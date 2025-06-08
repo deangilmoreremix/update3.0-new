@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" class="loading">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Smart CRM - AI-powered customer relationship management system">
+    <meta name="theme-color" content="#4f46e5">
+    <title>Smart CRM</title>
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" href="https://images.pexels.com/photos/6476582/pexels-photo-6476582.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" as="image" fetchpriority="high">
+    <link rel="stylesheet" href="/animations.css">
+    
+    <!-- Prevent FOUC (Flash of Unstyled Content) with minimal critical CSS -->
+    <style>
+      html {
+        background-color: #fff;
+      }
+      body {
+        margin: 0;
+        opacity: 0;
+        transition: opacity 0.4s ease-in-out;
+      }
+      html.content-ready body {
+        opacity: 0.6;
+      }
+      html.page-loaded body {
+        opacity: 1;
+      }
+      
+      /* Page loader animation */
+      @keyframes loader-spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      .initial-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #fff;
+        z-index: 9999;
+        transition: opacity 0.3s ease-out;
+      }
+      .initial-loader div {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #4f46e5;
+        border-radius: 50%;
+        animation: loader-spin 1s linear infinite;
+      }
+      .hide-loader {
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
+    <link rel="manifest" href="/site.webmanifest">
+  </head>
+  <body>
+    <!-- Initial loader -->
+    <div id="initial-loader" class="initial-loader">
+      <div></div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
