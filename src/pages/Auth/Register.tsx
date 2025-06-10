@@ -31,7 +31,7 @@ const Register: React.FC = () => {
   };
   
   if (isAuthenticated) {
-    return <Navigate to="/" />;
+    return <Navigate to="/dashboard" />;
   }
   
   return (
