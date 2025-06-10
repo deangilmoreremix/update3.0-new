@@ -17,7 +17,7 @@ const Login: React.FC = () => {
   };
   
   if (isAuthenticated) {
-    return <Navigate to="/Navigate" />;
+    return <Navigate to="/dashboard" replace/>;
   }
   
   return (
