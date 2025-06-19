@@ -16,6 +16,34 @@ export const useOpenAIEmbeddings = () => {
     });
   };
   
+  // Helper function to check if error is quota related
+  const isQuotaError = (error: any): boolean => {
+    const errorMessage = error?.message || '';
+    const errorStatus = error?.status;
+    
+    return (
+      errorStatus === 429 ||
+      errorMessage.includes('429') ||
+      errorMessage.toLowerCase().includes('quota') ||
+      errorMessage.toLowerCase().includes('exceeded') ||
+      errorMessage.toLowerCase().includes('billing')
+    );
+  };
+  
+  // Helper function to check if error is API key related
+  const isAPIKeyError = (error: any): boolean => {
+    const errorMessage = error?.message || '';
+    const errorStatus = error?.status;
+    
+    return (
+      errorStatus === 401 ||
+      errorMessage.includes('401') ||
+      errorMessage.toLowerCase().includes('unauthorized') ||
+      errorMessage.toLowerCase().includes('api key') ||
+      errorMessage.toLowerCase().includes('invalid key')
+    );
+  };
+  
   // Create embeddings for a text
   const createEmbedding = async (text: string) => {
     const client = getClient();
@@ -29,7 +57,10 @@ export const useOpenAIEmbeddings = () => {
       
       return response.data[0].embedding;
     } catch (error) {
-      console.error('Error creating embedding:', error);
+      // Only log unexpected errors, not quota or API key errors
+      if (!isQuotaError(error) && !isAPIKeyError(error)) {
+        console.error('Error creating embedding:', error);
+      }
       throw error;
     }
   };
@@ -61,7 +92,10 @@ export const useOpenAIEmbeddings = () => {
       
       return embeddings;
     } catch (error) {
-      console.error('Error creating contact embeddings:', error);
+      // Only log unexpected errors, not quota or API key errors
+      if (!isQuotaError(error) && !isAPIKeyError(error)) {
+        console.error('Error creating contact embeddings:', error);
+      }
       throw error;
     }
   };
@@ -91,7 +125,10 @@ export const useOpenAIEmbeddings = () => {
       
       return embeddings;
     } catch (error) {
-      console.error('Error creating deal embeddings:', error);
+      // Only log unexpected errors, not quota or API key errors
+      if (!isQuotaError(error) && !isAPIKeyError(error)) {
+        console.error('Error creating deal embeddings:', error);
+      }
       throw error;
     }
   };
@@ -129,7 +166,10 @@ export const useOpenAIEmbeddings = () => {
       // Sort by similarity score (highest first)
       return results.sort((a, b) => b.score - a.score);
     } catch (error) {
-      console.error('Error searching contacts:', error);
+      // Only log unexpected errors, not quota or API key errors
+      if (!isQuotaError(error) && !isAPIKeyError(error)) {
+        console.error('Error searching contacts:', error);
+      }
       throw error;
     }
   };
@@ -152,7 +192,10 @@ export const useOpenAIEmbeddings = () => {
       // Sort by similarity score (highest first)
       return results.sort((a, b) => b.score - a.score);
     } catch (error) {
-      console.error('Error searching deals:', error);
+      // Only log unexpected errors, not quota or API key errors
+      if (!isQuotaError(error) && !isAPIKeyError(error)) {
+        console.error('Error searching deals:', error);
+      }
       throw error;
     }
   };
