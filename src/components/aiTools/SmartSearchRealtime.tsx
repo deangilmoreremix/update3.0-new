@@ -129,6 +129,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
     dealEmbeddings: { dealId: string; embedding: number[] }[];
     error?: string;
     quotaExceeded?: boolean;
+    apiUnavailable?: boolean;
   }>({
     ready: false,
     contactEmbeddings: [],
@@ -137,6 +138,34 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
   
   const searchInputRef = useRef<HTMLInputElement>(null);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Helper function to check if error is quota related
+  const isQuotaError = (error: any): boolean => {
+    const errorMessage = error?.message || '';
+    const errorStatus = error?.status;
+    
+    return (
+      errorStatus === 429 ||
+      errorMessage.includes('429') ||
+      errorMessage.toLowerCase().includes('quota') ||
+      errorMessage.toLowerCase().includes('exceeded') ||
+      errorMessage.toLowerCase().includes('billing')
+    );
+  };
+  
+  // Helper function to check if error is API key related
+  const isAPIKeyError = (error: any): boolean => {
+    const errorMessage = error?.message || '';
+    const errorStatus = error?.status;
+    
+    return (
+      errorStatus === 401 ||
+      errorMessage.includes('401') ||
+      errorMessage.toLowerCase().includes('unauthorized') ||
+      errorMessage.toLowerCase().includes('api key') ||
+      errorMessage.toLowerCase().includes('invalid key')
+    );
+  };
   
   // Initialize embeddings on first load
   useEffect(() => {
@@ -152,25 +181,32 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
           dealEmbeddings: dealEmbs
         });
       } catch (error: any) {
-        console.error('Error initializing embeddings:', error);
+        // Check the type of error and handle gracefully
+        const isQuota = isQuotaError(error);
+        const isAPIKey = isAPIKeyError(error);
         
-        // Check if it's a quota exceeded error
-        const isQuotaError = error.message?.includes('429') || 
-                            error.message?.includes('quota') || 
-                            error.message?.includes('exceeded') ||
-                            error.status === 429;
+        // Only log non-quota errors to console to avoid cluttering with expected quota errors
+        if (!isQuota && !isAPIKey) {
+          console.error('Error initializing embeddings:', error);
+        }
         
         setEmbedData({
           ready: false,
           contactEmbeddings: [],
           dealEmbeddings: [],
           error: error.message || 'Failed to initialize embeddings',
-          quotaExceeded: isQuotaError
+          quotaExceeded: isQuota,
+          apiUnavailable: isAPIKey
         });
       }
     };
     
-    initializeEmbeddings();
+    // Use a slight delay to prevent immediate error logging on component mount
+    const timeoutId = setTimeout(() => {
+      initializeEmbeddings();
+    }, 100);
+    
+    return () => clearTimeout(timeoutId);
   }, []);
   
   // Generate search suggestions based on input
@@ -211,7 +247,9 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
       setSearchSuggestions(baseSuggestions.slice(0, 3));
       setShowSearchSuggestions(true);
     } catch (error) {
-      console.error('Error generating search suggestions:', error);
+      // Silently handle suggestion generation errors
+      setSearchSuggestions([]);
+      setShowSearchSuggestions(false);
     }
   };
   
@@ -312,9 +350,13 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
       }
       
       setShowSearchSuggestions(false);
-    } catch (error) {
-      console.error('Error performing search:', error);
-      // Fallback to basic search on error
+    } catch (error: any) {
+      // Handle search errors gracefully
+      if (!isQuotaError(error) && !isAPIKeyError(error)) {
+        console.error('Error performing search:', error);
+      }
+      
+      // Always fallback to basic search on error
       const fallbackResults = performBasicSearch(query);
       setSearchResults(fallbackResults);
       
@@ -387,8 +429,37 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
           </div>
         )}
         
+        {/* Show API key error message if applicable */}
+        {embedData.apiUnavailable && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-start">
+              <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 mr-3 flex-shrink-0" />
+              <div className="flex-1">
+                <h4 className="text-sm font-medium text-red-800 mb-1">
+                  OpenAI API Key Required
+                </h4>
+                <p className="text-sm text-red-700 mb-3">
+                  The smart search feature requires a valid OpenAI API key. Please check your API configuration.
+                  Using basic keyword search instead.
+                </p>
+                <div className="flex items-center text-xs text-red-600">
+                  <ExternalLink size={12} className="mr-1" />
+                  <a 
+                    href="https://platform.openai.com/api-keys" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="underline hover:text-red-800"
+                  >
+                    Manage your OpenAI API keys
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {/* Show general error message for other API errors */}
-        {embedData.error && !embedData.quotaExceeded && (
+        {embedData.error && !embedData.quotaExceeded && !embedData.apiUnavailable && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex items-start">
               <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 mr-3 flex-shrink-0" />
