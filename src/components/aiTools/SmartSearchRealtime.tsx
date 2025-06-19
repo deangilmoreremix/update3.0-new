@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useGemini } from '../../services/geminiService';
 import { useOpenAIEmbeddings } from '../../services/openaiEmbeddingsService';
-import { Search, FileText, User, Briefcase, Clock, ArrowRight, RefreshCw, X, Sparkles, Filter, CheckCircle } from 'lucide-react';
+import { Search, FileText, User, Briefcase, Clock, ArrowRight, RefreshCw, X, Sparkles, Filter, CheckCircle, AlertCircle, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Contact, Deal } from '../../types';
 
@@ -127,6 +127,8 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
     ready: boolean;
     contactEmbeddings: { contactId: string; embedding: number[] }[];
     dealEmbeddings: { dealId: string; embedding: number[] }[];
+    error?: string;
+    quotaExceeded?: boolean;
   }>({
     ready: false,
     contactEmbeddings: [],
@@ -149,8 +151,22 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
           contactEmbeddings: contactEmbs,
           dealEmbeddings: dealEmbs
         });
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error initializing embeddings:', error);
+        
+        // Check if it's a quota exceeded error
+        const isQuotaError = error.message?.includes('429') || 
+                            error.message?.includes('quota') || 
+                            error.message?.includes('exceeded') ||
+                            error.status === 429;
+        
+        setEmbedData({
+          ready: false,
+          contactEmbeddings: [],
+          dealEmbeddings: [],
+          error: error.message || 'Failed to initialize embeddings',
+          quotaExceeded: isQuotaError
+        });
       }
     };
     
@@ -199,63 +215,112 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
     }
   };
   
+  // Perform basic keyword search as fallback
+  const performBasicSearch = (query: string) => {
+    const searchTerm = query.toLowerCase();
+    const results: SearchResult[] = [];
+    
+    // Search contacts
+    if (filters.type === 'all' || filters.type === 'contacts') {
+      mockContacts.forEach(contact => {
+        const searchableText = `${contact.name} ${contact.email} ${contact.company} ${contact.position} ${contact.notes} ${contact.industry} ${contact.location}`.toLowerCase();
+        if (searchableText.includes(searchTerm)) {
+          results.push({
+            type: 'contact',
+            item: contact,
+            score: 0.8 // Default score for keyword matching
+          });
+        }
+      });
+    }
+    
+    // Search deals
+    if (filters.type === 'all' || filters.type === 'deals') {
+      mockDeals.forEach(deal => {
+        const searchableText = `${deal.title} ${deal.company} ${deal.contact} ${deal.stage} ${deal.priority}`.toLowerCase();
+        if (searchableText.includes(searchTerm)) {
+          results.push({
+            type: 'deal',
+            item: deal,
+            score: 0.8 // Default score for keyword matching
+          });
+        }
+      });
+    }
+    
+    return results.slice(0, 5);
+  };
+  
   // Perform the semantic search
   const performSemanticSearch = async (query: string) => {
-    if (query.trim().length === 0 || !embedData.ready) return;
+    if (query.trim().length === 0) return;
     
     setIsSearching(true);
     setSearchResults([]);
     
     try {
-      // Create an embedding for the search query
-      const queryEmbedding = await embeddings.createEmbedding(query);
+      let results: SearchResult[] = [];
       
-      const results: SearchResult[] = [];
-      
-      // Search contacts if not filtered out
-      if (filters.type === 'all' || filters.type === 'contacts') {
-        const contactsById = mockContacts.reduce((acc, contact) => {
-          acc[contact.id] = contact;
-          return acc;
-        }, {} as Record<string, Contact>);
+      // If embeddings are ready, use semantic search
+      if (embedData.ready) {
+        // Create an embedding for the search query
+        const queryEmbedding = await embeddings.createEmbedding(query);
         
-        const contactResults = await embeddings.searchContacts(query, embedData.contactEmbeddings, contactsById);
+        // Search contacts if not filtered out
+        if (filters.type === 'all' || filters.type === 'contacts') {
+          const contactsById = mockContacts.reduce((acc, contact) => {
+            acc[contact.id] = contact;
+            return acc;
+          }, {} as Record<string, Contact>);
+          
+          const contactResults = await embeddings.searchContacts(query, embedData.contactEmbeddings, contactsById);
+          
+          results.push(...contactResults.map(result => ({
+            type: 'contact',
+            item: result.contact,
+            score: result.score
+          })));
+        }
         
-        results.push(...contactResults.map(result => ({
-          type: 'contact',
-          item: result.contact,
-          score: result.score
-        })));
+        // Search deals if not filtered out
+        if (filters.type === 'all' || filters.type === 'deals') {
+          const dealsById = mockDeals.reduce((acc, deal) => {
+            acc[deal.id] = deal;
+            return acc;
+          }, {} as Record<string, Deal>);
+          
+          const dealResults = await embeddings.searchDeals(query, embedData.dealEmbeddings, dealsById);
+          
+          results.push(...dealResults.map(result => ({
+            type: 'deal',
+            item: result.deal,
+            score: result.score
+          })));
+        }
+        
+        // Sort by similarity score
+        results = results.sort((a, b) => b.score - a.score).slice(0, 5);
+      } else {
+        // Fallback to basic keyword search
+        results = performBasicSearch(query);
       }
       
-      // Search deals if not filtered out
-      if (filters.type === 'all' || filters.type === 'deals') {
-        const dealsById = mockDeals.reduce((acc, deal) => {
-          acc[deal.id] = deal;
-          return acc;
-        }, {} as Record<string, Deal>);
-        
-        const dealResults = await embeddings.searchDeals(query, embedData.dealEmbeddings, dealsById);
-        
-        results.push(...dealResults.map(result => ({
-          type: 'deal',
-          item: result.deal,
-          score: result.score
-        })));
-      }
-      
-      // Sort by similarity score
-      const sortedResults = results.sort((a, b) => b.score - a.score).slice(0, 5);
-      
-      setSearchResults(sortedResults);
+      setSearchResults(results);
       
       if (onSearchResult) {
-        onSearchResult(sortedResults);
+        onSearchResult(results);
       }
       
       setShowSearchSuggestions(false);
     } catch (error) {
       console.error('Error performing search:', error);
+      // Fallback to basic search on error
+      const fallbackResults = performBasicSearch(query);
+      setSearchResults(fallbackResults);
+      
+      if (onSearchResult) {
+        onSearchResult(fallbackResults);
+      }
     } finally {
       setIsSearching(false);
     }
@@ -287,12 +352,58 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
           <Search size={20} className="text-blue-600 mr-2" />
           Smart Search
           <span className="ml-2 text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full font-medium">
-            Real-time
+            {embedData.ready ? 'AI-Powered' : 'Basic Search'}
           </span>
         </h3>
       </div>
       
       <div className="p-6 space-y-6">
+        {/* Show API quota error message if applicable */}
+        {embedData.quotaExceeded && (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <div className="flex items-start">
+              <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 mr-3 flex-shrink-0" />
+              <div className="flex-1">
+                <h4 className="text-sm font-medium text-amber-800 mb-1">
+                  OpenAI API Quota Exceeded
+                </h4>
+                <p className="text-sm text-amber-700 mb-3">
+                  The smart search feature requires OpenAI embeddings but your API quota has been exceeded. 
+                  The search will use basic keyword matching as a fallback.
+                </p>
+                <div className="flex items-center text-xs text-amber-600">
+                  <ExternalLink size={12} className="mr-1" />
+                  <a 
+                    href="https://platform.openai.com/account/billing" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="underline hover:text-amber-800"
+                  >
+                    Check your OpenAI billing and usage
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Show general error message for other API errors */}
+        {embedData.error && !embedData.quotaExceeded && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-start">
+              <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 mr-3 flex-shrink-0" />
+              <div className="flex-1">
+                <h4 className="text-sm font-medium text-red-800 mb-1">
+                  Smart Search Unavailable
+                </h4>
+                <p className="text-sm text-red-700">
+                  Unable to initialize AI-powered search. Using basic keyword search instead.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-gray-400" />
@@ -302,7 +413,10 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Search using natural language (e.g., 'high priority deals closing this month')"
+            placeholder={embedData.ready ? 
+              "Search using natural language (e.g., 'high priority deals closing this month')" :
+              "Search contacts and deals using keywords"
+            }
             className="block w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700"
           />
           {searchQuery && (
@@ -317,7 +431,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
         
         {/* Search suggestions dropdown */}
         <AnimatePresence>
-          {showSearchSuggestions && searchSuggestions.length > 0 && (
+          {showSearchSuggestions && searchSuggestions.length > 0 && embedData.ready && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -398,16 +512,25 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
         </div>
       
         {/* Search metadata */}
-        {embedData.ready && (
-          <div className="bg-gray-50 p-3 rounded-lg">
-            <div className="flex items-center text-xs text-gray-500">
-              <CheckCircle size={14} className="text-blue-500 mr-1.5" />
-              <span>
-                Semantic search index ready ({mockContacts.length} contacts, {mockDeals.length} deals)
-              </span>
-            </div>
+        <div className="bg-gray-50 p-3 rounded-lg">
+          <div className="flex items-center text-xs text-gray-500">
+            {embedData.ready ? (
+              <>
+                <CheckCircle size={14} className="text-blue-500 mr-1.5" />
+                <span>
+                  AI semantic search ready ({mockContacts.length} contacts, {mockDeals.length} deals)
+                </span>
+              </>
+            ) : (
+              <>
+                <AlertCircle size={14} className="text-amber-500 mr-1.5" />
+                <span>
+                  Basic keyword search active ({mockContacts.length} contacts, {mockDeals.length} deals)
+                </span>
+              </>
+            )}
           </div>
-        )}
+        </div>
         
         {/* Search results */}
         <div className="mt-6">
@@ -420,7 +543,9 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
                 className="flex justify-center items-center py-12"
               >
                 <RefreshCw size={32} className="text-blue-500 animate-spin" />
-                <span className="ml-3 text-gray-600">Searching with AI...</span>
+                <span className="ml-3 text-gray-600">
+                  {embedData.ready ? 'Searching with AI...' : 'Searching...'}
+                </span>
               </motion.div>
             )}
           </AnimatePresence>
@@ -428,8 +553,17 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
           {!isSearching && searchResults.length > 0 && (
             <div>
               <h4 className="font-medium text-gray-900 mb-4 flex items-center">
-                <Sparkles size={16} className="text-blue-500 mr-2" />
+                {embedData.ready ? (
+                  <Sparkles size={16} className="text-blue-500 mr-2" />
+                ) : (
+                  <Search size={16} className="text-gray-500 mr-2" />
+                )}
                 {searchResults.length} Results for "{searchQuery}"
+                {!embedData.ready && (
+                  <span className="ml-2 text-xs px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full">
+                    Keyword Search
+                  </span>
+                )}
               </h4>
               
               <div className="space-y-4">
@@ -456,7 +590,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
                         </div>
                         <div className="text-right">
                           <div className="text-xs font-medium">
-                            Match: {Math.round(result.score * 100)}%
+                            {embedData.ready ? `Match: ${Math.round(result.score * 100)}%` : 'Keyword Match'}
                           </div>
                           <div className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 capitalize">
                             {(result.item as Contact).status}
@@ -478,7 +612,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
                         </div>
                         <div className="text-right">
                           <div className="text-xs font-medium">
-                            Match: {Math.round(result.score * 100)}%
+                            {embedData.ready ? `Match: ${Math.round(result.score * 100)}%` : 'Keyword Match'}
                           </div>
                           <div className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-800 capitalize">
                             {(result.item as Deal).stage}
@@ -531,24 +665,29 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
           {!isSearching && !searchQuery && (
             <div className="text-center py-12 bg-gray-50 rounded-lg">
               <Search size={48} className="mx-auto text-gray-300 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Smart Semantic Search</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                {embedData.ready ? 'Smart Semantic Search' : 'Keyword Search'}
+              </h3>
               <p className="text-gray-500 max-w-md mx-auto mb-4">
-                Use natural language to find exactly what you need across all your CRM data.
+                {embedData.ready ? 
+                  'Use natural language to find exactly what you need across all your CRM data.' :
+                  'Search through your contacts and deals using keywords.'
+                }
               </p>
               <div className="max-w-md mx-auto">
-                <div className="text-sm text-left">Try asking:</div>
+                <div className="text-sm text-left">Try searching for:</div>
                 <ul className="text-left text-sm text-gray-700 space-y-2 mt-2">
                   <li className="flex items-center">
                     <ArrowRight size={12} className="text-blue-500 mr-2" />
-                    Deals with high priority closing this month
+                    {embedData.ready ? 'Deals with high priority closing this month' : 'John Doe or Acme Inc'}
                   </li>
                   <li className="flex items-center">
                     <ArrowRight size={12} className="text-blue-500 mr-2" />
-                    Contacts in the technology industry with budget concerns
+                    {embedData.ready ? 'Contacts in the technology industry with budget concerns' : 'CTO or Technology'}
                   </li>
                   <li className="flex items-center">
                     <ArrowRight size={12} className="text-blue-500 mr-2" />
-                    Deals over $50,000 in the negotiation stage
+                    {embedData.ready ? 'Deals over $50,000 in the negotiation stage' : 'Enterprise or $75000'}
                   </li>
                 </ul>
               </div>
