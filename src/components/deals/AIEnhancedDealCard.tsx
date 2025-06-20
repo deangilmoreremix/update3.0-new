@@ -1,3 +1,6 @@
+import { useGemini } from '../../services/geminiService';
+import { sendGmailEmail } from '../../services/composioService';
+import { supabase } from '../../lib/supabase';
 import React, { useState } from 'react';
 import { Deal } from '../../types';
 import { 
