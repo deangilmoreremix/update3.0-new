@@ -294,3 +294,13 @@ Make it sound personalized, helpful, and clear. Keep it concise and ready to sen
   const result = await model.generateContent(prompt);
   return result.response.text().trim();
 };
+const generateReasoning = async (prompt: string): Promise<string> => {
+  const reasoningPrompt = `
+You're an AI email strategist. ${prompt}
+
+Explain the reasoning behind the structure, tone, and messaging used. Keep the explanation under 150 words.
+`;
+
+  const result = await model.generateContent(reasoningPrompt);
+  return result.response.text().trim();
+};
