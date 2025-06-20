@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Phone, User, Building, Tag, RefreshCw, Copy } from 'lucide-react';
 import AIToolContent from '../shared/AIToolContent';
-import ReasoningToggle from '../shared/ReasoningToggle';
 import { useOpenAI } from '../../services/openaiService';
 
 const CallScriptContent: React.FC = () => {
@@ -103,7 +102,14 @@ const CallScriptContent: React.FC = () => {
             </div>
           )}
 
-          {result && reasoning && <ReasoningToggle reasoning={reasoning} />}
+          {result && reasoning && (
+            <div className="mt-4">
+              <h4 className="text-indigo-700 font-medium mb-2">Strategy Reasoning</h4>
+              <div className="bg-blue-50 p-4 rounded border-l-4 border-blue-400">
+                <p className="text-sm text-blue-800 whitespace-pre-wrap">{reasoning}</p>
+              </div>
+            </div>
+          )}
         </form>
       </AIToolContent>
     </div>
