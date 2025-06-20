@@ -1,275 +1,113 @@
 import React, { useState } from 'react';
-import { Phone, User, Target, MessageSquare, Lightbulb, Copy, RefreshCw } from 'lucide-react';
+import { Phone, User, Building, Tag, RefreshCw, Copy } from 'lucide-react';
+import AIToolContent from '../shared/AIToolContent';
+import ReasoningToggle from '../shared/ReasoningToggle';
+import { useOpenAI } from '../../services/openaiService';
 
-interface CallScriptContentProps {
-  onGenerate?: (content: string) => void;
-}
-
-export default function CallScriptContent({ onGenerate }: CallScriptContentProps) {
+const CallScriptContent: React.FC = () => {
   const [formData, setFormData] = useState({
-    prospect: '',
-    company: '',
+    prospectName: '',
+    companyName: '',
     industry: '',
-    callObjective: '',
-    painPoints: '',
-    valueProposition: '',
-    tone: 'professional'
+    callPurpose: '',
   });
-  const [generatedScript, setGeneratedScript] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [reasoning, setReasoning] = useState<string | null>(null);
+  const openai = useOpenAI();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const generateScript = async () => {
-    setIsGenerating(true);
-    
-    // Simulate API call - replace with actual AI service call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    const script = `Hi ${formData.prospect || '[Prospect Name]'},
+  const handleGenerate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    setResult(null);
+    setReasoning(null);
 
-This is [Your Name] from [Your Company]. I hope I'm catching you at a good time.
-
-OPENING:
-I'm reaching out because I noticed ${formData.company || '[Company Name]'} is in the ${formData.industry || '[Industry]'} space, and we've been helping similar companies ${formData.callObjective || 'achieve their goals'}.
-
-PAIN POINT IDENTIFICATION:
-Many companies like yours are dealing with ${formData.painPoints || 'common industry challenges'}. Is this something you've experienced as well?
-
-VALUE PROPOSITION:
-What we've found is that ${formData.valueProposition || 'our solution helps companies overcome these challenges by providing specific benefits'}.
-
-DISCOVERY QUESTIONS:
-- How are you currently handling [relevant process]?
-- What's working well, and what could be improved?
-- What would success look like for you in this area?
-
-NEXT STEPS:
-Based on what you've shared, I'd love to show you how we've helped companies like [Similar Company] achieve [specific result]. 
-
-Would you be open to a brief 15-minute conversation next week to explore this further? I have some time available on [Day] at [Time] or [Alternative Time].
-
-CLOSING:
-Great! I'll send you a calendar invite right after our call. In the meantime, is there anything specific you'd like me to prepare or any questions you have about what we do?
-
-Thank you for your time, ${formData.prospect || '[Prospect Name]'}. I look forward to our conversation!`;
-
-    setGeneratedScript(script);
-    if (onGenerate) {
-      onGenerate(script);
+    try {
+      const prompt = `Create a personalized sales call script to ${formData.callPurpose} for ${formData.prospectName} at ${formData.companyName}, a company in the ${formData.industry} industry.`;
+      const script = await openai.generateScript(prompt); // <- replace with your actual function
+      const reason = await openai.generateReasoning(`Explain the strategy behind the call script for: ${formData.callPurpose}`);
+      setResult(script);
+      setReasoning(reason);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Something went wrong');
+    } finally {
+      setIsLoading(false);
     }
-    setIsGenerating(false);
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedScript);
+  const handleCopy = async () => {
+    if (result) {
+      await navigator.clipboard.writeText(result);
+      alert('Call script copied to clipboard!');
+    }
   };
-
-  const toneOptions = [
-    { value: 'professional', label: 'Professional' },
-    { value: 'friendly', label: 'Friendly' },
-    { value: 'direct', label: 'Direct' },
-    { value: 'consultative', label: 'Consultative' }
-  ];
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center mb-4">
-          <div className="p-3 bg-blue-100 rounded-full">
-            <Phone className="w-8 h-8 text-blue-600" />
+    <div className="w-full">
+      <AIToolContent>
+        <form onSubmit={handleGenerate} className="space-y-6">
+          <div>
+            <h3 className="font-semibold text-indigo-800">Call Script Generator</h3>
+            <p className="text-sm text-indigo-600">
+              Enter basic details to generate a personalized, strategic sales call script with AI.
+            </p>
           </div>
-        </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">AI Call Script Generator</h1>
-        <p className="text-gray-600">Create personalized call scripts that convert prospects into customers</p>
-      </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Input Form */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-            <Target className="w-5 h-5 mr-2" />
-            Call Details
-          </h2>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <User className="w-4 h-4 inline mr-1" />
-                Prospect Name
-              </label>
-              <input
-                type="text"
-                name="prospect"
-                value={formData.prospect}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="John Smith"
-              />
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label className="flex items-center gap-2">
+              <User size={18} /> Prospect Name
+              <input type="text" name="prospectName" className="input-modern" value={formData.prospectName} onChange={handleChange} required />
+            </label>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Company Name
-              </label>
-              <input
-                type="text"
-                name="company"
-                value={formData.company}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="ABC Corporation"
-              />
-            </div>
+            <label className="flex items-center gap-2">
+              <Building size={18} /> Company Name
+              <input type="text" name="companyName" className="input-modern" value={formData.companyName} onChange={handleChange} required />
+            </label>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Industry
-              </label>
-              <input
-                type="text"
-                name="industry"
-                value={formData.industry}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Technology, Healthcare, Manufacturing..."
-              />
-            </div>
+            <label className="flex items-center gap-2">
+              <Tag size={18} /> Industry
+              <input type="text" name="industry" className="input-modern" value={formData.industry} onChange={handleChange} />
+            </label>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Call Objective
-              </label>
-              <input
-                type="text"
-                name="callObjective"
-                value={formData.callObjective}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Schedule a demo, qualify lead, close deal..."
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Pain Points
-              </label>
-              <textarea
-                name="painPoints"
-                value={formData.painPoints}
-                onChange={handleInputChange}
-                rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="What challenges is the prospect facing?"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Value Proposition
-              </label>
-              <textarea
-                name="valueProposition"
-                value={formData.valueProposition}
-                onChange={handleInputChange}
-                rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="How does your solution help solve their problems?"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <MessageSquare className="w-4 h-4 inline mr-1" />
-                Tone
-              </label>
-              <select
-                name="tone"
-                value={formData.tone}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                {toneOptions.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <button
-              onClick={generateScript}
-              disabled={isGenerating}
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-            >
-              {isGenerating ? (
-                <>
-                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                  Generating Script...
-                </>
-              ) : (
-                <>
-                  <Lightbulb className="w-4 h-4 mr-2" />
-                  Generate Call Script
-                </>
-              )}
-            </button>
+            <label className="flex items-center gap-2">
+              <Phone size={18} /> Purpose of Call
+              <input type="text" name="callPurpose" className="input-modern" value={formData.callPurpose} onChange={handleChange} required />
+            </label>
           </div>
-        </div>
 
-        {/* Generated Script */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-              <Phone className="w-5 h-5 mr-2" />
-              Generated Call Script
-            </h2>
-            {generatedScript && (
-              <button
-                onClick={copyToClipboard}
-                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                title="Copy to clipboard"
-              >
-                <Copy className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-          
-          {generatedScript ? (
-            <div className="bg-gray-50 rounded-lg p-4 border">
-              <pre className="whitespace-pre-wrap text-sm text-gray-800 font-mono leading-relaxed">
-                {generatedScript}
-              </pre>
-            </div>
-          ) : (
-            <div className="bg-gray-50 rounded-lg p-8 text-center border">
-              <Phone className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500">
-                Fill out the form and click "Generate Call Script" to create your personalized script
-              </p>
+          <button type="submit" className="btn-primary flex items-center gap-2" disabled={isLoading}>
+            {isLoading ? <RefreshCw className="animate-spin" size={16} /> : null}
+            {isLoading ? 'Generating...' : 'Generate Call Script'}
+          </button>
+
+          {error && <p className="text-red-500">{error}</p>}
+
+          {result && (
+            <div className="mt-6">
+              <div className="flex justify-between items-center mb-2">
+                <h4 className="text-indigo-700 font-medium">Generated Script</h4>
+                <button type="button" className="btn-secondary text-sm flex items-center gap-1" onClick={handleCopy}>
+                  <Copy size={14} /> Copy
+                </button>
+              </div>
+              <div className="bg-gray-100 p-4 rounded whitespace-pre-wrap">{result}</div>
             </div>
           )}
-        </div>
-      </div>
 
-      {generatedScript && (
-        <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-          <h3 className="text-lg font-semibold text-blue-900 mb-2 flex items-center">
-            <Lightbulb className="w-5 h-5 mr-2" />
-            Pro Tips for Your Call
-          </h3>
-          <ul className="text-blue-800 space-y-2 text-sm list-disc list-inside">
-            <li>Practice the script beforehand but keep it conversational</li>
-            <li>Listen actively and be prepared to deviate based on their responses</li>
-            <li>Take notes during the call for follow-up actions</li>
-            <li>Always confirm next steps before ending the call</li>
-            <li>Follow up within 24 hours with promised information</li>
-          </ul>
-        </div>
-      )}
+          {result && reasoning && <ReasoningToggle reasoning={reasoning} />}
+        </form>
+      </AIToolContent>
     </div>
   );
-}
+};
+
+export default CallScriptContent;
