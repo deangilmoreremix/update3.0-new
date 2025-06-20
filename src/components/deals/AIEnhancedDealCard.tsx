@@ -312,3 +312,22 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
 
 export default AIEnhancedDealCard;
 const gemini = useGemini();
+const logEmailToLead = async ({
+  leadId,
+  summary,
+  content,
+}: {
+  leadId: string;
+  summary: string;
+  content: string;
+}) => {
+  const { error } = await supabase.from('lead_communications').insert([
+    {
+      lead_id: leadId,
+      type: 'email',
+      summary,
+      content,
+    },
+  ]);
+  if (error) throw error;
+};
