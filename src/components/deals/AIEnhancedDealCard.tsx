@@ -311,3 +311,4 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
 };
 
 export default AIEnhancedDealCard;
+const gemini = useGemini();
