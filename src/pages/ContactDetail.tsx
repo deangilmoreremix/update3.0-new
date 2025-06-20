@@ -45,7 +45,7 @@ const ContactDetail: React.FC = () => {
   const [leadScoreLoading, setLeadScoreLoading] = useState(false);
   const [leadScoreError, setLeadScoreError] = useState<string | null>(null);
   
-  const [personalizationResult, setPersonalizationResult] = useState<string | null>(null);
+  const [personalizationResult, setPersonalizationResult] = useState<any>(null);
   const [personalizationLoading, setPersonalizationLoading] = useState(false);
   const [personalizationError, setPersonalizationError] = useState<string | null>(null);
   
@@ -617,7 +617,39 @@ const ContactDetail: React.FC = () => {
               
               {personalizationResult && !personalizationError && (
                 <div className="bg-blue-50 text-gray-800 p-4 rounded-md">
-                  <div className="whitespace-pre-wrap text-sm">{personalizationResult}</div>
+                  <h3 className="font-medium mb-3">Personalization Recommendations</h3>
+                  <div className="space-y-3 text-sm">
+                    {typeof personalizationResult === 'string' ? (
+                      <div className="whitespace-pre-wrap">{personalizationResult}</div>
+                    ) : (
+                      <>
+                        {personalizationResult.personalizedMessage && (
+                          <div>
+                            <h4 className="font-medium text-gray-700 mb-1">Personalized Message:</h4>
+                            <p className="text-gray-600">{personalizationResult.personalizedMessage}</p>
+                          </div>
+                        )}
+                        {personalizationResult.talkingPoints && (
+                          <div>
+                            <h4 className="font-medium text-gray-700 mb-1">Talking Points:</h4>
+                            <p className="text-gray-600">{personalizationResult.talkingPoints}</p>
+                          </div>
+                        )}
+                        {personalizationResult.iceBreakers && (
+                          <div>
+                            <h4 className="font-medium text-gray-700 mb-1">Ice Breakers:</h4>
+                            <p className="text-gray-600">{personalizationResult.iceBreakers}</p>
+                          </div>
+                        )}
+                        {personalizationResult.followUpSuggestions && (
+                          <div>
+                            <h4 className="font-medium text-gray-700 mb-1">Follow-up Suggestions:</h4>
+                            <p className="text-gray-600">{personalizationResult.followUpSuggestions}</p>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
