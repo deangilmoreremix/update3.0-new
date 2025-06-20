@@ -297,3 +297,10 @@ Briefly explain the rationale, section structure, and strategic importance of th
   const result = await model.generateContent(reasoningPrompt);
   return result.response.text().trim();
 };
+return {
+  predictLeadScore,
+  generateLeadInsights,
+  generateEmailDraft,
+  generateMeetingAgenda,
+  generateReasoning,
+};
