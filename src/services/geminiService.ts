@@ -267,4 +267,87 @@ export const useGemini = () => {
   return geminiService;
 };
 
-export default geminiService;
+export default geminiService
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { Contact } from '../types';
+
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY!);
+const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+
+export const useGemini = () => {
+  const predictLeadScore = async (lead: Partial<Contact>): Promise<string> => {
+    const prompt = `
+Based on the following lead details, assign a score between 0 and 100 indicating how likely this lead is to convert to a customer.
+
+Respond with ONLY a number.
+
+Name: ${lead.name}
+Position: ${lead.position}
+Company: ${lead.company}
+Email: ${lead.email}
+Status: ${lead.status}
+Industry: ${lead.industry}
+Pain Points: ${lead.painPoints?.join(', ')}
+Budget: ${lead.budget}
+Timeframe: ${lead.timeframe}
+Decision Stage: ${lead.decisionStage}
+`;
+
+    const result = await model.generateContent(prompt);
+    return result.response.text().trim();
+  };
+
+  const generateLeadInsights = async (lead: Partial<Contact>) => {
+    const prompt = `
+You are an AI sales assistant. Analyze the following lead and provide:
+
+- Top 3 priority reasons this lead is worth following up
+- A fit score (0-100)
+- An engagement level (0-100)
+- Suggested next best actions
+- One follow-up message suggestion
+
+Lead Details:
+Name: ${lead.name}
+Position: ${lead.position}
+Company: ${lead.company}
+Industry: ${lead.industry}
+Pain Points: ${lead.painPoints?.join(', ')}
+Budget: ${lead.budget}
+Timeframe: ${lead.timeframe}
+Decision Stage: ${lead.decisionStage}
+Last Contacted: ${lead.lastContacted}
+
+Respond in this JSON format:
+{
+  "priorityReasons": [],
+  "fitScore": 0,
+  "engagementLevel": 0,
+  "nextBestActions": [],
+  "followUpSuggestion": ""
+}
+`;
+
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+    try {
+      const jsonBlock = text.match(/\{[\s\S]*\}/)?.[0];
+      if (!jsonBlock) throw new Error('Invalid Gemini JSON output');
+      return JSON.parse(jsonBlock);
+    } catch (err) {
+      console.error('Error parsing Gemini lead insights:', err);
+      return {
+        priorityReasons: [],
+        fitScore: 50,
+        engagementLevel: 50,
+        nextBestActions: [],
+        followUpSuggestion: 'Reach out with a personalized offer.',
+      };
+    }
+  };
+
+  return {
+    predictLeadScore,
+    generateLeadInsights,
+  };
+};
