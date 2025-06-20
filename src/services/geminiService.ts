@@ -268,3 +268,29 @@ export const useGemini = () => {
 };
 
 export default geminiService;
+const generateEmailDraft = async ({
+  name,
+  position,
+  company,
+  purpose,
+  context,
+}: {
+  name: string;
+  position?: string;
+  company?: string;
+  purpose: string;
+  context?: string;
+}): Promise<string> => {
+  const prompt = `
+Write a professional email for the following scenario:
+
+- Recipient: ${name}${position ? `, ${position}` : ''}${company ? ` at ${company}` : ''}
+- Purpose: ${purpose}
+- Context: ${context || 'N/A'}
+
+Make it sound personalized, helpful, and clear. Keep it concise and ready to send.
+`;
+
+  const result = await model.generateContent(prompt);
+  return result.response.text().trim();
+};
