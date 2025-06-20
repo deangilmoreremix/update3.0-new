@@ -262,4 +262,9 @@ export const geminiService = {
   }
 };
 
+// React hook for components to use Gemini service
+export const useGemini = () => {
+  return geminiService;
+};
+
 export default geminiService;
