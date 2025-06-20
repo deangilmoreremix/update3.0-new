@@ -287,3 +287,13 @@ Keep it short, clear, and business-ready.
   const result = await model.generateContent(prompt);
   return result.response.text().trim();
 };
+const generateReasoning = async (prompt: string): Promise<string> => {
+  const reasoningPrompt = `
+You're an AI strategist. ${prompt}
+
+Briefly explain the rationale, section structure, and strategic importance of the agenda. Keep it under 150 words.
+`;
+
+  const result = await model.generateContent(reasoningPrompt);
+  return result.response.text().trim();
+};
