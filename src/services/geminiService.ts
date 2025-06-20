@@ -259,6 +259,49 @@ export const geminiService = {
       console.error('Gemini API error in sentiment analysis:', error);
       throw error;
     }
+  },
+
+  async generateMeetingAgenda(
+    purpose: string,
+    attendees: string[],
+    previousNotes?: string
+  ): Promise<string> {
+    try {
+      const prompt = `
+        You're an expert sales assistant. Create a structured meeting agenda with clear sections based on:
+
+        - Purpose: ${purpose}
+        - Attendees: ${attendees.join(', ')}
+        - Previous notes: ${previousNotes || 'N/A'}
+
+        Use headings like "Introduction", "Client Needs", "Demo", "Q&A", "Next Steps".
+        Keep it short, clear, and business-ready.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      return response.text().trim();
+    } catch (error) {
+      console.error('Gemini API error in meeting agenda generation:', error);
+      throw error;
+    }
+  },
+
+  async generateReasoning(prompt: string): Promise<string> {
+    try {
+      const reasoningPrompt = `
+        You're an AI strategist. ${prompt}
+
+        Briefly explain the rationale, section structure, and strategic importance of the agenda. Keep it under 150 words.
+      `;
+
+      const result = await model.generateContent(reasoningPrompt);
+      const response = await result.response;
+      return response.text().trim();
+    } catch (error) {
+      console.error('Gemini API error in reasoning generation:', error);
+      throw error;
+    }
   }
 };
 
@@ -268,39 +311,3 @@ export const useGemini = () => {
 };
 
 export default geminiService;
-const generateMeetingAgenda = async (
-  purpose: string,
-  attendees: string[],
-  previousNotes?: string
-): Promise<string> => {
-  const prompt = `
-You're an expert sales assistant. Create a structured meeting agenda with clear sections based on:
-
-- Purpose: ${purpose}
-- Attendees: ${attendees.join(', ')}
-- Previous notes: ${previousNotes || 'N/A'}
-
-Use headings like "Introduction", "Client Needs", "Demo", "Q&A", "Next Steps".
-Keep it short, clear, and business-ready.
-`;
-
-  const result = await model.generateContent(prompt);
-  return result.response.text().trim();
-};
-const generateReasoning = async (prompt: string): Promise<string> => {
-  const reasoningPrompt = `
-You're an AI strategist. ${prompt}
-
-Briefly explain the rationale, section structure, and strategic importance of the agenda. Keep it under 150 words.
-`;
-
-  const result = await model.generateContent(reasoningPrompt);
-  return result.response.text().trim();
-};
-return {
-  predictLeadScore,
-  generateLeadInsights,
-  generateEmailDraft,
-  generateMeetingAgenda,
-  generateReasoning,
-};
