@@ -304,3 +304,9 @@ Explain the reasoning behind the structure, tone, and messaging used. Keep the e
   const result = await model.generateContent(reasoningPrompt);
   return result.response.text().trim();
 };
+return {
+  predictLeadScore,
+  generateLeadInsights,
+  generateEmailDraft,
+  generateReasoning,
+};
