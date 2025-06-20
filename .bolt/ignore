@@ -1,0 +1,17 @@
+.env
+README.md
+node_modules/*
+dist/*
+build/*
+.vite/*
+.vscode/*
+tests/*
+__tests__/*
+*.test.*
+*.spec.*
+*.stories.*
+docs/*
+public/images/*
+public/assets/*
+.DS_Store
+*.lock
