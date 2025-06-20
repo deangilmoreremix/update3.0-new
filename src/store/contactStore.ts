@@ -56,7 +56,7 @@ export const useContactStore = create<ContactState>((set, get) => ({
             position: item.position || '',
             status: item.status || 'lead',
             score: item.score || 50,
-            lastContact: item.last_contact ? new Date(item.last_contact) : undefined,
+            lastContact: item.last_contacted ? new Date(item.last_contacted) : undefined,
             notes: item.notes || '',
             industry: item.industry || '',
             location: item.location || '',
@@ -99,7 +99,7 @@ export const useContactStore = create<ContactState>((set, get) => ({
         position: contactData.position,
         status: contactData.status || 'lead',
         score: contactData.score || 50,
-        last_contact: contactData.lastContact ? contactData.lastContact.toISOString() : null,
+        last_contacted: contactData.lastContact ? contactData.lastContact.toISOString() : null,
         notes: contactData.notes,
         industry: contactData.industry,
         location: contactData.location,
@@ -125,7 +125,7 @@ export const useContactStore = create<ContactState>((set, get) => ({
           position: data[0].position || '',
           status: data[0].status || 'lead',
           score: data[0].score || 50,
-          lastContact: data[0].last_contact ? new Date(data[0].last_contact) : undefined,
+          lastContact: data[0].last_contacted ? new Date(data[0].last_contacted) : undefined,
           notes: data[0].notes || '',
           industry: data[0].industry || '',
           location: data[0].location || '',
@@ -164,7 +164,7 @@ export const useContactStore = create<ContactState>((set, get) => ({
       if (contactData.position !== undefined) supabaseData.position = contactData.position;
       if (contactData.status !== undefined) supabaseData.status = contactData.status;
       if (contactData.score !== undefined) supabaseData.score = contactData.score;
-      if (contactData.lastContact !== undefined) supabaseData.last_contact = contactData.lastContact.toISOString();
+      if (contactData.lastContact !== undefined) supabaseData.last_contacted = contactData.lastContact.toISOString();
       if (contactData.notes !== undefined) supabaseData.notes = contactData.notes;
       if (contactData.industry !== undefined) supabaseData.industry = contactData.industry;
       if (contactData.location !== undefined) supabaseData.location = contactData.location;
@@ -193,7 +193,7 @@ export const useContactStore = create<ContactState>((set, get) => ({
           position: data[0].position || '',
           status: data[0].status || 'lead',
           score: data[0].score || 50,
-          lastContact: data[0].last_contact ? new Date(data[0].last_contact) : undefined,
+          lastContact: data[0].last_contacted ? new Date(data[0].last_contacted) : undefined,
           notes: data[0].notes || '',
           industry: data[0].industry || '',
           location: data[0].location || '',
@@ -267,7 +267,7 @@ export const useContactStore = create<ContactState>((set, get) => ({
         position: contact.position,
         status: contact.status || 'lead',
         score: contact.score || 50,
-        last_contact: contact.lastContact ? contact.lastContact.toISOString() : null,
+        last_contacted: contact.lastContact ? contact.lastContact.toISOString() : null,
         notes: contact.notes,
         industry: contact.industry,
         location: contact.location,
@@ -304,7 +304,7 @@ export const useContactStore = create<ContactState>((set, get) => ({
             position: item.position || '',
             status: item.status || 'lead',
             score: item.score || 50,
-            lastContact: item.last_contact ? new Date(item.last_contact) : undefined,
+            lastContact: item.last_contacted ? new Date(item.last_contacted) : undefined,
             notes: item.notes || '',
             industry: item.industry || '',
             location: item.location || '',
@@ -361,7 +361,7 @@ export const useContactStore = create<ContactState>((set, get) => ({
           position: data.position || '',
           status: data.status || 'lead',
           score: data.score || 50,
-          lastContact: data.last_contact ? new Date(data.last_contact) : undefined,
+          lastContact: data.last_contacted ? new Date(data.last_contacted) : undefined,
           notes: data.notes || '',
           industry: data.industry || '',
           location: data.location || '',
