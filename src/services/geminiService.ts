@@ -268,3 +268,22 @@ export const useGemini = () => {
 };
 
 export default geminiService;
+const generateMeetingAgenda = async (
+  purpose: string,
+  attendees: string[],
+  previousNotes?: string
+): Promise<string> => {
+  const prompt = `
+You're an expert sales assistant. Create a structured meeting agenda with clear sections based on:
+
+- Purpose: ${purpose}
+- Attendees: ${attendees.join(', ')}
+- Previous notes: ${previousNotes || 'N/A'}
+
+Use headings like "Introduction", "Client Needs", "Demo", "Q&A", "Next Steps".
+Keep it short, clear, and business-ready.
+`;
+
+  const result = await model.generateContent(prompt);
+  return result.response.text().trim();
+};
