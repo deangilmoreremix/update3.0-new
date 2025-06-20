@@ -6,6 +6,29 @@ import { useOpenAI } from '../../services/openaiService';
 import AIToolContent from '../shared/AIToolContent';
 import { Mail, User, Building, RefreshCw, Copy, FileText, Send } from 'lucide-react';
 import Select from 'react-select';
+const logEmailToLead = async ({
+  leadId,
+  summary,
+  content,
+}: {
+  leadId: string;
+  summary: string;
+  content: string;
+}) => {
+  const { error } = await supabase.from('lead_communications').insert([
+    {
+      lead_id: leadId,
+      type: 'email',
+      summary,
+      content,
+    },
+  ]);
+
+  if (error) {
+    console.error('Error logging email:', error);
+    throw error;
+  }
+};
 
 const EmailComposerContent: React.FC = () => {
   const [formData, setFormData] = useState({
