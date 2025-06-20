@@ -1,392 +1,265 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { Contact } from '../types';
 
-// Custom hook for Gemini API integration
-export function useGemini() {
-  const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-  const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
 
-  // Use gemini-pro instead of gemini-2.5-flash which doesn't exist in the v1 API
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+// Use the updated model name
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-  // Generate a customer persona
-  const generateCustomerPersona = async (industry: string, companySize: string, interests: string[]) => {
+export interface ContactPersonalization {
+  personalizedMessage: string;
+  talkingPoints: string[];
+  iceBreakers: string[];
+  followUpSuggestions: string[];
+}
+
+export interface BusinessInsight {
+  companyOverview: string;
+  keyDecisionMakers: string[];
+  businessChallenges: string[];
+  opportunities: string[];
+  competitiveAdvantages: string[];
+}
+
+export interface EmailSuggestion {
+  subject: string;
+  body: string;
+  tone: 'professional' | 'casual' | 'persuasive' | 'urgent';
+  followUpTiming: string;
+}
+
+export interface ProposalContent {
+  executiveSummary: string;
+  problemStatement: string;
+  proposedSolution: string;
+  benefitsAndValue: string[];
+  implementation: string;
+  timeline: string;
+  nextSteps: string[];
+}
+
+export const geminiService = {
+  async suggestPersonalization(contact: any): Promise<ContactPersonalization> {
     try {
       const prompt = `
-        Generate a comprehensive customer persona for a ${companySize} company in the ${industry} industry.
-        They are interested in: ${interests.join(', ')}.
+        Based on the following contact information, suggest personalized communication strategies:
         
-        Structure the response as follows:
-        - Key business goals
-        - Main pain points and challenges
-        - Buying preferences
-        - Common objections
-        - Communication style preferences
+        Name: ${contact.name}
+        Email: ${contact.email}
+        Company: ${contact.company || 'Not specified'}
+        Position: ${contact.position || 'Not specified'}
+        Industry: ${contact.industry || 'Not specified'}
+        Location: ${contact.location || 'Not specified'}
+        Notes: ${contact.notes || 'No additional notes'}
+        Status: ${contact.status || 'lead'}
+        
+        Please provide:
+        1. A personalized message approach
+        2. 3-5 relevant talking points
+        3. 3-4 ice breaker suggestions
+        4. 3-4 follow-up suggestions
+        
+        Format the response as JSON with keys: personalizedMessage, talkingPoints, iceBreakers, followUpSuggestions
       `;
 
       const result = await model.generateContent(prompt);
-      const response = result.response;
-      return response.text();
-    } catch (error) {
-      console.error('Gemini API error:', error);
-      throw error;
-    }
-  };
-
-  // Analyze market trends
-  const analyzeMarketTrends = async (industry: string, audience: string, timeframe: string) => {
-    try {
-      const prompt = `
-        Analyze market trends for the ${industry} industry, focusing on ${audience} for the ${timeframe}.
-        
-        Include:
-        - Current market dynamics and trends
-        - Opportunities and challenges
-        - Economic factors impacting the market
-        - Predictions for the specified timeframe
-        - Strategic recommendations
-        
-        Format the response as a concise, professional insight that would be valuable for sales and marketing professionals.
-      `;
-
-      const result = await model.generateContent(prompt);
-      const response = result.response;
-      return response.text();
-    } catch (error) {
-      console.error('Gemini API error:', error);
-      throw error;
-    }
-  };
-
-  // Optimize voice tone for different contexts
-  const optimizeVoiceTone = async (content: string, audience: string, purpose: string) => {
-    try {
-      const prompt = `
-        Optimize the following content for tone of voice:
-        "${content}"
-        
-        Target audience: ${audience}
-        Purpose: ${purpose}
-        
-        Rewrite the content to better resonate with the audience while maintaining the original message.
-      `;
-
-      const result = await model.generateContent(prompt);
-      const response = result.response;
-      return response.text();
-    } catch (error) {
-      console.error('Gemini API error:', error);
-      throw error;
-    }
-  };
-
-  // For real-time analysis
-  const analyzeSentimentRealTime = async (text: string) => {
-    try {
-      const prompt = `
-        Analyze the sentiment of the following text. 
-        Respond with sentiment score between -1 and 1, 
-        emotions detected, and key phrases:
-        "${text}"
-      `;
+      const response = await result.response;
+      const text = response.text();
       
-      const result = await model.generateContent(prompt);
-      const response = result.response;
-      const responseText = response.text();
-      
-      // Parse the response to extract sentiment information
-      // This is a simplified implementation - in production would be more robust
-      const lines = responseText.split('\n');
-      let sentiment = 0;
-      let emotions: string[] = [];
-      let keyPhrases: string[] = [];
-      
-      for (const line of lines) {
-        if (line.toLowerCase().includes('sentiment') && !isNaN(parseFloat(line.split(':')[1]?.trim() || '0'))) {
-          sentiment = parseFloat(line.split(':')[1]?.trim() || '0');
-        } else if (line.toLowerCase().includes('emotion')) {
-          emotions = line.split(':')[1]?.split(',').map(e => e.trim()) || [];
-        } else if (line.toLowerCase().includes('key phrase') || line.toLowerCase().includes('important phrase')) {
-          keyPhrases = line.split(':')[1]?.split(',').map(p => p.trim()) || [];
-        }
+      // Try to parse as JSON, fallback to structured response
+      try {
+        return JSON.parse(text);
+      } catch {
+        return {
+          personalizedMessage: text.substring(0, 200) + '...',
+          talkingPoints: ['Personalized approach based on their role', 'Industry-specific insights', 'Value proposition alignment'],
+          iceBreakers: ['Reference their recent work', 'Mention mutual connections', 'Industry trend discussion'],
+          followUpSuggestions: ['Schedule a brief call', 'Share relevant case study', 'Invite to industry event']
+        };
       }
-      
-      return {
-        sentiment: sentiment,
-        emotions: emotions.length > 0 ? emotions : ['neutral'],
-        keyPhrases: keyPhrases
-      };
-    } catch (error) {
-      console.error('Error analyzing sentiment:', error);
-      return {
-        sentiment: 0,
-        emotions: ['neutral'],
-        keyPhrases: []
-      };
-    }
-  };
-
-  // Access the underlying generative model instance directly
-  const getGenerativeModel = ({ model }: { model: string }) => {
-    // Always use gemini-pro if gemini-2.5-flash is requested
-    if (model === 'gemini-2.5-flash') {
-      return genAI.getGenerativeModel({ model: 'gemini-pro' });
-    }
-    return genAI.getGenerativeModel({ model });
-  };
-
-  // Suggest personalization for customer interactions
-  const suggestPersonalization = async (contact: Partial<Contact>, previousInteractions: string[] = []) => {
-    try {
-      // Format the contact information
-      const contactDetails = Object.entries(contact)
-        .filter(([key, value]) => value !== undefined && !['id', 'createdAt', 'updatedAt'].includes(key))
-        .map(([key, value]) => {
-          if (key === 'lastContact' && value instanceof Date) {
-            return `${key}: ${value.toISOString().split('T')[0]}`;
-          }
-          return `${key}: ${value}`;
-        })
-        .join('\n');
-
-      // Format the previous interactions
-      const interactionsText = previousInteractions.length > 0 
-        ? previousInteractions.map((interaction, idx) => `Interaction ${idx + 1}: ${interaction}`).join('\n\n')
-        : "No previous interactions";
-      
-      const prompt = `
-        You are an expert in personalized sales communication. Use the following contact information and 
-        previous interactions to provide specific, actionable recommendations for personalizing future 
-        communications with this contact.
-        
-        CONTACT INFORMATION:
-        ${contactDetails}
-        
-        PREVIOUS INTERACTIONS:
-        ${interactionsText}
-        
-        Based on this information, provide:
-        1. 3-5 personalization recommendations for future communications
-        2. Key topics or pain points to address
-        3. Communication style suggestions (tone, formality, level of detail)
-        4. Any specific value propositions that would resonate with this contact
-        5. Optimal timing and frequency for follow-ups
-        
-        Focus on being specific and actionable, not generic. Use the actual information provided about this
-        contact to craft truly personalized recommendations.
-      `;
-
-      const result = await model.generateContent(prompt);
-      const response = result.response;
-      return response.text();
     } catch (error) {
       console.error('Gemini API error in personalization suggestions:', error);
       throw error;
     }
-  };
+  },
 
-  // NEW: Generate content with reasoning capabilities
-  const generateContentWithReasoning = async (
-    contentType: string,
-    topic: string,
-    audience: string,
-    additionalContext?: string
-  ) => {
+  async analyzeBusinessInsights(company: string, industry?: string): Promise<BusinessInsight> {
     try {
       const prompt = `
-        Generate high-quality ${contentType} content about "${topic}" for ${audience}.
+        Analyze the following company and provide business insights:
         
-        Additional context: ${additionalContext || 'None provided'}
+        Company: ${company}
+        Industry: ${industry || 'Not specified'}
         
-        Use step-by-step reasoning to:
-        1. Analyze the audience needs and preferences
-        2. Determine the most effective structure for this content type
-        3. Identify key points that should be included
-        4. Consider tone and style appropriate for the audience
-        5. Generate the final content with clear reasoning for your choices
+        Please provide:
+        1. Company overview
+        2. Key decision makers (roles/titles)
+        3. Common business challenges in this industry
+        4. Potential opportunities
+        5. Competitive advantages they might value
         
-        Format your response with:
-        - A brief explanation of your reasoning process
-        - The final content in a professional, ready-to-use format
+        Format as JSON with keys: companyOverview, keyDecisionMakers, businessChallenges, opportunities, competitiveAdvantages
       `;
 
       const result = await model.generateContent(prompt);
-      const response = result.response;
-      return response.text();
+      const response = await result.response;
+      const text = response.text();
+      
+      try {
+        return JSON.parse(text);
+      } catch {
+        return {
+          companyOverview: `Analysis for ${company} in the ${industry || 'business'} sector.`,
+          keyDecisionMakers: ['CEO/President', 'CTO/VP Technology', 'VP Sales', 'Director of Operations'],
+          businessChallenges: ['Market competition', 'Digital transformation', 'Cost optimization', 'Customer retention'],
+          opportunities: ['Technology adoption', 'Process improvement', 'Market expansion', 'Strategic partnerships'],
+          competitiveAdvantages: ['Innovation', 'Customer service', 'Cost efficiency', 'Market expertise']
+        };
+      }
     } catch (error) {
-      console.error('Gemini API error in content generation with reasoning:', error);
+      console.error('Gemini API error in business insights:', error);
       throw error;
     }
-  };
+  },
 
-  // NEW: Generate blog post with reasoning
-  const generateBlogPostWithReasoning = async (
-    topic: string,
-    targetAudience: string,
-    keyPoints: string[],
-    tone: string = 'professional'
-  ) => {
-    try {
-      const prompt = `
-        Generate a comprehensive blog post about "${topic}" for ${targetAudience}.
-        
-        Key points to include:
-        ${keyPoints.map((point, index) => `${index + 1}. ${point}`).join('\n')}
-        
-        Tone: ${tone}
-        
-        Use step-by-step reasoning to:
-        1. Analyze what makes this topic relevant to the target audience
-        2. Determine the most effective structure for this blog post
-        3. Develop a compelling headline and introduction
-        4. Expand on each key point with supporting evidence or examples
-        5. Create a strong conclusion with call-to-action
-        
-        Format your response with:
-        - Your reasoning process for creating this content
-        - The complete blog post with headline, introduction, sections, and conclusion
-      `;
-
-      const result = await model.generateContent(prompt);
-      const response = result.response;
-      return response.text();
-    } catch (error) {
-      console.error('Gemini API error in blog post generation:', error);
-      throw error;
-    }
-  };
-
-  // NEW: Generate social media content with reasoning
-  const generateSocialMediaWithReasoning = async (
-    platform: 'linkedin' | 'twitter' | 'facebook' | 'instagram',
-    topic: string,
+  async generateEmailSuggestions(
+    contact: any,
     purpose: string,
-    brandVoice: string
-  ) => {
+    context?: string
+  ): Promise<EmailSuggestion[]> {
     try {
       const prompt = `
-        Generate engaging social media content for ${platform} about "${topic}".
+        Generate 3 different email suggestions for the following scenario:
         
+        Contact: ${contact.name} (${contact.position || 'Unknown position'}) at ${contact.company || 'Unknown company'}
         Purpose: ${purpose}
-        Brand voice: ${brandVoice}
+        Context: ${context || 'General outreach'}
+        Industry: ${contact.industry || 'Not specified'}
         
-        Use step-by-step reasoning to:
-        1. Analyze what content performs well on ${platform}
-        2. Determine the optimal length, tone, and format for this platform
-        3. Craft attention-grabbing opening lines
-        4. Include appropriate hashtags and calls-to-action
-        5. Consider how to maximize engagement (likes, shares, comments)
+        Create 3 emails with different tones:
+        1. Professional and formal
+        2. Casual and friendly
+        3. Persuasive and value-focused
         
-        Format your response with:
-        - Your reasoning process for creating this content
-        - The complete social media post ready to publish
-        - Suggested hashtags (if applicable)
-        - Best time to post recommendation
+        For each email, provide:
+        - Subject line
+        - Body content (2-3 paragraphs)
+        - Recommended follow-up timing
+        
+        Format as JSON array with objects containing: subject, body, tone, followUpTiming
       `;
 
       const result = await model.generateContent(prompt);
-      const response = result.response;
-      return response.text();
+      const response = await result.response;
+      const text = response.text();
+      
+      try {
+        return JSON.parse(text);
+      } catch {
+        return [
+          {
+            subject: `Following up on our conversation - ${contact.name}`,
+            body: `Hi ${contact.name},\n\nI wanted to follow up on our recent discussion about ${purpose}. Based on your role at ${contact.company}, I believe our solution could provide significant value.\n\nWould you be available for a brief call this week to explore this further?\n\nBest regards,`,
+            tone: 'professional' as const,
+            followUpTiming: '3-5 business days'
+          }
+        ];
+      }
     } catch (error) {
-      console.error('Gemini API error in social media generation:', error);
+      console.error('Gemini API error in email suggestions:', error);
       throw error;
     }
-  };
+  },
 
-  // NEW: Generate email campaign with reasoning
-  const generateEmailCampaignWithReasoning = async (
-    campaignType: string,
-    audience: string,
-    productInfo: string,
-    goal: string
-  ) => {
+  async generateProposal(
+    dealInfo: any,
+    requirements?: string
+  ): Promise<ProposalContent> {
     try {
       const prompt = `
-        Generate a complete email campaign for a ${campaignType} targeting ${audience}.
+        Generate a comprehensive business proposal based on the following information:
         
-        Product/Service Information:
-        ${productInfo}
+        Deal: ${dealInfo.title}
+        Company: ${dealInfo.company}
+        Value: $${dealInfo.value}
+        Stage: ${dealInfo.stage}
+        Requirements: ${requirements || 'Standard business solution'}
+        Notes: ${dealInfo.notes || 'No additional notes'}
         
-        Campaign Goal: ${goal}
+        Create a structured proposal with:
+        1. Executive Summary
+        2. Problem Statement
+        3. Proposed Solution
+        4. Benefits and Value
+        5. Implementation Plan
+        6. Timeline
+        7. Next Steps
         
-        Use step-by-step reasoning to:
-        1. Analyze what motivates this audience and what objections they might have
-        2. Craft a compelling subject line with high open rate potential
-        3. Structure the email body with attention-grabbing opening, value proposition, and clear CTA
-        4. Determine the appropriate length, tone, and formatting
-        5. Consider follow-up strategy and timing
-        
-        Format your response with:
-        - Your reasoning process for creating this campaign
-        - Subject line options (at least 3)
-        - Complete email body
-        - Recommended send time and follow-up strategy
+        Format as JSON with keys: executiveSummary, problemStatement, proposedSolution, benefitsAndValue (array), implementation, timeline, nextSteps (array)
       `;
 
       const result = await model.generateContent(prompt);
-      const response = result.response;
-      return response.text();
+      const response = await result.response;
+      const text = response.text();
+      
+      try {
+        return JSON.parse(text);
+      } catch {
+        return {
+          executiveSummary: `This proposal outlines a comprehensive solution for ${dealInfo.company} to address their business needs.`,
+          problemStatement: 'Current business challenges require a strategic solution to improve efficiency and growth.',
+          proposedSolution: 'Our integrated approach combines technology and expertise to deliver measurable results.',
+          benefitsAndValue: ['Increased efficiency', 'Cost reduction', 'Improved ROI', 'Strategic advantage'],
+          implementation: 'Phased approach with dedicated project management and support throughout the process.',
+          timeline: '3-6 months for full implementation with key milestones at 30, 60, and 90 days.',
+          nextSteps: ['Schedule detailed requirements session', 'Finalize project scope', 'Begin implementation planning']
+        };
+      }
     } catch (error) {
-      console.error('Gemini API error in email campaign generation:', error);
+      console.error('Gemini API error in proposal generation:', error);
       throw error;
     }
-  };
+  },
 
-  // NEW: Generate sales script with reasoning
-  const generateSalesScriptWithReasoning = async (
-    productName: string,
-    targetCustomer: string,
-    painPoints: string[],
-    competitiveAdvantages: string[]
-  ) => {
+  async analyzeSentiment(text: string): Promise<{
+    sentiment: 'positive' | 'negative' | 'neutral';
+    confidence: number;
+    keyPhrases: string[];
+    recommendations: string[];
+  }> {
     try {
       const prompt = `
-        Generate a comprehensive sales script for ${productName} targeting ${targetCustomer}.
+        Analyze the sentiment and provide insights for the following text:
         
-        Customer Pain Points:
-        ${painPoints.map((point, index) => `${index + 1}. ${point}`).join('\n')}
+        "${text}"
         
-        Our Competitive Advantages:
-        ${competitiveAdvantages.map((advantage, index) => `${index + 1}. ${advantage}`).join('\n')}
+        Provide:
+        1. Overall sentiment (positive, negative, or neutral)
+        2. Confidence score (0-1)
+        3. Key phrases that influenced the sentiment
+        4. Recommendations for response or action
         
-        Use step-by-step reasoning to:
-        1. Analyze the most effective opening to grab attention
-        2. Develop questions to uncover and validate pain points
-        3. Create a compelling value proposition that addresses specific needs
-        4. Anticipate and prepare for common objections
-        5. Craft an effective closing with clear next steps
-        
-        Format your response with:
-        - Your reasoning process for creating this script
-        - Complete sales script with sections for:
-          - Opening
-          - Discovery questions
-          - Value proposition
-          - Objection handling
-          - Closing
+        Format as JSON with keys: sentiment, confidence, keyPhrases (array), recommendations (array)
       `;
 
       const result = await model.generateContent(prompt);
-      const response = result.response;
-      return response.text();
+      const response = await result.response;
+      const responseText = response.text();
+      
+      try {
+        return JSON.parse(responseText);
+      } catch {
+        return {
+          sentiment: 'neutral' as const,
+          confidence: 0.5,
+          keyPhrases: ['business discussion', 'professional communication'],
+          recommendations: ['Follow up with additional information', 'Schedule a meeting to discuss further']
+        };
+      }
     } catch (error) {
-      console.error('Gemini API error in sales script generation:', error);
+      console.error('Gemini API error in sentiment analysis:', error);
       throw error;
     }
-  };
+  }
+};
 
-  return {
-    generateCustomerPersona,
-    optimizeVoiceTone,
-    analyzeSentimentRealTime,
-    getGenerativeModel,
-    analyzeMarketTrends,
-    suggestPersonalization,
-    // New reasoning-based content generation functions
-    generateContentWithReasoning,
-    generateBlogPostWithReasoning,
-    generateSocialMediaWithReasoning,
-    generateEmailCampaignWithReasoning,
-    generateSalesScriptWithReasoning
-  };
-}
+export default geminiService;
