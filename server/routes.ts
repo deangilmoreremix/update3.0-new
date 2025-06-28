@@ -26,6 +26,70 @@ const requireAuth = (req: Request, res: Response, next: any) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Apply tenant extraction middleware to all routes
+  app.use(extractTenant);
+
+  // White Label Platform Integration Routes
+  app.post("/api/webhooks/white-label", handleWebhook);
+
+  // White Label Management Routes (for platform admin)
+  app.get("/api/white-label/tenants/:tenantId", async (req: Request, res: Response) => {
+    try {
+      const { tenantId } = req.params;
+      const tenant = await whiteLabelClient.getTenant(tenantId);
+      res.json(tenant);
+    } catch (error) {
+      console.error("Error fetching tenant:", error);
+      res.status(500).json({ error: "Failed to fetch tenant" });
+    }
+  });
+
+  app.post("/api/white-label/tenants", async (req: Request, res: Response) => {
+    try {
+      const tenant = await whiteLabelClient.createTenant(req.body);
+      res.json(tenant);
+    } catch (error) {
+      console.error("Error creating tenant:", error);
+      res.status(500).json({ error: "Failed to create tenant" });
+    }
+  });
+
+  app.put("/api/white-label/tenants/:tenantId", async (req: Request, res: Response) => {
+    try {
+      const { tenantId } = req.params;
+      const tenant = await whiteLabelClient.updateTenant(tenantId, req.body);
+      res.json(tenant);
+    } catch (error) {
+      console.error("Error updating tenant:", error);
+      res.status(500).json({ error: "Failed to update tenant" });
+    }
+  });
+
+  app.post("/api/white-label/tenants/:tenantId/usage", async (req: Request, res: Response) => {
+    try {
+      const { tenantId } = req.params;
+      await whiteLabelClient.reportUsage(tenantId, req.body);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error reporting usage:", error);
+      res.status(500).json({ error: "Failed to report usage" });
+    }
+  });
+
+  // Tenant-specific routes (require tenant context)
+  app.get("/api/tenant/info", requireTenant, async (req: TenantRequest, res: Response) => {
+    try {
+      res.json({
+        tenantId: req.tenantId,
+        tenant: req.tenant,
+        features: req.tenantFeatures
+      });
+    } catch (error) {
+      console.error("Error fetching tenant info:", error);
+      res.status(500).json({ error: "Failed to fetch tenant info" });
+    }
+  });
+
   // User routes
   app.post("/api/users", async (req: Request, res: Response) => {
     try {
@@ -362,7 +426,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // AI Content Generation route with OpenAI and Gemini support
-  app.post("/api/ai/generate-content", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/generate-content", requireAuth, requireFeature('aiTools'), async (req: Request, res: Response) => {
     try {
       const { contentType, purpose, data, apiKey, preferredModel = 'gemini' } = req.body;
       
