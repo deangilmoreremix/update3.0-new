@@ -1,501 +1,327 @@
-import { OpenAI } from 'openai';
+// MCP Client - Model Context Protocol integration for AI function calling
 
-// MCP Function Schema Interface
-interface MCPFunction {
+export interface MCPFunction {
   name: string;
   description: string;
   parameters: {
-    type: 'object';
-    properties: Record<string, {
-      type: string;
-      description: string;
-      enum?: string[];
-    }>;
-    required: string[];
+    type: string;
+    properties: Record<string, any>;
+    required?: string[];
   };
 }
 
-// MCP Agent Metadata
-interface MCPAgentMetadata {
-  functions: MCPFunction[];
-  model: string;
-  temperature: number;
-  max_tokens: number;
+export interface MCPCallRequest {
+  functionName: string;
+  parameters: Record<string, any>;
+  model?: 'gemini' | 'openai';
+  temperature?: number;
 }
 
-// Function calling result
-interface MCPFunctionResult {
+export interface MCPCallResponse {
   success: boolean;
   result?: any;
   error?: string;
-  function_called?: string;
-  raw_response?: string;
+  executionTime?: number;
+  modelUsed?: string;
 }
 
-/**
- * MCP (Model Context Protocol) Client for function calling
- * Handles LLM function calling with schema validation and execution
- */
+// Available MCP functions for AI Goals system
+export const AVAILABLE_MCP_FUNCTIONS: MCPFunction[] = [
+  {
+    name: 'analyzeLeadScore',
+    description: 'Analyze and score leads based on CRM data and behavioral patterns',
+    parameters: {
+      type: 'object',
+      properties: {
+        contactId: { type: 'string', description: 'Contact ID from CRM' },
+        includeEnrichment: { type: 'boolean', description: 'Whether to include data enrichment' }
+      },
+      required: ['contactId']
+    }
+  },
+  {
+    name: 'generatePersonalizedEmail',
+    description: 'Generate highly personalized email content based on contact profile',
+    parameters: {
+      type: 'object',
+      properties: {
+        contactId: { type: 'string', description: 'Target contact ID' },
+        campaignType: { type: 'string', enum: ['cold_outreach', 'follow_up', 'nurture', 'reengagement'] },
+        tone: { type: 'string', enum: ['professional', 'casual', 'friendly', 'urgent'] },
+        includeOffers: { type: 'boolean', description: 'Whether to include promotional offers' }
+      },
+      required: ['contactId', 'campaignType']
+    }
+  },
+  {
+    name: 'optimizeSalesSequence',
+    description: 'Optimize multi-touch sales sequence based on performance data',
+    parameters: {
+      type: 'object',
+      properties: {
+        sequenceId: { type: 'string', description: 'Existing sequence ID to optimize' },
+        targetAudience: { type: 'string', description: 'Target audience segment' },
+        performanceMetrics: { type: 'object', description: 'Current performance data' }
+      },
+      required: ['sequenceId']
+    }
+  },
+  {
+    name: 'analyzeCustomerHealth',
+    description: 'Analyze customer health and churn risk prediction',
+    parameters: {
+      type: 'object',
+      properties: {
+        customerId: { type: 'string', description: 'Customer ID for analysis' },
+        timeframe: { type: 'string', enum: ['30d', '60d', '90d', '180d'], description: 'Analysis timeframe' },
+        includeRecommendations: { type: 'boolean', description: 'Include intervention recommendations' }
+      },
+      required: ['customerId']
+    }
+  },
+  {
+    name: 'generateProposal',
+    description: 'Generate detailed business proposal based on client requirements',
+    parameters: {
+      type: 'object',
+      properties: {
+        clientId: { type: 'string', description: 'Client ID from CRM' },
+        requirements: { type: 'array', items: { type: 'string' }, description: 'Client requirements' },
+        budget: { type: 'number', description: 'Client budget range' },
+        timeline: { type: 'string', description: 'Project timeline' },
+        includeTemplates: { type: 'boolean', description: 'Use proposal templates' }
+      },
+      required: ['clientId', 'requirements']
+    }
+  },
+  {
+    name: 'predictDealClosure',
+    description: 'Predict deal closure probability and optimal closing strategies',
+    parameters: {
+      type: 'object',
+      properties: {
+        dealId: { type: 'string', description: 'Deal ID from CRM' },
+        includeCompetitorAnalysis: { type: 'boolean', description: 'Include competitor analysis' },
+        suggestActions: { type: 'boolean', description: 'Suggest next best actions' }
+      },
+      required: ['dealId']
+    }
+  }
+];
+
 export class MCPClient {
-  private openai: OpenAI | null = null;
-  private geminiApiKey: string | null = null;
+  private baseUrl: string;
+  private apiKey: string;
 
-  constructor() {
-    // Initialize API keys from environment
-    const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  constructor(baseUrl: string = '/api/mcp', apiKey: string = 'demo') {
+    this.baseUrl = baseUrl;
+    this.apiKey = apiKey;
+  }
 
-    if (openaiKey) {
-      this.openai = new OpenAI({
-        apiKey: openaiKey,
-        dangerouslyAllowBrowser: true
-      });
-    }
+  async callFunction(request: MCPCallRequest): Promise<MCPCallResponse> {
+    const startTime = Date.now();
     
-    this.geminiApiKey = geminiKey;
-  }
-
-  /**
-   * Load MCP agent metadata from server
-   */
-  private async loadAgentMetadata(agentType: string): Promise<MCPAgentMetadata> {
     try {
-      const response = await fetch(`/api/mcp/agents/${agentType}/metadata`);
-      if (!response.ok) {
-        throw new Error(`Failed to load agent metadata: ${response.statusText}`);
+      // For demo mode, simulate MCP function calls
+      if (this.apiKey === 'demo') {
+        return this.simulateMCPCall(request, startTime);
       }
-      return await response.json();
-    } catch (error) {
-      console.error('Error loading agent metadata:', error);
-      // Fallback to default metadata
-      return this.getDefaultMetadata(agentType);
-    }
-  }
 
-  /**
-   * Get default MCP metadata for different agent types
-   */
-  private getDefaultMetadata(agentType: string): MCPAgentMetadata {
-    const baseMetadata = {
-      model: 'gpt-4o-mini',
-      temperature: 0.7,
-      max_tokens: 1000
-    };
-
-    switch (agentType) {
-      case 'composio':
-        return {
-          ...baseMetadata,
-          functions: [
-            {
-              name: 'send_linkedin_message',
-              description: 'Send a personalized message via LinkedIn',
-              parameters: {
-                type: 'object',
-                properties: {
-                  recipient_id: {
-                    type: 'string',
-                    description: 'LinkedIn user ID of the recipient'
-                  },
-                  message: {
-                    type: 'string',
-                    description: 'The message content to send'
-                  },
-                  personalize: {
-                    type: 'boolean',
-                    description: 'Whether to personalize the message'
-                  }
-                },
-                required: ['recipient_id', 'message']
-              }
-            },
-            {
-              name: 'post_to_x',
-              description: 'Post content to X (Twitter)',
-              parameters: {
-                type: 'object',
-                properties: {
-                  content: {
-                    type: 'string',
-                    description: 'The content to post'
-                  },
-                  scheduled_time: {
-                    type: 'string',
-                    description: 'ISO timestamp for scheduled posting'
-                  }
-                },
-                required: ['content']
-              }
-            },
-            {
-              name: 'schedule_reddit_post',
-              description: 'Schedule a post to Reddit',
-              parameters: {
-                type: 'object',
-                properties: {
-                  subreddit: {
-                    type: 'string',
-                    description: 'The subreddit to post to'
-                  },
-                  title: {
-                    type: 'string',
-                    description: 'The post title'
-                  },
-                  content: {
-                    type: 'string',
-                    description: 'The post content'
-                  },
-                  scheduled_time: {
-                    type: 'string',
-                    description: 'ISO timestamp for scheduled posting'
-                  }
-                },
-                required: ['subreddit', 'title', 'content']
-              }
-            },
-            {
-              name: 'send_automated_email',
-              description: 'Send an automated email',
-              parameters: {
-                type: 'object',
-                properties: {
-                  to: {
-                    type: 'string',
-                    description: 'Recipient email address'
-                  },
-                  subject: {
-                    type: 'string',
-                    description: 'Email subject line'
-                  },
-                  content: {
-                    type: 'string',
-                    description: 'Email content'
-                  },
-                  template_id: {
-                    type: 'string',
-                    description: 'Optional email template ID'
-                  }
-                },
-                required: ['to', 'subject', 'content']
-              }
-            }
-          ]
-        };
-
-      case 'crm':
-        return {
-          ...baseMetadata,
-          functions: [
-            {
-              name: 'create_contact',
-              description: 'Create a new contact in the CRM',
-              parameters: {
-                type: 'object',
-                properties: {
-                  firstName: {
-                    type: 'string',
-                    description: 'Contact first name'
-                  },
-                  lastName: {
-                    type: 'string',
-                    description: 'Contact last name'
-                  },
-                  email: {
-                    type: 'string',
-                    description: 'Contact email address'
-                  },
-                  company: {
-                    type: 'string',
-                    description: 'Contact company'
-                  },
-                  phone: {
-                    type: 'string',
-                    description: 'Contact phone number'
-                  }
-                },
-                required: ['firstName', 'lastName', 'email']
-              }
-            },
-            {
-              name: 'update_lead_score',
-              description: 'Update the lead score for a contact',
-              parameters: {
-                type: 'object',
-                properties: {
-                  contact_id: {
-                    type: 'string',
-                    description: 'The contact ID'
-                  },
-                  score: {
-                    type: 'number',
-                    description: 'The new lead score (0-100)'
-                  },
-                  reason: {
-                    type: 'string',
-                    description: 'Reason for the score update'
-                  }
-                },
-                required: ['contact_id', 'score']
-              }
-            },
-            {
-              name: 'create_task',
-              description: 'Create a new task',
-              parameters: {
-                type: 'object',
-                properties: {
-                  title: {
-                    type: 'string',
-                    description: 'Task title'
-                  },
-                  description: {
-                    type: 'string',
-                    description: 'Task description'
-                  },
-                  due_date: {
-                    type: 'string',
-                    description: 'Task due date (ISO timestamp)'
-                  },
-                  priority: {
-                    type: 'string',
-                    description: 'Task priority',
-                    enum: ['low', 'medium', 'high']
-                  },
-                  related_to_id: {
-                    type: 'string',
-                    description: 'ID of related contact or deal'
-                  }
-                },
-                required: ['title']
-              }
-            }
-          ]
-        };
-
-      default:
-        return {
-          ...baseMetadata,
-          functions: []
-        };
-    }
-  }
-
-  /**
-   * Execute a function call through MCP
-   */
-  private async executeFunction(functionName: string, parameters: any): Promise<any> {
-    try {
-      const response = await fetch('/api/mcp/execute-function', {
+      // Real MCP call would go here
+      const response = await fetch(`${this.baseUrl}/call`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.apiKey}`
         },
-        body: JSON.stringify({
-          function_name: functionName,
-          parameters
-        }),
+        body: JSON.stringify(request)
       });
 
       if (!response.ok) {
-        throw new Error(`Function execution failed: ${response.statusText}`);
+        throw new Error(`MCP call failed: ${response.statusText}`);
       }
 
-      return await response.json();
-    } catch (error) {
-      console.error(`Error executing function ${functionName}:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Main MCP function calling method
-   * Loads schema, sends to LLM with functions, and executes the result
-   */
-  async callMCP(
-    prompt: string,
-    agentType: string = 'composio',
-    context?: any
-  ): Promise<MCPFunctionResult> {
-    try {
-      // Load agent metadata and schema
-      const metadata = await this.loadAgentMetadata(agentType);
+      const result = await response.json();
       
-      if (metadata.functions.length === 0) {
-        return {
-          success: false,
-          error: 'No functions available for this agent type'
-        };
-      }
-
-      // Prepare the system message with context
-      const systemMessage = `You are an AI assistant with access to ${agentType} functions. 
-        Use the available functions to help the user accomplish their goals.
-        Context: ${JSON.stringify(context || {})}
-        
-        Available functions: ${metadata.functions.map(f => f.name).join(', ')}`;
-
-      // Try OpenAI first, then fallback to Gemini
-      let functionCall;
-      let rawResponse;
-
-      if (this.openai) {
-        try {
-          const response = await this.openai.chat.completions.create({
-            model: metadata.model,
-            messages: [
-              { role: 'system', content: systemMessage },
-              { role: 'user', content: prompt }
-            ],
-            functions: metadata.functions,
-            function_call: 'auto',
-            temperature: metadata.temperature,
-            max_tokens: metadata.max_tokens,
-          });
-
-          rawResponse = response.choices[0].message;
-          functionCall = rawResponse.function_call;
-        } catch (error) {
-          console.warn('OpenAI function calling failed, trying Gemini:', error);
-        }
-      }
-
-      // Fallback to Gemini with manual function parsing
-      if (!functionCall && this.geminiApiKey) {
-        try {
-          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent?key=${this.geminiApiKey}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              contents: [{
-                parts: [{
-                  text: `${systemMessage}\n\nUser: ${prompt}\n\nRespond with a function call in this exact JSON format:
-                  {
-                    "function_call": {
-                      "name": "function_name",
-                      "arguments": "{\"param1\": \"value1\"}"
-                    }
-                  }`
-                }]
-              }],
-              generationConfig: {
-                temperature: metadata.temperature,
-                maxOutputTokens: metadata.max_tokens,
-              }
-            }),
-          });
-
-          if (response.ok) {
-            const result = await response.json();
-            rawResponse = result.candidates[0].content.parts[0].text;
-            
-            // Parse Gemini response for function call
-            try {
-              const parsed = JSON.parse(rawResponse);
-              functionCall = parsed.function_call;
-            } catch (parseError) {
-              console.warn('Could not parse Gemini function call response');
-            }
-          }
-        } catch (error) {
-          console.error('Gemini function calling failed:', error);
-        }
-      }
-
-      // Execute the function if we got a valid call
-      if (functionCall && functionCall.name) {
-        try {
-          const parameters = typeof functionCall.arguments === 'string' 
-            ? JSON.parse(functionCall.arguments)
-            : functionCall.arguments;
-
-          const result = await this.executeFunction(functionCall.name, parameters);
-
-          return {
-            success: true,
-            result,
-            function_called: functionCall.name,
-            raw_response: JSON.stringify(rawResponse)
-          };
-        } catch (error) {
-          return {
-            success: false,
-            error: `Function execution failed: ${error.message}`,
-            function_called: functionCall.name,
-            raw_response: JSON.stringify(rawResponse)
-          };
-        }
-      }
-
       return {
-        success: false,
-        error: 'No valid function call generated',
-        raw_response: JSON.stringify(rawResponse)
+        success: true,
+        result: result.data,
+        executionTime: Date.now() - startTime,
+        modelUsed: request.model || 'gemini'
       };
 
     } catch (error) {
       return {
         success: false,
-        error: `MCP call failed: ${error.message}`
+        error: error instanceof Error ? error.message : 'Unknown MCP error',
+        executionTime: Date.now() - startTime
       };
     }
   }
 
-  /**
-   * Validate function parameters against schema
-   */
-  private validateParameters(functionName: string, parameters: any, schema: MCPFunction): boolean {
-    try {
-      // Check required parameters
-      for (const required of schema.parameters.required) {
-        if (!(required in parameters)) {
-          throw new Error(`Missing required parameter: ${required}`);
-        }
-      }
+  private async simulateMCPCall(request: MCPCallRequest, startTime: number): Promise<MCPCallResponse> {
+    // Simulate processing time
+    await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200));
 
-      // Check parameter types
-      for (const [key, value] of Object.entries(parameters)) {
-        const propertySchema = schema.parameters.properties[key];
-        if (!propertySchema) {
-          console.warn(`Unknown parameter: ${key}`);
-          continue;
-        }
+    // Generate mock responses based on function name
+    let mockResult: any;
 
-        // Basic type checking
-        const expectedType = propertySchema.type;
-        const actualType = typeof value;
-        
-        if (expectedType === 'number' && actualType !== 'number') {
-          throw new Error(`Parameter ${key} should be a number, got ${actualType}`);
-        }
-        if (expectedType === 'string' && actualType !== 'string') {
-          throw new Error(`Parameter ${key} should be a string, got ${actualType}`);
-        }
-        if (expectedType === 'boolean' && actualType !== 'boolean') {
-          throw new Error(`Parameter ${key} should be a boolean, got ${actualType}`);
-        }
+    switch (request.functionName) {
+      case 'analyzeLeadScore':
+        mockResult = {
+          contactId: request.parameters.contactId,
+          score: Math.floor(Math.random() * 40) + 60, // 60-100 range
+          factors: [
+            'High engagement with email campaigns',
+            'Company size matches ICP',
+            'Recent website activity detected',
+            'LinkedIn profile shows decision-maker role'
+          ],
+          recommendation: 'High priority lead - immediate follow-up recommended',
+          confidence: 0.87
+        };
+        break;
 
-        // Enum validation
-        if (propertySchema.enum && !propertySchema.enum.includes(value as string)) {
-          throw new Error(`Parameter ${key} must be one of: ${propertySchema.enum.join(', ')}`);
-        }
-      }
+      case 'generatePersonalizedEmail':
+        mockResult = {
+          subject: `Personalized solution for ${request.parameters.contactId}`,
+          body: `Hi there,\n\nI noticed you've been exploring solutions like ours, and I wanted to reach out personally.\n\nBased on your company profile, I believe we could help you achieve [specific benefit]. Would you be open to a brief 15-minute conversation this week?\n\nBest regards,\n[Your name]`,
+          personalizations: [
+            'Referenced company industry',
+            'Mentioned recent company news',
+            'Included relevant case study'
+          ],
+          sendScore: 0.91
+        };
+        break;
 
-      return true;
-    } catch (error) {
-      console.error(`Parameter validation failed for ${functionName}:`, error);
-      return false;
+      case 'optimizeSalesSequence':
+        mockResult = {
+          sequenceId: request.parameters.sequenceId,
+          optimizations: [
+            'Reduce time between touch 2 and 3 from 5 days to 3 days',
+            'Add video message in touch 4',
+            'Personalize subject lines with company name',
+            'Include social proof in touch 6'
+          ],
+          expectedImprovement: '23% increase in response rate',
+          confidence: 0.79
+        };
+        break;
+
+      case 'analyzeCustomerHealth':
+        mockResult = {
+          customerId: request.parameters.customerId,
+          healthScore: Math.floor(Math.random() * 30) + 70, // 70-100
+          churnRisk: Math.random() < 0.3 ? 'High' : Math.random() < 0.6 ? 'Medium' : 'Low',
+          indicators: [
+            'Decreased login frequency',
+            'Support ticket volume increased',
+            'No feature adoption in 30 days'
+          ],
+          recommendations: [
+            'Schedule check-in call with customer success',
+            'Provide feature adoption training',
+            'Offer premium support consultation'
+          ]
+        };
+        break;
+
+      case 'generateProposal':
+        mockResult = {
+          clientId: request.parameters.clientId,
+          proposalSections: [
+            'Executive Summary',
+            'Problem Statement',
+            'Proposed Solution',
+            'Implementation Timeline',
+            'Investment & ROI',
+            'Next Steps'
+          ],
+          estimatedValue: '$45,000 - $75,000',
+          deliveryTimeline: '8-12 weeks',
+          winProbability: 0.73
+        };
+        break;
+
+      case 'predictDealClosure':
+        mockResult = {
+          dealId: request.parameters.dealId,
+          closureProbability: Math.floor(Math.random() * 40) + 50, // 50-90%
+          timeToClose: `${Math.floor(Math.random() * 30) + 14} days`,
+          keyFactors: [
+            'Budget confirmed by decision maker',
+            'Competitive evaluation in progress',
+            'Technical requirements aligned'
+          ],
+          nextBestActions: [
+            'Schedule executive briefing',
+            'Provide customer references',
+            'Submit final proposal'
+          ],
+          riskFactors: [
+            'Competing vendor still in consideration',
+            'Budget approval pending'
+          ]
+        };
+        break;
+
+      default:
+        mockResult = {
+          message: `Function ${request.functionName} executed successfully`,
+          parameters: request.parameters,
+          timestamp: new Date().toISOString()
+        };
     }
+
+    return {
+      success: true,
+      result: mockResult,
+      executionTime: Date.now() - startTime,
+      modelUsed: request.model || 'gemini'
+    };
+  }
+
+  getAvailableFunctions(): MCPFunction[] {
+    return AVAILABLE_MCP_FUNCTIONS;
+  }
+
+  validateFunctionCall(functionName: string, parameters: Record<string, any>): { valid: boolean; errors?: string[] } {
+    const func = AVAILABLE_MCP_FUNCTIONS.find(f => f.name === functionName);
+    
+    if (!func) {
+      return { valid: false, errors: [`Function ${functionName} not found`] };
+    }
+
+    const errors: string[] = [];
+    
+    // Check required parameters
+    if (func.parameters.required) {
+      for (const requiredParam of func.parameters.required) {
+        if (!(requiredParam in parameters)) {
+          errors.push(`Missing required parameter: ${requiredParam}`);
+        }
+      }
+    }
+
+    // Basic type validation could be added here
+    
+    return { valid: errors.length === 0, errors: errors.length > 0 ? errors : undefined };
   }
 }
 
-// Export the main function for easy use
-export async function callMCP(
-  prompt: string,
-  agentType: string = 'composio',
-  context?: any
-): Promise<MCPFunctionResult> {
-  const client = new MCPClient();
-  return await client.callMCP(prompt, agentType, context);
+// Export singleton client instance
+export const mcpClient = new MCPClient();
+
+// Convenience function for making MCP calls
+export async function callMCP(functionName: string, parameters: Record<string, any>, options?: {
+  model?: 'gemini' | 'openai';
+  temperature?: number;
+}): Promise<MCPCallResponse> {
+  return mcpClient.callFunction({
+    functionName,
+    parameters,
+    model: options?.model || 'gemini',
+    temperature: options?.temperature || 0.3
+  });
 }
