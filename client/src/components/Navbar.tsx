@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
-import { useProfileStore } from '../store/profileStore';
+import { useUser, useClerk } from '@clerk/clerk-react';
 import { useAITools } from '../components/AIToolsProvider';
 import { 
   Home, 
@@ -63,8 +62,8 @@ const Navbar: React.FC = () => {
   
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, user, logout } = useAuthStore();
-  const { profile, fetchProfile } = useProfileStore();
+  const { user } = useUser();
+  const { signOut } = useClerk();
   const { openTool } = useAITools();
 
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -73,16 +72,9 @@ const Navbar: React.FC = () => {
   const toggleMarketingMenu = () => setMarketingMenuOpen(!marketingMenuOpen);
   const toggleContentMenu = () => setContentMenuOpen(!contentMenuOpen);
   
-  // Fetch profile if not already loaded
-  React.useEffect(() => {
-    if (isAuthenticated && !profile) {
-      fetchProfile();
-    }
-  }, [isAuthenticated, profile, fetchProfile]);
-  
   const handleLogout = async () => {
-    await logout();
-    navigate('/login');
+    await signOut();
+    navigate('/');
   };
 
   const isActive = (path: string) => location.pathname === path;

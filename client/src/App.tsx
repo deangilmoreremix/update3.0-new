@@ -64,17 +64,19 @@ import VoiceProfiles from './pages/VoiceProfiles/VoiceProfiles';
 import Tasks from './pages/Tasks';
 import TaskCalendarView from './pages/TaskCalendarView';
 
-function App() {
-  const { initializeAuth } = useAuthStore();
-  
-  useEffect(() => {
-    initializeAuth();
-  }, [initializeAuth]);
+// Get the publishable key from environment
+const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
+if (!clerkPubKey) {
+  throw new Error("Missing Publishable Key");
+}
+
+function App() {
   return (
-    <AIToolsProvider>
-      <Router>
-        <Routes>
+    <ClerkProvider publishableKey={clerkPubKey}>
+      <AIToolsProvider>
+        <Router>
+          <Routes>
         {/* Landing Pages */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/features/ai-tools" element={<AiToolsFeaturePage />} />
@@ -381,6 +383,7 @@ function App() {
       </Routes>
     </Router>
     </AIToolsProvider>
+    </ClerkProvider>
   );
 }
 

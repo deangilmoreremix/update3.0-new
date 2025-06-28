@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { useAuthStore } from '../../store/authStore';
+import { useSignIn, useUser } from '@clerk/clerk-react';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, Brain, Zap, CheckCircle, ArrowRight } from 'lucide-react';
 import ParticleBackground from '../../components/Landing/ParticleBackground';
 
