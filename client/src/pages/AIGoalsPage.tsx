@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import { Goal } from '../types/goals';
 import InteractiveGoalExplorer from '../components/InteractiveGoalExplorer';
 import GoalExecutionModal from '../components/GoalExecutionModal';
-import { Button } from '../components/ui/button';
 import { Brain, Info, Lightbulb, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAITools } from '../components/AIToolsProvider';
-import { Card, CardContent, CardHeader } from '../components/ui/card';
 
 export function AIGoalsPage() {
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
@@ -17,8 +15,7 @@ export function AIGoalsPage() {
   const { openTool } = useAITools();
   
   // For now, context will be passed via props or global state
-  // In wouter, we don't have location.state, so we'll implement this differently
-  const context = null; // TODO: Implement context passing with wouter
+  const context = null; // TODO: Implement context passing with React Router
 
   const handleGoalSelected = (goal: Goal) => {
     setSelectedGoal(goal);
@@ -41,6 +38,7 @@ export function AIGoalsPage() {
 
   return (
     <div className="p-6 space-y-6">
+      {/* Clean header with brain icon and gradient background */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-white">
@@ -52,43 +50,42 @@ export function AIGoalsPage() {
           </div>
         </div>
         
-        <Button 
-          variant="outline" 
-          size="sm" 
+        <button 
+          className="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors"
           onClick={() => navigate('/')}
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ArrowLeft className="h-4 w-4" />
           Back
-        </Button>
+        </button>
       </div>
       
-      {/* Introduction/Info Card */}
+      {/* Context-aware info card */}
       {context && (
-        <Card className="bg-blue-50 border-blue-200">
-          <CardContent className="p-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="p-4">
             <div className="flex items-start gap-3">
               <Info className="h-5 w-5 text-blue-500 mt-0.5" />
               <div>
                 <h3 className="font-medium text-blue-800">Context-Aware Execution</h3>
                 <p className="text-sm text-blue-700 mt-1">
-                  {context.type === 'contact' && `The selected goals will be applied to contact: ${context.name}`}
-                  {context.type === 'deal' && `The selected goals will be applied to deal: ${context.title}`}
+                  {context?.type === 'contact' && `The selected goals will be applied to contact: ${context.name}`}
+                  {context?.type === 'deal' && `The selected goals will be applied to deal: ${context.title}`}
                 </p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
       
-      {/* Tips Card */}
-      <Card className="bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-100">
-        <CardHeader>
+      {/* Tips card with gradient background */}
+      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-lg">
+        <div className="p-6">
           <div className="flex items-center gap-2">
             <Lightbulb className="h-5 w-5 text-indigo-600" />
             <h3 className="font-medium text-indigo-900">AI Goal Explorer</h3>
           </div>
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div className="p-6 pt-0">
           <p className="text-indigo-800 mb-4">
             Select any business goal below and watch as our AI agents work together to achieve it. 
             Each goal uses multiple specialized agents that collaborate to deliver measurable business outcomes.
@@ -96,7 +93,7 @@ export function AIGoalsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
             <div className="bg-white p-3 rounded-lg border border-indigo-100">
               <span className="font-medium text-indigo-800">🎯 Set Business Goals</span>
-              <p className="mt-1 text-indigo-600 text-xs">Choose from 50+ pre-built goals</p>
+              <p className="mt-1 text-indigo-600 text-xs">Choose from 58+ pre-built goals</p>
             </div>
             <div className="bg-white p-3 rounded-lg border border-indigo-100">
               <span className="font-medium text-indigo-800">🤖 Watch AI Agents Work</span>
@@ -107,10 +104,10 @@ export function AIGoalsPage() {
               <p className="mt-1 text-indigo-600 text-xs">Track real business impact and ROI</p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
       
-      {/* Interactive Goal Explorer */}
+      {/* Interactive Goal Explorer - Clean embedded layout */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <InteractiveGoalExplorer 
           realMode={realMode}
