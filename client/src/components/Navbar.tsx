@@ -36,7 +36,21 @@ import {
   Image,
   HelpCircle,
   User,
-  LogOut
+  LogOut,
+  Star,
+  Shield,
+  Reply,
+  Volume2,
+  Calendar,
+  Eye,
+  Search,
+  FileCode,
+  MessagesSquare,
+  CheckCircle,
+  Zap,
+  ArrowRight,
+  Mic,
+  Sparkles
 } from 'lucide-react';
 
 const Navbar: React.FC = () => {
