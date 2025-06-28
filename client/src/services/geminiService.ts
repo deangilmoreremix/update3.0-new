@@ -2,9 +2,9 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
 
-// Use the latest Gemma model with reasoning capabilities
+// Use Gemma 7B for complex agentic tasks requiring planning, tool use, and reasoning
 const model = genAI.getGenerativeModel({ 
-  model: 'gemini-2.0-flash-thinking-exp',
+  model: 'gemma-2-27b-it',
   generationConfig: {
     temperature: 0.7,
     topK: 40,
@@ -49,8 +49,18 @@ export const geminiService = {
   async suggestPersonalization(contact: any): Promise<ContactPersonalization> {
     try {
       const prompt = `
-        Based on the following contact information, suggest personalized communication strategies:
+        You are an expert sales strategist with deep expertise in personalized outreach. Let's approach this systematically.
+
+        First, outline the steps needed to create a personalized communication strategy:
+        1. Analyze the contact's profile and context
+        2. Identify key value propositions based on their role/industry
+        3. Develop personalized messaging angles
+        4. Create specific talking points and ice breakers
+        5. Plan follow-up strategy
+
+        Now, execute each step for this contact:
         
+        Contact Profile:
         Name: ${contact.name}
         Email: ${contact.email}
         Company: ${contact.company || 'Not specified'}
@@ -60,13 +70,13 @@ export const geminiService = {
         Notes: ${contact.notes || 'No additional notes'}
         Status: ${contact.status || 'lead'}
         
-        Please provide:
-        1. A personalized message approach
-        2. 3-5 relevant talking points
-        3. 3-4 ice breaker suggestions
-        4. 3-4 follow-up suggestions
-        
-        Format the response as JSON with keys: personalizedMessage, talkingPoints, iceBreakers, followUpSuggestions
+        Step 1 - Profile Analysis: What can you infer about their priorities, challenges, and decision-making authority?
+        Step 2 - Value Proposition: What specific benefits would resonate most with someone in their position?
+        Step 3 - Messaging Strategy: How should you position your approach?
+        Step 4 - Tactical Elements: What specific talking points and ice breakers would work?
+        Step 5 - Follow-up Plan: What's the optimal sequence and timing?
+
+        Provide your final recommendations as JSON with keys: personalizedMessage, talkingPoints, iceBreakers, followUpSuggestions
       `;
 
       const result = await model.generateContent(prompt);
@@ -93,19 +103,28 @@ export const geminiService = {
   async analyzeBusinessInsights(company: string, industry?: string): Promise<BusinessInsight> {
     try {
       const prompt = `
-        Analyze the following company and provide business insights:
-        
-        Company: ${company}
-        Industry: ${industry || 'Not specified'}
-        
-        Please provide:
-        1. Company overview
-        2. Key decision makers (roles/titles)
-        3. Common business challenges in this industry
-        4. Potential opportunities
-        5. Competitive advantages they might value
-        
-        Format as JSON with keys: companyOverview, keyDecisionMakers, businessChallenges, opportunities, competitiveAdvantages
+        You are a strategic business analyst. I need you to conduct a comprehensive analysis of ${company}${industry ? ` in the ${industry} industry` : ''}. Let's break this down systematically.
+
+        First, outline your analysis framework:
+        1. Research company background and market positioning
+        2. Identify organizational structure and key stakeholders  
+        3. Assess current market challenges and pain points
+        4. Evaluate growth opportunities and market trends
+        5. Determine competitive positioning and unique advantages
+
+        Now, execute each step:
+
+        Step 1 - Company Research: What can you determine about ${company}'s business model, size, recent developments, and market presence${industry ? ` within the ${industry} sector` : ''}?
+
+        Step 2 - Decision Maker Analysis: Based on typical ${industry || 'business'} organizations, who are the likely key decision makers, their priorities, and influence levels?
+
+        Step 3 - Challenge Assessment: What are the most pressing business challenges facing ${industry ? `${industry} companies like ` : ''}${company} in the current market environment?
+
+        Step 4 - Opportunity Identification: What growth opportunities, market trends, or strategic initiatives could benefit ${company}?
+
+        Step 5 - Competitive Analysis: What unique strengths, market advantages, or differentiators should ${company} leverage?
+
+        Based on your analysis, provide insights formatted as JSON with keys: companyOverview, keyDecisionMakers, businessChallenges, opportunities, competitiveAdvantages
       `;
 
       const result = await model.generateContent(prompt);

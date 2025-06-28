@@ -35,8 +35,8 @@ export const useOpenAIStream = () => {
       // Check if the model is from Gemini
       if (model.includes('gemini')) {
         const client = getGeminiClient();
-        // Use the latest Gemma model with reasoning capabilities
-        const actualModel = 'gemini-2.0-flash-thinking-exp';
+        // Use Gemma 27B for complex agentic tasks requiring planning and tool use
+        const actualModel = 'gemma-2-27b-it';
         const genModel = client.getGenerativeModel({ 
           model: actualModel,
           generationConfig: {

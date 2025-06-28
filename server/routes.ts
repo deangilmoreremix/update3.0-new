@@ -434,7 +434,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const { GoogleGenerativeAI } = await import('@google/generative-ai');
           const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
           const model = genAI.getGenerativeModel({ 
-            model: 'gemini-2.0-flash-thinking-exp',
+            model: 'gemma-2-27b-it',
             generationConfig: {
               temperature: 0.7,
               topK: 40,
