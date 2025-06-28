@@ -166,6 +166,18 @@ const Navbar: React.FC = () => {
               <span className="ml-2">Pipeline</span>
             </Link>
             
+            <Link 
+              to="/ai-goals" 
+              className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                isActive('/ai-goals') 
+                  ? 'text-blue-600 bg-blue-50' 
+                  : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50/50'
+              } transition-colors duration-200`}
+            >
+              <Target size={20} className="mr-2" />
+              <span className="ml-2">AI Goals</span>
+            </Link>
+            
             {/* AI Tools dropdown */}
             <div className="relative group inline-block">
               <button 
@@ -813,6 +825,19 @@ const Navbar: React.FC = () => {
             >
               <Briefcase size={20} className="mr-3" />
               Pipeline
+            </Link>
+            
+            <Link
+              to="/ai-goals"
+              className={`flex items-center px-3 py-2 text-base font-medium rounded-md ${
+                isActive('/ai-goals') 
+                  ? 'text-blue-600 bg-blue-50' 
+                  : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+              }`}
+              onClick={() => setIsOpen(false)}
+            >
+              <Target size={20} className="mr-3" />
+              AI Goals
             </Link>
             
             <div>
