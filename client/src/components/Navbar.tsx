@@ -49,7 +49,11 @@ import {
   Zap,
   ArrowRight,
   Mic,
-  Sparkles
+  Sparkles,
+  ExternalLink,
+  Grid3X3,
+  Megaphone,
+  Palette
 } from 'lucide-react';
 
 const Navbar: React.FC = () => {

@@ -29,7 +29,13 @@ import {
   Mail,
   CheckSquare,
   Plus,
-  Search
+  Search,
+  ExternalLink,
+  Grid3X3,
+  Megaphone,
+  FileText,
+  Settings,
+  Palette
 } from 'lucide-react';
 
 // Import AI tools components
@@ -471,6 +477,98 @@ const Dashboard: React.FC = () => {
               <div className="bg-indigo-500 h-1.5 rounded-full" style={{ width: `${aiMetrics.qualityScore}%` }}></div>
             </div>
           </div>
+        </div>
+      </div>
+      
+      {/* Connected Apps Section */}
+      <div className="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center">
+            <div className="p-2 rounded-full bg-gradient-to-r from-purple-50 to-indigo-50 text-purple-600 mr-3">
+              <Grid3X3 size={20} />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Connected Apps</h2>
+              <p className="text-sm text-gray-500">Access your entire business toolkit</p>
+            </div>
+          </div>
+          <button className="text-sm text-purple-600 hover:text-purple-700 font-medium flex items-center">
+            View All <ExternalLink size={14} className="ml-1" />
+          </button>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* FunnelCraft AI - Marketing Team */}
+          <a 
+            href="https://funnelcraft-ai.videoremix.io/landing" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="group p-4 rounded-lg border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all duration-200 bg-gradient-to-br from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100"
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div className="p-2 rounded-lg bg-purple-100 text-purple-600 group-hover:bg-purple-200 transition-colors">
+                <Megaphone size={20} />
+              </div>
+              <ExternalLink size={14} className="text-gray-400 group-hover:text-purple-600 transition-colors" />
+            </div>
+            <h3 className="font-medium text-gray-900 mb-1">FunnelCraft AI</h3>
+            <p className="text-sm text-gray-600 mb-2">Marketing Team</p>
+            <p className="text-xs text-gray-500">Create high-converting funnels with AI-powered optimization</p>
+          </a>
+
+          {/* SmartCRM Closer - Outreach Team */}
+          <a 
+            href="https://tubular-dieffenbachia-5f01b5.netlify.app" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="group p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-200 bg-gradient-to-br from-blue-50 to-cyan-50 hover:from-blue-100 hover:to-cyan-100"
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div className="p-2 rounded-lg bg-blue-100 text-blue-600 group-hover:bg-blue-200 transition-colors">
+                <Users size={20} />
+              </div>
+              <ExternalLink size={14} className="text-gray-400 group-hover:text-blue-600 transition-colors" />
+            </div>
+            <h3 className="font-medium text-gray-900 mb-1">SmartCRM Closer</h3>
+            <p className="text-sm text-gray-600 mb-2">Outreach Team</p>
+            <p className="text-xs text-gray-500">Advanced outreach automation and deal closing tools</p>
+          </a>
+
+          {/* ContentAI - Content & Support Team */}
+          <a 
+            href="https://content-ai.videoremix.io" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="group p-4 rounded-lg border border-gray-200 hover:border-green-300 hover:shadow-md transition-all duration-200 bg-gradient-to-br from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100"
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div className="p-2 rounded-lg bg-green-100 text-green-600 group-hover:bg-green-200 transition-colors">
+                <FileText size={20} />
+              </div>
+              <ExternalLink size={14} className="text-gray-400 group-hover:text-green-600 transition-colors" />
+            </div>
+            <h3 className="font-medium text-gray-900 mb-1">ContentAI</h3>
+            <p className="text-sm text-gray-600 mb-2">Content & Support</p>
+            <p className="text-xs text-gray-500">AI-powered content creation and support documentation</p>
+          </a>
+
+          {/* White-Label Platform Management */}
+          <a 
+            href="https://moonlit-tarsier-239e70.netlify.app" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="group p-4 rounded-lg border border-gray-200 hover:border-orange-300 hover:shadow-md transition-all duration-200 bg-gradient-to-br from-orange-50 to-amber-50 hover:from-orange-100 hover:to-amber-100"
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div className="p-2 rounded-lg bg-orange-100 text-orange-600 group-hover:bg-orange-200 transition-colors">
+                <Palette size={20} />
+              </div>
+              <ExternalLink size={14} className="text-gray-400 group-hover:text-orange-600 transition-colors" />
+            </div>
+            <h3 className="font-medium text-gray-900 mb-1">White-Label Platform</h3>
+            <p className="text-sm text-gray-600 mb-2">Platform Management</p>
+            <p className="text-xs text-gray-500">Customize and manage your branded platform solutions</p>
+          </a>
         </div>
       </div>
       
