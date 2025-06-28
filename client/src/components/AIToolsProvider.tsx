@@ -148,8 +148,10 @@ export const AIToolsProvider: React.FC<AIToolsProviderProps> = ({ children }) =>
   const [currentTool, setCurrentTool] = useState<AIToolType | null>(null);
 
   const openTool = (tool: AIToolType) => {
+    console.log('Opening tool:', tool);
     setCurrentTool(tool);
     setIsToolOpen(true);
+    console.log('Tool state updated - isOpen:', true, 'currentTool:', tool);
   };
 
   const closeTool = () => {
@@ -397,19 +399,23 @@ export const AIToolsProvider: React.FC<AIToolsProviderProps> = ({ children }) =>
 
   const toolInfo = getToolInfo(currentTool);
 
+  console.log('Provider render - isToolOpen:', isToolOpen, 'currentTool:', currentTool);
+
   return (
     <AIToolsContext.Provider value={{ openTool, closeTool, isToolOpen, currentTool }}>
       {children}
 
-      <AIToolModal 
-        isOpen={isToolOpen}
-        onClose={closeTool}
-        title={toolInfo.title}
-        icon={toolInfo.icon}
-        maxWidth="max-w-5xl"
-      >
-        {toolInfo.component}
-      </AIToolModal>
+      {isToolOpen && currentTool && (
+        <AIToolModal 
+          isOpen={isToolOpen}
+          onClose={closeTool}
+          title={toolInfo?.title || 'AI Tool'}
+          icon={toolInfo?.icon || <Brain size={24} />}
+          maxWidth="max-w-5xl"
+        >
+          {toolInfo?.component || <div>Tool not found</div>}
+        </AIToolModal>
+      )}
     </AIToolsContext.Provider>
   );
 };

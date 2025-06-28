@@ -21,6 +21,8 @@ const AIToolModal: React.FC<AIToolModalProps> = ({
   const [isFullScreen, setIsFullScreen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
+  console.log('AIToolModal render - isOpen:', isOpen, 'title:', title, 'children:', children);
+
   if (!isOpen) return null;
 
   const toggleFullScreen = () => {
