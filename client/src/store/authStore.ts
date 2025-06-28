@@ -50,7 +50,7 @@ export const useAuthStore = create<AuthState>()(
           } else {
             // Auto-login as demo user for simplicity in Replit
             const demoUser: User = {
-              id: 'demo-user-123',
+              id: '550e8400-e29b-41d4-a716-446655440000',
               email: 'demo@smartcrm.com',
               fullName: 'Demo User',
               accountStatus: 'active',
@@ -86,7 +86,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           // For demo purposes, accept any email/password combination
           const demoUser: User = {
-            id: 'demo-user-123',
+            id: '550e8400-e29b-41d4-a716-446655440000',
             email: email,
             fullName: email.split('@')[0],
             accountStatus: 'active',
