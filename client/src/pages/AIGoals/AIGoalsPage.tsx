@@ -108,10 +108,11 @@ const AIGoalsPage: React.FC = () => {
   };
 
   const categoryStats = goalCategories.map(category => ({
-    name: category,
-    count: getGoalsByCategory(category).length,
-    icon: getCategoryIcon(category),
-    color: getCategoryColor(category)
+    name: category.name,
+    id: category.id,
+    count: getGoalsByCategory(category.id).length,
+    icon: getCategoryIcon(category.id),
+    color: getCategoryColor(category.id)
   }));
 
   return (
@@ -186,19 +187,19 @@ const AIGoalsPage: React.FC = () => {
           {categoryStats.map((category) => (
             <button
               key={category.name}
-              onClick={() => setSelectedCategory(category.name)}
+              onClick={() => setSelectedCategory(category.id)}
               className={`p-4 rounded-xl border transition-all duration-300 hover:scale-105 ${
-                selectedCategory === category.name
+                selectedCategory === category.id
                   ? `bg-gradient-to-r ${category.color} text-white border-transparent shadow-lg`
                   : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:shadow-md'
               }`}
             >
               <div className="flex flex-col items-center text-center">
-                <div className={`mb-2 ${selectedCategory === category.name ? 'text-white' : 'text-gray-600'}`}>
+                <div className={`mb-2 ${selectedCategory === category.id ? 'text-white' : 'text-gray-600'}`}>
                   {category.icon}
                 </div>
                 <div className="text-sm font-medium">{category.name}</div>
-                <div className={`text-xs ${selectedCategory === category.name ? 'text-white/80' : 'text-gray-500'}`}>
+                <div className={`text-xs ${selectedCategory === category.id ? 'text-white/80' : 'text-gray-500'}`}>
                   {category.count} goals
                 </div>
               </div>
@@ -294,7 +295,7 @@ const AIGoalsPage: React.FC = () => {
                 >
                   <option value="All">All Categories</option>
                   {goalCategories.map(category => (
-                    <option key={category} value={category}>{category}</option>
+                    <option key={category.id} value={category.id}>{category.name}</option>
                   ))}
                 </select>
               </div>
