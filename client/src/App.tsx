@@ -87,9 +87,25 @@ function App() {
                 <Register />
               </SignedOut>
             } />
-        {/* Landing Pages */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/features/ai-tools" element={<AiToolsFeaturePage />} />
+            {/* Public routes for signed out users */}
+            <Route path="/" element={
+              <SignedOut>
+                <LandingPage />
+              </SignedOut>
+            } />
+            
+            {/* Authenticated user routes */}
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <div>
+                  <Navbar />
+                  <Dashboard />
+                </div>
+              </ProtectedRoute>
+            } />
+            
+            {/* Public feature pages */}
+            <Route path="/features/ai-tools" element={<AiToolsFeaturePage />} />
         <Route path="/features/contacts" element={<ContactsFeaturePage />} />
         <Route path="/features/pipeline" element={<PipelineFeaturePage />} />
         <Route path="/features/ai-assistant" element={<AiAssistantFeaturePage />} />
