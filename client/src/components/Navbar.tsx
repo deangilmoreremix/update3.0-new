@@ -630,10 +630,10 @@ const Navbar: React.FC = () => {
               <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100">
                 <div className="px-4 py-2 border-b border-gray-100">
                   <p className="text-sm font-medium text-gray-900 truncate">
-                    {profile?.fullName || 'User'}
+                    {user?.fullName || 'User'}
                   </p>
                   <p className="text-xs text-gray-500 truncate">
-                    {profile?.email || user?.email}
+                    {user?.email}
                   </p>
                 </div>
                 
@@ -755,10 +755,10 @@ const Navbar: React.FC = () => {
             {/* User profile on mobile */}
             <div className="pt-4 mt-2 border-t border-gray-200">
               <div className="flex items-center px-3 py-2">
-                {profile?.avatarUrl ? (
+                {user?.avatarUrl ? (
                   <img 
-                    src={profile.avatarUrl}
-                    alt={profile.fullName || 'User profile'} 
+                    src={user.avatarUrl}
+                    alt={user.fullName || 'User profile'} 
                     className="h-10 w-10 rounded-full object-cover mr-3"
                   />
                 ) : (
@@ -767,7 +767,7 @@ const Navbar: React.FC = () => {
                   </div>
                 )}
                 <div>
-                  <div className="font-medium">{profile?.fullName || user?.email?.split('@')[0] || 'User'}</div>
+                  <div className="font-medium">{user?.fullName || user?.email?.split('@')[0] || 'User'}</div>
                   <div className="text-sm text-gray-500">{user?.email}</div>
                 </div>
               </div>
