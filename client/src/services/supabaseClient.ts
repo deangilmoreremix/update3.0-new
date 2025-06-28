@@ -1,17 +1,24 @@
-import { createClient } from '@supabase/supabase-js';
-import { Database } from '../types/database.types';
+// Legacy Supabase client - replaced with new API
+// This is a stub to prevent import errors during migration
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
-}
-
-export const supabase = createClient<Database>(
-  supabaseUrl,
-  supabaseAnonKey
-);
+export const supabase = {
+  auth: {
+    getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+    signInWithPassword: () => Promise.resolve({ data: { session: null }, error: new Error('Use new API') }),
+    signUp: () => Promise.resolve({ data: { session: null }, error: new Error('Use new API') }),
+    signOut: () => Promise.resolve({ error: null }),
+    getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+    resetPasswordForEmail: () => Promise.resolve({ data: null, error: new Error('Use new API') }),
+    updateUser: () => Promise.resolve({ data: null, error: new Error('Use new API') }),
+    onAuthStateChange: () => ({ data: { subscription: null }, error: null })
+  },
+  from: () => ({
+    select: () => ({ eq: () => Promise.resolve({ data: [], error: null }) }),
+    insert: () => Promise.resolve({ data: [], error: null }),
+    update: () => ({ eq: () => Promise.resolve({ data: [], error: null }) }),
+    delete: () => ({ eq: () => Promise.resolve({ error: null }) })
+  })
+};
 
 // Helper to validate UUID format
 const isValidUUID = (uuid: string) => {
