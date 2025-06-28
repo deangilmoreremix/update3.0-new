@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Goal } from '../types/goals';
-import { goalCategories, allGoals } from '../data/goalsData';
+import { goalCategories, allGoals } from '../data/aiGoals';
 import InteractiveGoalCard from './ui/InteractiveGoalCard';
 import GoalExecutionModal from './GoalExecutionModal';
 import { 

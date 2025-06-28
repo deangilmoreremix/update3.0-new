@@ -23,7 +23,7 @@ import {
   Star,
   Activity
 } from 'lucide-react';
-import { aiGoals, goalCategories, priorityLevels, complexityLevels, searchGoals, getGoalsByCategory, getGoalsByPriority, getGoalsByComplexity } from '@/data/aiGoals';
+import { allGoals as aiGoals, goalCategories, priorityLevels, complexityLevels, searchGoals, getGoalsByCategory, getGoalsByPriority, getGoalsByComplexity } from '@/data/aiGoals';
 
 const AIGoalsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
