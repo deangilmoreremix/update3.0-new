@@ -45,7 +45,7 @@ const AIToolModal: React.FC<AIToolModalProps> = ({
 
   return (
     <div 
-      className="fixed inset-0 z-50 overflow-y-auto bg-gray-800 bg-opacity-75 backdrop-blur-sm flex items-start justify-center py-4 px-4 min-h-screen transition-all duration-300"
+      className="fixed inset-0 z-50 bg-gray-800 bg-opacity-75 backdrop-blur-sm flex items-start justify-center pt-8 pb-8 px-4 transition-all duration-300 overflow-y-auto"
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
     >
@@ -54,8 +54,8 @@ const AIToolModal: React.FC<AIToolModalProps> = ({
         className={`${
           isFullScreen 
             ? 'fixed inset-4 md:inset-8' 
-            : `relative ${maxWidth} w-full max-h-[calc(100vh-2rem)] my-auto`
-        } bg-white rounded-xl shadow-xl flex flex-col overflow-hidden transition-all duration-200 transform scale-100 opacity-100 border border-gray-200`}
+            : `relative ${maxWidth} w-full min-h-[400px] max-h-none`
+        } bg-white rounded-xl shadow-xl flex flex-col transition-all duration-200 transform scale-100 opacity-100 border border-gray-200 my-auto`}
         onClick={e => e.stopPropagation()}
         style={{
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 40px 0 rgba(0, 0, 0, 0.1)',
@@ -89,14 +89,14 @@ const AIToolModal: React.FC<AIToolModalProps> = ({
         </div>
 
         {/* Body with subtle background and improved scrolling */}
-        <div className="flex-1 p-6 overflow-y-auto overflow-x-hidden bg-white bg-opacity-80 bg-[radial-gradient(#f3f4f6_1px,transparent_1px)] bg-[size:20px_20px] min-h-0">
-          <div className="bg-white bg-opacity-95 p-6 rounded-xl border border-gray-100 shadow-sm min-h-0">
+        <div className="flex-grow overflow-visible bg-white bg-opacity-80 bg-[radial-gradient(#f3f4f6_1px,transparent_1px)] bg-[size:20px_20px]">
+          <div className="p-6 bg-white bg-opacity-95 m-6 rounded-xl border border-gray-100 shadow-sm">
             {children}
           </div>
         </div>
 
-        {/* Optional footer */}
-        <div className="px-6 py-3 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white">
+        {/* Optional footer - reduced height */}
+        <div className="px-6 py-2 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white flex-shrink-0">
           <div className="flex justify-between items-center text-xs text-gray-500">
             <div>Powered by AI</div>
             <div className="flex items-center space-x-2">
