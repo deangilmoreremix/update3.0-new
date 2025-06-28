@@ -160,6 +160,11 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### June 28, 2025 - AI Goals Navigation Fix
+- **Navigation Issue Resolved**: Fixed back button on AI Goals page to navigate to `/dashboard` instead of landing page
+- **User Experience**: Users now properly return to dashboard when clicking back from AI Goals page
+- **Implementation**: Updated navigate('/') to navigate('/dashboard') in AIGoalsPage back button handler
+
 ### June 28, 2025 - Enhanced AI Goals System with Complete Integration Layer
 - **Comprehensive AI Goals Platform**: Built complete AI Goals system with 21 pre-configured business automation goals
 - **Interactive Goal Explorer**: Created comprehensive InteractiveGoalExplorer component with:
