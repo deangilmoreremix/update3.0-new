@@ -76,6 +76,17 @@ function App() {
       <AIToolsProvider>
         <Router>
           <Routes>
+            {/* Auth routes for signed out users */}
+            <Route path="/login" element={
+              <SignedOut>
+                <Login />
+              </SignedOut>
+            } />
+            <Route path="/register" element={
+              <SignedOut>
+                <Register />
+              </SignedOut>
+            } />
         {/* Landing Pages */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/features/ai-tools" element={<AiToolsFeaturePage />} />

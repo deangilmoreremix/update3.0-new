@@ -80,22 +80,22 @@ const Navbar: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
   const isActiveParent = (path: string) => location.pathname.startsWith(path);
 
-  if (!isAuthenticated) {
+  if (!isSignedIn) {
     return null;
   }
   
   // Get user's initials for avatar
   const getInitials = () => {
-    if (user?.fullName) {
-      const names = user.fullName.split(' ');
-      if (names.length >= 2) {
-        return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
-      }
-      return user.fullName.charAt(0).toUpperCase();
+    if (user?.firstName && user?.lastName) {
+      return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
     }
     
-    if (user?.email) {
-      return user.email.charAt(0).toUpperCase();
+    if (user?.firstName) {
+      return user.firstName.charAt(0).toUpperCase();
+    }
+    
+    if (user?.emailAddresses?.[0]?.emailAddress) {
+      return user.emailAddresses[0].emailAddress.charAt(0).toUpperCase();
     }
     
     return 'U';
@@ -612,10 +612,10 @@ const Navbar: React.FC = () => {
               className="flex items-center space-x-2 text-gray-700 hover:text-blue-600" 
               onClick={() => setUserMenuOpen(!userMenuOpen)}
             >
-              {user?.avatarUrl ? (
+              {user?.imageUrl ? (
                 <img 
-                  src={user.avatarUrl}
-                  alt={user.fullName || 'User profile'} 
+                  src={user.imageUrl}
+                  alt={user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 'User profile'} 
                   className="h-8 w-8 rounded-full object-cover border border-gray-200"
                 />
               ) : (
@@ -623,7 +623,10 @@ const Navbar: React.FC = () => {
                   {getInitials()}
                 </div>
               )}
-              <span className="font-medium text-sm">{user?.fullName || user?.email?.split('@')[0] || 'User'}</span>
+              <span className="font-medium text-sm">
+                {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 
+                 user?.emailAddresses?.[0]?.emailAddress?.split('@')[0] || 'User'}
+              </span>
               <ChevronDown size={16} />
             </button>
             
@@ -631,10 +634,10 @@ const Navbar: React.FC = () => {
               <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100">
                 <div className="px-4 py-2 border-b border-gray-100">
                   <p className="text-sm font-medium text-gray-900 truncate">
-                    {user?.fullName || 'User'}
+                    {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 'User'}
                   </p>
                   <p className="text-xs text-gray-500 truncate">
-                    {user?.email}
+                    {user?.emailAddresses?.[0]?.emailAddress}
                   </p>
                 </div>
                 
@@ -756,10 +759,10 @@ const Navbar: React.FC = () => {
             {/* User profile on mobile */}
             <div className="pt-4 mt-2 border-t border-gray-200">
               <div className="flex items-center px-3 py-2">
-                {user?.avatarUrl ? (
+                {user?.imageUrl ? (
                   <img 
-                    src={user.avatarUrl}
-                    alt={user.fullName || 'User profile'} 
+                    src={user.imageUrl}
+                    alt={user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 'User profile'} 
                     className="h-10 w-10 rounded-full object-cover mr-3"
                   />
                 ) : (
@@ -768,8 +771,11 @@ const Navbar: React.FC = () => {
                   </div>
                 )}
                 <div>
-                  <div className="font-medium">{user?.fullName || user?.email?.split('@')[0] || 'User'}</div>
-                  <div className="text-sm text-gray-500">{user?.email}</div>
+                  <div className="font-medium">
+                    {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 
+                     user?.emailAddresses?.[0]?.emailAddress?.split('@')[0] || 'User'}
+                  </div>
+                  <div className="text-sm text-gray-500">{user?.emailAddresses?.[0]?.emailAddress}</div>
                 </div>
               </div>
               
