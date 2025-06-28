@@ -217,6 +217,7 @@ function App() {
           <Route path="/features/function-assistant" element={<FunctionAssistantFeaturePage />} />
           <Route path="/features/communications" element={<CommunicationsFeaturePage />} />
           <Route path="/demo/goal-cards" element={<GoalCardDemo />} />
+          <Route path="/ai-goals" element={<AIGoalsPage />} />
         </Routes>
       </Router>
     </AIToolsProvider>
