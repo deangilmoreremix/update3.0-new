@@ -70,20 +70,9 @@ if (!clerkPubKey) {
   throw new Error("Missing Publishable Key");
 }
 
-// Clerk configuration matching production settings
+// Clerk configuration - simplified for development
 const clerkConfig = {
   publishableKey: clerkPubKey,
-  // Application paths
-  homeUrl: 'https://smart-crm.videoremix.io/dashboard',
-  unauthorizedSignInUrl: 'https://smart-crm.videoremix.io/login',
-  // Component paths - using Account Portal
-  signInUrl: 'https://accounts.smart-crm.videoremix.io/sign-in',
-  signUpUrl: 'https://accounts.smart-crm.videoremix.io/sign-up',
-  userProfileUrl: 'https://accounts.smart-crm.videoremix.io/user',
-  organizationProfileUrl: 'https://accounts.smart-crm.videoremix.io/organization',
-  createOrganizationUrl: 'https://accounts.smart-crm.videoremix.io/create-organization',
-  // After sign out, redirect to root
-  afterSignOutUrl: 'https://smart-crm.videoremix.io',
 };
 
 function App() {

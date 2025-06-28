@@ -8,9 +8,7 @@ const Register: React.FC = () => {
   
   useEffect(() => {
     // Redirect to Clerk hosted sign-up
-    redirectToSignUp({
-      redirectUrl: '/dashboard'
-    });
+    redirectToSignUp();
   }, [redirectToSignUp]);
   
   return (
