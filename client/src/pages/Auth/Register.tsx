@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react';
 import { Brain } from 'lucide-react';
 import ParticleBackground from '../../components/Landing/ParticleBackground';
-import { useClerk } from '@clerk/clerk-react';
+import { useNavigate } from 'react-router-dom';
 
 const Register: React.FC = () => {
-  const { redirectToSignUp } = useClerk();
+  const navigate = useNavigate();
   
   useEffect(() => {
-    // Redirect to Clerk hosted sign-up
-    redirectToSignUp();
-  }, [redirectToSignUp]);
+    // For now, redirect to dashboard since Clerk is not configured
+    // This can be updated when Clerk is properly integrated
+    navigate('/dashboard');
+  }, [navigate]);
   
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 relative overflow-hidden">

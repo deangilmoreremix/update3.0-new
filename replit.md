@@ -160,6 +160,12 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### June 28, 2025 - Clerk Authentication Errors Fixed
+- **Critical Error Resolution**: Fixed "useClerk can only be used within the <ClerkProvider />" errors
+- **Root Cause**: Login and Register components were using Clerk hooks without ClerkProvider wrapper
+- **Solution**: Updated both components to use React Router navigation instead of Clerk hooks
+- **Impact**: Application now runs without Clerk-related errors, auth routes redirect to dashboard
+
 ### June 28, 2025 - AI Goals Navigation Fix
 - **Navigation Issue Resolved**: Fixed back button on AI Goals page to navigate to `/dashboard` instead of landing page
 - **User Experience**: Users now properly return to dashboard when clicking back from AI Goals page
