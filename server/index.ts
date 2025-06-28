@@ -1,8 +1,48 @@
 import express, { type Request, Response, NextFunction } from "express";
+import { createClerkClient } from '@clerk/backend';
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
+
+// Create Clerk client with authorized parties configuration
+const clerkClient = createClerkClient({
+  secretKey: process.env.CLERK_SECRET_KEY,
+  publishableKey: process.env.VITE_CLERK_PUBLISHABLE_KEY,
+  jwtKey: process.env.CLERK_JWT_KEY,
+});
+
+// Custom middleware to handle Clerk authentication with authorized parties
+app.use(async (req, res, next) => {
+  try {
+    // Get the session token from the request
+    const sessionToken = req.headers.authorization?.replace('Bearer ', '') || req.cookies?.__session;
+    
+    if (sessionToken) {
+      // Verify the session with authorized parties
+      const requestState = await clerkClient.authenticateRequest(req, {
+        authorizedParties: [
+          'https://smart-crm.videoremix.io',
+          'https://*.replit.dev',
+          'https://*.repl.it',
+          'http://localhost:5000',
+          'http://localhost:3000'
+        ]
+      });
+      
+      // Add user info to request if authenticated
+      if (requestState.isSignedIn) {
+        req.userId = requestState.userId;
+      }
+    }
+    
+    next();
+  } catch (error) {
+    console.error('Clerk authentication error:', error);
+    next(); // Continue without authentication for now
+  }
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
