@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useUser, useClerk } from '@clerk/clerk-react';
+// import { useUser, useClerk } from '@clerk/clerk-react';
 import { useAITools } from '../components/AIToolsProvider';
 import { 
   Home, 
@@ -62,8 +62,18 @@ const Navbar: React.FC = () => {
   
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, isSignedIn } = useUser();
-  const { signOut } = useClerk();
+  // const { user, isSignedIn } = useUser();
+  // const { signOut } = useClerk();
+  
+  // Temporary mock user data for development without Clerk
+  const user = { 
+    firstName: 'Demo', 
+    lastName: 'User', 
+    emailAddresses: [{ emailAddress: 'demo@smartcrm.com' }],
+    imageUrl: null 
+  };
+  const isSignedIn = true;
+  
   const { openTool } = useAITools();
 
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -73,7 +83,7 @@ const Navbar: React.FC = () => {
   const toggleContentMenu = () => setContentMenuOpen(!contentMenuOpen);
   
   const handleLogout = async () => {
-    await signOut();
+    // await signOut(); // Temporary disabled for development
     navigate('/');
   };
 
