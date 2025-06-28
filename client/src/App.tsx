@@ -300,7 +300,18 @@ function App() {
           </ProtectedRoute>
         } />
         
-        {/* New Supabase-integrated routes */}
+        {/* Business Analysis Routes */}
+        <Route path="/business-analysis" element={
+          <ProtectedRoute>
+            <div className="flex flex-col min-h-screen bg-gray-50">
+              <Navbar />
+              <main className="flex-1">
+                <BusinessAnalyzer />
+              </main>
+            </div>
+          </ProtectedRoute>
+        } />
+
         <Route path="/business-analyzer" element={
           <ProtectedRoute>
             <div className="flex flex-col min-h-screen bg-gray-50">
@@ -334,6 +345,36 @@ function App() {
           </ProtectedRoute>
         } />
         
+        <Route path="/campaigns" element={
+          <ProtectedRoute>
+            <div className="flex flex-col min-h-screen bg-gray-50">
+              <Navbar />
+              <main className="flex-1 container mx-auto px-4 py-8">
+                <h1 className="text-2xl font-bold">Email Campaigns</h1>
+                <p className="text-gray-600 mt-4">Manage your email marketing campaigns and automation sequences.</p>
+                <div className="bg-white rounded-lg shadow p-6 mt-6">
+                  <p className="text-gray-500">Campaign management features coming soon...</p>
+                </div>
+              </main>
+            </div>
+          </ProtectedRoute>
+        } />
+
+        <Route path="/forms" element={
+          <ProtectedRoute>
+            <div className="flex flex-col min-h-screen bg-gray-50">
+              <Navbar />
+              <main className="flex-1 container mx-auto px-4 py-8">
+                <h1 className="text-2xl font-bold">Forms & Surveys</h1>
+                <p className="text-gray-600 mt-4">Create and manage forms for lead capture and customer feedback.</p>
+                <div className="bg-white rounded-lg shadow p-6 mt-6">
+                  <p className="text-gray-500">Form builder coming soon...</p>
+                </div>
+              </main>
+            </div>
+          </ProtectedRoute>
+        } />
+
         <Route path="/deals" element={
           <ProtectedRoute>
             <div className="flex flex-col min-h-screen bg-gray-50">
