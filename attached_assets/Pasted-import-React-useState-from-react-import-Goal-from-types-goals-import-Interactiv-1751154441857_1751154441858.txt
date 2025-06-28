@@ -1,46 +1,40 @@
 import React, { useState } from 'react';
-import { Goal } from '../types/goals';
-import InteractiveGoalExplorer from '../components/InteractiveGoalExplorer';
-import GoalExecutionModal from '../components/GoalExecutionModal';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader } from '../components/ui/card';
+import { Goal } from '../../types/goals';
+import InteractiveGoalExplorer from '../InteractiveGoalExplorer';
+import GoalExecutionModal from '../GoalExecutionModal';
+import { Button } from '../ui/Button';
+import { Card, CardContent, CardHeader } from '../ui/Card';
 import { Brain, Info, Lightbulb, ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useAITools } from '../components/AIToolsProvider';
-
+import { useLocation } from 'wouter';
+import { useAITools } from '../AIToolsProvider';
 export function AIGoalsPage() {
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [showExecutionModal, setShowExecutionModal] = useState(false);
   const [realMode, setRealMode] = useState(false);
   
-  const navigate = useNavigate();
+  const [location, navigate] = useLocation();
   const { openTool } = useAITools();
   
   // For now, context will be passed via props or global state
-  const context = null; // TODO: Implement context passing with React Router
-
+  // In wouter, we don't have location.state, so we'll implement this differently
+  const context = null; // TODO: Implement context passing with wouter
   const handleGoalSelected = (goal: Goal) => {
     setSelectedGoal(goal);
     setShowExecutionModal(true);
   };
-
   const handleModeToggle = (mode: boolean) => {
     setRealMode(mode);
   };
-
   const handleCloseModal = () => {
     setShowExecutionModal(false);
     setSelectedGoal(null);
   };
-
   const handleGoalComplete = (result: any) => {
     console.log('Goal execution completed:', result);
     // Could add additional functionality here like showing a success notification
   };
-
   return (
     <div className="p-6 space-y-6">
-      {/* Clean header with brain icon and gradient background */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-white">
@@ -62,7 +56,7 @@ export function AIGoalsPage() {
         </Button>
       </div>
       
-      {/* Context-aware info card */}
+      {/* Introduction/Info Card */}
       {context && (
         <Card className="bg-blue-50 border-blue-200">
           <CardContent className="p-4">
@@ -96,7 +90,7 @@ export function AIGoalsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
             <div className="bg-white p-3 rounded-lg border border-indigo-100">
               <span className="font-medium text-indigo-800">🎯 Set Business Goals</span>
-              <p className="mt-1 text-indigo-600 text-xs">Choose from 58+ pre-built goals</p>
+              <p className="mt-1 text-indigo-600 text-xs">Choose from 50+ pre-built goals</p>
             </div>
             <div className="bg-white p-3 rounded-lg border border-indigo-100">
               <span className="font-medium text-indigo-800">🤖 Watch AI Agents Work</span>
@@ -110,7 +104,7 @@ export function AIGoalsPage() {
         </CardContent>
       </Card>
       
-      {/* Interactive Goal Explorer - Clean embedded layout */}
+      {/* Interactive Goal Explorer */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <InteractiveGoalExplorer 
           realMode={realMode}
