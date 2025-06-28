@@ -72,6 +72,27 @@ export const useOpenAIStream = () => {
         // Use OpenAI for non-Gemini models
         const client = getOpenAIClient();
         
+        // O1 models don't support streaming or system messages
+        if (model.includes('o1')) {
+          const response = await client.chat.completions.create({
+            model: model,
+            messages: [
+              { role: 'user', content: `${systemPrompt}\n\n${prompt}` }
+            ],
+            max_completion_tokens: 4096
+          });
+          
+          const content = response.choices[0]?.message?.content || '';
+          // Simulate streaming by sending tokens gradually
+          const words = content.split(' ');
+          for (let i = 0; i < words.length; i++) {
+            onToken(words[i] + (i < words.length - 1 ? ' ' : ''));
+            await new Promise(resolve => setTimeout(resolve, 50)); // Delay for streaming effect
+          }
+          return content;
+        }
+        
+        // For other models, use regular streaming
         const stream = await client.chat.completions.create({
           model,
           messages: [
