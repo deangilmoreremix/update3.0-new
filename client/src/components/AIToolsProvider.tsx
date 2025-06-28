@@ -130,14 +130,15 @@ interface AIToolsContextProps {
   currentTool: AIToolType | null;
 }
 
-const AIToolsContext = createContext<AIToolsContextProps>({
-  openTool: () => {},
-  closeTool: () => {},
-  isToolOpen: false,
-  currentTool: null
-});
+const AIToolsContext = createContext<AIToolsContextProps | null>(null);
 
-export const useAITools = () => useContext(AIToolsContext);
+export const useAITools = () => {
+  const context = useContext(AIToolsContext);
+  if (!context) {
+    throw new Error('useAITools must be used within an AIToolsProvider');
+  }
+  return context;
+};
 
 interface AIToolsProviderProps {
   children: ReactNode;

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
+import { AIToolsProvider } from './components/AIToolsProvider';
 
 // Layout components
 import Navbar from './components/Navbar';
@@ -80,8 +81,9 @@ function App() {
   }, [initializeAuth]);
 
   return (
-    <Router>
-      <Routes>
+    <AIToolsProvider>
+      <Router>
+        <Routes>
         {/* Landing Pages */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/features/ai-tools" element={<AiToolsFeaturePage />} />
@@ -387,6 +389,7 @@ function App() {
         } />
       </Routes>
     </Router>
+    </AIToolsProvider>
   );
 }
 
