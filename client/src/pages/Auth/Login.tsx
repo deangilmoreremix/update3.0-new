@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { useSignIn, useUser } from '@clerk/clerk-react';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, Brain, Zap, CheckCircle, ArrowRight } from 'lucide-react';
 import ParticleBackground from '../../components/Landing/ParticleBackground';
+import { useAuthStore } from '../../store/authStore';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');

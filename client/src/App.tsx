@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react';
 import { useAuthStore } from './store/authStore';
 import { AIToolsProvider } from './components/AIToolsProvider';
 
@@ -8,8 +7,8 @@ import { AIToolsProvider } from './components/AIToolsProvider';
 import Navbar from './components/Navbar';
 
 // Authentication
-import LoginClerkHosted from './pages/Auth/LoginClerkHosted';
-import RegisterClerkHosted from './pages/Auth/RegisterClerkHosted';
+import Login from './pages/Auth/Login';
+import Register from './pages/Auth/Register';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import ResetPassword from './pages/Auth/ResetPassword';
 
@@ -24,13 +23,15 @@ import ImageGeneratorFeaturePage from './pages/Landing/FeaturePage/ImageGenerato
 import FunctionAssistantFeaturePage from './pages/Landing/FeaturePage/FunctionAssistantFeaturePage';
 import SemanticSearchFeaturePage from './pages/Landing/FeaturePage/SemanticSearchFeaturePage';
 
-// Protected route wrapper using Clerk
+// Protected route wrapper using auth store
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <SignedIn>
-      {children}
-    </SignedIn>
-  );
+  const { isAuthenticated } = useAuthStore();
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  return <>{children}</>;
 };
 
 // Main pages
@@ -64,17 +65,9 @@ import VoiceProfiles from './pages/VoiceProfiles/VoiceProfiles';
 import Tasks from './pages/Tasks';
 import TaskCalendarView from './pages/TaskCalendarView';
 
-// Get the publishable key from environment
-const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-
-if (!clerkPubKey) {
-  throw new Error("Missing Publishable Key");
-}
-
 function App() {
   return (
-    <ClerkProvider publishableKey={clerkPubKey}>
-      <AIToolsProvider>
+    <AIToolsProvider>
         <Router>
           <Routes>
         {/* Landing Pages */}
@@ -90,8 +83,8 @@ function App() {
         <Route path="/faq" element={<FAQ />} />
         
         {/* Auth routes */}
-        <Route path="/login" element={<LoginClerkHosted />} />
-        <Route path="/register" element={<RegisterClerkHosted />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         
@@ -383,7 +376,6 @@ function App() {
       </Routes>
     </Router>
     </AIToolsProvider>
-    </ClerkProvider>
   );
 }
 
