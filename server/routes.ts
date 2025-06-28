@@ -352,18 +352,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI Content Generation route (porting from Supabase Edge Function)
+  // AI Content Generation route with OpenAI and Gemini support
   app.post("/api/ai/generate-content", requireAuth, async (req: Request, res: Response) => {
     try {
-      const { contentType, purpose, data, apiKey } = req.body;
+      const { contentType, purpose, data, apiKey, preferredModel = 'gemini' } = req.body;
       
-      // Check for OpenAI API key
-      const openaiApiKey = process.env.OPENAI_API_KEY || apiKey;
-      
-      if (!openaiApiKey) {
-        return res.status(400).json({ error: "OpenAI API key is required" });
-      }
-
       let prompt = '';
       let systemMessage = '';
 
@@ -374,48 +367,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
           prompt = `Write a professional email for ${purpose} to ${data.contactName || 'the contact'}.`;
           break;
         
+        case 'text':
+          systemMessage = 'You are a professional text message writer. Create concise, effective text messages.';
+          prompt = `Write a professional text message for ${purpose} to ${data.contactName || 'the contact'}.`;
+          break;
+        
         case 'call':
           systemMessage = 'You are a sales call expert. Create effective call scripts.';
-          prompt = `Create a professional call script for ${purpose}.`;
+          prompt = `Create a professional call script for ${purpose}. Include: ${JSON.stringify(data)}`;
           break;
         
         case 'proposal':
           systemMessage = 'You are a business proposal expert. Create compelling proposals.';
-          prompt = `Create a professional business proposal for ${purpose}.`;
+          prompt = `Create a professional business proposal for ${purpose}. Details: ${JSON.stringify(data)}`;
+          break;
+
+        case 'marketTrend':
+          systemMessage = 'You are a market analysis expert. Provide comprehensive market trend insights.';
+          prompt = `Analyze market trends for ${data.industry} targeting ${data.targetMarket} over ${data.timeframe}. Provide actionable insights and predictions.`;
+          break;
+
+        case 'competitor':
+          systemMessage = 'You are a competitive analysis expert. Provide strategic competitor insights.';
+          prompt = `Analyze competitor ${data.competitorName} in ${data.industry}. Their strengths: ${data.strengths.join(', ')}. Provide competitive positioning recommendations.`;
+          break;
+
+        case 'salesForecast':
+          systemMessage = 'You are a sales forecasting expert. Analyze deal data and provide accurate forecasts.';
+          prompt = `Generate a sales forecast for ${data.timeframe} based on these deals: ${JSON.stringify(data.deals)}`;
+          break;
+
+        case 'personalization':
+          systemMessage = 'You are a contact personalization expert. Create personalized outreach strategies.';
+          prompt = `Create personalized outreach for this contact: ${JSON.stringify(data.contact)}`;
+          break;
+
+        case 'dealScore':
+          systemMessage = 'You are a deal scoring expert. Evaluate deal quality and probability.';
+          prompt = `Score this deal and provide analysis: ${JSON.stringify(data.deal)}`;
+          break;
+
+        case 'leadQualification':
+          systemMessage = 'You are a lead qualification expert. Assess lead quality and potential.';
+          prompt = `Qualify this lead: ${JSON.stringify(data.lead)}`;
+          break;
+
+        case 'optimization':
+          systemMessage = 'You are a content optimization expert. Improve content effectiveness.';
+          prompt = `Optimize this content for ${purpose}: ${data.content}`;
+          break;
+
+        case 'reasoning':
+          systemMessage = 'You are an AI reasoning expert. Provide logical, step-by-step analysis.';
+          prompt = data.prompt;
           break;
         
         default:
           return res.status(400).json({ error: `Unsupported content type: ${contentType}` });
       }
 
-      // Call OpenAI API
-      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${openaiApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'gpt-4',
-          messages: [
-            { role: 'system', content: systemMessage },
-            { role: 'user', content: prompt }
-          ],
-          temperature: 0.7,
-          max_tokens: 2000,
-        }),
-      });
+      let generatedContent = '';
 
-      if (!openaiResponse.ok) {
-        const errorData = await openaiResponse.json();
-        throw new Error(`OpenAI API error: ${errorData.error?.message || 'Unknown error'}`);
+      // Use Gemini by default or if specified
+      if (preferredModel === 'gemini' && process.env.GEMINI_API_KEY) {
+        try {
+          const { GoogleGenerativeAI } = await import('@google/generative-ai');
+          const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+          const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+          
+          const fullPrompt = systemMessage + '\n\n' + prompt;
+          const result = await model.generateContent(fullPrompt);
+          generatedContent = result.response.text();
+        } catch (geminiError) {
+          console.warn('Gemini API failed, falling back to OpenAI:', geminiError);
+          // Fall back to OpenAI
+        }
       }
 
-      const result = await openaiResponse.json();
-      const generatedContent = result.choices[0]?.message?.content;
+      // Use OpenAI if Gemini failed or was not preferred
+      if (!generatedContent && (process.env.OPENAI_API_KEY || apiKey)) {
+        const openaiApiKey = process.env.OPENAI_API_KEY || apiKey;
+        
+        const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openaiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-4',
+            messages: [
+              { role: 'system', content: systemMessage },
+              { role: 'user', content: prompt }
+            ],
+            temperature: 0.7,
+            max_tokens: 2000,
+          }),
+        });
+
+        if (openaiResponse.ok) {
+          const result = await openaiResponse.json();
+          generatedContent = result.choices[0]?.message?.content;
+        }
+      }
 
       if (!generatedContent) {
-        throw new Error('No content generated from OpenAI');
+        throw new Error('No AI service available or content generated');
       }
 
       res.json({ 

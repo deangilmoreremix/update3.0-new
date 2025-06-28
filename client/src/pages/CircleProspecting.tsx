@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useGemini } from '../services/geminiService';
+import * as aiService from '../services/aiService';
 import { Target, Search, Download, User, Home, MapPin, CreditCard, Database, Brain } from 'lucide-react';
 // import { MapContainer, TileLayer, Circle, Marker, Popup } from 'react-leaflet';
 // import 'leaflet/dist/leaflet.css';
@@ -127,7 +127,7 @@ const CircleProspecting: React.FC = () => {
     
     try {
       // Generate market trend analysis for the area
-      const insight = await gemini.analyzeMarketTrends(
+      const insight = await aiService.analyzeMarketTrends(
         "Real Estate",
         "San Francisco Bay Area homeowners",
         "next 6 months"
