@@ -85,7 +85,11 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
   const handleExecuteGoal = async (goal: Goal) => {
     if (executingGoals.has(goal.id)) return;
 
-    setExecutingGoals(prev => new Set([...Array.from(prev), goal.id]));
+    setExecutingGoals(prev => {
+      const newSet = new Set(prev);
+      newSet.add(goal.id);
+      return newSet;
+    });
     setExecutionProgress(prev => ({ ...prev, [goal.id]: 0 }));
 
     // Show the modal
@@ -108,7 +112,11 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
             newSet.delete(goal.id);
             return newSet;
           });
-          setCompletedGoals(current => new Set([...current, goal.id]));
+          setCompletedGoals(current => {
+            const newSet = new Set(current);
+            newSet.add(goal.id);
+            return newSet;
+          });
           return { ...prev, [goal.id]: 100 };
         }
         
@@ -120,7 +128,11 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
   // Handle goal completion from modal
   const handleExecutionComplete = (result: any) => {
     console.log('Goal execution completed:', result);
-    setCompletedGoals(prev => new Set([...prev, result.goalId]));
+    setCompletedGoals(prev => {
+      const newSet = new Set(prev);
+      newSet.add(result.goalId);
+      return newSet;
+    });
   };
 
   // Handle modal close
