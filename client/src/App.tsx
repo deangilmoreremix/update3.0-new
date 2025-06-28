@@ -51,6 +51,7 @@ import SemanticSearchFeaturePage from './pages/Landing/FeaturePage/SemanticSearc
 import FunctionAssistantFeaturePage from './pages/Landing/FeaturePage/FunctionAssistantFeaturePage';
 import CommunicationsFeaturePage from './pages/Landing/FeaturePage/CommunicationsFeaturePage';
 import GoalCardDemo from './pages/GoalCardDemo';
+import AIGoalsPage from './pages/AIGoals/AIGoalsPage';
 
 // Layout Components
 import Navbar from './components/Navbar';
