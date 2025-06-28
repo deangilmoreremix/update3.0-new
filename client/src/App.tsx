@@ -70,9 +70,19 @@ if (!clerkPubKey) {
   throw new Error("Missing Publishable Key");
 }
 
+// Clerk configuration for production domain
+const clerkConfig = {
+  publishableKey: clerkPubKey,
+  signInUrl: 'https://accounts.smart-crm.videoremix.io/sign-in',
+  signUpUrl: 'https://accounts.smart-crm.videoremix.io/sign-up',
+  userProfileUrl: 'https://accounts.smart-crm.videoremix.io/user',
+  organizationProfileUrl: 'https://accounts.smart-crm.videoremix.io/organization',
+  createOrganizationUrl: 'https://accounts.smart-crm.videoremix.io/create-organization',
+};
+
 function App() {
   return (
-    <ClerkProvider publishableKey={clerkPubKey}>
+    <ClerkProvider {...clerkConfig}>
       <AIToolsProvider>
         <Router>
           <Routes>
