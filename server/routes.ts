@@ -11,6 +11,9 @@ import {
   insertVoiceProfileSchema
 } from "@shared/schema";
 import { z } from "zod";
+import { extractTenant, requireTenant, requireFeature, addTenantContext, type TenantRequest } from "./middleware/tenantMiddleware";
+import { handleWebhook } from "./integrations/webhookHandlers";
+import { whiteLabelClient } from "./integrations/whiteLabelClient";
 
 // Middleware to extract user ID from request headers
 const requireAuth = (req: Request, res: Response, next: any) => {
