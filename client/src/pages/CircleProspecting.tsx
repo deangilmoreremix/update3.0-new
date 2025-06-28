@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { useGemini } from '../services/geminiService';
 import { Target, Search, Download, User, Home, MapPin, CreditCard, Database, Brain } from 'lucide-react';
-import { MapContainer, TileLayer, Circle, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import { icon } from 'leaflet';
+// import { MapContainer, TileLayer, Circle, Marker, Popup } from 'react-leaflet';
+// import 'leaflet/dist/leaflet.css';
+// import { icon } from 'leaflet';
 
 // Fix for default marker icon in Leaflet
-const defaultIcon = icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
+// const defaultIcon = icon({
+//   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+//   shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+//   iconSize: [25, 41],
+//   iconAnchor: [12, 41],
+//   popupAnchor: [1, -34],
+//   shadowSize: [41, 41]
+// });
 
 interface ProspectData {
   id: string;
@@ -336,48 +336,12 @@ const CircleProspecting: React.FC = () => {
             </div>
             
             {viewMode === 'map' && (
-              <div className="h-[600px] w-full">
-                <MapContainer 
-                  center={center} 
-                  zoom={14} 
-                  style={{ height: '100%', width: '100%' }}
-                >
-                  <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  />
-                  
-                  {/* Draw the radius circle */}
-                  <Circle center={center} radius={radius} pathOptions={{ color: 'blue', fillColor: 'blue', fillOpacity: 0.1 }} />
-                  
-                  {/* Place markers for each prospect */}
-                  {prospectsInRadius.map(prospect => (
-                    <Marker 
-                      key={prospect.id} 
-                      position={[prospect.lat, prospect.lng]} 
-                      icon={defaultIcon}
-                    >
-                      <Popup>
-                        <div className="text-sm">
-                          <p className="font-bold">{prospect.name}</p>
-                          <p>{prospect.address}</p>
-                          <p className="mt-1">Home Value: ${prospect.homeValue?.toLocaleString()}</p>
-                          <p>Last Refinance: {prospect.lastRefinance}</p>
-                          <p className="mt-2">
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                              getMarkerColor(prospect.score) === 'green' ? 'bg-green-100 text-green-800' :
-                              getMarkerColor(prospect.score) === 'blue' ? 'bg-blue-100 text-blue-800' :
-                              getMarkerColor(prospect.score) === 'orange' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'
-                            }`}>
-                              Lead Score: {prospect.score}
-                            </span>
-                          </p>
-                        </div>
-                      </Popup>
-                    </Marker>
-                  ))}
-                </MapContainer>
+              <div className="h-[600px] w-full flex items-center justify-center bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg">
+                <div className="text-center">
+                  <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-2" />
+                  <p className="text-gray-500">Map functionality temporarily disabled</p>
+                  <p className="text-sm text-gray-400 mt-1">Switch to list view to see prospects</p>
+                </div>
               </div>
             )}
             
