@@ -8,8 +8,8 @@ import { AIToolsProvider } from './components/AIToolsProvider';
 import Navbar from './components/Navbar';
 
 // Authentication
-import LoginClerkSimple from './pages/Auth/LoginClerkSimple';
-import RegisterClerkSimple from './pages/Auth/RegisterClerkSimple';
+import LoginClerkHosted from './pages/Auth/LoginClerkHosted';
+import RegisterClerkHosted from './pages/Auth/RegisterClerkHosted';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import ResetPassword from './pages/Auth/ResetPassword';
 
@@ -90,8 +90,8 @@ function App() {
         <Route path="/faq" element={<FAQ />} />
         
         {/* Auth routes */}
-        <Route path="/login" element={<LoginClerkSimple />} />
-        <Route path="/register" element={<RegisterClerkSimple />} />
+        <Route path="/login" element={<LoginClerkHosted />} />
+        <Route path="/register" element={<RegisterClerkHosted />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         
