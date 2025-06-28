@@ -213,6 +213,7 @@ function App() {
           <Route path="/features/image-generator" element={<ImageGeneratorFeaturePage />} />
           <Route path="/features/semantic-search" element={<SemanticSearchFeaturePage />} />
           <Route path="/features/function-assistant" element={<FunctionAssistantFeaturePage />} />
+          <Route path="/features/communications" element={<CommunicationsFeaturePage />} />
         </Routes>
       </Router>
     </AIToolsProvider>
