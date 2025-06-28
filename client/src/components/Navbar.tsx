@@ -606,6 +606,92 @@ const Navbar: React.FC = () => {
               </div>
             </div>
 
+            {/* Connected Apps dropdown */}
+            <div className="relative group inline-block">
+              <button 
+                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:text-blue-600 hover:bg-blue-50/50 transition-colors duration-200`}
+              >
+                <Grid3X3 size={20} className="mr-2" />
+                <span className="ml-2">Apps</span>
+                <ChevronDown size={16} className="ml-1" />
+              </button>
+              
+              <div className="hidden group-hover:block absolute z-50 w-80 mt-1 bg-white rounded-md shadow-lg border border-gray-100">
+                <div className="p-4">
+                  <div className="text-sm font-medium text-gray-900 mb-3">Connected Apps</div>
+                  <div className="grid grid-cols-1 gap-3">
+                    {/* FunnelCraft AI */}
+                    <a 
+                      href="https://funnelcraft-ai.videoremix.io/landing" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center p-3 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-200"
+                    >
+                      <div className="p-2 rounded-lg bg-purple-100 text-purple-600 mr-3">
+                        <Megaphone size={16} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900 text-sm">FunnelCraft AI</div>
+                        <div className="text-xs text-gray-500">Marketing Team</div>
+                      </div>
+                      <ExternalLink size={14} className="text-gray-400" />
+                    </a>
+
+                    {/* SmartCRM Closer */}
+                    <a 
+                      href="https://tubular-dieffenbachia-5f01b5.netlify.app" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
+                    >
+                      <div className="p-2 rounded-lg bg-blue-100 text-blue-600 mr-3">
+                        <Users size={16} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900 text-sm">SmartCRM Closer</div>
+                        <div className="text-xs text-gray-500">Outreach Team</div>
+                      </div>
+                      <ExternalLink size={14} className="text-gray-400" />
+                    </a>
+
+                    {/* ContentAI */}
+                    <a 
+                      href="https://content-ai.videoremix.io" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center p-3 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-all duration-200"
+                    >
+                      <div className="p-2 rounded-lg bg-green-100 text-green-600 mr-3">
+                        <FileText size={16} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900 text-sm">ContentAI</div>
+                        <div className="text-xs text-gray-500">Content & Support</div>
+                      </div>
+                      <ExternalLink size={14} className="text-gray-400" />
+                    </a>
+
+                    {/* White-Label Platform */}
+                    <a 
+                      href="https://moonlit-tarsier-239e70.netlify.app" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center p-3 rounded-lg border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-200"
+                    >
+                      <div className="p-2 rounded-lg bg-orange-100 text-orange-600 mr-3">
+                        <Palette size={16} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900 text-sm">White-Label Platform</div>
+                        <div className="text-xs text-gray-500">Platform Management</div>
+                      </div>
+                      <ExternalLink size={14} className="text-gray-400" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Tasks */}
             <Link 
               to="/tasks" 
