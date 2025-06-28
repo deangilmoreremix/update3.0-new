@@ -728,9 +728,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Seed mock contacts endpoint
+  // Seed mock contacts endpoint (no auth required for seeding)
   app.post("/api/seed/contacts", async (req: Request, res: Response) => {
     try {
+      // Generate a proper UUID for demo user
+      const demoUserId = "12345678-1234-5234-a234-123456789012";
+      
       const mockContacts = [
         {
           name: "Sarah Johnson",
@@ -744,7 +747,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           location: "San Francisco, CA",
           notes: "Interested in enterprise solutions. Follow up next week.",
           favorite: true,
-          userId: "demo-user"
+          userId: demoUserId
         },
         {
           name: "Michael Chen",
@@ -758,7 +761,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           location: "New York, NY",
           notes: "Budget approved for Q2. Ready to move forward.",
           favorite: false,
-          userId: "demo-user"
+          userId: demoUserId
         },
         {
           name: "Emily Rodriguez",
@@ -772,7 +775,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           location: "Austin, TX",
           notes: "Current customer. Looking to expand services.",
           favorite: true,
-          userId: "demo-user"
+          userId: demoUserId
         },
         {
           name: "David Kim",
@@ -786,7 +789,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           location: "Chicago, IL",
           notes: "Initial contact made. Needs more information about pricing.",
           favorite: false,
-          userId: "demo-user"
+          userId: demoUserId
         },
         {
           name: "Lisa Thompson",
@@ -800,7 +803,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           location: "Denver, CO",
           notes: "Interested in loyalty program integration.",
           favorite: false,
-          userId: "demo-user"
+          userId: demoUserId
         },
         {
           name: "James Wilson",
@@ -814,7 +817,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           location: "Phoenix, AZ",
           notes: "Initial meeting scheduled for next month.",
           favorite: false,
-          userId: "demo-user"
+          userId: demoUserId
         },
         {
           name: "Maria Garcia",
@@ -828,7 +831,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           location: "Miami, FL",
           notes: "Long-term customer. Very satisfied with current services.",
           favorite: true,
-          userId: "demo-user"
+          userId: demoUserId
         },
         {
           name: "Robert Davis",
@@ -842,7 +845,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           location: "Detroit, MI",
           notes: "Contract ended last quarter. Potential for re-engagement.",
           favorite: false,
-          userId: "demo-user"
+          userId: demoUserId
         }
       ];
 
