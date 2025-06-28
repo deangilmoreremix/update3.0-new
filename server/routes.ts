@@ -60,9 +60,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Contact routes
-  app.get("/api/contacts", requireAuth, async (req: Request, res: Response) => {
+  app.get("/api/contacts", async (req: Request, res: Response) => {
     try {
-      const contacts = await storage.getContacts(req.userId!);
+      // For demo purposes, use the demo user we created
+      const demoUser = await storage.getUserByEmail("demo@smartcrm.com");
+      if (!demoUser) {
+        return res.status(404).json({ error: "Demo user not found. Run seed endpoint first." });
+      }
+      
+      const contacts = await storage.getContacts(demoUser.id);
       res.json(contacts);
     } catch (error) {
       console.error("Error fetching contacts:", error);
