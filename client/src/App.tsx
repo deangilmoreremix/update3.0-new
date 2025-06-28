@@ -40,6 +40,17 @@ import ContentLibrary from './pages/ContentLibrary/ContentLibrary';
 // Voice Profiles
 import VoiceProfiles from './pages/VoiceProfiles/VoiceProfiles';
 
+// Feature Pages
+import AiToolsFeaturePage from './pages/Landing/FeaturePage/AiToolsFeaturePage';
+import ContactsFeaturePage from './pages/Landing/FeaturePage/ContactsFeaturePage';
+import PipelineFeaturePage from './pages/Landing/FeaturePage/PipelineFeaturePage';
+import AiAssistantFeaturePage from './pages/Landing/FeaturePage/AiAssistantFeaturePage';
+import VisionAnalyzerFeaturePage from './pages/Landing/FeaturePage/VisionAnalyzerFeaturePage';
+import ImageGeneratorFeaturePage from './pages/Landing/FeaturePage/ImageGeneratorFeaturePage';
+import SemanticSearchFeaturePage from './pages/Landing/FeaturePage/SemanticSearchFeaturePage';
+import FunctionAssistantFeaturePage from './pages/Landing/FeaturePage/FunctionAssistantFeaturePage';
+import CommunicationsFeaturePage from './pages/Landing/FeaturePage/CommunicationsFeaturePage';
+
 // Layout Components
 import Navbar from './components/Navbar';
 
@@ -192,6 +203,16 @@ function App() {
               <Settings />
             </ProtectedRoute>
           } />
+          
+          {/* Feature Pages */}
+          <Route path="/features/ai-tools" element={<AiToolsFeaturePage />} />
+          <Route path="/features/contacts" element={<ContactsFeaturePage />} />
+          <Route path="/features/pipeline" element={<PipelineFeaturePage />} />
+          <Route path="/features/ai-assistant" element={<AiAssistantFeaturePage />} />
+          <Route path="/features/vision-analyzer" element={<VisionAnalyzerFeaturePage />} />
+          <Route path="/features/image-generator" element={<ImageGeneratorFeaturePage />} />
+          <Route path="/features/semantic-search" element={<SemanticSearchFeaturePage />} />
+          <Route path="/features/function-assistant" element={<FunctionAssistantFeaturePage />} />
         </Routes>
       </Router>
     </AIToolsProvider>
