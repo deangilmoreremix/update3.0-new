@@ -1,4 +1,3 @@
-import { callEdgeFunction } from './supabaseClient';
 import { Contact, Deal } from '../types';
 
 // Interface for API options
@@ -6,16 +5,38 @@ interface ApiOptions {
   apiKey?: string;
 }
 
+// Generic API request helper for Express endpoints
+const apiRequest = async (endpoint: string, data: any) => {
+  try {
+    const response = await fetch(`/api/ai/${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result.result;
+  } catch (error) {
+    console.error(`Error calling ${endpoint}:`, error);
+    throw error;
+  }
+};
+
 // Email generation
 const generateEmailContent = async (contactName: string, purpose: string): Promise<string> => {
   try {
-    const response = await callEdgeFunction('ai-content-generator', {
+    return await apiRequest('generate-content', {
       contentType: 'email',
       purpose,
       data: { contactName }
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error generating email content:', error);
     throw error;
@@ -25,13 +46,11 @@ const generateEmailContent = async (contactName: string, purpose: string): Promi
 // Text message generation
 const generateTextMessage = async (contactName: string, purpose: string): Promise<string> => {
   try {
-    const response = await callEdgeFunction('ai-content-generator', {
+    return await apiRequest('generate-content', {
       contentType: 'text',
       purpose,
       data: { contactName }
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error generating text message:', error);
     throw error;
@@ -45,7 +64,7 @@ export const generateCallScript = async (
   previousInteractions: string[]
 ): Promise<string> => {
   try {
-    const response = await callEdgeFunction('ai-content-generator', {
+    return await apiRequest('generate-content', {
       contentType: 'call',
       purpose: callPurpose,
       data: { 
@@ -53,8 +72,6 @@ export const generateCallScript = async (
         previousInteractions
       }
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error generating call script:', error);
     throw error;
@@ -69,7 +86,7 @@ export const analyzeMarketTrends = async (
   options?: ApiOptions
 ): Promise<string> => {
   try {
-    const response = await callEdgeFunction('ai-content-generator', {
+    return await apiRequest('generate-content', {
       contentType: 'marketTrend',
       purpose: 'Market Analysis',
       data: { 
@@ -79,8 +96,6 @@ export const analyzeMarketTrends = async (
       },
       apiKey: options?.apiKey // Pass the API key if provided
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error analyzing market trends:', error);
     throw error;
@@ -94,7 +109,7 @@ export const analyzeCompetitor = async (
   strengths: string[]
 ): Promise<string> => {
   try {
-    const response = await callEdgeFunction('ai-content-generator', {
+    return await apiRequest('generate-content', {
       contentType: 'competitor',
       purpose: 'Competitive Analysis',
       data: { 
@@ -103,8 +118,6 @@ export const analyzeCompetitor = async (
         strengths
       }
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error analyzing competitor:', error);
     throw error;
@@ -117,7 +130,7 @@ export const generateSalesForecast = async (
   timeframe: string
 ): Promise<string> => {
   try {
-    const response = await callEdgeFunction('ai-content-generator', {
+    return await apiRequest('generate-content', {
       contentType: 'salesForecast',
       purpose: 'Sales Forecast',
       data: { 
@@ -125,8 +138,6 @@ export const generateSalesForecast = async (
         timeframe
       }
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error generating sales forecast:', error);
     throw error;
@@ -140,7 +151,7 @@ const generateProposal = async (
   previousInteractions: string[]
 ): Promise<string> => {
   try {
-    const response = await callEdgeFunction('ai-content-generator', {
+    return await apiRequest('generate-content', {
       contentType: 'proposal',
       purpose: 'Sales Proposal',
       data: { 
@@ -149,8 +160,6 @@ const generateProposal = async (
         previousInteractions
       }
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error generating proposal:', error);
     throw error;
@@ -160,11 +169,9 @@ const generateProposal = async (
 // Email analysis
 export const analyzeCustomerEmail = async (emailContent: string): Promise<string> => {
   try {
-    const response = await callEdgeFunction('email-analyzer', {
+    return await apiRequest('email-analyzer', {
       emailContent
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error analyzing customer email:', error);
     throw error;
@@ -174,11 +181,9 @@ export const analyzeCustomerEmail = async (emailContent: string): Promise<string
 // Meeting summarization
 export const generateMeetingSummary = async (transcript: string): Promise<string> => {
   try {
-    const response = await callEdgeFunction('meeting-summarizer', {
+    return await apiRequest('meeting-summarizer', {
       transcript
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error generating meeting summary:', error);
     throw error;
@@ -191,12 +196,10 @@ export const analyzeBusinessData = async (
   userId?: string
 ): Promise<string> => {
   try {
-    const response = await callEdgeFunction('business-analyzer', {
+    return await apiRequest('business-analyzer', {
       businessData,
       userId
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error analyzing business:', error);
     throw new Error('Failed to analyze business. Please try again later or check your data.');
@@ -209,12 +212,10 @@ export const generateSalesInsights = async (
   deals: Partial<Deal>[]
 ): Promise<string> => {
   try {
-    const response = await callEdgeFunction('sales-insights', {
+    return await apiRequest('sales-insights', {
       contacts,
       deals
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error generating sales insights:', error);
     throw error;
@@ -224,12 +225,10 @@ export const generateSalesInsights = async (
 // Real-time analysis functions
 const analyzeSentimentRealTime = async (text: string): Promise<any> => {
   try {
-    const response = await callEdgeFunction('realtime-analysis', {
+    return await apiRequest('realtime-analysis', {
       analysisType: 'sentiment',
       content: text
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error analyzing sentiment:', error);
     throw error;
@@ -238,12 +237,10 @@ const analyzeSentimentRealTime = async (text: string): Promise<any> => {
 
 const provideEmailFeedback = async (emailContent: string): Promise<string> => {
   try {
-    const response = await callEdgeFunction('realtime-analysis', {
+    return await apiRequest('realtime-analysis', {
       analysisType: 'email-feedback',
       content: emailContent
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error providing email feedback:', error);
     throw error;
@@ -256,7 +253,7 @@ const validateFormField = async (
   formContext: string = 'general'
 ): Promise<any> => {
   try {
-    const response = await callEdgeFunction('realtime-analysis', {
+    return await apiRequest('realtime-analysis', {
       analysisType: 'form-validation',
       content: {
         fieldName,
@@ -264,8 +261,6 @@ const validateFormField = async (
         formContext
       }
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error validating form field:', error);
     throw error;
@@ -274,12 +269,10 @@ const validateFormField = async (
 
 const analyzeCallRealTime = async (transcript: string): Promise<any> => {
   try {
-    const response = await callEdgeFunction('realtime-analysis', {
+    return await apiRequest('realtime-analysis', {
       analysisType: 'call-insights',
       content: transcript
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error analyzing call:', error);
     throw error;
@@ -288,12 +281,10 @@ const analyzeCallRealTime = async (transcript: string): Promise<any> => {
 
 const summarizeMeetingRealTime = async (partialTranscript: string): Promise<string> => {
   try {
-    const response = await callEdgeFunction('realtime-analysis', {
+    return await apiRequest('realtime-analysis', {
       analysisType: 'meeting-summary-realtime',
       content: partialTranscript
     });
-    
-    return response.result;
   } catch (error) {
     console.error('Error summarizing meeting:', error);
     throw error;
