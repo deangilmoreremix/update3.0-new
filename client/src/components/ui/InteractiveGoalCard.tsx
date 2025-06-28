@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Goal } from '@/types/goals';
 import { 
   Play,
@@ -35,6 +35,26 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [liveMetrics, setLiveMetrics] = useState({
+    estimatedValue: Math.floor(Math.random() * 50000) + 10000,
+    timeToComplete: Math.floor(Math.random() * 30) + 5,
+    confidence: Math.floor(Math.random() * 20) + 80
+  });
+
+  // Simulate live metrics updates during execution
+  useEffect(() => {
+    if (isExecuting) {
+      const interval = setInterval(() => {
+        setLiveMetrics(prev => ({
+          ...prev,
+          estimatedValue: prev.estimatedValue + Math.floor(Math.random() * 1000),
+          timeToComplete: Math.max(1, prev.timeToComplete - 1),
+          confidence: Math.min(99, prev.confidence + Math.floor(Math.random() * 3))
+        }));
+      }, 2000);
+      return () => clearInterval(interval);
+    }
+  }, [isExecuting]);
 
   const getPriorityColor = (priority: string): string => {
     switch (priority) {
