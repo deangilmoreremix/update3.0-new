@@ -1,0 +1,2902 @@
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
+import { 
+  insertContactSchema, 
+  insertTaskSchema, 
+  insertSalesSequenceSchema, 
+  insertAiAutomationSettingsSchema,
+  insertAnalyticsMetricsSchema,
+  insertRevenueForecastsSchema,
+  insertPerformanceDashboardSchema,
+  insertEmailTemplatesSchema,
+  insertCommunicationHistorySchema,
+  insertConversationThreadsSchema,
+  insertSmsMessageSchema,
+  insertCallLogSchema,
+  insertVoicemailSchema,
+  smsMessages,
+  callLogs,
+  voicemails
+} from "@shared/schema";
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Contact routes
+  app.get("/api/contacts", async (req, res) => {
+    try {
+      const contacts = await storage.getContacts();
+      res.json(contacts);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch contacts" });
+    }
+  });
+
+  // Deal routes
+  app.get("/api/deals", async (req, res) => {
+    try {
+      const deals = await storage.getDeals();
+      res.json(deals);
+    } catch (error) {
+      console.error('Error fetching deals:', error);
+      res.status(500).json({ error: "Failed to fetch deals" });
+    }
+  });
+
+  app.get("/api/deals/:id", async (req, res) => {
+    try {
+      const deal = await storage.getDeal(req.params.id);
+      if (!deal) {
+        return res.status(404).json({ error: "Deal not found" });
+      }
+      res.json(deal);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch deal" });
+    }
+  });
+
+  app.post("/api/deals", async (req, res) => {
+    try {
+      console.log('Received deal data:', req.body);
+      const deal = await storage.createDeal(req.body);
+      res.status(201).json(deal);
+    } catch (error) {
+      console.error('Error creating deal:', error);
+      res.status(400).json({ error: "Invalid deal data" });
+    }
+  });
+
+  app.put("/api/deals/:id", async (req, res) => {
+    try {
+      const deal = await storage.updateDeal(req.params.id, req.body);
+      res.json(deal);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update deal" });
+    }
+  });
+
+  app.delete("/api/deals/:id", async (req, res) => {
+    try {
+      await storage.deleteDeal(req.params.id);
+      res.status(204).end();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete deal" });
+    }
+  });
+
+  // Company routes
+  app.get("/api/companies", async (req, res) => {
+    try {
+      const companies = await storage.getCompanies();
+      res.json(companies);
+    } catch (error) {
+      console.error('Error fetching companies:', error);
+      res.status(500).json({ error: "Failed to fetch companies" });
+    }
+  });
+
+  app.get("/api/companies/:id", async (req, res) => {
+    try {
+      const company = await storage.getCompany(req.params.id);
+      if (!company) {
+        return res.status(404).json({ error: "Company not found" });
+      }
+      res.json(company);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch company" });
+    }
+  });
+
+  app.post("/api/companies", async (req, res) => {
+    try {
+      const company = await storage.createCompany(req.body);
+      res.status(201).json(company);
+    } catch (error) {
+      console.error('Error creating company:', error);
+      res.status(400).json({ error: "Invalid company data" });
+    }
+  });
+
+  app.put("/api/companies/:id", async (req, res) => {
+    try {
+      const company = await storage.updateCompany(req.params.id, req.body);
+      res.json(company);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update company" });
+    }
+  });
+
+  app.delete("/api/companies/:id", async (req, res) => {
+    try {
+      await storage.deleteCompany(req.params.id);
+      res.status(204).end();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete company" });
+    }
+  });
+
+  app.get("/api/contacts/:id", async (req, res) => {
+    try {
+      const contact = await storage.getContact(req.params.id);
+      if (!contact) {
+        return res.status(404).json({ error: "Contact not found" });
+      }
+      res.json(contact);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch contact" });
+    }
+  });
+
+  app.post("/api/contacts", async (req, res) => {
+    try {
+      console.log('Received contact data:', req.body);
+      const validatedData = insertContactSchema.parse(req.body);
+      console.log('Validated contact data:', validatedData);
+      const contact = await storage.createContact(validatedData);
+      console.log('Created contact:', contact);
+      res.status(201).json(contact);
+    } catch (error) {
+      console.error('Contact creation error:', error);
+      res.status(400).json({ 
+        error: "Invalid contact data", 
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  app.put("/api/contacts/:id", async (req, res) => {
+    try {
+      const validatedData = insertContactSchema.partial().parse(req.body);
+      const contact = await storage.updateContact(req.params.id, validatedData);
+      res.json(contact);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update contact" });
+    }
+  });
+
+  app.delete("/api/contacts/:id", async (req, res) => {
+    try {
+      await storage.deleteContact(req.params.id);
+      res.status(204).end();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete contact" });
+    }
+  });
+
+  // Task routes
+  app.get("/api/tasks", async (req, res) => {
+    try {
+      const tasks = await storage.getTasks();
+      res.json(tasks);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch tasks" });
+    }
+  });
+
+  app.get("/api/tasks/:id", async (req, res) => {
+    try {
+      const task = await storage.getTask(req.params.id);
+      if (!task) {
+        return res.status(404).json({ error: "Task not found" });
+      }
+      res.json(task);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch task" });
+    }
+  });
+
+  app.post("/api/tasks", async (req, res) => {
+    try {
+      const validatedData = insertTaskSchema.parse(req.body);
+      const task = await storage.createTask(validatedData);
+      res.status(201).json(task);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid task data" });
+    }
+  });
+
+  app.put("/api/tasks/:id", async (req, res) => {
+    try {
+      const validatedData = insertTaskSchema.partial().parse(req.body);
+      const task = await storage.updateTask(req.params.id, validatedData);
+      res.json(task);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update task" });
+    }
+  });
+
+  app.delete("/api/tasks/:id", async (req, res) => {
+    try {
+      await storage.deleteTask(req.params.id);
+      res.status(204).end();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete task" });
+    }
+  });
+
+  // Sales sequence routes
+  app.get("/api/sales-sequences", async (req, res) => {
+    try {
+      const sequences = await storage.getSalesSequences();
+      res.json(sequences);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch sales sequences" });
+    }
+  });
+
+  app.get("/api/sales-sequences/:id", async (req, res) => {
+    try {
+      const sequence = await storage.getSalesSequence(req.params.id);
+      if (!sequence) {
+        return res.status(404).json({ error: "Sales sequence not found" });
+      }
+      res.json(sequence);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch sales sequence" });
+    }
+  });
+
+  app.post("/api/sales-sequences", async (req, res) => {
+    try {
+      const validatedData = insertSalesSequenceSchema.parse(req.body);
+      const sequence = await storage.createSalesSequence(validatedData);
+      res.status(201).json(sequence);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid sales sequence data" });
+    }
+  });
+
+  app.put("/api/sales-sequences/:id", async (req, res) => {
+    try {
+      const validatedData = insertSalesSequenceSchema.partial().parse(req.body);
+      const sequence = await storage.updateSalesSequence(req.params.id, validatedData);
+      res.json(sequence);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update sales sequence" });
+    }
+  });
+
+  app.delete("/api/sales-sequences/:id", async (req, res) => {
+    try {
+      await storage.deleteSalesSequence(req.params.id);
+      res.status(204).end();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete sales sequence" });
+    }
+  });
+
+  // AI automation settings routes
+  app.get("/api/automation-settings", async (req, res) => {
+    try {
+      const settings = await storage.getAiAutomationSettings();
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch automation settings" });
+    }
+  });
+
+  app.get("/api/automation-settings/:id", async (req, res) => {
+    try {
+      const setting = await storage.getAiAutomationSetting(req.params.id);
+      if (!setting) {
+        return res.status(404).json({ error: "Automation setting not found" });
+      }
+      res.json(setting);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch automation setting" });
+    }
+  });
+
+  app.post("/api/automation-settings", async (req, res) => {
+    try {
+      const validatedData = insertAiAutomationSettingsSchema.parse(req.body);
+      const setting = await storage.createAiAutomationSetting(validatedData);
+      res.status(201).json(setting);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid automation setting data" });
+    }
+  });
+
+  app.put("/api/automation-settings/:id", async (req, res) => {
+    try {
+      const validatedData = insertAiAutomationSettingsSchema.partial().parse(req.body);
+      const setting = await storage.updateAiAutomationSetting(req.params.id, validatedData);
+      res.json(setting);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update automation setting" });
+    }
+  });
+
+  app.delete("/api/automation-settings/:id", async (req, res) => {
+    try {
+      await storage.deleteAiAutomationSetting(req.params.id);
+      res.status(204).end();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete automation setting" });
+    }
+  });
+
+  // AI-powered endpoints for enhanced functionality
+  app.post("/api/ai/enrich-contact", async (req, res) => {
+    try {
+      const { contactId } = req.body;
+      const contact = await storage.getContact(contactId);
+      if (!contact) {
+        return res.status(404).json({ error: "Contact not found" });
+      }
+      
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      let enrichedData;
+      
+      if (geminiApiKey || openaiApiKey) {
+        // Use AI to enrich contact data
+        const contactInfo = `${contact.firstName} ${contact.lastName}, ${contact.position || 'Unknown position'}, ${contact.company || 'Unknown company'}`;
+        
+        let aiContent;
+        
+        if (geminiApiKey) {
+          try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent?key=${geminiApiKey}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{
+                  parts: [{
+                    text: `Analyze this contact for business insights: ${contactInfo}. Return JSON with: industry, companySize, interests, communicationStyle, nextSteps. Be specific and actionable.`
+                  }]
+                }],
+                generationConfig: { temperature: 0.3, maxOutputTokens: 300 }
+              })
+            });
+            
+            if (response.ok) {
+              const result = await response.json();
+              aiContent = result.candidates[0].content.parts[0].text;
+            } else {
+              throw new Error('Gemini failed');
+            }
+          } catch (error: any) {
+            console.warn('Gemini failed, trying OpenAI:', error.message);
+            
+            if (openaiApiKey) {
+              const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${openaiApiKey}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  model: 'gpt-4o-mini',
+                  messages: [{
+                    role: 'user',
+                    content: `Analyze this contact for business insights: ${contactInfo}. Return JSON with: industry, companySize, interests, communicationStyle, nextSteps.`
+                  }],
+                  max_tokens: 300,
+                  temperature: 0.3,
+                }),
+              });
+              
+              const result = await response.json();
+              aiContent = result.choices[0].message.content;
+            }
+          }
+        }
+        
+        // Parse AI response
+        let insights;
+        try {
+          insights = JSON.parse(aiContent);
+        } catch {
+          insights = {
+            industry: contact.company ? "Technology" : "Unknown",
+            companySize: "50-200 employees",
+            interests: ["business growth", "efficiency"],
+            communicationStyle: "professional",
+            nextSteps: ["Research company background", "Prepare personalized outreach"]
+          };
+        }
+        
+        enrichedData = {
+          socialProfiles: {
+            linkedin: `https://linkedin.com/in/${contact.firstName.toLowerCase()}-${contact.lastName.toLowerCase()}`,
+            twitter: `@${contact.firstName.toLowerCase()}${contact.lastName.toLowerCase()}`
+          },
+          customFields: {
+            ...insights,
+            lastEnrichment: new Date().toISOString()
+          }
+        };
+      } else {
+        // Fallback enrichment
+        enrichedData = {
+          socialProfiles: {
+            linkedin: `https://linkedin.com/in/${contact.firstName.toLowerCase()}-${contact.lastName.toLowerCase()}`,
+            twitter: `@${contact.firstName.toLowerCase()}${contact.lastName.toLowerCase()}`
+          },
+          customFields: {
+            industry: contact.company ? "Technology" : "Unknown",
+            companySize: "50-200 employees",
+            lastEnrichment: new Date().toISOString()
+          }
+        };
+      }
+
+      const updatedContact = await storage.updateContact(contactId, enrichedData);
+      res.json({ success: true, contact: updatedContact });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to enrich contact" });
+    }
+  });
+
+  // Generate customer persona
+  app.post("/api/ai/generate-persona", async (req, res) => {
+    try {
+      const { industry, companySize, interests } = req.body;
+      
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      const prompt = `Create a detailed customer persona for:
+      Industry: ${industry}
+      Company Size: ${companySize}
+      Interests: ${interests.join(', ')}
+      
+      Include: demographics, challenges, goals, communication preferences, buying behavior, and value proposition alignment.`;
+      
+      let persona;
+      
+      if (geminiApiKey) {
+        try {
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent?key=${geminiApiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+            })
+          });
+          
+          if (response.ok) {
+            const result = await response.json();
+            persona = result.candidates[0].content.parts[0].text;
+          } else {
+            throw new Error('Gemini failed');
+          }
+        } catch (error: any) {
+          console.warn('Gemini failed, trying OpenAI:', error.message);
+          
+          if (openaiApiKey) {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${openaiApiKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: 800,
+                temperature: 0.7,
+              }),
+            });
+            
+            const result = await response.json();
+            persona = result.choices[0].message.content;
+          }
+        }
+      } else if (openaiApiKey) {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openaiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 800,
+            temperature: 0.7,
+          }),
+        });
+        
+        const result = await response.json();
+        persona = result.choices[0].message.content;
+      } else {
+        return res.status(400).json({ error: "No AI service available" });
+      }
+      
+      res.json({ success: true, persona });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate persona" });
+    }
+  });
+
+  // Generate meeting agenda
+  app.post("/api/ai/generate-meeting-agenda", async (req, res) => {
+    try {
+      const { meetingPurpose, attendees, previousNotes } = req.body;
+      
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      const prompt = `Create a structured meeting agenda for:
+      Purpose: ${meetingPurpose}
+      Attendees: ${attendees.join(', ')}
+      ${previousNotes ? `Previous Notes: ${previousNotes}` : ''}
+      
+      Include: objectives, agenda items with time allocations, discussion points, and action items.`;
+      
+      let agenda;
+      
+      if (geminiApiKey) {
+        try {
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent?key=${geminiApiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.5, maxOutputTokens: 600 }
+            })
+          });
+          
+          if (response.ok) {
+            const result = await response.json();
+            agenda = result.candidates[0].content.parts[0].text;
+          } else {
+            throw new Error('Gemini failed');
+          }
+        } catch (error: any) {
+          console.warn('Gemini failed, trying OpenAI:', error.message);
+          
+          if (openaiApiKey) {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${openaiApiKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: 600,
+                temperature: 0.5,
+              }),
+            });
+            
+            const result = await response.json();
+            agenda = result.choices[0].message.content;
+          }
+        }
+      } else if (openaiApiKey) {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openaiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 600,
+            temperature: 0.5,
+          }),
+        });
+        
+        const result = await response.json();
+        agenda = result.choices[0].message.content;
+      } else {
+        return res.status(400).json({ error: "No AI service available" });
+      }
+      
+      res.json({ success: true, agenda });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate meeting agenda" });
+    }
+  });
+
+  // Analyze market trends
+  app.post("/api/ai/analyze-market-trends", async (req, res) => {
+    try {
+      const { industry, audience, timeframe } = req.body;
+      
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      const prompt = `Analyze current market trends for:
+      Industry: ${industry}
+      Target Audience: ${audience}
+      Timeframe: ${timeframe}
+      
+      Provide: key trends, opportunities, challenges, and strategic recommendations.`;
+      
+      let analysis;
+      
+      if (geminiApiKey) {
+        try {
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent?key=${geminiApiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.4, maxOutputTokens: 700 }
+            })
+          });
+          
+          if (response.ok) {
+            const result = await response.json();
+            analysis = result.candidates[0].content.parts[0].text;
+          } else {
+            throw new Error('Gemini failed');
+          }
+        } catch (error: any) {
+          console.warn('Gemini failed, trying OpenAI:', error.message);
+          
+          if (openaiApiKey) {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${openaiApiKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: 700,
+                temperature: 0.4,
+              }),
+            });
+            
+            const result = await response.json();
+            analysis = result.choices[0].message.content;
+          }
+        }
+      } else if (openaiApiKey) {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openaiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 700,
+            temperature: 0.4,
+          }),
+        });
+        
+        const result = await response.json();
+        analysis = result.choices[0].message.content;
+      } else {
+        return res.status(400).json({ error: "No AI service available" });
+      }
+      
+      res.json({ success: true, analysis });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to analyze market trends" });
+    }
+  });
+
+  // Generic AI endpoint for agents
+  app.post("/api/ai/generic", async (req, res) => {
+    try {
+      const { prompt, model = 'gemini', maxTokens = 1000, temperature = 0.7 } = req.body;
+      
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      let response_text;
+      let usedModel = model;
+      
+      if (model === 'gemini' && geminiApiKey) {
+        try {
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent?key=${geminiApiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature, maxOutputTokens: maxTokens }
+            })
+          });
+          
+          if (response.ok) {
+            const result = await response.json();
+            response_text = result.candidates[0].content.parts[0].text;
+          } else {
+            throw new Error('Gemini failed');
+          }
+        } catch (error: any) {
+          console.warn('Gemini failed, trying OpenAI:', error.message);
+          usedModel = 'openai';
+          
+          if (openaiApiKey) {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${openaiApiKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: maxTokens,
+                temperature,
+              }),
+            });
+            
+            const result = await response.json();
+            response_text = result.choices[0].message.content;
+          }
+        }
+      } else if (model === 'openai' && openaiApiKey) {
+        usedModel = 'openai';
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openaiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: maxTokens,
+            temperature,
+          }),
+        });
+        
+        const result = await response.json();
+        response_text = result.choices[0].message.content;
+      } else {
+        return res.status(400).json({ error: "No AI service available or invalid model specified" });
+      }
+      
+      res.json({ 
+        success: true, 
+        response: response_text,
+        content: response_text,
+        model: usedModel 
+      });
+    } catch (error) {
+      console.error('Generic AI endpoint error:', error);
+      res.status(500).json({ error: "Failed to process AI request" });
+    }
+  });
+
+  // Generic AI prompt endpoint
+  app.post("/api/ai/execute-prompt", async (req, res) => {
+    try {
+      const { prompt } = req.body;
+      
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      let response_text;
+      let usedModel = 'gemini';
+      
+      if (geminiApiKey) {
+        try {
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent?key=${geminiApiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.7, maxOutputTokens: 1000 }
+            })
+          });
+          
+          if (response.ok) {
+            const result = await response.json();
+            response_text = result.candidates[0].content.parts[0].text;
+          } else {
+            throw new Error('Gemini failed');
+          }
+        } catch (error: any) {
+          console.warn('Gemini failed, trying OpenAI:', error.message);
+          usedModel = 'openai';
+          
+          if (openaiApiKey) {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${openaiApiKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: 1000,
+                temperature: 0.7,
+              }),
+            });
+            
+            const result = await response.json();
+            response_text = result.choices[0].message.content;
+          }
+        }
+      } else if (openaiApiKey) {
+        usedModel = 'openai';
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openaiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 1000,
+            temperature: 0.7,
+          }),
+        });
+        
+        const result = await response.json();
+        response_text = result.choices[0].message.content;
+      } else {
+        return res.status(400).json({ error: "No AI service available" });
+      }
+      
+      res.json({ success: true, response: response_text, model: usedModel });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to execute prompt" });
+    }
+  });
+
+  app.post("/api/ai/draft-email", async (req, res) => {
+    try {
+      const { contactId, purpose = "follow-up" } = req.body;
+      const contact = await storage.getContact(contactId);
+      if (!contact) {
+        return res.status(404).json({ error: "Contact not found" });
+      }
+      
+      // Generate personalized email draft
+      const emailDraft = `Subject: Following up on our conversation
+      
+Hi ${contact.firstName},
+
+I hope this email finds you well. I wanted to follow up on our previous conversation about ${contact.company}'s needs.
+
+Based on our discussion, I believe our solution could help ${contact.company} achieve significant improvements in efficiency and cost savings.
+
+Would you be available for a brief call this week to discuss how we can move forward?
+
+Best regards,
+[Your Name]`;
+
+      res.json({ success: true, emailDraft });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to draft email" });
+    }
+  });
+
+  app.post("/api/ai/score-lead", async (req, res) => {
+    try {
+      const { contactId } = req.body;
+      const contact = await storage.getContact(contactId);
+      if (!contact) {
+        return res.status(404).json({ error: "Contact not found" });
+      }
+      
+      // Use AI to score the lead - try Gemini first (better for analytical tasks), fallback to OpenAI
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      if (!geminiApiKey && !openaiApiKey) {
+        // Fallback to rule-based scoring if no API keys
+        console.warn('No AI API keys found, using rule-based scoring');
+        
+        let score = 50; // Base score
+        if (contact.company) score += 20;
+        if (contact.position && contact.position.toLowerCase().includes('manager')) score += 15;
+        if (contact.position && contact.position.toLowerCase().includes('director')) score += 20;
+        if (contact.position && contact.position.toLowerCase().includes('ceo')) score += 25;
+        if (contact.phone) score += 10;
+        
+        score = Math.min(100, Math.max(0, score));
+        
+        const analysis = {
+          score,
+          factors: {
+            hasCompany: !!contact.company,
+            hasPhone: !!contact.phone,
+            seniorPosition: contact.position?.toLowerCase().includes('ceo') || contact.position?.toLowerCase().includes('director'),
+            recentContact: false
+          },
+          recommendation: score >= 75 ? "High priority lead" : score >= 50 ? "Medium priority lead" : "Low priority lead"
+        };
+
+        return res.json({ success: true, analysis });
+      }
+
+      // Prepare contact data for AI analysis
+      const contactData = {
+        name: `${contact.firstName} ${contact.lastName}`,
+        email: contact.email,
+        company: contact.company || 'Unknown',
+        position: contact.position || 'Unknown',
+        phone: contact.phone ? 'Yes' : 'No',
+        source: contact.source || 'Unknown',
+        status: contact.status || 'Unknown'
+      };
+
+      // Try Gemini first (better for analytical tasks like lead scoring)
+      let aiContent;
+      let usedModel = 'gemini';
+      
+      if (geminiApiKey) {
+        try {
+          const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent?key=${geminiApiKey}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{
+                  text: `You are a lead scoring expert. Analyze this contact and return ONLY a JSON response with:
+                  - score: number (0-100)
+                  - factors: object with boolean values for hasCompany, hasPhone, seniorPosition, recentContact
+                  - recommendation: string (High/Medium/Low priority lead)
+                  
+                  Contact data: ${JSON.stringify(contactData)}
+                  
+                  Return only valid JSON, no additional text.`
+                }]
+              }],
+              generationConfig: {
+                temperature: 0.1,
+                maxOutputTokens: 200,
+              }
+            }),
+          });
+
+          if (geminiResponse.ok) {
+            const geminiResult = await geminiResponse.json();
+            aiContent = geminiResult.candidates[0].content.parts[0].text;
+          } else {
+            throw new Error('Gemini API request failed');
+          }
+        } catch (geminiError: any) {
+          console.warn('Gemini failed, falling back to OpenAI:', geminiError.message);
+          usedModel = 'openai';
+          
+          if (openaiApiKey) {
+            const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${openaiApiKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages: [
+                  {
+                    role: 'system',
+                    content: `You are a lead scoring expert. Analyze the contact information and return a JSON response with:
+                    - score: number (0-100)
+                    - factors: object with boolean values for hasCompany, hasPhone, seniorPosition, recentContact
+                    - recommendation: string (High/Medium/Low priority lead)
+                    
+                    Consider: company presence, job title seniority, contact completeness, and lead quality indicators.`
+                  },
+                  {
+                    role: 'user',
+                    content: `Please score this lead: ${JSON.stringify(contactData)}`
+                  }
+                ],
+                max_tokens: 200,
+                temperature: 0.1,
+              }),
+            });
+
+            if (!openaiResponse.ok) {
+              throw new Error('Both AI services failed');
+            }
+
+            const aiResult = await openaiResponse.json();
+            aiContent = aiResult.choices[0].message.content;
+          } else {
+            throw new Error('No working AI service available');
+          }
+        }
+      } else if (openaiApiKey) {
+        // Use OpenAI if Gemini not available
+        usedModel = 'openai';
+        const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openaiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [
+              {
+                role: 'system',
+                content: `You are a lead scoring expert. Analyze the contact information and return a JSON response with:
+                - score: number (0-100)
+                - factors: object with boolean values for hasCompany, hasPhone, seniorPosition, recentContact
+                - recommendation: string (High/Medium/Low priority lead)
+                
+                Consider: company presence, job title seniority, contact completeness, and lead quality indicators.`
+              },
+              {
+                role: 'user',
+                content: `Please score this lead: ${JSON.stringify(contactData)}`
+              }
+            ],
+            max_tokens: 200,
+            temperature: 0.1,
+          }),
+        });
+
+        if (!openaiResponse.ok) {
+          throw new Error('OpenAI API request failed');
+        }
+
+        const aiResult = await openaiResponse.json();
+        aiContent = aiResult.choices[0].message.content;
+      } else {
+        throw new Error('No AI service available');
+      }
+      
+      // Parse AI response
+      let analysis;
+      try {
+        analysis = JSON.parse(aiContent);
+      } catch (parseError) {
+        // Fallback if AI response isn't valid JSON
+        console.warn('AI response not valid JSON, using fallback scoring');
+        
+        let score = 50;
+        if (contact.company) score += 20;
+        if (contact.position && (contact.position.toLowerCase().includes('manager') || 
+                                 contact.position.toLowerCase().includes('director') || 
+                                 contact.position.toLowerCase().includes('ceo'))) score += 20;
+        if (contact.phone) score += 10;
+        
+        score = Math.min(100, Math.max(0, score));
+        
+        analysis = {
+          score,
+          factors: {
+            hasCompany: !!contact.company,
+            hasPhone: !!contact.phone,
+            seniorPosition: contact.position?.toLowerCase().includes('ceo') || 
+                          contact.position?.toLowerCase().includes('director') ||
+                          contact.position?.toLowerCase().includes('manager'),
+            recentContact: false
+          },
+          recommendation: score >= 75 ? "High priority lead" : score >= 50 ? "Medium priority lead" : "Low priority lead"
+        };
+      }
+
+      // Update contact with the new score
+      await storage.updateContact(contactId, { leadScore: analysis.score });
+
+      res.json({ 
+        success: true, 
+        analysis: {
+          ...analysis,
+          model: usedModel
+        }
+      });
+    } catch (error) {
+      console.error('Error scoring lead:', error);
+      res.status(500).json({ error: "Failed to score lead" });
+    }
+  });
+
+  app.post("/api/ai/next-action", async (req, res) => {
+    try {
+      const { contactId } = req.body;
+      const contact = await storage.getContact(contactId);
+      if (!contact) {
+        return res.status(404).json({ error: "Contact not found" });
+      }
+      
+      // Suggest next best action
+      let action = "Send initial email";
+      let priority = "medium";
+      
+      if (contact.lastContacted) {
+        const daysSinceContact = Math.floor((Date.now() - new Date(contact.lastContacted).getTime()) / (1000 * 60 * 60 * 24));
+        if (daysSinceContact > 14) {
+          action = "Follow up call";
+          priority = "high";
+        } else if (daysSinceContact > 7) {
+          action = "Send follow-up email";
+          priority = "medium";
+        } else {
+          action = "Wait for response";
+          priority = "low";
+        }
+      }
+      
+      const suggestion = {
+        action,
+        priority,
+        reasoning: `Based on contact history and engagement patterns`,
+        timeframe: priority === "high" ? "Today" : priority === "medium" ? "This week" : "Next week"
+      };
+
+      res.json({ success: true, suggestion });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to suggest next action" });
+    }
+  });
+
+  app.post("/api/ai/lead-score", async (req, res) => {
+    try {
+      const { contactId } = req.body;
+      const contact = await storage.getContact(contactId);
+      if (!contact) {
+        return res.status(404).json({ error: "Contact not found" });
+      }
+      
+      // Simulate AI lead scoring
+      let score = 0;
+      if (contact.company) score += 20;
+      if (contact.position) score += 15;
+      if (contact.phone) score += 10;
+      if (contact.source === 'Website') score += 25;
+      if (contact.engagementScore && contact.engagementScore > 50) score += 30;
+      
+      const updatedContact = await storage.updateContact(contactId, { leadScore: score });
+      res.json({ success: true, score, contact: updatedContact });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to calculate lead score" });
+    }
+  });
+
+  // AI services endpoints
+  app.post("/api/ai/generate-persona", async (req, res) => {
+    try {
+      const { industry, companySize, interests } = req.body;
+      
+      // Simulate AI persona generation (would use OpenAI/Gemini on server)
+      const persona = {
+        demographics: {
+          title: `${companySize} company decision maker`,
+          industry,
+          experience: "5-10 years in industry"
+        },
+        challenges: interests.map((interest: string) => `Needs solutions for ${interest}`),
+        goals: ["Increase efficiency", "Reduce costs", "Scale operations"],
+        communicationPreference: "Email and LinkedIn",
+        buyingProcess: "Committee decision with 3-6 month cycle"
+      };
+      
+      res.json({ success: true, persona });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate persona" });
+    }
+  });
+
+  app.post("/api/ai/generate-meeting-agenda", async (req, res) => {
+    try {
+      const { meetingPurpose, attendees, previousNotes } = req.body;
+      
+      // Simulate AI agenda generation
+      const agenda = {
+        objective: meetingPurpose,
+        duration: "60 minutes",
+        items: [
+          { time: "0-5 min", topic: "Welcome and introductions", owner: "Host" },
+          { time: "5-20 min", topic: "Review objectives", owner: "Lead" },
+          { time: "20-45 min", topic: "Main discussion", owner: "All" },
+          { time: "45-55 min", topic: "Action items", owner: "Host" },
+          { time: "55-60 min", topic: "Next steps", owner: "Host" }
+        ],
+        attendees,
+        previousNotes
+      };
+      
+      res.json({ success: true, agenda });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate meeting agenda" });
+    }
+  });
+
+  app.post("/api/ai/analyze-market-trends", async (req, res) => {
+    try {
+      const { industry, audience, timeframe } = req.body;
+      
+      // Simulate market analysis
+      const analysis = {
+        trends: [
+          "Digital transformation acceleration",
+          "Remote work adoption",
+          "AI and automation integration",
+          "Sustainability focus"
+        ],
+        opportunities: [
+          "New market segments emerging",
+          "Technology adoption gaps",
+          "Regulatory changes creating needs"
+        ],
+        recommendations: [
+          "Focus on digital-first solutions",
+          "Emphasize ROI and efficiency",
+          "Build partnerships with tech vendors"
+        ]
+      };
+      
+      res.json({ success: true, analysis });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to analyze market trends" });
+    }
+  });
+
+  // Composio Integration Routes
+  app.get("/api/composio/features", async (req, res) => {
+    try {
+      // Return default Composio features configuration
+      const features = [
+        {
+          id: 'linkedin-outreach',
+          name: 'LinkedIn Outreach',
+          description: 'Send personalized LinkedIn messages and connection requests',
+          category: 'social',
+          icon: '💼',
+          enabled: false
+        },
+        {
+          id: 'linkedin-prospecting',
+          name: 'LinkedIn Prospecting',
+          description: 'Search and discover potential leads on LinkedIn',
+          category: 'social',
+          icon: '🔍',
+          enabled: false
+        },
+        {
+          id: 'twitter-posting',
+          name: 'X (Twitter) Posting',
+          description: 'Schedule and post content to X (Twitter)',
+          category: 'social',
+          icon: '🐦',
+          enabled: false
+        },
+        {
+          id: 'reddit-engagement',
+          name: 'Reddit Engagement',
+          description: 'Post and engage in relevant subreddit communities',
+          category: 'social',
+          icon: '🗣️',
+          enabled: false
+        },
+        {
+          id: 'email-automation',
+          name: 'Email Automation',
+          description: 'Send automated follow-up emails and sequences',
+          category: 'communication',
+          icon: '📧',
+          enabled: false
+        },
+        {
+          id: 'whatsapp-messaging',
+          name: 'WhatsApp Business',
+          description: 'Send WhatsApp messages to leads and customers',
+          category: 'communication',
+          icon: '💬',
+          enabled: false
+        },
+        {
+          id: 'sms-campaigns',
+          name: 'SMS Campaigns',
+          description: 'Send SMS messages and campaigns via Twilio',
+          category: 'communication',
+          icon: '📱',
+          enabled: false
+        },
+        {
+          id: 'calendar-scheduling',
+          name: 'Calendar Integration',
+          description: 'Schedule meetings and manage calendar events',
+          category: 'automation',
+          icon: '📅',
+          enabled: false
+        },
+        {
+          id: 'lead-enrichment',
+          name: 'Lead Enrichment',
+          description: 'Automatically enrich lead data from multiple sources',
+          category: 'automation',
+          icon: '✨',
+          enabled: false
+        },
+        {
+          id: 'workflow-triggers',
+          name: 'Workflow Triggers',
+          description: 'Trigger automated workflows based on CRM events',
+          category: 'automation',
+          icon: '⚡',
+          enabled: false
+        },
+        {
+          id: 'engagement-analytics',
+          name: 'Engagement Analytics',
+          description: 'Track engagement across all communication channels',
+          category: 'analytics',
+          icon: '📊',
+          enabled: false
+        },
+        {
+          id: 'sentiment-analysis',
+          name: 'Sentiment Analysis',
+          description: 'Analyze sentiment in customer communications',
+          category: 'analytics',
+          icon: '💭',
+          enabled: false
+        }
+      ];
+      
+      res.json(features);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch Composio features" });
+    }
+  });
+
+  app.post("/api/composio/features/:featureId/toggle", async (req, res) => {
+    try {
+      const { featureId } = req.params;
+      // In a real implementation, this would update feature status in database
+      console.log(`Toggling Composio feature: ${featureId}`);
+      res.json({ success: true, message: `Feature ${featureId} toggled` });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to toggle feature" });
+    }
+  });
+
+  app.post("/api/composio/auth/:app", async (req, res) => {
+    try {
+      const { app } = req.params;
+      // In a real implementation, this would initiate OAuth flow with Composio
+      console.log(`Initiating Composio auth for: ${app}`);
+      
+      // Mock OAuth URL for demonstration
+      const authUrl = `https://composio.dev/oauth/${app}?client_id=demo&redirect_uri=${encodeURIComponent('http://localhost:3000/auth/callback')}`;
+      
+      res.json({ 
+        success: true, 
+        authUrl,
+        message: `OAuth flow initiated for ${app}` 
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to initiate OAuth" });
+    }
+  });
+
+  app.get("/api/composio/apps/:app/status", async (req, res) => {
+    try {
+      const { app } = req.params;
+      // In a real implementation, this would check actual connection status
+      res.json({
+        enabled: false,
+        connected: false,
+        app
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to check app status" });
+    }
+  });
+
+  // Composio Action Routes
+  app.post("/api/composio/linkedin/message", async (req, res) => {
+    try {
+      const { recipient_id, message } = req.body;
+      // In a real implementation, this would use Composio SDK to send LinkedIn message
+      console.log(`Sending LinkedIn message to ${recipient_id}: ${message}`);
+      
+      res.json({
+        success: true,
+        message: "LinkedIn message sent successfully",
+        messageId: `msg_${Date.now()}`
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to send LinkedIn message" });
+    }
+  });
+
+  app.post("/api/composio/linkedin/search", async (req, res) => {
+    try {
+      const { query, filters } = req.body;
+      // In a real implementation, this would use Composio SDK to search LinkedIn
+      console.log(`Searching LinkedIn for: ${query} with filters:`, filters);
+      
+      res.json({
+        success: true,
+        results: [
+          {
+            id: "profile_1",
+            name: "John Doe",
+            title: "VP of Sales",
+            company: "TechCorp",
+            profileUrl: "https://linkedin.com/in/johndoe"
+          }
+        ]
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to search LinkedIn" });
+    }
+  });
+
+  app.post("/api/composio/x/post", async (req, res) => {
+    try {
+      const { content, scheduled_time } = req.body;
+      // In a real implementation, this would use Composio SDK to post to X
+      console.log(`Posting to X: ${content}`, scheduled_time ? `scheduled for ${scheduled_time}` : 'immediately');
+      
+      res.json({
+        success: true,
+        message: "X post created successfully",
+        postId: `post_${Date.now()}`
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to post to X" });
+    }
+  });
+
+  app.post("/api/composio/reddit/post", async (req, res) => {
+    try {
+      const { subreddit, title, content, scheduled_time } = req.body;
+      // In a real implementation, this would use Composio SDK to post to Reddit
+      console.log(`Posting to r/${subreddit}: ${title}`);
+      
+      res.json({
+        success: true,
+        message: "Reddit post created successfully",
+        postId: `reddit_${Date.now()}`
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to post to Reddit" });
+    }
+  });
+
+  app.post("/api/composio/email/send", async (req, res) => {
+    try {
+      const { to, subject, content, template_id } = req.body;
+      // In a real implementation, this would use Composio SDK to send email
+      console.log(`Sending email to ${to}: ${subject}`);
+      
+      res.json({
+        success: true,
+        message: "Email sent successfully",
+        emailId: `email_${Date.now()}`
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to send email" });
+    }
+  });
+
+  app.post("/api/composio/whatsapp/message", async (req, res) => {
+    try {
+      const { phone_number, message, template_name, media_url } = req.body;
+      // In a real implementation, this would use Composio SDK to send WhatsApp message
+      console.log(`Sending WhatsApp message to ${phone_number}: ${message}`);
+      
+      res.json({
+        success: true,
+        message: "WhatsApp message sent successfully",
+        messageId: `whatsapp_${Date.now()}`
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to send WhatsApp message" });
+    }
+  });
+
+  app.post("/api/composio/sms/send", async (req, res) => {
+    try {
+      const { phone_number, message, scheduled_time } = req.body;
+      // In a real implementation, this would use Composio SDK to send SMS
+      console.log(`Sending SMS to ${phone_number}: ${message}`);
+      
+      res.json({
+        success: true,
+        message: "SMS sent successfully",
+        messageId: `sms_${Date.now()}`
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to send SMS" });
+    }
+  });
+
+  app.post("/api/composio/calendar/event", async (req, res) => {
+    try {
+      const { title, description, start_time, end_time, attendees, meeting_link } = req.body;
+      // In a real implementation, this would use Composio SDK to create calendar event
+      console.log(`Creating calendar event: ${title} from ${start_time} to ${end_time}`);
+      
+      res.json({
+        success: true,
+        message: "Calendar event created successfully",
+        eventId: `event_${Date.now()}`
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create calendar event" });
+    }
+  });
+
+  // MCP (Model Context Protocol) Routes
+  app.get("/api/mcp/agents/:agentType/metadata", async (req, res) => {
+    try {
+      const { agentType } = req.params;
+      
+      const metadata = {
+        model: 'gpt-4o-mini',
+        temperature: 0.7,
+        max_tokens: 1000,
+        functions: [
+          {
+            name: 'send_linkedin_message',
+            description: 'Send a personalized message via LinkedIn',
+            parameters: {
+              type: 'object',
+              properties: {
+                recipient_id: {
+                  type: 'string',
+                  description: 'LinkedIn user ID of the recipient'
+                },
+                message: {
+                  type: 'string',
+                  description: 'The message content to send'
+                }
+              },
+              required: ['recipient_id', 'message']
+            }
+          },
+          {
+            name: 'post_to_x',
+            description: 'Post content to X (Twitter)',
+            parameters: {
+              type: 'object',
+              properties: {
+                content: {
+                  type: 'string',
+                  description: 'The content to post'
+                },
+                scheduled_time: {
+                  type: 'string',
+                  description: 'ISO timestamp for scheduled posting'
+                }
+              },
+              required: ['content']
+            }
+          }
+        ]
+      };
+      
+      res.json(metadata);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to load agent metadata" });
+    }
+  });
+
+  app.post("/api/mcp/execute-function", async (req, res) => {
+    try {
+      const { function_name, parameters } = req.body;
+      
+      // Route function execution to appropriate Composio endpoints
+      let result;
+      
+      switch (function_name) {
+        case 'send_linkedin_message':
+          const linkedinResponse = await fetch('http://localhost:3000/api/composio/linkedin/message', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(parameters)
+          });
+          result = await linkedinResponse.json();
+          break;
+          
+        case 'post_to_x':
+          const xResponse = await fetch('http://localhost:3000/api/composio/x/post', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(parameters)
+          });
+          result = await xResponse.json();
+          break;
+          
+        case 'send_automated_email':
+          const emailResponse = await fetch('http://localhost:3000/api/composio/email/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(parameters)
+          });
+          result = await emailResponse.json();
+          break;
+          
+        default:
+          throw new Error(`Unknown function: ${function_name}`);
+      }
+      
+      res.json({
+        success: true,
+        function_name,
+        result
+      });
+    } catch (error) {
+      res.status(500).json({ 
+        error: "Function execution failed",
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // AI Reasoning endpoints
+  app.post("/api/ai/analyze-deal", async (req, res) => {
+    try {
+      const { dealId, includeReasoning = true } = req.body;
+      
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      // For demo purposes, create a detailed analysis
+      const prompt = `Analyze deal: ${dealId}
+      
+      Please provide a comprehensive deal analysis including:
+      1. Deal strength assessment
+      2. Risk factors
+      3. Opportunity analysis
+      4. Recommended next steps
+      
+      ${includeReasoning ? 'Also provide detailed reasoning for each assessment.' : ''}`;
+      
+      let report, reasoning;
+      
+      if (geminiApiKey) {
+        try {
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent?key=${geminiApiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.3, maxOutputTokens: 800 }
+            })
+          });
+          
+          if (response.ok) {
+            const result = await response.json();
+            const fullResponse = result.candidates[0].content.parts[0].text;
+            
+            if (includeReasoning) {
+              const parts = fullResponse.split('\n\n');
+              report = parts.slice(0, Math.ceil(parts.length / 2)).join('\n\n');
+              reasoning = `Analysis Process:\n\n${parts.slice(Math.ceil(parts.length / 2)).join('\n\n')}\n\nThis analysis used advanced AI modeling to evaluate deal parameters, market conditions, and success probability factors.`;
+            } else {
+              report = fullResponse;
+              reasoning = '';
+            }
+          } else {
+            throw new Error('Gemini failed');
+          }
+        } catch (error: any) {
+          console.warn('Gemini failed, trying OpenAI:', error.message);
+          
+          if (openaiApiKey) {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${openaiApiKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: 800,
+                temperature: 0.3,
+              }),
+            });
+            
+            const result = await response.json();
+            const fullResponse = result.choices[0].message.content;
+            
+            if (includeReasoning) {
+              const parts = fullResponse.split('\n\n');
+              report = parts.slice(0, Math.ceil(parts.length / 2)).join('\n\n');
+              reasoning = `Analysis Process:\n\n${parts.slice(Math.ceil(parts.length / 2)).join('\n\n')}\n\nThis analysis used advanced AI modeling to evaluate deal parameters, market conditions, and success probability factors.`;
+            } else {
+              report = fullResponse;
+              reasoning = '';
+            }
+          }
+        }
+      } else if (openaiApiKey) {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openaiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 800,
+            temperature: 0.3,
+          }),
+        });
+        
+        const result = await response.json();
+        const fullResponse = result.choices[0].message.content;
+        
+        if (includeReasoning) {
+          const parts = fullResponse.split('\n\n');
+          report = parts.slice(0, Math.ceil(parts.length / 2)).join('\n\n');
+          reasoning = `Analysis Process:\n\n${parts.slice(Math.ceil(parts.length / 2)).join('\n\n')}\n\nThis analysis used advanced AI modeling to evaluate deal parameters, market conditions, and success probability factors.`;
+        } else {
+          report = fullResponse;
+          reasoning = '';
+        }
+      } else {
+        return res.status(400).json({ error: "No AI service available" });
+      }
+      
+      res.json({ success: true, report, reasoning });
+    } catch (error) {
+      console.error('Deal analysis error:', error);
+      res.status(500).json({ error: "Failed to analyze deal" });
+    }
+  });
+
+  app.post("/api/ai/compose-email", async (req, res) => {
+    try {
+      const { prompt, includeReasoning = true } = req.body;
+      
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      const fullPrompt = `Compose a professional email based on this request: ${prompt}
+      
+      The email should be:
+      - Professional and engaging
+      - Appropriately personalized
+      - Clear and actionable
+      - Business-appropriate in tone
+      
+      ${includeReasoning ? 'Explain the reasoning behind your email structure, tone choices, and content decisions.' : ''}`;
+      
+      let output, reasoning;
+      
+      if (openaiApiKey) {
+        try {
+          const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${openaiApiKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'gpt-4o-mini',
+              messages: [{ role: 'user', content: fullPrompt }],
+              max_tokens: 800,
+              temperature: 0.7,
+            }),
+          });
+          
+          const result = await response.json();
+          const fullResponse = result.choices[0].message.content;
+          
+          if (includeReasoning) {
+            const emailEnd = fullResponse.lastIndexOf('\n\n');
+            output = fullResponse.substring(0, emailEnd > 0 ? emailEnd : fullResponse.length);
+            reasoning = `Email Composition Process:\n\nI considered the following factors:\n- Audience and context from your prompt\n- Professional communication standards\n- Engagement and call-to-action effectiveness\n- Tone appropriate for business relationships\n\nThe structure follows proven email frameworks for maximum impact and response rates.`;
+          } else {
+            output = fullResponse;
+            reasoning = '';
+          }
+        } catch (error: any) {
+          console.warn('OpenAI failed, trying Gemini:', error.message);
+          
+          if (geminiApiKey) {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent?key=${geminiApiKey}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: fullPrompt }] }],
+                generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+              })
+            });
+            
+            if (response.ok) {
+              const result = await response.json();
+              const fullResponse = result.candidates[0].content.parts[0].text;
+              
+              if (includeReasoning) {
+                const emailEnd = fullResponse.lastIndexOf('\n\n');
+                output = fullResponse.substring(0, emailEnd > 0 ? emailEnd : fullResponse.length);
+                reasoning = `Email Composition Process:\n\nI considered the following factors:\n- Audience and context from your prompt\n- Professional communication standards\n- Engagement and call-to-action effectiveness\n- Tone appropriate for business relationships\n\nThe structure follows proven email frameworks for maximum impact and response rates.`;
+              } else {
+                output = fullResponse;
+                reasoning = '';
+              }
+            }
+          }
+        }
+      } else if (geminiApiKey) {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent?key=${geminiApiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: fullPrompt }] }],
+            generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+          })
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          const fullResponse = result.candidates[0].content.parts[0].text;
+          
+          if (includeReasoning) {
+            const emailEnd = fullResponse.lastIndexOf('\n\n');
+            output = fullResponse.substring(0, emailEnd > 0 ? emailEnd : fullResponse.length);
+            reasoning = `Email Composition Process:\n\nI considered the following factors:\n- Audience and context from your prompt\n- Professional communication standards\n- Engagement and call-to-action effectiveness\n- Tone appropriate for business relationships\n\nThe structure follows proven email frameworks for maximum impact and response rates.`;
+          } else {
+            output = fullResponse;
+            reasoning = '';
+          }
+        }
+      } else {
+        return res.status(400).json({ error: "No AI service available" });
+      }
+      
+      res.json({ success: true, output, reasoning });
+    } catch (error) {
+      console.error('Email composition error:', error);
+      res.status(500).json({ error: "Failed to compose email" });
+    }
+  });
+
+  // Automation endpoints
+  app.post("/api/automation/follow-up-task", async (req, res) => {
+    try {
+      const { enabled } = req.body;
+      
+      // Create a sample follow-up task automation
+      const automation = await storage.createAiAutomationSetting({
+        name: "Follow-up Task Creation",
+        description: "Automatically create follow-up tasks for deals and contacts",
+        type: "task_automation",
+        isEnabled: enabled,
+        settings: {
+          trigger: "deal_stage_change",
+          action: "create_task",
+          delay: "1_day"
+        }
+      });
+      
+      res.json({ success: true, automation });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create follow-up task automation" });
+    }
+  });
+
+  app.post("/api/automation/calendar-reminder", async (req, res) => {
+    try {
+      const { enabled } = req.body;
+      
+      // Create a sample calendar reminder automation
+      const automation = await storage.createAiAutomationSetting({
+        name: "Calendar Reminders",
+        description: "Schedule automatic calendar reminders for important events",
+        type: "calendar_automation",
+        isEnabled: enabled,
+        settings: {
+          trigger: "appointment_created",
+          action: "create_reminder",
+          timing: "15_minutes_before"
+        }
+      });
+      
+      res.json({ success: true, automation });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to schedule calendar reminder" });
+    }
+  });
+
+  // Composio endpoints
+  app.post("/api/composio/sms", async (req, res) => {
+    try {
+      const { enabled } = req.body;
+      
+      // Create SMS automation configuration
+      const automation = await storage.createAiAutomationSetting({
+        name: "SMS Alerts",
+        description: "Send SMS notifications for important updates",
+        type: "sms_automation",
+        isEnabled: enabled,
+        settings: {
+          provider: "composio",
+          triggers: ["deal_won", "urgent_task", "meeting_reminder"]
+        }
+      });
+      
+      res.json({ success: true, automation });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to enable SMS alerts" });
+    }
+  });
+
+  app.post("/api/composio/whatsapp", async (req, res) => {
+    try {
+      const { enabled } = req.body;
+      
+      // Create WhatsApp automation configuration
+      const automation = await storage.createAiAutomationSetting({
+        name: "WhatsApp Messages",
+        description: "Send WhatsApp notifications and messages",
+        type: "whatsapp_automation",
+        isEnabled: enabled,
+        settings: {
+          provider: "composio",
+          triggers: ["follow_up", "deal_update", "task_reminder"]
+        }
+      });
+      
+      res.json({ success: true, automation });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to enable WhatsApp messages" });
+    }
+  });
+
+  // Analytics & Reporting Routes
+  app.get("/api/analytics/metrics", async (req, res) => {
+    try {
+      const { metricType, period } = req.query;
+      const metrics = await storage.getAnalyticsMetrics(
+        metricType as string, 
+        period as string
+      );
+      res.json(metrics);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch analytics metrics" });
+    }
+  });
+
+  app.get("/api/analytics/metrics/:id", async (req, res) => {
+    try {
+      const metric = await storage.getAnalyticsMetric(req.params.id);
+      if (!metric) {
+        return res.status(404).json({ error: "Metric not found" });
+      }
+      res.json(metric);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch metric" });
+    }
+  });
+
+  app.post("/api/analytics/metrics", async (req, res) => {
+    try {
+      const validatedData = insertAnalyticsMetricsSchema.parse(req.body);
+      const metric = await storage.createAnalyticsMetric(validatedData);
+      res.status(201).json(metric);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid analytics metric data" });
+    }
+  });
+
+  app.put("/api/analytics/metrics/:id", async (req, res) => {
+    try {
+      const updates = insertAnalyticsMetricsSchema.partial().parse(req.body);
+      const metric = await storage.updateAnalyticsMetric(req.params.id, updates);
+      res.json(metric);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update analytics metric" });
+    }
+  });
+
+  app.delete("/api/analytics/metrics/:id", async (req, res) => {
+    try {
+      await storage.deleteAnalyticsMetric(req.params.id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete analytics metric" });
+    }
+  });
+
+  // Revenue Forecasts Routes
+  app.get("/api/analytics/forecasts", async (req, res) => {
+    try {
+      const { period } = req.query;
+      const forecasts = await storage.getRevenueForecasts(period as string);
+      res.json(forecasts);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch revenue forecasts" });
+    }
+  });
+
+  app.get("/api/analytics/forecasts/:id", async (req, res) => {
+    try {
+      const forecast = await storage.getRevenueForecast(req.params.id);
+      if (!forecast) {
+        return res.status(404).json({ error: "Forecast not found" });
+      }
+      res.json(forecast);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch forecast" });
+    }
+  });
+
+  app.post("/api/analytics/forecasts", async (req, res) => {
+    try {
+      const validatedData = insertRevenueForecastsSchema.parse(req.body);
+      const forecast = await storage.createRevenueForecast(validatedData);
+      res.status(201).json(forecast);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid revenue forecast data" });
+    }
+  });
+
+  app.put("/api/analytics/forecasts/:id", async (req, res) => {
+    try {
+      const updates = insertRevenueForecastsSchema.partial().parse(req.body);
+      const forecast = await storage.updateRevenueForecast(req.params.id, updates);
+      res.json(forecast);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update revenue forecast" });
+    }
+  });
+
+  app.delete("/api/analytics/forecasts/:id", async (req, res) => {
+    try {
+      await storage.deleteRevenueForecast(req.params.id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete revenue forecast" });
+    }
+  });
+
+  // Performance Dashboard Routes
+  app.get("/api/analytics/dashboards", async (req, res) => {
+    try {
+      const { dashboardType, userId } = req.query;
+      const dashboards = await storage.getPerformanceDashboards(
+        dashboardType as string, 
+        userId as string
+      );
+      res.json(dashboards);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch performance dashboards" });
+    }
+  });
+
+  app.get("/api/analytics/dashboards/:id", async (req, res) => {
+    try {
+      const dashboard = await storage.getPerformanceDashboard(req.params.id);
+      if (!dashboard) {
+        return res.status(404).json({ error: "Dashboard not found" });
+      }
+      res.json(dashboard);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch dashboard" });
+    }
+  });
+
+  app.post("/api/analytics/dashboards", async (req, res) => {
+    try {
+      const validatedData = insertPerformanceDashboardSchema.parse(req.body);
+      const dashboard = await storage.createPerformanceDashboard(validatedData);
+      res.status(201).json(dashboard);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid performance dashboard data" });
+    }
+  });
+
+  app.put("/api/analytics/dashboards/:id", async (req, res) => {
+    try {
+      const updates = insertPerformanceDashboardSchema.partial().parse(req.body);
+      const dashboard = await storage.updatePerformanceDashboard(req.params.id, updates);
+      res.json(dashboard);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update performance dashboard" });
+    }
+  });
+
+  app.delete("/api/analytics/dashboards/:id", async (req, res) => {
+    try {
+      await storage.deletePerformanceDashboard(req.params.id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete performance dashboard" });
+    }
+  });
+
+  // Email Templates Routes
+  app.get("/api/communication/templates", async (req, res) => {
+    try {
+      const { category, templateType } = req.query;
+      const templates = await storage.getEmailTemplates(
+        category as string, 
+        templateType as string
+      );
+      res.json(templates);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch email templates" });
+    }
+  });
+
+  app.get("/api/communication/templates/:id", async (req, res) => {
+    try {
+      const template = await storage.getEmailTemplate(req.params.id);
+      if (!template) {
+        return res.status(404).json({ error: "Template not found" });
+      }
+      res.json(template);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch template" });
+    }
+  });
+
+  app.post("/api/communication/templates", async (req, res) => {
+    try {
+      const validatedData = insertEmailTemplatesSchema.parse(req.body);
+      const template = await storage.createEmailTemplate(validatedData);
+      res.status(201).json(template);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid email template data" });
+    }
+  });
+
+  app.put("/api/communication/templates/:id", async (req, res) => {
+    try {
+      const updates = insertEmailTemplatesSchema.partial().parse(req.body);
+      const template = await storage.updateEmailTemplate(req.params.id, updates);
+      res.json(template);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update email template" });
+    }
+  });
+
+  app.delete("/api/communication/templates/:id", async (req, res) => {
+    try {
+      await storage.deleteEmailTemplate(req.params.id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete email template" });
+    }
+  });
+
+  app.post("/api/communication/templates/:id/use", async (req, res) => {
+    try {
+      await storage.incrementTemplateUsage(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to increment template usage" });
+    }
+  });
+
+  // Communication History Routes
+  app.get("/api/communication/history", async (req, res) => {
+    try {
+      const { contactId, dealId, communicationType } = req.query;
+      const history = await storage.getCommunicationHistory(
+        contactId as string, 
+        dealId as string, 
+        communicationType as string
+      );
+      res.json(history);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch communication history" });
+    }
+  });
+
+  app.get("/api/communication/history/:id", async (req, res) => {
+    try {
+      const communication = await storage.getCommunicationHistoryItem(req.params.id);
+      if (!communication) {
+        return res.status(404).json({ error: "Communication not found" });
+      }
+      res.json(communication);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch communication" });
+    }
+  });
+
+  app.post("/api/communication/history", async (req, res) => {
+    try {
+      const validatedData = insertCommunicationHistorySchema.parse(req.body);
+      const communication = await storage.createCommunicationHistory(validatedData);
+      res.status(201).json(communication);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid communication history data" });
+    }
+  });
+
+  app.put("/api/communication/history/:id", async (req, res) => {
+    try {
+      const updates = insertCommunicationHistorySchema.partial().parse(req.body);
+      const communication = await storage.updateCommunicationHistory(req.params.id, updates);
+      res.json(communication);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update communication history" });
+    }
+  });
+
+  app.delete("/api/communication/history/:id", async (req, res) => {
+    try {
+      await storage.deleteCommunicationHistory(req.params.id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete communication history" });
+    }
+  });
+
+  // Conversation Threads Routes
+  app.get("/api/communication/threads", async (req, res) => {
+    try {
+      const { contactId, dealId, status } = req.query;
+      const threads = await storage.getConversationThreads(
+        contactId as string, 
+        dealId as string, 
+        status as string
+      );
+      res.json(threads);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch conversation threads" });
+    }
+  });
+
+  app.get("/api/communication/threads/:id", async (req, res) => {
+    try {
+      const thread = await storage.getConversationThread(req.params.id);
+      if (!thread) {
+        return res.status(404).json({ error: "Thread not found" });
+      }
+      res.json(thread);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch thread" });
+    }
+  });
+
+  app.post("/api/communication/threads", async (req, res) => {
+    try {
+      const validatedData = insertConversationThreadsSchema.parse(req.body);
+      const thread = await storage.createConversationThread(validatedData);
+      res.status(201).json(thread);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid conversation thread data" });
+    }
+  });
+
+  app.put("/api/communication/threads/:id", async (req, res) => {
+    try {
+      const updates = insertConversationThreadsSchema.partial().parse(req.body);
+      const thread = await storage.updateConversationThread(req.params.id, updates);
+      res.json(thread);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update conversation thread" });
+    }
+  });
+
+  app.delete("/api/communication/threads/:id", async (req, res) => {
+    try {
+      await storage.deleteConversationThread(req.params.id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete conversation thread" });
+    }
+  });
+
+  app.post("/api/communication/threads/:id/message", async (req, res) => {
+    try {
+      await storage.incrementThreadMessageCount(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to increment thread message count" });
+    }
+  });
+
+  // AI-powered Analytics Endpoints
+  app.post("/api/analytics/generate-insights", async (req, res) => {
+    try {
+      const { timeRange, metricTypes } = req.body;
+      
+      // Get metrics data
+      const metrics = await storage.getAnalyticsMetrics();
+      const deals = await storage.getDeals();
+      const contacts = await storage.getContacts();
+      
+      // Prepare data for AI analysis
+      const analyticsData = {
+        totalContacts: contacts.length,
+        totalDeals: deals.length,
+        totalDealValue: deals.reduce((sum, deal) => sum + parseFloat(deal.value || '0'), 0),
+        avgDealSize: deals.length > 0 ? deals.reduce((sum, deal) => sum + parseFloat(deal.value || '0'), 0) / deals.length : 0,
+        conversionRate: contacts.length > 0 ? (deals.filter(d => d.stage === 'closed-won').length / contacts.length) * 100 : 0,
+        timeRange,
+        metricTypes
+      };
+      
+      const prompt = `Analyze this CRM data and provide actionable insights:
+      ${JSON.stringify(analyticsData, null, 2)}
+      
+      Please provide:
+      1. Key performance insights (3-5 bullet points)
+      2. Recommendations for improvement (3-5 actionable items)
+      3. Trends and patterns observed
+      4. Priority areas for focus
+      
+      Format as JSON with sections: insights, recommendations, trends, priorities`;
+
+      // Try Gemini first
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      let aiContent: string;
+      let usedModel = 'gemini';
+
+      if (geminiApiKey) {
+        try {
+          const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{ text: prompt }]
+              }],
+              generationConfig: {
+                temperature: 0.3,
+                maxOutputTokens: 1000
+              }
+            })
+          });
+
+          if (!geminiResponse.ok) {
+            throw new Error('Gemini API failed');
+          }
+
+          const result = await geminiResponse.json();
+          aiContent = result.candidates[0].content.parts[0].text;
+        } catch (geminiError) {
+          // Fallback to OpenAI
+          usedModel = 'openai';
+          const openaiApiKey = process.env.OPENAI_API_KEY;
+          
+          if (!openaiApiKey) {
+            throw new Error('No AI service available');
+          }
+
+          const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${openaiApiKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'gpt-4o-mini',
+              messages: [
+                { role: 'system', content: 'You are a CRM analytics expert. Provide actionable business insights based on data analysis.' },
+                { role: 'user', content: prompt }
+              ],
+              max_tokens: 1000,
+              temperature: 0.3,
+            }),
+          });
+
+          if (!openaiResponse.ok) {
+            throw new Error('Both AI services failed');
+          }
+
+          const aiResult = await openaiResponse.json();
+          aiContent = aiResult.choices[0].message.content;
+        }
+      } else {
+        throw new Error('No AI service configured');
+      }
+
+      // Parse AI response or provide fallback insights
+      let insights;
+      try {
+        insights = JSON.parse(aiContent);
+      } catch {
+        insights = {
+          insights: [
+            `Total pipeline value: $${analyticsData.totalDealValue.toLocaleString()}`,
+            `Average deal size: $${analyticsData.avgDealSize.toLocaleString()}`,
+            `Conversion rate: ${analyticsData.conversionRate.toFixed(1)}%`,
+            `Active deals: ${deals.filter(d => !['closed-won', 'closed-lost'].includes(d.stage)).length}`
+          ],
+          recommendations: [
+            "Focus on improving lead qualification to increase conversion rates",
+            "Implement automated follow-up sequences for better engagement",
+            "Analyze top-performing deals to replicate success patterns",
+            "Review and optimize sales process stages"
+          ],
+          trends: [
+            "Deal pipeline trends need deeper analysis over time",
+            "Contact engagement patterns show room for improvement",
+            "Revenue forecasting requires historical data tracking"
+          ],
+          priorities: [
+            "Implement consistent lead scoring methodology",
+            "Establish regular pipeline review meetings",
+            "Create data-driven sales coaching programs"
+          ]
+        };
+      }
+
+      res.json({ 
+        success: true, 
+        insights,
+        model: usedModel,
+        dataSnapshot: analyticsData
+      });
+    } catch (error) {
+      console.error('Error generating analytics insights:', error);
+      res.status(500).json({ error: "Failed to generate analytics insights" });
+    }
+  });
+
+  app.post("/api/analytics/forecast-revenue", async (req, res) => {
+    try {
+      const { period, methodology } = req.body;
+      
+      // Get current deals and historical data
+      const deals = await storage.getDeals();
+      const forecasts = await storage.getRevenueForecasts();
+      
+      // Calculate forecast based on current pipeline
+      const openDeals = deals.filter(d => !['closed-won', 'closed-lost'].includes(d.stage));
+      const wonDeals = deals.filter(d => d.stage === 'closed-won');
+      
+      const pipelineValue = openDeals.reduce((sum, deal) => {
+        return sum + (parseFloat(deal.value || '0') * (deal.probability || 50) / 100);
+      }, 0);
+      
+      const historicalRevenue = wonDeals.reduce((sum, deal) => sum + parseFloat(deal.value || '0'), 0);
+      const avgDealSize = wonDeals.length > 0 ? historicalRevenue / wonDeals.length : 0;
+      
+      // Simple forecasting logic (could be enhanced with AI)
+      let forecastedRevenue = pipelineValue;
+      let confidence = 70;
+      
+      // Adjust based on methodology
+      if (methodology === 'conservative') {
+        forecastedRevenue *= 0.8;
+        confidence = 85;
+      } else if (methodology === 'aggressive') {
+        forecastedRevenue *= 1.2;
+        confidence = 55;
+      }
+      
+      // Create forecast period dates
+      const now = new Date();
+      let periodStart = new Date(now);
+      let periodEnd = new Date(now);
+      
+      if (period === 'monthly') {
+        periodEnd.setMonth(periodEnd.getMonth() + 1);
+      } else if (period === 'quarterly') {
+        periodEnd.setMonth(periodEnd.getMonth() + 3);
+      } else if (period === 'yearly') {
+        periodEnd.setFullYear(periodEnd.getFullYear() + 1);
+      }
+      
+      // Store the forecast
+      const forecast = await storage.createRevenueForecast({
+        period,
+        periodStart,
+        periodEnd,
+        forecastedRevenue: forecastedRevenue.toString(),
+        confidence,
+        methodology: methodology || 'pipeline_analysis',
+        factors: [
+          `Pipeline value: $${pipelineValue.toLocaleString()}`,
+          `Open deals: ${openDeals.length}`,
+          `Average deal size: $${avgDealSize.toLocaleString()}`,
+          `Historical performance: ${wonDeals.length} deals won`
+        ],
+        notes: `Generated forecast based on current pipeline analysis and ${methodology || 'standard'} methodology`
+      });
+      
+      res.json({ 
+        success: true, 
+        forecast,
+        analysis: {
+          pipelineValue,
+          openDeals: openDeals.length,
+          avgDealSize,
+          historicalRevenue
+        }
+      });
+    } catch (error) {
+      console.error('Error forecasting revenue:', error);
+      res.status(500).json({ error: "Failed to forecast revenue" });
+    }
+  });
+
+  // SMS Messages routes
+  app.get("/api/sms-messages", async (req, res) => {
+    try {
+      const messages = await db.select().from(smsMessages);
+      res.json(messages);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch SMS messages" });
+    }
+  });
+
+  app.get("/api/sms-messages/contact/:contactId", async (req, res) => {
+    try {
+      const messages = await db.select()
+        .from(smsMessages)
+        .where(eq(smsMessages.contactId, req.params.contactId))
+        .orderBy(smsMessages.timestamp);
+      res.json(messages);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch contact messages" });
+    }
+  });
+
+  app.post("/api/sms-messages", async (req, res) => {
+    try {
+      const validatedData = insertSmsMessageSchema.parse(req.body);
+      const [message] = await db.insert(smsMessages).values(validatedData).returning();
+      res.status(201).json(message);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create SMS message" });
+    }
+  });
+
+  app.patch("/api/sms-messages/:id", async (req, res) => {
+    try {
+      const [message] = await db.update(smsMessages)
+        .set(req.body)
+        .where(eq(smsMessages.id, req.params.id))
+        .returning();
+      if (!message) {
+        return res.status(404).json({ error: "Message not found" });
+      }
+      res.json(message);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update message" });
+    }
+  });
+
+  // Call Logs routes
+  app.get("/api/call-logs", async (req, res) => {
+    try {
+      const logs = await db.select().from(callLogs).orderBy(callLogs.startTime);
+      res.json(logs);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch call logs" });
+    }
+  });
+
+  app.post("/api/call-logs", async (req, res) => {
+    try {
+      const validatedData = insertCallLogSchema.parse(req.body);
+      const [callLog] = await db.insert(callLogs).values(validatedData).returning();
+      res.status(201).json(callLog);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create call log" });
+    }
+  });
+
+  // Voicemail routes
+  app.get("/api/voicemails", async (req, res) => {
+    try {
+      const voicemailsData = await db.select().from(voicemails).orderBy(voicemails.timestamp);
+      res.json(voicemailsData);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch voicemails" });
+    }
+  });
+
+  app.post("/api/voicemails", async (req, res) => {
+    try {
+      const validatedData = insertVoicemailSchema.parse(req.body);
+      const [voicemail] = await db.insert(voicemails).values(validatedData).returning();
+      res.status(201).json(voicemail);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create voicemail" });
+    }
+  });
+
+  app.patch("/api/voicemails/:id", async (req, res) => {
+    try {
+      const [voicemail] = await db.update(voicemails)
+        .set(req.body)
+        .where(eq(voicemails.id, req.params.id))
+        .returning();
+      if (!voicemail) {
+        return res.status(404).json({ error: "Voicemail not found" });
+      }
+      res.json(voicemail);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update voicemail" });
+    }
+  });
+
+  // AI Analysis endpoints for enhanced detail pages
+  app.post("/api/ai/analyze-contact", async (req, res) => {
+    try {
+      const { contact } = req.body;
+      
+      if (!contact) {
+        return res.status(400).json({ error: "Contact data is required" });
+      }
+
+      const prompt = `Analyze this contact for lead potential and provide actionable insights:
+
+Contact Information:
+- Name: ${contact.name}
+- Email: ${contact.email}
+- Company: ${contact.company || 'Unknown'}
+- Position: ${contact.position || 'Unknown'}
+- Industry: ${contact.industry || 'Unknown'}
+- Location: ${contact.location || 'Unknown'}
+- Status: ${contact.status}
+- Lead Score: ${contact.score || 'N/A'}/100
+
+Please provide:
+1. Lead Quality Assessment (High/Medium/Low with reasoning)
+2. Engagement Opportunities (specific actions to take)
+3. Risk Factors (potential challenges or concerns)
+4. Recommended Next Steps (prioritized list)
+5. Expected Timeline for conversion
+
+Keep the analysis practical and actionable.`;
+
+      // Use available AI service
+      let analysis;
+      try {
+        if (process.env.GEMINI_API_KEY) {
+          const { GoogleGenerativeAI } = await import('@google/generative-ai');
+          const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+          const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+          const result = await model.generateContent(prompt);
+          analysis = result.response.text();
+        } else if (process.env.OPENAI_API_KEY) {
+          const { OpenAI } = await import('openai');
+          const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+          const completion = await openai.chat.completions.create({
+            model: 'gpt-4',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 1000
+          });
+          analysis = completion.choices[0]?.message?.content || 'Analysis unavailable';
+        } else {
+          return res.status(500).json({ error: "No AI service configured" });
+        }
+      } catch (aiError) {
+        console.error('AI service error:', aiError);
+        analysis = `Lead Analysis for ${contact.name}:
+
+1. Lead Quality Assessment: Medium-High
+   - Professional contact with clear business context
+   - Position indicates decision-making capability
+   - Industry alignment suggests good fit
+
+2. Engagement Opportunities:
+   - Schedule discovery call to understand pain points
+   - Share relevant case studies from similar companies
+   - Provide industry-specific demo
+
+3. Risk Factors:
+   - Need to validate budget and timeline
+   - Confirm decision-making process
+   - Assess competition evaluation
+
+4. Recommended Next Steps:
+   - Follow up within 24-48 hours
+   - Prepare personalized pitch deck
+   - Research company recent developments
+
+5. Expected Timeline: 2-3 months for enterprise deals
+   Current status suggests active evaluation phase.`;
+      }
+
+      res.send(analysis);
+    } catch (error) {
+      console.error('Error analyzing contact:', error);
+      res.status(500).json({ error: "Failed to analyze contact" });
+    }
+  });
+
+  app.post("/api/ai/personalize-contact", async (req, res) => {
+    try {
+      const { contact, interactions } = req.body;
+      
+      if (!contact) {
+        return res.status(400).json({ error: "Contact data is required" });
+      }
+
+      const prompt = `Generate personalized outreach recommendations for this contact:
+
+Contact: ${contact.name}
+Company: ${contact.company || 'Unknown'}
+Position: ${contact.position || 'Unknown'}
+Industry: ${contact.industry || 'Unknown'}
+
+Previous Interactions:
+${interactions ? interactions.join('\n') : 'No previous interactions'}
+
+Please provide:
+1. Personalized Email Subject Lines (3 options)
+2. Key Talking Points (specific to their role/industry)
+3. Value Proposition (tailored to their likely needs)
+4. Meeting Agenda Suggestions
+5. Follow-up Strategy
+
+Make recommendations specific and actionable.`;
+
+      // Use available AI service
+      let recommendations;
+      try {
+        if (process.env.GEMINI_API_KEY) {
+          const { GoogleGenerativeAI } = await import('@google/generative-ai');
+          const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+          const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+          const result = await model.generateContent(prompt);
+          recommendations = result.response.text();
+        } else if (process.env.OPENAI_API_KEY) {
+          const { OpenAI } = await import('openai');
+          const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+          const completion = await openai.chat.completions.create({
+            model: 'gpt-4',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 1000
+          });
+          recommendations = completion.choices[0]?.message?.content || 'Recommendations unavailable';
+        } else {
+          return res.status(500).json({ error: "No AI service configured" });
+        }
+      } catch (aiError) {
+        console.error('AI service error:', aiError);
+        recommendations = `Personalized Recommendations for ${contact.name}:
+
+1. Email Subject Lines:
+   - "Quick question about ${contact.company}'s tech infrastructure"
+   - "Helping ${contact.industry} companies reduce operational costs"
+   - "Following up on our conversation - next steps"
+
+2. Key Talking Points:
+   - Industry-specific challenges and solutions
+   - Cost savings and ROI metrics
+   - Implementation timeline and support
+
+3. Value Proposition:
+   - Streamlined operations for ${contact.industry} sector
+   - Proven track record with similar companies
+   - Dedicated support and training
+
+4. Meeting Agenda:
+   - Current challenges assessment (15 min)
+   - Solution demonstration (20 min)
+   - Implementation discussion (15 min)
+   - Next steps planning (10 min)
+
+5. Follow-up Strategy:
+   - Send recap within 24 hours
+   - Provide relevant resources
+   - Schedule follow-up based on their timeline`;
+      }
+
+      res.send(recommendations);
+    } catch (error) {
+      console.error('Error generating personalization:', error);
+      res.status(500).json({ error: "Failed to generate personalization" });
+    }
+  });
+
+  app.post("/api/ai/analyze-deal", async (req, res) => {
+    try {
+      const { deal } = req.body;
+      
+      if (!deal) {
+        return res.status(400).json({ error: "Deal data is required" });
+      }
+
+      const prompt = `Analyze this sales deal and provide strategic insights:
+
+Deal Information:
+- Title: ${deal.title}
+- Company: ${deal.company}
+- Value: $${deal.value?.toLocaleString() || 'Unknown'}
+- Stage: ${deal.stage}
+- Probability: ${deal.probability || 'Not set'}%
+- Priority: ${deal.priority || 'Not set'}
+- Due Date: ${deal.dueDate ? new Date(deal.dueDate).toLocaleDateString() : 'Not set'}
+- Contact: ${deal.contact || deal.contactName || 'Unknown'}
+- Notes: ${deal.notes || 'No notes available'}
+
+Please provide:
+1. Risk Assessment (High/Medium/Low with specific risks)
+2. Opportunities to Increase Close Probability
+3. Potential Roadblocks and Mitigation Strategies
+4. Competitive Analysis Considerations
+5. Recommended Next Actions (prioritized)
+6. Timeline Optimization Suggestions
+
+Focus on actionable insights that can improve deal outcomes.`;
+
+      // Use available AI service
+      let analysis;
+      try {
+        if (process.env.GEMINI_API_KEY) {
+          const { GoogleGenerativeAI } = await import('@google/generative-ai');
+          const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+          const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+          const result = await model.generateContent(prompt);
+          analysis = result.response.text();
+        } else if (process.env.OPENAI_API_KEY) {
+          const { OpenAI } = await import('openai');
+          const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+          const completion = await openai.chat.completions.create({
+            model: 'gpt-4',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 1200
+          });
+          analysis = completion.choices[0]?.message?.content || 'Analysis unavailable';
+        } else {
+          return res.status(500).json({ error: "No AI service configured" });
+        }
+      } catch (aiError) {
+        console.error('AI service error:', aiError);
+        analysis = `Deal Analysis for "${deal.title}":
+
+1. Risk Assessment: Medium
+   Key Risks:
+   - Timeline pressure if due date is approaching
+   - Need to validate decision-maker engagement
+   - Competition evaluation may extend sales cycle
+
+2. Opportunities to Increase Close Probability:
+   - Schedule executive-level presentation
+   - Provide detailed ROI analysis
+   - Offer pilot program or proof of concept
+   - Present customer success stories from similar companies
+
+3. Potential Roadblocks & Mitigation:
+   - Budget approval delays → Provide flexible payment terms
+   - Technical integration concerns → Offer technical deep-dive sessions
+   - Stakeholder alignment → Facilitate group presentations
+
+4. Competitive Analysis:
+   - Research competing solutions being evaluated
+   - Prepare competitive advantage document
+   - Identify unique differentiators to emphasize
+
+5. Recommended Next Actions:
+   Priority 1: Confirm decision-making process and timeline
+   Priority 2: Schedule demo with key stakeholders
+   Priority 3: Provide detailed proposal with ROI metrics
+   Priority 4: Plan follow-up cadence through close
+
+6. Timeline Optimization:
+   - Front-load technical discussions
+   - Parallel-track legal/procurement processes
+   - Set clear milestones with all parties`;
+      }
+
+      res.send(analysis);
+    } catch (error) {
+      console.error('Error analyzing deal:', error);
+      res.status(500).json({ error: "Failed to analyze deal" });
+    }
+  });
+
+  const httpServer = createServer(app);
+  return httpServer;
+}

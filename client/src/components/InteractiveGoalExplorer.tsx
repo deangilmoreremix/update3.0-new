@@ -85,7 +85,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
   const handleExecuteGoal = async (goal: Goal) => {
     if (executingGoals.has(goal.id)) return;
 
-    setExecutingGoals(prev => new Set([...prev, goal.id]));
+    setExecutingGoals(prev => new Set([...Array.from(prev), goal.id]));
     setExecutionProgress(prev => ({ ...prev, [goal.id]: 0 }));
 
     // Show the modal
