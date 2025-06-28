@@ -48,20 +48,19 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   // For now, all routes are accessible without authentication
   // This can be updated when Clerk is re-enabled
   return (
-    <AIToolsProvider>
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <main className="pt-16">
-          {children}
-        </main>
-      </div>
-    </AIToolsProvider>
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <main className="pt-16">
+        {children}
+      </main>
+    </div>
   );
 };
 
 function App() {
   return (
-    <Router>
+    <AIToolsProvider>
+      <Router>
         <Routes>
           {/* Auth routes (available for future Clerk integration) */}
           <Route path="/login" element={<Login />} />
@@ -195,6 +194,7 @@ function App() {
           } />
         </Routes>
       </Router>
+    </AIToolsProvider>
   );
 }
 

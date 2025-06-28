@@ -135,6 +135,7 @@ const AIToolsContext = createContext<AIToolsContextProps | null>(null);
 export const useAITools = () => {
   const context = useContext(AIToolsContext);
   if (!context) {
+    console.error('AITools context not found - checking provider hierarchy');
     throw new Error('useAITools must be used within an AIToolsProvider');
   }
   return context;
