@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Goal } from '../../types/goals';
+import { Goal } from '../types/goals';
 import { 
   Clock, 
   TrendingUp, 
@@ -18,12 +18,7 @@ import {
   Settings,
   Sparkles,
   FileText,
-  BarChart3,
-  Lightbulb,
-  DollarSign,
-  Award,
-  Network,
-  ExternalLink
+  BarChart3
 } from 'lucide-react';
 
 interface InteractiveGoalCardProps {
@@ -317,7 +312,7 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
                 <ul className="space-y-1">
                   {goal.prerequisite.map((req, index) => (
                     <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
-                      <CheckCircle className="h-3 w-3 text-green-600 mt-1 flex-shrink-0" />
+                      <div className="w-1 h-1 bg-orange-600 rounded-full mt-2 flex-shrink-0"></div>
                       {req}
                     </li>
                   ))}
@@ -325,43 +320,87 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
               </div>
             )}
 
+            {/* All AI Agents */}
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                <Bot className="h-4 w-4 text-purple-600" />
+                AI Agents Required ({goal.agentsRequired.length})
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {goal.agentsRequired.map((agent, index) => (
+                  <div key={index} className="flex items-center gap-1 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs border border-purple-200">
+                    <Bot className="h-3 w-3" />
+                    {agent}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Tools and Integrations */}
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                <Settings className="h-4 w-4 text-cyan-600" />
+                Tools & Integrations
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {goal.toolsNeeded.map((tool, index) => (
+                  <span key={index} className="bg-cyan-100 text-cyan-700 px-2 py-1 rounded text-xs border border-cyan-200">
+                    {tool}
+                  </span>
+                ))}
+              </div>
+            </div>
+
             {/* Success Metrics */}
             <div>
               <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                <BarChart3 className="h-4 w-4 text-blue-600" />
+                <BarChart3 className="h-4 w-4 text-indigo-600" />
                 Success Metrics
               </h4>
               <ul className="space-y-1">
                 {goal.successMetrics.map((metric, index) => (
                   <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
-                    <TrendingUp className="h-3 w-3 text-green-600 mt-1 flex-shrink-0" />
+                    <div className="w-1 h-1 bg-indigo-600 rounded-full mt-2 flex-shrink-0"></div>
                     {metric}
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Tools Needed */}
-            <div>
-              <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                <Settings className="h-4 w-4 text-purple-600" />
-                Tools & Integrations
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {goal.toolsNeeded.map((tool, index) => (
-                  <span key={index} className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full border border-purple-200">
-                    {tool}
-                  </span>
-                ))}
+            {/* Category and Complexity */}
+            <div className="grid grid-cols-2 gap-4 pt-3 border-t border-gray-100">
+              <div>
+                <h4 className="text-xs font-medium text-gray-600 mb-1">Category</h4>
+                <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs ${getCategoryColor(goal.category)}`}>
+                  {goal.category}
+                </span>
+              </div>
+              <div>
+                <h4 className="text-xs font-medium text-gray-600 mb-1">Complexity</h4>
+                <div className="flex items-center gap-1 text-gray-700">
+                  {getComplexityIcon(goal.complexity)}
+                  <span className="text-xs">{goal.complexity}</span>
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Sparkle Animation for Interactive Effects */}
-        {(isHovered || isExecuting) && (
-          <div className="absolute top-4 right-4 animate-bounce">
-            <Sparkles className={`h-5 w-5 ${isExecuting ? 'text-purple-500' : 'text-blue-500'}`} />
+        {/* Floating Action Indicators */}
+        {isHovered && !isExecuting && (
+          <div className="absolute top-4 right-4 space-y-2 animate-fadeIn">
+            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center border border-blue-300">
+              <Sparkles className="h-4 w-4 text-blue-600" />
+            </div>
+          </div>
+        )}
+
+        {/* Agent Network Indicator */}
+        {isExecuting && (
+          <div className="absolute bottom-4 right-4 flex items-center gap-2 animate-pulse">
+            <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+            <div className="w-2 h-2 bg-purple-400 rounded-full" style={{animationDelay: '0.5s'}}></div>
+            <div className="w-2 h-2 bg-green-400 rounded-full" style={{animationDelay: '1s'}}></div>
           </div>
         )}
       </div>
