@@ -432,6 +432,241 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Email Analysis Endpoint
+  app.post("/api/ai/email-analyzer", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { emailContent } = req.body;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      if (!openaiApiKey) {
+        return res.status(400).json({ error: "OpenAI API key is required" });
+      }
+
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4',
+          messages: [
+            { 
+              role: 'system', 
+              content: 'You are an expert email analyzer. Analyze emails for sentiment, intent, urgency, and provide actionable insights for sales teams.' 
+            },
+            { 
+              role: 'user', 
+              content: `Analyze this email and provide insights: ${emailContent}` 
+            }
+          ],
+          temperature: 0.3,
+          max_tokens: 1000,
+        }),
+      });
+
+      const result = await openaiResponse.json();
+      res.json({ result: result.choices[0]?.message?.content, success: true });
+    } catch (error) {
+      console.error('Error analyzing email:', error);
+      res.status(500).json({ error: 'Failed to analyze email', success: false });
+    }
+  });
+
+  // Meeting Summary Endpoint
+  app.post("/api/ai/meeting-summarizer", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { transcript } = req.body;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      if (!openaiApiKey) {
+        return res.status(400).json({ error: "OpenAI API key is required" });
+      }
+
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4',
+          messages: [
+            { 
+              role: 'system', 
+              content: 'You are a meeting summarization expert. Create concise, actionable meeting summaries with key points, decisions, and next steps.' 
+            },
+            { 
+              role: 'user', 
+              content: `Summarize this meeting transcript: ${transcript}` 
+            }
+          ],
+          temperature: 0.3,
+          max_tokens: 1500,
+        }),
+      });
+
+      const result = await openaiResponse.json();
+      res.json({ result: result.choices[0]?.message?.content, success: true });
+    } catch (error) {
+      console.error('Error summarizing meeting:', error);
+      res.status(500).json({ error: 'Failed to summarize meeting', success: false });
+    }
+  });
+
+  // Sales Insights Endpoint
+  app.post("/api/ai/sales-insights", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { contacts, deals } = req.body;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      if (!openaiApiKey) {
+        return res.status(400).json({ error: "OpenAI API key is required" });
+      }
+
+      const prompt = `Analyze this sales data and provide actionable insights:
+      Contacts: ${JSON.stringify(contacts)}
+      Deals: ${JSON.stringify(deals)}
+      
+      Provide insights on:
+      1. Sales pipeline health
+      2. Top opportunities
+      3. At-risk deals
+      4. Recommended actions`;
+
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4',
+          messages: [
+            { 
+              role: 'system', 
+              content: 'You are a sales analytics expert. Analyze sales data and provide strategic insights and recommendations.' 
+            },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.3,
+          max_tokens: 2000,
+        }),
+      });
+
+      const result = await openaiResponse.json();
+      res.json({ result: result.choices[0]?.message?.content, success: true });
+    } catch (error) {
+      console.error('Error generating sales insights:', error);
+      res.status(500).json({ error: 'Failed to generate sales insights', success: false });
+    }
+  });
+
+  // Business Analyzer Endpoint
+  app.post("/api/ai/business-analyzer", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { businessData } = req.body;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      if (!openaiApiKey) {
+        return res.status(400).json({ error: "OpenAI API key is required" });
+      }
+
+      const prompt = `Analyze this business data: ${JSON.stringify(businessData)}
+      
+      Provide analysis on:
+      1. Business strengths and weaknesses
+      2. Market opportunities
+      3. Competitive positioning
+      4. Growth recommendations`;
+
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4',
+          messages: [
+            { 
+              role: 'system', 
+              content: 'You are a business analyst expert. Provide comprehensive business analysis and strategic recommendations.' 
+            },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.3,
+          max_tokens: 2000,
+        }),
+      });
+
+      const result = await openaiResponse.json();
+      res.json({ result: result.choices[0]?.message?.content, success: true });
+    } catch (error) {
+      console.error('Error analyzing business:', error);
+      res.status(500).json({ error: 'Failed to analyze business', success: false });
+    }
+  });
+
+  // Real-time Analysis Endpoint
+  app.post("/api/ai/realtime-analysis", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { analysisType, content } = req.body;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      if (!openaiApiKey) {
+        return res.status(400).json({ error: "OpenAI API key is required" });
+      }
+
+      let systemMessage = '';
+      let prompt = '';
+
+      switch (analysisType) {
+        case 'sentiment':
+          systemMessage = 'You are a sentiment analysis expert. Analyze text for emotional tone, sentiment polarity, and provide insights.';
+          prompt = `Analyze the sentiment of this text: ${content}`;
+          break;
+        case 'email-feedback':
+          systemMessage = 'You are an email writing coach. Provide constructive feedback on email effectiveness and tone.';
+          prompt = `Provide feedback on this email: ${content}`;
+          break;
+        case 'form-validation':
+          systemMessage = 'You are a data validation expert. Provide intelligent form field validation and suggestions.';
+          prompt = `Validate this form data: ${JSON.stringify(content)}`;
+          break;
+        case 'call-insights':
+          systemMessage = 'You are a call analysis expert. Provide real-time insights on call effectiveness and recommendations.';
+          prompt = `Analyze this call transcript: ${content}`;
+          break;
+        default:
+          return res.status(400).json({ error: `Unsupported analysis type: ${analysisType}` });
+      }
+
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4',
+          messages: [
+            { role: 'system', content: systemMessage },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.3,
+          max_tokens: 1000,
+        }),
+      });
+
+      const result = await openaiResponse.json();
+      res.json({ result: result.choices[0]?.message?.content, success: true });
+    } catch (error) {
+      console.error('Error in real-time analysis:', error);
+      res.status(500).json({ error: 'Failed to perform analysis', success: false });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
