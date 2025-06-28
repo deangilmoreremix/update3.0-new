@@ -122,7 +122,7 @@ class ComposioClient {
       }
     };
 
-    const toolKey = action.tool.toLowerCase();
+    const toolKey = action.tool.toLowerCase() as keyof typeof demoResults;
     const result = demoResults[toolKey] || {
       success: true,
       data: { message: `${action.tool} action completed successfully`, status: 'executed' }

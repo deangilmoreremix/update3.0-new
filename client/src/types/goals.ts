@@ -1,6 +1,8 @@
+import { LucideIcon } from 'lucide-react';
+
 export interface Goal {
   id: string;
-  category: 'Sales' | 'Marketing' | 'Relationship' | 'Automation' | 'Analytics' | 'Content' | 'Admin' | 'AI-Native';
+  category: string;
   title: string;
   description: string;
   priority: 'High' | 'Medium' | 'Low';
@@ -11,7 +13,7 @@ export interface Goal {
   complexity: 'Simple' | 'Intermediate' | 'Advanced';
   realWorldExample: string;
   successMetrics: string[];
-  prerequisite?: string[];
+  prerequisite: string[];
   roi: string;
 }
 
@@ -19,23 +21,37 @@ export interface GoalCategory {
   id: string;
   name: string;
   description: string;
-  icon: any;
+  icon: LucideIcon;
   color: string;
   totalGoals: number;
 }
 
 export interface GoalProgress {
   goalId: string;
-  status: 'not_started' | 'in_progress' | 'completed' | 'failed';
-  progress: number; // 0-100
-  completedSteps: string[];
-  lastUpdated: Date;
-  metrics: Record<string, any>;
+  status: 'pending' | 'executing' | 'completed' | 'failed';
+  progress: number;
+  steps: ExecutionStep[];
+  startTime: Date;
+  endTime?: Date;
+  results?: any;
+}
+
+export interface ExecutionStep {
+  id: string;
+  name: string;
+  status: 'pending' | 'executing' | 'completed' | 'failed';
+  progress: number;
+  agent: string;
+  duration?: number;
+  result?: any;
 }
 
 export interface AgentGoalMapping {
-  agentId: string;
-  goalIds: string[];
-  primaryGoals: string[];
-  supportingGoals: string[];
+  goalId: string;
+  agents: {
+    primary: string;
+    secondary: string[];
+  };
+  executionOrder: string[];
+  dependencies: Record<string, string[]>;
 }

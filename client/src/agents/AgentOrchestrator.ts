@@ -178,7 +178,7 @@ export async function runAgentWorkflow(
     
     for (let i = 0; i < steps.length; i++) {
       const step = steps[i];
-      progressCallback?.(step);
+      progressCallback?.(step.step);
       
       // Simulate step execution with realistic delays
       await delay(Math.random() * 2000 + 1000);

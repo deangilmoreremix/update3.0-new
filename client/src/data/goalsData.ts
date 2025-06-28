@@ -1,0 +1,432 @@
+import { Goal, GoalCategory } from '@/types/goals';
+import { 
+  Target, 
+  TrendingUp, 
+  Users, 
+  Zap, 
+  BarChart3, 
+  FileText, 
+  Settings,
+  Brain
+} from 'lucide-react';
+
+export const goalCategories: GoalCategory[] = [
+  {
+    id: 'sales',
+    name: 'Sales Goals',
+    description: 'Automate sales processes and boost revenue',
+    icon: Target,
+    color: 'blue',
+    totalGoals: 3
+  },
+  {
+    id: 'marketing',
+    name: 'Marketing Goals',
+    description: 'Enhance marketing campaigns and lead generation',
+    icon: TrendingUp,
+    color: 'purple',
+    totalGoals: 3
+  },
+  {
+    id: 'relationship',
+    name: 'Relationship Goals',
+    description: 'Improve customer relationships and engagement',
+    icon: Users,
+    color: 'green',
+    totalGoals: 2
+  },
+  {
+    id: 'automation',
+    name: 'Automation Goals',
+    description: 'Streamline workflows and increase efficiency',
+    icon: Zap,
+    color: 'orange',
+    totalGoals: 3
+  },
+  {
+    id: 'analytics',
+    name: 'Analytics Goals',
+    description: 'Generate insights from data and optimize performance',
+    icon: BarChart3,
+    color: 'teal',
+    totalGoals: 3
+  },
+  {
+    id: 'content',
+    name: 'Content Goals',
+    description: 'Create and distribute engaging content',
+    icon: FileText,
+    color: 'yellow',
+    totalGoals: 2
+  },
+  {
+    id: 'admin',
+    name: 'Admin Goals',
+    description: 'Administrative tasks and compliance',
+    icon: Settings,
+    color: 'indigo',
+    totalGoals: 2
+  },
+  {
+    id: 'ai-native',
+    name: 'AI-Native Goals',
+    description: 'Advanced AI-powered business processes',
+    icon: Brain,
+    color: 'pink',
+    totalGoals: 3
+  }
+];
+
+export const allGoals: Goal[] = [
+  // Sales Goals
+  {
+    id: 'lead-scoring-automation',
+    category: 'Sales',
+    title: 'AI-Powered Lead Scoring',
+    description: 'Automatically score and prioritize leads based on behavior, demographics, and engagement patterns using machine learning algorithms.',
+    priority: 'High',
+    agentsRequired: ['Lead Scoring Agent', 'Data Analysis Agent', 'CRM Integration Agent'],
+    toolsNeeded: ['CRM', 'Analytics', 'Email'],
+    estimatedSetupTime: '15 minutes',
+    businessImpact: 'Increase qualified lead conversion by 35% and reduce manual lead qualification time by 80%',
+    complexity: 'Intermediate',
+    realWorldExample: 'A SaaS company increased their sales team efficiency by 45% after implementing AI lead scoring, helping them focus on prospects most likely to convert.',
+    successMetrics: ['Lead qualification accuracy', 'Sales team productivity', 'Conversion rate improvement'],
+    prerequisite: ['CRM integration', 'Historical lead data'],
+    roi: '300% within 6 months'
+  },
+  {
+    id: 'smart-proposal-generation',
+    category: 'Sales',
+    title: 'Smart Proposal Generation',
+    description: 'Generate personalized, compelling proposals automatically based on prospect data, industry trends, and winning proposal templates.',
+    priority: 'High',
+    agentsRequired: ['Proposal Generation Agent', 'Research Agent', 'Content Optimization Agent'],
+    toolsNeeded: ['CRM', 'Document Generator', 'Research Tools'],
+    estimatedSetupTime: '20 minutes',
+    businessImpact: 'Reduce proposal creation time by 70% and increase win rates by 25% through data-driven personalization',
+    complexity: 'Advanced',
+    realWorldExample: 'A consulting firm reduced proposal preparation time from 8 hours to 2 hours while increasing their proposal acceptance rate by 30%.',
+    successMetrics: ['Time to create proposal', 'Proposal win rate', 'Client satisfaction scores'],
+    prerequisite: ['Proposal templates', 'Client data integration'],
+    roi: '250% within 4 months'
+  },
+  {
+    id: 'pipeline-optimization',
+    category: 'Sales',
+    title: 'Sales Pipeline Optimization',
+    description: 'Analyze and optimize your sales pipeline with AI-driven insights, identifying bottlenecks and suggesting improvements.',
+    priority: 'Medium',
+    agentsRequired: ['Pipeline Analysis Agent', 'Performance Optimizer Agent', 'Forecasting Agent'],
+    toolsNeeded: ['CRM', 'Analytics', 'Reporting'],
+    estimatedSetupTime: '12 minutes',
+    businessImpact: 'Improve pipeline velocity by 40% and increase forecast accuracy to 95%',
+    complexity: 'Intermediate',
+    realWorldExample: 'A B2B software company identified that their demo-to-close rate improved by 50% after optimizing their sales process based on AI recommendations.',
+    successMetrics: ['Pipeline velocity', 'Forecast accuracy', 'Deal closure rate'],
+    prerequisite: ['Sales data history', 'CRM integration'],
+    roi: '180% within 3 months'
+  },
+
+  // Marketing Goals
+  {
+    id: 'dynamic-email-campaigns',
+    category: 'Marketing',
+    title: 'Dynamic Email Campaigns',
+    description: 'Create and execute personalized email campaigns that adapt content based on recipient behavior, preferences, and engagement history.',
+    priority: 'High',
+    agentsRequired: ['Email Marketing Agent', 'Personalization Agent', 'A/B Testing Agent'],
+    toolsNeeded: ['Email Platform', 'CRM', 'Analytics'],
+    estimatedSetupTime: '18 minutes',
+    businessImpact: 'Increase email open rates by 45% and click-through rates by 60% through dynamic personalization',
+    complexity: 'Intermediate',
+    realWorldExample: 'An e-commerce brand saw a 3x increase in email revenue after implementing AI-driven dynamic content that personalized product recommendations.',
+    successMetrics: ['Open rates', 'Click-through rates', 'Conversion rates', 'Revenue per email'],
+    prerequisite: ['Email platform integration', 'Customer data'],
+    roi: '400% within 2 months'
+  },
+  {
+    id: 'content-calendar-automation',
+    category: 'Marketing',
+    title: 'AI Content Calendar',
+    description: 'Automatically generate and schedule content across multiple channels based on audience insights, trending topics, and business goals.',
+    priority: 'Medium',
+    agentsRequired: ['Content Planning Agent', 'Social Media Agent', 'Trend Analysis Agent'],
+    toolsNeeded: ['Social Media', 'Content Management', 'Analytics'],
+    estimatedSetupTime: '25 minutes',
+    businessImpact: 'Reduce content planning time by 80% and increase engagement rates by 35% through data-driven content strategy',
+    complexity: 'Advanced',
+    realWorldExample: 'A digital marketing agency automated content creation for 50+ clients, reducing planning time from 20 hours to 4 hours per week per client.',
+    successMetrics: ['Content engagement rates', 'Time saved in planning', 'Follower growth'],
+    prerequisite: ['Social media accounts', 'Brand guidelines'],
+    roi: '200% within 3 months'
+  },
+  {
+    id: 'dynamic-pricing-optimization',
+    category: 'Marketing',
+    title: 'Dynamic Pricing Optimization',
+    description: 'Implement AI-driven pricing strategies that adjust based on market conditions, competitor analysis, and demand patterns.',
+    priority: 'High',
+    agentsRequired: ['Pricing Strategy Agent', 'Market Analysis Agent', 'Competitor Intelligence Agent'],
+    toolsNeeded: ['Analytics', 'Market Data', 'Price Management'],
+    estimatedSetupTime: '30 minutes',
+    businessImpact: 'Increase profit margins by 15-25% and improve price competitiveness through real-time market analysis',
+    complexity: 'Advanced',
+    realWorldExample: 'A SaaS company increased revenue by 22% after implementing dynamic pricing that responded to competitor moves and market demand.',
+    successMetrics: ['Profit margin improvement', 'Price competitiveness', 'Revenue growth'],
+    prerequisite: ['Product catalog', 'Competitor data access'],
+    roi: '300% within 6 months'
+  },
+
+  // Relationship Goals
+  {
+    id: 'customer-health-monitoring',
+    category: 'Relationship',
+    title: 'Customer Health Score Monitoring',
+    description: 'Monitor customer satisfaction and engagement in real-time, predicting churn risk and suggesting retention strategies.',
+    priority: 'High',
+    agentsRequired: ['Customer Success Agent', 'Churn Prediction Agent', 'Engagement Analyzer Agent'],
+    toolsNeeded: ['CRM', 'Analytics', 'Support System'],
+    estimatedSetupTime: '20 minutes',
+    businessImpact: 'Reduce customer churn by 30% and increase customer lifetime value by 40% through proactive intervention',
+    complexity: 'Intermediate',
+    realWorldExample: 'A subscription service reduced churn from 8% to 5% monthly by proactively reaching out to at-risk customers identified by AI.',
+    successMetrics: ['Churn rate reduction', 'Customer satisfaction scores', 'Retention rate'],
+    prerequisite: ['Customer interaction data', 'Support ticket history'],
+    roi: '250% within 4 months'
+  },
+  {
+    id: 'automated-onboarding',
+    category: 'Relationship',
+    title: 'Automated Customer Onboarding',
+    description: 'Create personalized onboarding experiences that adapt to customer needs, ensuring faster time-to-value and higher success rates.',
+    priority: 'Medium',
+    agentsRequired: ['Onboarding Specialist Agent', 'Progress Tracking Agent', 'Success Optimization Agent'],
+    toolsNeeded: ['CRM', 'Learning Management', 'Communication'],
+    estimatedSetupTime: '25 minutes',
+    businessImpact: 'Reduce time-to-value by 50% and increase new customer success rates by 60%',
+    complexity: 'Intermediate',
+    realWorldExample: 'A software platform reduced their average onboarding time from 2 weeks to 5 days while improving customer activation rates by 45%.',
+    successMetrics: ['Time to first value', 'Onboarding completion rate', 'Customer activation'],
+    prerequisite: ['Onboarding content', 'User journey mapping'],
+    roi: '180% within 3 months'
+  },
+
+  // Automation Goals
+  {
+    id: 'invoice-processing-automation',
+    category: 'Automation',
+    title: 'Invoice Processing Automation',
+    description: 'Automate invoice processing, approval workflows, and payment tracking using AI-powered document recognition and workflow management.',
+    priority: 'Medium',
+    agentsRequired: ['Document Processing Agent', 'Workflow Automation Agent', 'Financial Reconciliation Agent'],
+    toolsNeeded: ['Document Scanner', 'Workflow Engine', 'Accounting System'],
+    estimatedSetupTime: '22 minutes',
+    businessImpact: 'Reduce invoice processing time by 85% and eliminate manual data entry errors',
+    complexity: 'Intermediate',
+    realWorldExample: 'An accounting firm automated invoice processing for 100+ clients, reducing processing time from 2 hours to 15 minutes per batch.',
+    successMetrics: ['Processing time reduction', 'Error rate decrease', 'Cost savings'],
+    prerequisite: ['Digital invoice formats', 'Accounting system integration'],
+    roi: '150% within 2 months'
+  },
+  {
+    id: 'meeting-scheduling-optimization',
+    category: 'Automation',
+    title: 'Intelligent Meeting Scheduling',
+    description: 'Automatically schedule meetings, find optimal times, send invitations, and manage calendar conflicts across teams and time zones.',
+    priority: 'Low',
+    agentsRequired: ['Scheduling Agent', 'Calendar Optimization Agent', 'Time Zone Coordinator Agent'],
+    toolsNeeded: ['Calendar', 'Email', 'Meeting Platform'],
+    estimatedSetupTime: '15 minutes',
+    businessImpact: 'Save 5 hours per week per employee on scheduling coordination and reduce meeting conflicts by 90%',
+    complexity: 'Simple',
+    realWorldExample: 'A global consulting firm saved 20 hours per week of administrative time by automating meeting coordination across 15 time zones.',
+    successMetrics: ['Time saved on scheduling', 'Meeting conflict reduction', 'Employee satisfaction'],
+    prerequisite: ['Calendar access', 'Meeting preferences setup'],
+    roi: '120% within 1 month'
+  },
+  {
+    id: 'workflow-automation-designer',
+    category: 'Automation',
+    title: 'Workflow Automation Designer',
+    description: 'Design and implement custom automated workflows that connect multiple systems and eliminate repetitive manual tasks.',
+    priority: 'High',
+    agentsRequired: ['Workflow Designer Agent', 'Integration Specialist Agent', 'Process Optimizer Agent'],
+    toolsNeeded: ['Workflow Engine', 'API Connectors', 'Monitoring Tools'],
+    estimatedSetupTime: '35 minutes',
+    businessImpact: 'Automate 70% of repetitive tasks and improve process efficiency by 300%',
+    complexity: 'Advanced',
+    realWorldExample: 'A manufacturing company automated their entire order-to-fulfillment process, reducing processing time from 3 days to 4 hours.',
+    successMetrics: ['Tasks automated', 'Process efficiency gain', 'Error rate reduction'],
+    prerequisite: ['System access credentials', 'Process documentation'],
+    roi: '400% within 6 months'
+  },
+
+  // Analytics Goals
+  {
+    id: 'business-intelligence-dashboard',
+    category: 'Analytics',
+    title: 'Real-time Business Intelligence',
+    description: 'Create comprehensive dashboards that provide real-time insights into key business metrics and predictive analytics.',
+    priority: 'High',
+    agentsRequired: ['Business Intelligence Agent', 'Data Visualization Agent', 'Predictive Analytics Agent'],
+    toolsNeeded: ['Analytics Platform', 'Data Warehouse', 'Visualization Tools'],
+    estimatedSetupTime: '28 minutes',
+    businessImpact: 'Improve decision-making speed by 60% and increase data-driven insights across all departments',
+    complexity: 'Advanced',
+    realWorldExample: 'A retail chain identified $2M in cost savings opportunities through real-time analytics that revealed inefficient inventory patterns.',
+    successMetrics: ['Decision-making speed', 'Data accessibility', 'Insight quality'],
+    prerequisite: ['Data sources integration', 'KPI definitions'],
+    roi: '350% within 4 months'
+  },
+  {
+    id: 'customer-lifetime-value-prediction',
+    category: 'Analytics',
+    title: 'Customer Lifetime Value Prediction',
+    description: 'Predict customer lifetime value using advanced machine learning models to optimize acquisition and retention strategies.',
+    priority: 'Medium',
+    agentsRequired: ['CLV Prediction Agent', 'Customer Segmentation Agent', 'Revenue Forecasting Agent'],
+    toolsNeeded: ['Analytics', 'Machine Learning', 'CRM'],
+    estimatedSetupTime: '25 minutes',
+    businessImpact: 'Optimize marketing spend efficiency by 40% and improve customer acquisition ROI by 65%',
+    complexity: 'Advanced',
+    realWorldExample: 'An e-commerce company increased marketing ROI by 50% by focusing acquisition spend on high-CLV customer segments.',
+    successMetrics: ['CLV prediction accuracy', 'Marketing ROI improvement', 'Customer segmentation effectiveness'],
+    prerequisite: ['Customer transaction history', 'Marketing spend data'],
+    roi: '280% within 5 months'
+  },
+  {
+    id: 'performance-optimization-insights',
+    category: 'Analytics',
+    title: 'Performance Optimization Insights',
+    description: 'Analyze business performance across all departments and provide actionable recommendations for improvement.',
+    priority: 'Medium',
+    agentsRequired: ['Performance Analysis Agent', 'Optimization Recommendation Agent', 'KPI Monitoring Agent'],
+    toolsNeeded: ['Analytics', 'Performance Monitoring', 'Reporting'],
+    estimatedSetupTime: '20 minutes',
+    businessImpact: 'Identify 15-25% efficiency improvements across operations and increase overall productivity',
+    complexity: 'Intermediate',
+    realWorldExample: 'A professional services firm increased billable hour utilization by 23% after implementing AI-driven performance optimization recommendations.',
+    successMetrics: ['Efficiency improvements identified', 'Productivity increases', 'Cost reduction achieved'],
+    prerequisite: ['Performance metrics access', 'Operational data'],
+    roi: '200% within 3 months'
+  },
+
+  // Content Goals
+  {
+    id: 'automated-blog-generation',
+    category: 'Content',
+    title: 'Automated Blog Content Generation',
+    description: 'Generate high-quality, SEO-optimized blog content that aligns with your brand voice and drives organic traffic.',
+    priority: 'Medium',
+    agentsRequired: ['Content Writer Agent', 'SEO Optimization Agent', 'Brand Voice Agent'],
+    toolsNeeded: ['Content Management', 'SEO Tools', 'Analytics'],
+    estimatedSetupTime: '22 minutes',
+    businessImpact: 'Increase content production by 500% and improve organic search traffic by 75%',
+    complexity: 'Intermediate',
+    realWorldExample: 'A marketing agency increased their content output from 4 to 20 blog posts per week while maintaining quality and improving search rankings.',
+    successMetrics: ['Content production volume', 'Organic traffic growth', 'Search ranking improvements'],
+    prerequisite: ['Brand guidelines', 'Content strategy'],
+    roi: '180% within 3 months'
+  },
+  {
+    id: 'video-content-automation',
+    category: 'Content',
+    title: 'Video Content Automation',
+    description: 'Automate video content creation, editing, and distribution across multiple platforms with AI-powered tools.',
+    priority: 'Low',
+    agentsRequired: ['Video Production Agent', 'Content Distribution Agent', 'Performance Tracking Agent'],
+    toolsNeeded: ['Video Editor', 'Social Media', 'Analytics'],
+    estimatedSetupTime: '30 minutes',
+    businessImpact: 'Reduce video production time by 80% and increase video engagement rates by 45%',
+    complexity: 'Advanced',
+    realWorldExample: 'A fitness brand automated their workout video creation, increasing content output from 5 to 25 videos per week with higher engagement.',
+    successMetrics: ['Video production speed', 'Engagement rates', 'Platform reach'],
+    prerequisite: ['Video assets', 'Platform accounts'],
+    roi: '220% within 4 months'
+  },
+
+  // Admin Goals
+  {
+    id: 'hr-document-processing',
+    category: 'Admin',
+    title: 'HR Document Processing',
+    description: 'Automate HR document processing, employee onboarding paperwork, and compliance tracking.',
+    priority: 'Medium',
+    agentsRequired: ['HR Processing Agent', 'Compliance Monitoring Agent', 'Document Management Agent'],
+    toolsNeeded: ['Document Management', 'HR System', 'Compliance Tools'],
+    estimatedSetupTime: '25 minutes',
+    businessImpact: 'Reduce HR administrative time by 70% and ensure 100% compliance with labor regulations',
+    complexity: 'Intermediate',
+    realWorldExample: 'A growing startup reduced new employee onboarding time from 3 days to 4 hours while ensuring complete compliance documentation.',
+    successMetrics: ['Processing time reduction', 'Compliance rate', 'Employee satisfaction'],
+    prerequisite: ['HR system access', 'Compliance requirements'],
+    roi: '150% within 2 months'
+  },
+  {
+    id: 'compliance-monitoring-automation',
+    category: 'Admin',
+    title: 'Compliance Monitoring Automation',
+    description: 'Monitor regulatory compliance across all business operations and automatically generate compliance reports.',
+    priority: 'High',
+    agentsRequired: ['Compliance Monitor Agent', 'Regulatory Update Agent', 'Report Generation Agent'],
+    toolsNeeded: ['Compliance Platform', 'Monitoring Tools', 'Reporting'],
+    estimatedSetupTime: '35 minutes',
+    businessImpact: 'Achieve 100% compliance monitoring coverage and reduce compliance violations by 95%',
+    complexity: 'Advanced',
+    realWorldExample: 'A financial services firm automated compliance monitoring, reducing audit preparation time from 200 hours to 20 hours.',
+    successMetrics: ['Compliance coverage', 'Violation reduction', 'Audit efficiency'],
+    prerequisite: ['Regulatory requirements', 'System integrations'],
+    roi: '300% within 6 months'
+  },
+
+  // AI-Native Goals
+  {
+    id: 'document-intelligence-system',
+    category: 'AI-Native',
+    title: 'Document Intelligence System',
+    description: 'Extract insights from unstructured documents using advanced AI, including contracts, reports, and correspondence.',
+    priority: 'High',
+    agentsRequired: ['Document Intelligence Agent', 'Information Extraction Agent', 'Insight Generation Agent'],
+    toolsNeeded: ['Document AI', 'Natural Language Processing', 'Knowledge Management'],
+    estimatedSetupTime: '30 minutes',
+    businessImpact: 'Unlock 80% more insights from existing documents and reduce document review time by 90%',
+    complexity: 'Advanced',
+    realWorldExample: 'A law firm automated contract review, reducing analysis time from 8 hours to 30 minutes per contract while improving accuracy.',
+    successMetrics: ['Document processing speed', 'Insight extraction rate', 'Accuracy improvement'],
+    prerequisite: ['Document repository access', 'AI training data'],
+    roi: '400% within 4 months'
+  },
+  {
+    id: 'predictive-maintenance-system',
+    category: 'AI-Native',
+    title: 'Predictive Maintenance System',
+    description: 'Predict equipment failures and optimize maintenance schedules using IoT data and machine learning algorithms.',
+    priority: 'Medium',
+    agentsRequired: ['Predictive Analytics Agent', 'IoT Data Agent', 'Maintenance Optimizer Agent'],
+    toolsNeeded: ['IoT Sensors', 'Machine Learning', 'Maintenance Management'],
+    estimatedSetupTime: '40 minutes',
+    businessImpact: 'Reduce unplanned downtime by 60% and decrease maintenance costs by 30%',
+    complexity: 'Advanced',
+    realWorldExample: 'A manufacturing plant reduced equipment downtime from 8% to 3% and saved $500K annually in maintenance costs.',
+    successMetrics: ['Downtime reduction', 'Maintenance cost savings', 'Prediction accuracy'],
+    prerequisite: ['IoT sensor data', 'Equipment history'],
+    roi: '350% within 8 months'
+  },
+  {
+    id: 'intelligent-inventory-optimization',
+    category: 'AI-Native',
+    title: 'Intelligent Inventory Optimization',
+    description: 'Optimize inventory levels using AI-powered demand forecasting and supply chain analytics.',
+    priority: 'High',
+    agentsRequired: ['Demand Forecasting Agent', 'Inventory Optimizer Agent', 'Supply Chain Agent'],
+    toolsNeeded: ['Inventory Management', 'Forecasting Models', 'Supply Chain Analytics'],
+    estimatedSetupTime: '32 minutes',
+    businessImpact: 'Reduce inventory holding costs by 25% while improving stock availability to 98%',
+    complexity: 'Advanced',
+    realWorldExample: 'A retail chain optimized inventory across 200 stores, reducing stock-outs by 70% while decreasing inventory costs by $2M.',
+    successMetrics: ['Inventory turnover improvement', 'Stock-out reduction', 'Holding cost savings'],
+    prerequisite: ['Sales history', 'Supply chain data'],
+    roi: '280% within 6 months'
+  }
+];
