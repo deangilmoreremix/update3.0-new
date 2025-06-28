@@ -162,8 +162,7 @@ const Navbar: React.FC = () => {
             
             {/* AI Tools dropdown */}
             <div className="relative group inline-block">
-              <Link 
-                to="/ai-tools"
+              <button 
                 className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
                   isActiveParent('/ai-tools') 
                     ? 'text-blue-600 bg-blue-50' 
@@ -173,9 +172,9 @@ const Navbar: React.FC = () => {
                 <Brain size={20} className="mr-2" />
                 <span className="ml-2">AI Tools</span>
                 <ChevronDown size={16} className="ml-1" />
-              </Link>
+              </button>
               
-              <div className="hidden group-hover:block absolute z-10 w-80 mt-1 bg-white rounded-md shadow-lg border border-gray-100 max-h-96 overflow-y-auto">
+              <div className="hidden group-hover:block absolute z-50 w-80 mt-1 bg-white rounded-md shadow-lg border border-gray-100 max-h-96 overflow-y-auto">
                 <div className="py-1">
                   {/* Core AI Tools */}
                   <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
@@ -183,7 +182,12 @@ const Navbar: React.FC = () => {
                   </div>
                   
                   <button
-                    onClick={() => openTool('email-analysis')}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('Clicking email analysis tool');
+                      openTool('email-analysis');
+                    }}
                     className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                   >
                     <Mail size={18} className="mr-2" />
