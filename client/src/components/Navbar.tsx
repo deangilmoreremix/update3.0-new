@@ -176,7 +176,7 @@ const Navbar: React.FC = () => {
                 <ChevronDown size={16} className="ml-1" />
               </button>
               
-              <div className="hidden group-hover:block absolute z-50 w-80 mt-1 bg-white rounded-md shadow-lg border border-gray-100 max-h-96 overflow-y-auto">
+              <div className="hidden group-hover:block absolute z-50 w-80 mt-1 bg-white rounded-md shadow-lg border border-gray-100 max-h-[calc(100vh-6rem)] overflow-y-auto">
                 <div className="py-1">
                   {/* Core AI Tools */}
                   <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">

@@ -45,7 +45,7 @@ const AIToolModal: React.FC<AIToolModalProps> = ({
 
   return (
     <div 
-      className="fixed inset-0 z-50 overflow-y-auto bg-gray-800 bg-opacity-75 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300"
+      className="fixed inset-0 z-50 overflow-y-auto bg-gray-800 bg-opacity-75 backdrop-blur-sm flex items-start justify-center py-4 px-4 min-h-screen transition-all duration-300"
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
     >
@@ -54,7 +54,7 @@ const AIToolModal: React.FC<AIToolModalProps> = ({
         className={`${
           isFullScreen 
             ? 'fixed inset-4 md:inset-8' 
-            : `relative ${maxWidth} w-full max-h-[85vh] md:max-h-[90vh]`
+            : `relative ${maxWidth} w-full max-h-[calc(100vh-2rem)] my-auto`
         } bg-white rounded-xl shadow-xl flex flex-col overflow-hidden transition-all duration-200 transform scale-100 opacity-100 border border-gray-200`}
         onClick={e => e.stopPropagation()}
         style={{
@@ -89,8 +89,8 @@ const AIToolModal: React.FC<AIToolModalProps> = ({
         </div>
 
         {/* Body with subtle background and improved scrolling */}
-        <div className="flex-1 p-6 overflow-y-auto bg-white bg-opacity-80 bg-[radial-gradient(#f3f4f6_1px,transparent_1px)] bg-[size:20px_20px]">
-          <div className="bg-white bg-opacity-95 p-6 rounded-xl border border-gray-100 shadow-sm">
+        <div className="flex-1 p-6 overflow-y-auto overflow-x-hidden bg-white bg-opacity-80 bg-[radial-gradient(#f3f4f6_1px,transparent_1px)] bg-[size:20px_20px] min-h-0">
+          <div className="bg-white bg-opacity-95 p-6 rounded-xl border border-gray-100 shadow-sm min-h-0">
             {children}
           </div>
         </div>
