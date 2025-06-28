@@ -9,7 +9,7 @@ const Login: React.FC = () => {
   useEffect(() => {
     // Redirect to Clerk hosted sign-in
     redirectToSignIn({
-      returnUrl: '/dashboard'
+      redirectUrl: '/dashboard'
     });
   }, [redirectToSignIn]);
   
