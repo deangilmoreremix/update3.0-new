@@ -50,6 +50,7 @@ import ImageGeneratorFeaturePage from './pages/Landing/FeaturePage/ImageGenerato
 import SemanticSearchFeaturePage from './pages/Landing/FeaturePage/SemanticSearchFeaturePage';
 import FunctionAssistantFeaturePage from './pages/Landing/FeaturePage/FunctionAssistantFeaturePage';
 import CommunicationsFeaturePage from './pages/Landing/FeaturePage/CommunicationsFeaturePage';
+import GoalCardDemo from './pages/GoalCardDemo';
 
 // Layout Components
 import Navbar from './components/Navbar';
@@ -214,6 +215,7 @@ function App() {
           <Route path="/features/semantic-search" element={<SemanticSearchFeaturePage />} />
           <Route path="/features/function-assistant" element={<FunctionAssistantFeaturePage />} />
           <Route path="/features/communications" element={<CommunicationsFeaturePage />} />
+          <Route path="/demo/goal-cards" element={<GoalCardDemo />} />
         </Routes>
       </Router>
     </AIToolsProvider>
