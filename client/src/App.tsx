@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthStore } from './store/authStore';
+import { ClerkProvider, SignedIn, SignedOut } from '@clerk/clerk-react';
 import { AIToolsProvider } from './components/AIToolsProvider';
 
 // Layout components
@@ -23,15 +23,13 @@ import ImageGeneratorFeaturePage from './pages/Landing/FeaturePage/ImageGenerato
 import FunctionAssistantFeaturePage from './pages/Landing/FeaturePage/FunctionAssistantFeaturePage';
 import SemanticSearchFeaturePage from './pages/Landing/FeaturePage/SemanticSearchFeaturePage';
 
-// Protected route wrapper using auth store
+// Protected route wrapper using Clerk
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useAuthStore();
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  return <>{children}</>;
+  return (
+    <SignedIn>
+      {children}
+    </SignedIn>
+  );
 };
 
 // Main pages
@@ -65,15 +63,17 @@ import VoiceProfiles from './pages/VoiceProfiles/VoiceProfiles';
 import Tasks from './pages/Tasks';
 import TaskCalendarView from './pages/TaskCalendarView';
 
+// Get the publishable key from environment
+const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+if (!clerkPubKey) {
+  throw new Error("Missing Publishable Key");
+}
+
 function App() {
-  const { initializeAuth } = useAuthStore();
-  
-  useEffect(() => {
-    initializeAuth();
-  }, [initializeAuth]);
-  
   return (
-    <AIToolsProvider>
+    <ClerkProvider publishableKey={clerkPubKey}>
+      <AIToolsProvider>
         <Router>
           <Routes>
         {/* Landing Pages */}
@@ -382,6 +382,7 @@ function App() {
       </Routes>
     </Router>
     </AIToolsProvider>
+    </ClerkProvider>
   );
 }
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
+import { useUser, useClerk } from '@clerk/clerk-react';
 import { useAITools } from '../components/AIToolsProvider';
 import { 
   Home, 
@@ -62,7 +62,8 @@ const Navbar: React.FC = () => {
   
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isSignedIn } = useUser();
+  const { signOut } = useClerk();
   const { openTool } = useAITools();
 
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -72,7 +73,7 @@ const Navbar: React.FC = () => {
   const toggleContentMenu = () => setContentMenuOpen(!contentMenuOpen);
   
   const handleLogout = async () => {
-    await logout();
+    await signOut();
     navigate('/');
   };
 
