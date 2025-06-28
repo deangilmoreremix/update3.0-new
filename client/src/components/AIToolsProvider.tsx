@@ -149,9 +149,18 @@ export const AIToolsProvider: React.FC<AIToolsProviderProps> = ({ children }) =>
 
   const openTool = (tool: AIToolType) => {
     console.log('Opening tool:', tool);
-    setCurrentTool(tool);
-    setIsToolOpen(true);
-    console.log('Tool state updated - isOpen:', true, 'currentTool:', tool);
+    console.log('Before state update - isOpen:', isToolOpen, 'currentTool:', currentTool);
+    
+    // Force immediate state update using callback form
+    setCurrentTool(() => tool);
+    setIsToolOpen(() => true);
+    
+    // Also trigger a manual re-render after a brief delay
+    setTimeout(() => {
+      setIsToolOpen(true);
+      setCurrentTool(tool);
+      console.log('Force update - tool should be open now');
+    }, 50);
   };
 
   const closeTool = () => {
