@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ClerkProvider, SignedIn, SignedOut } from '@clerk/clerk-react';
+// import { ClerkProvider, SignedIn, SignedOut } from '@clerk/clerk-react';
 import { AIToolsProvider } from './components/AIToolsProvider';
 
 // Layout components
@@ -23,12 +23,12 @@ import ImageGeneratorFeaturePage from './pages/Landing/FeaturePage/ImageGenerato
 import FunctionAssistantFeaturePage from './pages/Landing/FeaturePage/FunctionAssistantFeaturePage';
 import SemanticSearchFeaturePage from './pages/Landing/FeaturePage/SemanticSearchFeaturePage';
 
-// Protected route wrapper using Clerk
+// Protected route wrapper - temporarily disabled for testing
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SignedIn>
+    <>
       {children}
-    </SignedIn>
+    </>
   );
 };
 
@@ -77,7 +77,7 @@ const clerkConfig = {
 
 function App() {
   return (
-    <ClerkProvider {...clerkConfig}>
+    // <ClerkProvider {...clerkConfig}>
       <AIToolsProvider>
         <Router>
           <Routes>
