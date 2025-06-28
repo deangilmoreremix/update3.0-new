@@ -2,8 +2,16 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
 
-// Use the updated model name
-const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+// Use the latest Gemma model with reasoning capabilities
+const model = genAI.getGenerativeModel({ 
+  model: 'gemini-2.0-flash-thinking-exp',
+  generationConfig: {
+    temperature: 0.7,
+    topK: 40,
+    topP: 0.95,
+    maxOutputTokens: 8192,
+  }
+});
 
 export interface ContactPersonalization {
   personalizedMessage: string;

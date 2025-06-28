@@ -29,15 +29,23 @@ export const useOpenAIStream = () => {
     prompt: string,
     systemPrompt: string,
     onToken: (token: string) => void,
-    model: string = 'gpt-4o'  // Default to GPT-4o
+    model: string = 'o1-mini'  // Default to O1-mini for reasoning
   ) => {
     try {
       // Check if the model is from Gemini
       if (model.includes('gemini')) {
         const client = getGeminiClient();
-        // Use gemini-pro instead of any flash models which don't exist in the v1 API
-        const actualModel = model.includes('flash') ? 'gemini-pro' : model;
-        const genModel = client.getGenerativeModel({ model: actualModel });
+        // Use the latest Gemma model with reasoning capabilities
+        const actualModel = 'gemini-2.0-flash-thinking-exp';
+        const genModel = client.getGenerativeModel({ 
+          model: actualModel,
+          generationConfig: {
+            temperature: 0.7,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 8192,
+          }
+        });
         
         // For Gemini, we need to combine the system prompt and user prompt
         const combinedPrompt = `${systemPrompt}\n\nUser query: ${prompt}`;

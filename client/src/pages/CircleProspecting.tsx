@@ -32,7 +32,7 @@ interface ProspectData {
 }
 
 const CircleProspecting: React.FC = () => {
-  const gemini = useGemini();
+  // const gemini = useGemini(); // Removed - using new AI service
   const [center, setCenter] = useState<[number, number]>([37.7749, -122.4194]); // San Francisco
   const [radius, setRadius] = useState<number>(1000); // Radius in meters
   const [searchAddress, setSearchAddress] = useState<string>('');

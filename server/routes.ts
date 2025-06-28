@@ -433,7 +433,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         try {
           const { GoogleGenerativeAI } = await import('@google/generative-ai');
           const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-          const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+          const model = genAI.getGenerativeModel({ 
+            model: 'gemini-2.0-flash-thinking-exp',
+            generationConfig: {
+              temperature: 0.7,
+              topK: 40,
+              topP: 0.95,
+              maxOutputTokens: 8192,
+            }
+          });
           
           const fullPrompt = systemMessage + '\n\n' + prompt;
           const result = await model.generateContent(fullPrompt);
@@ -455,13 +463,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'gpt-4',
+            model: 'o1-preview',
             messages: [
-              { role: 'system', content: systemMessage },
-              { role: 'user', content: prompt }
+              { role: 'user', content: `${systemMessage}\n\n${prompt}` }
             ],
-            temperature: 0.7,
-            max_tokens: 2000,
+            max_completion_tokens: 8192,
           }),
         });
 
@@ -706,13 +712,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-4',
+          model: 'o1-mini',
           messages: [
-            { role: 'system', content: systemMessage },
-            { role: 'user', content: prompt }
+            { role: 'user', content: `${systemMessage}\n\n${prompt}` }
           ],
-          temperature: 0.3,
-          max_tokens: 1000,
+          max_completion_tokens: 4096,
         }),
       });
 
