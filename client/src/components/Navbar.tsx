@@ -161,15 +161,19 @@ const Navbar: React.FC = () => {
                 <ChevronDown size={16} className="ml-1" />
               </Link>
               
-              <div className="hidden group-hover:block absolute z-10 w-56 mt-1 bg-white rounded-md shadow-lg border border-gray-100">
+              <div className="hidden group-hover:block absolute z-10 w-80 mt-1 bg-white rounded-md shadow-lg border border-gray-100 max-h-96 overflow-y-auto">
                 <div className="py-1">
-                  {/* Example AI tool items */}
+                  {/* Core AI Tools */}
+                  <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
+                    Core AI Tools
+                  </div>
+                  
                   <button
                     onClick={() => openTool('email-analysis')}
                     className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                   >
                     <Mail size={18} className="mr-2" />
-                    <span className="ml-2">Email Analysis</span>
+                    Email Analysis
                   </button>
                   
                   <button
@@ -177,13 +181,420 @@ const Navbar: React.FC = () => {
                     className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                   >
                     <MessageSquare size={18} className="mr-2" />
-                    <span className="ml-2">Meeting Summarizer</span>
+                    Meeting Summarizer
                   </button>
                   
-                  {/* More AI tools... */}
+                  <button
+                    onClick={() => openTool('proposal-generator')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <FileText size={18} className="mr-2" />
+                    Proposal Generator
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('call-script')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Phone size={18} className="mr-2" />
+                    Call Script Generator
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('subject-optimizer')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Star size={18} className="mr-2" />
+                    Subject Line Optimizer
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('competitor-analysis')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Target size={18} className="mr-2" />
+                    Competitor Analysis
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('market-trends')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <TrendingUp size={18} className="mr-2" />
+                    Market Trends
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('sales-insights')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <BarChart3 size={18} className="mr-2" />
+                    Sales Insights
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('sales-forecast')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <PieChart size={18} className="mr-2" />
+                    Sales Forecast
+                  </button>
+                  
+                  {/* Communication Tools */}
+                  <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100 mt-2">
+                    Communication
+                  </div>
+                  
+                  <button
+                    onClick={() => openTool('email-composer')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Mail size={18} className="mr-2" />
+                    Email Composer
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('objection-handler')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Shield size={18} className="mr-2" />
+                    Objection Handler
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('email-response')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Reply size={18} className="mr-2" />
+                    Email Response
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('voice-tone-optimizer')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Volume2 size={18} className="mr-2" />
+                    Voice Tone Optimizer
+                  </button>
+                  
+                  {/* Customer & Content */}
+                  <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100 mt-2">
+                    Customer & Content
+                  </div>
+                  
+                  <button
+                    onClick={() => openTool('customer-persona')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Users size={18} className="mr-2" />
+                    Customer Persona
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('visual-content-generator')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Image size={18} className="mr-2" />
+                    Visual Content Generator
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('meeting-agenda')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Calendar size={18} className="mr-2" />
+                    Meeting Agenda
+                  </button>
+                  
+                  {/* Advanced Features */}
+                  <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100 mt-2">
+                    Advanced Features
+                  </div>
+                  
+                  <button
+                    onClick={() => openTool('ai-assistant')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Brain size={18} className="mr-2" />
+                    AI Assistant
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('vision-analyzer')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Eye size={18} className="mr-2" />
+                    Vision Analyzer
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('image-generator')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Image size={18} className="mr-2" />
+                    Image Generator
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('semantic-search')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Search size={18} className="mr-2" />
+                    Semantic Search
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('function-assistant')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <FileCode size={18} className="mr-2" />
+                    Function Assistant
+                  </button>
+                  
+                  {/* Real-time Features */}
+                  <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100 mt-2">
+                    Real-time Features
+                  </div>
+                  
+                  <button
+                    onClick={() => openTool('streaming-chat')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <MessagesSquare size={18} className="mr-2" />
+                    Streaming Chat
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('form-validation')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <CheckCircle size={18} className="mr-2" />
+                    Form Validation
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('live-deal-analysis')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Zap size={18} className="mr-2" />
+                    Live Deal Analysis
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('instant-response')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <ArrowRight size={18} className="mr-2" />
+                    Instant Response
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('realtime-email-composer')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Mail size={18} className="mr-2" />
+                    Real-time Email Composer
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('voice-analysis-realtime')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Mic size={18} className="mr-2" />
+                    Voice Analysis Real-time
+                  </button>
+                  
+                  {/* Reasoning-based Generators */}
+                  <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100 mt-2">
+                    Reasoning Generators
+                  </div>
+                  
+                  <button
+                    onClick={() => openTool('reasoning-email')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Sparkles size={18} className="mr-2" />
+                    Reasoning Email
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('reasoning-proposal')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Sparkles size={18} className="mr-2" />
+                    Reasoning Proposal
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('reasoning-script')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Sparkles size={18} className="mr-2" />
+                    Reasoning Script
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('reasoning-objection')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Sparkles size={18} className="mr-2" />
+                    Reasoning Objection
+                  </button>
+                  
+                  <button
+                    onClick={() => openTool('reasoning-social')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Sparkles size={18} className="mr-2" />
+                    Reasoning Social
+                  </button>
                 </div>
               </div>
             </div>
+
+            {/* Sales Tools dropdown */}
+            <div className="relative group inline-block">
+              <Link 
+                to="/sales-tools"
+                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                  isActiveParent('/sales-tools') 
+                    ? 'text-blue-600 bg-blue-50' 
+                    : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50/50'
+                } transition-colors duration-200`}
+              >
+                <Target size={20} className="mr-2" />
+                <span className="ml-2">Sales</span>
+                <ChevronDown size={16} className="ml-1" />
+              </Link>
+              
+              <div className="hidden group-hover:block absolute z-10 w-64 mt-1 bg-white rounded-md shadow-lg border border-gray-100">
+                <div className="py-1">
+                  <Link to="/sales-tools" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                    <Target size={18} className="mr-2" />
+                    Sales Tools
+                  </Link>
+                  
+                  <Link to="/lead-automation" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                    <BarChart3 size={18} className="mr-2" />
+                    Lead Automation
+                  </Link>
+                  
+                  <Link to="/circle-prospecting" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                    <Map size={18} className="mr-2" />
+                    Circle Prospecting
+                  </Link>
+                  
+                  <Link to="/appointments" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                    <CalendarDays size={18} className="mr-2" />
+                    Appointments
+                  </Link>
+                  
+                  <Link to="/phone-system" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                    <Phone size={18} className="mr-2" />
+                    Phone System
+                  </Link>
+                  
+                  <Link to="/invoicing" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                    <Receipt size={18} className="mr-2" />
+                    Invoicing
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Communication dropdown */}
+            <div className="relative group inline-block">
+              <button 
+                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:text-blue-600 hover:bg-blue-50/50 transition-colors duration-200`}
+              >
+                <MessageCircle size={20} className="mr-2" />
+                <span className="ml-2">Communication</span>
+                <ChevronDown size={16} className="ml-1" />
+              </button>
+              
+              <div className="hidden group-hover:block absolute z-10 w-64 mt-1 bg-white rounded-md shadow-lg border border-gray-100">
+                <div className="py-1">
+                  <Link to="/video-email" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                    <Video size={18} className="mr-2" />
+                    Video Email
+                  </Link>
+                  
+                  <Link to="/text-messages" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                    <MessageSquare size={18} className="mr-2" />
+                    Text Messages
+                  </Link>
+                  
+                  <button
+                    onClick={() => openTool('email-composer')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Mail size={18} className="mr-2" />
+                    Email Composer
+                  </button>
+                  
+                  <Link to="/campaigns" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                    <Target size={18} className="mr-2" />
+                    Campaigns
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Content & Tools dropdown */}
+            <div className="relative group inline-block">
+              <button 
+                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:text-blue-600 hover:bg-blue-50/50 transition-colors duration-200`}
+              >
+                <Package size={20} className="mr-2" />
+                <span className="ml-2">Content</span>
+                <ChevronDown size={16} className="ml-1" />
+              </button>
+              
+              <div className="hidden group-hover:block absolute z-10 w-64 mt-1 bg-white rounded-md shadow-lg border border-gray-100">
+                <div className="py-1">
+                  <Link to="/content-library" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                    <Music size={18} className="mr-2" />
+                    Content Library
+                  </Link>
+                  
+                  <Link to="/voice-profiles" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                    <Headphones size={18} className="mr-2" />
+                    Voice Profiles
+                  </Link>
+                  
+                  <Link to="/business-analysis" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                    <Building size={18} className="mr-2" />
+                    Business Analysis
+                  </Link>
+                  
+                  <button
+                    onClick={() => openTool('image-generator')}
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <Image size={18} className="mr-2" />
+                    Image Generator
+                  </button>
+                  
+                  <Link to="/forms" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                    <FileSpreadsheet size={18} className="mr-2" />
+                    Forms
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Tasks */}
+            <Link 
+              to="/tasks" 
+              className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                isActiveParent('/tasks') 
+                  ? 'text-blue-600 bg-blue-50' 
+                  : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50/50'
+              } transition-colors duration-200`}
+            >
+              <CheckSquare size={20} className="mr-2" />
+              <span className="ml-2">Tasks</span>
+            </Link>
           </div>
           
           {/* User profile/logout */}
