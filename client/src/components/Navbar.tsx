@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useUser, useClerk } from '@clerk/clerk-react';
+import { useAuthStore } from '../store/authStore';
 import { useAITools } from '../components/AIToolsProvider';
 import { 
   Home, 
@@ -62,8 +62,7 @@ const Navbar: React.FC = () => {
   
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useUser();
-  const { signOut } = useClerk();
+  const { user, isAuthenticated, logout } = useAuthStore();
   const { openTool } = useAITools();
 
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -73,7 +72,7 @@ const Navbar: React.FC = () => {
   const toggleContentMenu = () => setContentMenuOpen(!contentMenuOpen);
   
   const handleLogout = async () => {
-    await signOut();
+    await logout();
     navigate('/');
   };
 
@@ -86,12 +85,12 @@ const Navbar: React.FC = () => {
   
   // Get user's initials for avatar
   const getInitials = () => {
-    if (profile?.fullName) {
-      const names = profile.fullName.split(' ');
+    if (user?.fullName) {
+      const names = user.fullName.split(' ');
       if (names.length >= 2) {
         return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
       }
-      return profile.fullName.charAt(0).toUpperCase();
+      return user.fullName.charAt(0).toUpperCase();
     }
     
     if (user?.email) {
@@ -612,10 +611,10 @@ const Navbar: React.FC = () => {
               className="flex items-center space-x-2 text-gray-700 hover:text-blue-600" 
               onClick={() => setUserMenuOpen(!userMenuOpen)}
             >
-              {profile?.avatarUrl ? (
+              {user?.avatarUrl ? (
                 <img 
-                  src={profile.avatarUrl}
-                  alt={profile.fullName || 'User profile'} 
+                  src={user.avatarUrl}
+                  alt={user.fullName || 'User profile'} 
                   className="h-8 w-8 rounded-full object-cover border border-gray-200"
                 />
               ) : (
@@ -623,7 +622,7 @@ const Navbar: React.FC = () => {
                   {getInitials()}
                 </div>
               )}
-              <span className="font-medium text-sm">{profile?.fullName || user?.email?.split('@')[0] || 'User'}</span>
+              <span className="font-medium text-sm">{user?.fullName || user?.email?.split('@')[0] || 'User'}</span>
               <ChevronDown size={16} />
             </button>
             

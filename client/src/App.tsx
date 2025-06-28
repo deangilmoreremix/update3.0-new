@@ -66,6 +66,12 @@ import Tasks from './pages/Tasks';
 import TaskCalendarView from './pages/TaskCalendarView';
 
 function App() {
+  const { initializeAuth } = useAuthStore();
+  
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+  
   return (
     <AIToolsProvider>
         <Router>
