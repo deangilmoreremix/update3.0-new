@@ -66,13 +66,17 @@ interface GoalExecutionModalProps {
   isOpen: boolean;
   onClose: () => void;
   realMode?: boolean;
+  onComplete?: (result: any) => void;
+  contextData?: any;
 }
 
 const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
   goal,
   isOpen,
   onClose,
-  realMode = false
+  realMode = false,
+  onComplete,
+  contextData
 }) => {
   const [executionState, setExecutionState] = useState<'idle' | 'running' | 'paused' | 'completed' | 'failed'>('idle');
   const [overallProgress, setOverallProgress] = useState(0);
