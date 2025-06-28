@@ -728,6 +728,141 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Seed mock contacts endpoint
+  app.post("/api/seed/contacts", async (req: Request, res: Response) => {
+    try {
+      const mockContacts = [
+        {
+          name: "Sarah Johnson",
+          email: "sarah.johnson@techcorp.com",
+          phone: "+1-555-0123",
+          company: "TechCorp Industries",
+          position: "VP of Sales",
+          status: "lead",
+          score: 85,
+          industry: "Technology",
+          location: "San Francisco, CA",
+          notes: "Interested in enterprise solutions. Follow up next week.",
+          favorite: true,
+          userId: "demo-user"
+        },
+        {
+          name: "Michael Chen",
+          email: "m.chen@globalfinance.com",
+          phone: "+1-555-0124",
+          company: "Global Finance LLC",
+          position: "CFO",
+          status: "prospect",
+          score: 92,
+          industry: "Finance",
+          location: "New York, NY",
+          notes: "Budget approved for Q2. Ready to move forward.",
+          favorite: false,
+          userId: "demo-user"
+        },
+        {
+          name: "Emily Rodriguez",
+          email: "emily.r@marketingsolutions.net",
+          phone: "+1-555-0125",
+          company: "Marketing Solutions",
+          position: "Marketing Director",
+          status: "customer",
+          score: 78,
+          industry: "Marketing",
+          location: "Austin, TX",
+          notes: "Current customer. Looking to expand services.",
+          favorite: true,
+          userId: "demo-user"
+        },
+        {
+          name: "David Kim",
+          email: "david.kim@healthplus.org",
+          phone: "+1-555-0126",
+          company: "HealthPlus Medical",
+          position: "Operations Manager",
+          status: "lead",
+          score: 65,
+          industry: "Healthcare",
+          location: "Chicago, IL",
+          notes: "Initial contact made. Needs more information about pricing.",
+          favorite: false,
+          userId: "demo-user"
+        },
+        {
+          name: "Lisa Thompson",
+          email: "lisa.thompson@retailchain.com",
+          phone: "+1-555-0127",
+          company: "Retail Chain Inc",
+          position: "Store Manager",
+          status: "prospect",
+          score: 73,
+          industry: "Retail",
+          location: "Denver, CO",
+          notes: "Interested in loyalty program integration.",
+          favorite: false,
+          userId: "demo-user"
+        },
+        {
+          name: "James Wilson",
+          email: "j.wilson@constructionpro.com",
+          phone: "+1-555-0128",
+          company: "Construction Pro",
+          position: "Project Director",
+          status: "lead",
+          score: 55,
+          industry: "Construction",
+          location: "Phoenix, AZ",
+          notes: "Initial meeting scheduled for next month.",
+          favorite: false,
+          userId: "demo-user"
+        },
+        {
+          name: "Maria Garcia",
+          email: "maria.garcia@foodservice.com",
+          phone: "+1-555-0129",
+          company: "Premium Food Service",
+          position: "Head Chef",
+          status: "customer",
+          score: 88,
+          industry: "Food & Beverage",
+          location: "Miami, FL",
+          notes: "Long-term customer. Very satisfied with current services.",
+          favorite: true,
+          userId: "demo-user"
+        },
+        {
+          name: "Robert Davis",
+          email: "r.davis@autoparts.com",
+          phone: "+1-555-0130",
+          company: "Auto Parts Direct",
+          position: "Sales Manager",
+          status: "churned",
+          score: 25,
+          industry: "Automotive",
+          location: "Detroit, MI",
+          notes: "Contract ended last quarter. Potential for re-engagement.",
+          favorite: false,
+          userId: "demo-user"
+        }
+      ];
+
+      // Create all mock contacts
+      const createdContacts = [];
+      for (const contactData of mockContacts) {
+        const contact = await storage.createContact(contactData);
+        createdContacts.push(contact);
+      }
+
+      res.json({ 
+        message: `Successfully created ${createdContacts.length} mock contacts`,
+        contacts: createdContacts
+      });
+    } catch (error) {
+      console.error("Error seeding contacts:", error);
+      res.status(500).json({ error: "Failed to seed contacts" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

@@ -28,25 +28,25 @@ export const useContactStore = create<ContactState>((set, get) => ({
     set({ isLoading: true, error: null });
     
     try {
-      // Get current user
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) {
-        throw new Error('No authenticated user found');
+      // Fetch contacts from Express API
+      const response = await fetch('/api/contacts', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      // Fetch contacts from Supabase
-      const { data, error } = await supabase
-        .from('contacts')
-        .select('*')
-        .eq('user_id', userData.user.id);
-      
-      if (error) throw error;
+      const data = await response.json();
       
       // Transform the contacts into our app's format
       const contactsRecord: Record<string, Contact> = {};
       
-      if (data) {
-        data.forEach(item => {
+      if (data && Array.isArray(data)) {
+        data.forEach((item: any) => {
           const contact: Contact = {
             id: item.id,
             name: item.name,
@@ -56,11 +56,14 @@ export const useContactStore = create<ContactState>((set, get) => ({
             position: item.position || '',
             status: item.status || 'lead',
             score: item.score || 50,
-            lastContact: item.last_contacted ? new Date(item.last_contacted) : undefined,
+            lastContact: item.lastContact ? new Date(item.lastContact) : undefined,
             notes: item.notes || '',
             industry: item.industry || '',
             location: item.location || '',
-            userId: item.user_id
+            favorite: item.favorite || false,
+            createdAt: new Date(item.createdAt),
+            updatedAt: new Date(item.updatedAt),
+            userId: item.userId
           };
           
           contactsRecord[contact.id] = contact;
@@ -84,62 +87,48 @@ export const useContactStore = create<ContactState>((set, get) => ({
     set({ isLoading: true, error: null });
     
     try {
-      // Get current user
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) {
-        throw new Error('No authenticated user found');
+      // Create contact via Express API
+      const response = await fetch('/api/contacts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactData),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      // Convert Contact to Supabase format
-      const supabaseData = {
-        name: contactData.name,
-        email: contactData.email,
-        phone: contactData.phone,
-        company: contactData.company,
-        position: contactData.position,
-        status: contactData.status || 'lead',
-        score: contactData.score || 50,
-        last_contacted: contactData.lastContact ? contactData.lastContact.toISOString() : null,
-        notes: contactData.notes,
-        industry: contactData.industry,
-        location: contactData.location,
-        user_id: userData.user.id
-      };
-      
-      // Insert into Supabase
-      const { data, error } = await supabase
-        .from('contacts')
-        .insert([supabaseData])
-        .select();
-      
-      if (error) throw error;
+      const createdContact = await response.json();
       
       // Update local state with the new contact
-      if (data && data.length > 0) {
-        const newContact: Contact = {
-          id: data[0].id,
-          name: data[0].name,
-          email: data[0].email || '',
-          phone: data[0].phone || '',
-          company: data[0].company || '',
-          position: data[0].position || '',
-          status: data[0].status || 'lead',
-          score: data[0].score || 50,
-          lastContact: data[0].last_contacted ? new Date(data[0].last_contacted) : undefined,
-          notes: data[0].notes || '',
-          industry: data[0].industry || '',
-          location: data[0].location || '',
-          userId: data[0].user_id
-        };
-        
-        set(state => ({
-          contacts: {
-            ...state.contacts,
-            [newContact.id]: newContact
-          },
-          isLoading: false
-        }));
-      }
+      const contact: Contact = {
+        id: createdContact.id,
+        name: createdContact.name,
+        email: createdContact.email || '',
+        phone: createdContact.phone || '',
+        company: createdContact.company || '',
+        position: createdContact.position || '',
+        status: createdContact.status || 'lead',
+        score: createdContact.score || 50,
+        lastContact: createdContact.lastContact ? new Date(createdContact.lastContact) : undefined,
+        notes: createdContact.notes || '',
+        industry: createdContact.industry || '',
+        location: createdContact.location || '',
+        favorite: createdContact.favorite || false,
+        createdAt: new Date(createdContact.createdAt),
+        updatedAt: new Date(createdContact.updatedAt),
+        userId: createdContact.userId
+      };
+      
+      set(state => ({
+        contacts: {
+          ...state.contacts,
+          [contact.id]: contact
+        },
+        isLoading: false
+      }));
     } catch (err) {
       console.error('Error creating contact:', err);
       set({ 
