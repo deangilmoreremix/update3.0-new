@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { AIGoal, AI_GOALS, AI_GOAL_CATEGORIES } from '../data/aiGoals';
+import { GOALS, GOAL_CATEGORIES } from '../data/goals';
+import { Goal } from '../types/goals';
 import InteractiveGoalCard from './ui/InteractiveGoalCard';
 import GoalExecutionModal from './GoalExecutionModal';
 import { useCustomizationStore, CustomizationLocation } from '../store/customizationStore';
@@ -34,7 +35,7 @@ import {
 interface InteractiveGoalExplorerProps {
   realMode?: boolean;
   onModeToggle?: (mode: boolean) => void;
-  onGoalSelect?: (goal: AIGoal) => void;
+  onGoalSelect?: (goal: Goal) => void;
   contextData?: any;
 }
 
@@ -48,7 +49,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [complexityFilter, setComplexityFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [executingGoal, setExecutingGoal] = useState<AIGoal | null>(null);
+  const [executingGoal, setExecutingGoal] = useState<Goal | null>(null);
   const [showExecutionModal, setShowExecutionModal] = useState(false);
   const [executingGoals, setExecutingGoals] = useState<Set<string>>(new Set());
   const [executionProgress, setExecutionProgress] = useState<Record<string, number>>({});
@@ -70,7 +71,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
   });
 
   // Filter goals based on current filters
-  const filteredGoals = AI_GOALS.filter(goal => {
+  const filteredGoals = GOALS.filter(goal => {
     const matchesCategory = selectedCategory === 'all' || goal.category === selectedCategory;
     const matchesComplexity = complexityFilter === 'all' || goal.complexity === complexityFilter;
     
@@ -89,14 +90,14 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
 
   // Get category counts
   const getCategoryCount = (category: string) => {
-    if (category === 'all') return AI_GOALS.length;
-    return AI_GOALS.filter(goal => goal.category === category).length;
+    if (category === 'all') return GOALS.length;
+    return GOALS.filter(goal => goal.category === category).length;
   };
 
   // Get priority counts
   const getPriorityCount = (priority: string) => {
-    if (priority === 'all') return AI_GOALS.length;
-    return AI_GOALS.filter(goal => {
+    if (priority === 'all') return GOALS.length;
+    return GOALS.filter(goal => {
       const goalPriority = goal.complexity === 'Advanced' ? 'High' : 
                           goal.complexity === 'Intermediate' ? 'Medium' : 'Low';
       return goalPriority === priority;
@@ -123,7 +124,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
     }
   }, [isCustomizationMode, selectedLocation, getSelectedGoals]);
 
-  const handleGoalExecution = (goal: AIGoal) => {
+  const handleGoalExecution = (goal: Goal) => {
     if (isCustomizationMode) {
       handleCustomizationToggle(goal.id);
       return;
@@ -366,7 +367,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
             >
               All Goals <span className="text-sm opacity-75">({getCategoryCount('all')})</span>
             </button>
-            {AI_GOAL_CATEGORIES.map((category) => (
+            {GOAL_CATEGORIES.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}

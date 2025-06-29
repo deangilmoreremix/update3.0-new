@@ -307,14 +307,14 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
             </div>
 
             {/* Prerequisites */}
-            {mockPrerequisites && mockPrerequisites.length > 0 && (
+            {goal.prerequisite && goal.prerequisite.length > 0 && (
               <div>
                 <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
                   <Shield className="h-4 w-4 text-orange-600" />
                   Prerequisites
                 </h4>
                 <ul className="space-y-1">
-                  {mockPrerequisites.map((req, index) => (
+                  {goal.prerequisite.map((req, index) => (
                     <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
                       <div className="w-1 h-1 bg-orange-600 rounded-full mt-2 flex-shrink-0"></div>
                       {req}
