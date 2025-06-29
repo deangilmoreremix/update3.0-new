@@ -7,7 +7,7 @@ interface AIActionToolbarProps {
   entityType: 'contact' | 'deal' | 'company';
   entityId: string;
   entityData: any;
-  layout?: 'horizontal' | 'vertical';
+  layout?: 'horizontal' | 'vertical' | 'grid';
   showGoalsButton?: boolean;
   size?: 'sm' | 'md';
   className?: string;
@@ -50,12 +50,54 @@ const AIActionToolbar: React.FC<AIActionToolbarProps> = ({
 
   const quickActions = getQuickActions(entityType);
   
-  const layoutClasses = layout === 'horizontal' 
-    ? 'flex items-center space-x-2' 
-    : 'flex flex-col space-y-2';
+  const getLayoutClasses = () => {
+    switch (layout) {
+      case 'horizontal':
+        return 'flex items-center space-x-1 flex-wrap';
+      case 'vertical':
+        return 'flex flex-col space-y-2';
+      case 'grid':
+        return 'grid grid-cols-2 gap-1';
+      default:
+        return 'flex items-center space-x-1 flex-wrap';
+    }
+  };
+
+  if (layout === 'grid') {
+    // Grid layout: AI Goals button in first row, quick actions fill remaining cells
+    return (
+      <div className={`${getLayoutClasses()} ${className}`}>
+        {showGoalsButton && (
+          <div className="col-span-2">
+            <AIGoalsButton
+              entityType={entityType}
+              entityId={entityId}
+              entityData={entityData}
+              size={size}
+              variant="primary"
+            />
+          </div>
+        )}
+        
+        {quickActions.map((action, index) => (
+          <QuickAIButton
+            key={index}
+            icon={action.icon}
+            label={action.label}
+            toolName={action.toolName}
+            entityType={entityType}
+            entityId={entityId}
+            entityData={entityData}
+            size={size}
+            variant={action.variant}
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
-    <div className={`${layoutClasses} ${className}`}>
+    <div className={`${getLayoutClasses()} ${className}`}>
       {showGoalsButton && (
         <AIGoalsButton
           entityType={entityType}
