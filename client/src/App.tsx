@@ -219,6 +219,7 @@ function App() {
           <Route path="/features/communications" element={<CommunicationsFeaturePage />} />
           <Route path="/demo/goal-cards" element={<GoalCardDemo />} />
           <Route path="/ai-goals" element={<AIGoalsPage />} />
+          <Route path="/partner/onboard" element={<PartnerOnboardingPage />} />
         </Routes>
       </Router>
     </AIToolsProvider>
