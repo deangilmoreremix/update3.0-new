@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDealStore } from '../store/dealStore';
 import { useGemini } from '../services/geminiService';
+import AIActionToolbar from './ai/AIActionToolbar';
 import { 
   X, 
   Edit, 
@@ -528,25 +529,41 @@ const DealDetail: React.FC<DealDetailProps> = ({ dealId, onClose }) => {
                         )}
                       </div>
                       
-                      <div className="border-t border-gray-200 pt-4 mt-6">
-                        <p className="text-sm font-medium text-gray-900 mb-3">Quick Actions</p>
-                        <div className="flex flex-wrap gap-2">
-                          <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                            <Mail size={14} className="mr-1.5" />
-                            Send Email
-                          </button>
-                          <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                            <Phone size={14} className="mr-1.5" />
-                            Schedule Call
-                          </button>
-                          <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                            <MessageSquare size={14} className="mr-1.5" />
-                            Add Note
-                          </button>
-                          <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                            <Calendar size={14} className="mr-1.5" />
-                            Add Task
-                          </button>
+                      {/* Organized Action Buttons Section */}
+                      <div className="border-t border-gray-200 pt-4 mt-6 -mx-6 px-6 pb-6 bg-gradient-to-b from-gray-50/40 to-gray-50/60">
+                        {/* AI Tools Section */}
+                        <div className="mb-4">
+                          <AIActionToolbar
+                            entityType="deal"
+                            entityId={deal.id}
+                            entityData={deal}
+                            layout="vertical"
+                            size="md"
+                            className="w-full"
+                          />
+                        </div>
+                        
+                        {/* Traditional Actions Section */}
+                        <div className="pt-3 border-t border-gray-100/60">
+                          <p className="text-sm font-medium text-gray-900 mb-3">Quick Actions</p>
+                          <div className="grid grid-cols-2 gap-2">
+                            <button className="flex items-center justify-center py-2 px-3 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 rounded-full hover:from-blue-100 hover:to-blue-200 text-sm font-medium transition-all duration-200 border border-blue-200/50 shadow-sm">
+                              <Mail size={14} className="mr-1.5" />
+                              Send Email
+                            </button>
+                            <button className="flex items-center justify-center py-2 px-3 bg-gradient-to-r from-green-50 to-green-100 text-green-700 rounded-full hover:from-green-100 hover:to-green-200 text-sm font-medium transition-all duration-200 border border-green-200/50 shadow-sm">
+                              <Phone size={14} className="mr-1.5" />
+                              Schedule Call
+                            </button>
+                            <button className="flex items-center justify-center py-2 px-3 bg-gradient-to-r from-purple-50 to-purple-100 text-purple-700 rounded-full hover:from-purple-100 hover:to-purple-200 text-sm font-medium transition-all duration-200 border border-purple-200/50 shadow-sm">
+                              <MessageSquare size={14} className="mr-1.5" />
+                              Add Note
+                            </button>
+                            <button className="flex items-center justify-center py-2 px-3 bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 rounded-full hover:from-orange-100 hover:to-orange-200 text-sm font-medium transition-all duration-200 border border-orange-200/50 shadow-sm">
+                              <Calendar size={14} className="mr-1.5" />
+                              Add Task
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
