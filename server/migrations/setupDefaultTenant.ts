@@ -1,6 +1,6 @@
 import { db } from "../db";
 import { tenants, users, contacts, deals, tasks, businessAnalysis, contentItems, voiceProfiles, subscriptionPlans, tenantSubscriptions, userRoles, type Tenant } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { eq, isNull } from "drizzle-orm";
 
 /**
  * Migration script to set up default tenant and update existing data
