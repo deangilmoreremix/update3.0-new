@@ -15,12 +15,31 @@ import { extractTenant, requireTenant, requireFeature, addTenantContext, type Te
 import { handleWebhook } from "./integrations/webhookHandlers";
 import { whiteLabelClient } from "./integrations/whiteLabelClient";
 
-// Middleware to extract user ID from request headers
-const requireAuth = (req: Request, res: Response, next: any) => {
-  const userId = req.headers['x-user-id'] as string;
+// Middleware to extract user ID from request headers or create demo user
+const requireAuth = async (req: Request, res: Response, next: any) => {
+  let userId = req.headers['x-user-id'] as string;
+  
+  // If no user ID provided, create or use demo user for development
   if (!userId) {
-    return res.status(401).json({ error: "Unauthorized: Missing user ID" });
+    try {
+      // Try to find existing demo user
+      let demoUser = await storage.getUserByEmail('demo@smartcrm.com');
+      
+      if (!demoUser) {
+        // Create demo user if doesn't exist
+        demoUser = await storage.createUser({
+          email: 'demo@smartcrm.com',
+          fullName: 'Demo User'
+        });
+      }
+      
+      userId = demoUser.id;
+    } catch (error) {
+      console.error('Error creating demo user:', error);
+      return res.status(500).json({ error: "Authentication setup failed" });
+    }
   }
+  
   req.userId = userId;
   next();
 };
@@ -701,20 +720,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Business Analyzer Endpoint
   app.post("/api/ai/business-analyzer", requireAuth, async (req: Request, res: Response) => {
     try {
-      const { businessData } = req.body;
+      const { contacts, deals, tasks } = req.body;
       const openaiApiKey = process.env.OPENAI_API_KEY;
       
       if (!openaiApiKey) {
         return res.status(400).json({ error: "OpenAI API key is required" });
       }
 
-      const prompt = `Analyze this business data: ${JSON.stringify(businessData)}
-      
-      Provide analysis on:
-      1. Business strengths and weaknesses
-      2. Market opportunities
-      3. Competitive positioning
-      4. Growth recommendations`;
+      // Prepare comprehensive business analysis
+      const businessSummary = {
+        totalContacts: contacts?.length || 0,
+        totalDeals: Object.keys(deals || {}).length,
+        totalTasks: Object.keys(tasks || {}).length,
+        activeDeals: Object.values(deals || {}).filter((deal: any) => 
+          deal.stage !== 'closed-won' && deal.stage !== 'closed-lost'
+        ).length,
+        pipelineValue: Object.values(deals || {}).reduce((sum: number, deal: any) => 
+          sum + (deal.value || 0), 0
+        ),
+        completedTasks: Object.values(tasks || {}).filter((task: any) => task.completed).length
+      };
+
+      const prompt = `Analyze this CRM business data and provide strategic recommendations:
+
+Business Summary:
+- Total Contacts: ${businessSummary.totalContacts}
+- Total Deals: ${businessSummary.totalDeals}
+- Active Deals: ${businessSummary.activeDeals}
+- Pipeline Value: $${businessSummary.pipelineValue.toLocaleString()}
+- Total Tasks: ${businessSummary.totalTasks}
+- Completed Tasks: ${businessSummary.completedTasks}
+
+Contact Overview: ${JSON.stringify(contacts?.slice(0, 5) || [])}
+Deal Overview: ${JSON.stringify(Object.values(deals || {}).slice(0, 5))}
+
+Based on this data, provide strategic business recommendations focusing on:
+1. Pipeline health and conversion optimization
+2. Contact engagement opportunities
+3. Task management efficiency
+4. Revenue growth strategies
+5. Specific actionable next steps
+
+Format as actionable insights with priorities.`;
 
       const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
