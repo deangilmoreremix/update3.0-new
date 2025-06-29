@@ -11,72 +11,171 @@ interface CrmFunctions {
   getDealInfo: (params: {dealId: string}) => Promise<Deal | null>;
 }
 
-// Mock implementation of CRM functions for the demo
+// Real CRM functions using API integration
 const crmFunctions: CrmFunctions = {
   searchDeals: async (params) => {
     console.log('Searching deals with params:', params);
-    // Mock implementation - would connect to actual API in production
-    await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Return mock deals
-    return [
-      {
-        id: 'deal-1',
-        title: 'Enterprise License',
-        value: 75000,
-        stage: 'qualification',
-        company: 'Acme Inc',
-        contact: 'John Doe',
-        contactId: 'contact-1',
-        dueDate: new Date('2025-07-15'),
-        createdAt: new Date('2025-06-01'),
-        updatedAt: new Date('2025-06-01'),
-        probability: 10,
-        daysInStage: 5,
-        priority: 'high'
-      },
-      {
-        id: 'deal-2',
-        title: 'Software Renewal',
-        value: 45000,
-        stage: 'proposal',
-        company: 'Globex Corp',
-        contact: 'Jane Smith',
-        contactId: 'contact-2',
-        dueDate: new Date('2025-06-30'),
-        createdAt: new Date('2025-05-15'),
-        updatedAt: new Date('2025-06-01'),
-        probability: 50,
-        daysInStage: 3,
-        priority: 'medium'
+    try {
+      const response = await fetch(`/api/deals?query=${encodeURIComponent(params.query)}&status=${params.status || ''}&minValue=${params.minValue || ''}&maxValue=${params.maxValue || ''}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Deal search failed: ${response.status}`);
       }
-    ].filter(deal => {
-      // Apply filters
-      if (params.status && deal.stage !== params.status) return false;
-      if (params.minValue && deal.value < params.minValue) return false;
-      if (params.maxValue && deal.value > params.maxValue) return false;
-      if (params.query && !deal.title.toLowerCase().includes(params.query.toLowerCase())) return false;
-      return true;
-    });
+      
+      const deals = await response.json();
+      return deals.map((deal: any) => ({
+        ...deal,
+        dueDate: deal.dueDate ? new Date(deal.dueDate) : null,
+        createdAt: new Date(deal.createdAt),
+        updatedAt: new Date(deal.updatedAt)
+      }));
+    } catch (error) {
+      console.error('Deal search error:', error);
+      return [];
+    }
   },
-  
+
   searchContacts: async (params) => {
     console.log('Searching contacts with params:', params);
-    // Mock implementation - would connect to actual API in production
-    await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Return mock contacts
-    return [
-      {
-        id: '1',
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        phone: '(555) 123-4567',
-        company: 'Acme Inc',
-        position: 'CTO',
-        status: 'customer',
-        score: 85,
-        lastContact: new Date('2023-06-15'),
+    try {
+      const response = await fetch(`/api/contacts?query=${encodeURIComponent(params.query)}&status=${params.status || ''}&industry=${params.industry || ''}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Contact search failed: ${response.status}`);
+      }
+      
+      const contacts = await response.json();
+      return contacts.map((contact: any) => ({
+        ...contact,
+        lastContact: contact.lastContact ? new Date(contact.lastContact) : null
+      }));
+    } catch (error) {
+      console.error('Contact search error:', error);
+      return [];
+    }
+  },
+  
+  createTask: async (params) => {
+    console.log('Creating task with params:', params);
+    
+    try {
+      const response = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Task creation failed: ${response.status}`);
+      }
+      
+      const task = await response.json();
+      return {
+        id: task.id,
+        success: true
+      };
+    } catch (error) {
+      console.error('Task creation error:', error);
+      return {
+        id: '',
+        success: false
+      };
+    }
+  },
+  
+  scheduleFollowUp: async (params) => {
+    console.log('Scheduling follow-up with params:', params);
+    
+    try {
+      const response = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: `Follow-up with contact`,
+          description: `Follow-up meeting: ${params.meetingType || 'General'}\nNotes: ${params.notes || ''}`,
+          dueDate: params.date,
+          relatedToType: 'Contact',
+          relatedToId: params.contactId,
+          priority: 'medium'
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Follow-up scheduling failed: ${response.status}`);
+      }
+      
+      const followUp = await response.json();
+      return {
+        id: followUp.id,
+        success: true
+      };
+    } catch (error) {
+      console.error('Follow-up scheduling error:', error);
+      return {
+        id: '',
+        success: false
+      };
+    }
+  },
+  
+  getContactInfo: async (params) => {
+    console.log('Getting contact info for:', params.contactId);
+    
+    try {
+      const response = await fetch(`/api/contacts/${params.contactId}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Contact retrieval failed: ${response.status}`);
+      }
+      
+      const contact = await response.json();
+      return {
+        ...contact,
+        lastContact: contact.lastContact ? new Date(contact.lastContact) : null
+      };
+    } catch (error) {
+      console.error('Contact retrieval error:', error);
+      return null;
+    }
+  },
+  
+  getDealInfo: async (params) => {
+    console.log('Getting deal info for:', params.dealId);
+    
+    try {
+      const response = await fetch(`/api/deals/${params.dealId}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Deal retrieval failed: ${response.status}`);
+      }
+      
+      const deal = await response.json();
+      return {
+        ...deal,
+        dueDate: deal.dueDate ? new Date(deal.dueDate) : null,
+        createdAt: new Date(deal.createdAt),
+        updatedAt: new Date(deal.updatedAt)
+      };
+    } catch (error) {
+      console.error('Deal retrieval error:', error);
+      return null;
+    }
+  }
+};
         notes: 'Interested in enterprise plan',
         industry: 'Technology',
         location: 'San Francisco, CA'

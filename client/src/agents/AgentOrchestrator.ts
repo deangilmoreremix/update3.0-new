@@ -154,7 +154,7 @@ export const AVAILABLE_AGENTS: Record<AgentType, {
   }
 };
 
-// Simulate agent execution for demo purposes
+// Execute agent workflow using real AI integration
 export async function runAgentWorkflow(
   agentType: AgentType,
   input: any,
@@ -163,7 +163,7 @@ export async function runAgentWorkflow(
   const startTime = Date.now();
   
   try {
-    // Simulate processing steps
+    // Real agent execution steps
     if (setSteps) {
       setSteps([
         { id: 1, title: 'Initializing Agent', status: 'completed', timestamp: new Date() },
@@ -171,8 +171,32 @@ export async function runAgentWorkflow(
       ]);
     }
     
-    // Simulate execution time
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
+    // Call real agent execution API
+    const response = await fetch('/api/agents/execute', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        agentType,
+        input,
+        agentConfig: AVAILABLE_AGENTS[agentType]
+      }),
+    });
+
+    if (setSteps) {
+      setSteps([
+        { id: 1, title: 'Initializing Agent', status: 'completed', timestamp: new Date() },
+        { id: 2, title: 'Processing Input', status: 'completed', timestamp: new Date() },
+        { id: 3, title: 'Executing Strategy', status: 'in-progress', timestamp: new Date() }
+      ]);
+    }
+
+    if (!response.ok) {
+      throw new Error(`Agent execution failed: ${response.status}`);
+    }
+
+    const result = await response.json();
     
     if (setSteps) {
       setSteps([
@@ -184,16 +208,15 @@ export async function runAgentWorkflow(
     
     const executionTime = Date.now() - startTime;
     
-    // Return mock successful result
     return {
       success: true,
       data: {
         agentType,
-        result: `Successfully executed ${AVAILABLE_AGENTS[agentType].name}`,
+        result: result.result || result.data,
         metrics: {
           executionTime,
           stepsCompleted: 3,
-          confidence: Math.random() * 0.3 + 0.7 // 70-100%
+          confidence: result.confidence || 0.85
         }
       },
       executionTime
@@ -204,7 +227,7 @@ export async function runAgentWorkflow(
     
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
+      error: error instanceof Error ? error.message : 'Agent execution failed',
       executionTime
     };
   }

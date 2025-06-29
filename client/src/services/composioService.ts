@@ -27,42 +27,62 @@ class ComposioService {
     return this.isConfigured;
   }
 
-  // LinkedIn Integration (Mock)
+  // LinkedIn Integration (Real API)
   async sendLinkedInMessage(recipientId: string, message: string): Promise<ComposioExecutionResult> {
-    if (!this.isConfigured) {
+    try {
+      const response = await fetch('/api/composio/linkedin/message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ recipientId, message }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`LinkedIn API error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return {
+        success: true,
+        data: result.data,
+        message: result.message || 'LinkedIn message sent successfully'
+      };
+    } catch (error) {
       return {
         success: false,
-        error: 'Composio client not initialized. Please set COMPOSIO_API_KEY environment variable.'
+        error: error instanceof Error ? error.message : 'LinkedIn message failed'
       };
     }
-
-    // Mock implementation for demo
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    return {
-      success: true,
-      data: { recipientId, messageId: `msg_${Date.now()}` },
-      message: 'LinkedIn message sent successfully (demo mode)'
-    };
   }
 
-  // WhatsApp Integration (Mock)
+  // WhatsApp Integration (Real API)
   async sendWhatsAppMessage(phoneNumber: string, message: string, templateName?: string): Promise<ComposioExecutionResult> {
-    if (!this.isConfigured) {
+    try {
+      const response = await fetch('/api/composio/whatsapp/message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ phoneNumber, message, templateName }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`WhatsApp API error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return {
+        success: true,
+        data: result.data,
+        message: result.message || 'WhatsApp message sent successfully'
+      };
+    } catch (error) {
       return {
         success: false,
-        error: 'Composio client not initialized. Please set COMPOSIO_API_KEY environment variable.'
+        error: error instanceof Error ? error.message : 'WhatsApp message failed'
       };
     }
-
-    // Mock implementation for demo
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    return {
-      success: true,
-      data: { phoneNumber, messageId: `whats_${Date.now()}`, templateName },
-      message: 'WhatsApp message sent successfully (demo mode)'
-    };
   }
 
   // Email Integration (Mock)
