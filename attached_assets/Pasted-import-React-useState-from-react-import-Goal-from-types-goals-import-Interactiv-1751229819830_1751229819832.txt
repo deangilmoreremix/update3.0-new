@@ -1,23 +1,22 @@
 import React, { useState } from 'react';
-import { Goal } from '../types/goals';
-import InteractiveGoalExplorer from '../components/InteractiveGoalExplorer';
-import GoalExecutionModal from '../components/GoalExecutionModal';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader } from '../components/ui/card';
+import { Goal } from '../../types/goals';
+import InteractiveGoalExplorer from '../InteractiveGoalExplorer';
+import GoalExecutionModal from '../GoalExecutionModal';
+import { Button } from '../ui/Button';
+import { Card, CardContent, CardHeader } from '../ui/Card';
 import { Brain, Info, Lightbulb, ArrowLeft, Sparkles, Zap, Target, Users, BarChart3, Bot, Activity } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useAITools } from '../components/AIToolsProvider';
+import { useLocation } from 'wouter';
+import { useAITools } from '../AIToolsProvider';
 
 export function AIGoalsPage() {
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [showExecutionModal, setShowExecutionModal] = useState(false);
   const [realMode, setRealMode] = useState(false);
   
-  const navigate = useNavigate();
+  const [location, navigate] = useLocation();
   const { openTool } = useAITools();
   
-  // For now, context will be passed via props or global state
-  const context = null; // TODO: Implement context passing with React Router
+  const context = null; // TODO: Implement context passing with wouter
 
   const handleGoalSelected = (goal: Goal) => {
     setSelectedGoal(goal);
@@ -35,7 +34,6 @@ export function AIGoalsPage() {
 
   const handleGoalComplete = (result: any) => {
     console.log('Goal execution completed:', result);
-    // Could add additional functionality here like showing a success notification
   };
 
   return (
@@ -73,7 +71,7 @@ export function AIGoalsPage() {
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/')}
                 className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm hover:bg-white/70 dark:hover:bg-slate-700/70 transition-all duration-300"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
@@ -204,7 +202,7 @@ export function AIGoalsPage() {
           contextData={context}
         />
       </div>
-      
+
       {/* Goal Execution Modal */}
       {showExecutionModal && selectedGoal && (
         <GoalExecutionModal
