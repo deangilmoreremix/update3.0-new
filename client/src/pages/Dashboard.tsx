@@ -135,16 +135,18 @@ const Dashboard: React.FC = () => {
       
       // Parse AI recommendations or use structured fallback
       let recommendations = [];
+      const aiResponse = data.result || data.insights || data.content;
+      
       try {
-        const aiResult = JSON.parse(data.insights || data.content || '{}');
+        const aiResult = JSON.parse(aiResponse || '{}');
         recommendations = aiResult.recommendations || [];
       } catch (parseError) {
         // Create structured recommendations from AI text
         recommendations = [
           {
             id: 1,
-            title: 'AI Analysis Complete',
-            description: data.insights || data.content || 'Business analysis completed',
+            title: 'AI Business Analysis',
+            description: aiResponse || 'Business analysis completed',
             type: 'general',
             priority: 'medium',
             action: 'Review AI insights',
@@ -189,7 +191,7 @@ const Dashboard: React.FC = () => {
       }
       
       const data = await response.json();
-      setPipelineInsight(data.insights || data.content || data.message);
+      setPipelineInsight(data.result || data.insights || data.content || data.message);
     } catch (error) {
       console.error('Error generating pipeline insight:', error);
       setPipelineInsight('Unable to generate insights at this time. Please ensure your OpenAI API key is configured and try again.');
