@@ -69,16 +69,16 @@ const QuickAIButton: React.FC<QuickAIButtonProps> = ({
   };
 
   const sizeClasses = {
-    sm: 'px-2 py-1 text-xs',
-    md: 'px-3 py-1.5 text-sm'
+    sm: 'px-2 py-1 text-xs h-7 min-w-[60px]',
+    md: 'px-3 py-1.5 text-sm h-8 min-w-[70px]'
   };
 
   const variantClasses = {
-    default: 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200',
-    analysis: 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200',
-    generation: 'bg-green-50 text-green-700 hover:bg-green-100 border border-green-200',
-    research: 'bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200',
-    automation: 'bg-orange-50 text-orange-700 hover:bg-orange-100 border border-orange-200'
+    default: 'bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 hover:from-gray-100 hover:to-gray-200 border border-gray-200/60 shadow-sm',
+    analysis: 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 hover:from-blue-100 hover:to-blue-200 border border-blue-200/60 shadow-sm',
+    generation: 'bg-gradient-to-r from-green-50 to-green-100 text-green-700 hover:from-green-100 hover:to-green-200 border border-green-200/60 shadow-sm',
+    research: 'bg-gradient-to-r from-purple-50 to-purple-100 text-purple-700 hover:from-purple-100 hover:to-purple-200 border border-purple-200/60 shadow-sm',
+    automation: 'bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 hover:from-orange-100 hover:to-orange-200 border border-orange-200/60 shadow-sm'
   };
 
   const iconSize = size === 'sm' ? 12 : 14;
@@ -88,7 +88,7 @@ const QuickAIButton: React.FC<QuickAIButtonProps> = ({
       onClick={handleClick}
       disabled={isLoading}
       className={`
-        inline-flex items-center justify-center font-medium rounded-md transition-all duration-200
+        inline-flex items-center justify-center font-semibold rounded-full transition-all duration-200
         ${sizeClasses[size]}
         ${variantClasses[variant]}
         ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}

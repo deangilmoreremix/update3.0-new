@@ -239,29 +239,30 @@ const AIEnhancedContactCard: React.FC<AIEnhancedContactCardProps> = ({
         </div>
       )}
       
-      {/* AI Action Toolbar */}
-      <div className="mt-4 pt-3 border-t border-gray-100">
-        <AIActionToolbar
-          entityType="contact"
-          entityId={contact.id}
-          entityData={contact}
-          layout="horizontal"
-          size="sm"
-          className="justify-center"
-        />
-      </div>
-      
-      {/* Traditional Actions */}
-      <div className="mt-3">
-        <div className="flex space-x-2">
-          <button className="flex-1 flex items-center justify-center py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100 text-xs font-medium">
-            <Mail size={14} className="mr-1" /> Email
+      {/* Action Buttons - Combined AI and Traditional */}
+      <div className="mt-4 pt-3 border-t border-gray-100 space-y-3">
+        {/* AI Action Toolbar - Compact Modern Style */}
+        <div className="flex justify-center">
+          <AIActionToolbar
+            entityType="contact"
+            entityId={contact.id}
+            entityData={contact}
+            layout="horizontal"
+            size="sm"
+            className="gap-1"
+          />
+        </div>
+        
+        {/* Traditional Actions - Modern Pills */}
+        <div className="flex space-x-1.5">
+          <button className="flex-1 flex items-center justify-center py-2 px-2 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 rounded-full hover:from-blue-100 hover:to-blue-200 text-xs font-semibold transition-all duration-200 border border-blue-200/50">
+            <Mail size={12} className="mr-1" /> Email
           </button>
-          <button className="flex-1 flex items-center justify-center py-1 bg-green-50 text-green-600 rounded hover:bg-green-100 text-xs font-medium">
-            <Phone size={14} className="mr-1" /> Call
+          <button className="flex-1 flex items-center justify-center py-2 px-2 bg-gradient-to-r from-green-50 to-green-100 text-green-700 rounded-full hover:from-green-100 hover:to-green-200 text-xs font-semibold transition-all duration-200 border border-green-200/50">
+            <Phone size={12} className="mr-1" /> Call
           </button>
-          <button className="flex-1 flex items-center justify-center py-1 bg-purple-50 text-purple-600 rounded hover:bg-purple-100 text-xs font-medium">
-            <User size={14} className="mr-1" /> Profile
+          <button className="flex-1 flex items-center justify-center py-2 px-2 bg-gradient-to-r from-purple-50 to-purple-100 text-purple-700 rounded-full hover:from-purple-100 hover:to-purple-200 text-xs font-semibold transition-all duration-200 border border-purple-200/50">
+            <User size={12} className="mr-1" /> View
           </button>
         </div>
       </div>
