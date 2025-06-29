@@ -53,6 +53,8 @@ import CommunicationsFeaturePage from './pages/Landing/FeaturePage/Communication
 import GoalCardDemo from './pages/GoalCardDemo';
 import { AIGoalsPage } from './pages/AIGoalsPage';
 import PartnerOnboardingPage from './pages/PartnerOnboardingPage';
+import PartnerDashboard from './pages/PartnerDashboard';
+import SuperAdminDashboard from './pages/SuperAdminDashboard';
 
 // Layout Components
 import Navbar from './components/Navbar';
@@ -220,6 +222,8 @@ function App() {
           <Route path="/demo/goal-cards" element={<GoalCardDemo />} />
           <Route path="/ai-goals" element={<AIGoalsPage />} />
           <Route path="/partner/onboard" element={<PartnerOnboardingPage />} />
+          <Route path="/partner/dashboard" element={<PartnerDashboard />} />
+          <Route path="/admin/dashboard" element={<SuperAdminDashboard />} />
         </Routes>
       </Router>
     </AIToolsProvider>
