@@ -160,6 +160,14 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### June 28, 2025 - AI Pipeline Intelligence Real API Integration
+- **Real Data Integration**: Connected Generate Insight button to use actual CRM data instead of mock data
+- **API Endpoint**: Now calls `/api/ai/sales-insights` with real contacts and deals data
+- **AI Analysis**: Uses OpenAI GPT-4 to analyze actual pipeline data for genuine insights
+- **Data Sources**: Fetches real contacts from contactStore and deals from dealStore
+- **Error Handling**: Improved error messages for API configuration issues
+- **Impact**: Users now receive personalized AI insights based on their actual business data
+
 ### June 28, 2025 - Smart CRM Closer Link Updated
 - **Link Update**: Updated Smart CRM Closer links to point to https://smartcrm-closer.videoremix.io
 - **Locations Updated**: Both Navbar dropdown and Dashboard quick access links

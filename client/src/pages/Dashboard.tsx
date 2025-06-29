@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDealStore } from '../store/dealStore';
+import { useContactStore } from '../store/contactStore';
 import { useGemini } from '../services/geminiService';
 import { useTaskStore } from '../store/taskStore';
 import { useAppointmentStore } from '../store/appointmentStore';
@@ -67,6 +68,12 @@ const Dashboard: React.FC = () => {
     totalPipelineValue 
   } = useDealStore();
   
+  const { 
+    contacts, 
+    fetchContacts, 
+    isLoading: contactsLoading 
+  } = useContactStore();
+  
   const { tasks, fetchTasks } = useTaskStore();
   const { fetchAppointments } = useAppointmentStore();
   const { openTool } = useAITools();
@@ -85,8 +92,9 @@ const Dashboard: React.FC = () => {
   });
   
   useEffect(() => {
-    // Fetch deals data when component mounts
+    // Fetch all data when component mounts
     fetchDeals();
+    fetchContacts();
     fetchTasks();
     fetchAppointments();
     
@@ -96,6 +104,7 @@ const Dashboard: React.FC = () => {
     // Set up timer to refresh data periodically
     const intervalId = setInterval(() => {
       fetchDeals();
+      fetchContacts();
     }, 300000); // refresh every 5 minutes
     
     return () => clearInterval(intervalId);
@@ -134,20 +143,38 @@ const Dashboard: React.FC = () => {
     ]);
   };
   
-  // Generate AI insight for the pipeline
+  // Generate AI insight for the pipeline using real data
   const generatePipelineInsight = async () => {
     setIsAnalyzing(true);
     
     try {
-      // In a real implementation, this would call the Gemini API with actual pipeline data
-      // For demo, we'll simulate a response after a delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Convert contacts object to array for API
+      const contactsArray = Object.values(contacts);
       
-      const insight = `Your pipeline has grown by 15% this month with a healthy distribution across stages. Focus on the two high-value deals in negotiation stage that need technical validation to progress. Your win rate has improved from 22% to 28% quarter-over-quarter, but close cycles have lengthened by 5 days on average. Consider implementing a more structured proof-of-concept process to accelerate deals in the proposal stage.`;
+      // Prepare real data for the AI analysis
+      const requestData = {
+        contacts: contactsArray,
+        deals: deals
+      };
       
-      setPipelineInsight(insight);
+      // Call the real AI sales insights API
+      const response = await fetch('/api/ai/sales-insights', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setPipelineInsight(data.insights || data.content || data.message);
     } catch (error) {
       console.error('Error generating pipeline insight:', error);
+      setPipelineInsight('Unable to generate insights at this time. Please ensure your OpenAI API key is configured and try again.');
     } finally {
       setIsAnalyzing(false);
     }
