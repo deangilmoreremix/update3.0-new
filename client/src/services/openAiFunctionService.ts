@@ -55,7 +55,9 @@ const crmFunctions: CrmFunctions = {
       const contacts = await response.json();
       return contacts.map((contact: any) => ({
         ...contact,
-        lastContact: contact.lastContact ? new Date(contact.lastContact) : null
+        lastContact: contact.lastContact ? new Date(contact.lastContact) : null,
+        createdAt: contact.createdAt ? new Date(contact.createdAt) : new Date(),
+        updatedAt: contact.updatedAt ? new Date(contact.updatedAt) : new Date()
       }));
     } catch (error) {
       console.error('Contact search error:', error);
@@ -142,7 +144,9 @@ const crmFunctions: CrmFunctions = {
       const contact = await response.json();
       return {
         ...contact,
-        lastContact: contact.lastContact ? new Date(contact.lastContact) : null
+        lastContact: contact.lastContact ? new Date(contact.lastContact) : null,
+        createdAt: contact.createdAt ? new Date(contact.createdAt) : new Date(),
+        updatedAt: contact.updatedAt ? new Date(contact.updatedAt) : new Date()
       };
     } catch (error) {
       console.error('Contact retrieval error:', error);
@@ -176,165 +180,19 @@ const crmFunctions: CrmFunctions = {
     }
   }
 };
-        notes: 'Interested in enterprise plan',
-        industry: 'Technology',
-        location: 'San Francisco, CA'
-      },
-      {
-        id: '2',
-        name: 'Jane Smith',
-        email: 'jane.smith@globex.com',
-        phone: '(555) 987-6543',
-        company: 'Globex Corp',
-        position: 'Marketing Director',
-        status: 'lead',
-        score: 65,
-        lastContact: new Date('2023-05-28'),
-        notes: 'Follow up on marketing proposal',
-        industry: 'Manufacturing',
-        location: 'Chicago, IL'
-      }
-    ].filter(contact => {
-      // Apply filters
-      if (params.status && contact.status !== params.status) return false;
-      if (params.industry && contact.industry !== params.industry) return false;
-      if (params.query && !contact.name.toLowerCase().includes(params.query.toLowerCase())) return false;
-      return true;
-    });
-  },
-  
-  createTask: async (params) => {
-    console.log('Creating task with params:', params);
-    // Mock implementation - would connect to actual API in production
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Return mock response
-    return {
-      id: `task-${Date.now()}`,
-      success: true
-    };
-  },
-  
-  scheduleFollowUp: async (params) => {
-    console.log('Scheduling follow-up with params:', params);
-    // Mock implementation - would connect to actual API in production
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Return mock response
-    return {
-      id: `appointment-${Date.now()}`,
-      success: true
-    };
-  },
-  
-  getContactInfo: async (params) => {
-    console.log('Getting contact info with ID:', params.contactId);
-    // Mock implementation - would connect to actual API in production
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Return mock contact or null if not found
-    const contacts = {
-      '1': {
-        id: '1',
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        phone: '(555) 123-4567',
-        company: 'Acme Inc',
-        position: 'CTO',
-        status: 'customer',
-        score: 85,
-        lastContact: new Date('2023-06-15'),
-        notes: 'Interested in enterprise plan',
-        industry: 'Technology',
-        location: 'San Francisco, CA'
-      },
-      '2': {
-        id: '2',
-        name: 'Jane Smith',
-        email: 'jane.smith@globex.com',
-        phone: '(555) 987-6543',
-        company: 'Globex Corp',
-        position: 'Marketing Director',
-        status: 'lead',
-        score: 65,
-        lastContact: new Date('2023-05-28'),
-        notes: 'Follow up on marketing proposal',
-        industry: 'Manufacturing',
-        location: 'Chicago, IL'
-      }
-    };
-    
-    return contacts[params.contactId] || null;
-  },
-  
-  getDealInfo: async (params) => {
-    console.log('Getting deal info with ID:', params.dealId);
-    // Mock implementation - would connect to actual API in production
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Return mock deal or null if not found
-    const deals = {
-      'deal-1': {
-        id: 'deal-1',
-        title: 'Enterprise License',
-        value: 75000,
-        stage: 'qualification',
-        company: 'Acme Inc',
-        contact: 'John Doe',
-        contactId: 'contact-1',
-        dueDate: new Date('2025-07-15'),
-        createdAt: new Date('2025-06-01'),
-        updatedAt: new Date('2025-06-01'),
-        probability: 10,
-        daysInStage: 5,
-        priority: 'high'
-      },
-      'deal-2': {
-        id: 'deal-2',
-        title: 'Software Renewal',
-        value: 45000,
-        stage: 'proposal',
-        company: 'Globex Corp',
-        contact: 'Jane Smith',
-        contactId: 'contact-2',
-        dueDate: new Date('2025-06-30'),
-        createdAt: new Date('2025-05-15'),
-        updatedAt: new Date('2025-06-01'),
-        probability: 50,
-        daysInStage: 3,
-        priority: 'medium'
-      }
-    };
-    
-    return deals[params.dealId] || null;
-  }
-};
 
-// Define function schemas for OpenAI function calling
-const functionSchemas = [
+// Function definitions for OpenAI Function Calling
+const functionDefinitions = [
   {
     name: 'searchDeals',
-    description: 'Search for deals in the CRM system based on various criteria',
+    description: 'Search for deals in the CRM system',
     parameters: {
       type: 'object',
       properties: {
-        query: {
-          type: 'string',
-          description: 'Search query to find matching deals'
-        },
-        status: {
-          type: 'string',
-          enum: ['qualification', 'proposal', 'negotiation', 'closed-won', 'closed-lost'],
-          description: 'Filter by deal status'
-        },
-        minValue: {
-          type: 'number',
-          description: 'Minimum deal value'
-        },
-        maxValue: {
-          type: 'number',
-          description: 'Maximum deal value'
-        }
+        query: { type: 'string', description: 'Search query' },
+        status: { type: 'string', description: 'Deal status filter' },
+        minValue: { type: 'number', description: 'Minimum deal value' },
+        maxValue: { type: 'number', description: 'Maximum deal value' }
       },
       required: ['query']
     }
@@ -345,19 +203,9 @@ const functionSchemas = [
     parameters: {
       type: 'object',
       properties: {
-        query: {
-          type: 'string',
-          description: 'Search query to find matching contacts'
-        },
-        status: {
-          type: 'string',
-          enum: ['lead', 'prospect', 'customer', 'churned'],
-          description: 'Filter by contact status'
-        },
-        industry: {
-          type: 'string',
-          description: 'Filter by industry'
-        }
+        query: { type: 'string', description: 'Search query' },
+        status: { type: 'string', description: 'Contact status filter' },
+        industry: { type: 'string', description: 'Industry filter' }
       },
       required: ['query']
     }
@@ -368,32 +216,12 @@ const functionSchemas = [
     parameters: {
       type: 'object',
       properties: {
-        title: {
-          type: 'string',
-          description: 'Task title'
-        },
-        description: {
-          type: 'string',
-          description: 'Task description'
-        },
-        dueDate: {
-          type: 'string',
-          description: 'Due date for the task (ISO format)'
-        },
-        priority: {
-          type: 'string',
-          enum: ['low', 'medium', 'high'],
-          description: 'Task priority'
-        },
-        relatedToType: {
-          type: 'string',
-          enum: ['contact', 'deal'],
-          description: 'Type of entity this task is related to'
-        },
-        relatedToId: {
-          type: 'string',
-          description: 'ID of the entity this task is related to'
-        }
+        title: { type: 'string', description: 'Task title' },
+        description: { type: 'string', description: 'Task description' },
+        dueDate: { type: 'string', description: 'Due date in ISO format' },
+        priority: { type: 'string', description: 'Task priority' },
+        relatedToType: { type: 'string', description: 'Type of related entity' },
+        relatedToId: { type: 'string', description: 'ID of related entity' }
       },
       required: ['title']
     }
@@ -404,23 +232,10 @@ const functionSchemas = [
     parameters: {
       type: 'object',
       properties: {
-        contactId: {
-          type: 'string',
-          description: 'ID of the contact to follow up with'
-        },
-        date: {
-          type: 'string',
-          description: 'Date and time for the follow-up (ISO format)'
-        },
-        meetingType: {
-          type: 'string',
-          enum: ['call', 'video', 'in-person'],
-          description: 'Type of meeting'
-        },
-        notes: {
-          type: 'string',
-          description: 'Notes for the follow-up'
-        }
+        contactId: { type: 'string', description: 'Contact ID' },
+        date: { type: 'string', description: 'Follow-up date' },
+        meetingType: { type: 'string', description: 'Type of meeting' },
+        notes: { type: 'string', description: 'Additional notes' }
       },
       required: ['contactId', 'date']
     }
@@ -431,10 +246,7 @@ const functionSchemas = [
     parameters: {
       type: 'object',
       properties: {
-        contactId: {
-          type: 'string',
-          description: 'ID of the contact to get information for'
-        }
+        contactId: { type: 'string', description: 'Contact ID' }
       },
       required: ['contactId']
     }
@@ -445,157 +257,130 @@ const functionSchemas = [
     parameters: {
       type: 'object',
       properties: {
-        dealId: {
-          type: 'string',
-          description: 'ID of the deal to get information for'
-        }
+        dealId: { type: 'string', description: 'Deal ID' }
       },
       required: ['dealId']
     }
   }
 ];
 
-export const useOpenAIFunctions = () => {
-  const { apiKeys } = useApiStore();
-  
-  const getClient = () => {
-    if (!apiKeys.openai) {
-      throw new Error('OpenAI API key is not set');
-    }
-    
-    return new OpenAI({
-      apiKey: apiKeys.openai,
-      dangerouslyAllowBrowser: true // Note: In production, proxy requests through a backend
-    });
-  };
-  
-  // Execute function calls from OpenAI
-  const executeFunction = async (functionName: string, args: any) => {
-    if (typeof crmFunctions[functionName as keyof CrmFunctions] === 'function') {
-      // Convert arguments if needed (e.g., parse dates)
-      try {
-        return await crmFunctions[functionName as keyof CrmFunctions](args);
-      } catch (error) {
-        console.error(`Error executing function ${functionName}:`, error);
-        throw error;
-      }
-    } else {
-      throw new Error(`Function ${functionName} not implemented`);
-    }
-  };
-  
-  // Chat with function calling capabilities
-  const chatWithFunctions = async (
-    messages: { role: 'system' | 'user' | 'assistant' | 'function'; content: string; name?: string }[],
-    availableFunctions: string[] = []
-  ) => {
-    const client = getClient();
-    
-    try {
-      // Filter function schemas based on available functions
-      const selectedFunctionSchemas = functionSchemas.filter(
-        schema => availableFunctions.includes(schema.name)
-      );
-      
-      // Initial API call with functions
-      const response = await client.chat.completions.create({
-        model: "gpt-4o", // Updated from gpt-4-turbo-preview
-        messages,
-        functions: selectedFunctionSchemas.length > 0 ? selectedFunctionSchemas : undefined,
-        function_call: selectedFunctionSchemas.length > 0 ? 'auto' : undefined,
+// Service class for handling OpenAI Function Calling with CRM functions
+export class OpenAIFunctionService {
+  private openai: OpenAI | null = null;
+  private conversation: Array<{ role: string; content: string; name?: string }> = [];
+
+  constructor() {
+    const apiStore = useApiStore.getState();
+    if (apiStore.apiKeys.openai) {
+      this.openai = new OpenAI({
+        apiKey: apiStore.apiKeys.openai,
+        dangerouslyAllowBrowser: true
       });
+    }
+  }
+
+  isInitialized(): boolean {
+    return this.openai !== null;
+  }
+
+  async processMessage(message: string): Promise<string> {
+    if (!this.openai) {
+      throw new Error('OpenAI client not initialized. Please set your API key.');
+    }
+
+    // Add user message to conversation
+    this.conversation.push({ role: 'user', content: message });
+
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4o',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a helpful CRM assistant. You can search for deals and contacts, create tasks, schedule follow-ups, and get detailed information about contacts and deals. Use the available functions to help users with their CRM needs.'
+          },
+          ...this.conversation.map(msg => ({
+            role: msg.role as any,
+            content: msg.content,
+            ...(msg.name && { name: msg.name })
+          }))
+        ],
+        functions: functionDefinitions,
+        function_call: 'auto'
+      });
+
+      const responseMessage = response.choices[0]?.message;
       
-      const responseMessage = response.choices[0].message;
-      
-      // Check if the model wants to call a function
-      if (responseMessage.function_call) {
+      if (responseMessage?.function_call) {
+        // Handle function call
         const functionName = responseMessage.function_call.name;
-        let functionArgs = {};
-        
-        try {
-          functionArgs = JSON.parse(responseMessage.function_call.arguments);
-        } catch (error) {
-          console.error('Error parsing function arguments:', error);
-          throw new Error('Invalid function arguments');
-        }
+        const functionArgs = JSON.parse(responseMessage.function_call.arguments);
         
         // Execute the function
-        const functionResult = await executeFunction(functionName, functionArgs);
+        let functionResult;
+        try {
+          functionResult = await (crmFunctions as any)[functionName](functionArgs);
+        } catch (error) {
+          functionResult = { error: 'Function execution failed' };
+        }
+
+        // Add function call and result to conversation
+        this.conversation.push({
+          role: 'assistant',
+          content: responseMessage.content || '',
+          ...(responseMessage.function_call && { function_call: responseMessage.function_call })
+        });
         
-        // Append the function call and result to messages
-        const newMessages = [
-          ...messages,
-          {
-            role: 'assistant',
-            content: '',
-            function_call: {
-              name: functionName,
-              arguments: responseMessage.function_call.arguments,
+        this.conversation.push({
+          role: 'function',
+          name: functionName,
+          content: JSON.stringify(functionResult)
+        });
+
+        // Get AI response based on function result
+        const followUpResponse = await this.openai.chat.completions.create({
+          model: 'gpt-4o',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a helpful CRM assistant. Provide clear, helpful responses based on the function results.'
             },
-          },
-          {
-            role: 'function',
-            name: functionName,
-            content: JSON.stringify(functionResult),
-          },
-        ];
-        
-        // Call the API again with the updated messages
-        return chatWithFunctions(newMessages, availableFunctions);
+            ...this.conversation.map(msg => ({
+              role: msg.role as any,
+              content: msg.content,
+              ...(msg.name && { name: msg.name })
+            }))
+          ]
+        });
+
+        const finalResponse = followUpResponse.choices[0]?.message?.content || 'Function executed successfully.';
+        this.conversation.push({ role: 'assistant', content: finalResponse });
+        return finalResponse;
+      } else {
+        // Regular response without function call
+        const content = responseMessage?.content || 'I apologize, but I was unable to process your request.';
+        this.conversation.push({ role: 'assistant', content });
+        return content;
       }
-      
-      return responseMessage;
     } catch (error) {
-      console.error('Error in chat with functions:', error);
-      throw error;
+      console.error('Error processing message:', error);
+      throw new Error('Failed to process message with OpenAI');
     }
-  };
-  
-  // Simplified helper for sales assistant with functions
-  const salesAssistantWithFunctions = async (
-    userMessage: string,
-    context: string = '',
-    previousMessages: { role: 'system' | 'user' | 'assistant' | 'function'; content: string; name?: string }[] = []
-  ) => {
-    const systemMessage = {
-      role: 'system' as const,
-      content: `You are an AI-powered sales assistant in a CRM system. You can help with:
-- Finding and analyzing deals and contacts
-- Creating tasks and scheduling follow-ups
-- Providing information about specific deals and contacts
-- Offering sales advice and strategies
+  }
 
-${context}
+  clearConversation(): void {
+    this.conversation = [];
+  }
 
-Always be helpful, professional, and focused on helping the user achieve their sales goals.`
-    };
-    
-    const messages = [
-      systemMessage,
-      ...previousMessages,
-      {
-        role: 'user' as const,
-        content: userMessage
-      }
-    ];
-    
-    // These are all the functions this assistant can use
-    const availableFunctions = [
-      'searchDeals',
-      'searchContacts',
-      'createTask',
-      'scheduleFollowUp',
-      'getContactInfo',
-      'getDealInfo'
-    ];
-    
-    return chatWithFunctions(messages, availableFunctions);
-  };
-  
-  return {
-    chatWithFunctions,
-    salesAssistantWithFunctions,
-    functionSchemas,
-    executeFunction
-  };
-};
+  getConversation(): Array<{ role: string; content: string; name?: string }> {
+    return [...this.conversation];
+  }
+}
+
+// Export default instance
+export const openAIFunctionService = new OpenAIFunctionService();
+
+// Hook for using OpenAI Functions in React components
+export function useOpenAIFunctions() {
+  return openAIFunctionService;
+}

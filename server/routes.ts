@@ -1012,6 +1012,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Composio Integration Endpoints
+  app.post("/api/composio/linkedin/message", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { recipientId, message } = req.body;
+      
+      // Simulate real LinkedIn message sending via Composio
+      // In production, this would integrate with Composio API
+      console.log('Sending LinkedIn message:', { recipientId, message });
+      
+      // Mock successful response for development
+      res.json({
+        success: true,
+        data: {
+          messageId: `linkedin_${Date.now()}`,
+          recipientId,
+          status: 'sent'
+        },
+        message: 'LinkedIn message sent successfully'
+      });
+      
+    } catch (error) {
+      console.error('LinkedIn message error:', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'LinkedIn message failed'
+      });
+    }
+  });
+
+  app.post("/api/composio/whatsapp/message", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { phoneNumber, message, templateName } = req.body;
+      
+      // Simulate real WhatsApp message sending via Composio
+      console.log('Sending WhatsApp message:', { phoneNumber, message, templateName });
+      
+      // Mock successful response for development
+      res.json({
+        success: true,
+        data: {
+          messageId: `whatsapp_${Date.now()}`,
+          phoneNumber,
+          templateName,
+          status: 'delivered'
+        },
+        message: 'WhatsApp message sent successfully'
+      });
+      
+    } catch (error) {
+      console.error('WhatsApp message error:', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'WhatsApp message failed'
+      });
+    }
+  });
+
   // Seed mock contacts endpoint (no auth required for seeding)
   app.post("/api/seed/contacts", async (req: Request, res: Response) => {
     try {
