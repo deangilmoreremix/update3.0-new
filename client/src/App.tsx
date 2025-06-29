@@ -52,6 +52,7 @@ import FunctionAssistantFeaturePage from './pages/Landing/FeaturePage/FunctionAs
 import CommunicationsFeaturePage from './pages/Landing/FeaturePage/CommunicationsFeaturePage';
 import GoalCardDemo from './pages/GoalCardDemo';
 import { AIGoalsPage } from './pages/AIGoalsPage';
+import CustomizationDemo from './pages/CustomizationDemo';
 
 // Layout Components
 import Navbar from './components/Navbar';
@@ -217,6 +218,7 @@ function App() {
           <Route path="/features/function-assistant" element={<FunctionAssistantFeaturePage />} />
           <Route path="/features/communications" element={<CommunicationsFeaturePage />} />
           <Route path="/demo/goal-cards" element={<GoalCardDemo />} />
+          <Route path="/demo/customization" element={<CustomizationDemo />} />
           <Route path="/ai-goals" element={<AIGoalsPage />} />
         </Routes>
       </Router>
