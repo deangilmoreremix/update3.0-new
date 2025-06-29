@@ -11,7 +11,7 @@ import {
   insertVoiceProfileSchema
 } from "@shared/schema";
 import { z } from "zod";
-// import { extractTenant, requireTenant, requireFeature, addTenantContext, type TenantRequest } from "./middleware/tenantMiddleware";
+import { extractTenant, requireTenant, requireFeature, addTenantContext, type TenantRequest } from "./middleware/tenantMiddleware";
 import { handleWebhook } from "./integrations/webhookHandlers";
 import { whiteLabelClient } from "./integrations/whiteLabelClient";
 
@@ -46,7 +46,8 @@ const requireAuth = async (req: Request, res: Response, next: any) => {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Apply tenant extraction middleware to all routes
-  // app.use(extractTenant); // Temporarily disabled during migration
+  app.use(extractTenant);
+  app.use(addTenantContext);
 
   // White Label Platform Integration Routes
   app.post("/api/webhooks/white-label", handleWebhook);
@@ -96,12 +97,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Tenant-specific routes (require tenant context)
-  app.get("/api/tenant/info", async (req: Request, res: Response) => {
+  app.get("/api/tenant/info", async (req: TenantRequest, res: Response) => {
     try {
+      if (!req.tenantId) {
+        return res.status(400).json({ error: "Tenant context required" });
+      }
+
       res.json({
-        tenantId: "default-tenant",
-        tenant: { name: "Default Tenant", status: "active" },
-        features: { aiTools: true, multiTenant: false } // All features enabled during migration
+        tenantId: req.tenantId,
+        tenant: req.tenant,
+        features: req.tenantFeatures
       });
     } catch (error) {
       console.error("Error fetching tenant info:", error);

@@ -65,19 +65,18 @@ export const extractTenant = async (req: TenantRequest, res: Response, next: Nex
       }
     }
 
-    // Method 6: Fallback to existing white-label logic for backward compatibility
+    // Method 6: Use default tenant for development/migration
     if (!tenant) {
+      const defaultTenantId = '630ed3be-0533-43ff-a569-2051df9c4d20'; // Default tenant created during migration
       try {
-        const legacyTenantId = subdomain || req.get('X-Tenant-ID') || req.query.tenant as string;
-        if (legacyTenantId) {
-          const legacyTenant = await whiteLabelClient.getTenant(legacyTenantId);
-          if (legacyTenant) {
-            req.tenantId = legacyTenantId;
-            req.tenantFeatures = legacyTenant.features;
-          }
+        const defaultTenant = await tenantService.getTenant(defaultTenantId);
+        if (defaultTenant) {
+          req.tenantId = defaultTenantId;
+          req.tenant = defaultTenant;
+          req.tenantFeatures = defaultTenant.featureFlags;
         }
       } catch (error) {
-        console.warn(`Failed to fetch legacy tenant details:`, error);
+        console.warn(`Failed to fetch default tenant:`, error);
       }
     }
 

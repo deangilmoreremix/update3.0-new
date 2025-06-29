@@ -51,7 +51,7 @@ export async function setupDefaultTenantSQL() {
           'active',
           '{"logo": null, "primaryColor": "#3b82f6", "secondaryColor": "#1e40af", "companyName": "Smart CRM"}',
           '{"aiTools": true, "multiTenant": false, "whiteLabel": false, "customBranding": false, "apiAccess": true, "advancedAnalytics": true, "voiceAnalysis": true, "documentAnalysis": true}',
-          '${metadataJson}'
+          '{"migration": true, "migrationDate": "2025-06-29", "originalApp": "Smart CRM"}'
         )
       `);
     }
@@ -76,14 +76,14 @@ export async function setupDefaultTenantSQL() {
     
     if (existingRole.rows.length === 0) {
       await db.execute(sql`
-        INSERT INTO user_roles (id, tenant_id, name, description, permissions, is_default)
+        INSERT INTO user_roles (id, tenant_id, name, description, permissions, is_system)
         VALUES (
           gen_random_uuid(),
           ${defaultTenantId},
           'Admin',
           'Default administrator role',
           '["users.read", "users.write", "users.delete", "contacts.read", "contacts.write", "contacts.delete", "deals.read", "deals.write", "deals.delete", "tasks.read", "tasks.write", "tasks.delete", "analytics.read", "ai.use", "settings.write"]',
-          true
+          false
         )
       `);
     }
