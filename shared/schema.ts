@@ -109,8 +109,8 @@ export const users = pgTable("users", {
   preferences: jsonb("preferences").default({}),
   socialLinks: jsonb("social_links").default({}),
   accountStatus: text("account_status").default("active"),
-  // Multi-tenant fields
-  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+  // Multi-tenant fields - nullable during migration
+  tenantId: uuid("tenant_id").references(() => tenants.id),
   roleId: uuid("role_id").references(() => userRoles.id),
   permissions: jsonb("permissions").default([]),
   isAdmin: boolean("is_admin").default(false),
@@ -139,7 +139,7 @@ export const contacts = pgTable("contacts", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   userId: uuid("user_id").notNull().references(() => users.id),
-  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+  tenantId: uuid("tenant_id").references(() => tenants.id), // Nullable during migration
 }, (table) => [
   index("idx_contacts_tenant").on(table.tenantId),
   index("idx_contacts_user_tenant").on(table.userId, table.tenantId),

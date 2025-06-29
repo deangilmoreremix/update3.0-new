@@ -1,5 +1,5 @@
 import { db } from "../db";
-import { tenants, users, userRoles, subscriptionPlans, tenantSubscriptions, featureUsage, type Tenant, type InsertTenant, type User, type FeatureKey, type PermissionKey, FEATURES, USER_PERMISSIONS } from "@shared/schema";
+import { tenants, users, userRoles, subscriptionPlans, tenantSubscriptions, featureUsage, type Tenant, type InsertTenant, type User, type InsertUser, type FeatureKey, type PermissionKey, FEATURES, USER_PERMISSIONS } from "@shared/schema";
 import { eq, and, sql } from "drizzle-orm";
 
 export class TenantService {
