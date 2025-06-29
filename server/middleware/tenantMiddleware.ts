@@ -1,14 +1,22 @@
 import { Request, Response, NextFunction } from 'express';
 import { whiteLabelClient } from '../integrations/whiteLabelClient';
+import { tenantService } from '../services/tenantService';
+import { type Tenant, type FeatureKey, type PermissionKey } from '@shared/schema';
 
 export interface TenantRequest extends Request {
   tenantId?: string;
-  tenant?: any;
+  tenant?: Tenant;
   tenantFeatures?: any;
+  userId?: string;
+}
+
+export interface AuthenticatedRequest extends TenantRequest {
+  userId: string;
+  userPermissions?: PermissionKey[];
 }
 
 /**
- * Middleware to extract tenant information from request
+ * Enhanced middleware to extract tenant information from request
  * Supports multiple methods:
  * 1. Subdomain (tenant.crm-platform.com)
  * 2. Custom domain (client.com)
@@ -17,52 +25,67 @@ export interface TenantRequest extends Request {
  */
 export const extractTenant = async (req: TenantRequest, res: Response, next: NextFunction) => {
   try {
-    let tenantId: string | null = null;
+    let tenant: Tenant | undefined = undefined;
 
     // Method 1: Extract from subdomain
     const host = req.get('host') || '';
     const subdomain = host.split('.')[0];
     
-    if (subdomain && subdomain !== 'www' && subdomain !== 'api') {
-      tenantId = subdomain;
+    if (subdomain && subdomain !== 'www' && subdomain !== 'api' && subdomain !== 'localhost') {
+      tenant = await tenantService.getTenantBySubdomain(subdomain);
     }
 
     // Method 2: Check for custom domain
-    if (!tenantId) {
-      // This would require a lookup table of custom domains to tenant IDs
-      // For now, we'll implement a simple check
-      const customDomainTenant = await findTenantByDomain(host);
-      if (customDomainTenant) {
-        tenantId = customDomainTenant;
-      }
+    if (!tenant) {
+      tenant = await tenantService.getTenantByDomain(host);
     }
 
     // Method 3: Check headers
-    if (!tenantId) {
-      tenantId = req.get('X-Tenant-ID') || null;
+    if (!tenant) {
+      const tenantId = req.get('X-Tenant-ID');
+      if (tenantId) {
+        tenant = await tenantService.getTenant(tenantId);
+      }
     }
 
     // Method 4: Check query parameters
-    if (!tenantId) {
-      tenantId = req.query.tenant as string || null;
-    }
-
-    // Method 5: Extract from JWT token (if using tenant-specific tokens)
-    if (!tenantId && req.user) {
-      tenantId = (req.user as any).tenantId || null;
-    }
-
-    if (tenantId) {
-      req.tenantId = tenantId;
-      
-      // Optionally fetch tenant details
-      try {
-        const tenant = await whiteLabelClient.getTenant(tenantId);
-        req.tenant = tenant;
-        req.tenantFeatures = tenant.features;
-      } catch (error) {
-        console.warn(`Failed to fetch tenant details for ${tenantId}:`, error);
+    if (!tenant) {
+      const tenantId = req.query.tenant as string;
+      if (tenantId) {
+        tenant = await tenantService.getTenant(tenantId);
       }
+    }
+
+    // Method 5: Extract from user context if authenticated
+    if (!tenant && (req as any).user) {
+      const userId = (req as any).user.id;
+      if (userId) {
+        // This would require a user lookup to get tenant - implement if needed
+        // For now we'll continue with fallback logic
+      }
+    }
+
+    // Method 6: Fallback to existing white-label logic for backward compatibility
+    if (!tenant) {
+      try {
+        const legacyTenantId = subdomain || req.get('X-Tenant-ID') || req.query.tenant as string;
+        if (legacyTenantId) {
+          const legacyTenant = await whiteLabelClient.getTenant(legacyTenantId);
+          if (legacyTenant) {
+            req.tenantId = legacyTenantId;
+            req.tenantFeatures = legacyTenant.features;
+          }
+        }
+      } catch (error) {
+        console.warn(`Failed to fetch legacy tenant details:`, error);
+      }
+    }
+
+    // Set tenant information in request
+    if (tenant) {
+      req.tenantId = tenant.id;
+      req.tenant = tenant;
+      req.tenantFeatures = tenant.featureFlags;
     }
 
     next();
@@ -88,25 +111,83 @@ export const requireTenant = (req: TenantRequest, res: Response, next: NextFunct
 /**
  * Middleware to check if tenant has access to specific features
  */
-export const requireFeature = (featureName: string) => {
-  return (req: TenantRequest, res: Response, next: NextFunction) => {
-    if (!req.tenantFeatures) {
-      return res.status(403).json({
-        error: 'Feature access denied',
-        message: 'Tenant features not available'
+export const requireFeature = (featureName: FeatureKey) => {
+  return async (req: TenantRequest, res: Response, next: NextFunction) => {
+    if (!req.tenantId) {
+      return res.status(400).json({
+        error: 'Tenant identification required for feature access'
       });
     }
 
-    const hasFeature = req.tenantFeatures[featureName];
-    if (!hasFeature) {
-      return res.status(403).json({
-        error: 'Feature access denied',
-        message: `Feature '${featureName}' is not available for this tenant`
+    try {
+      const hasAccess = await tenantService.hasFeatureAccess(req.tenantId, featureName);
+      if (!hasAccess) {
+        return res.status(403).json({
+          error: 'Feature not available',
+          message: `This tenant does not have access to feature: ${featureName}`
+        });
+      }
+
+      // Track feature usage
+      await tenantService.trackFeatureUsage(req.tenantId, featureName);
+      next();
+    } catch (error) {
+      console.error('Feature access check failed:', error);
+      return res.status(500).json({
+        error: 'Feature access check failed'
       });
     }
-
-    next();
   };
+};
+
+/**
+ * Middleware to check if user has specific permissions
+ */
+export const requirePermission = (permission: PermissionKey) => {
+  return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    if (!req.userId) {
+      return res.status(401).json({
+        error: 'Authentication required'
+      });
+    }
+
+    try {
+      const hasPermission = await tenantService.hasPermission(req.userId, permission);
+      if (!hasPermission) {
+        return res.status(403).json({
+          error: 'Insufficient permissions',
+          message: `This user does not have permission: ${permission}`
+        });
+      }
+
+      next();
+    } catch (error) {
+      console.error('Permission check failed:', error);
+      return res.status(500).json({
+        error: 'Permission check failed'
+      });
+    }
+  };
+};
+
+/**
+ * Middleware to ensure tenant is active
+ */
+export const requireActiveTenant = (req: TenantRequest, res: Response, next: NextFunction) => {
+  if (!req.tenant) {
+    return res.status(400).json({
+      error: 'Tenant not found'
+    });
+  }
+
+  if (req.tenant.status !== 'active') {
+    return res.status(403).json({
+      error: 'Tenant not active',
+      message: `Tenant status: ${req.tenant.status}`
+    });
+  }
+
+  next();
 };
 
 /**
@@ -115,7 +196,7 @@ export const requireFeature = (featureName: string) => {
  */
 async function findTenantByDomain(domain: string): Promise<string | null> {
   // In a real implementation, this would check a database
-  // For now, return null
+  // For now, return null to fallback to other methods
   return null;
 }
 
