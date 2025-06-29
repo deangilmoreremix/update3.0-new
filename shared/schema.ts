@@ -174,7 +174,7 @@ export const deals = pgTable("deals", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   userId: uuid("user_id").notNull().references(() => users.id),
-  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+  tenantId: uuid("tenant_id").references(() => tenants.id), // Nullable during migration
 }, (table) => [
   index("idx_deals_tenant").on(table.tenantId),
   index("idx_deals_user_tenant").on(table.userId, table.tenantId),
@@ -194,7 +194,7 @@ export const tasks = pgTable("tasks", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   userId: uuid("user_id").notNull().references(() => users.id),
-  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+  tenantId: uuid("tenant_id").references(() => tenants.id), // Nullable during migration
 }, (table) => [
   index("idx_tasks_tenant").on(table.tenantId),
   index("idx_tasks_user_tenant").on(table.userId, table.tenantId),
@@ -211,7 +211,7 @@ export const businessAnalysis = pgTable("business_analysis", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   userId: uuid("user_id").notNull().references(() => users.id),
-  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+  tenantId: uuid("tenant_id").references(() => tenants.id), // Nullable during migration
 }, (table) => [
   index("idx_business_analysis_tenant").on(table.tenantId),
 ]);
@@ -226,7 +226,7 @@ export const contentItems = pgTable("content_items", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   userId: uuid("user_id").notNull().references(() => users.id),
-  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+  tenantId: uuid("tenant_id").references(() => tenants.id), // Nullable during migration
 }, (table) => [
   index("idx_content_items_tenant").on(table.tenantId),
 ]);
@@ -240,7 +240,7 @@ export const voiceProfiles = pgTable("voice_profiles", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   userId: uuid("user_id").notNull().references(() => users.id),
-  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+  tenantId: uuid("tenant_id").references(() => tenants.id), // Nullable during migration
 }, (table) => [
   index("idx_voice_profiles_tenant").on(table.tenantId),
 ]);

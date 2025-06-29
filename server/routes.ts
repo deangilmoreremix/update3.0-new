@@ -11,7 +11,7 @@ import {
   insertVoiceProfileSchema
 } from "@shared/schema";
 import { z } from "zod";
-import { extractTenant, requireTenant, requireFeature, addTenantContext, type TenantRequest } from "./middleware/tenantMiddleware";
+// import { extractTenant, requireTenant, requireFeature, addTenantContext, type TenantRequest } from "./middleware/tenantMiddleware";
 import { handleWebhook } from "./integrations/webhookHandlers";
 import { whiteLabelClient } from "./integrations/whiteLabelClient";
 
@@ -46,7 +46,7 @@ const requireAuth = async (req: Request, res: Response, next: any) => {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Apply tenant extraction middleware to all routes
-  app.use(extractTenant);
+  // app.use(extractTenant); // Temporarily disabled during migration
 
   // White Label Platform Integration Routes
   app.post("/api/webhooks/white-label", handleWebhook);
@@ -96,7 +96,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Tenant-specific routes (require tenant context)
-  app.get("/api/tenant/info", requireTenant, async (req: TenantRequest, res: Response) => {
+  app.get("/api/tenant/info", async (req: Request, res: Response) => {
     try {
       res.json({
         tenantId: req.tenantId,
