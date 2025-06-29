@@ -4,6 +4,7 @@ import { useOpenAI } from '../services/openaiService';
 import { useGemini } from '../services/geminiService';
 import { useContactStore } from '../store/contactStore';
 import { Contact } from '../types';
+import AIActionToolbar from '../components/ai/AIActionToolbar';
 import { 
   Mail, 
   Phone, 
@@ -558,6 +559,19 @@ const ContactDetail: React.FC = () => {
             <div className="flex items-center mb-4">
               <Brain size={20} className="text-blue-500 mr-2" />
               <h3 className="text-lg font-medium">AI Insights</h3>
+            </div>
+            
+            {/* AI Action Toolbar */}
+            <div className="mb-6 pb-4 border-b border-gray-100">
+              <AIActionToolbar
+                entityType="contact"
+                entityId={contact.id}
+                entityData={contact}
+                layout="vertical"
+                size="md"
+                className="w-full"
+                showGoalsButton={true}
+              />
             </div>
             
             <div className="space-y-4">

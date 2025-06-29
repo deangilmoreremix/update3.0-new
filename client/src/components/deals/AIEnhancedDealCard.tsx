@@ -296,9 +296,21 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
         </div>
       )}
       
-      {/* Quick Actions */}
-      <div className="mt-4 pt-2 border-t border-gray-100">
-        <div className="flex justify-end space-x-2">
+      {/* AI Action Toolbar */}
+      <div className="mt-4 pt-3 border-t border-gray-100">
+        <AIActionToolbar
+          entityType="deal"
+          entityId={deal.id}
+          entityData={deal}
+          layout="horizontal"
+          size="sm"
+          className="justify-center"
+        />
+      </div>
+      
+      {/* Traditional Actions */}
+      <div className="mt-3">
+        <div className="flex justify-center space-x-2">
           <button className="flex items-center py-1 px-2 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium">
             <PieChart size={14} className="mr-1" /> Analyze
           </button>
@@ -312,23 +324,3 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
 };
 
 export default AIEnhancedDealCard;
-const gemini = useGemini();
-const logEmailToLead = async ({
-  leadId,
-  summary,
-  content,
-}: {
-  leadId: string;
-  summary: string;
-  content: string;
-}) => {
-  const { error } = await supabase.from('lead_communications').insert([
-    {
-      lead_id: leadId,
-      type: 'email',
-      summary,
-      content,
-    },
-  ]);
-  if (error) throw error;
-};
