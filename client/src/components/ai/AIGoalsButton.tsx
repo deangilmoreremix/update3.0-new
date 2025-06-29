@@ -57,14 +57,14 @@ const AIGoalsButton: React.FC<AIGoalsButtonProps> = ({
   };
 
   const sizeClasses = {
-    sm: 'px-2 py-1 text-xs',
-    md: 'px-3 py-1.5 text-sm',
-    lg: 'px-4 py-2 text-base'
+    sm: 'px-3 py-1 text-xs h-7 min-w-[80px]',
+    md: 'px-4 py-1.5 text-sm h-8 min-w-[90px]',
+    lg: 'px-5 py-2 text-base h-10 min-w-[100px]'
   };
 
   const variantClasses = {
-    primary: 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-sm',
-    secondary: 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
+    primary: 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 shadow-md border border-purple-300/20',
+    secondary: 'bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 hover:from-blue-100 hover:to-indigo-100 border border-blue-200/60 shadow-sm'
   };
 
   return (
@@ -72,7 +72,7 @@ const AIGoalsButton: React.FC<AIGoalsButtonProps> = ({
       onClick={handleAIGoalsClick}
       disabled={isLoading}
       className={`
-        inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200
+        inline-flex items-center justify-center font-semibold rounded-full transition-all duration-200
         ${sizeClasses[size]}
         ${variantClasses[variant]}
         ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}
