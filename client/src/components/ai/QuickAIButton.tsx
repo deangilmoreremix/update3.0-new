@@ -69,8 +69,8 @@ const QuickAIButton: React.FC<QuickAIButtonProps> = ({
   };
 
   const sizeClasses = {
-    sm: 'px-2.5 py-1.5 text-xs h-8 min-w-[60px]',
-    md: 'px-3 py-2 text-sm h-9 min-w-[70px]'
+    sm: 'px-2 py-1.5 text-xs h-7 min-w-[55px]',
+    md: 'px-3 py-2 text-sm h-8 min-w-[65px]'
   };
 
   const variantClasses = {

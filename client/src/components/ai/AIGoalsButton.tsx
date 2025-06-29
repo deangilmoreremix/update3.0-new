@@ -57,9 +57,9 @@ const AIGoalsButton: React.FC<AIGoalsButtonProps> = ({
   };
 
   const sizeClasses = {
-    sm: 'px-3 py-2 text-xs h-9 min-w-[100px]',
-    md: 'px-4 py-2.5 text-sm h-10 min-w-[120px]',
-    lg: 'px-5 py-3 text-sm h-11 min-w-[140px]'
+    sm: 'px-3 py-2 text-xs h-8 min-w-[90px]',
+    md: 'px-4 py-2.5 text-sm h-9 min-w-[110px]',
+    lg: 'px-5 py-3 text-sm h-10 min-w-[130px]'
   };
 
   const variantClasses = {

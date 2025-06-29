@@ -64,38 +64,42 @@ const AIActionToolbar: React.FC<AIActionToolbarProps> = ({
   };
 
   if (layout === 'grid') {
-    // Grid layout: AI Goals button prominently at top, quick actions in organized grid below
+    // Grid layout: Organized sections with clear visual separation
     return (
       <div className={`${getLayoutClasses()} ${className}`}>
+        {/* Primary AI Goals Section */}
         {showGoalsButton && (
-          <div className="w-full">
+          <div className="w-full mb-3">
             <AIGoalsButton
               entityType={entityType}
               entityId={entityId}
               entityData={entityData}
               size={size}
               variant="primary"
-              className="w-full"
+              className="w-full justify-center"
             />
           </div>
         )}
         
+        {/* Quick Actions Section */}
         {quickActions.length > 0 && (
-          <div className="grid grid-cols-2 gap-2">
-            {quickActions.map((action, index) => (
-              <QuickAIButton
-                key={index}
-                icon={action.icon}
-                label={action.label}
-                toolName={action.toolName}
-                entityType={entityType}
-                entityId={entityId}
-                entityData={entityData}
-                size={size}
-                variant={action.variant}
-                className="w-full"
-              />
-            ))}
+          <div className="w-full">
+            <div className="grid grid-cols-2 gap-1.5">
+              {quickActions.map((action, index) => (
+                <QuickAIButton
+                  key={index}
+                  icon={action.icon}
+                  label={action.label}
+                  toolName={action.toolName}
+                  entityType={entityType}
+                  entityId={entityId}
+                  entityData={entityData}
+                  size={size}
+                  variant={action.variant}
+                  className="w-full justify-center text-center"
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>
