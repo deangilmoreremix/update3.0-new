@@ -1,23 +1,23 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type CustomizationLocation = 'contactCards' | 'dealCards' | 'contactDetail' | 'dealDetail';
+export type CustomizationLocation = 'contact' | 'deal' | 'company';
 
 export interface ButtonConfiguration {
-  contactCards: string[];
-  dealCards: string[];
-  contactDetail: string[];
-  dealDetail: string[];
+  contact: string[];
+  deal: string[];
+  company: string[];
 }
 
 export interface CustomizationState {
   buttonConfigurations: ButtonConfiguration;
   isCustomizing: boolean;
   activeLocation: CustomizationLocation | null;
+  maxButtonsPerLocation: number;
   
   // Actions
-  setButtonConfiguration: (location: CustomizationLocation, goalIds: string[]) => void;
-  getButtonConfiguration: (location: CustomizationLocation) => string[];
+  setSelectedGoals: (location: CustomizationLocation, goalIds: string[]) => void;
+  getSelectedGoals: (location: CustomizationLocation) => string[];
   resetToDefaults: (location?: CustomizationLocation) => void;
   exportConfiguration: () => string;
   importConfiguration: (config: string) => boolean;
@@ -26,10 +26,9 @@ export interface CustomizationState {
 
 // Default button configurations
 const DEFAULT_CONFIGURATIONS: ButtonConfiguration = {
-  contactCards: ['leadScoring', 'emailPersonalization'], // Default 2 buttons for cards
-  dealCards: ['dealRiskAssessment', 'nextBestAction'], // Default 2 buttons for cards
-  contactDetail: ['leadScoring', 'emailPersonalization', 'contactEnrichment'], // Default 3 for detail
-  dealDetail: ['dealRiskAssessment', 'nextBestAction', 'proposalGeneration'] // Default 3 for detail
+  contact: ['leadScoring', 'emailPersonalization'],
+  deal: ['dealRiskAssessment', 'pipelineOptimization'],
+  company: ['businessIntelligence', 'marketResearch']
 };
 
 export const useCustomizationStore = create<CustomizationState>()(
@@ -38,22 +37,20 @@ export const useCustomizationStore = create<CustomizationState>()(
       buttonConfigurations: DEFAULT_CONFIGURATIONS,
       isCustomizing: false,
       activeLocation: null,
+      maxButtonsPerLocation: 4,
 
-      setButtonConfiguration: (location: CustomizationLocation, goalIds: string[]) => {
-        // Limit buttons per location (6 max for clean design)
-        const limitedGoalIds = goalIds.slice(0, 6);
-        
+      setSelectedGoals: (location: CustomizationLocation, goalIds: string[]) => {
         set((state) => ({
           buttonConfigurations: {
             ...state.buttonConfigurations,
-            [location]: limitedGoalIds
+            [location]: goalIds.slice(0, state.maxButtonsPerLocation)
           }
         }));
       },
 
-      getButtonConfiguration: (location: CustomizationLocation) => {
-        const config = get().buttonConfigurations[location];
-        return config || DEFAULT_CONFIGURATIONS[location];
+      getSelectedGoals: (location: CustomizationLocation) => {
+        const state = get();
+        return state.buttonConfigurations[location] || [];
       },
 
       resetToDefaults: (location?: CustomizationLocation) => {
@@ -70,47 +67,30 @@ export const useCustomizationStore = create<CustomizationState>()(
       },
 
       exportConfiguration: () => {
-        const config = get().buttonConfigurations;
-        return JSON.stringify(config, null, 2);
+        const state = get();
+        return JSON.stringify(state.buttonConfigurations);
       },
 
-      importConfiguration: (configString: string) => {
+      importConfiguration: (config: string) => {
         try {
-          const config = JSON.parse(configString) as ButtonConfiguration;
-          
-          // Validate configuration structure
-          const requiredKeys: (keyof ButtonConfiguration)[] = ['contactCards', 'dealCards', 'contactDetail', 'dealDetail'];
-          const isValid = requiredKeys.every(key => 
-            Array.isArray(config[key]) && config[key].every(id => typeof id === 'string')
-          );
-          
-          if (!isValid) return false;
-          
-          // Apply limits to each location
-          const limitedConfig: ButtonConfiguration = {
-            contactCards: config.contactCards.slice(0, 6),
-            dealCards: config.dealCards.slice(0, 6),
-            contactDetail: config.contactDetail.slice(0, 6),
-            dealDetail: config.dealDetail.slice(0, 6)
-          };
-          
-          set({ buttonConfigurations: limitedConfig });
-          return true;
+          const parsed = JSON.parse(config);
+          if (parsed && typeof parsed === 'object') {
+            set({ buttonConfigurations: { ...DEFAULT_CONFIGURATIONS, ...parsed } });
+            return true;
+          }
+          return false;
         } catch {
           return false;
         }
       },
 
       setCustomizing: (isCustomizing: boolean, location?: CustomizationLocation) => {
-        set({ 
-          isCustomizing, 
-          activeLocation: isCustomizing ? location || null : null 
-        });
-      }
+        set({ isCustomizing, activeLocation: location || null });
+      },
     }),
     {
-      name: 'ai-button-customization',
-      version: 1
+      name: 'ai-goals-customization',
+      version: 1,
     }
   )
 );
