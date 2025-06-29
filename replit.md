@@ -158,6 +158,17 @@ Smart CRM is a modern AI-powered customer relationship management platform built
 
 Preferred communication style: Simple, everyday language.
 
+## Design Preservation Requirements
+
+**CRITICAL**: The AI Goals page and InteractiveGoalCard designs are finalized and must NOT be changed:
+
+- **InteractiveGoalCard Component**: Uses original Goal interface with fields like `businessImpact`, `agentsRequired`, `estimatedSetupTime`, `roi`, `prerequisite`, `realWorldExample`
+- **AIGoalsPage Component**: Features enhanced header with glass effects, gradient backgrounds, and structured Card layout
+- **Original Design Elements**: All hover animations, backdrop-blur effects, gradient styling, and component structure must be preserved exactly as provided in attached design files
+- **Field Mapping**: Goal object structure and property access patterns are finalized and should not be modified
+
+Any updates must maintain the exact visual design and component structure provided by the user.
+
 ## Recent Changes
 
 ### June 29, 2025 - Complete UI Consistency with Modern Pill-Shaped Buttons and Enhanced Detail Pages
