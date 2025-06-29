@@ -99,9 +99,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/tenant/info", async (req: Request, res: Response) => {
     try {
       res.json({
-        tenantId: req.tenantId,
-        tenant: req.tenant,
-        features: req.tenantFeatures
+        tenantId: "default-tenant",
+        tenant: { name: "Default Tenant", status: "active" },
+        features: { aiTools: true, multiTenant: false } // All features enabled during migration
       });
     } catch (error) {
       console.error("Error fetching tenant info:", error);
@@ -445,7 +445,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // AI Content Generation route with OpenAI and Gemini support
-  app.post("/api/ai/generate-content", requireAuth, requireFeature('aiTools'), async (req: Request, res: Response) => {
+  app.post("/api/ai/generate-content", requireAuth, async (req: Request, res: Response) => {
     try {
       const { contentType, purpose, data, apiKey, preferredModel = 'gemini' } = req.body;
       
