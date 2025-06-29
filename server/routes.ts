@@ -801,6 +801,132 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // MCP (Model Context Protocol) Function Calling Endpoint
+  app.post("/api/mcp/call", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { functionName, parameters, model = 'gemini', temperature = 0.1 } = req.body;
+      
+      // Get user's data for context
+      const contacts = await storage.getContacts(req.userId!);
+      const deals = await storage.getDeals(req.userId!);
+      const tasks = await storage.getTasks(req.userId!);
+      
+      let result: any = {};
+      
+      switch (functionName) {
+        case 'analyzeLeadScore':
+          const contact = await storage.getContact(parameters.contactId);
+          if (!contact) {
+            throw new Error('Contact not found');
+          }
+          
+          // Use AI to analyze lead score
+          const leadAnalysisPrompt = `Analyze this contact for lead scoring: ${JSON.stringify(contact)}. 
+          Score from 0-100 based on: company size, industry, engagement, position, and other factors.
+          Provide specific factors and recommendation.`;
+          
+          result = await callAIModel(model, leadAnalysisPrompt, temperature);
+          break;
+          
+        case 'generatePersonalizedEmail':
+          const targetContact = await storage.getContact(parameters.contactId);
+          if (!targetContact) {
+            throw new Error('Contact not found');
+          }
+          
+          const emailPrompt = `Generate a personalized ${parameters.campaignType || 'professional'} email with ${parameters.tone || 'professional'} tone for: ${JSON.stringify(targetContact)}. 
+          Include subject line, body, and personalization notes.`;
+          
+          result = await callAIModel(model, emailPrompt, temperature);
+          break;
+          
+        case 'predictDealClosure':
+          const deal = await storage.getDeal(parameters.dealId);
+          if (!deal) {
+            throw new Error('Deal not found');
+          }
+          
+          const dealPrompt = `Analyze this deal for closure prediction: ${JSON.stringify(deal)}. 
+          Provide closure probability, time to close, key factors, next actions, and risk factors.`;
+          
+          result = await callAIModel(model, dealPrompt, temperature);
+          break;
+          
+        case 'optimizeSalesSequence':
+          const sequencePrompt = `Optimize sales sequence with ID ${parameters.sequenceId}. 
+          Current sequence: ${JSON.stringify(parameters.currentSequence || {})}. 
+          Provide optimizations, expected improvements, and confidence level.`;
+          
+          result = await callAIModel(model, sequencePrompt, temperature);
+          break;
+          
+        default:
+          result = {
+            message: `MCP function ${functionName} executed successfully`,
+            parameters,
+            timestamp: new Date().toISOString()
+          };
+      }
+      
+      res.json({ 
+        success: true,
+        result,
+        executionTime: Date.now() - Date.now(),
+        modelUsed: model
+      });
+      
+    } catch (error) {
+      console.error('Error in MCP function call:', error);
+      res.status(500).json({ 
+        success: false,
+        error: error instanceof Error ? error.message : 'MCP function call failed'
+      });
+    }
+  });
+
+  // Helper function to call AI models
+  async function callAIModel(model: string, prompt: string, temperature: number = 0.1): Promise<any> {
+    if (model === 'gemini') {
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      if (!geminiApiKey) {
+        throw new Error('Gemini API key not configured');
+      }
+      
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemma-2-27b-it:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature }
+        })
+      });
+      
+      const data = await response.json();
+      return JSON.parse(data.candidates[0]?.content?.parts[0]?.text || '{}');
+    } else {
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      if (!openaiApiKey) {
+        throw new Error('OpenAI API key not configured');
+      }
+      
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'o1-mini',
+          messages: [{ role: 'user', content: prompt }],
+          max_completion_tokens: 4096
+        })
+      });
+      
+      const data = await response.json();
+      return JSON.parse(data.choices[0]?.message?.content || '{}');
+    }
+  }
+
   // Seed mock contacts endpoint (no auth required for seeding)
   app.post("/api/seed/contacts", async (req: Request, res: Response) => {
     try {

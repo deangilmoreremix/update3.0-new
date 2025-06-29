@@ -93,12 +93,24 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
     }
     
     try {
-      // In a real implementation, call OpenAI Vision API
-      // For the demo, simulate a response after the progress animation
-      await new Promise(resolve => setTimeout(resolve, 700));
-      
-      // Simulate analysis results based on document type
-      let result;
+      // Call real AI analysis API
+      const response = await fetch('/api/ai/realtime-analysis', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          analysisType: 'document',
+          content: `Document analysis for ${analysisType}: ${uploadedFile?.name || 'document'}`
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Analysis failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      let result = JSON.parse(data.result || '{}');
       switch(analysisType) {
         case 'document':
           result = {

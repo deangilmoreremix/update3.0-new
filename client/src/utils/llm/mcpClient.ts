@@ -122,17 +122,11 @@ export class MCPClient {
     const startTime = Date.now();
     
     try {
-      // For demo mode, simulate MCP function calls
-      if (this.apiKey === 'demo') {
-        return this.simulateMCPCall(request, startTime);
-      }
-
-      // Real MCP call would go here
+      // Call the real MCP API endpoint
       const response = await fetch(`${this.baseUrl}/call`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(request)
       });
@@ -145,7 +139,7 @@ export class MCPClient {
       
       return {
         success: true,
-        result: result.data,
+        result: result.data || result.result,
         executionTime: Date.now() - startTime,
         modelUsed: request.model || 'gemini'
       };
@@ -153,134 +147,13 @@ export class MCPClient {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown MCP error',
+        error: error instanceof Error ? error.message : 'MCP function call failed',
         executionTime: Date.now() - startTime
       };
     }
   }
 
-  private async simulateMCPCall(request: MCPCallRequest, startTime: number): Promise<MCPCallResponse> {
-    // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200));
 
-    // Generate mock responses based on function name
-    let mockResult: any;
-
-    switch (request.functionName) {
-      case 'analyzeLeadScore':
-        mockResult = {
-          contactId: request.parameters.contactId,
-          score: Math.floor(Math.random() * 40) + 60, // 60-100 range
-          factors: [
-            'High engagement with email campaigns',
-            'Company size matches ICP',
-            'Recent website activity detected',
-            'LinkedIn profile shows decision-maker role'
-          ],
-          recommendation: 'High priority lead - immediate follow-up recommended',
-          confidence: 0.87
-        };
-        break;
-
-      case 'generatePersonalizedEmail':
-        mockResult = {
-          subject: `Personalized solution for ${request.parameters.contactId}`,
-          body: `Hi there,\n\nI noticed you've been exploring solutions like ours, and I wanted to reach out personally.\n\nBased on your company profile, I believe we could help you achieve [specific benefit]. Would you be open to a brief 15-minute conversation this week?\n\nBest regards,\n[Your name]`,
-          personalizations: [
-            'Referenced company industry',
-            'Mentioned recent company news',
-            'Included relevant case study'
-          ],
-          sendScore: 0.91
-        };
-        break;
-
-      case 'optimizeSalesSequence':
-        mockResult = {
-          sequenceId: request.parameters.sequenceId,
-          optimizations: [
-            'Reduce time between touch 2 and 3 from 5 days to 3 days',
-            'Add video message in touch 4',
-            'Personalize subject lines with company name',
-            'Include social proof in touch 6'
-          ],
-          expectedImprovement: '23% increase in response rate',
-          confidence: 0.79
-        };
-        break;
-
-      case 'analyzeCustomerHealth':
-        mockResult = {
-          customerId: request.parameters.customerId,
-          healthScore: Math.floor(Math.random() * 30) + 70, // 70-100
-          churnRisk: Math.random() < 0.3 ? 'High' : Math.random() < 0.6 ? 'Medium' : 'Low',
-          indicators: [
-            'Decreased login frequency',
-            'Support ticket volume increased',
-            'No feature adoption in 30 days'
-          ],
-          recommendations: [
-            'Schedule check-in call with customer success',
-            'Provide feature adoption training',
-            'Offer premium support consultation'
-          ]
-        };
-        break;
-
-      case 'generateProposal':
-        mockResult = {
-          clientId: request.parameters.clientId,
-          proposalSections: [
-            'Executive Summary',
-            'Problem Statement',
-            'Proposed Solution',
-            'Implementation Timeline',
-            'Investment & ROI',
-            'Next Steps'
-          ],
-          estimatedValue: '$45,000 - $75,000',
-          deliveryTimeline: '8-12 weeks',
-          winProbability: 0.73
-        };
-        break;
-
-      case 'predictDealClosure':
-        mockResult = {
-          dealId: request.parameters.dealId,
-          closureProbability: Math.floor(Math.random() * 40) + 50, // 50-90%
-          timeToClose: `${Math.floor(Math.random() * 30) + 14} days`,
-          keyFactors: [
-            'Budget confirmed by decision maker',
-            'Competitive evaluation in progress',
-            'Technical requirements aligned'
-          ],
-          nextBestActions: [
-            'Schedule executive briefing',
-            'Provide customer references',
-            'Submit final proposal'
-          ],
-          riskFactors: [
-            'Competing vendor still in consideration',
-            'Budget approval pending'
-          ]
-        };
-        break;
-
-      default:
-        mockResult = {
-          message: `Function ${request.functionName} executed successfully`,
-          parameters: request.parameters,
-          timestamp: new Date().toISOString()
-        };
-    }
-
-    return {
-      success: true,
-      result: mockResult,
-      executionTime: Date.now() - startTime,
-      modelUsed: request.model || 'gemini'
-    };
-  }
 
   getAvailableFunctions(): MCPFunction[] {
     return AVAILABLE_MCP_FUNCTIONS;
