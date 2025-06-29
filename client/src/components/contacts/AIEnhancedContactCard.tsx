@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Contact } from '../../types';
 import { useOpenAI } from '../../services/openaiService';
+import AIActionToolbar from '../ai/AIActionToolbar';
 import { 
   Mail, 
   Phone, 
@@ -201,7 +202,7 @@ const AIEnhancedContactCard: React.FC<AIEnhancedContactCardProps> = ({
         
         {/* AI Score */}
         <div>
-          {aiScore !== null ? (
+          {aiScore !== null && (
             <div className="flex flex-col items-center">
               <div className={`h-12 w-12 rounded-full ${getScoreColor(aiScore)} text-white flex items-center justify-center font-bold text-lg transition-all`}>
                 {aiScore}
@@ -211,20 +212,6 @@ const AIEnhancedContactCard: React.FC<AIEnhancedContactCardProps> = ({
                 <span className="ml-1">AI Score</span>
               </div>
             </div>
-          ) : (
-            showAnalyzeButton && (
-              <button 
-                onClick={handleAnalyzeContact} 
-                disabled={isAnalyzing}
-                className="flex items-center justify-center p-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
-              >
-                {isAnalyzing ? (
-                  <RefreshCw size={20} className="animate-spin" />
-                ) : (
-                  <Zap size={20} />
-                )}
-              </button>
-            )
           )}
         </div>
       </div>
