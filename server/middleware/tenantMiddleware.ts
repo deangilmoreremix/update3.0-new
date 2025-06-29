@@ -25,7 +25,6 @@ export interface AuthenticatedRequest extends TenantRequest {
  */
 export const extractTenant = async (req: TenantRequest, res: Response, next: NextFunction) => {
   try {
-    console.log(`🔍 Extracting tenant for ${req.method} ${req.path}`);
     let tenant: Tenant | undefined = undefined;
 
     // Method 1: Extract from subdomain
@@ -69,16 +68,13 @@ export const extractTenant = async (req: TenantRequest, res: Response, next: Nex
     // Method 6: Use default tenant for development/migration
     if (!tenant) {
       const defaultTenantId = '630ed3be-0533-43ff-a569-2051df9c4d20'; // Default tenant created during migration
-      console.log(`🔧 Using default tenant: ${defaultTenantId}`);
       try {
         const defaultTenant = await tenantService.getTenant(defaultTenantId);
-        console.log(`🔧 Default tenant lookup result:`, defaultTenant);
         if (defaultTenant) {
-          tenant = defaultTenant; // Set the tenant variable so it's processed correctly below
-          console.log(`✅ Default tenant set successfully: ${tenant.id}`);
+          tenant = defaultTenant;
         }
       } catch (error) {
-        console.error(`❌ Failed to fetch default tenant:`, error);
+        console.warn(`Failed to fetch default tenant:`, error);
       }
     }
 
