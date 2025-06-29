@@ -8,6 +8,8 @@ import { sql } from "drizzle-orm";
 export async function setupDefaultTenantSQL() {
   console.log("Starting SQL-based default tenant setup...");
 
+  const migrationDate = new Date().toISOString();
+  
   try {
     // Step 1: Create default subscription plan (only if it doesn't exist)
     const existingPlan = await db.execute(sql`
@@ -49,7 +51,7 @@ export async function setupDefaultTenantSQL() {
           'active',
           '{"logo": null, "primaryColor": "#3b82f6", "secondaryColor": "#1e40af", "companyName": "Smart CRM"}',
           '{"aiTools": true, "multiTenant": false, "whiteLabel": false, "customBranding": false, "apiAccess": true, "advancedAnalytics": true, "voiceAnalysis": true, "documentAnalysis": true}',
-          '{"migration": true, "migrationDate": "' + new Date().toISOString() + '", "originalApp": "Smart CRM"}'
+          '${metadataJson}'
         )
       `);
     }
@@ -152,22 +154,27 @@ export async function setupDefaultTenantSQL() {
     `);
     console.log(`✅ Updated ${voiceProfilesUpdate.rowCount || 0} voice profiles with tenant ID`);
 
-    // Step 13: Create subscription for default tenant
-    await db.execute(sql`
-      INSERT INTO tenant_subscriptions (id, tenant_id, plan_id, status, current_period_start, current_period_end, cancel_at_period_end, metadata)
-      SELECT 
-        gen_random_uuid(),
-        ${defaultTenantId},
-        sp.id,
-        'active',
-        NOW(),
-        NOW() + INTERVAL '1 year',
-        false,
-        '{"migration": true, "freeAccount": true}'
-      FROM subscription_plans sp
-      WHERE sp.name = 'Default Plan'
-      ON CONFLICT DO NOTHING
+    // Step 13: Create subscription for default tenant (only if it doesn't exist)
+    const existingSubscription = await db.execute(sql`
+      SELECT id FROM tenant_subscriptions WHERE tenant_id = ${defaultTenantId} LIMIT 1
     `);
+    
+    if (existingSubscription.rows.length === 0) {
+      await db.execute(sql`
+        INSERT INTO tenant_subscriptions (id, tenant_id, plan_id, status, current_period_start, current_period_end, cancel_at_period_end, metadata)
+        SELECT 
+          gen_random_uuid(),
+          ${defaultTenantId},
+          sp.id,
+          'active',
+          NOW(),
+          NOW() + INTERVAL '1 year',
+          false,
+          '{"migration": true, "freeAccount": true}'
+        FROM subscription_plans sp
+        WHERE sp.name = 'Default Plan'
+      `);
+    }
     console.log("✅ Created tenant subscription");
 
     console.log("🎉 Default tenant setup completed successfully!");
