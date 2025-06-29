@@ -696,16 +696,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-4',
+          model: 'o1-mini',
           messages: [
-            { 
-              role: 'system', 
-              content: 'You are a sales analytics expert. Analyze sales data and provide strategic insights and recommendations.' 
-            },
-            { role: 'user', content: prompt }
+            { role: 'user', content: `You are a sales analytics expert. Analyze sales data and provide strategic insights and recommendations.\n\n${prompt}` }
           ],
-          temperature: 0.3,
-          max_tokens: 2000,
+          max_completion_tokens: 2000,
         }),
       });
 
@@ -770,16 +765,11 @@ Format as actionable insights with priorities.`;
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-4',
+          model: 'o1-mini',
           messages: [
-            { 
-              role: 'system', 
-              content: 'You are a business analyst expert. Provide comprehensive business analysis and strategic recommendations.' 
-            },
-            { role: 'user', content: prompt }
+            { role: 'user', content: `You are a business analyst expert. Provide comprehensive business analysis and strategic recommendations.\n\n${prompt}` }
           ],
-          temperature: 0.3,
-          max_tokens: 2000,
+          max_completion_tokens: 2000,
         }),
       });
 

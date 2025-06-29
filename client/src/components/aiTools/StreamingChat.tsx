@@ -24,8 +24,8 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
   modelOptions = [
     { value: 'gpt-4o', label: 'GPT-4o' },
     { value: 'gpt-4o-mini', label: 'GPT-4o Mini' },
-    { value: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro' },
-    { value: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash' }
+    { value: 'gemma-2-27b-it', label: 'Gemma 2 27B' },
+    { value: 'gemma-2-9b-it', label: 'Gemma 2 9B' }
   ]
 }) => {
   const [messages, setMessages] = useState<Message[]>([
