@@ -134,7 +134,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
     setShowExecutionModal(true);
     
     // Add to executing goals
-    setExecutingGoals(prev => new Set([...prev, goal.id]));
+    setExecutingGoals(prev => new Set([...Array.from(prev), goal.id]));
     
     // Start progress simulation
     const startTime = Date.now();
@@ -156,7 +156,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
           newSet.delete(goal.id);
           return newSet;
         });
-        setCompletedGoals(prev => new Set([...prev, goal.id]));
+        setCompletedGoals(prev => new Set([...Array.from(prev), goal.id]));
       }
     }, 100);
   };

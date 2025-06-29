@@ -328,10 +328,10 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
             <div>
               <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
                 <Bot className="h-4 w-4 text-purple-600" />
-                AI Agents Required ({mockAgentsRequired.length})
+                AI Agents Required ({goal.agentsRequired.length})
               </h4>
               <div className="flex flex-wrap gap-2">
-                {mockAgentsRequired.map((agent, index) => (
+                {goal.agentsRequired.map((agent, index) => (
                   <div key={index} className="flex items-center gap-1 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs border border-purple-200">
                     <Bot className="h-3 w-3" />
                     {agent}
@@ -347,7 +347,7 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
                 Tools & Integrations
               </h4>
               <div className="flex flex-wrap gap-2">
-                {mockToolsNeeded.map((tool, index) => (
+                {goal.toolsNeeded.map((tool, index) => (
                   <span key={index} className="bg-cyan-100 text-cyan-700 px-2 py-1 rounded text-xs border border-cyan-200">
                     {tool}
                   </span>
@@ -362,7 +362,7 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
                 Success Metrics
               </h4>
               <ul className="space-y-1">
-                {mockSuccessMetrics.map((metric, index) => (
+                {goal.successMetrics.map((metric, index) => (
                   <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
                     <div className="w-1 h-1 bg-indigo-600 rounded-full mt-2 flex-shrink-0"></div>
                     {metric}
