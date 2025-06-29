@@ -422,7 +422,7 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
               <div className="px-6 py-4 bg-gray-50 flex justify-end">
                 <button
                   onClick={() => setShowDetailModal(false)}
-                  className="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200/60 shadow-sm text-sm font-semibold rounded-full text-gray-700 hover:from-gray-100 hover:to-gray-200 transition-all duration-200"
                 >
                   Close
                 </button>

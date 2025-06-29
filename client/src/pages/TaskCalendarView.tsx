@@ -580,7 +580,7 @@ const TaskCalendarView: React.FC = () => {
                     <button
                       type="button"
                       onClick={handleSubmit}
-                      className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                      className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 border border-blue-300/20 shadow-sm text-sm font-semibold rounded-full text-white hover:from-blue-600 hover:to-blue-700 transition-all duration-200"
                     >
                       <Save size={16} className="mr-1.5" />
                       Save Changes
@@ -588,7 +588,7 @@ const TaskCalendarView: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setIsEditing(false)}
-                      className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                      className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200/60 shadow-sm text-sm font-semibold rounded-full text-gray-700 hover:from-gray-100 hover:to-gray-200 transition-all duration-200"
                     >
                       Cancel
                     </button>
@@ -598,7 +598,7 @@ const TaskCalendarView: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setIsEditing(true)}
-                      className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                      className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 border border-blue-300/20 shadow-sm text-sm font-semibold rounded-full text-white hover:from-blue-600 hover:to-blue-700 transition-all duration-200"
                     >
                       <Edit size={16} className="mr-1.5" />
                       Edit
@@ -611,7 +611,7 @@ const TaskCalendarView: React.FC = () => {
                           setShowTaskDetail(false);
                         }
                       }}
-                      className="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                      className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 border border-red-300/20 shadow-sm text-sm font-semibold rounded-full text-white hover:from-red-600 hover:to-red-700 transition-all duration-200"
                     >
                       <Trash2 size={16} className="mr-1.5" />
                       Delete
@@ -619,7 +619,7 @@ const TaskCalendarView: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowTaskDetail(false)}
-                      className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:mr-3 sm:w-auto sm:text-sm"
+                      className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200/60 shadow-sm text-sm font-semibold rounded-full text-gray-700 hover:from-gray-100 hover:to-gray-200 transition-all duration-200"
                     >
                       Close
                     </button>

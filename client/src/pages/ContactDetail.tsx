@@ -226,16 +226,16 @@ const ContactDetail: React.FC = () => {
         <div className="mt-4 sm:mt-0 flex flex-wrap gap-2">
           <button 
             onClick={handleEditToggle}
-            className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+            className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200/60 shadow-sm text-sm font-semibold rounded-full text-gray-700 hover:from-gray-100 hover:to-gray-200 transition-all duration-200"
           >
             {isEditing ? (
               <>
-                <X size={16} className="mr-1" />
+                <X size={16} className="mr-2" />
                 Cancel
               </>
             ) : (
               <>
-                <Edit size={16} className="mr-1" />
+                <Edit size={16} className="mr-2" />
                 Edit
               </>
             )}
@@ -243,17 +243,17 @@ const ContactDetail: React.FC = () => {
           {isEditing ? (
             <button 
               onClick={handleSaveContact}
-              className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 border border-blue-300/20 shadow-sm text-sm font-semibold rounded-full text-white hover:from-blue-600 hover:to-blue-700 transition-all duration-200"
             >
-              <Check size={16} className="mr-1" />
+              <Check size={16} className="mr-2" />
               Save
             </button>
           ) : (
             <button 
               onClick={handleDeleteContact}
-              className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
+              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 border border-red-300/20 shadow-sm text-sm font-semibold rounded-full text-white hover:from-red-600 hover:to-red-700 transition-all duration-200"
             >
-              <Trash2 size={16} className="mr-1" />
+              <Trash2 size={16} className="mr-2" />
               Delete
             </button>
           )}
@@ -578,7 +578,7 @@ const ContactDetail: React.FC = () => {
               <button
                 onClick={handleLeadScoreAnalysis}
                 disabled={leadScoreLoading}
-                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors disabled:bg-blue-300"
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-3 px-4 rounded-full font-semibold transition-all duration-200 disabled:from-blue-300 disabled:to-blue-400 shadow-sm border border-blue-300/20"
               >
                 {leadScoreLoading ? (
                   <>
@@ -610,7 +610,7 @@ const ContactDetail: React.FC = () => {
               <button
                 onClick={handlePersonalization}
                 disabled={personalizationLoading}
-                className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md transition-colors disabled:bg-indigo-300 mt-2"
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white py-3 px-4 rounded-full font-semibold transition-all duration-200 disabled:from-indigo-300 disabled:to-indigo-400 shadow-sm border border-indigo-300/20 mt-2"
               >
                 {personalizationLoading ? (
                   <>
