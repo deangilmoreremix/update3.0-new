@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Goal } from '../types/goals';
-import { goalCategories, allGoals } from '../data/aiGoals';
+import { AIGoal, AI_GOALS, AI_GOAL_CATEGORIES } from '../data/aiGoals';
 import InteractiveGoalCard from './ui/InteractiveGoalCard';
 import GoalExecutionModal from './GoalExecutionModal';
+import { useCustomizationStore, CustomizationLocation } from '../store/customizationStore';
 import { 
   Target, 
   Filter, 
@@ -22,13 +22,18 @@ import {
   Bot,
   Award,
   Lightbulb,
-  HelpCircle
+  HelpCircle,
+  Settings,
+  Check,
+  X,
+  ChevronRight,
+  Palette
 } from 'lucide-react';
 
 interface InteractiveGoalExplorerProps {
   realMode?: boolean;
   onModeToggle?: (mode: boolean) => void;
-  onGoalSelect?: (goal: Goal) => void;
+  onGoalSelect?: (goal: AIGoal) => void;
   contextData?: any;
 }
 
@@ -39,454 +44,406 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
   contextData
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [complexityFilter, setComplexityFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [executingGoal, setExecutingGoal] = useState<Goal | null>(null);
+  const [executingGoal, setExecutingGoal] = useState<AIGoal | null>(null);
   const [showExecutionModal, setShowExecutionModal] = useState(false);
   const [executingGoals, setExecutingGoals] = useState<Set<string>>(new Set());
   const [executionProgress, setExecutionProgress] = useState<Record<string, number>>({});
   const [completedGoals, setCompletedGoals] = useState<Set<string>>(new Set());
+  
+  // Customization state
+  const [isCustomizationMode, setIsCustomizationMode] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState<CustomizationLocation>('contact');
+  const [selectedGoalsForCustomization, setSelectedGoalsForCustomization] = useState<string[]>([]);
+  const { getSelectedGoals, setSelectedGoals, maxButtonsPerLocation } = useCustomizationStore();
+  
   const [liveStats, setLiveStats] = useState({
-    totalGoals: allGoals.length,
-    executing: 0,
+    totalGoals: AI_GOALS.length,
+    inProgress: 0,
     completed: 0,
-    estimatedValue: 0,
-    agentsActive: 0,
-    crmUpdates: 0
+    avgExecutionTime: 0
   });
 
-  // Filter goals based on selected criteria
-  const filteredGoals = allGoals.filter(goal => {
-    const categoryMatch = selectedCategory === 'all' || 
-      goal.category.toLowerCase() === selectedCategory.toLowerCase();
-    const priorityMatch = priorityFilter === 'all' || goal.priority === priorityFilter;
-    const complexityMatch = complexityFilter === 'all' || goal.complexity === complexityFilter;
-    const searchMatch = searchQuery === '' || 
+  // Filter goals based on current filters
+  const filteredGoals = AI_GOALS.filter(goal => {
+    const matchesCategory = selectedCategory === 'all' || goal.category === selectedCategory;
+    const matchesComplexity = complexityFilter === 'all' || goal.complexity === complexityFilter;
+    const matchesSearch = searchQuery === '' || 
       goal.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      goal.description.toLowerCase().includes(searchQuery.toLowerCase());
+      goal.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      goal.category.toLowerCase().includes(searchQuery.toLowerCase());
     
-    return categoryMatch && priorityMatch && complexityMatch && searchMatch;
+    return matchesCategory && matchesComplexity && matchesSearch;
   });
 
   // Update live stats
   useEffect(() => {
     setLiveStats({
-      totalGoals: allGoals.length,
-      executing: executingGoals.size,
+      totalGoals: AI_GOALS.length,
+      inProgress: executingGoals.size,
       completed: completedGoals.size,
-      estimatedValue: (completedGoals.size * 15000) + (executingGoals.size * 7500),
-      agentsActive: executingGoals.size * 3,
-      crmUpdates: completedGoals.size * 12 + executingGoals.size * 6
+      avgExecutionTime: 8.5
     });
-  }, [executingGoals, completedGoals]);
+  }, [executingGoals.size, completedGoals.size]);
 
-  // Handle goal execution
-  const handleExecuteGoal = async (goal: Goal) => {
-    if (executingGoals.has(goal.id)) return;
+  // Initialize customization selections
+  useEffect(() => {
+    if (isCustomizationMode) {
+      const currentSelections = getSelectedGoals(selectedLocation);
+      setSelectedGoalsForCustomization(currentSelections);
+    }
+  }, [isCustomizationMode, selectedLocation, getSelectedGoals]);
 
-    setExecutingGoals(prev => {
-      const newSet = new Set(prev);
-      newSet.add(goal.id);
-      return newSet;
-    });
-    setExecutionProgress(prev => ({ ...prev, [goal.id]: 0 }));
-
-    // Show the modal
+  const handleGoalExecution = (goal: AIGoal) => {
+    if (isCustomizationMode) {
+      handleCustomizationToggle(goal.id);
+      return;
+    }
+    
     setExecutingGoal(goal);
     setShowExecutionModal(true);
+    setExecutingGoals(prev => new Set([...prev, goal.id]));
     
-    // Notify parent component
-    onGoalSelect?.(goal);
-
     // Simulate execution progress
-    const progressInterval = setInterval(() => {
-      setExecutionProgress(prev => {
-        const currentProgress = prev[goal.id] || 0;
-        const newProgress = Math.min(100, currentProgress + Math.random() * 12 + 3);
-        
-        if (newProgress >= 100) {
-          clearInterval(progressInterval);
-          setExecutingGoals(current => {
-            const newSet = new Set(current);
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.random() * 15;
+      setExecutionProgress(prev => ({ ...prev, [goal.id]: Math.min(progress, 100) }));
+      
+      if (progress >= 100) {
+        clearInterval(interval);
+        setTimeout(() => {
+          setExecutingGoals(prev => {
+            const newSet = new Set(prev);
             newSet.delete(goal.id);
             return newSet;
           });
-          setCompletedGoals(current => {
-            const newSet = new Set(current);
-            newSet.add(goal.id);
-            return newSet;
+          setCompletedGoals(prev => new Set([...prev, goal.id]));
+          setExecutionProgress(prev => {
+            const newProgress = { ...prev };
+            delete newProgress[goal.id];
+            return newProgress;
           });
-          return { ...prev, [goal.id]: 100 };
-        }
-        
-        return { ...prev, [goal.id]: newProgress };
-      });
-    }, 800);
+        }, 1000);
+      }
+    }, 500);
+    
+    if (onGoalSelect) {
+      onGoalSelect(goal);
+    }
   };
 
-  // Handle goal completion from modal
-  const handleExecutionComplete = (result: any) => {
-    console.log('Goal execution completed:', result);
-    setCompletedGoals(prev => {
-      const newSet = new Set(prev);
-      newSet.add(result.goalId);
-      return newSet;
-    });
+  const handleCustomizationToggle = (goalId: string) => {
+    const isSelected = selectedGoalsForCustomization.includes(goalId);
+    const canSelect = !isSelected && selectedGoalsForCustomization.length < maxButtonsPerLocation;
+    
+    if (isSelected) {
+      setSelectedGoalsForCustomization(prev => prev.filter(id => id !== goalId));
+    } else if (canSelect) {
+      setSelectedGoalsForCustomization(prev => [...prev, goalId]);
+    }
   };
 
-  // Handle modal close
-  const handleCloseModal = () => {
-    setShowExecutionModal(false);
-    setExecutingGoal(null);
+  const handleSaveCustomization = () => {
+    setSelectedGoals(selectedLocation, selectedGoalsForCustomization);
+    setIsCustomizationMode(false);
+    setSelectedGoalsForCustomization([]);
   };
 
-  const getPriorityCount = (priority: string) => {
-    return allGoals.filter(g => g.priority === priority).length;
+  const handleCancelCustomization = () => {
+    setIsCustomizationMode(false);
+    setSelectedGoalsForCustomization([]);
   };
 
-  const getCategoryCount = (categoryId: string) => {
-    if (categoryId === 'all') return allGoals.length;
-    return allGoals.filter(g => g.category.toLowerCase() === categoryId.toLowerCase()).length;
+  const getCategoryIcon = (category: string) => {
+    switch (category.toLowerCase()) {
+      case 'sales': return <TrendingUp className="h-4 w-4" />;
+      case 'marketing': return <Lightbulb className="h-4 w-4" />;
+      case 'relationship': return <Users className="h-4 w-4" />;
+      case 'automation': return <Bot className="h-4 w-4" />;
+      case 'analytics': return <BarChart3 className="h-4 w-4" />;
+      case 'content': return <Network className="h-4 w-4" />;
+      case 'ai-native': return <Brain className="h-4 w-4" />;
+      default: return <Target className="h-4 w-4" />;
+    }
   };
 
   return (
-    <div className="space-y-8" id="goal-explorer-section">
-      {/* Enhanced Interactive Header */}
-      <div className="text-center space-y-8">
-        <div className="relative">
-          <h1 className="text-6xl font-bold text-gray-900 mb-6">
-            Interactive AI Goal Explorer
-          </h1>
-          <div className="absolute -top-4 -right-4 animate-float">
-            <Sparkles className="h-12 w-12 text-blue-600" />
-          </div>
-          <div className="absolute -bottom-2 -left-4 animate-float" style={{animationDelay: '1s'}}>
-            <Brain className="h-10 w-10 text-purple-600" />
-          </div>
-        </div>
-        
-        <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
-          Choose your business goals and watch AI agents execute them in real-time on a live CRM interface. 
-          Every goal comes with step-by-step execution, live progress tracking, and measurable business impact.
-        </p>
-
-        {/* Enhanced Live Stats Dashboard */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 backdrop-blur-xl rounded-2xl border border-blue-200 p-8 relative overflow-hidden">
-          {/* Background Pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0" style={{
-              backgroundImage: 'radial-gradient(circle at 25% 25%, #3b82f6 1px, transparent 1px)',
-              backgroundSize: '30px 30px'
-            }}></div>
-          </div>
-
-          <div className="relative z-10">
-            <div className="flex items-center justify-center gap-3 mb-8">
-              <Network className="h-8 w-8 text-blue-600" />
-              <h2 className="text-2xl font-bold text-gray-900">Live System Dashboard</h2>
-              <Activity className="h-6 w-6 text-green-600 animate-pulse" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full">
+              <Target className="h-8 w-8 text-white" />
             </div>
-
-            <div className="grid md:grid-cols-6 gap-6">
-              <div className="text-center p-4 bg-white rounded-xl border border-blue-200 shadow-sm">
-                <div className="text-3xl font-bold text-blue-600 mb-2">{liveStats.totalGoals}</div>
-                <div className="text-gray-800 font-medium">Available Goals</div>
-                <div className="text-sm text-gray-600">Ready to execute</div>
-              </div>
-              <div className="text-center p-4 bg-white rounded-xl border border-orange-200 shadow-sm">
-                <div className="text-3xl font-bold text-orange-600 mb-2 flex items-center justify-center gap-2">
-                  {liveStats.executing}
-                  {liveStats.executing > 0 && <Activity className="h-6 w-6 animate-pulse" />}
-                </div>
-                <div className="text-gray-800 font-medium">Executing Now</div>
-                <div className="text-sm text-gray-600">Active workflows</div>
-              </div>
-              <div className="text-center p-4 bg-white rounded-xl border border-green-200 shadow-sm">
-                <div className="text-3xl font-bold text-green-600 mb-2 flex items-center justify-center gap-2">
-                  {liveStats.completed}
-                  {liveStats.completed > 0 && <Award className="h-6 w-6" />}
-                </div>
-                <div className="text-gray-800 font-medium">Completed</div>
-                <div className="text-sm text-gray-600">Successfully achieved</div>
-              </div>
-              <div className="text-center p-4 bg-white rounded-xl border border-purple-200 shadow-sm">
-                <div className="text-3xl font-bold text-purple-600 mb-2">{liveStats.agentsActive}</div>
-                <div className="text-gray-800 font-medium">AI Agents</div>
-                <div className="text-sm text-gray-600">Currently working</div>
-              </div>
-              <div className="text-center p-4 bg-white rounded-xl border border-cyan-200 shadow-sm">
-                <div className="text-3xl font-bold text-cyan-600 mb-2">{liveStats.crmUpdates}</div>
-                <div className="text-gray-800 font-medium">CRM Updates</div>
-                <div className="text-sm text-gray-600">Data changes made</div>
-              </div>
-              <div className="text-center p-4 bg-white rounded-xl border border-emerald-200 shadow-sm">
-                <div className="text-3xl font-bold text-emerald-600 mb-2">${(liveStats.estimatedValue).toLocaleString()}</div>
-                <div className="text-gray-800 font-medium">Business Value</div>
-                <div className="text-sm text-gray-600">Generated ROI</div>
-              </div>
-            </div>
+            <h1 className="text-4xl font-bold text-white">
+              AI Goals Dashboard
+            </h1>
           </div>
-        </div>
-      </div>
-
-      {/* Enhanced Search and Filter Interface */}
-      <div className="bg-gradient-to-br from-gray-50 to-blue-50 backdrop-blur-xl rounded-2xl border border-gray-200 p-8">
-        {/* Search Bar */}
-        <div className="mb-8">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-500" />
-            <input
-              type="text"
-              placeholder="Search goals by title, description, or business impact..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-6 py-4 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-            />
-          </div>
-        </div>
-
-        {/* Category Filter */}
-        <div className="mb-8">
-          <h4 className="text-gray-900 font-medium mb-4 flex items-center gap-2">
-            <Filter className="h-5 w-5 text-blue-600" />
-            Goal Categories
-          </h4>
-          <div className="grid md:grid-cols-4 lg:grid-cols-8 gap-3">
-            <button
-              onClick={() => setSelectedCategory('all')}
-              className={`p-4 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105 ${
-                selectedCategory === 'all'
-                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
-              }`}
-            >
-              All Goals
-              <span className="block text-xs opacity-75 mt-1">
-                ({getCategoryCount('all')})
-              </span>
-            </button>
-            {goalCategories.map(category => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`p-4 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105 ${
-                  selectedCategory === category.id
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                    : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
-                }`}
-              >
-                {category.name.replace(' Goals', '')}
-                <span className="block text-xs opacity-75 mt-1">
-                  ({category.totalGoals})
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Priority and Complexity Filters */}
-        <div className="grid md:grid-cols-2 gap-8">
-          <div>
-            <h4 className="text-gray-900 font-medium mb-4 flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-red-600" />
-              Priority Level
-            </h4>
-            <div className="flex gap-3">
-              {['all', 'High', 'Medium', 'Low'].map(priority => (
-                <button
-                  key={priority}
-                  onClick={() => setPriorityFilter(priority)}
-                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 ${
-                    priorityFilter === priority
-                      ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
-                      : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
-                  }`}
-                >
-                  {priority === 'all' ? 'All Priorities' : priority}
-                  {priority !== 'all' && (
-                    <span className="ml-2 text-xs opacity-75">
-                      ({getPriorityCount(priority)})
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h4 className="text-gray-900 font-medium mb-4 flex items-center gap-2">
-              <Star className="h-5 w-5 text-purple-600" />
-              Complexity Level
-            </h4>
-            <div className="flex gap-3">
-              {['all', 'Simple', 'Intermediate', 'Advanced'].map(complexity => (
-                <button
-                  key={complexity}
-                  onClick={() => setComplexityFilter(complexity)}
-                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 ${
-                    complexityFilter === complexity
-                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
-                      : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
-                  }`}
-                >
-                  {complexity === 'all' ? 'All Levels' : complexity}
-                  {complexity !== 'all' && complexity === 'Simple' && <Zap className="inline w-3 h-3 ml-1" />}
-                  {complexity !== 'all' && complexity === 'Intermediate' && <Target className="inline w-3 h-3 ml-1" />}
-                  {complexity !== 'all' && complexity === 'Advanced' && <Star className="inline w-3 h-3 ml-1" />}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Enhanced Results Summary */}
-      <div className="flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
-        <div className="text-gray-700">
-          Showing <span className="text-gray-900 font-bold text-lg">{filteredGoals.length}</span> of{' '}
-          <span className="text-gray-900 font-bold text-lg">{allGoals.length}</span> goals
-          {searchQuery && (
-            <span> matching "<span className="text-blue-600 font-medium">{searchQuery}</span>"</span>
-          )}
-        </div>
-        
-        <div className="flex items-center gap-4">
-          {realMode && (
-            <div className="flex items-center gap-2 bg-red-100 px-4 py-2 rounded-full border border-red-200">
-              <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-              <span className="text-red-700 font-medium">Live Mode Active</span>
-            </div>
-          )}
+          <p className="text-xl text-blue-200 mb-6">
+            Discover and execute {AI_GOALS.length} intelligent automation goals to transform your business
+          </p>
           
-          {onModeToggle && (
+          {/* Mode Toggle and Customization */}
+          <div className="flex items-center justify-center gap-4 mb-8">
             <button
-              onClick={() => onModeToggle(!realMode)}
-              className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+              onClick={() => onModeToggle && onModeToggle(!realMode)}
+              className={`px-6 py-3 rounded-full font-medium transition-all duration-200 ${
                 realMode
-                  ? 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white'
-                  : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white'
+                  ? 'bg-green-600 text-white shadow-lg hover:bg-green-700'
+                  : 'bg-gray-600 text-white shadow-lg hover:bg-gray-700'
               }`}
             >
-              Switch to {realMode ? 'Demo' : 'Live'} Mode
+              {realMode ? '🔴 Live Mode' : '🎭 Demo Mode'}
             </button>
-          )}
-        </div>
-      </div>
-
-      {/* Enhanced Interactive Goal Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredGoals.map(goal => (
-          <div key={goal.id} className="animate-fadeIn">
-            <InteractiveGoalCard
-              goal={goal}
-              onExecute={handleExecuteGoal}
-              isExecuting={executingGoals.has(goal.id)}
-              executionProgress={executionProgress[goal.id] || 0}
-              realMode={realMode}
-            />
+            
+            {!isCustomizationMode ? (
+              <button
+                onClick={() => setIsCustomizationMode(true)}
+                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-medium shadow-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 flex items-center gap-2"
+              >
+                <Palette className="h-4 w-4" />
+                Customize Toolbar
+              </button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleSaveCustomization}
+                  className="px-4 py-2 bg-green-600 text-white rounded-full font-medium shadow-lg hover:bg-green-700 transition-all duration-200 flex items-center gap-2"
+                >
+                  <Check className="h-4 w-4" />
+                  Save ({selectedGoalsForCustomization.length})
+                </button>
+                <button
+                  onClick={handleCancelCustomization}
+                  className="px-4 py-2 bg-gray-600 text-white rounded-full font-medium shadow-lg hover:bg-gray-700 transition-all duration-200 flex items-center gap-2"
+                >
+                  <X className="h-4 w-4" />
+                  Cancel
+                </button>
+              </div>
+            )}
           </div>
-        ))}
-      </div>
-
-      {/* Enhanced Empty State */}
-      {filteredGoals.length === 0 && (
-        <div className="text-center py-16 bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl border border-gray-200">
-          <div className="mb-6">
-            <Search className="h-20 w-20 text-gray-500 mx-auto mb-6 animate-float" />
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">No goals found</h3>
-            <p className="text-gray-700 max-w-md mx-auto text-lg">
-              Try adjusting your filters or search terms to find the perfect goals for your business.
-            </p>
-          </div>
-          <button
-            onClick={() => {
-              setSelectedCategory('all');
-              setPriorityFilter('all');
-              setComplexityFilter('all');
-              setSearchQuery('');
-            }}
-            className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
-          >
-            Clear All Filters
-          </button>
         </div>
-      )}
 
-      {/* Enhanced Quick Actions */}
-      {filteredGoals.length > 0 && (
-        <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-8">
-          <h3 className="text-2xl font-semibold text-white mb-6 flex items-center gap-3">
-            <Lightbulb className="h-8 w-8 text-yellow-400" />
-            Smart Quick Actions
-          </h3>
+        {/* Customization Panel */}
+        {isCustomizationMode && (
+          <div className="mb-8 p-6 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                Customize AI Toolbar
+              </h3>
+              <div className="text-sm text-blue-200">
+                Select up to {maxButtonsPerLocation} goals for your {selectedLocation} toolbar
+              </div>
+            </div>
+            
+            {/* Location Selector */}
+            <div className="flex gap-2 mb-4">
+              {(['contact', 'deal', 'company'] as CustomizationLocation[]).map(location => (
+                <button
+                  key={location}
+                  onClick={() => setSelectedLocation(location)}
+                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    selectedLocation === location
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'bg-white/20 text-blue-200 hover:bg-white/30'
+                  }`}
+                >
+                  {location.charAt(0).toUpperCase() + location.slice(1)} Cards
+                </button>
+              ))}
+            </div>
+            
+            {/* Selection Status */}
+            <div className="text-sm text-blue-200">
+              {selectedGoalsForCustomization.length} of {maxButtonsPerLocation} goals selected
+            </div>
+          </div>
+        )}
+
+        {/* Live Dashboard Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="p-6 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20">
+            <div className="flex items-center gap-3 mb-2">
+              <Target className="h-5 w-5 text-blue-400" />
+              <span className="text-sm font-medium text-blue-200">Total Goals</span>
+            </div>
+            <div className="text-2xl font-bold text-white">{liveStats.totalGoals}</div>
+          </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
-            <button
-              onClick={() => {
-                const highPriorityGoals = filteredGoals.filter(g => g.priority === 'High');
-                highPriorityGoals.slice(0, 3).forEach(goal => handleExecuteGoal(goal));
-              }}
-              className="p-6 bg-gradient-to-br from-red-500/10 to-orange-500/10 border border-red-400/30 rounded-xl hover:from-red-500/20 hover:to-orange-500/20 transition-all duration-300 text-left group hover:scale-105"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-full bg-red-500/20">
-                  <TrendingUp className="h-6 w-6 text-red-400" />
-                </div>
-                <span className="font-semibold text-white text-lg">Execute High Priority</span>
-                <ArrowRight className="h-5 w-5 text-red-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
-              <p className="text-gray-300 mb-2">Run top 3 high-priority goals simultaneously</p>
-              <p className="text-sm text-red-300">Maximum business impact strategy</p>
-            </button>
-
-            <button
-              onClick={() => {
-                const simpleGoals = filteredGoals.filter(g => g.complexity === 'Simple');
-                simpleGoals.slice(0, 5).forEach(goal => handleExecuteGoal(goal));
-              }}
-              className="p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-400/30 rounded-xl hover:from-green-500/20 hover:to-emerald-500/20 transition-all duration-300 text-left group hover:scale-105"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-full bg-green-500/20">
-                  <Zap className="h-6 w-6 text-green-400" />
-                </div>
-                <span className="font-semibold text-white text-lg">Quick Wins</span>
-                <ArrowRight className="h-5 w-5 text-green-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
-              <p className="text-gray-300 mb-2">Execute all simple goals for fast results</p>
-              <p className="text-sm text-green-300">Immediate productivity boost</p>
-            </button>
-
-            <button
-              onClick={() => {
-                const salesGoals = filteredGoals.filter(g => g.category === 'Sales');
-                salesGoals.slice(0, 3).forEach(goal => handleExecuteGoal(goal));
-              }}
-              className="p-6 bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-xl hover:from-blue-500/20 hover:to-purple-500/20 transition-all duration-300 text-left group hover:scale-105"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-full bg-blue-500/20">
-                  <Users className="h-6 w-6 text-blue-400" />
-                </div>
-                <span className="font-semibold text-white text-lg">Sales Focus</span>
-                <ArrowRight className="h-5 w-5 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
-              <p className="text-gray-300 mb-2">Focus on revenue-generating goals</p>
-              <p className="text-sm text-blue-300">Direct revenue impact</p>
-            </button>
+          <div className="p-6 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20">
+            <div className="flex items-center gap-3 mb-2">
+              <Activity className="h-5 w-5 text-orange-400" />
+              <span className="text-sm font-medium text-orange-200">In Progress</span>
+            </div>
+            <div className="text-2xl font-bold text-white">{liveStats.inProgress}</div>
+          </div>
+          
+          <div className="p-6 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20">
+            <div className="flex items-center gap-3 mb-2">
+              <Award className="h-5 w-5 text-green-400" />
+              <span className="text-sm font-medium text-green-200">Completed</span>
+            </div>
+            <div className="text-2xl font-bold text-white">{liveStats.completed}</div>
+          </div>
+          
+          <div className="p-6 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20">
+            <div className="flex items-center gap-3 mb-2">
+              <Zap className="h-5 w-5 text-purple-400" />
+              <span className="text-sm font-medium text-purple-200">Avg Time</span>
+            </div>
+            <div className="text-2xl font-bold text-white">{liveStats.avgExecutionTime}m</div>
           </div>
         </div>
-      )}
 
-      {/* Full Screen Goal Execution Modal */}
-      {executingGoal && (
+        {/* Filters Section */}
+        <div className="mb-8 p-6 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search goals..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            
+            {/* Category Filter */}
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Categories</option>
+              {AI_GOAL_CATEGORIES.map(category => (
+                <option key={category} value={category} className="text-gray-900">
+                  {category}
+                </option>
+              ))}
+            </select>
+            
+            {/* Complexity Filter */}
+            <select
+              value={complexityFilter}
+              onChange={(e) => setComplexityFilter(e.target.value)}
+              className="px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Complexities</option>
+              <option value="Simple" className="text-gray-900">Simple</option>
+              <option value="Intermediate" className="text-gray-900">Intermediate</option>
+              <option value="Advanced" className="text-gray-900">Advanced</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Category Pills */}
+        <div className="flex flex-wrap gap-3 mb-8 justify-center">
+          <button
+            onClick={() => setSelectedCategory('all')}
+            className={`px-4 py-2 rounded-full font-medium transition-all duration-200 flex items-center gap-2 ${
+              selectedCategory === 'all'
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'bg-white/20 text-blue-200 hover:bg-white/30'
+            }`}
+          >
+            <Eye className="h-4 w-4" />
+            All ({AI_GOALS.length})
+          </button>
+          {AI_GOAL_CATEGORIES.map(category => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`px-4 py-2 rounded-full font-medium transition-all duration-200 flex items-center gap-2 ${
+                selectedCategory === category
+                  ? 'bg-blue-600 text-white shadow-lg'
+                  : 'bg-white/20 text-blue-200 hover:bg-white/30'
+              }`}
+            >
+              {getCategoryIcon(category)}
+              {category} ({AI_GOALS.filter(g => g.category === category).length})
+            </button>
+          ))}
+        </div>
+
+        {/* Goals Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+          {filteredGoals.map(goal => {
+            const isExecuting = executingGoals.has(goal.id);
+            const isCompleted = completedGoals.has(goal.id);
+            const progress = executionProgress[goal.id] || 0;
+            const isSelectedForCustomization = selectedGoalsForCustomization.includes(goal.id);
+            const canSelectForCustomization = !isSelectedForCustomization && selectedGoalsForCustomization.length < maxButtonsPerLocation;
+            
+            return (
+              <div key={goal.id} className="relative">
+                {/* Customization Selection Overlay */}
+                {isCustomizationMode && (
+                  <div className={`absolute inset-0 z-10 rounded-2xl transition-all duration-300 ${
+                    isSelectedForCustomization
+                      ? 'bg-blue-500/20 ring-2 ring-blue-500'
+                      : canSelectForCustomization
+                      ? 'hover:bg-blue-500/10 hover:ring-1 hover:ring-blue-400'
+                      : 'bg-gray-500/20 ring-1 ring-gray-400'
+                  }`}>
+                    <div className="absolute top-4 right-4">
+                      {isSelectedForCustomization ? (
+                        <div className="p-2 bg-blue-500 rounded-full text-white shadow-lg">
+                          <Check className="w-4 h-4" />
+                        </div>
+                      ) : canSelectForCustomization ? (
+                        <div className="p-2 bg-white/20 border-2 border-blue-400 rounded-full">
+                          <div className="w-4 h-4" />
+                        </div>
+                      ) : (
+                        <div className="p-2 bg-gray-500 rounded-full text-white">
+                          <X className="w-4 h-4" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+                
+                <InteractiveGoalCard
+                  goal={goal}
+                  onExecute={handleGoalExecution}
+                  isExecuting={isExecuting}
+                  executionProgress={progress}
+                  realMode={realMode}
+                />
+                
+                {isCompleted && (
+                  <div className="absolute top-4 left-4 p-2 bg-green-500 rounded-full text-white shadow-lg animate-bounce">
+                    <Award className="w-4 h-4" />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {filteredGoals.length === 0 && (
+          <div className="text-center py-16">
+            <HelpCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-medium text-white mb-2">No goals found</h3>
+            <p className="text-gray-400">Try adjusting your search or filters</p>
+          </div>
+        )}
+      </div>
+
+      {/* Goal Execution Modal */}
+      {showExecutionModal && executingGoal && (
         <GoalExecutionModal
           goal={executingGoal}
           isOpen={showExecutionModal}
-          onClose={handleCloseModal}
+          onClose={() => setShowExecutionModal(false)}
           realMode={realMode}
-          onComplete={handleExecutionComplete}
           contextData={contextData}
         />
       )}

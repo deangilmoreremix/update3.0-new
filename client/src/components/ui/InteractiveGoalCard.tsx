@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Goal } from '../../types/goals';
+import { AIGoal } from '../../data/aiGoals';
 import { 
   Clock, 
   TrendingUp, 
