@@ -239,8 +239,20 @@ const AIEnhancedContactCard: React.FC<AIEnhancedContactCardProps> = ({
         </div>
       )}
       
-      {/* Quick Actions */}
-      <div className="mt-4 pt-2 border-t border-gray-100">
+      {/* AI Action Toolbar */}
+      <div className="mt-4 pt-3 border-t border-gray-100">
+        <AIActionToolbar
+          entityType="contact"
+          entityId={contact.id}
+          entityData={contact}
+          layout="horizontal"
+          size="sm"
+          className="justify-center"
+        />
+      </div>
+      
+      {/* Traditional Actions */}
+      <div className="mt-3">
         <div className="flex space-x-2">
           <button className="flex-1 flex items-center justify-center py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100 text-xs font-medium">
             <Mail size={14} className="mr-1" /> Email

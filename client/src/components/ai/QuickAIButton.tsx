@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LucideIcon, Loader2 } from 'lucide-react';
-import { useAITools } from '../../hooks/useAITools';
+import { useAITools } from '../AIToolsProvider';
 
 interface QuickAIButtonProps {
   icon: LucideIcon;
@@ -35,15 +35,31 @@ const QuickAIButton: React.FC<QuickAIButtonProps> = ({
     setIsLoading(true);
     
     try {
-      const result = await openTool(toolName, {
+      // Store entity context in sessionStorage for AI tools to use
+      sessionStorage.setItem('currentEntityContext', JSON.stringify({
         entityType,
         entityId,
-        entityData,
-        autoExecute: true // For quick actions, execute immediately
-      });
+        entityData
+      }));
+      
+      // Map tool names to existing AI tools
+      const toolMapping: Record<string, string> = {
+        'leadScoring': 'business-analyzer',
+        'emailPersonalization': 'email-composer',
+        'contactEnrichment': 'smart-search',
+        'dealRiskAssessment': 'business-analyzer',
+        'nextBestAction': 'business-analyzer',
+        'proposalGeneration': 'proposal-generator',
+        'businessIntelligence': 'smart-search',
+        'companyHealthScoring': 'business-analyzer',
+        'opportunityIdentification': 'business-analyzer'
+      };
+      
+      const mappedTool = toolMapping[toolName] || toolName;
+      openTool(mappedTool as any);
       
       if (onResult) {
-        onResult(result);
+        onResult({ status: 'opened', tool: mappedTool });
       }
     } catch (error) {
       console.error(`Error executing ${toolName}:`, error);

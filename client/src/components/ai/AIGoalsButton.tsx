@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Target, Loader2 } from 'lucide-react';
-import { useAITools } from '../../hooks/useAITools';
+import { useAITools } from '../AIToolsProvider';
 
 interface AIGoalsButtonProps {
   entityType: 'contact' | 'deal' | 'company';
@@ -26,14 +26,16 @@ const AIGoalsButton: React.FC<AIGoalsButtonProps> = ({
     setIsLoading(true);
     
     try {
-      // Open AI Goals with pre-populated context
-      await openTool('aiGoals', {
+      // Navigate to AI Goals page with entity context stored in sessionStorage
+      sessionStorage.setItem('aiGoalsContext', JSON.stringify({
         entityType,
         entityId,
         entityData,
-        // Pre-filter goals based on entity type
         suggestedCategories: getSuggestedCategories(entityType)
-      });
+      }));
+      
+      // Navigate to AI Goals page
+      window.location.href = '/ai-goals';
     } catch (error) {
       console.error('Error opening AI Goals:', error);
     } finally {

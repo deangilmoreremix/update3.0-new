@@ -3,6 +3,7 @@ import { sendGmailEmail } from '../../services/composioService';
 import { supabase } from '../../services/supabaseClient';
 import React, { useState } from 'react';
 import { Deal } from '../../types';
+import AIActionToolbar from '../ai/AIActionToolbar';
 import { 
   DollarSign, 
   Calendar, 
