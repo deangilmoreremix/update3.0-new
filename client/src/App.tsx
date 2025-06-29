@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AIToolsProvider } from './components/AIToolsProvider';
+import { TenantProvider } from './components/TenantProvider';
+import { RoleProvider } from './components/RoleBasedAccess';
 
 // Landing Pages
 import LandingPage from './pages/Landing/LandingPage';
@@ -55,6 +57,8 @@ import { AIGoalsPage } from './pages/AIGoalsPage';
 import PartnerOnboardingPage from './pages/PartnerOnboardingPage';
 import PartnerDashboard from './pages/PartnerDashboard';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
+import UserManagement from './pages/UserManagement';
+import WhiteLabelCustomization from './pages/WhiteLabelCustomization';
 
 // Layout Components
 import Navbar from './components/Navbar';
@@ -224,6 +228,8 @@ function App() {
           <Route path="/partner/onboard" element={<PartnerOnboardingPage />} />
           <Route path="/partner/dashboard" element={<PartnerDashboard />} />
           <Route path="/admin/dashboard" element={<SuperAdminDashboard />} />
+          <Route path="/admin/users" element={<UserManagement />} />
+          <Route path="/admin/white-label" element={<WhiteLabelCustomization />} />
         </Routes>
       </Router>
     </AIToolsProvider>
