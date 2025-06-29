@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { X, Search, Settings, Target, Check, RotateCcw, Download, Upload, Sparkles } from 'lucide-react';
+import { X, Search, Settings, Target, Check, RotateCcw, Download, Upload, Sparkles, Brain, Palette } from 'lucide-react';
 import { useCustomizationStore, CustomizationLocation } from '../../store/customizationStore';
 import { AI_GOALS, AI_GOAL_CATEGORIES, getGoalById, getRecommendedGoals } from '../../data/aiGoals';
+import { Card, CardContent, CardHeader } from '../ui/card';
+import { Button } from '../ui/button';
 
 interface CustomizeButtonsModalProps {
   isOpen: boolean;
@@ -128,219 +130,279 @@ const CustomizeButtonsModal: React.FC<CustomizeButtonsModalProps> = ({
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onClick={onClose} />
         
-        <div className="relative inline-block w-full max-w-6xl px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:p-6">
-          {/* Header */}
+        <div className="relative inline-block w-full max-w-6xl px-6 pt-6 pb-6 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle">
+          {/* Header - matching AI Goals page style */}
           <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center">
-              <Settings className="w-6 h-6 text-indigo-600 mr-3" />
-              <h3 className="text-lg font-medium text-gray-900">
-                Customize AI Goals Buttons
-              </h3>
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg text-white">
+                <Palette className="h-6 w-6" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Customize AI Goals</h1>
+                <p className="text-gray-600 mt-1">
+                  Personalize your AI tools for different areas of the CRM
+                </p>
+              </div>
             </div>
-            <button
+            <Button
               onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-500 rounded-full hover:bg-gray-100"
+              variant="ghost"
+              size="sm"
+              className="text-gray-400 hover:text-gray-500"
             >
               <X size={20} />
-            </button>
+            </Button>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            {/* Location Tabs */}
+            {/* Location Tabs - Card style */}
             <div className="lg:col-span-1">
-              <h4 className="text-sm font-medium text-gray-900 mb-3">Customize For</h4>
-              <div className="space-y-2">
-                {Object.entries(locationLabels).map(([key, label]) => (
-                  <button
-                    key={key}
-                    onClick={() => setActiveLocation(key as CustomizationLocation)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      activeLocation === key
-                        ? 'bg-indigo-100 text-indigo-700 border border-indigo-200'
-                        : 'text-gray-600 hover:bg-gray-50 border border-transparent'
-                    }`}
-                  >
-                    {label}
-                    <span className="block text-xs text-gray-500 mt-1">
-                      {buttonConfigurations[key as CustomizationLocation]?.length || 0} / {maxButtonsPerLocation} buttons
-                    </span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Actions */}
-              <div className="mt-6 space-y-2">
-                <button
-                  onClick={handleReset}
-                  className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-                >
-                  <RotateCcw size={16} className="mr-2" />
-                  Reset to Defaults
-                </button>
-                
-                <button
-                  onClick={handleExport}
-                  className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-                >
-                  <Download size={16} className="mr-2" />
-                  Export Config
-                </button>
-                
-                <label className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
-                  <Upload size={16} className="mr-2" />
-                  Import Config
-                  <input
-                    type="file"
-                    accept=".json"
-                    onChange={handleImport}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-            </div>
-
-            {/* Filters and Search */}
-            <div className="lg:col-span-3">
-              <div className="flex flex-wrap gap-4 mb-6">
-                {/* Search */}
-                <div className="flex-1 min-w-[200px]">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-                    <input
-                      type="text"
-                      placeholder="Search AI goals..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    />
-                  </div>
-                </div>
-
-                {/* Category Filter */}
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                >
-                  <option value="All">All Categories</option>
-                  {AI_GOAL_CATEGORIES.map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-
-                {/* Recommended Toggle */}
-                <button
-                  onClick={() => setShowRecommended(!showRecommended)}
-                  className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    showRecommended
-                      ? 'bg-yellow-100 text-yellow-800 border border-yellow-200'
-                      : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'
-                  }`}
-                >
-                  <Sparkles size={16} className="mr-2" />
-                  Recommended Only
-                </button>
-              </div>
-
-              {/* Selected Goals Preview */}
-              <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-                <h5 className="text-sm font-medium text-gray-900 mb-2">
-                  Selected for {locationLabels[activeLocation]} ({selectedGoals.length}/{maxButtonsPerLocation})
-                </h5>
-                <div className="flex flex-wrap gap-2">
-                  {selectedGoals.map(goalId => {
-                    const goal = getGoalById(goalId);
-                    return goal ? (
-                      <span
-                        key={goalId}
-                        className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"
-                      >
-                        {goal.title}
-                        <button
-                          onClick={() => handleGoalToggle(goalId)}
-                          className="ml-1 text-indigo-600 hover:text-indigo-800"
-                        >
-                          <X size={12} />
-                        </button>
-                      </span>
-                    ) : null;
-                  })}
-                  {selectedGoals.length === 0 && (
-                    <span className="text-sm text-gray-500">No goals selected</span>
-                  )}
-                </div>
-              </div>
-
-              {/* Goals Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
-                {filteredGoals.map(goal => {
-                  const isSelected = selectedGoals.includes(goal.id);
-                  const canSelect = !isSelected && selectedGoals.length < maxButtonsPerLocation;
-                  
-                  return (
-                    <div
-                      key={goal.id}
-                      onClick={() => canSelect || isSelected ? handleGoalToggle(goal.id) : null}
-                      className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                        isSelected
-                          ? 'border-indigo-500 bg-indigo-50 shadow-sm'
-                          : canSelect
-                          ? 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
-                          : 'border-gray-200 opacity-50 cursor-not-allowed'
+              <Card>
+                <CardHeader>
+                  <h4 className="text-lg font-semibold text-gray-900">Customize For</h4>
+                  <p className="text-sm text-gray-600">Select where to customize buttons</p>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {Object.entries(locationLabels).map(([key, label]) => (
+                    <button
+                      key={key}
+                      onClick={() => setActiveLocation(key as CustomizationLocation)}
+                      className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                        activeLocation === key
+                          ? 'bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 border border-purple-200 shadow-sm'
+                          : 'text-gray-600 hover:bg-gray-50 border border-gray-200'
                       }`}
                     >
-                      <div className="flex items-start justify-between mb-2">
-                        <h6 className="text-sm font-medium text-gray-900 line-clamp-2">
-                          {goal.title}
-                        </h6>
-                        {isSelected && (
-                          <Check className="w-4 h-4 text-indigo-600 flex-shrink-0 ml-2" />
-                        )}
-                      </div>
-                      
-                      <p className="text-xs text-gray-600 mb-3 line-clamp-2">
-                        {goal.description}
-                      </p>
-                      
-                      <div className="flex items-center justify-between text-xs">
-                        <span className={`px-2 py-1 rounded-full font-medium ${
-                          goal.complexity === 'Simple' ? 'bg-green-100 text-green-700' :
-                          goal.complexity === 'Intermediate' ? 'bg-yellow-100 text-yellow-700' :
-                          'bg-red-100 text-red-700'
-                        }`}>
-                          {goal.complexity}
-                        </span>
-                        <span className="text-gray-500">{goal.estimatedTime}</span>
+                      {label}
+                      <span className="block text-xs text-gray-500 mt-1">
+                        {buttonConfigurations[key as CustomizationLocation]?.length || 0} / {maxButtonsPerLocation} buttons
+                      </span>
+                    </button>
+                  ))}
+                </CardContent>
+              </Card>
+
+              {/* Actions Card */}
+              <Card className="mt-4">
+                <CardHeader>
+                  <h4 className="text-lg font-semibold text-gray-900">Configuration</h4>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Button
+                    onClick={handleReset}
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start"
+                  >
+                    <RotateCcw size={16} className="mr-2" />
+                    Reset to Defaults
+                  </Button>
+                  
+                  <Button
+                    onClick={handleExport}
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start"
+                  >
+                    <Download size={16} className="mr-2" />
+                    Export Config
+                  </Button>
+                  
+                  <label>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start cursor-pointer"
+                      asChild
+                    >
+                      <span>
+                        <Upload size={16} className="mr-2" />
+                        Import Config
+                      </span>
+                    </Button>
+                    <input
+                      type="file"
+                      accept=".json"
+                      onChange={handleImport}
+                      className="hidden"
+                    />
+                  </label>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="lg:col-span-3 space-y-6">
+              {/* Search and Filters Card */}
+              <Card>
+                <CardHeader>
+                  <h4 className="text-lg font-semibold text-gray-900">Find AI Goals</h4>
+                  <p className="text-sm text-gray-600">Search and filter from {AI_GOALS.length} available goals</p>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-4">
+                    {/* Search */}
+                    <div className="flex-1 min-w-[200px]">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                        <input
+                          type="text"
+                          placeholder="Search AI goals..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        />
                       </div>
                     </div>
-                  );
-                })}
-              </div>
 
-              {filteredGoals.length === 0 && (
-                <div className="text-center py-12">
-                  <Target className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-sm font-medium text-gray-900 mb-2">No goals found</h3>
-                  <p className="text-sm text-gray-500">Try adjusting your search or filters</p>
-                </div>
-              )}
+                    {/* Category Filter */}
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    >
+                      <option value="All">All Categories</option>
+                      {AI_GOAL_CATEGORIES.map(category => (
+                        <option key={category} value={category}>{category}</option>
+                      ))}
+                    </select>
+
+                    {/* Recommended Toggle */}
+                    <Button
+                      onClick={() => setShowRecommended(!showRecommended)}
+                      variant={showRecommended ? "default" : "outline"}
+                      size="sm"
+                      className={showRecommended ? "bg-gradient-to-r from-yellow-500 to-orange-500" : ""}
+                    >
+                      <Sparkles size={16} className="mr-2" />
+                      Recommended Only
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Selected Goals Preview Card */}
+              <Card>
+                <CardHeader>
+                  <h5 className="text-lg font-semibold text-gray-900">
+                    Selected for {locationLabels[activeLocation]}
+                  </h5>
+                  <p className="text-sm text-gray-600">
+                    {selectedGoals.length}/{maxButtonsPerLocation} goals selected
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedGoals.map(goalId => {
+                      const goal = getGoalById(goalId);
+                      return goal ? (
+                        <span
+                          key={goalId}
+                          className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border border-purple-200"
+                        >
+                          {goal.title}
+                          <button
+                            onClick={() => handleGoalToggle(goalId)}
+                            className="ml-2 text-purple-600 hover:text-purple-800"
+                          >
+                            <X size={14} />
+                          </button>
+                        </span>
+                      ) : null;
+                    })}
+                    {selectedGoals.length === 0 && (
+                      <span className="text-sm text-gray-500">No goals selected - choose from the grid below</span>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Goals Grid Card */}
+              <Card>
+                <CardHeader>
+                  <h4 className="text-lg font-semibold text-gray-900">Available AI Goals</h4>
+                  <p className="text-sm text-gray-600">
+                    {filteredGoals.length} goals found - Click to select for your toolbar
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+                    {filteredGoals.map(goal => {
+                      const isSelected = selectedGoals.includes(goal.id);
+                      const canSelect = !isSelected && selectedGoals.length < maxButtonsPerLocation;
+                      
+                      return (
+                        <Card
+                          key={goal.id}
+                          className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
+                            isSelected
+                              ? 'ring-2 ring-purple-500 bg-gradient-to-br from-purple-50 to-pink-50'
+                              : canSelect
+                              ? 'hover:ring-1 hover:ring-gray-300 hover:shadow-sm'
+                              : 'opacity-50 cursor-not-allowed'
+                          }`}
+                          onClick={() => canSelect || isSelected ? handleGoalToggle(goal.id) : null}
+                        >
+                          <CardContent className="p-4">
+                            <div className="flex items-start justify-between mb-3">
+                              <h6 className="text-sm font-semibold text-gray-900 line-clamp-2">
+                                {goal.title}
+                              </h6>
+                              {isSelected && (
+                                <div className="p-1 bg-purple-500 rounded-full text-white ml-2">
+                                  <Check className="w-3 h-3" />
+                                </div>
+                              )}
+                            </div>
+                            
+                            <p className="text-xs text-gray-600 mb-4 line-clamp-2">
+                              {goal.description}
+                            </p>
+                            
+                            <div className="flex items-center justify-between text-xs">
+                              <span className={`px-2 py-1 rounded-full font-medium ${
+                                goal.complexity === 'Simple' ? 'bg-green-100 text-green-700' :
+                                goal.complexity === 'Intermediate' ? 'bg-yellow-100 text-yellow-700' :
+                                'bg-red-100 text-red-700'
+                              }`}>
+                                {goal.complexity}
+                              </span>
+                              <span className="text-gray-500 font-medium">{goal.estimatedTime}</span>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+
+                  {filteredGoals.length === 0 && (
+                    <div className="text-center py-12">
+                      <Target className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No goals found</h3>
+                      <p className="text-sm text-gray-500">Try adjusting your search or filters</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </div>
           </div>
 
           {/* Footer */}
           <div className="flex justify-end space-x-3 mt-6 pt-6 border-t border-gray-200">
-            <button
+            <Button
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              variant="outline"
+              size="lg"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleSave}
-              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-lg hover:bg-indigo-700"
+              size="lg"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
             >
               Save Changes
-            </button>
+            </Button>
           </div>
         </div>
       </div>
