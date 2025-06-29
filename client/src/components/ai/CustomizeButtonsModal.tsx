@@ -4,6 +4,7 @@ import { useCustomizationStore, CustomizationLocation } from '../../store/custom
 import { AI_GOALS, AI_GOAL_CATEGORIES, getGoalById, getRecommendedGoals } from '../../data/aiGoals';
 import { Card, CardContent, CardHeader } from '../ui/card';
 import { Button } from '../ui/button';
+import SelectableGoalCard from './SelectableGoalCard';
 
 interface CustomizeButtonsModalProps {
   isOpen: boolean;
@@ -317,7 +318,7 @@ const CustomizeButtonsModal: React.FC<CustomizeButtonsModalProps> = ({
                 </CardContent>
               </Card>
 
-              {/* Goals Grid - Using Exact AI Goals Page Design */}
+              {/* Goals Grid - Using Exact InteractiveGoalCard Design */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h4 className="text-lg font-semibold text-gray-900">Available AI Goals</h4>
@@ -329,119 +330,14 @@ const CustomizeButtonsModal: React.FC<CustomizeButtonsModalProps> = ({
                     const isSelected = selectedGoals.includes(goal.id);
                     const canSelect = !isSelected && selectedGoals.length < maxButtonsPerLocation;
                     
-                    const getCategoryColor = (category: string) => {
-                      switch (category.toLowerCase()) {
-                        case 'sales': return 'text-blue-400 bg-blue-500/20';
-                        case 'marketing': return 'text-purple-400 bg-purple-500/20';
-                        case 'relationship': return 'text-green-400 bg-green-500/20';
-                        case 'automation': return 'text-orange-400 bg-orange-500/20';
-                        case 'analytics': return 'text-teal-400 bg-teal-500/20';
-                        case 'content': return 'text-yellow-400 bg-yellow-500/20';
-                        case 'ai-native': return 'text-pink-400 bg-pink-500/20';
-                        default: return 'text-gray-400 bg-gray-500/20';
-                      }
-                    };
-
-                    const getComplexityIcon = (complexity: string) => {
-                      switch (complexity) {
-                        case 'Simple': return <Sparkles className="h-4 w-4" />;
-                        case 'Intermediate': return <Target className="h-4 w-4" />;
-                        case 'Advanced': return <Brain className="h-4 w-4" />;
-                        default: return <Settings className="h-4 w-4" />;
-                      }
-                    };
-                    
                     return (
-                      <div 
+                      <SelectableGoalCard
                         key={goal.id}
-                        className={`relative group cursor-pointer transition-all duration-500 transform ${
-                          isSelected ? 'scale-105 z-10' : canSelect ? 'hover:scale-105' : 'opacity-50 cursor-not-allowed'
-                        } ${isSelected ? 'ring-2 ring-purple-500/50 ring-offset-2 ring-offset-white' : ''}`}
-                        onClick={() => canSelect || isSelected ? handleGoalToggle(goal.id) : null}
-                      >
-                        {/* Main Goal Card - Exact AI Goals Design */}
-                        <div className={`relative p-6 rounded-2xl border backdrop-blur-xl transition-all duration-500 overflow-hidden ${
-                          isSelected 
-                            ? 'bg-gradient-to-br from-purple-50 to-pink-50 border-purple-400 shadow-lg'
-                            : canSelect
-                            ? 'bg-gradient-to-br from-white to-blue-50 border-blue-400 shadow-xl group-hover:border-blue-400 group-hover:shadow-xl'
-                            : 'bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200 shadow-sm'
-                        }`}>
-                          
-                          {/* Animated Background Pattern */}
-                          <div className="absolute inset-0 opacity-5">
-                            <div className={`absolute inset-0 transition-all duration-1000 ${
-                              isSelected ? 'scale-110 rotate-1' : 'scale-100'
-                            }`} style={{
-                              backgroundImage: 'radial-gradient(circle at 25% 25%, #3b82f6 1px, transparent 1px)',
-                              backgroundSize: '20px 20px'
-                            }}></div>
-                          </div>
-
-                          {/* Header */}
-                          <div className="relative z-10 mb-4">
-                            <div className="flex items-start justify-between mb-3">
-                              <div className="flex items-center gap-3">
-                                <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getCategoryColor(goal.category)}`}>
-                                  {goal.category}
-                                </span>
-                                <div className="text-gray-600">{getComplexityIcon(goal.complexity)}</div>
-                              </div>
-                              {isSelected && (
-                                <div className="p-2 bg-purple-500 rounded-full text-white shadow-md">
-                                  <Check className="w-4 h-4" />
-                                </div>
-                              )}
-                            </div>
-                            
-                            <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
-                              {goal.title}
-                            </h3>
-                            
-                            <p className="text-sm text-gray-600 line-clamp-2 mb-4">
-                              {goal.description}
-                            </p>
-                          </div>
-
-                          {/* Metrics */}
-                          <div className="relative z-10 grid grid-cols-2 gap-4 mb-4">
-                            <div className="text-center p-3 bg-white/50 rounded-lg border border-gray-200">
-                              <div className="text-xs text-gray-500 mb-1">Complexity</div>
-                              <div className={`text-sm font-bold ${
-                                goal.complexity === 'Simple' ? 'text-green-600' :
-                                goal.complexity === 'Intermediate' ? 'text-yellow-600' :
-                                'text-red-600'
-                              }`}>
-                                {goal.complexity}
-                              </div>
-                            </div>
-                            <div className="text-center p-3 bg-white/50 rounded-lg border border-gray-200">
-                              <div className="text-xs text-gray-500 mb-1">Time</div>
-                              <div className="text-sm font-bold text-blue-600">{goal.estimatedTime}</div>
-                            </div>
-                          </div>
-
-                          {/* Action Button */}
-                          <div className="relative z-10">
-                            <button className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-all duration-200 ${
-                              isSelected
-                                ? 'bg-purple-600 text-white shadow-md hover:bg-purple-700'
-                                : canSelect
-                                ? 'bg-blue-600 text-white shadow-md hover:bg-blue-700'
-                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            }`}>
-                              {isSelected ? 'Selected' : canSelect ? 'Select Goal' : 'Limit Reached'}
-                            </button>
-                          </div>
-
-                          {/* Sparkle Animation for Interactive Effects */}
-                          {(isSelected || (canSelect && 'group-hover' in {})) && (
-                            <div className="absolute top-4 right-4 animate-bounce">
-                              <Sparkles className={`h-5 w-5 ${isSelected ? 'text-purple-500' : 'text-blue-500'}`} />
-                            </div>
-                          )}
-                        </div>
-                      </div>
+                        goal={goal}
+                        isSelected={isSelected}
+                        canSelect={canSelect}
+                        onToggle={handleGoalToggle}
+                      />
                     );
                   })}
                 </div>
