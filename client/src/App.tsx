@@ -52,6 +52,7 @@ import FunctionAssistantFeaturePage from './pages/Landing/FeaturePage/FunctionAs
 import CommunicationsFeaturePage from './pages/Landing/FeaturePage/CommunicationsFeaturePage';
 import GoalCardDemo from './pages/GoalCardDemo';
 import { AIGoalsPage } from './pages/AIGoalsPage';
+import PartnerOnboardingPage from './pages/PartnerOnboardingPage';
 
 // Layout Components
 import Navbar from './components/Navbar';
