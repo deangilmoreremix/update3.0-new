@@ -18,12 +18,7 @@ import {
   Settings,
   Sparkles,
   FileText,
-  BarChart3,
-  Lightbulb,
-  DollarSign,
-  Award,
-  Network,
-  ExternalLink
+  BarChart3
 } from 'lucide-react';
 
 interface InteractiveGoalCardProps {
@@ -41,11 +36,12 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
   executionProgress = 0,
   realMode = false
 }) => {
-  const getComplexityColor = (complexity: string) => {
+  // Map complexity to priority colors for consistency with original design
+  const getPriorityColor = (complexity: string) => {
     switch (complexity) {
-      case 'Simple': return 'green';
-      case 'Intermediate': return 'yellow';
       case 'Advanced': return 'red';
+      case 'Intermediate': return 'yellow';
+      case 'Simple': return 'green';
       default: return 'gray';
     }
   };
@@ -96,19 +92,30 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
     }
   }, [isExecuting]);
 
+  // Mock data for fields that don't exist in AIGoal but were in original Goal
+  const mockBusinessImpact = `Streamline ${goal.category.toLowerCase()} processes with AI automation to increase efficiency and reduce manual work.`;
+  const mockAgentsRequired = goal.toolMapping ? [goal.toolMapping] : ['AI Assistant', 'Data Analyzer'];
+  const mockRoi = '250-400%';
+  const mockPrerequisites = goal.recommendedFor.map(type => `Access to ${type} data`);
+  const mockToolsNeeded = goal.toolMapping ? [goal.toolMapping, 'CRM Integration'] : ['CRM Integration', 'AI Engine'];
+  const mockSuccessMetrics = [
+    `Improved ${goal.category.toLowerCase()} efficiency by 60%`,
+    'Reduced manual processing time',
+    'Enhanced data accuracy'
+  ];
+
   return (
     <div 
       className={`relative group cursor-pointer transition-all duration-500 transform ${
         isHovered ? 'scale-105 z-10' : ''
-      }`}
+      } ${isExecuting ? 'ring-2 ring-blue-500/50 ring-offset-2 ring-offset-slate-900' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => onExecute(goal)}
     >
       {/* Main Goal Card */}
       <div className={`relative p-6 rounded-2xl border backdrop-blur-xl transition-all duration-500 overflow-hidden ${
         isExecuting 
-          ? 'bg-gradient-to-br from-green-50 to-blue-50 border-green-400 shadow-lg'
+          ? 'bg-gradient-to-br from-blue-50 to-purple-50 border-blue-400 shadow-lg'
           : isHovered
           ? 'bg-gradient-to-br from-white to-blue-50 border-blue-400 shadow-xl'
           : 'bg-gradient-to-br from-white to-gray-50 border-gray-200 shadow-sm'
@@ -124,6 +131,16 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
           }}></div>
         </div>
 
+        {/* Execution Progress Overlay */}
+        {isExecuting && (
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 animate-pulse">
+            <div 
+              className="h-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 transition-all duration-300"
+              style={{ width: `${executionProgress}%` }}
+            />
+          </div>
+        )}
+
         {/* Header */}
         <div className="relative z-10 mb-4">
           <div className="flex items-start justify-between mb-3">
@@ -134,180 +151,271 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
                 goal.complexity === 'Simple' ? 'bg-green-100 text-green-700 border-green-300' :
                 'bg-gray-100 text-gray-700 border-gray-300'
               }`}>
-                {goal.complexity}
+                {goal.complexity} Priority
               </span>
               <div className="text-gray-600">{getComplexityIcon(goal.complexity)}</div>
             </div>
+            
             {isExecuting && (
-              <div className="p-2 bg-green-500 rounded-full text-white shadow-lg animate-pulse">
-                <Loader className="w-4 h-4 animate-spin" />
+              <div className="flex items-center gap-2 bg-blue-100 px-3 py-1 rounded-full border border-blue-300">
+                <Activity className="h-4 w-4 text-blue-600 animate-pulse" />
+                <span className="text-xs text-blue-700">Executing</span>
               </div>
             )}
           </div>
-          
-          <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+
+          <h3 className={`text-lg font-bold transition-colors duration-300 ${
+            isHovered ? 'text-gray-900' : 'text-gray-900'
+          }`}>
             {goal.title}
           </h3>
-          
-          <p className="text-sm text-gray-600 line-clamp-3 mb-4">
-            {goal.description}
-          </p>
+          <p className="text-sm text-gray-700 mt-2 line-clamp-2">{goal.description}</p>
         </div>
 
-        {/* Live Metrics Dashboard */}
-        <div className="relative z-10 mb-4">
-          <div className="grid grid-cols-3 gap-2">
-            <div className="text-center p-2 bg-white/80 rounded-lg border border-gray-200/80">
-              <div className="text-xs text-gray-500 mb-1">Category</div>
-              <div className={`text-xs font-bold px-2 py-1 rounded-full ${getCategoryColor(goal.category)}`}>
-                {goal.category}
+        {/* Business Impact */}
+        <div className="relative z-10 mb-4 p-3 rounded-lg bg-gradient-to-r from-green-50 to-blue-50 border border-green-200">
+          <div className="text-xs font-medium text-green-700 mb-1 flex items-center gap-2">
+            <TrendingUp className="h-3 w-3" />
+            Business Impact
+          </div>
+          <div className="text-sm text-gray-800">{mockBusinessImpact}</div>
+        </div>
+
+        {/* Live Metrics (when hovered or executing) */}
+        {(isHovered || isExecuting) && (
+          <div className="relative z-10 mb-4 space-y-3 animate-fadeIn">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="text-center p-2 bg-gray-100 rounded-lg border border-gray-200">
+                <div className="text-lg font-bold text-green-600">${liveMetrics.estimatedValue.toLocaleString()}</div>
+                <div className="text-xs text-gray-700">Est. Value</div>
+              </div>
+              <div className="text-center p-2 bg-gray-100 rounded-lg border border-gray-200">
+                <div className="text-lg font-bold text-blue-600">{liveMetrics.timeToComplete}m</div>
+                <div className="text-xs text-gray-700">Setup</div>
+              </div>
+              <div className="text-center p-2 bg-gray-100 rounded-lg border border-gray-200">
+                <div className="text-lg font-bold text-purple-600">{liveMetrics.confidence}%</div>
+                <div className="text-xs text-gray-700">Success</div>
               </div>
             </div>
-            <div className="text-center p-2 bg-white/80 rounded-lg border border-gray-200/80">
-              <div className="text-xs text-gray-500 mb-1">Time</div>
-              <div className="text-xs font-bold text-blue-600">{goal.estimatedTime}</div>
-            </div>
-            <div className="text-center p-2 bg-white/80 rounded-lg border border-gray-200/80">
-              <div className="text-xs text-gray-500 mb-1">Value</div>
-              <div className="text-xs font-bold text-green-600">${liveMetrics.estimatedValue.toLocaleString()}</div>
-            </div>
           </div>
-        </div>
+        )}
 
-        {/* Action Section */}
-        <div className="relative z-10 space-y-3">
-          {/* Primary Action Button */}
-          <button 
-            className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-all duration-200 ${
-              isExecuting
-                ? 'bg-green-600 text-white shadow-md cursor-not-allowed'
-                : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md hover:from-blue-700 hover:to-purple-700'
-            }`}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (!isExecuting) {
-                onExecute(goal);
-              }
-            }}
-            disabled={isExecuting}
-          >
-            {isExecuting ? (
-              <span className="flex items-center justify-center gap-2">
-                <Loader className="w-4 h-4 animate-spin" />
-                Executing... {Math.round(executionProgress)}%
-              </span>
-            ) : (
-              <span className="flex items-center justify-center gap-2">
-                <Play className="w-4 h-4" />
-                Execute Goal
+        {/* Agents Required */}
+        <div className="relative z-10 mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Users className="h-4 w-4 text-purple-600" />
+            <span className="text-xs font-medium text-purple-700">AI Agents Required</span>
+          </div>
+          <div className="flex flex-wrap gap-1">
+            {mockAgentsRequired.slice(0, 3).map((agent, index) => (
+              <div key={index} className="flex items-center gap-1 bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs border border-purple-200">
+                <Bot className="h-3 w-3" />
+                {agent}
+              </div>
+            ))}
+            {mockAgentsRequired.length > 3 && (
+              <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full border border-gray-200">
+                +{mockAgentsRequired.length - 3} more
               </span>
             )}
-          </button>
-
-          {/* Secondary Actions */}
-          <div className="flex gap-2">
-            <button 
-              className="flex-1 py-2 px-3 text-xs bg-white/80 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowDetails(!showDetails);
-              }}
-            >
-              <Eye className="w-3 h-3 inline mr-1" />
-              {showDetails ? 'Hide' : 'Details'}
-            </button>
-            <button 
-              className="flex-1 py-2 px-3 text-xs bg-white/80 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <ExternalLink className="w-3 h-3 inline mr-1" />
-              Learn More
-            </button>
           </div>
         </div>
 
-        {/* Progress Indicator for Execution */}
+        {/* Tools & ROI */}
+        <div className="relative z-10 mb-6 grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <div className="text-gray-700 mb-1">Setup Time</div>
+            <div className="flex items-center gap-1 text-blue-600">
+              <Clock className="h-4 w-4" />
+              {goal.estimatedTime}
+            </div>
+          </div>
+          <div>
+            <div className="text-gray-700 mb-1">Expected ROI</div>
+            <div className="text-green-600 font-medium">{mockRoi}</div>
+          </div>
+        </div>
+
+        {/* Execution Progress Bar */}
         {isExecuting && (
-          <div className="relative z-10 mt-3">
-            <div className="w-full bg-gray-200 rounded-full h-1.5">
+          <div className="relative z-10 mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-blue-700">Execution Progress</span>
+              <span className="text-sm text-blue-600">{Math.round(executionProgress)}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-3 relative overflow-hidden">
               <div 
-                className="bg-gradient-to-r from-green-500 to-blue-500 h-1.5 rounded-full transition-all duration-300"
+                className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-300 relative"
                 style={{ width: `${executionProgress}%` }}
-              />
-            </div>
-            <div className="text-xs text-center text-gray-600 mt-1">
-              {realMode ? 'Live Execution' : 'Demo Mode'} - {Math.round(executionProgress)}%
+              >
+                <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Enhanced Details Panel */}
-        {showDetails && (
-          <div className="relative z-10 mt-4 p-4 bg-white/90 rounded-lg border border-gray-200">
-            <div className="space-y-3">
-              {/* Goal Requirements */}
-              <div>
-                <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                  <Settings className="h-4 w-4 text-blue-600" />
-                  Recommended For
-                </h4>
-                <div className="flex flex-wrap gap-1">
-                  {goal.recommendedFor.map((type, index) => (
-                    <span key={index} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full border border-blue-200">
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Tool Mapping */}
-              {goal.toolMapping && (
-                <div>
-                  <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                    <Bot className="h-4 w-4 text-purple-600" />
-                    Mapped Tool
-                  </h4>
-                  <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full border border-purple-200">
-                    {goal.toolMapping}
-                  </span>
-                </div>
+        {/* Action Buttons */}
+        <div className="relative z-10 space-y-3">
+          <button
+            onClick={() => onExecute(goal)}
+            disabled={isExecuting}
+            className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 transform ${
+              isExecuting
+                ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                : realMode
+                ? 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white hover:scale-105 shadow-lg hover:shadow-xl'
+                : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white hover:scale-105 shadow-lg hover:shadow-xl'
+            }`}
+          >
+            <span className="flex items-center justify-center gap-2">
+              {isExecuting ? (
+                <>
+                  <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full" />
+                  Executing Goal...
+                </>
+              ) : (
+                <>
+                  <Play className="h-5 w-5" />
+                  {realMode ? 'Execute Real Goal' : 'Start Interactive Demo'}
+                </>
               )}
+            </span>
+          </button>
 
-              {/* Live Metrics */}
+          <button
+            onClick={() => setShowDetails(!showDetails)}
+            className="w-full py-2 text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium"
+          >
+            <span className="flex items-center justify-center gap-2">
+              <Settings className="h-4 w-4" />
+              {showDetails ? 'Hide Details' : 'View Details'}
+            </span>
+          </button>
+        </div>
+
+        {/* Goal Details Expansion */}
+        {showDetails && (
+          <div className="relative z-10 mt-6 space-y-4 animate-fadeIn border-t border-gray-200 pt-4">
+            {/* Detailed Description */}
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                <FileText className="h-4 w-4 text-blue-600" />
+                Goal Details
+              </h4>
+              <p className="text-sm text-gray-700 leading-relaxed">{goal.description}</p>
+            </div>
+
+            {/* Real World Example */}
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                <Target className="h-4 w-4 text-green-600" />
+                Real World Example
+              </h4>
+              <p className="text-sm text-gray-700 leading-relaxed">
+                Implement this goal to automate {goal.category.toLowerCase()} workflows and improve team productivity with AI-powered insights.
+              </p>
+            </div>
+
+            {/* Prerequisites */}
+            {mockPrerequisites && mockPrerequisites.length > 0 && (
               <div>
                 <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4 text-green-600" />
-                  Live Metrics
+                  <Shield className="h-4 w-4 text-orange-600" />
+                  Prerequisites
                 </h4>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="bg-green-50 p-2 rounded border border-green-200">
-                    <div className="text-green-600 font-medium">Confidence</div>
-                    <div className="text-green-800">{liveMetrics.confidence}%</div>
+                <ul className="space-y-1">
+                  {mockPrerequisites.map((req, index) => (
+                    <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
+                      <div className="w-1 h-1 bg-orange-600 rounded-full mt-2 flex-shrink-0"></div>
+                      {req}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* All AI Agents */}
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                <Bot className="h-4 w-4 text-purple-600" />
+                AI Agents Required ({mockAgentsRequired.length})
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {mockAgentsRequired.map((agent, index) => (
+                  <div key={index} className="flex items-center gap-1 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs border border-purple-200">
+                    <Bot className="h-3 w-3" />
+                    {agent}
                   </div>
-                  <div className="bg-blue-50 p-2 rounded border border-blue-200">
-                    <div className="text-blue-600 font-medium">Time Left</div>
-                    <div className="text-blue-800">{liveMetrics.timeToComplete}m</div>
-                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Tools and Integrations */}
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                <Settings className="h-4 w-4 text-cyan-600" />
+                Tools & Integrations
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {mockToolsNeeded.map((tool, index) => (
+                  <span key={index} className="bg-cyan-100 text-cyan-700 px-2 py-1 rounded text-xs border border-cyan-200">
+                    {tool}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Success Metrics */}
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                <BarChart3 className="h-4 w-4 text-indigo-600" />
+                Success Metrics
+              </h4>
+              <ul className="space-y-1">
+                {mockSuccessMetrics.map((metric, index) => (
+                  <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
+                    <div className="w-1 h-1 bg-indigo-600 rounded-full mt-2 flex-shrink-0"></div>
+                    {metric}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Category and Complexity */}
+            <div className="grid grid-cols-2 gap-4 pt-3 border-t border-gray-100">
+              <div>
+                <h4 className="text-xs font-medium text-gray-600 mb-1">Category</h4>
+                <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs ${getCategoryColor(goal.category)}`}>
+                  {goal.category}
+                </span>
+              </div>
+              <div>
+                <h4 className="text-xs font-medium text-gray-600 mb-1">Complexity</h4>
+                <div className="flex items-center gap-1 text-gray-700">
+                  {getComplexityIcon(goal.complexity)}
+                  <span className="text-xs">{goal.complexity}</span>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Hover Overlay */}
+        {/* Floating Action Indicators */}
         {isHovered && !isExecuting && (
-          <div className="absolute inset-0 bg-gradient-to-t from-blue-600/10 to-transparent pointer-events-none rounded-xl" />
+          <div className="absolute top-4 right-4 space-y-2 animate-fadeIn">
+            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center border border-blue-300">
+              <Sparkles className="h-4 w-4 text-blue-600" />
+            </div>
+          </div>
         )}
 
-        {/* Execution Overlay */}
+        {/* Agent Network Indicator */}
         {isExecuting && (
-          <div className="absolute inset-0 bg-gradient-to-t from-green-600/5 to-transparent pointer-events-none rounded-xl" />
-        )}
-
-        {/* Sparkle Animation for Interactive Effects */}
-        {(isHovered || isExecuting) && (
-          <div className="absolute top-4 right-4 animate-bounce">
-            <Sparkles className={`h-5 w-5 ${isExecuting ? 'text-green-500' : 'text-blue-500'}`} />
+          <div className="absolute bottom-4 right-4 flex items-center gap-2 animate-pulse">
+            <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+            <div className="w-2 h-2 bg-purple-400 rounded-full" style={{animationDelay: '0.5s'}}></div>
+            <div className="w-2 h-2 bg-green-400 rounded-full" style={{animationDelay: '1s'}}></div>
           </div>
         )}
       </div>
