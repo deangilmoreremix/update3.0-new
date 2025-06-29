@@ -14,6 +14,7 @@ import { z } from "zod";
 import { extractTenant, requireTenant, requireFeature, addTenantContext, type TenantRequest } from "./middleware/tenantMiddleware";
 import { handleWebhook } from "./integrations/webhookHandlers";
 import { whiteLabelClient } from "./integrations/whiteLabelClient";
+import { partnerService } from "./services/partnerService";
 
 // Middleware to extract user ID from request headers or create demo user
 const requireAuth = async (req: Request, res: Response, next: any) => {
@@ -93,6 +94,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error reporting usage:", error);
       res.status(500).json({ error: "Failed to report usage" });
+    }
+  });
+
+  // Phase 2: Partner Management Routes
+  app.post("/api/partners/onboard", async (req: Request, res: Response) => {
+    try {
+      const partner = await partnerService.createPartner(req.body);
+      res.json(partner);
+    } catch (error) {
+      console.error("Error creating partner:", error);
+      res.status(500).json({ error: "Failed to create partner" });
+    }
+  });
+
+  app.get("/api/partners/pending", async (req: Request, res: Response) => {
+    try {
+      const partners = await partnerService.getPendingPartners();
+      res.json(partners);
+    } catch (error) {
+      console.error("Error fetching pending partners:", error);
+      res.status(500).json({ error: "Failed to fetch pending partners" });
+    }
+  });
+
+  app.get("/api/partners/active", async (req: Request, res: Response) => {
+    try {
+      const partners = await partnerService.getActivePartners();
+      res.json(partners);
+    } catch (error) {
+      console.error("Error fetching active partners:", error);
+      res.status(500).json({ error: "Failed to fetch active partners" });
+    }
+  });
+
+  app.post("/api/partners/:partnerId/approve", async (req: Request, res: Response) => {
+    try {
+      const { partnerId } = req.params;
+      const partner = await partnerService.approvePartner(partnerId);
+      res.json(partner);
+    } catch (error) {
+      console.error("Error approving partner:", error);
+      res.status(500).json({ error: "Failed to approve partner" });
+    }
+  });
+
+  app.get("/api/partners/:partnerId/stats", async (req: Request, res: Response) => {
+    try {
+      const { partnerId } = req.params;
+      const stats = await partnerService.getPartnerStats(partnerId);
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching partner stats:", error);
+      res.status(500).json({ error: "Failed to fetch partner stats" });
+    }
+  });
+
+  app.get("/api/partners/:partnerId/customers", async (req: Request, res: Response) => {
+    try {
+      const { partnerId } = req.params;
+      const customers = await partnerService.getPartnerCustomers(partnerId);
+      res.json(customers);
+    } catch (error) {
+      console.error("Error fetching partner customers:", error);
+      res.status(500).json({ error: "Failed to fetch partner customers" });
+    }
+  });
+
+  app.post("/api/partners/:partnerId/customers", async (req: Request, res: Response) => {
+    try {
+      const { partnerId } = req.params;
+      const customer = await partnerService.createCustomerForPartner(partnerId, req.body);
+      res.json(customer);
+    } catch (error) {
+      console.error("Error creating customer for partner:", error);
+      res.status(500).json({ error: "Failed to create customer" });
     }
   });
 
