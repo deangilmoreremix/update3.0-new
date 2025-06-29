@@ -160,6 +160,12 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### June 28, 2025 - Smart CRM Closer Link Updated
+- **Link Update**: Updated Smart CRM Closer links to point to https://smartcrm-closer.videoremix.io
+- **Locations Updated**: Both Navbar dropdown and Dashboard quick access links
+- **Previous URL**: Was pointing to https://tubular-dieffenbachia-5f01b5.netlify.app
+- **Impact**: Users now properly navigate to the correct Smart CRM Closer application
+
 ### June 28, 2025 - Clerk Authentication Errors Fixed
 - **Critical Error Resolution**: Fixed "useClerk can only be used within the <ClerkProvider />" errors
 - **Root Cause**: Login and Register components were using Clerk hooks without ClerkProvider wrapper

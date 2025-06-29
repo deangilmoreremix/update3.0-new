@@ -651,7 +651,7 @@ const Navbar: React.FC = () => {
 
                     {/* SmartCRM Closer */}
                     <a 
-                      href="https://tubular-dieffenbachia-5f01b5.netlify.app" 
+                      href="https://smartcrm-closer.videoremix.io" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex items-center p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"

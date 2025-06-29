@@ -518,7 +518,7 @@ const Dashboard: React.FC = () => {
 
           {/* SmartCRM Closer - Outreach Team */}
           <a 
-            href="https://tubular-dieffenbachia-5f01b5.netlify.app" 
+            href="https://smartcrm-closer.videoremix.io" 
             target="_blank" 
             rel="noopener noreferrer"
             className="group p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-200 bg-gradient-to-br from-blue-50 to-cyan-50 hover:from-blue-100 hover:to-cyan-100"
