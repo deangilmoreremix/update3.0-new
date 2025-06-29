@@ -55,43 +55,49 @@ const AIActionToolbar: React.FC<AIActionToolbarProps> = ({
       case 'horizontal':
         return 'flex items-center space-x-1 flex-wrap';
       case 'vertical':
-        return 'flex flex-col space-y-2';
+        return 'flex flex-col space-y-3';
       case 'grid':
-        return 'grid grid-cols-2 gap-1';
+        return 'space-y-2.5';
       default:
         return 'flex items-center space-x-1 flex-wrap';
     }
   };
 
   if (layout === 'grid') {
-    // Grid layout: AI Goals button in first row, quick actions fill remaining cells
+    // Grid layout: AI Goals button prominently at top, quick actions in organized grid below
     return (
       <div className={`${getLayoutClasses()} ${className}`}>
         {showGoalsButton && (
-          <div className="col-span-2">
+          <div className="w-full">
             <AIGoalsButton
               entityType={entityType}
               entityId={entityId}
               entityData={entityData}
               size={size}
               variant="primary"
+              className="w-full"
             />
           </div>
         )}
         
-        {quickActions.map((action, index) => (
-          <QuickAIButton
-            key={index}
-            icon={action.icon}
-            label={action.label}
-            toolName={action.toolName}
-            entityType={entityType}
-            entityId={entityId}
-            entityData={entityData}
-            size={size}
-            variant={action.variant}
-          />
-        ))}
+        {quickActions.length > 0 && (
+          <div className="grid grid-cols-2 gap-2">
+            {quickActions.map((action, index) => (
+              <QuickAIButton
+                key={index}
+                icon={action.icon}
+                label={action.label}
+                toolName={action.toolName}
+                entityType={entityType}
+                entityId={entityId}
+                entityData={entityData}
+                size={size}
+                variant={action.variant}
+                className="w-full"
+              />
+            ))}
+          </div>
+        )}
       </div>
     );
   }

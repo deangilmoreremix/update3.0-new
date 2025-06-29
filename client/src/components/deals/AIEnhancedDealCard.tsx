@@ -297,9 +297,9 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
       )}
       
       {/* Action Buttons - Combined AI and Traditional */}
-      <div className="mt-4 pt-3 border-t border-gray-100 space-y-3">
+      <div className="mt-4 pt-4 border-t border-gray-100/80 bg-gradient-to-b from-gray-50/30 to-gray-50/50 rounded-b-lg -mx-4 px-4 pb-4">
         {/* AI Action Toolbar - Grid Layout for Cards */}
-        <div className="w-full">
+        <div className="mb-3">
           <AIActionToolbar
             entityType="deal"
             entityId={deal.id}
@@ -311,12 +311,12 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
         </div>
         
         {/* Traditional Actions - Modern Pills */}
-        <div className="flex space-x-1">
-          <button className="flex-1 flex items-center justify-center py-1.5 px-2 bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 rounded-full hover:from-orange-100 hover:to-orange-200 text-xs font-semibold transition-all duration-200 border border-orange-200/50">
-            <PieChart size={11} className="mr-1" /> Analyze
+        <div className="flex space-x-1.5">
+          <button className="flex-1 flex items-center justify-center py-2 px-2 bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 rounded-full hover:from-orange-100 hover:to-orange-200 text-xs font-semibold transition-all duration-200 border border-orange-200/50 shadow-sm">
+            <PieChart size={12} className="mr-1" /> Analyze
           </button>
-          <button className="flex-1 flex items-center justify-center py-1.5 px-2 bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 rounded-full hover:from-gray-100 hover:to-gray-200 text-xs font-semibold transition-all duration-200 border border-gray-200/50">
-            <MessageSquare size={11} className="mr-1" /> Notes
+          <button className="flex-1 flex items-center justify-center py-2 px-2 bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 rounded-full hover:from-gray-100 hover:to-gray-200 text-xs font-semibold transition-all duration-200 border border-gray-200/50 shadow-sm">
+            <MessageSquare size={12} className="mr-1" /> Notes
           </button>
         </div>
       </div>
