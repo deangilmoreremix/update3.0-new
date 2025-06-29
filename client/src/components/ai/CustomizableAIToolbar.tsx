@@ -1,5 +1,28 @@
 import React, { useState } from 'react';
-import { Settings, Plus } from 'lucide-react';
+import { 
+  Settings, 
+  Plus, 
+  BarChart3, 
+  Mail, 
+  TrendingUp, 
+  AlertTriangle, 
+  Navigation, 
+  FileText,
+  Send,
+  Calendar,
+  DollarSign,
+  Heart,
+  UserPlus,
+  Search,
+  BarChart,
+  Zap,
+  Clock,
+  GitBranch,
+  PenTool,
+  Video,
+  FileSearch,
+  Package
+} from 'lucide-react';
 import { useCustomizationStore, CustomizationLocation } from '../../store/customizationStore';
 import { getGoalById } from '../../data/aiGoals';
 import AIGoalsButton from './AIGoalsButton';
@@ -41,13 +64,13 @@ const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
     if (!goal) return null;
     
     return {
-      icon: getIconComponent(goal.icon),
+      icon: goal.icon,
       label: goal.title,
       toolName: goal.toolMapping || goalId,
       variant: getVariantForCategory(goal.category)
     };
   }).filter(Boolean) as Array<{
-    icon: any;
+    icon: string;
     label: string;
     toolName: string;
     variant: string;
