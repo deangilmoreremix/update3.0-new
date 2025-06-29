@@ -111,36 +111,54 @@ const Dashboard: React.FC = () => {
   }, []);
   
   const generateRecommendations = async () => {
-    // Generate sample recommendations (in production this would call Gemini API)
-    setAiRecommendations([
-      {
-        id: 1,
-        title: 'Prioritize "Cloud Migration" deal',
-        description: 'This high-value deal has been in qualification for 5 days with no activity',
-        type: 'deal',
-        priority: 'high',
-        action: 'Schedule technical discussion',
-        entityId: 'deal-5'
-      },
-      {
-        id: 2,
-        title: 'Follow up with Acme Inc',
-        description: 'Your proposal was sent 7 days ago with no response',
-        type: 'contact',
-        priority: 'medium',
-        action: 'Send follow-up email',
-        entityId: '1'
-      },
-      {
-        id: 3,
-        title: 'Update negotiation strategy',
-        description: 'Two deals in negotiation stage have stalled',
-        type: 'pipeline',
-        priority: 'medium',
-        action: 'Review negotiation tactics',
-        entityId: null
+    try {
+      // Use real AI to generate recommendations based on actual CRM data
+      const contactsArray = Object.values(contacts);
+      
+      const response = await fetch('/api/ai/business-analyzer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contacts: contactsArray,
+          deals: deals,
+          tasks: tasks
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Recommendations failed: ${response.status}`);
       }
-    ]);
+
+      const data = await response.json();
+      
+      // Parse AI recommendations or use structured fallback
+      let recommendations = [];
+      try {
+        const aiResult = JSON.parse(data.insights || data.content || '{}');
+        recommendations = aiResult.recommendations || [];
+      } catch (parseError) {
+        // Create structured recommendations from AI text
+        recommendations = [
+          {
+            id: 1,
+            title: 'AI Analysis Complete',
+            description: data.insights || data.content || 'Business analysis completed',
+            type: 'general',
+            priority: 'medium',
+            action: 'Review AI insights',
+            entityId: null
+          }
+        ];
+      }
+      
+      setAiRecommendations(recommendations);
+    } catch (error) {
+      console.error('Error generating recommendations:', error);
+      // Set empty array on error
+      setAiRecommendations([]);
+    }
   };
   
   // Generate AI insight for the pipeline using real data
