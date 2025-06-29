@@ -1,6 +1,100 @@
-import { pgTable, text, serial, integer, boolean, uuid, timestamp, numeric, jsonb, date } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, uuid, timestamp, numeric, jsonb, date, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+
+// ============= MULTI-TENANT TABLES =============
+
+// Tenants table for multi-tenancy
+export const tenants = pgTable("tenants", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  type: text("type").notNull().default("customer"), // customer, partner, direct
+  parentTenantId: uuid("parent_tenant_id"),
+  subdomain: text("subdomain").unique(),
+  customDomain: text("custom_domain").unique(),
+  status: text("status").notNull().default("active"), // active, suspended, cancelled
+  brandingConfig: jsonb("branding_config").default({}),
+  featureFlags: jsonb("feature_flags").default({}),
+  metadata: jsonb("metadata").default({}),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_tenants_subdomain").on(table.subdomain),
+  index("idx_tenants_custom_domain").on(table.customDomain),
+  index("idx_tenants_parent").on(table.parentTenantId),
+]);
+
+// User roles and permissions
+export const userRoles = pgTable("user_roles", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  description: text("description"),
+  permissions: jsonb("permissions").default([]),
+  tenantId: uuid("tenant_id").references(() => tenants.id),
+  isSystem: boolean("is_system").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Subscription plans
+export const subscriptionPlans = pgTable("subscription_plans", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  description: text("description"),
+  planType: text("plan_type").notNull(), // starter, professional, enterprise, white_label
+  price: numeric("price").notNull(),
+  billingCycle: text("billing_cycle").notNull().default("monthly"), // monthly, yearly
+  features: jsonb("features").default({}),
+  usageLimits: jsonb("usage_limits").default({}),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Tenant subscriptions
+export const tenantSubscriptions = pgTable("tenant_subscriptions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+  planId: uuid("plan_id").notNull().references(() => subscriptionPlans.id),
+  status: text("status").notNull().default("active"), // active, cancelled, past_due, unpaid
+  currentPeriodStart: timestamp("current_period_start").notNull(),
+  currentPeriodEnd: timestamp("current_period_end").notNull(),
+  cancelAtPeriodEnd: boolean("cancel_at_period_end").default(false),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  metadata: jsonb("metadata").default({}),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_tenant_subscriptions_tenant").on(table.tenantId),
+  index("idx_tenant_subscriptions_status").on(table.status),
+]);
+
+// Feature usage tracking
+export const featureUsage = pgTable("feature_usage", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+  featureName: text("feature_name").notNull(),
+  usageCount: integer("usage_count").default(0),
+  usageData: jsonb("usage_data").default({}),
+  periodStart: timestamp("period_start").notNull(),
+  periodEnd: timestamp("period_end").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_feature_usage_tenant_feature").on(table.tenantId, table.featureName),
+  index("idx_feature_usage_period").on(table.periodStart, table.periodEnd),
+]);
+
+// Session storage table for multi-tenant sessions
+export const sessions = pgTable("sessions", {
+  sid: text("sid").primaryKey(),
+  sess: jsonb("sess").notNull(),
+  expire: timestamp("expire").notNull(),
+}, (table) => [
+  index("IDX_session_expire").on(table.expire),
+]);
+
+// ============= CORE APPLICATION TABLES =============
 
 // Users table for basic authentication
 export const users = pgTable("users", {
@@ -15,9 +109,17 @@ export const users = pgTable("users", {
   preferences: jsonb("preferences").default({}),
   socialLinks: jsonb("social_links").default({}),
   accountStatus: text("account_status").default("active"),
+  // Multi-tenant fields
+  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+  roleId: uuid("role_id").references(() => userRoles.id),
+  permissions: jsonb("permissions").default([]),
+  isAdmin: boolean("is_admin").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => [
+  index("idx_users_tenant").on(table.tenantId),
+  index("idx_users_email_tenant").on(table.email, table.tenantId),
+]);
 
 // Contacts table
 export const contacts = pgTable("contacts", {
@@ -37,7 +139,11 @@ export const contacts = pgTable("contacts", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   userId: uuid("user_id").notNull().references(() => users.id),
-});
+  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+}, (table) => [
+  index("idx_contacts_tenant").on(table.tenantId),
+  index("idx_contacts_user_tenant").on(table.userId, table.tenantId),
+]);
 
 // Deals table
 export const deals = pgTable("deals", {
@@ -68,7 +174,11 @@ export const deals = pgTable("deals", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   userId: uuid("user_id").notNull().references(() => users.id),
-});
+  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+}, (table) => [
+  index("idx_deals_tenant").on(table.tenantId),
+  index("idx_deals_user_tenant").on(table.userId, table.tenantId),
+]);
 
 // Tasks table
 export const tasks = pgTable("tasks", {
@@ -84,7 +194,11 @@ export const tasks = pgTable("tasks", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   userId: uuid("user_id").notNull().references(() => users.id),
-});
+  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+}, (table) => [
+  index("idx_tasks_tenant").on(table.tenantId),
+  index("idx_tasks_user_tenant").on(table.userId, table.tenantId),
+]);
 
 // Business analysis table
 export const businessAnalysis = pgTable("business_analysis", {
@@ -97,7 +211,10 @@ export const businessAnalysis = pgTable("business_analysis", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   userId: uuid("user_id").notNull().references(() => users.id),
-});
+  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+}, (table) => [
+  index("idx_business_analysis_tenant").on(table.tenantId),
+]);
 
 // Content items table
 export const contentItems = pgTable("content_items", {
@@ -109,7 +226,10 @@ export const contentItems = pgTable("content_items", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   userId: uuid("user_id").notNull().references(() => users.id),
-});
+  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+}, (table) => [
+  index("idx_content_items_tenant").on(table.tenantId),
+]);
 
 // Voice profiles table
 export const voiceProfiles = pgTable("voice_profiles", {
@@ -120,9 +240,45 @@ export const voiceProfiles = pgTable("voice_profiles", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   userId: uuid("user_id").notNull().references(() => users.id),
+  tenantId: uuid("tenant_id").notNull().references(() => tenants.id),
+}, (table) => [
+  index("idx_voice_profiles_tenant").on(table.tenantId),
+]);
+
+// ============= INSERT SCHEMAS =============
+
+// Multi-tenant schemas
+export const insertTenantSchema = createInsertSchema(tenants).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
-// Create insert schemas
+export const insertUserRoleSchema = createInsertSchema(userRoles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSubscriptionPlanSchema = createInsertSchema(subscriptionPlans).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertTenantSubscriptionSchema = createInsertSchema(tenantSubscriptions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertFeatureUsageSchema = createInsertSchema(featureUsage).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Core application schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -165,7 +321,25 @@ export const insertVoiceProfileSchema = createInsertSchema(voiceProfiles).omit({
   updatedAt: true,
 });
 
-// Export types
+// ============= EXPORT TYPES =============
+
+// Multi-tenant types
+export type Tenant = typeof tenants.$inferSelect;
+export type InsertTenant = z.infer<typeof insertTenantSchema>;
+
+export type UserRole = typeof userRoles.$inferSelect;
+export type InsertUserRole = z.infer<typeof insertUserRoleSchema>;
+
+export type SubscriptionPlan = typeof subscriptionPlans.$inferSelect;
+export type InsertSubscriptionPlan = z.infer<typeof insertSubscriptionPlanSchema>;
+
+export type TenantSubscription = typeof tenantSubscriptions.$inferSelect;
+export type InsertTenantSubscription = z.infer<typeof insertTenantSubscriptionSchema>;
+
+export type FeatureUsage = typeof featureUsage.$inferSelect;
+export type InsertFeatureUsage = z.infer<typeof insertFeatureUsageSchema>;
+
+// Core application types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 
@@ -186,3 +360,67 @@ export type InsertContentItem = z.infer<typeof insertContentItemSchema>;
 
 export type VoiceProfile = typeof voiceProfiles.$inferSelect;
 export type InsertVoiceProfile = z.infer<typeof insertVoiceProfileSchema>;
+
+// ============= FEATURE DEFINITIONS =============
+
+// Define available features and permissions
+export const FEATURES = {
+  // Core CRM Features
+  CONTACTS_BASIC: 'contacts_basic',
+  CONTACTS_ADVANCED: 'contacts_advanced',
+  DEALS_BASIC: 'deals_basic',
+  DEALS_ADVANCED: 'deals_advanced',
+  TASKS_BASIC: 'tasks_basic',
+  TASKS_AUTOMATION: 'tasks_automation',
+  
+  // AI Features
+  AI_GOALS_BASIC: 'ai_goals_basic',
+  AI_GOALS_CUSTOM: 'ai_goals_custom',
+  AI_ANALYSIS: 'ai_analysis',
+  AI_PREMIUM_MODELS: 'ai_premium_models',
+  DOCUMENT_ANALYSIS: 'document_analysis',
+  
+  // Integrations
+  EMAIL_INTEGRATION: 'email_integration',
+  CALENDAR_INTEGRATION: 'calendar_integration',
+  THIRD_PARTY_APIS: 'third_party_apis',
+  
+  // White Label
+  CUSTOM_BRANDING: 'custom_branding',
+  SUBDOMAIN: 'subdomain',
+  CUSTOM_DOMAIN: 'custom_domain',
+  WHITE_LABEL_RESELLING: 'white_label_reselling',
+  
+  // Analytics & Reporting
+  ADVANCED_ANALYTICS: 'advanced_analytics',
+  CUSTOM_REPORTS: 'custom_reports',
+  DATA_EXPORT: 'data_export',
+} as const;
+
+export const USER_PERMISSIONS = {
+  // Super Admin (Platform Owner)
+  SUPER_ADMIN: 'super_admin',
+  MANAGE_PLATFORM: 'manage_platform',
+  MANAGE_ALL_TENANTS: 'manage_all_tenants',
+  GLOBAL_ANALYTICS: 'global_analytics',
+  
+  // Partner Admin (White-Label Partners)
+  PARTNER_ADMIN: 'partner_admin',
+  MANAGE_CUSTOMERS: 'manage_customers',
+  PARTNER_ANALYTICS: 'partner_analytics',
+  PARTNER_BILLING: 'partner_billing',
+  
+  // Customer Admin (Business Owners)
+  CUSTOMER_ADMIN: 'customer_admin',
+  MANAGE_USERS: 'manage_users',
+  MANAGE_BILLING: 'manage_billing',
+  TENANT_SETTINGS: 'tenant_settings',
+  
+  // End Users
+  USER_READ: 'user_read',
+  USER_WRITE: 'user_write',
+  USER_DELETE: 'user_delete',
+} as const;
+
+export type FeatureKey = typeof FEATURES[keyof typeof FEATURES];
+export type PermissionKey = typeof USER_PERMISSIONS[keyof typeof USER_PERMISSIONS];
