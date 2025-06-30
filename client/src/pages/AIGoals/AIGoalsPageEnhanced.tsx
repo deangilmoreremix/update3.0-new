@@ -258,6 +258,9 @@ const AIGoalsPageEnhanced: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl border border-white/50 dark:border-slate-700/50 shadow-2xl p-8">
             <InteractiveGoalExplorer 
+              realMode={realMode}
+              onModeToggle={(mode) => setRealMode(mode)}
+              onOpenApiSetup={() => setShowApiSetup(true)}
               onGoalSelected={handleGoalSelected}
               contextData={context}
             />

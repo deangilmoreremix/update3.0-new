@@ -1,78 +1,110 @@
 import React, { useState, useEffect } from 'react';
 import { Goal } from '../types/goals';
-import { aiGoalsData } from '../data/goalsData';
+import { goalCategories, allGoals } from '../data/goalsData';
 import InteractiveGoalCard from './InteractiveGoalCard';
+import GoalExecutionModal from './GoalExecutionModal';
 import { 
-  Search, 
-  Filter, 
-  Zap, 
   Target, 
+  Filter, 
+  Search, 
+  Zap, 
   Star, 
-  TrendingUp, 
-  Clock, 
-  Users,
-  Brain,
-  Activity,
+  TrendingUp,
+  ArrowRight,
   Play,
+  Eye,
   Sparkles,
+  Brain,
+  Users,
+  Activity,
   BarChart3,
-  Settings,
+  Network,
   Bot,
-  Rocket,
-  Globe,
-  FileText,
-  Calendar,
-  ArrowRight
+  Award,
+  Lightbulb,
+  HelpCircle,
+  Settings,
+  Info,
+  Timer,
+  Gauge,
+  Cpu
 } from 'lucide-react';
 
 interface InteractiveGoalExplorerProps {
-  onGoalSelected: (goal: Goal) => void;
+  realMode?: boolean;
+  onModeToggle?: (mode: boolean) => void;
+  onOpenApiSetup?: () => void;
+  onGoalSelected?: (goal: Goal) => void;
   contextData?: any;
 }
 
 const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
+  realMode = false,
+  onModeToggle,
+  onOpenApiSetup,
   onGoalSelected,
   contextData
 }) => {
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedPriority, setSelectedPriority] = useState<string>('all');
+  const [selectedComplexity, setSelectedComplexity] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedPriority, setSelectedPriority] = useState('all');
-  const [selectedComplexity, setSelectedComplexity] = useState('all');
   const [executingGoals, setExecutingGoals] = useState<Set<string>>(new Set());
-  const [completedGoals, setCompletedGoals] = useState<Set<string>>(new Set());
   const [executionProgress, setExecutionProgress] = useState<Record<string, number>>({});
+  const [completedGoals, setCompletedGoals] = useState<Set<string>>(new Set());
   const [executingGoal, setExecutingGoal] = useState<Goal | null>(null);
-  const [realMode, setRealMode] = useState(false);
+  const [showExecutionModal, setShowExecutionModal] = useState(false);
+  
+  // Live dashboard stats
   const [liveStats, setLiveStats] = useState({
-    totalGoals: 0,
+    totalGoals: allGoals.length,
     completedToday: 0,
     valueGenerated: 0,
-    activeAgents: 17
+    activeAgents: 0,
+    executingNow: 0,
+    systemHealth: 98
   });
 
-  // Calculate stats from all goals
+  // Update live stats based on execution state
   useEffect(() => {
-    const allGoals = aiGoalsData.flatMap(category => category.goals);
     setLiveStats(prev => ({
       ...prev,
-      totalGoals: allGoals.length,
-      completedToday: Math.floor(Math.random() * 8) + 3,
-      valueGenerated: Math.floor(Math.random() * 150000) + 50000
+      executingNow: executingGoals.size,
+      completedToday: completedGoals.size,
+      valueGenerated: completedGoals.size * 15000 + executingGoals.size * 7500,
+      activeAgents: executingGoals.size * 3,
+      systemHealth: 98 + Math.random() * 2
     }));
-  }, []);
+  }, [executingGoals.size, completedGoals.size]);
+
+  // Smart filtering combining multiple criteria
+  const filteredGoals = allGoals.filter(goal => {
+    const matchesSearch = searchTerm === '' || 
+      goal.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      goal.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      goal.businessImpact.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = selectedCategory === 'all' || 
+      goal.category.toLowerCase() === selectedCategory.toLowerCase();
+    
+    const matchesPriority = selectedPriority === 'all' || goal.priority === selectedPriority;
+    
+    const matchesComplexity = selectedComplexity === 'all' || goal.complexity === selectedComplexity;
+    
+    return matchesSearch && matchesCategory && matchesPriority && matchesComplexity;
+  });
 
   // Handle goal execution
   const handleExecuteGoal = async (goal: Goal) => {
     if (executingGoals.has(goal.id)) return;
-    
-    setExecutingGoals(prev => new Set(Array.from(prev).concat(goal.id)));
+
+    setExecutingGoals(prev => new Set([...prev, goal.id]));
     setExecutionProgress(prev => ({ ...prev, [goal.id]: 0 }));
-    
-    // Show the modal
     setExecutingGoal(goal);
-    onGoalSelected(goal);
-    
-    // Simulate execution progress
+    setShowExecutionModal(true);
+    onGoalSelected?.(goal);
+
+    // Simulate realistic execution with progress tracking
     const progressInterval = setInterval(() => {
       setExecutionProgress(prev => {
         const currentProgress = prev[goal.id] || 0;
@@ -81,11 +113,12 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
         if (newProgress >= 100) {
           clearInterval(progressInterval);
           setExecutingGoals(current => {
-            const newSet = new Set(Array.from(current));
+            const newSet = new Set(current);
             newSet.delete(goal.id);
             return newSet;
           });
-          setCompletedGoals(current => new Set(Array.from(current).concat(goal.id)));
+          setCompletedGoals(current => new Set([...current, goal.id]));
+          return { ...prev, [goal.id]: 100 };
         }
         
         return { ...prev, [goal.id]: newProgress };
@@ -93,54 +126,8 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
     }, 1000);
   };
 
-  // Handle goal completion from modal
-  const handleExecutionComplete = (result: any) => {
-    console.log('Goal execution completed:', result);
-    setCompletedGoals(prev => new Set(Array.from(prev).concat(result.goalId)));
-  };
-
-  // Handle modal close
-  const handleCloseModal = () => {
-    setExecutingGoal(null);
-  };
-
-  // Filter goals based on search and filters
-  const filteredGoals = aiGoalsData.reduce((acc, category) => {
-    const filteredCategoryGoals = category.goals.filter(goal => {
-      const matchesSearch = goal.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           goal.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = selectedCategory === 'all' || category.id === selectedCategory;
-      const matchesPriority = selectedPriority === 'all' || goal.priority === selectedPriority;
-      const matchesComplexity = selectedComplexity === 'all' || goal.complexity === selectedComplexity;
-      
-      return matchesSearch && matchesCategory && matchesPriority && matchesComplexity;
-    });
-
-    if (filteredCategoryGoals.length > 0) {
-      acc.push({
-        ...category,
-        goals: filteredCategoryGoals
-      });
-    }
-    return acc;
-  }, [] as typeof aiGoalsData);
-
-  const getCategoryIcon = (categoryId: string) => {
-    switch (categoryId) {
-      case 'sales': return <Target className="h-5 w-5" />;
-      case 'marketing': return <Rocket className="h-5 w-5" />;
-      case 'relationship': return <Users className="h-5 w-5" />;
-      case 'automation': return <Bot className="h-5 w-5" />;
-      case 'analytics': return <BarChart3 className="h-5 w-5" />;
-      case 'content': return <Globe className="h-5 w-5" />;
-      case 'admin': return <Settings className="h-5 w-5" />;
-      case 'ai-native': return <Brain className="h-5 w-5" />;
-      default: return <FileText className="h-5 w-5" />;
-    }
-  };
-
-  const executeQuickAction = (actionType: string) => {
-    const allGoals = aiGoalsData.flatMap(category => category.goals);
+  // Batch execution for quick actions
+  const executeQuickAction = async (actionType: string) => {
     let targetGoals: Goal[] = [];
     
     switch (actionType) {
@@ -148,217 +135,342 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
         targetGoals = allGoals.filter(goal => goal.priority === 'High').slice(0, 3);
         break;
       case 'quick-wins':
-        targetGoals = allGoals.filter(goal => goal.complexity === 'Simple').slice(0, 3);
+        targetGoals = allGoals.filter(goal => goal.complexity === 'Simple').slice(0, 5);
         break;
       case 'sales-focus':
-        targetGoals = allGoals.filter(goal => goal.category === 'Sales').slice(0, 3);
+        targetGoals = allGoals.filter(goal => goal.category.toLowerCase() === 'sales').slice(0, 4);
         break;
     }
-    
+
+    // Execute goals with staggered delays
     targetGoals.forEach((goal, index) => {
-      setTimeout(() => handleExecuteGoal(goal), index * 500);
+      setTimeout(() => {
+        handleExecuteGoal(goal);
+      }, index * 2000);
     });
   };
 
+  const handleCloseModal = () => {
+    setShowExecutionModal(false);
+    setExecutingGoal(null);
+  };
+
+  const handleExecutionComplete = (result: any) => {
+    console.log('Goal execution completed:', result);
+    setCompletedGoals(prev => new Set([...prev, result.goalId]));
+  };
+
+  const getCategoryCount = (categoryId: string) => {
+    if (categoryId === 'all') return allGoals.length;
+    return allGoals.filter(g => g.category.toLowerCase() === categoryId.toLowerCase()).length;
+  };
+
+  const getPriorityCount = (priority: string) => {
+    if (priority === 'all') return allGoals.length;
+    return allGoals.filter(g => g.priority === priority).length;
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900 relative overflow-hidden">
       {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute top-40 right-20 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-20 left-1/3 w-32 h-32 bg-pink-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }}></div>
+      <div className="absolute inset-0">
+        {/* Floating Background Circles */}
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full opacity-10 animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              width: `${Math.random() * 100 + 50}px`,
+              height: `${Math.random() * 100 + 50}px`,
+              background: `linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4)`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${Math.random() * 10 + 10}s`
+            }}
+          />
+        ))}
+        
+        {/* Moving Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 via-purple-600/5 to-pink-600/5 animate-pulse"></div>
       </div>
 
-      <div className="relative z-10">
-        {/* Massive Header */}
+      <div className="relative z-10 space-y-12 pb-16">
+        {/* Massive Animated Header Section */}
         <div className="text-center py-16 px-4 relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 backdrop-blur-sm"></div>
-          <div className="relative z-10 max-w-6xl mx-auto">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute inset-0" style={{
+              backgroundImage: 'radial-gradient(circle at 50% 50%, #3b82f6 2px, transparent 2px)',
+              backgroundSize: '50px 50px'
+            }}></div>
+          </div>
+
+          <div className="relative z-10">
+            {/* Main Title */}
             <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="p-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-2xl">
-                <Brain className="h-12 w-12 text-white animate-pulse" />
-              </div>
-              <h1 className="text-6xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <Brain className="h-12 w-12 text-white animate-pulse" />
+              <h1 className="text-6xl md:text-8xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 AI Goals Center
               </h1>
+              <Sparkles className="h-10 w-10 text-blue-400 animate-float" />
             </div>
-            
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Intelligent business automation powered by 17 specialized AI agents. Execute strategic goals with real-time insights and measurable outcomes.
+
+            <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-12 leading-relaxed">
+              Transform your business with AI-powered automation. Execute strategic goals with intelligent agents 
+              and watch real-time progress across your entire operation.
             </p>
 
-            {/* Live Dashboard */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-              <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-slate-700/50 shadow-xl">
-                <div className="flex items-center gap-3 mb-2">
-                  <Target className="h-8 w-8 text-blue-600" />
-                  <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                    {liveStats.totalGoals}+
-                  </div>
+            {/* Live System Dashboard */}
+            <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl rounded-3xl border border-slate-700/50 p-8 max-w-6xl mx-auto relative overflow-hidden">
+              {/* Glass Morphism Background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-white/1 backdrop-blur-xl"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center justify-center gap-3 mb-8">
+                  <Network className="h-8 w-8 text-blue-400" />
+                  <h2 className="text-3xl font-bold text-white">Live System Dashboard</h2>
+                  <Activity className="h-6 w-6 text-green-400 animate-pulse" />
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                  Available Goals
-                </div>
-              </div>
 
-              <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-slate-700/50 shadow-xl">
-                <div className="flex items-center gap-3 mb-2">
-                  <Activity className="h-8 w-8 text-green-600 animate-pulse" />
-                  <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                    {liveStats.completedToday}
+                {/* 4 Main Metric Cards */}
+                <div className="grid md:grid-cols-4 gap-6">
+                  {/* Total Goals */}
+                  <div className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-sm rounded-2xl border border-blue-400/30 p-6 text-center relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-cyan-600/10 animate-pulse"></div>
+                    <div className="relative z-10">
+                      <Target className="h-8 w-8 text-blue-400 mx-auto mb-3" />
+                      <div className="text-4xl font-bold text-white mb-2">{liveStats.totalGoals}</div>
+                      <div className="text-blue-300 font-medium">Available Goals</div>
+                      <div className="text-sm text-blue-400/70 mt-1">Ready for execution</div>
+                    </div>
                   </div>
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                  Completed Today
-                </div>
-              </div>
 
-              <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-slate-700/50 shadow-xl">
-                <div className="flex items-center gap-3 mb-2">
-                  <TrendingUp className="h-8 w-8 text-purple-600" />
-                  <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                    ${Math.floor(liveStats.valueGenerated / 1000)}K
+                  {/* Completed Today */}
+                  <div className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-2xl border border-green-400/30 p-6 text-center relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-600/10 to-emerald-600/10 animate-pulse"></div>
+                    <div className="relative z-10">
+                      <Award className="h-8 w-8 text-green-400 mx-auto mb-3" />
+                      <div className="text-4xl font-bold text-white mb-2 flex items-center justify-center gap-2">
+                        {liveStats.completedToday}
+                        {liveStats.completedToday > 0 && <Sparkles className="h-6 w-6 text-green-400" />}
+                      </div>
+                      <div className="text-green-300 font-medium">Completed Today</div>
+                      <div className="text-sm text-green-400/70 mt-1">Successfully achieved</div>
+                    </div>
                   </div>
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                  Value Generated
-                </div>
-              </div>
 
-              <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-slate-700/50 shadow-xl">
-                <div className="flex items-center gap-3 mb-2">
-                  <Bot className="h-8 w-8 text-orange-600" />
-                  <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                    {liveStats.activeAgents}
+                  {/* Value Generated */}
+                  <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-sm rounded-2xl border border-purple-400/30 p-6 text-center relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 to-pink-600/10 animate-pulse"></div>
+                    <div className="relative z-10">
+                      <TrendingUp className="h-8 w-8 text-purple-400 mx-auto mb-3" />
+                      <div className="text-4xl font-bold text-white mb-2">${(liveStats.valueGenerated).toLocaleString()}</div>
+                      <div className="text-purple-300 font-medium">Value Generated</div>
+                      <div className="text-sm text-purple-400/70 mt-1">Business impact today</div>
+                    </div>
+                  </div>
+
+                  {/* Active Agents */}
+                  <div className="bg-gradient-to-br from-orange-500/20 to-amber-500/20 backdrop-blur-sm rounded-2xl border border-orange-400/30 p-6 text-center relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-600/10 to-amber-600/10 animate-pulse"></div>
+                    <div className="relative z-10">
+                      <Bot className="h-8 w-8 text-orange-400 mx-auto mb-3" />
+                      <div className="text-4xl font-bold text-white mb-2 flex items-center justify-center gap-2">
+                        {liveStats.activeAgents}
+                        {liveStats.activeAgents > 0 && <Activity className="h-6 w-6 text-orange-400 animate-pulse" />}
+                      </div>
+                      <div className="text-orange-300 font-medium">Active Agents</div>
+                      <div className="text-sm text-orange-400/70 mt-1">Currently working</div>
+                    </div>
                   </div>
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                  AI Agents Ready
+
+                {/* System Health Bar */}
+                <div className="mt-8 flex items-center justify-center gap-4">
+                  <Cpu className="h-6 w-6 text-green-400" />
+                  <div className="flex-1 max-w-md">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-gray-300">System Health</span>
+                      <span className="text-sm text-green-400">{liveStats.systemHealth.toFixed(1)}%</span>
+                    </div>
+                    <div className="w-full bg-slate-700 rounded-full h-3">
+                      <div 
+                        className="bg-gradient-to-r from-green-500 to-emerald-500 h-3 rounded-full transition-all duration-500"
+                        style={{ width: `${liveStats.systemHealth}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Enhanced Search and Filters */}
-        <div className="max-w-7xl mx-auto px-4 mb-12">
-          <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-gray-200/50 dark:border-slate-700/50">
+        {/* Enhanced Search & Filter System */}
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-8">
             {/* Search Bar */}
-            <div className="relative mb-8">
-              <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search goals by title, description, or outcome..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-16 pr-6 py-4 text-lg bg-gray-50 dark:bg-slate-700 border-2 border-gray-200 dark:border-slate-600 rounded-2xl focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none transition-colors"
-              />
+            <div className="mb-8">
+              <div className="relative max-w-3xl mx-auto">
+                <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search goals by title, description, or expected outcomes..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-16 pr-6 py-5 bg-slate-700/50 border border-slate-600/50 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg transition-all duration-300"
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="absolute right-6 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             </div>
 
-            {/* Filter Buttons */}
-            <div className="space-y-6">
-              {/* Category Filter */}
-              <div>
-                <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
-                  <Filter className="h-4 w-4" />
-                  Categories
-                </h3>
-                <div className="flex flex-wrap gap-3">
+            {/* Quick Action Buttons */}
+            <div className="grid md:grid-cols-4 gap-4 mb-8">
+              <button
+                onClick={() => executeQuickAction('high-priority')}
+                className="bg-gradient-to-r from-red-500/20 to-pink-500/20 border border-red-400/30 rounded-xl p-4 text-center hover:from-red-500/30 hover:to-pink-500/30 transition-all duration-300 group"
+              >
+                <Star className="h-6 w-6 text-red-400 mx-auto mb-2 group-hover:scale-110 transition-transform" />
+                <div className="text-white font-medium">High Priority</div>
+                <div className="text-sm text-red-400">Execute top 3 goals</div>
+              </button>
+
+              <button
+                onClick={() => executeQuickAction('quick-wins')}
+                className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-400/30 rounded-xl p-4 text-center hover:from-green-500/30 hover:to-emerald-500/30 transition-all duration-300 group"
+              >
+                <Zap className="h-6 w-6 text-green-400 mx-auto mb-2 group-hover:scale-110 transition-transform" />
+                <div className="text-white font-medium">Quick Wins</div>
+                <div className="text-sm text-green-400">Simple goals first</div>
+              </button>
+
+              <button
+                onClick={() => executeQuickAction('sales-focus')}
+                className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-400/30 rounded-xl p-4 text-center hover:from-blue-500/30 hover:to-cyan-500/30 transition-all duration-300 group"
+              >
+                <TrendingUp className="h-6 w-6 text-blue-400 mx-auto mb-2 group-hover:scale-110 transition-transform" />
+                <div className="text-white font-medium">Sales Focus</div>
+                <div className="text-sm text-blue-400">Revenue goals</div>
+              </button>
+
+              <button
+                onClick={() => onModeToggle?.(!realMode)}
+                className={`border rounded-xl p-4 text-center transition-all duration-300 group ${
+                  realMode 
+                    ? 'bg-gradient-to-r from-red-500/20 to-orange-500/20 border-red-400/30 hover:from-red-500/30 hover:to-orange-500/30' 
+                    : 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border-blue-400/30 hover:from-blue-500/30 hover:to-purple-500/30'
+                }`}
+              >
+                <Settings className={`h-6 w-6 mx-auto mb-2 group-hover:scale-110 transition-transform ${
+                  realMode ? 'text-red-400' : 'text-blue-400'
+                }`} />
+                <div className="text-white font-medium">{realMode ? 'Live Mode' : 'Demo Mode'}</div>
+                <div className={`text-sm ${realMode ? 'text-red-400' : 'text-blue-400'}`}>
+                  {realMode ? 'Real execution' : 'Safe testing'}
+                </div>
+              </button>
+            </div>
+
+            {/* Category Filters */}
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Target className="h-5 w-5 text-blue-400" />
+                Categories
+              </h3>
+              <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-3">
+                <button
+                  onClick={() => setSelectedCategory('all')}
+                  className={`p-3 rounded-xl border transition-all duration-300 ${
+                    selectedCategory === 'all'
+                      ? 'bg-blue-500/20 text-blue-400 border-blue-500/30 scale-105'
+                      : 'bg-slate-700/30 text-gray-400 border-gray-600/30 hover:border-blue-500/30 hover:scale-105'
+                  }`}
+                >
+                  <div className="text-center">
+                    <div className="text-sm font-medium">All</div>
+                    <div className="text-xs text-gray-500">{getCategoryCount('all')}</div>
+                  </div>
+                </button>
+                {goalCategories.map(category => (
                   <button
-                    onClick={() => setSelectedCategory('all')}
-                    className={`px-4 py-2 rounded-xl font-medium transition-all ${
-                      selectedCategory === 'all'
-                        ? 'bg-blue-600 text-white shadow-lg'
-                        : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600'
+                    key={category.id}
+                    onClick={() => setSelectedCategory(category.id)}
+                    className={`p-3 rounded-xl border transition-all duration-300 ${
+                      selectedCategory === category.id
+                        ? 'bg-blue-500/20 text-blue-400 border-blue-500/30 scale-105'
+                        : 'bg-slate-700/30 text-gray-400 border-gray-600/30 hover:border-blue-500/30 hover:scale-105'
                     }`}
                   >
-                    All Categories ({aiGoalsData.reduce((acc, cat) => acc + cat.goals.length, 0)})
+                    <div className="text-center">
+                      <category.icon className="h-5 w-5 mx-auto mb-1" />
+                      <div className="text-sm font-medium">{category.name}</div>
+                      <div className="text-xs text-gray-500">{getCategoryCount(category.id)}</div>
+                    </div>
                   </button>
-                  {aiGoalsData.map(category => (
+                ))}
+              </div>
+            </div>
+
+            {/* Priority and Complexity Filters */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <Star className="h-5 w-5 text-yellow-400" />
+                  Priority Level
+                </h3>
+                <div className="grid grid-cols-4 gap-3">
+                  {['all', 'High', 'Medium', 'Low'].map(priority => (
                     <button
-                      key={category.id}
-                      onClick={() => setSelectedCategory(category.id)}
-                      className={`px-4 py-2 rounded-xl font-medium transition-all flex items-center gap-2 ${
-                        selectedCategory === category.id
-                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                          : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600'
+                      key={priority}
+                      onClick={() => setSelectedPriority(priority)}
+                      className={`p-3 rounded-xl border transition-all duration-300 ${
+                        selectedPriority === priority
+                          ? 'bg-blue-500/20 text-blue-400 border-blue-500/30 scale-105'
+                          : 'bg-slate-700/30 text-gray-400 border-gray-600/30 hover:border-blue-500/30 hover:scale-105'
                       }`}
                     >
-                      {getCategoryIcon(category.id)}
-                      {category.name} ({category.goals.length})
+                      <div className="text-center">
+                        <div className="text-sm font-medium">{priority === 'all' ? 'All' : priority}</div>
+                        <div className="text-xs text-gray-500">{getPriorityCount(priority)}</div>
+                      </div>
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Priority and Complexity Filters */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">Priority</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {['all', 'High', 'Medium', 'Low'].map(priority => (
-                      <button
-                        key={priority}
-                        onClick={() => setSelectedPriority(priority)}
-                        className={`px-3 py-1 rounded-lg text-sm font-medium transition-all ${
-                          selectedPriority === priority
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-600'
-                        }`}
-                      >
-                        {priority === 'all' ? 'All' : priority}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">Complexity</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {['all', 'Simple', 'Intermediate', 'Advanced'].map(complexity => (
-                      <button
-                        key={complexity}
-                        onClick={() => setSelectedComplexity(complexity)}
-                        className={`px-3 py-1 rounded-lg text-sm font-medium transition-all ${
-                          selectedComplexity === complexity
-                            ? 'bg-purple-600 text-white'
-                            : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-600'
-                        }`}
-                      >
-                        {complexity === 'all' ? 'All' : complexity}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick Actions */}
               <div>
-                <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
-                  <Zap className="h-4 w-4" />
-                  Quick Actions
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <Gauge className="h-5 w-5 text-purple-400" />
+                  Complexity Level
                 </h3>
-                <div className="flex flex-wrap gap-3">
-                  <button
-                    onClick={() => executeQuickAction('high-priority')}
-                    className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium hover:from-red-600 hover:to-orange-600 transition-all shadow-lg flex items-center gap-2"
-                  >
-                    <TrendingUp className="h-4 w-4" />
-                    Execute High Priority
-                  </button>
-                  <button
-                    onClick={() => executeQuickAction('quick-wins')}
-                    className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-medium hover:from-green-600 hover:to-emerald-600 transition-all shadow-lg flex items-center gap-2"
-                  >
-                    <Zap className="h-4 w-4" />
-                    Quick Wins
-                  </button>
-                  <button
-                    onClick={() => executeQuickAction('sales-focus')}
-                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-medium hover:from-blue-600 hover:to-cyan-600 transition-all shadow-lg flex items-center gap-2"
-                  >
-                    <Target className="h-4 w-4" />
-                    Sales Focus
-                  </button>
+                <div className="grid grid-cols-4 gap-3">
+                  {['all', 'Simple', 'Intermediate', 'Advanced'].map(complexity => (
+                    <button
+                      key={complexity}
+                      onClick={() => setSelectedComplexity(complexity)}
+                      className={`p-3 rounded-xl border transition-all duration-300 ${
+                        selectedComplexity === complexity
+                          ? 'bg-blue-500/20 text-blue-400 border-blue-500/30 scale-105'
+                          : 'bg-slate-700/30 text-gray-400 border-gray-600/30 hover:border-blue-500/30 hover:scale-105'
+                      }`}
+                    >
+                      <div className="text-center">
+                        <div className="text-sm font-medium">{complexity === 'all' ? 'All' : complexity}</div>
+                        <div className="text-xs text-gray-500">
+                          {complexity === 'all' ? allGoals.length : allGoals.filter(g => g.complexity === complexity).length}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
@@ -366,81 +478,85 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
         </div>
 
         {/* Results Summary */}
-        <div className="max-w-7xl mx-auto px-4 mb-8">
-          <div className="bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-pink-600/10 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-slate-700/50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                  {filteredGoals.reduce((acc, cat) => acc + cat.goals.length, 0)} Goals Found
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  across {filteredGoals.length} categories
-                </div>
+              <div className="flex items-center gap-3">
+                <Eye className="h-6 w-6 text-green-400" />
+                <h3 className="text-xl font-semibold text-white">
+                  Showing {filteredGoals.length} of {allGoals.length} goals
+                </h3>
+                {searchTerm && (
+                  <span className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm">
+                    "{searchTerm}"
+                  </span>
+                )}
               </div>
-              
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Execution Mode:
+              <div className="flex items-center gap-4 text-sm text-gray-400">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span>{completedGoals.size} completed</span>
                 </div>
-                <button
-                  onClick={() => setRealMode(!realMode)}
-                  className={`px-4 py-2 rounded-xl font-medium transition-all ${
-                    realMode
-                      ? 'bg-red-600 text-white shadow-lg'
-                      : 'bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300'
-                  }`}
-                >
-                  {realMode ? 'LIVE MODE' : 'DEMO MODE'}
-                </button>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
+                  <span>{executingGoals.size} executing</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Goals Grid */}
-        <div className="max-w-7xl mx-auto px-4 pb-12">
-          {filteredGoals.length === 0 ? (
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredGoals.map((goal) => (
+              <InteractiveGoalCard
+                key={goal.id}
+                goal={goal}
+                onExecute={handleExecuteGoal}
+                isExecuting={executingGoals.has(goal.id)}
+                executionProgress={executionProgress[goal.id] || 0}
+                realMode={realMode}
+              />
+            ))}
+          </div>
+
+          {/* Empty State */}
+          {filteredGoals.length === 0 && (
             <div className="text-center py-16">
-              <div className="text-gray-500 dark:text-gray-400 text-lg">
-                No goals match your current filters
+              <div className="w-16 h-16 bg-slate-700/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="h-8 w-8 text-gray-400" />
               </div>
-            </div>
-          ) : (
-            <div className="space-y-12">
-              {filteredGoals.map(category => (
-                <div key={category.id} className="animate-fadeIn">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className={`p-3 rounded-2xl bg-gradient-to-r ${category.color} shadow-lg`}>
-                      {getCategoryIcon(category.id)}
-                    </div>
-                    <div>
-                      <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                        {category.name}
-                      </h2>
-                      <p className="text-gray-600 dark:text-gray-400">
-                        {category.description}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {category.goals.map(goal => (
-                      <InteractiveGoalCard
-                        key={goal.id}
-                        goal={goal}
-                        onExecute={handleExecuteGoal}
-                        isExecuting={executingGoals.has(goal.id)}
-                        executionProgress={executionProgress[goal.id] || 0}
-                        realMode={realMode}
-                      />
-                    ))}
-                  </div>
-                </div>
-              ))}
+              <h3 className="text-xl font-semibold text-white mb-2">No goals found</h3>
+              <p className="text-gray-400 mb-6">
+                Try adjusting your filters or search terms to find goals that match your needs.
+              </p>
+              <button
+                onClick={() => {
+                  setSelectedCategory('all');
+                  setSelectedPriority('all');
+                  setSelectedComplexity('all');
+                  setSearchTerm('');
+                }}
+                className="bg-blue-500/20 text-blue-400 px-6 py-3 rounded-xl border border-blue-500/30 hover:bg-blue-500/30 transition-all duration-300"
+              >
+                Reset All Filters
+              </button>
             </div>
           )}
         </div>
       </div>
+
+      {/* Goal Execution Modal */}
+      {showExecutionModal && executingGoal && (
+        <GoalExecutionModal
+          goal={executingGoal}
+          isOpen={showExecutionModal}
+          onClose={handleCloseModal}
+          realMode={realMode}
+          onComplete={handleExecutionComplete}
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,14 @@
 import { Goal } from '../types/goals';
+import { 
+  TrendingUp, 
+  Target, 
+  Users, 
+  Zap, 
+  BarChart3, 
+  PenTool, 
+  Settings, 
+  Brain 
+} from 'lucide-react';
 
 interface GoalCategory {
   id: string;
@@ -267,5 +277,33 @@ export const aiGoalsData: GoalCategory[] = [
     ]
   }
 ];
+
+import { 
+  TrendingUp, 
+  Target, 
+  Users, 
+  Zap, 
+  BarChart3, 
+  PenTool, 
+  Settings, 
+  Brain 
+} from 'lucide-react';
+
+// Export goal categories for filtering
+export const goalCategories = [
+  { id: 'sales', name: 'Sales', icon: TrendingUp },
+  { id: 'marketing', name: 'Marketing', icon: Target },
+  { id: 'relationship', name: 'Relationship', icon: Users },
+  { id: 'automation', name: 'Automation', icon: Zap },
+  { id: 'analytics', name: 'Analytics', icon: BarChart3 },
+  { id: 'content', name: 'Content', icon: PenTool },
+  { id: 'admin', name: 'Admin', icon: Settings },
+  { id: 'ai-native', name: 'AI-Native', icon: Brain }
+];
+
+// Export all goals in a flat array for easier filtering
+export const allGoals: Goal[] = aiGoalsData.reduce((acc, category) => {
+  return acc.concat(category.goals);
+}, [] as Goal[]);
 
 export default aiGoalsData;
