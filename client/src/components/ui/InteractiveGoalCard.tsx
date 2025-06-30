@@ -71,25 +71,25 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [liveMetrics, setLiveMetrics] = useState({
-    estimatedValue: Math.floor(Math.random() * 50000) + 10000,
-    timeToComplete: Math.floor(Math.random() * 30) + 5,
-    confidence: Math.floor(Math.random() * 20) + 80
+    estimatedValue: parseInt(goal.roi.replace(/[^0-9]/g, '')) || 25000,
+    timeToComplete: parseInt(goal.estimatedSetupTime.replace(/[^0-9]/g, '')) || 15,
+    confidence: goal.priority === 'High' ? 95 : goal.priority === 'Medium' ? 85 : 75
   });
 
-  // Simulate live metrics updates
+  // Update metrics based on execution progress (no simulation)
   useEffect(() => {
-    if (isExecuting) {
-      const interval = setInterval(() => {
-        setLiveMetrics(prev => ({
-          ...prev,
-          estimatedValue: prev.estimatedValue + Math.floor(Math.random() * 1000),
-          timeToComplete: Math.max(1, prev.timeToComplete - 1),
-          confidence: Math.min(99, prev.confidence + Math.floor(Math.random() * 3))
-        }));
-      }, 2000);
-      return () => clearInterval(interval);
+    if (isExecuting && realMode) {
+      const baseValue = parseInt(goal.roi.replace(/[^0-9]/g, '')) || 25000;
+      const baseTime = parseInt(goal.estimatedSetupTime.replace(/[^0-9]/g, '')) || 15;
+      const baseConfidence = goal.priority === 'High' ? 95 : goal.priority === 'Medium' ? 85 : 75;
+      
+      setLiveMetrics({
+        estimatedValue: Math.floor(baseValue * (1 + executionProgress / 100)),
+        timeToComplete: Math.max(1, Math.floor(baseTime * (1 - executionProgress / 100))),
+        confidence: Math.min(99, Math.floor(baseConfidence + (executionProgress / 10)))
+      });
     }
-  }, [isExecuting]);
+  }, [isExecuting, executionProgress, goal, realMode]);
 
   // No mock data needed - using real Goal interface fields
 

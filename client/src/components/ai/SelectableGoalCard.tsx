@@ -75,9 +75,9 @@ const SelectableGoalCard: React.FC<SelectableGoalCardProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [liveMetrics, setLiveMetrics] = useState({
-    estimatedValue: Math.floor(Math.random() * 50000) + 10000,
-    timeToComplete: Math.floor(Math.random() * 30) + 5,
-    confidence: Math.floor(Math.random() * 20) + 80
+    estimatedValue: parseInt(goal.roi.replace(/[^0-9]/g, '')) || 25000,
+    timeToComplete: parseInt(goal.estimatedSetupTime.replace(/[^0-9]/g, '')) || 15,
+    confidence: goal.priority === 'High' ? 95 : goal.priority === 'Medium' ? 85 : 75
   });
 
   return (

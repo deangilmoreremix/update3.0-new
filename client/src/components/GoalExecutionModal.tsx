@@ -272,8 +272,9 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
       onComplete(results);
       
     } catch (error) {
-      addActivity(`❌ Execution failed: ${error.message}`);
-      setGoalResults({ success: false, error: error.message });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      addActivity(`❌ Execution failed: ${errorMessage}`);
+      setGoalResults({ success: false, error: errorMessage });
     } finally {
       setIsExecuting(false);
     }
