@@ -223,6 +223,30 @@ function App() {
                 </ProtectedRoute>
               } />
               
+              <Route path="/communication-hub" element={
+                <ProtectedRoute>
+                  <CommunicationHub />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/document-center" element={
+                <ProtectedRoute>
+                  <DocumentCenter />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/analytics-dashboard" element={
+                <ProtectedRoute>
+                  <AnalyticsDashboard />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/lead-capture" element={
+                <ProtectedRoute>
+                  <LeadCapture />
+                </ProtectedRoute>
+              } />
+              
               <Route path="/settings" element={
                 <ProtectedRoute>
                   <Settings />
