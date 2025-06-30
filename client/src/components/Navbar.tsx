@@ -119,21 +119,21 @@ const Navbar: React.FC = () => {
 
   // Dynamic navbar class based on position
   const getNavbarClasses = () => {
-    const baseClasses = "bg-white shadow-sm z-50 transition-all duration-300";
+    const baseClasses = "navbar-container bg-white shadow-sm";
     
     if (isTop) {
-      return `${baseClasses} border-b border-gray-200 sticky top-0 navbar-top`;
+      return `${baseClasses} navbar-top`;
     }
     
     if (isLeft) {
-      return `${baseClasses} border-r border-gray-200 fixed left-0 top-0 h-full w-64 navbar-left`;
+      return `${baseClasses} navbar-left`;
     }
     
     if (isRight) {
-      return `${baseClasses} border-l border-gray-200 fixed right-0 top-0 h-full w-64 navbar-right`;
+      return `${baseClasses} navbar-right`;
     }
     
-    return `${baseClasses} border-b border-gray-200 sticky top-0 navbar-top`; // fallback
+    return `${baseClasses} navbar-top`; // fallback
   };
 
   // Dynamic container class based on position
