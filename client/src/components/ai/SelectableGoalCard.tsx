@@ -158,7 +158,7 @@ const SelectableGoalCard: React.FC<SelectableGoalCardProps> = ({
             </div>
             <div className="text-center p-2 bg-white/80 rounded-lg border border-gray-200/80">
               <div className="text-xs text-gray-500 mb-1">Time</div>
-              <div className="text-xs font-bold text-blue-600">{goal.estimatedTime}</div>
+              <div className="text-xs font-bold text-blue-600">{goal.estimatedTime || '15 min'}</div>
             </div>
             <div className="text-center p-2 bg-white/80 rounded-lg border border-gray-200/80">
               <div className="text-xs text-gray-500 mb-1">Value</div>
