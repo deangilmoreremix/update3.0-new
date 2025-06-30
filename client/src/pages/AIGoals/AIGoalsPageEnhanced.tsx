@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Goal } from '../../types/goals';
 import InteractiveGoalExplorer from '../../components/InteractiveGoalExplorer';
-import GoalExecutionModal from '../../components/GoalExecutionModal';
+import GoalExecutionModal from '../../components/GoalExecutionModalComplete';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardHeader } from '../../components/ui/card';
 import { Brain, Info, Lightbulb, ArrowLeft, Sparkles, Zap, Target, Users, BarChart3, Bot, Activity } from 'lucide-react';
@@ -48,8 +48,8 @@ const AIGoalsPageEnhanced: React.FC = () => {
     setSelectedGoal(null);
   };
 
-  const handleGoalComplete = (goal: Goal, results: any) => {
-    console.log('Goal completed:', goal.title, results);
+  const handleGoalComplete = (results: any) => {
+    console.log('Goal completed:', selectedGoal?.title, results);
     setShowExecutionModal(false);
     setSelectedGoal(null);
   };
