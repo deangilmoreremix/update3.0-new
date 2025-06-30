@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 // import { useUser, useClerk } from '@clerk/clerk-react';
 import { useAITools } from '../components/AIToolsProvider';
+import { useNavbarPositionContext } from './layout/NavbarPositionProvider';
 import { 
   Home, 
   Users, 
@@ -79,6 +80,7 @@ const Navbar: React.FC = () => {
   const isSignedIn = true;
   
   const { openTool } = useAITools();
+  const { position, isTop, isLeft, isRight } = useNavbarPositionContext();
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleAiMenu = () => setAiMenuOpen(!aiMenuOpen);
@@ -115,10 +117,45 @@ const Navbar: React.FC = () => {
     return 'U';
   };
 
+  // Dynamic navbar class based on position
+  const getNavbarClasses = () => {
+    const baseClasses = "bg-white shadow-sm z-50 transition-all duration-300";
+    
+    if (isTop) {
+      return `${baseClasses} border-b border-gray-200 sticky top-0 navbar-top`;
+    }
+    
+    if (isLeft) {
+      return `${baseClasses} border-r border-gray-200 fixed left-0 top-0 h-full w-64 navbar-left`;
+    }
+    
+    if (isRight) {
+      return `${baseClasses} border-l border-gray-200 fixed right-0 top-0 h-full w-64 navbar-right`;
+    }
+    
+    return `${baseClasses} border-b border-gray-200 sticky top-0 navbar-top`; // fallback
+  };
+
+  // Dynamic container class based on position
+  const getContainerClasses = () => {
+    if (isLeft || isRight) {
+      return "h-full px-4 py-6 flex flex-col";
+    }
+    return "container mx-auto px-4";
+  };
+
+  // Dynamic flex layout class based on position
+  const getFlexClasses = () => {
+    if (isLeft || isRight) {
+      return "flex flex-col space-y-4 h-full";
+    }
+    return "flex justify-between h-16";
+  };
+
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between h-16">
+    <nav className={getNavbarClasses()}>
+      <div className={getContainerClasses()}>
+        <div className={getFlexClasses()}>
           {/* Logo and brand */}
           <div className="flex items-center">
             <Link to="/" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
@@ -128,7 +165,7 @@ const Navbar: React.FC = () => {
           </div>
           
           {/* Desktop navigation */}
-          <div className="hidden md:flex space-x-1">
+          <div className={isTop ? "hidden md:flex space-x-1" : "flex flex-col space-y-2 flex-1"}>
             {/* Main nav items */}
             <Link 
               to="/dashboard" 
@@ -719,7 +756,7 @@ const Navbar: React.FC = () => {
           </div>
           
           {/* User profile/logout */}
-          <div className="hidden md:flex items-center ml-4 relative">
+          <div className={isTop ? "hidden md:flex items-center ml-4 relative" : "flex items-center relative mt-auto"}>
             <button 
               className="flex items-center space-x-2 text-gray-700 hover:text-blue-600" 
               onClick={() => setUserMenuOpen(!userMenuOpen)}
@@ -772,15 +809,17 @@ const Navbar: React.FC = () => {
             )}
           </div>
           
-          {/* Mobile menu button */}
-          <div className="flex md:hidden items-center">
-            <button 
-              onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-blue-50 focus:outline-none"
-            >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
+          {/* Mobile menu button - only show for top position */}
+          {isTop && (
+            <div className="flex md:hidden items-center">
+              <button 
+                onClick={toggleMenu}
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-blue-50 focus:outline-none"
+              >
+                {isOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
+          )}
         </div>
       </div>
       
