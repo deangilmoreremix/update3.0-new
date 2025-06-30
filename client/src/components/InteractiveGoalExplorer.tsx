@@ -167,18 +167,33 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
     return allGoals.filter(g => g.category.toLowerCase() === categoryId.toLowerCase()).length;
   };
 
-  const getIconComponent = (iconName: string) => {
+  const getIconComponent = (icon: any) => {
+    // If it's already a React component, return it directly
+    if (typeof icon === 'function') {
+      return icon;
+    }
+    
+    // Fallback mapping for string icons
     const iconMap: Record<string, any> = {
       '🎯': Target,
+      'Target': Target,
       '📈': TrendingUp,
       '👥': Users,
+      'Users': Users,
       '⚡': Zap,
+      'Zap': Zap,
       '📊': BarChart3,
+      'BarChart3': BarChart3,
       '📝': FileText,
+      'FileText': FileText,
       '🚀': Rocket,
+      'Rocket': Rocket,
       '🤖': Bot,
+      'Bot': Bot,
       '🧠': Brain,
+      'Brain': Brain,
       '💼': Settings,
+      'Settings': Settings,
       '🔍': Search,
       '⭐': Star,
       '👁️': Eye,
@@ -194,7 +209,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
       '💻': Cpu
     };
     
-    const IconComponent = iconMap[iconName] || Target;
+    const IconComponent = iconMap[icon] || Target;
     return IconComponent;
   };
 
