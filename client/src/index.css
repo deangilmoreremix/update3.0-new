@@ -268,3 +268,67 @@ html.page-loaded body {
 .animation-fix {
   transform: translate3d(0, 0, 0);
 }
+
+/* Help tooltip and tour styles */
+.tour-highlight {
+  position: relative;
+  z-index: 1000;
+  border-radius: 8px;
+  animation: tour-pulse 2s infinite;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3), 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+@keyframes tour-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3), 0 0 20px rgba(59, 130, 246, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.4), 0 0 30px rgba(59, 130, 246, 0.3);
+  }
+}
+
+/* Tooltip animations */
+.tooltip-bounce {
+  animation: tooltip-bounce 0.6s ease-out;
+}
+
+@keyframes tooltip-bounce {
+  0% {
+    transform: scale(0.8) translateY(10px);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.05) translateY(-2px);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.tooltip-wiggle {
+  animation: tooltip-wiggle 0.8s ease-in-out infinite;
+}
+
+@keyframes tooltip-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(1deg); }
+  75% { transform: rotate(-1deg); }
+}
+
+/* Help button hover effects */
+.help-button-glow {
+  transition: all 0.3s ease;
+}
+
+.help-button-glow:hover {
+  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4));
+  transform: scale(1.1);
+}
+
+/* Tour backdrop effects */
+.tour-backdrop {
+  backdrop-filter: blur(2px);
+  background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%);
+}

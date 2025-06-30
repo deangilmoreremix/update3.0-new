@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AIToolsProvider } from './components/AIToolsProvider';
 import { TenantProvider } from './components/TenantProvider';
 import { RoleProvider } from './components/RoleBasedAccess';
+import { HelpProvider } from './contexts/HelpContext';
 
 // Landing Pages
 import LandingPage from './pages/Landing/LandingPage';
