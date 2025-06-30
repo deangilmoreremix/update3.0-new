@@ -1156,13 +1156,47 @@ Next Actions:
   // Composio Integration Endpoints
   app.post("/api/composio/linkedin/message", requireAuth, async (req: Request, res: Response) => {
     try {
-      const { recipientId, message } = req.body;
+      const { recipientId, message, entityId = 'default' } = req.body;
       
-      // Simulate real LinkedIn message sending via Composio
-      // In production, this would integrate with Composio API
-      console.log('Sending LinkedIn message:', { recipientId, message });
+      // Try real Composio API integration first
+      if (process.env.COMPOSIO_API_KEY) {
+        try {
+          const response = await fetch('https://backend.composio.dev/api/v1/actions/execute', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${process.env.COMPOSIO_API_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              entityId,
+              action: 'LINKEDIN_SEND_MESSAGE',
+              params: {
+                recipientUrn: recipientId,
+                messageText: message
+              }
+            })
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log('LinkedIn message sent via Composio:', data);
+            res.json({
+              success: true,
+              data: data.response,
+              provider: 'Composio',
+              message: 'LinkedIn message sent successfully via Composio API'
+            });
+            return;
+          } else {
+            console.log('Composio LinkedIn API failed, falling back to demo mode');
+          }
+        } catch (composioError) {
+          console.log('Composio LinkedIn API error:', composioError);
+        }
+      }
       
-      // Mock successful response for development
+      // Fallback to demo mode
+      console.log('Sending LinkedIn message (demo mode):', { recipientId, message });
       res.json({
         success: true,
         data: {
@@ -1170,7 +1204,8 @@ Next Actions:
           recipientId,
           status: 'sent'
         },
-        message: 'LinkedIn message sent successfully'
+        provider: 'Demo',
+        message: 'LinkedIn message sent successfully (demo mode)'
       });
       
     } catch (error) {
@@ -1184,12 +1219,48 @@ Next Actions:
 
   app.post("/api/composio/whatsapp/message", requireAuth, async (req: Request, res: Response) => {
     try {
-      const { phoneNumber, message, templateName } = req.body;
+      const { phoneNumber, message, templateName, entityId = 'default' } = req.body;
       
-      // Simulate real WhatsApp message sending via Composio
-      console.log('Sending WhatsApp message:', { phoneNumber, message, templateName });
+      // Try real Composio API integration first
+      if (process.env.COMPOSIO_API_KEY) {
+        try {
+          const response = await fetch('https://backend.composio.dev/api/v1/actions/execute', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${process.env.COMPOSIO_API_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              entityId,
+              action: 'WHATSAPP_SEND_MESSAGE',
+              params: {
+                phoneNumber,
+                message,
+                templateName: templateName || 'default'
+              }
+            })
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log('WhatsApp message sent via Composio:', data);
+            res.json({
+              success: true,
+              data: data.response,
+              provider: 'Composio',
+              message: 'WhatsApp message sent successfully via Composio API'
+            });
+            return;
+          } else {
+            console.log('Composio WhatsApp API failed, falling back to demo mode');
+          }
+        } catch (composioError) {
+          console.log('Composio WhatsApp API error:', composioError);
+        }
+      }
       
-      // Mock successful response for development
+      // Fallback to demo mode
+      console.log('Sending WhatsApp message (demo mode):', { phoneNumber, message, templateName });
       res.json({
         success: true,
         data: {
@@ -1198,7 +1269,8 @@ Next Actions:
           templateName,
           status: 'delivered'
         },
-        message: 'WhatsApp message sent successfully'
+        provider: 'Demo',
+        message: 'WhatsApp message sent successfully (demo mode)'
       });
       
     } catch (error) {
