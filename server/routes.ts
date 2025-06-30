@@ -15,6 +15,8 @@ import { extractTenant, requireTenant, requireFeature, addTenantContext, type Te
 import { handleWebhook } from "./integrations/webhookHandlers";
 import { whiteLabelClient } from "./integrations/whiteLabelClient";
 import { partnerService } from "./services/partnerService";
+import partnersRouter from "./routes/partners";
+import featurePackagesRouter from "./routes/feature-packages";
 
 // Middleware to extract user ID from request headers or create demo user
 const requireAuth = async (req: Request, res: Response, next: any) => {
