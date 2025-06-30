@@ -158,8 +158,12 @@ const HelpTooltip: React.FC<HelpTooltipProps> = ({
             className={`
               absolute w-0 h-0 border-4
               ${arrowClasses[placement]}
-              ${typeClasses[type].split(' ')[0]}
             `}
+            style={{
+              borderColor: type === 'info' ? '#dbeafe' : 
+                          type === 'tip' ? '#fef3c7' :
+                          type === 'feature' ? '#ede9fe' : '#d1fae5'
+            }}
           />
         </div>
       )}
