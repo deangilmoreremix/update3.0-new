@@ -75,8 +75,8 @@ const SelectableGoalCard: React.FC<SelectableGoalCardProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [liveMetrics, setLiveMetrics] = useState({
-    estimatedValue: parseInt(goal.roi.replace(/[^0-9]/g, '')) || 25000,
-    timeToComplete: parseInt(goal.estimatedSetupTime.replace(/[^0-9]/g, '')) || 15,
+    estimatedValue: parseInt((goal.roi || '25000').replace(/[^0-9]/g, '')) || 25000,
+    timeToComplete: parseInt((goal.estimatedSetupTime || '15').replace(/[^0-9]/g, '')) || 15,
     confidence: goal.priority === 'High' ? 95 : goal.priority === 'Medium' ? 85 : 75
   });
 
@@ -127,9 +127,9 @@ const SelectableGoalCard: React.FC<SelectableGoalCardProps> = ({
                 goal.complexity === 'Simple' ? 'bg-green-100 text-green-700 border-green-300' :
                 'bg-gray-100 text-gray-700 border-gray-300'
               }`}>
-                {goal.complexity}
+                {goal.complexity || 'Simple'}
               </span>
-              <div className="text-gray-600">{getComplexityIcon(goal.complexity)}</div>
+              <div className="text-gray-600">{getComplexityIcon(goal.complexity || 'Simple')}</div>
             </div>
             {isSelected && (
               <div className="p-2 bg-blue-500 rounded-full text-white shadow-lg animate-pulse">
@@ -139,11 +139,11 @@ const SelectableGoalCard: React.FC<SelectableGoalCardProps> = ({
           </div>
           
           <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
-            {goal.title}
+            {goal.title || 'Untitled Goal'}
           </h3>
           
           <p className="text-sm text-gray-600 line-clamp-3 mb-4">
-            {goal.description}
+            {goal.description || 'No description available'}
           </p>
         </div>
 
@@ -152,8 +152,8 @@ const SelectableGoalCard: React.FC<SelectableGoalCardProps> = ({
           <div className="grid grid-cols-3 gap-2">
             <div className="text-center p-2 bg-white/80 rounded-lg border border-gray-200/80">
               <div className="text-xs text-gray-500 mb-1">Category</div>
-              <div className={`text-xs font-bold px-2 py-1 rounded-full ${getCategoryColor(goal.category)}`}>
-                {goal.category}
+              <div className={`text-xs font-bold px-2 py-1 rounded-full ${getCategoryColor(goal.category || 'General')}`}>
+                {goal.category || 'General'}
               </div>
             </div>
             <div className="text-center p-2 bg-white/80 rounded-lg border border-gray-200/80">
@@ -243,7 +243,7 @@ const SelectableGoalCard: React.FC<SelectableGoalCardProps> = ({
                   Recommended For
                 </h4>
                 <div className="flex flex-wrap gap-1">
-                  {goal.recommendedFor.map((type, index) => (
+                  {(goal.recommendedFor || []).map((type, index) => (
                     <span key={index} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full border border-blue-200">
                       {type.charAt(0).toUpperCase() + type.slice(1)}
                     </span>
