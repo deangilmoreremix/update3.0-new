@@ -1048,7 +1048,7 @@ Format as actionable insights with priorities.`;
   // Agent Execution Endpoint
   app.post("/api/agents/execute", requireAuth, async (req: Request, res: Response) => {
     try {
-      const { agentType, input, agentConfig } = req.body;
+      const { goalId, agentName, action, toolsNeeded, agentType, input, agentConfig } = req.body;
       
       // Get user's CRM data for context
       const contacts = await storage.getContacts(req.userId!);
@@ -1056,23 +1056,36 @@ Format as actionable insights with priorities.`;
       const tasks = await storage.getTasks(req.userId!);
       
       // Prepare context for agent execution
-      const agentPrompt = `Execute ${agentConfig.name} with the following:
-      
-      Agent Description: ${agentConfig.description}
-      Capabilities: ${agentConfig.capabilities.join(', ')}
-      Input: ${JSON.stringify(input)}
-      
-      User's CRM Context:
-      - Contacts: ${contacts.length} contacts
-      - Deals: ${deals.length} deals  
-      - Tasks: ${tasks.length} tasks
-      
-      Provide specific actionable results based on this agent's capabilities and the user's actual CRM data.`;
+      const agentPrompt = agentConfig ? 
+        `Execute ${agentConfig.name} with the following:
+        
+        Agent Description: ${agentConfig.description}
+        Capabilities: ${agentConfig.capabilities.join(', ')}
+        Input: ${JSON.stringify(input)}
+        
+        User's CRM Context:
+        - Contacts: ${contacts.length} contacts
+        - Deals: ${deals.length} deals  
+        - Tasks: ${tasks.length} tasks
+        
+        Provide specific actionable results based on this agent's capabilities and the user's actual CRM data.` :
+        `Execute ${agentName || 'AI Agent'} for goal: ${goalId}
+        
+        Action: ${action}
+        Tools Needed: ${toolsNeeded ? toolsNeeded.join(', ') : 'general tools'}
+        
+        User's CRM Context:
+        - Contacts: ${contacts.length} contacts with diverse industries and positions
+        - Deals: ${deals.length} active deals in pipeline
+        - Tasks: ${tasks.length} tasks requiring attention
+        
+        Based on this real CRM data, provide specific actionable insights and recommendations for: ${action}
+        Focus on business impact and practical next steps.`;
       
       let result: any = {};
       
       // Use the configured AI model for the agent
-      if (agentConfig.aiModel === 'OpenAI' || agentConfig.aiModel === 'Both') {
+      if (agentConfig && (agentConfig.aiModel === 'OpenAI' || agentConfig.aiModel === 'Both')) {
         const openaiApiKey = process.env.OPENAI_API_KEY;
         if (!openaiApiKey) {
           throw new Error('OpenAI API key not configured');
@@ -1094,7 +1107,7 @@ Format as actionable insights with priorities.`;
         const data = await response.json();
         result = data.choices[0]?.message?.content || 'Agent execution completed';
       } else {
-        // Use Gemini for agents configured with Gemini
+        // Use Gemini as default or for agents configured with Gemini
         const geminiApiKey = process.env.GEMINI_API_KEY;
         if (!geminiApiKey) {
           throw new Error('Gemini API key not configured');
