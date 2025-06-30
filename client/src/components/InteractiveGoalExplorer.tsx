@@ -167,6 +167,37 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
     return allGoals.filter(g => g.category.toLowerCase() === categoryId.toLowerCase()).length;
   };
 
+  const getIconComponent = (iconName: string) => {
+    const iconMap: Record<string, any> = {
+      '🎯': Target,
+      '📈': TrendingUp,
+      '👥': Users,
+      '⚡': Zap,
+      '📊': BarChart3,
+      '📝': FileText,
+      '🚀': Rocket,
+      '🤖': Bot,
+      '🧠': Brain,
+      '💼': Settings,
+      '🔍': Search,
+      '⭐': Star,
+      '👁️': Eye,
+      '🎨': Sparkles,
+      '📱': Activity,
+      '🌐': Network,
+      '🏆': Award,
+      '💡': Lightbulb,
+      '❓': HelpCircle,
+      'ℹ️': Info,
+      '⏱️': Timer,
+      '📏': Gauge,
+      '💻': Cpu
+    };
+    
+    const IconComponent = iconMap[iconName] || Target;
+    return IconComponent;
+  };
+
   const getPriorityCount = (priority: string) => {
     if (priority === 'all') return allGoals.length;
     return allGoals.filter(g => g.priority === priority).length;
@@ -413,7 +444,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
                     }`}
                   >
                     <div className="text-center">
-                      <div className="h-5 w-5 mx-auto mb-1 text-blue-400">{category.icon}</div>
+                      {React.createElement(getIconComponent(category.icon), { className: "h-5 w-5 mx-auto mb-1 text-blue-400" })}
                       <div className="text-sm font-medium">{category.name}</div>
                       <div className="text-xs text-gray-500">{getCategoryCount(category.id)}</div>
                     </div>
