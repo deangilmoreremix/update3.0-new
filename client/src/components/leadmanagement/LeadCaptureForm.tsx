@@ -181,7 +181,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
               id="fullName"
               placeholder="John Doe"
               value={formData.fullName}
-              onChange={(e) => handleInputChange('fullName', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('fullName', e.target.value)}
               required
             />
           </div>
