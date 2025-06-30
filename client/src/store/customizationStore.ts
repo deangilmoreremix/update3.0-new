@@ -1,12 +1,14 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type CustomizationLocation = 'contact' | 'deal' | 'company';
+export type CustomizationLocation = 'contactCards' | 'dealCards' | 'contactDetail' | 'dealDetail' | 'aiGoalsPage';
 
 export interface ButtonConfiguration {
-  contact: string[];
-  deal: string[];
-  company: string[];
+  contactCards: string[];
+  dealCards: string[];
+  contactDetail: string[];
+  dealDetail: string[];
+  aiGoalsPage: string[];
 }
 
 export interface CustomizationState {
@@ -26,9 +28,11 @@ export interface CustomizationState {
 
 // Default button configurations
 const DEFAULT_CONFIGURATIONS: ButtonConfiguration = {
-  contact: ['leadScoring', 'emailPersonalization'],
-  deal: ['dealRiskAssessment', 'pipelineOptimization'],
-  company: ['businessIntelligence', 'marketResearch']
+  contactCards: ['leadScoring', 'emailPersonalization'],
+  dealCards: ['dealRiskAssessment', 'pipelineOptimization'],
+  contactDetail: ['leadScoring', 'emailPersonalization', 'businessIntelligence'],
+  dealDetail: ['dealRiskAssessment', 'pipelineOptimization', 'businessIntelligence'],
+  aiGoalsPage: ['leadScoring', 'dealRiskAssessment', 'businessIntelligence', 'marketResearch']
 };
 
 export const useCustomizationStore = create<CustomizationState>()(

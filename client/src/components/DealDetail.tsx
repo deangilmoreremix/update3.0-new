@@ -533,13 +533,15 @@ const DealDetail: React.FC<DealDetailProps> = ({ dealId, onClose }) => {
                       <div className="border-t border-gray-200 pt-4 mt-6 -mx-6 px-6 pb-6 bg-gradient-to-b from-gray-50/40 to-gray-50/60">
                         {/* AI Tools Section */}
                         <div className="mb-4">
-                          <AIActionToolbar
+                          <CustomizableAIToolbar
                             entityType="deal"
                             entityId={deal.id}
                             entityData={deal}
+                            location="dealDetail"
                             layout="vertical"
                             size="md"
                             className="w-full"
+                            showCustomizeButton={true}
                           />
                         </div>
                         
