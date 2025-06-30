@@ -3,7 +3,7 @@ import { sendGmailEmail } from '../../services/composioService';
 import { supabase } from '../../services/supabaseClient';
 import React, { useState } from 'react';
 import { Deal } from '../../types';
-import AIActionToolbar from '../ai/AIActionToolbar';
+import CustomizableAIToolbar from '../ai/CustomizableAIToolbar';
 import { 
   DollarSign, 
   Calendar, 
@@ -300,12 +300,14 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
       <div className="mt-4 pt-4 -mx-4 px-4 pb-4 bg-gradient-to-b from-gray-50/40 to-gray-50/60 border-t border-gray-100/80 rounded-b-lg">
         {/* AI Tools Section */}
         <div className="mb-4">
-          <AIActionToolbar
+          <CustomizableAIToolbar
             entityType="deal"
             entityId={deal.id}
             entityData={deal}
+            location="dealCards"
             layout="grid"
             size="sm"
+            showCustomizeButton={true}
             className="w-full"
           />
         </div>

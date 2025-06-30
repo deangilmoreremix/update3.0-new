@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDealStore } from '../store/dealStore';
 import { useGemini } from '../services/geminiService';
-import AIActionToolbar from './ai/AIActionToolbar';
+import CustomizableAIToolbar from './ai/CustomizableAIToolbar';
 import { 
   X, 
   Edit, 
