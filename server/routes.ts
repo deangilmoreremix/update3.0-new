@@ -1396,6 +1396,38 @@ Next Actions:
     }
   });
 
+  // Communication endpoints
+  app.post("/api/communication/send-sms", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { contactId, content, phone } = req.body;
+      
+      // In a real app, this would integrate with SMS providers like Twilio
+      // For now, we'll simulate the SMS sending
+      const messageId = Date.now().toString();
+      
+      const response = {
+        success: true,
+        messageId,
+        status: 'sent',
+        message: 'SMS sent successfully',
+        details: {
+          to: phone,
+          content: content,
+          timestamp: new Date().toISOString()
+        }
+      };
+      
+      res.json(response);
+    } catch (error) {
+      console.error('SMS sending error:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to send SMS',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   // Seed mock contacts endpoint (no auth required for seeding)
   app.post("/api/seed/contacts", async (req: Request, res: Response) => {
     try {
