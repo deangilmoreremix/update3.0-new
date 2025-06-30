@@ -43,6 +43,12 @@ import ContentLibrary from './pages/ContentLibrary/ContentLibrary';
 // Voice Profiles
 import VoiceProfiles from './pages/VoiceProfiles/VoiceProfiles';
 
+// New Feature Pages
+import CommunicationHub from './pages/CommunicationHub';
+import DocumentCenter from './pages/DocumentCenter';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import LeadCapture from './pages/LeadCapture';
+
 // Feature Pages
 import AiToolsFeaturePage from './pages/Landing/FeaturePage/AiToolsFeaturePage';
 import ContactsFeaturePage from './pages/Landing/FeaturePage/ContactsFeaturePage';
