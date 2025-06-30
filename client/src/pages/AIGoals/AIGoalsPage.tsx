@@ -68,6 +68,13 @@ const AIGoalsPage: React.FC = () => {
   const handleExecuteGoal = (goal: Goal) => {
     setSelectedGoal(goal);
     setIsExecutionModalOpen(true);
+    
+    // Show notification about demo mode
+    if (!realMode) {
+      setTimeout(() => {
+        console.log('💡 Tip: Switch to Live Mode above to execute real AI agents instead of demos');
+      }, 1000);
+    }
   };
 
   const handleCloseExecutionModal = () => {
@@ -129,34 +136,38 @@ const AIGoalsPage: React.FC = () => {
                 Transform your business with AI-powered automation. Choose from {aiGoals.length} pre-built goals across {goalCategories.length} categories.
               </p>
               
-              {/* Mode Toggle */}
+              {/* Mode Toggle with Enhanced UX */}
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600">Mode:</span>
+                  <span className="text-sm text-gray-600">Execution Mode:</span>
                   <div className="flex bg-gray-100 rounded-lg p-1">
                     <button
                       onClick={() => setRealMode(false)}
-                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                         !realMode ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
                       }`}
                     >
-                      Demo Mode
+                      🎭 Demo Mode
                     </button>
                     <button
                       onClick={() => setRealMode(true)}
-                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                        realMode ? 'bg-white text-red-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                        realMode ? 'bg-white text-green-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
                       }`}
                     >
-                      Live Mode
+                      🚀 Live Mode
                     </button>
                   </div>
                 </div>
                 
-                {realMode && (
-                  <div className="flex items-center gap-2 text-sm text-red-600">
-                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                    Real API integrations active
+                {realMode ? (
+                  <div className="flex items-center gap-2 px-3 py-1 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-sm text-green-700 font-medium">Real AI execution enabled</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-lg">
+                    <span className="text-sm text-blue-700">Demo mode - Click Live Mode for real execution</span>
                   </div>
                 )}
               </div>
@@ -395,10 +406,14 @@ const AIGoalsPage: React.FC = () => {
                     </div>
                     <button
                       onClick={() => handleExecuteGoal(goal)}
-                      className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                      className={`px-6 py-3 text-white rounded-lg transition-colors flex items-center gap-2 ${
+                        realMode 
+                          ? 'bg-green-600 hover:bg-green-700' 
+                          : 'bg-blue-600 hover:bg-blue-700'
+                      }`}
                     >
                       <Play className="h-4 w-4" />
-                      {realMode ? 'Execute' : 'Demo'}
+                      {realMode ? '🚀 Execute Live' : '🎭 Demo Only'}
                     </button>
                   </div>
                 )}
