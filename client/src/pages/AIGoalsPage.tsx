@@ -250,7 +250,7 @@ export function AIGoalsPage() {
         <InteractiveGoalExplorer 
           realMode={realMode}
           onModeToggle={handleModeToggle}
-          onGoalSelect={handleGoalSelected}
+          onGoalSelected={handleGoalSelected}
           contextData={context}
         />
       </div>
