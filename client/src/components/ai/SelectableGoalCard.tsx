@@ -1,31 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AIGoal } from '../../data/aiGoals';
-import { 
-  Clock, 
-  TrendingUp, 
-  Users, 
-  Zap, 
-  Play,
-  Eye,
-  CheckCircle,
-  Loader,
-  Star,
-  Target,
-  Shield,
-  Brain,
-  Activity,
-  Bot,
-  Settings,
-  Sparkles,
-  FileText,
-  BarChart3,
-  Lightbulb,
-  DollarSign,
-  Award,
-  Network,
-  ExternalLink,
-  Check
-} from 'lucide-react';
+import { Check } from 'lucide-react';
 
 interface SelectableGoalCardProps {
   goal: AIGoal;
@@ -73,12 +48,11 @@ const SelectableGoalCard: React.FC<SelectableGoalCardProps> = ({
   };
 
   const [isHovered, setIsHovered] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
-  const [liveMetrics, setLiveMetrics] = useState({
+  
+  const liveMetrics = {
     estimatedValue: parseInt((goal.roi || '25000').replace(/[^0-9]/g, '')) || 25000,
-    timeToComplete: parseInt((goal.estimatedSetupTime || '15').replace(/[^0-9]/g, '')) || 15,
     confidence: goal.priority === 'High' ? 95 : goal.priority === 'Medium' ? 85 : 75
-  });
+  };
 
   return (
     <div 
