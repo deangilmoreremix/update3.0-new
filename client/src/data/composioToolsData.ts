@@ -7,243 +7,315 @@ export interface ComposioTool {
   category: string;
   description: string;
   icon: string;
-  capabilities: string[];
-  authType: 'oauth' | 'api_key' | 'basic';
-  isPopular: boolean;
+  status: 'active' | 'coming-soon';
+  popularityScore?: number;
+  setupTime?: string;
+  authType?: 'oauth' | 'apiKey' | 'basic';
+  useCases?: string[];
 }
 
-export const composioToolsData: ComposioTool[] = [
+export interface ComposioToolCategory {
+  id: string;
+  name: string;
+  iconText: string;
+  description?: string;
+}
+
+export const composioTools: ComposioTool[] = [
   // CRM & Sales Tools
   {
     id: 'salesforce',
     name: 'Salesforce',
-    category: 'CRM',
+    category: 'crm',
     description: 'Complete CRM platform for sales, service, and marketing',
     icon: '🏢',
-    capabilities: ['contact_management', 'deal_tracking', 'lead_scoring', 'opportunity_management'],
+    status: 'active',
+    popularityScore: 95,
+    setupTime: '10 min',
     authType: 'oauth',
-    isPopular: true
+    useCases: ['Lead Management', 'Sales Pipeline', 'Customer Service', 'Marketing Automation']
   },
   {
     id: 'hubspot',
     name: 'HubSpot',
-    category: 'CRM',
+    category: 'crm',
     description: 'Inbound marketing, sales, and customer service platform',
     icon: '🚀',
-    capabilities: ['marketing_automation', 'contact_management', 'email_sequences', 'analytics'],
-    authType: 'api_key',
-    isPopular: true
+    status: 'active',
+    popularityScore: 92,
+    setupTime: '8 min',
+    authType: 'apiKey',
+    useCases: ['Inbound Marketing', 'Lead Nurturing', 'Content Management', 'Email Campaigns']
   },
   {
     id: 'pipedrive',
     name: 'Pipedrive',
-    category: 'CRM',
+    category: 'crm',
     description: 'Sales-focused CRM for pipeline management',
     icon: '📊',
-    capabilities: ['pipeline_management', 'activity_tracking', 'deal_forecasting'],
-    authType: 'api_key',
-    isPopular: false
+    status: 'active',
+    popularityScore: 78,
+    setupTime: '5 min',
+    authType: 'apiKey',
+    useCases: ['Pipeline Management', 'Deal Tracking', 'Sales Reporting']
   },
 
   // Communication Tools
   {
     id: 'gmail',
     name: 'Gmail',
-    category: 'Communication',
+    category: 'communication',
     description: 'Email service by Google with powerful automation capabilities',
     icon: '📧',
-    capabilities: ['send_email', 'read_email', 'email_templates', 'bulk_operations'],
+    status: 'active',
+    popularityScore: 98,
+    setupTime: '3 min',
     authType: 'oauth',
-    isPopular: true
+    useCases: ['Email Automation', 'Customer Communication', 'Newsletter Campaigns', 'Support Tickets']
   },
   {
     id: 'outlook',
     name: 'Microsoft Outlook',
-    category: 'Communication',
+    category: 'communication',
     description: 'Email and calendar service by Microsoft',
     icon: '📮',
-    capabilities: ['send_email', 'calendar_integration', 'contact_sync'],
+    status: 'active',
+    popularityScore: 88,
+    setupTime: '5 min',
     authType: 'oauth',
-    isPopular: true
+    useCases: ['Corporate Email', 'Calendar Integration', 'Meeting Scheduling']
   },
   {
     id: 'slack',
     name: 'Slack',
-    category: 'Communication',
+    category: 'communication',
     description: 'Team communication and collaboration platform',
     icon: '💬',
-    capabilities: ['send_messages', 'channel_management', 'file_sharing', 'notifications'],
+    status: 'active',
+    popularityScore: 94,
+    setupTime: '2 min',
     authType: 'oauth',
-    isPopular: true
+    useCases: ['Team Collaboration', 'Project Updates', 'File Sharing', 'Notifications']
   },
   {
     id: 'teams',
     name: 'Microsoft Teams',
-    category: 'Communication',
+    category: 'communication',
     description: 'Unified communication and collaboration platform',
     icon: '👥',
-    capabilities: ['video_calls', 'chat', 'file_collaboration', 'meeting_scheduling'],
+    status: 'active',
+    popularityScore: 85,
+    setupTime: '5 min',
     authType: 'oauth',
-    isPopular: true
+    useCases: ['Video Conferencing', 'Team Chat', 'File Collaboration', 'Meeting Management']
   },
 
   // Calendar & Scheduling
   {
     id: 'google_calendar',
     name: 'Google Calendar',
-    category: 'Calendar',
+    category: 'calendar',
     description: 'Calendar service for scheduling and time management',
     icon: '📅',
-    capabilities: ['create_events', 'schedule_meetings', 'availability_check', 'reminder_management'],
+    status: 'active',
+    popularityScore: 96,
+    setupTime: '2 min',
     authType: 'oauth',
-    isPopular: true
+    useCases: ['Meeting Scheduling', 'Event Management', 'Reminder Setting', 'Team Coordination']
   },
   {
     id: 'calendly',
     name: 'Calendly',
-    category: 'Calendar',
+    category: 'calendar',
     description: 'Automated scheduling tool for meetings and appointments',
     icon: '⏰',
-    capabilities: ['automated_scheduling', 'buffer_time', 'meeting_preferences'],
-    authType: 'api_key',
-    isPopular: true
+    status: 'active',
+    popularityScore: 89,
+    setupTime: '5 min',
+    authType: 'apiKey',
+    useCases: ['Appointment Booking', 'Client Meetings', 'Interview Scheduling', 'Consultation Calls']
   },
 
   // Social Media & Marketing
   {
     id: 'linkedin',
     name: 'LinkedIn',
-    category: 'Social Media',
+    category: 'social-media',
     description: 'Professional networking and business social platform',
     icon: '🔗',
-    capabilities: ['profile_updates', 'connection_requests', 'content_posting', 'lead_generation'],
+    status: 'active',
+    popularityScore: 91,
+    setupTime: '7 min',
     authType: 'oauth',
-    isPopular: true
+    useCases: ['Lead Generation', 'Professional Networking', 'Content Marketing', 'Recruitment']
   },
   {
     id: 'twitter',
     name: 'Twitter/X',
-    category: 'Social Media',
+    category: 'social-media',
     description: 'Social media platform for real-time updates and engagement',
     icon: '🐦',
-    capabilities: ['post_tweets', 'direct_messages', 'follower_management', 'analytics'],
+    status: 'active',
+    popularityScore: 82,
+    setupTime: '3 min',
     authType: 'oauth',
-    isPopular: true
+    useCases: ['Brand Awareness', 'Customer Support', 'News Updates', 'Community Engagement']
   },
   {
     id: 'facebook',
     name: 'Facebook',
-    category: 'Social Media',
+    category: 'social-media',
     description: 'Social media platform for business pages and advertising',
-    icon: '👥',
-    capabilities: ['page_management', 'ad_campaigns', 'audience_insights'],
+    icon: '📘',
+    status: 'active',
+    popularityScore: 75,
+    setupTime: '6 min',
     authType: 'oauth',
-    isPopular: false
+    useCases: ['Business Pages', 'Ad Campaigns', 'Customer Engagement', 'Event Promotion']
   },
 
   // E-commerce & Payment
   {
     id: 'shopify',
     name: 'Shopify',
-    category: 'E-commerce',
+    category: 'ecommerce',
     description: 'E-commerce platform for online stores',
     icon: '🛒',
-    capabilities: ['inventory_management', 'order_processing', 'customer_data', 'analytics'],
-    authType: 'api_key',
-    isPopular: true
+    status: 'active',
+    popularityScore: 93,
+    setupTime: '15 min',
+    authType: 'apiKey',
+    useCases: ['Online Store Management', 'Inventory Tracking', 'Order Processing', 'Customer Analytics']
   },
   {
     id: 'stripe',
     name: 'Stripe',
-    category: 'Payment',
+    category: 'payment',
     description: 'Payment processing platform for online businesses',
     icon: '💳',
-    capabilities: ['payment_processing', 'subscription_management', 'invoice_generation'],
-    authType: 'api_key',
-    isPopular: true
+    status: 'active',
+    popularityScore: 97,
+    setupTime: '10 min',
+    authType: 'apiKey',
+    useCases: ['Payment Processing', 'Subscription Billing', 'Invoice Management', 'Financial Reporting']
   },
 
   // Productivity & Project Management
   {
     id: 'trello',
     name: 'Trello',
-    category: 'Project Management',
+    category: 'project-management',
     description: 'Visual project management using boards and cards',
     icon: '📋',
-    capabilities: ['board_management', 'task_tracking', 'team_collaboration'],
+    status: 'active',
+    popularityScore: 86,
+    setupTime: '3 min',
     authType: 'oauth',
-    isPopular: true
+    useCases: ['Task Management', 'Project Tracking', 'Team Organization', 'Workflow Automation']
   },
   {
     id: 'asana',
     name: 'Asana',
-    category: 'Project Management',
+    category: 'project-management',
     description: 'Work management platform for teams',
     icon: '✅',
-    capabilities: ['project_tracking', 'task_assignment', 'progress_monitoring'],
+    status: 'active',
+    popularityScore: 90,
+    setupTime: '8 min',
     authType: 'oauth',
-    isPopular: true
+    useCases: ['Project Planning', 'Task Assignment', 'Progress Tracking', 'Team Collaboration']
   },
   {
     id: 'notion',
     name: 'Notion',
-    category: 'Productivity',
+    category: 'productivity',
     description: 'All-in-one workspace for notes, docs, and databases',
     icon: '📝',
-    capabilities: ['database_management', 'document_creation', 'template_automation'],
+    status: 'active',
+    popularityScore: 87,
+    setupTime: '10 min',
     authType: 'oauth',
-    isPopular: true
+    useCases: ['Documentation', 'Knowledge Management', 'Project Planning', 'Database Management']
   },
 
   // Marketing & Analytics
   {
     id: 'google_analytics',
     name: 'Google Analytics',
-    category: 'Analytics',
+    category: 'analytics',
     description: 'Web analytics service for tracking website performance',
     icon: '📈',
-    capabilities: ['traffic_analysis', 'conversion_tracking', 'audience_insights'],
+    status: 'active',
+    popularityScore: 99,
+    setupTime: '5 min',
     authType: 'oauth',
-    isPopular: true
+    useCases: ['Website Analytics', 'Traffic Analysis', 'Conversion Tracking', 'User Behavior']
   },
   {
     id: 'mailchimp',
     name: 'Mailchimp',
-    category: 'Marketing',
+    category: 'marketing',
     description: 'Email marketing and automation platform',
     icon: '🐵',
-    capabilities: ['email_campaigns', 'audience_segmentation', 'automation_workflows'],
-    authType: 'api_key',
-    isPopular: true
+    status: 'active',
+    popularityScore: 84,
+    setupTime: '7 min',
+    authType: 'apiKey',
+    useCases: ['Email Campaigns', 'Newsletter Management', 'Audience Segmentation', 'Marketing Automation']
+  },
+
+  // Coming Soon Tools
+  {
+    id: 'zendesk',
+    name: 'Zendesk',
+    category: 'customer-service',
+    description: 'Customer service and support ticket platform',
+    icon: '🎧',
+    status: 'coming-soon',
+    setupTime: '8 min',
+    authType: 'oauth',
+    useCases: ['Support Tickets', 'Customer Service', 'Help Desk', 'Knowledge Base']
+  },
+  {
+    id: 'jira',
+    name: 'Jira',
+    category: 'project-management',
+    description: 'Issue tracking and project management for software teams',
+    icon: '🔧',
+    status: 'coming-soon',
+    setupTime: '12 min',
+    authType: 'oauth',
+    useCases: ['Bug Tracking', 'Agile Management', 'Sprint Planning', 'Development Workflow']
   }
 ];
 
-export const toolCategories = [
-  'CRM',
-  'Communication', 
-  'Calendar',
-  'Social Media',
-  'E-commerce',
-  'Payment',
-  'Project Management',
-  'Productivity',
-  'Analytics',
-  'Marketing'
+export const composioToolCategories: ComposioToolCategory[] = [
+  { id: 'crm', name: 'CRM & Sales', iconText: '🏢' },
+  { id: 'communication', name: 'Communication', iconText: '💬' },
+  { id: 'calendar', name: 'Calendar & Scheduling', iconText: '📅' },
+  { id: 'social-media', name: 'Social Media', iconText: '📱' },
+  { id: 'ecommerce', name: 'E-commerce', iconText: '🛒' },
+  { id: 'payment', name: 'Payment', iconText: '💳' },
+  { id: 'project-management', name: 'Project Management', iconText: '📋' },
+  { id: 'productivity', name: 'Productivity', iconText: '📝' },
+  { id: 'analytics', name: 'Analytics', iconText: '📈' },
+  { id: 'marketing', name: 'Marketing', iconText: '📢' },
+  { id: 'customer-service', name: 'Customer Service', iconText: '🎧' }
 ];
 
 export function getToolsByCategory(category: string): ComposioTool[] {
-  return composioToolsData.filter(tool => tool.category === category);
+  return composioTools.filter(tool => tool.category === category);
 }
 
-export function getPopularTools(): ComposioTool[] {
-  return composioToolsData.filter(tool => tool.isPopular);
+export function getToolsByStatus(status: 'active' | 'coming-soon'): ComposioTool[] {
+  return composioTools.filter(tool => tool.status === status);
 }
 
 export function searchTools(query: string): ComposioTool[] {
   const lowerQuery = query.toLowerCase();
-  return composioToolsData.filter(tool => 
+  return composioTools.filter(tool => 
     tool.name.toLowerCase().includes(lowerQuery) ||
     tool.description.toLowerCase().includes(lowerQuery) ||
-    tool.capabilities.some(cap => cap.toLowerCase().includes(lowerQuery))
+    (tool.useCases && tool.useCases.some(useCase => useCase.toLowerCase().includes(lowerQuery)))
   );
 }

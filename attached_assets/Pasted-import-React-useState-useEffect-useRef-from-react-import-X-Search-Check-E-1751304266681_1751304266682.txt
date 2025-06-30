@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { composioTools, composioToolCategories, getToolsByCategory, getToolsByStatus, searchTools, ComposioTool } from '../data/composioToolsData';
 import { apiConfig } from '../config/apiConfig';
+import Tooltip from './Tooltip';
 
 interface ComposioIntegrationModalProps {
   isOpen: boolean;
@@ -146,17 +147,24 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
           
           <div className="flex items-center gap-3">
             <div className={`px-3 py-1 rounded-full text-sm ${
-              apiConfig.composio.available 
+              apiConfig.composio.isConfigured 
                 ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
                 : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
             }`}>
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${
-                  apiConfig.composio.available ? 'bg-green-400' : 'bg-yellow-400'
+                  apiConfig.composio.isConfigured ? 'bg-green-400' : 'bg-yellow-400'
                 }`}></div>
                 <span>
-                  {apiConfig.composio.available ? 'API Configured' : 'Platform Provided'}
+                  {apiConfig.composio.isConfigured ? 'API Configured' : 'API Not Configured'}
                 </span>
+                <Tooltip 
+                  content={apiConfig.composio.isConfigured 
+                    ? "Your Composio API key is configured" 
+                    : "Set up your Composio API key in settings to enable real tool integration"
+                  }
+                  position="left"
+                />
               </div>
             </div>
             
