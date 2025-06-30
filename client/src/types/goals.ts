@@ -30,9 +30,9 @@ export interface GoalCategory {
   id: string;
   name: string;
   description: string;
-  icon: string; // Changed from LucideIcon to string for icon names
+  icon: any; // LucideIcon component
   color: string;
-  goals: Goal[]; // Added goals array
+  totalGoals: number;
 }
 
 export interface GoalProgress {

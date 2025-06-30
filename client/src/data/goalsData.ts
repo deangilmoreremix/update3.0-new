@@ -92,8 +92,8 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'AI finds 50 SaaS prospects matching your ICP and adds them to your CRM with contact info',
     successMetrics: ['50+ leads per week', '90%+ data accuracy', '30% qualification rate'],
-    roi: '300% ROI within 30 days',
-    prerequisite: 'LinkedIn Sales Navigator account and target customer profile'
+    prerequisite: ['LinkedIn Sales Navigator account', 'Target customer profile defined'],
+    roi: '300% ROI within 30 days'
   },
   {
     id: 'score-prioritize-leads',
@@ -108,6 +108,7 @@ export const allGoals: Goal[] = [
     complexity: 'Simple',
     realWorldExample: 'AI analyzes email opens, website visits, and engagement to rank your leads',
     successMetrics: ['80% accuracy', '5x better conversion', '50% time savings'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '400% increase in close rate'
   },
   {
@@ -123,6 +124,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'AI writes and sends personalized cold emails to 100 prospects daily',
     successMetrics: ['100+ emails daily', '25% response rate', '90% deliverability'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '10x cost savings vs hiring SDRs'
   },
   {
@@ -138,6 +140,7 @@ export const allGoals: Goal[] = [
     complexity: 'Simple',
     realWorldExample: 'AI handles scheduling, sends calendar invites, and sets up Zoom links',
     successMetrics: ['20+ meetings/week', '90% show rate', '0 scheduling conflicts'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '80% time savings on scheduling'
   },
   {
@@ -153,6 +156,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'AI follows up via email, LinkedIn, and phone across 7 touchpoints',
     successMetrics: ['7 touchpoints', '200% response increase', '0 leads forgotten'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '200% increase in pipeline velocity'
   },
   {
@@ -168,6 +172,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'AI detects "too expensive" and responds with ROI calculator and case studies',
     successMetrics: ['40% objection conversion', 'Sub-2min response time', '85% satisfaction'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '300% improvement in objection handling'
   },
   {
@@ -183,6 +188,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'AI executes 9-step closing sequence from interest to signed contract',
     successMetrics: ['25% close rate increase', '50% faster sales cycles', '90% accuracy'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '500% ROI on closed deals'
   },
   {
@@ -198,6 +204,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'AI creates custom proposals with pricing, terms, and case studies in minutes',
     successMetrics: ['10x faster creation', '95% accuracy', '60% acceptance rate'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '1000% time savings on proposals'
   },
   {
@@ -213,6 +220,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'AI identifies dormant deals and launches targeted re-engagement campaigns',
     successMetrics: ['30% deal recovery', '$10k average value', '60 day revival cycle'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '2000% ROI on recovered deals'
   },
   {
@@ -228,6 +236,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'AI analyzes 50+ signals to predict which leads will close in next 7 days',
     successMetrics: ['90% prediction accuracy', '10x close probability', '50% faster cycles'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '800% increase in weekly closes'
   },
   {
@@ -243,6 +252,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'AI handles objections and closes deals via WhatsApp conversations',
     successMetrics: ['5x faster closing', '80% response rate', '40% close rate'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '400% increase in mobile closes'
   },
   {
@@ -258,6 +268,7 @@ export const allGoals: Goal[] = [
     complexity: 'Simple',
     realWorldExample: 'Get Slack notification when prospect opens pricing email',
     successMetrics: ['60 second response time', '90% engagement tracking', '300% response rates'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '250% improvement in response timing'
   },
   {
@@ -273,6 +284,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'AI chatbot qualifies website visitors and scores them automatically',
     successMetrics: ['100+ qualifications daily', '85% accuracy', '90% completion rate'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '600% increase in qualified leads'
   },
   {
@@ -288,6 +300,7 @@ export const allGoals: Goal[] = [
     complexity: 'Simple',
     realWorldExample: 'Say "Move Acme Corp to Negotiation stage" and watch it happen instantly',
     successMetrics: ['10x faster updates', '95% accuracy', '0 clicks required'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '1000% time savings on CRM updates'
   },
 
@@ -305,6 +318,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: '30-day nurture sequence with educational content and case studies',
     successMetrics: ['1000+ leads nurtured', '3 channels', '45% engagement'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '800% increase in lead nurturing capacity'
   },
   {
@@ -320,6 +334,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'Single interface controls email, SMS, WhatsApp, and social campaigns',
     successMetrics: ['5x faster launches', '4 channels unified', '90% consistency'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '500% improvement in campaign efficiency'
   },
   {
@@ -335,6 +350,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'Send pricing info to those who clicked features, case studies to pricing viewers',
     successMetrics: ['300% engagement increase', '90% relevance score', '50% conversion boost'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '400% improvement in content relevance'
   },
   {
@@ -350,6 +366,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'Auto-send recordings, surveys, and book follow-up calls for attendees',
     successMetrics: ['40% conversion increase', '100% recording delivery', '80% survey completion'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '300% increase in webinar ROI'
   },
   {
@@ -365,6 +382,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: '30-day sequence teaching SaaS growth strategies with actionable tips',
     successMetrics: ['30 educational touches', '70% completion rate', '90% brand recall'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '600% increase in thought leadership'
   },
   {
@@ -380,6 +398,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'Send SaaS case studies to software prospects, retail cases to ecommerce',
     successMetrics: ['100% content relevance', '80% engagement increase', '50% conversion boost'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '400% improvement in content effectiveness'
   },
   {
@@ -395,6 +414,7 @@ export const allGoals: Goal[] = [
     complexity: 'Simple',
     realWorldExample: 'Auto-trigger "Miss us?" campaign after 14 days of inactivity',
     successMetrics: ['25% reactivation rate', '14 day trigger time', '60% engagement recovery'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '300% recovery of dormant leads'
   },
   {
@@ -410,6 +430,7 @@ export const allGoals: Goal[] = [
     complexity: 'Simple',
     realWorldExample: 'Auto-request testimonials 30 days after deal close with custom forms',
     successMetrics: ['50+ testimonials monthly', '60% response rate', '90% quality score'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '500% increase in social proof collection'
   },
 
@@ -427,6 +448,7 @@ export const allGoals: Goal[] = [
     complexity: 'Simple',
     realWorldExample: 'Ask "Tell me about John Smith" and get full interaction history instantly',
     successMetrics: ['Sub-3 second response', '100% context retention', '95% accuracy'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '800% improvement in conversation quality'
   },
   {
@@ -442,6 +464,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'AI detects frustration in email and suggests empathetic response',
     successMetrics: ['90% emotion accuracy', 'Real-time detection', '70% response improvement'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '400% improvement in relationship quality'
   },
   {
@@ -457,6 +480,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'AI suggests next talking points based on previous conversation patterns',
     successMetrics: ['100% context recall', '85% suggestion relevance', '50% conversation improvement'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '600% improvement in conversation effectiveness'
   },
   {
@@ -472,6 +496,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'Route enterprise SaaS leads to senior reps, SMB to junior reps',
     successMetrics: ['40% close rate increase', '100% rule compliance', '90% rep satisfaction'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '300% improvement in lead-rep matching'
   },
   {
@@ -487,6 +512,7 @@ export const allGoals: Goal[] = [
     complexity: 'Simple',
     realWorldExample: 'Auto-transcribe Zoom calls and extract action items for CRM',
     successMetrics: ['95% transcription accuracy', '100% call logging', '80% action item extraction'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '500% improvement in call documentation'
   },
   {
@@ -502,6 +528,7 @@ export const allGoals: Goal[] = [
     complexity: 'Simple',
     realWorldExample: 'Every email, call, and meeting automatically appears in lead timeline',
     successMetrics: ['100% interaction logging', '2 hours daily savings', '95% data accuracy'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '1000% time savings on data entry'
   },
   {
@@ -517,6 +544,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'Alert when customer expresses frustration, suggest upsell for happy customers',
     successMetrics: ['90% sentiment accuracy', '50% churn reduction', '30% upsell increase'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '700% improvement in customer retention'
   },
   {
@@ -532,6 +560,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'Pick up conversation from 3 weeks ago with full context and next steps',
     successMetrics: ['100% context preservation', '90% conversation continuity', '60% reengagement success'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '400% improvement in conversation consistency'
   },
 
@@ -549,6 +578,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'AI analyzes your pipeline and suggests: "Call John (hot lead), follow up with Acme Corp"',
     successMetrics: ['100% daily task coverage', '90% priority accuracy', '70% productivity increase'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '500% improvement in daily productivity'
   },
   {
@@ -564,6 +594,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'If lead scores 80+, then send pricing, book meeting, notify sales manager',
     successMetrics: ['10x faster automation', '95% workflow reliability', '0 code required'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '2000% reduction in automation development time'
   },
   {
@@ -579,6 +610,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'After pricing call, AI moves deal to "Proposal" stage and logs next steps',
     successMetrics: ['100% CRM accuracy', '0 manual entry', '95% stage progression accuracy'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '800% improvement in CRM data quality'
   },
   {
@@ -594,6 +626,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'AI automatically tags leads as "Price Sensitive", "Feature Focused", "Decision Maker"',
     successMetrics: ['95% segmentation accuracy', '50+ behavioral signals', '80% engagement improvement'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '600% improvement in targeting precision'
   },
   {
@@ -609,6 +642,7 @@ export const allGoals: Goal[] = [
     complexity: 'Simple',
     realWorldExample: 'Auto-reminder: "Follow up with Acme Corp in 3 days - proposal sent"',
     successMetrics: ['100% follow-up coverage', '0 missed opportunities', '90% timing accuracy'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '400% improvement in follow-up consistency'
   },
   {
@@ -624,6 +658,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'After demo call, AI creates: "Send pricing proposal by Friday, schedule technical call"',
     successMetrics: ['95% action item extraction', '100% task creation', '80% completion tracking'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '600% improvement in meeting follow-through'
   },
   {
@@ -639,6 +674,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'Route technical prospects to engineers, enterprise deals to senior reps',
     successMetrics: ['35% close rate increase', '100% optimal routing', '90% rep satisfaction'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '400% improvement in lead assignment efficiency'
   },
   {
@@ -654,6 +690,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'Auto-update job titles, company info, and contact details monthly',
     successMetrics: ['95% data accuracy', '100% automation', '80% enrichment coverage'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '300% improvement in data quality'
   },
 
@@ -671,6 +708,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'Get alert: "Enterprise deals slowing down 40% this week - check pricing objections"',
     successMetrics: ['Real-time alerts', '90% accuracy', '50% faster issue resolution'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '400% improvement in pipeline management'
   },
   {
@@ -686,6 +724,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'AI predicts: "85% chance of hitting $500k this quarter based on current pipeline"',
     successMetrics: ['90% forecast accuracy', 'Weekly updates', '95% confidence intervals'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '300% improvement in planning accuracy'
   },
   {
@@ -701,6 +740,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'Discover: "We lose 60% of deals against Competitor X on pricing, win 80% on features"',
     successMetrics: ['100% deal tracking', '90% insight accuracy', '30% win rate improvement'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '500% improvement in competitive positioning'
   },
   {
@@ -716,6 +756,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'AI suggests: "Sarah should focus on discovery calls - 20% below team average"',
     successMetrics: ['40% performance improvement', 'Weekly coaching', '95% actionability'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '600% improvement in team productivity'
   },
 
@@ -733,6 +774,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'AI creates custom 20-page proposal with pricing, case studies, and timeline',
     successMetrics: ['10x faster creation', '90% accuracy', '60% win rate'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '800% improvement in proposal efficiency'
   },
   {
@@ -748,6 +790,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'AI generates battle cards comparing features, pricing, and positioning vs top 3 competitors',
     successMetrics: ['100% competitor coverage', '95% accuracy', '50% win rate improvement'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '400% improvement in competitive readiness'
   },
   {
@@ -763,6 +806,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'AI creates full case study: "How Company X increased revenue 40% using our solution"',
     successMetrics: ['20x faster creation', '95% quality score', '80% customer approval'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '1000% improvement in case study production'
   },
   {
@@ -778,6 +822,7 @@ export const allGoals: Goal[] = [
     complexity: 'Intermediate',
     realWorldExample: 'AI generates 12-email nurture sequence for SaaS prospects with industry-specific content',
     successMetrics: ['30x faster creation', '45% open rates', '15% conversion rates'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '600% improvement in email campaign creation'
   },
 
@@ -795,6 +840,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'Contact update in CRM automatically updates email, calendar, and Slack',
     successMetrics: ['100% data consistency', 'Real-time sync', '99.9% uptime'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '500% improvement in data reliability'
   },
   {
@@ -810,6 +856,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'Auto-delete data after retention period, handle GDPR requests, manage consent',
     successMetrics: ['100% compliance', '0 manual work', '99% audit readiness'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '800% reduction in compliance overhead'
   },
 
@@ -827,6 +874,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'Ask: "How is Acme Corp doing?" Get: full history, recent activities, and suggested next steps',
     successMetrics: ['Sub-5 second responses', '95% task completion', '90% question accuracy'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '1000% improvement in information access'
   },
   {
@@ -842,6 +890,7 @@ export const allGoals: Goal[] = [
     complexity: 'Advanced',
     realWorldExample: 'AI predicts: "Lead has 85% chance to close within 30 days based on 50+ signals"',
     successMetrics: ['90% prediction accuracy', 'Real-time scoring', '5x better targeting'],
+    prerequisite: ['Basic CRM setup', 'API access'],
     roi: '800% improvement in lead prioritization'
   }
 ];
