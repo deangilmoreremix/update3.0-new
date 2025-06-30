@@ -1,0 +1,268 @@
+/* Navbar Position Styles */
+
+/* Global layout adjustments based on navbar position */
+.navbar-top {
+  --navbar-height: 4rem;
+  --navbar-width: 100%;
+  --content-margin-top: var(--navbar-height);
+  --content-margin-left: 0;
+  --content-margin-right: 0;
+}
+
+.navbar-left {
+  --navbar-width: 16rem;
+  --navbar-height: 100vh;
+  --content-margin-top: 0;
+  --content-margin-left: var(--navbar-width);
+  --content-margin-right: 0;
+}
+
+.navbar-right {
+  --navbar-width: 16rem;
+  --navbar-height: 100vh;
+  --content-margin-top: 0;
+  --content-margin-left: 0;
+  --content-margin-right: var(--navbar-width);
+}
+
+/* Navbar container styles */
+.navbar-container {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: fixed;
+  z-index: 50;
+}
+
+/* Top position navbar */
+.navbar-container.navbar-top {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--navbar-height);
+  width: 100%;
+  flex-direction: row;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.1);
+}
+
+/* Left position navbar */
+.navbar-container.navbar-left {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--navbar-width);
+  height: 100vh;
+  flex-direction: column;
+  border-right: 1px solid rgba(229, 231, 235, 0.1);
+}
+
+/* Right position navbar */
+.navbar-container.navbar-right {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--navbar-width);
+  height: 100vh;
+  flex-direction: column;
+  border-left: 1px solid rgba(229, 231, 235, 0.1);
+}
+
+/* Content area adjustments */
+.main-content {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: var(--content-margin-top);
+  margin-left: var(--content-margin-left);
+  margin-right: var(--content-margin-right);
+  min-height: calc(100vh - var(--content-margin-top));
+}
+
+/* Navbar brand/logo adjustments */
+.navbar-brand {
+  transition: all 0.3s ease;
+}
+
+.navbar-top .navbar-brand {
+  flex-direction: row;
+  margin-bottom: 0;
+  margin-right: 1rem;
+}
+
+.navbar-left .navbar-brand,
+.navbar-right .navbar-brand {
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+  margin-right: 0;
+  text-align: center;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.1);
+}
+
+/* Navigation items layout */
+.navbar-nav {
+  transition: all 0.3s ease;
+}
+
+.navbar-top .navbar-nav {
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.navbar-left .navbar-nav,
+.navbar-right .navbar-nav {
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Navigation links adjustments */
+.navbar-link {
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.navbar-top .navbar-link {
+  flex-direction: row;
+  justify-content: center;
+  min-width: auto;
+}
+
+.navbar-left .navbar-link,
+.navbar-right .navbar-link {
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 100%;
+  margin-bottom: 0.25rem;
+}
+
+/* Icon and text spacing */
+.navbar-link-icon {
+  transition: all 0.3s ease;
+}
+
+.navbar-top .navbar-link-icon {
+  margin-right: 0.5rem;
+}
+
+.navbar-left .navbar-link-icon,
+.navbar-right .navbar-link-icon {
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* User menu adjustments */
+.navbar-user-menu {
+  transition: all 0.3s ease;
+}
+
+.navbar-top .navbar-user-menu {
+  margin-left: auto;
+}
+
+.navbar-left .navbar-user-menu,
+.navbar-right .navbar-user-menu {
+  margin-top: auto;
+  padding: 1rem;
+  border-top: 1px solid rgba(229, 231, 235, 0.1);
+}
+
+/* Mobile responsive behavior */
+@media (max-width: 768px) {
+  .navbar-left,
+  .navbar-right {
+    --navbar-width: 100%;
+    --content-margin-left: 0;
+    --content-margin-right: 0;
+  }
+  
+  .navbar-container.navbar-left,
+  .navbar-container.navbar-right {
+    width: 100%;
+    height: var(--navbar-height);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    flex-direction: row;
+    border: none;
+    border-bottom: 1px solid rgba(229, 231, 235, 0.1);
+  }
+  
+  .main-content {
+    margin-top: var(--navbar-height);
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  .navbar-left .navbar-brand,
+  .navbar-right .navbar-brand,
+  .navbar-left .navbar-nav,
+  .navbar-right .navbar-nav,
+  .navbar-left .navbar-link,
+  .navbar-right .navbar-link {
+    /* Revert to top navbar styles on mobile */
+    flex-direction: row;
+    margin-bottom: 0;
+    text-align: left;
+    padding: 0.5rem 1rem;
+    border: none;
+  }
+  
+  .navbar-left .navbar-user-menu,
+  .navbar-right .navbar-user-menu {
+    margin-top: 0;
+    margin-left: auto;
+    padding: 0;
+    border: none;
+  }
+}
+
+/* Smooth animations for position changes */
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.navbar-container.navbar-top {
+  animation: slideInFromTop 0.3s ease-out;
+}
+
+.navbar-container.navbar-left {
+  animation: slideInFromLeft 0.3s ease-out;
+}
+
+.navbar-container.navbar-right {
+  animation: slideInFromRight 0.3s ease-out;
+}

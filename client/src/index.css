@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import navbar position styles */
+@import './styles/navbar-positions.css';
+
 /* Custom animations */
 @keyframes fadeIn {
   from {
