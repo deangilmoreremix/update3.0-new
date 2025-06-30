@@ -21,6 +21,7 @@ const AIGoalsPageEnhanced: React.FC = () => {
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [showExecutionModal, setShowExecutionModal] = useState(false);
   const [realMode, setRealMode] = useState(false);
+  const [showApiSetup, setShowApiSetup] = useState(false);
   
   const navigate = useNavigate();
   const { openTool } = useAITools();
@@ -276,7 +277,6 @@ const AIGoalsPageEnhanced: React.FC = () => {
           onClose={handleCloseModal}
           realMode={realMode}
           onComplete={handleGoalComplete}
-          contextData={context}
         />
       )}
     </div>

@@ -98,7 +98,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
   const handleExecuteGoal = async (goal: Goal) => {
     if (executingGoals.has(goal.id)) return;
 
-    setExecutingGoals(prev => new Set([...prev, goal.id]));
+    setExecutingGoals(prev => new Set([...Array.from(prev), goal.id]));
     setExecutionProgress(prev => ({ ...prev, [goal.id]: 0 }));
     setExecutingGoal(goal);
     setShowExecutionModal(true);
@@ -117,7 +117,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
             newSet.delete(goal.id);
             return newSet;
           });
-          setCompletedGoals(current => new Set([...current, goal.id]));
+          setCompletedGoals(current => new Set([...Array.from(current), goal.id]));
           return { ...prev, [goal.id]: 100 };
         }
         
@@ -157,7 +157,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
 
   const handleExecutionComplete = (result: any) => {
     console.log('Goal execution completed:', result);
-    setCompletedGoals(prev => new Set([...prev, result.goalId]));
+    setCompletedGoals(prev => new Set([...Array.from(prev), result.goalId]));
   };
 
   const getCategoryCount = (categoryId: string) => {

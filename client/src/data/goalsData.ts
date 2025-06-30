@@ -278,17 +278,6 @@ export const aiGoalsData: GoalCategory[] = [
   }
 ];
 
-import { 
-  TrendingUp, 
-  Target, 
-  Users, 
-  Zap, 
-  BarChart3, 
-  PenTool, 
-  Settings, 
-  Brain 
-} from 'lucide-react';
-
 // Export goal categories for filtering
 export const goalCategories = [
   { id: 'sales', name: 'Sales', icon: TrendingUp },
