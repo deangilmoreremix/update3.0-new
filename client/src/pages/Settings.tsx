@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { useProfileStore } from '../store/profileStore';
 import { useApiStore } from '../store/apiStore';
-import { Eye, EyeOff, Key, User, Upload, Trash2, Edit, Save, X, RefreshCw } from 'lucide-react';
+import { useNavbarPositionContext } from '../components/layout/NavbarPositionProvider';
+import { Eye, EyeOff, Key, User, Upload, Trash2, Edit, Save, X, RefreshCw, Monitor } from 'lucide-react';
 
 const Settings: React.FC = () => {
   const { apiKeys, setOpenAiKey, setGeminiKey } = useApiStore();
   const { user } = useAuthStore();
   const { profile, isLoading: profileLoading, error: profileError, fetchProfile, updateProfile, uploadAvatar, deleteAvatar } = useProfileStore();
+  const { position, setPosition } = useNavbarPositionContext();
   
   const [showOpenAiKey, setShowOpenAiKey] = useState(false);
   const [showGeminiKey, setShowGeminiKey] = useState(false);
@@ -462,6 +464,83 @@ const Settings: React.FC = () => {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Interface Settings */}
+      <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center">
+          <Monitor size={20} className="mr-2 text-gray-500" />
+          Interface Settings
+        </h2>
+        
+        <div>
+          <h3 className="text-lg font-medium mb-3">Navigation Bar Position</h3>
+          <p className="text-gray-600 mb-4">
+            Choose where you want the navigation bar to be positioned. This setting is saved to your browser.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <button
+              onClick={() => setPosition('top')}
+              className={`p-4 border-2 rounded-lg text-center transition-all duration-200 ${
+                position === 'top'
+                  ? 'border-blue-500 bg-blue-50 text-blue-700'
+                  : 'border-gray-200 hover:border-gray-300 text-gray-700'
+              }`}
+            >
+              <div className="mb-2">
+                <div className="w-16 h-12 mx-auto bg-gray-200 rounded border">
+                  <div className={`w-full h-2 rounded-t ${position === 'top' ? 'bg-blue-500' : 'bg-gray-400'}`}></div>
+                </div>
+              </div>
+              <div className="font-medium">Top</div>
+              <div className="text-sm text-gray-500">Traditional horizontal navbar</div>
+            </button>
+            
+            <button
+              onClick={() => setPosition('left')}
+              className={`p-4 border-2 rounded-lg text-center transition-all duration-200 ${
+                position === 'left'
+                  ? 'border-blue-500 bg-blue-50 text-blue-700'
+                  : 'border-gray-200 hover:border-gray-300 text-gray-700'
+              }`}
+            >
+              <div className="mb-2">
+                <div className="w-16 h-12 mx-auto bg-gray-200 rounded border flex">
+                  <div className={`w-3 h-full rounded-l ${position === 'left' ? 'bg-blue-500' : 'bg-gray-400'}`}></div>
+                  <div className="flex-1"></div>
+                </div>
+              </div>
+              <div className="font-medium">Left</div>
+              <div className="text-sm text-gray-500">Vertical sidebar navigation</div>
+            </button>
+            
+            <button
+              onClick={() => setPosition('right')}
+              className={`p-4 border-2 rounded-lg text-center transition-all duration-200 ${
+                position === 'right'
+                  ? 'border-blue-500 bg-blue-50 text-blue-700'
+                  : 'border-gray-200 hover:border-gray-300 text-gray-700'
+              }`}
+            >
+              <div className="mb-2">
+                <div className="w-16 h-12 mx-auto bg-gray-200 rounded border flex">
+                  <div className="flex-1"></div>
+                  <div className={`w-3 h-full rounded-r ${position === 'right' ? 'bg-blue-500' : 'bg-gray-400'}`}></div>
+                </div>
+              </div>
+              <div className="font-medium">Right</div>
+              <div className="text-sm text-gray-500">Right-side sidebar navigation</div>
+            </button>
+          </div>
+          
+          <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+            <p className="text-sm text-blue-700">
+              <strong>Current:</strong> Navigation bar is positioned on the {position}. 
+              Changes take effect immediately and are saved automatically.
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* API Configuration */}
