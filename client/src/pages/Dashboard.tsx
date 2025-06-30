@@ -80,6 +80,7 @@ const Dashboard: React.FC = () => {
   const { tasks, fetchTasks } = useTaskStore();
   const { fetchAppointments } = useAppointmentStore();
   const { openTool } = useAITools();
+  const { startTour, activeTour, setActiveTour } = useHelp();
   
   const gemini = useGemini();
   
@@ -361,13 +362,19 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <header className="mb-8">
+      <header className="mb-8" data-tour="dashboard-welcome">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
             <p className="text-gray-600 mt-1">Your real-time sales performance overview</p>
           </div>
           <div className="mt-4 md:mt-0 flex space-x-3">
+            <button
+              onClick={() => startTour('dashboard')}
+              className="px-3 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md text-sm font-medium text-blue-700 transition-colors duration-200"
+            >
+              Take Tour
+            </button>
             <div className="relative inline-block">
               <select 
                 className="appearance-none pl-3 pr-10 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
@@ -793,37 +800,70 @@ const Dashboard: React.FC = () => {
           <AppointmentWidget limit={3} />
           
           {/* Quick Actions */}
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+          <div id="quick-actions" className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>
+              <HelpTooltip 
+                content="These buttons let you quickly create new deals and contacts, or open AI tools for scheduling and email composition."
+                placement="left"
+              />
+            </div>
             <div className="grid grid-cols-2 gap-3">
-              <Link 
-                to="/deals"
-                className="p-3 text-center bg-blue-50 hover:bg-blue-100 rounded-lg text-blue-700 transition-colors duration-200 no-underline"
+              <HelpTooltip 
+                content="Click here to go to the deals page where you can create a new deal opportunity."
+                placement="top"
               >
-                <Plus size={20} className="mx-auto mb-1" />
-                <span className="text-sm">New Deal</span>
-              </Link>
-              <Link 
-                to="/contacts"
-                className="p-3 text-center bg-green-50 hover:bg-green-100 rounded-lg text-green-700 transition-colors duration-200 no-underline"
+                <Link 
+                  id="new-deal-btn"
+                  to="/deals"
+                  className="p-3 text-center bg-blue-50 hover:bg-blue-100 rounded-lg text-blue-700 transition-colors duration-200 no-underline"
+                >
+                  <Plus size={20} className="mx-auto mb-1" />
+                  <span className="text-sm">New Deal</span>
+                </Link>
+              </HelpTooltip>
+              
+              <HelpTooltip 
+                content="Click here to go to the contacts page where you can add a new contact to your CRM."
+                placement="top"
               >
-                <Plus size={20} className="mx-auto mb-1" />
-                <span className="text-sm">New Contact</span>
-              </Link>
-              <button 
-                onClick={() => openTool('meeting-agenda')}
-                className="p-3 text-center bg-purple-50 hover:bg-purple-100 rounded-lg text-purple-700 transition-colors duration-200"
+                <Link 
+                  id="new-contact-btn"
+                  to="/contacts"
+                  className="p-3 text-center bg-green-50 hover:bg-green-100 rounded-lg text-green-700 transition-colors duration-200 no-underline"
+                >
+                  <Plus size={20} className="mx-auto mb-1" />
+                  <span className="text-sm">New Contact</span>
+                </Link>
+              </HelpTooltip>
+              
+              <HelpTooltip 
+                content="Opens the AI meeting scheduler to help you organize and plan meetings with contacts."
+                placement="bottom"
               >
-                <Calendar size={20} className="mx-auto mb-1" />
-                <span className="text-sm">Schedule</span>
-              </button>
-              <button 
-                onClick={() => openTool('email-composer')}
-                className="p-3 text-center bg-amber-50 hover:bg-amber-100 rounded-lg text-amber-700 transition-colors duration-200"
+                <button 
+                  id="schedule-btn"
+                  onClick={() => openTool('meeting-agenda')}
+                  className="p-3 text-center bg-purple-50 hover:bg-purple-100 rounded-lg text-purple-700 transition-colors duration-200"
+                >
+                  <Calendar size={20} className="mx-auto mb-1" />
+                  <span className="text-sm">Schedule</span>
+                </button>
+              </HelpTooltip>
+              
+              <HelpTooltip 
+                content="Opens the AI email composer to help you write personalized emails using AI."
+                placement="bottom"
               >
-                <Mail size={20} className="mx-auto mb-1" />
-                <span className="text-sm">Send Email</span>
-              </button>
+                <button 
+                  id="send-email-btn"
+                  onClick={() => openTool('email-composer')}
+                  className="p-3 text-center bg-amber-50 hover:bg-amber-100 rounded-lg text-amber-700 transition-colors duration-200"
+                >
+                  <Mail size={20} className="mx-auto mb-1" />
+                  <span className="text-sm">Send Email</span>
+                </button>
+              </HelpTooltip>
             </div>
           </div>
         </div>
@@ -831,6 +871,15 @@ const Dashboard: React.FC = () => {
       
       {/* DealAnalytics Component */}
       <DealAnalytics />
+      
+      {/* Dashboard Tour */}
+      <ContextualTour
+        steps={tourData.dashboard.steps}
+        isOpen={activeTour === 'dashboard'}
+        onClose={() => setActiveTour(null)}
+        onComplete={() => setActiveTour(null)}
+        tourId="dashboard"
+      />
     </div>
   );
 };
