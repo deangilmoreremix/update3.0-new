@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Goal } from '../types/goals';
-import { goalCategories, allGoals } from '../data/goalsData';
+import { aiGoalsData, goalCategories, allGoals } from '../data/goalsData';
 import InteractiveGoalCard from './InteractiveGoalCard';
 import GoalExecutionModal from './GoalExecutionModal';
 import { 
@@ -27,7 +27,9 @@ import {
   Info,
   Timer,
   Gauge,
-  Cpu
+  Cpu,
+  Rocket,
+  FileText
 } from 'lucide-react';
 
 interface InteractiveGoalExplorerProps {
@@ -400,7 +402,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
                     <div className="text-xs text-gray-500">{getCategoryCount('all')}</div>
                   </div>
                 </button>
-                {goalCategories.map(category => (
+                {aiGoalsData.map(category => (
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
@@ -411,7 +413,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
                     }`}
                   >
                     <div className="text-center">
-                      <category.icon className="h-5 w-5 mx-auto mb-1" />
+                      <div className="h-5 w-5 mx-auto mb-1 text-blue-400">{category.icon}</div>
                       <div className="text-sm font-medium">{category.name}</div>
                       <div className="text-xs text-gray-500">{getCategoryCount(category.id)}</div>
                     </div>
