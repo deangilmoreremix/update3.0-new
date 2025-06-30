@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AIToolsProvider } from './components/AIToolsProvider';
 import { TenantProvider } from './components/TenantProvider';
 import { RoleProvider } from './components/RoleBasedAccess';
-import { NavbarPositionProvider } from './components/layout/NavbarPositionProvider';
-import { AppLayout } from './components/layout/AppLayout';
+
 
 // Landing Pages
 import LandingPage from './pages/Landing/LandingPage';
@@ -72,11 +71,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <AppLayout>
-        <main>
-          {children}
-        </main>
-      </AppLayout>
+      <main className="w-full">
+        {children}
+      </main>
     </div>
   );
 };
@@ -85,7 +82,6 @@ function App() {
   return (
     <TenantProvider>
       <RoleProvider>
-        <NavbarPositionProvider>
           <AIToolsProvider>
             <Router>
             <Routes>
@@ -246,7 +242,6 @@ function App() {
             </Routes>
             </Router>
           </AIToolsProvider>
-        </NavbarPositionProvider>
       </RoleProvider>
     </TenantProvider>
   );
