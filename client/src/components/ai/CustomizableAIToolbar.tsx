@@ -21,7 +21,8 @@ import {
   PenTool,
   Video,
   FileSearch,
-  Package
+  Package,
+  LucideIcon
 } from 'lucide-react';
 import { useCustomizationStore, CustomizationLocation } from '../../store/customizationStore';
 import { getGoalById } from '../../data/aiGoals';
@@ -52,11 +53,11 @@ const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
   showGoalsButton = true,
   showCustomizeButton = true
 }) => {
-  const { getButtonConfiguration } = useCustomizationStore();
+  const { getSelectedGoals } = useCustomizationStore();
   const [showCustomizeModal, setShowCustomizeModal] = useState(false);
   
   // Get user's customized button configuration
-  const customizedGoalIds = getButtonConfiguration(location);
+  const customizedGoalIds = getSelectedGoals(location);
   
   // Convert goal IDs to quick actions
   const customQuickActions = customizedGoalIds.map(goalId => {
@@ -64,13 +65,13 @@ const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
     if (!goal) return null;
     
     return {
-      icon: goal.icon,
+      icon: getIconComponent(goal.icon),
       label: goal.title,
       toolName: goal.toolMapping || goalId,
       variant: getVariantForCategory(goal.category)
     };
   }).filter(Boolean) as Array<{
-    icon: string;
+    icon: LucideIcon;
     label: string;
     toolName: string;
     variant: string;
@@ -235,6 +236,36 @@ const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
     </div>
   );
 };
+
+// Helper function to get icon component from string
+function getIconComponent(iconName: string): LucideIcon {
+  const iconMap: Record<string, LucideIcon> = {
+    BarChart3,
+    Mail,
+    TrendingUp,
+    AlertTriangle,
+    Navigation,
+    FileText,
+    Send,
+    Calendar,
+    DollarSign,
+    Heart,
+    UserPlus,
+    Search,
+    BarChart,
+    Zap,
+    Clock,
+    GitBranch,
+    PenTool,
+    Video,
+    FileSearch,
+    Package,
+    Settings,
+    Plus
+  };
+  
+  return iconMap[iconName] || BarChart3; // Default fallback
+}
 
 // Helper function to get variant based on category
 function getVariantForCategory(category: string): string {
