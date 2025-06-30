@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { GOALS, GOAL_CATEGORIES } from '../data/goals';
 import { Goal } from '../types/goals';
-import InteractiveGoalCard from './ui/InteractiveGoalCard';
-import GoalExecutionModal from './GoalExecutionModal';
+import InteractiveGoalCard from './InteractiveGoalCardComplete';
+import GoalExecutionModal from './GoalExecutionModalComplete';
 import { useCustomizationStore, CustomizationLocation } from '../store/customizationStore';
 import { 
   Target, 
