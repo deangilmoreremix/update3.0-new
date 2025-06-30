@@ -196,7 +196,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
               type="email"
               placeholder="john@company.com"
               value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('email', e.target.value)}
               required
             />
           </div>
@@ -214,7 +214,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
               type="tel"
               placeholder="+1 (555) 123-4567"
               value={formData.phone}
-              onChange={(e) => handleInputChange('phone', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('phone', e.target.value)}
             />
           </div>
           
@@ -227,7 +227,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
               id="company"
               placeholder="Acme Corp"
               value={formData.company}
-              onChange={(e) => handleInputChange('company', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('company', e.target.value)}
             />
           </div>
         </div>
@@ -243,7 +243,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
               id="position"
               placeholder="Sales Manager"
               value={formData.position}
-              onChange={(e) => handleInputChange('position', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('position', e.target.value)}
             />
           </div>
           
@@ -252,7 +252,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
             <select
               id="industry"
               value={formData.industry}
-              onChange={(e) => handleInputChange('industry', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleInputChange('industry', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select Industry</option>
@@ -279,7 +279,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
             id="message"
             placeholder="Tell us about your business needs and goals..."
             value={formData.message}
-            onChange={(e) => handleInputChange('message', e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleInputChange('message', e.target.value)}
             rows={4}
           />
         </div>
