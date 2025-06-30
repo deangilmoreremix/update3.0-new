@@ -808,7 +808,7 @@ const Dashboard: React.FC = () => {
                 <span className="text-sm">New Contact</span>
               </Link>
               <button 
-                onClick={() => openTool('meeting-scheduler')}
+                onClick={() => openTool('meeting-agenda')}
                 className="p-3 text-center bg-purple-50 hover:bg-purple-100 rounded-lg text-purple-700 transition-colors duration-200"
               >
                 <Calendar size={20} className="mx-auto mb-1" />

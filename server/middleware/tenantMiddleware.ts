@@ -15,6 +15,12 @@ export interface AuthenticatedRequest extends TenantRequest {
   userPermissions?: PermissionKey[];
 }
 
+// Helper function to validate UUID format
+function isValidUUID(str: string): boolean {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(str);
+}
+
 /**
  * Enhanced middleware to extract tenant information from request
  * Supports multiple methods:
@@ -46,7 +52,7 @@ export const extractTenant = async (req: TenantRequest, res: Response, next: Nex
     // Method 3: Check headers
     if (!tenant) {
       const tenantId = req.get('X-Tenant-ID');
-      if (tenantId) {
+      if (tenantId && isValidUUID(tenantId)) {
         tenant = await tenantService.getTenant(tenantId);
       }
     }
@@ -54,7 +60,7 @@ export const extractTenant = async (req: TenantRequest, res: Response, next: Nex
     // Method 4: Check query parameters
     if (!tenant) {
       const tenantId = req.query.tenant as string;
-      if (tenantId) {
+      if (tenantId && isValidUUID(tenantId)) {
         tenant = await tenantService.getTenant(tenantId);
       }
     }

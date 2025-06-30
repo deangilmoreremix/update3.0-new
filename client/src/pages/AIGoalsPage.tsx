@@ -24,7 +24,15 @@ export function AIGoalsPage() {
   const navigate = useNavigate();
   const { openTool } = useAITools();
   
-  // Context handling will be implemented when needed
+  // Get context from session storage or URL params
+  const [context, setContext] = useState<AIGoalContext | null>(() => {
+    try {
+      const savedContext = sessionStorage.getItem('currentEntityContext');
+      return savedContext ? JSON.parse(savedContext) : null;
+    } catch {
+      return null;
+    }
+  });
 
   const handleGoalSelected = (goal: Goal) => {
     setSelectedGoal(goal);
