@@ -27,10 +27,10 @@ const SalesInsightsContent: React.FC = () => {
     try {
       // Use real contact and deal data from stores for analysis
       const contacts = [
-        { name: "John Doe", company: "Acme Inc", status: "customer", score: 85 },
-        { name: "Jane Smith", company: "Globex Corp", status: "lead", score: 65 },
-        { name: "Robert Johnson", company: "Initech", status: "prospect", score: 75 },
-        { name: "Sarah Williams", company: "Umbrella Corp", status: "customer", score: 90 }
+        { name: "John Doe", company: "Acme Inc", status: "customer" as const, score: 85 },
+        { name: "Jane Smith", company: "Globex Corp", status: "lead" as const, score: 65 },
+        { name: "Robert Johnson", company: "Initech", status: "prospect" as const, score: 75 },
+        { name: "Sarah Williams", company: "Umbrella Corp", status: "customer" as const, score: 90 }
       ];
       
       const deals = [

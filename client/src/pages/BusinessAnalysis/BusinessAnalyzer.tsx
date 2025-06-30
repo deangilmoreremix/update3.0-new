@@ -250,28 +250,10 @@ const BusinessAnalyzer: React.FC = () => {
           </div>
           
           {analysisResults && (
-            <div className="card-modern p-6 mb-6">
-              <h2 className="text-xl font-semibold mb-6 flex items-center">
-                <Brain size={22} className="mr-2 text-indigo-600" />
-                Analysis Results
-              </h2>
-              
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 shadow-sm border border-blue-100">
-                <div className="prose max-w-none">
-                  {analysisResults.split('\n').map((line, index) => {
-                    if (line.match(/^#\s/)) {
-                      return <h3 key={index} className="text-lg font-semibold text-blue-800">{line.replace(/^#\s/, '')}</h3>;
-                    } else if (line.match(/^\d+\./)) {
-                      return <p key={index} className="flex"><span className="mr-2 font-semibold">{line.match(/^\d+\./)![0]}</span> {line.replace(/^\d+\.\s/, '')}</p>;
-                    } else if (line.trim().length > 0) {
-                      return <p key={index}>{line}</p>;
-                    } else {
-                      return <br key={index} />;
-                    }
-                  })}
-                </div>
-              </div>
-            </div>
+            <StructuredAIResult 
+              result={analysisResults} 
+              title="Business Intelligence Analysis Report"
+            />
           )}
         </div>
         
