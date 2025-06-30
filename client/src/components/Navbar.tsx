@@ -823,8 +823,8 @@ const Navbar: React.FC = () => {
         </div>
       </div>
       
-      {/* Mobile menu */}
-      {isOpen && (
+      {/* Mobile menu - only show for top position */}
+      {isOpen && isTop && (
         <div className="md:hidden bg-white border-t border-gray-200">
           <div className="px-2 pt-2 pb-3 space-y-1">
             <Link

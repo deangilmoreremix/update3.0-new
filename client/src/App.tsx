@@ -4,6 +4,7 @@ import { AIToolsProvider } from './components/AIToolsProvider';
 import { TenantProvider } from './components/TenantProvider';
 import { RoleProvider } from './components/RoleBasedAccess';
 import { NavbarPositionProvider } from './components/layout/NavbarPositionProvider';
+import { AppLayout } from './components/layout/AppLayout';
 
 // Landing Pages
 import LandingPage from './pages/Landing/LandingPage';
@@ -71,9 +72,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="pt-16">
-        {children}
-      </main>
+      <AppLayout>
+        <main className="pt-16">
+          {children}
+        </main>
+      </AppLayout>
     </div>
   );
 };
