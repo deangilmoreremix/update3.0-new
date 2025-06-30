@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Goal } from '../../types/goals';
 import InteractiveGoalExplorer from '../../components/InteractiveGoalExplorer';
 import GoalExecutionModal from '../../components/GoalExecutionModalExact';
+import CustomizeButtonsModal from '../../components/ai/CustomizeButtonsModal';
 import { aiGoalsData } from '../../data/goalsData';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardHeader } from '../../components/ui/card';
-import { Brain, Info, Lightbulb, ArrowLeft, Sparkles, Zap, Target, Users, BarChart3, Bot, Activity } from 'lucide-react';
+import { Brain, Info, Lightbulb, ArrowLeft, Sparkles, Zap, Target, Users, BarChart3, Bot, Activity, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAITools } from '../../components/AIToolsProvider';
 
@@ -22,6 +23,7 @@ const AIGoalsPageEnhanced: React.FC = () => {
   const [showExecutionModal, setShowExecutionModal] = useState(false);
   const [realMode, setRealMode] = useState(false);
   const [showApiSetup, setShowApiSetup] = useState(false);
+  const [showCustomizeModal, setShowCustomizeModal] = useState(false);
   
   const navigate = useNavigate();
   const { openTool } = useAITools();
@@ -85,6 +87,15 @@ const AIGoalsPageEnhanced: React.FC = () => {
               </div>
               
               <div className="flex items-center gap-4">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setShowCustomizeModal(true)}
+                  className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm hover:bg-white/70 dark:hover:bg-slate-700/70 transition-all duration-300"
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Customize
+                </Button>
                 <Button 
                   variant="outline" 
                   size="sm" 
@@ -277,6 +288,15 @@ const AIGoalsPageEnhanced: React.FC = () => {
           onClose={handleCloseModal}
           realMode={realMode}
           onComplete={handleGoalComplete}
+        />
+      )}
+
+      {/* Customize Buttons Modal */}
+      {showCustomizeModal && (
+        <CustomizeButtonsModal
+          isOpen={showCustomizeModal}
+          onClose={() => setShowCustomizeModal(false)}
+          initialLocation="aiGoalsPage"
         />
       )}
     </div>
