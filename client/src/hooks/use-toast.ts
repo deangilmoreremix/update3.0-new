@@ -1,6 +1,7 @@
 import { useState } from "react"
+import * as React from "react"
 
-export interface Toast {
+export interface ToastProps {
   id: string
   title?: string
   description?: string
@@ -19,7 +20,7 @@ function genId() {
   return count.toString()
 }
 
-type ToasterToast = Toast & {
+type ToasterToast = ToastProps & {
   id: string
   title?: string
   description?: string
@@ -112,6 +113,8 @@ export const reducer = (
         ...state,
         toasts: state.toasts.filter((t) => t.id !== action.toastId),
       }
+    default:
+      return state
   }
 }
 
@@ -122,9 +125,9 @@ function dispatch(action: any) {
   })
 }
 
-type Toast = Omit<ToasterToast, "id">
+type ToastConfig = Omit<ToasterToast, "id">
 
-function toast({ ...props }: Toast) {
+function toast({ ...props }: ToastConfig) {
   const id = genId()
 
   const update = (props: ToasterToast) =>
