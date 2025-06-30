@@ -4,7 +4,6 @@ import { AIToolsProvider } from './components/AIToolsProvider';
 import { TenantProvider } from './components/TenantProvider';
 import { RoleProvider } from './components/RoleBasedAccess';
 
-
 // Landing Pages
 import LandingPage from './pages/Landing/LandingPage';
 
@@ -71,7 +70,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="w-full">
+      <main className="pt-16">
         {children}
       </main>
     </div>
@@ -82,8 +81,8 @@ function App() {
   return (
     <TenantProvider>
       <RoleProvider>
-          <AIToolsProvider>
-            <Router>
+        <AIToolsProvider>
+          <Router>
             <Routes>
               {/* Auth routes (available for future Clerk integration) */}
               <Route path="/login" element={<Login />} />
@@ -240,8 +239,8 @@ function App() {
               <Route path="/admin/users" element={<UserManagement />} />
               <Route path="/admin/white-label" element={<WhiteLabelCustomization />} />
             </Routes>
-            </Router>
-          </AIToolsProvider>
+          </Router>
+        </AIToolsProvider>
       </RoleProvider>
     </TenantProvider>
   );

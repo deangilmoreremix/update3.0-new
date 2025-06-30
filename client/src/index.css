@@ -1,9 +1,9 @@
-/* Import navbar position styles */
-@import './styles/navbar-positions.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Import navbar position styles */
+@import './styles/navbar-positions.css';
 
 /* Custom animations */
 @keyframes fadeIn {
@@ -267,69 +267,4 @@ html.page-loaded body {
 /* Fix for performance issues with animations */
 .animation-fix {
   transform: translate3d(0, 0, 0);
-}
-
-/* Navbar Position Styles */
-.navbar-top {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  height: 64px;
-  flex-direction: row;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.navbar-left {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  z-index: 1000;
-  width: 256px;
-  flex-direction: column;
-  border-right: 1px solid #e5e7eb;
-  border-bottom: none;
-}
-
-.navbar-right {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1000;
-  width: 256px;
-  flex-direction: column;
-  border-left: 1px solid #e5e7eb;
-  border-bottom: none;
-}
-
-/* App content areas */
-.app-content-top {
-  padding-top: 64px;
-}
-
-.app-content-left {
-  margin-left: 256px;
-}
-
-.app-content-right {
-  margin-right: 256px;
-}
-
-/* Mobile responsiveness for sidebar navbars */
-@media (max-width: 768px) {
-  .navbar-left,
-  .navbar-right {
-    transform: translateX(-100%);
-    visibility: hidden;
-  }
-  
-  .app-content-left,
-  .app-content-right {
-    margin-left: 0;
-    margin-right: 0;
-    padding-top: 64px;
-  }
 }
