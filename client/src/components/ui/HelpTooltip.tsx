@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { HelpCircle, Info, Lightbulb, Target } from 'lucide-react';
-import { useHelp } from '../../contexts/HelpContext';
+import { useEnhancedHelp } from '../../contexts/EnhancedHelpContext';
 
 interface HelpTooltipProps {
   content: string;
@@ -31,10 +31,10 @@ const HelpTooltip: React.FC<HelpTooltipProps> = ({
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
-  const { showTooltips } = useHelp();
+  const { showTours } = useEnhancedHelp();
 
-  // Don't render if tooltips are disabled
-  if (!showTooltips) {
+  // Don't render if help system is disabled
+  if (!showTours) {
     return children ? <>{children}</> : null;
   }
 
