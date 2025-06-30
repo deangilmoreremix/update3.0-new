@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Goal } from '../types/goals';
-import { aiGoalsData } from '../data/goalsData';
 import InteractiveGoalCard from './InteractiveGoalCard';
 import { 
   Search, 
@@ -25,14 +24,30 @@ import {
   ArrowRight
 } from 'lucide-react';
 
+interface GoalCategory {
+  id: string;
+  name: string;
+  description: string;
+  color: string;
+  goals: Goal[];
+}
+
 interface InteractiveGoalExplorerProps {
+  aiGoalsData: GoalCategory[];
   onGoalSelected: (goal: Goal) => void;
   contextData?: any;
+  realMode?: boolean;
+  onModeToggle?: (mode: boolean) => void;
+  onGoalSelect?: (goal: Goal) => void;
 }
 
 const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
+  aiGoalsData,
   onGoalSelected,
-  contextData
+  contextData,
+  realMode = false,
+  onModeToggle,
+  onGoalSelect
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -42,7 +57,6 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
   const [completedGoals, setCompletedGoals] = useState<Set<string>>(new Set());
   const [executionProgress, setExecutionProgress] = useState<Record<string, number>>({});
   const [executingGoal, setExecutingGoal] = useState<Goal | null>(null);
-  const [realMode, setRealMode] = useState(false);
   const [liveStats, setLiveStats] = useState({
     totalGoals: 0,
     completedToday: 0,
