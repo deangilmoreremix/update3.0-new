@@ -200,8 +200,33 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
           idx === i ? { ...s, status: 'running', startTime: new Date() } : s
         ));
         
-        // Simulate execution time
-        await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 2000));
+        // Execute real agent action
+        if (realMode) {
+          try {
+            const result = await runAgentWorkflow(
+              step.agentName as AgentType,
+              {
+                goal: goal.title,
+                action: step.action,
+                context: contextData,
+                tools: step.toolsUsed || []
+              }
+            );
+            setExecutionSteps(prev => prev.map((s, idx) => 
+              idx === i ? { ...s, result, thinking: result.data?.reasoning || 'Agent execution completed' } : s
+            ));
+          } catch (error) {
+            console.error(`Agent execution failed:`, error);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+            setExecutionSteps(prev => prev.map((s, idx) => 
+              idx === i ? { ...s, status: 'error', result: { error: errorMessage } } : s
+            ));
+            throw new Error(errorMessage);
+          }
+        } else {
+          // Demo mode: minimal delay
+          await new Promise(resolve => setTimeout(resolve, 800));
+        }
         
         // Complete step
         setExecutionSteps(prev => prev.map((s, idx) => 
@@ -238,7 +263,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
       setOverallProgress(100);
       setExecutionMetrics(prev => ({ 
         ...prev, 
-        businessValue: realMode ? Math.floor(Math.random() * 50000) + 10000 : 0 
+        businessValue: realMode ? parseInt(goal.roi.replace(/[^0-9]/g, '')) || 0 : 0 
       }));
       
       addActivity(`🎉 Goal "${goal.title}" completed successfully!`);

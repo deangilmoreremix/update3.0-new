@@ -242,36 +242,40 @@ class ComposioService {
     }
   }
 
-  // Execute generic action (Mock)
+  // Execute generic action (Real API)
   async executeAction(appName: string, actionName: string, params: any): Promise<ComposioExecutionResult> {
-    if (!this.isConfigured) {
+    try {
+      const response = await fetch('/api/composio/execute', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ appName, actionName, params }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Composio API error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return {
+        success: true,
+        data: result.data,
+        message: result.message || 'Action executed successfully'
+      };
+    } catch (error) {
       return {
         success: false,
-        error: 'Composio client not initialized. Please set COMPOSIO_API_KEY environment variable.'
+        error: error instanceof Error ? error.message : 'Action execution failed'
       };
     }
-
-    // Mock execution
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
-
-    return {
-      success: true,
-      data: { 
-        app: appName, 
-        action: actionName, 
-        params, 
-        executionId: `exec_${Date.now()}`,
-        timestamp: new Date().toISOString()
-      },
-      message: `${appName} ${actionName} executed successfully (demo mode)`
-    };
   }
 }
 
-// Export singleton instance with demo configuration
+// Export singleton instance with environment configuration
 export const composioService = new ComposioService({
-  apiKey: 'demo_mode',
-  baseUrl: 'https://api.composio.dev'
+  apiKey: import.meta.env.VITE_COMPOSIO_API_KEY || '',
+  baseUrl: import.meta.env.VITE_COMPOSIO_BASE_URL || 'https://api.composio.dev'
 });
 
 // Export the class for custom instances
