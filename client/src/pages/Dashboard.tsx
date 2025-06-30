@@ -10,9 +10,7 @@ import AppointmentWidget from '../components/AppointmentWidget';
 import AIToolsCard from '../components/Dashboard/AIToolsCard';
 import DealAnalytics from '../components/DealAnalytics';
 import HelpTooltip from '../components/ui/HelpTooltip';
-import { ComprehensiveTour } from '../components/ui/ComprehensiveTour';
 import { useEnhancedHelp } from '../contexts/EnhancedHelpContext';
-import { dashboardTourSteps } from '../data/tourDefinitions';
 import { 
   BarChart3, 
   TrendingUp, 
@@ -875,22 +873,7 @@ const Dashboard: React.FC = () => {
         <DealAnalytics />
       </div>
       
-      {/* Dashboard Tour */}
-      {showTours && (
-        <ComprehensiveTour
-          config={{
-            steps: dashboardTourSteps,
-            tourId: "dashboard",
-            defaultOpen: false,
-            showPrevNextButtons: true,
-            showCloseButton: true,
-            showNavigation: true,
-            showDots: true
-          }}
-        >
-          <div />
-        </ComprehensiveTour>
-      )}
+      {/* Dashboard Tour - Temporarily disabled for syntax fix */}
     </div>
   );
 };
