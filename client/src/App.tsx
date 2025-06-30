@@ -79,7 +79,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <AIToolsProvider>
+    <TenantProvider>
+      <RoleProvider>
+        <AIToolsProvider>
       <Router>
         <Routes>
           {/* Auth routes (available for future Clerk integration) */}
@@ -232,7 +234,9 @@ function App() {
           <Route path="/admin/white-label" element={<WhiteLabelCustomization />} />
         </Routes>
       </Router>
-    </AIToolsProvider>
+        </AIToolsProvider>
+      </RoleProvider>
+    </TenantProvider>
   );
 }
 
