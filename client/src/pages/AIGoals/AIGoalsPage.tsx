@@ -1,42 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { Goal } from '@/types/goals';
-import InteractiveGoalCard from '@/components/ui/InteractiveGoalCard';
-import GoalExecutionModal from '@/components/GoalExecutionModal';
-import { 
-  Search,
-  Filter,
-  Bot,
-  Zap,
-  Target,
-  TrendingUp,
-  Users,
-  Settings,
-  FileText,
-  Shield,
-  Brain,
-  Sparkles,
-  Grid3X3,
-  List,
-  ChevronDown,
-  Play,
-  Clock,
-  Star,
-  Activity
-} from 'lucide-react';
-import { allGoals as aiGoals, goalCategories, priorityLevels, complexityLevels, searchGoals, getGoalsByCategory, getGoalsByPriority, getGoalsByComplexity } from '@/data/aiGoals';
+import React, { useState } from 'react';
+import { Goal } from '../../types/goals';
+import InteractiveGoalExplorer from '../../components/InteractiveGoalExplorer';
+import GoalExecutionModal from '../../components/GoalExecutionModal';
+import { Button } from '../../components/ui/button';
+import { Card, CardContent, CardHeader } from '../../components/ui/card';
+import { Brain, Info, Lightbulb, ArrowLeft, Sparkles, Zap, Target, Users, BarChart3, Bot, Activity } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAITools } from '../../components/AIToolsProvider';
+
+// Define context type
+interface AIGoalContext {
+  type: 'contact' | 'deal' | 'company';
+  name?: string;
+  title?: string;
+  id?: string;
+}
 
 const AIGoalsPage: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [selectedPriority, setSelectedPriority] = useState<string>('All');
-  const [selectedComplexity, setSelectedComplexity] = useState<string>('All');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [filteredGoals, setFilteredGoals] = useState<Goal[]>(aiGoals);
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
-  const [isExecutionModalOpen, setIsExecutionModalOpen] = useState(false);
+  const [showExecutionModal, setShowExecutionModal] = useState(false);
   const [realMode, setRealMode] = useState(false);
-  const [executingGoals, setExecutingGoals] = useState<Set<string>>(new Set());
-  const [showFilters, setShowFilters] = useState(false);
+  
+  const navigate = useNavigate();
+  const { openTool } = useAITools();
+  
+  // Get context from session storage or URL params
+  const [context, setContext] = useState<AIGoalContext | null>(() => {
+    try {
+      const savedContext = sessionStorage.getItem('currentEntityContext');
+      return savedContext ? JSON.parse(savedContext) : null;
+    } catch {
+      return null;
+    }
+  });
 
   // Filter goals based on current criteria
   useEffect(() => {

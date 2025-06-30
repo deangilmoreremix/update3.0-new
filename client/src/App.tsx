@@ -54,7 +54,7 @@ import SemanticSearchFeaturePage from './pages/Landing/FeaturePage/SemanticSearc
 import FunctionAssistantFeaturePage from './pages/Landing/FeaturePage/FunctionAssistantFeaturePage';
 import CommunicationsFeaturePage from './pages/Landing/FeaturePage/CommunicationsFeaturePage';
 import GoalCardDemo from './pages/GoalCardDemo';
-import { AIGoalsPage } from './pages/AIGoalsPage';
+import AIGoalsPage from './pages/AIGoals/AIGoalsPageEnhanced';
 import PartnerOnboardingPage from './pages/PartnerOnboardingPage';
 import PartnerDashboard from './pages/PartnerDashboard';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
