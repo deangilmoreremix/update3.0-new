@@ -96,6 +96,42 @@ export function AIGoalsPage() {
               </Button>
             </div>
           </div>
+          
+          {/* Mode Toggle with Enhanced UX */}
+          <div className="flex items-center gap-4 mt-6">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600 dark:text-gray-300">Execution Mode:</span>
+              <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+                <button
+                  onClick={() => setRealMode(false)}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    !realMode ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                  }`}
+                >
+                  🎭 Demo Mode
+                </button>
+                <button
+                  onClick={() => setRealMode(true)}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    realMode ? 'bg-white dark:bg-slate-700 text-green-600 dark:text-green-400 shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                  }`}
+                >
+                  🚀 Live Mode
+                </button>
+              </div>
+            </div>
+            
+            {realMode ? (
+              <div className="flex items-center gap-2 px-3 py-1 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700/50 rounded-lg">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-green-700 dark:text-green-300 font-medium">Real AI execution enabled</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 px-3 py-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/50 rounded-lg">
+                <span className="text-sm text-blue-700 dark:text-blue-300">Demo mode - Click Live Mode for real execution</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
