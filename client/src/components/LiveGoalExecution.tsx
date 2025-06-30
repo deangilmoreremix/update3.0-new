@@ -418,13 +418,6 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
               backgroundColor: realMode ? '#f87171' : '#60a5fa'
             }}></div>
             <span className="font-medium">{realMode ? 'Live Mode' : 'Demo Mode'}</span>
-            <Tooltip 
-              content={realMode ? 
-                "Real AI agents are executing actual business actions with your configured APIs." :
-                "Simulated AI responses for safe exploration. No real actions are performed."
-              }
-              position="right"
-            />
           </div>
         </div>
 
@@ -619,11 +612,31 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
             
             {showCRMView && (
               <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-600/50">
-                <CRMWorkspace 
-                  realTimeUpdates={isExecuting}
-                  goalExecution={true}
-                  executionMetrics={executionMetrics}
-                />
+                <div className="space-y-4">
+                  <div className="text-center text-gray-400 py-6">
+                    <Database className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                    <h4 className="font-semibold text-white mb-2">CRM Data Monitor</h4>
+                    <p className="text-sm">
+                      {isExecuting 
+                        ? "Monitoring real-time changes to your CRM data during goal execution"
+                        : "CRM workspace will show live updates when goal execution begins"
+                      }
+                    </p>
+                  </div>
+                  
+                  {isExecuting && (
+                    <div className="grid grid-cols-2 gap-4 text-center">
+                      <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-400/20">
+                        <div className="text-2xl font-bold text-blue-400">{executionMetrics.crmChanges}</div>
+                        <div className="text-xs text-gray-400">Records Updated</div>
+                      </div>
+                      <div className="p-3 bg-green-500/10 rounded-lg border border-green-400/20">
+                        <div className="text-2xl font-bold text-green-400">{executionMetrics.agentsActive}</div>
+                        <div className="text-xs text-gray-400">Active Agents</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
