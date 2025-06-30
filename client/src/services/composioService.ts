@@ -85,26 +85,36 @@ class ComposioService {
     }
   }
 
-  // Email Integration (Mock)
+  // Email Integration (Real API)
   async sendEmail(to: string, subject: string, content: string, templateId?: string): Promise<ComposioExecutionResult> {
-    if (!this.isConfigured) {
+    try {
+      const response = await fetch('/api/composio/email/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ to, subject, content, templateId }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Email API error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return {
+        success: true,
+        data: result.data,
+        message: result.message || 'Email sent successfully'
+      };
+    } catch (error) {
       return {
         success: false,
-        error: 'Composio client not initialized. Please set COMPOSIO_API_KEY environment variable.'
+        error: error instanceof Error ? error.message : 'Email sending failed'
       };
     }
-
-    // Mock implementation for demo
-    await new Promise(resolve => setTimeout(resolve, 1200));
-
-    return {
-      success: true,
-      data: { to, emailId: `email_${Date.now()}`, templateId },
-      message: 'Email sent successfully (demo mode)'
-    };
   }
 
-  // Calendar Integration (Mock)
+  // Calendar Integration (Real API)
   async createCalendarEvent(
     title: string, 
     description: string, 
@@ -113,97 +123,123 @@ class ComposioService {
     attendees?: string[], 
     meetingLink?: string
   ): Promise<ComposioExecutionResult> {
-    if (!this.isConfigured) {
+    try {
+      const response = await fetch('/api/composio/calendar/event', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          title, 
+          description, 
+          startTime, 
+          endTime, 
+          attendees, 
+          meetingLink 
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Calendar API error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return {
+        success: true,
+        data: result.data,
+        message: result.message || 'Calendar event created successfully'
+      };
+    } catch (error) {
       return {
         success: false,
-        error: 'Composio client not initialized. Please set COMPOSIO_API_KEY environment variable.'
+        error: error instanceof Error ? error.message : 'Calendar event creation failed'
       };
     }
-
-    // Mock implementation for demo
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    return {
-      success: true,
-      data: { 
-        eventId: `event_${Date.now()}`, 
-        title, 
-        startTime, 
-        endTime, 
-        attendees: attendees?.length || 0,
-        meetingLink 
-      },
-      message: 'Calendar event created successfully (demo mode)'
-    };
   }
 
-  // Social Media Integration - X (Twitter) (Mock)
+  // Social Media Integration - X (Twitter) (Real API)
   async postToX(content: string, scheduledTime?: string): Promise<ComposioExecutionResult> {
-    if (!this.isConfigured) {
+    try {
+      const response = await fetch('/api/composio/twitter/post', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content, scheduledTime }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Twitter API error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return {
+        success: true,
+        data: result.data,
+        message: result.message || 'X post published successfully'
+      };
+    } catch (error) {
       return {
         success: false,
-        error: 'Composio client not initialized. Please set COMPOSIO_API_KEY environment variable.'
+        error: error instanceof Error ? error.message : 'Twitter posting failed'
       };
     }
-
-    // Mock implementation for demo
-    await new Promise(resolve => setTimeout(resolve, 900));
-
-    return {
-      success: true,
-      data: { postId: `tweet_${Date.now()}`, content, scheduledTime },
-      message: 'X post published successfully (demo mode)'
-    };
   }
 
-  // Get available tools/apps (Mock)
+  // Get available tools/apps (Real API)
   async getAvailableApps(): Promise<ComposioExecutionResult> {
-    if (!this.isConfigured) {
+    try {
+      const response = await fetch('/api/composio/apps/available', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Composio API error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return {
+        success: true,
+        data: result.data,
+        message: result.message || 'Available apps retrieved successfully'
+      };
+    } catch (error) {
       return {
         success: false,
-        error: 'Composio client not initialized. Please set COMPOSIO_API_KEY environment variable.'
+        error: error instanceof Error ? error.message : 'Failed to retrieve available apps'
       };
     }
-
-    // Mock available apps
-    const mockApps = [
-      { name: 'linkedin', status: 'connected' },
-      { name: 'gmail', status: 'connected' },
-      { name: 'google_calendar', status: 'connected' },
-      { name: 'whatsapp_business', status: 'available' },
-      { name: 'x', status: 'available' },
-      { name: 'slack', status: 'connected' },
-      { name: 'hubspot', status: 'available' }
-    ];
-
-    return {
-      success: true,
-      data: mockApps,
-      message: 'Available apps retrieved successfully (demo mode)'
-    };
   }
 
-  // Get entity connections (Mock)
+  // Get entity connections (Real API)
   async getConnections(): Promise<ComposioExecutionResult> {
-    if (!this.isConfigured) {
+    try {
+      const response = await fetch('/api/composio/connections', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Composio API error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return {
+        success: true,
+        data: result.data,
+        message: result.message || 'Connections retrieved successfully'
+      };
+    } catch (error) {
       return {
         success: false,
-        error: 'Composio client not initialized. Please set COMPOSIO_API_KEY environment variable.'
+        error: error instanceof Error ? error.message : 'Failed to retrieve connections'
       };
     }
-
-    // Mock connections
-    const mockConnections = [
-      { app: 'linkedin', status: 'active', connectedAt: new Date().toISOString() },
-      { app: 'gmail', status: 'active', connectedAt: new Date().toISOString() },
-      { app: 'google_calendar', status: 'active', connectedAt: new Date().toISOString() }
-    ];
-
-    return {
-      success: true,
-      data: mockConnections,
-      message: 'Connections retrieved successfully (demo mode)'
-    };
   }
 
   // Execute generic action (Mock)

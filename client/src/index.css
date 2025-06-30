@@ -1,9 +1,9 @@
+/* Import navbar position styles */
+@import './styles/navbar-positions.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import navbar position styles */
-@import './styles/navbar-positions.css';
 
 /* Custom animations */
 @keyframes fadeIn {
