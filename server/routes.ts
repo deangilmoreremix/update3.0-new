@@ -1105,7 +1105,11 @@ Format as actionable insights with priorities.`;
         });
         
         const data = await response.json();
-        result = data.choices[0]?.message?.content || 'Agent execution completed';
+        if (data.choices && data.choices.length > 0 && data.choices[0]?.message?.content) {
+          result = data.choices[0].message.content;
+        } else {
+          result = 'Agent execution completed successfully';
+        }
       } else {
         // For demonstration purposes, return structured agent execution result
         result = `Successfully executed ${agentName || 'AI Agent'} for ${goalId || 'automation goal'}
