@@ -73,7 +73,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <AppLayout>
-        <main className="pt-16">
+        <main>
           {children}
         </main>
       </AppLayout>
