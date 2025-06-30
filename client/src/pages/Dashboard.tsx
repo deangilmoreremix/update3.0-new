@@ -800,7 +800,7 @@ const Dashboard: React.FC = () => {
           <AppointmentWidget limit={3} />
           
           {/* Quick Actions */}
-          <div id="quick-actions" className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div id="quick-actions" className="bg-white rounded-xl shadow-sm p-6 border border-gray-100" data-tour="quick-actions">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>
               <HelpTooltip 
