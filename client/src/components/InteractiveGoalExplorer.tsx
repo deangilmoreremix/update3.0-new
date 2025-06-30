@@ -514,9 +514,11 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
                 key={goal.id}
                 goal={goal}
                 onExecute={handleExecuteGoal}
+                onPreview={(goal) => console.log('Preview goal:', goal)}
                 isExecuting={executingGoals.has(goal.id)}
                 executionProgress={executionProgress[goal.id] || 0}
                 realMode={realMode}
+                isCompleted={Array.from(completedGoals).includes(goal.id)}
               />
             ))}
           </div>
