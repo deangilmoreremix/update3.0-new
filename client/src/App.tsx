@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AIToolsProvider } from './components/AIToolsProvider';
 import { TenantProvider } from './components/TenantProvider';
 import { RoleProvider } from './components/RoleBasedAccess';
+import { NavbarPositionProvider } from './components/layout/NavbarPositionProvider';
 
 // Landing Pages
 import LandingPage from './pages/Landing/LandingPage';
@@ -81,8 +82,9 @@ function App() {
   return (
     <TenantProvider>
       <RoleProvider>
-        <AIToolsProvider>
-          <Router>
+        <NavbarPositionProvider>
+          <AIToolsProvider>
+            <Router>
             <Routes>
               {/* Auth routes (available for future Clerk integration) */}
               <Route path="/login" element={<Login />} />
@@ -239,8 +241,9 @@ function App() {
               <Route path="/admin/users" element={<UserManagement />} />
               <Route path="/admin/white-label" element={<WhiteLabelCustomization />} />
             </Routes>
-          </Router>
-        </AIToolsProvider>
+            </Router>
+          </AIToolsProvider>
+        </NavbarPositionProvider>
       </RoleProvider>
     </TenantProvider>
   );
