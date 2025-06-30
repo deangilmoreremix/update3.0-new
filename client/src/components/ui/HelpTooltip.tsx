@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { HelpCircle, X, Lightbulb, Info, Zap, Target } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { HelpCircle, Info, Lightbulb, Target } from 'lucide-react';
+import { useHelp } from '../../contexts/HelpContext';
 
 interface HelpTooltipProps {
   content: string;
@@ -25,248 +25,182 @@ const HelpTooltip: React.FC<HelpTooltipProps> = ({
   className = '',
   children,
   showIcon = true,
-  persistent = false
+  persistent = false,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const triggerRef = useRef<HTMLDivElement>(null);
+  const [shouldAnimate, setShouldAnimate] = useState(false);
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const { showTooltips } = useHelp();
 
+  // Don't render if tooltips are disabled
+  if (!showTooltips) {
+    return children ? <>{children}</> : null;
+  }
+
+  // Icon mapping based on type
   const getIcon = () => {
     switch (type) {
+      case 'info':
+        return <Info className="w-4 h-4" />;
       case 'tip':
-        return <Lightbulb size={14} className="text-yellow-500" />;
+        return <Lightbulb className="w-4 h-4" />;
       case 'feature':
-        return <Zap size={14} className="text-blue-500" />;
+        return <HelpCircle className="w-4 h-4" />;
       case 'goal':
-        return <Target size={14} className="text-green-500" />;
+        return <Target className="w-4 h-4" />;
       default:
-        return <Info size={14} className="text-blue-500" />;
+        return <HelpCircle className="w-4 h-4" />;
     }
   };
 
-  const getTypeColors = () => {
-    switch (type) {
-      case 'tip':
-        return 'bg-yellow-50 border-yellow-200 text-yellow-800';
-      case 'feature':
-        return 'bg-blue-50 border-blue-200 text-blue-800';
-      case 'goal':
-        return 'bg-green-50 border-green-200 text-green-800';
-      default:
-        return 'bg-gray-50 border-gray-200 text-gray-800';
+  // Size classes
+  const sizeClasses = {
+    sm: 'text-xs max-w-48',
+    md: 'text-sm max-w-64',
+    lg: 'text-base max-w-80',
+  };
+
+  // Color classes based on type
+  const typeClasses = {
+    info: 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-800 dark:text-blue-200',
+    tip: 'bg-yellow-50 dark:bg-yellow-900/30 border-yellow-200 dark:border-yellow-700 text-yellow-800 dark:text-yellow-200',
+    feature: 'bg-purple-50 dark:bg-purple-900/30 border-purple-200 dark:border-purple-700 text-purple-800 dark:text-purple-200',
+    goal: 'bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-700 text-green-800 dark:text-green-200',
+  };
+
+  // Placement classes
+  const placementClasses = {
+    top: 'bottom-full left-1/2 transform -translate-x-1/2 mb-2',
+    bottom: 'top-full left-1/2 transform -translate-x-1/2 mt-2',
+    left: 'right-full top-1/2 transform -translate-y-1/2 mr-2',
+    right: 'left-full top-1/2 transform -translate-y-1/2 ml-2',
+  };
+
+  // Arrow classes
+  const arrowClasses = {
+    top: 'top-full left-1/2 transform -translate-x-1/2 border-l-transparent border-r-transparent border-t-current',
+    bottom: 'bottom-full left-1/2 transform -translate-x-1/2 border-l-transparent border-r-transparent border-b-current',
+    left: 'left-full top-1/2 transform -translate-y-1/2 border-t-transparent border-b-transparent border-l-current',
+    right: 'right-full top-1/2 transform -translate-y-1/2 border-t-transparent border-b-transparent border-r-current',
+  };
+
+  const handleMouseEnter = () => {
+    if (trigger === 'hover') {
+      setIsVisible(true);
+      setShouldAnimate(true);
     }
   };
 
-  const getSizeClasses = () => {
-    switch (size) {
-      case 'sm':
-        return 'max-w-xs text-xs p-2';
-      case 'lg':
-        return 'max-w-md text-sm p-4';
-      default:
-        return 'max-w-sm text-xs p-3';
-    }
-  };
-
-  const calculatePosition = () => {
-    if (!triggerRef.current) return;
-
-    const triggerRect = triggerRef.current.getBoundingClientRect();
-    const tooltipWidth = 200; // Approximate width
-    const tooltipHeight = 80; // Approximate height
-    
-    let x = 0;
-    let y = 0;
-
-    switch (placement) {
-      case 'top':
-        x = triggerRect.left + triggerRect.width / 2 - tooltipWidth / 2;
-        y = triggerRect.top - tooltipHeight - 8;
-        break;
-      case 'bottom':
-        x = triggerRect.left + triggerRect.width / 2 - tooltipWidth / 2;
-        y = triggerRect.bottom + 8;
-        break;
-      case 'left':
-        x = triggerRect.left - tooltipWidth - 8;
-        y = triggerRect.top + triggerRect.height / 2 - tooltipHeight / 2;
-        break;
-      case 'right':
-        x = triggerRect.right + 8;
-        y = triggerRect.top + triggerRect.height / 2 - tooltipHeight / 2;
-        break;
-    }
-
-    // Ensure tooltip stays within viewport
-    const padding = 16;
-    x = Math.max(padding, Math.min(x, window.innerWidth - tooltipWidth - padding));
-    y = Math.max(padding, Math.min(y, window.innerHeight - tooltipHeight - padding));
-
-    setPosition({ x, y });
-  };
-
-  const showTooltip = () => {
-    calculatePosition();
-    setIsVisible(true);
-  };
-
-  const hideTooltip = () => {
-    if (!persistent) {
+  const handleMouseLeave = () => {
+    if (trigger === 'hover' && !persistent) {
       setIsVisible(false);
+      setShouldAnimate(false);
     }
   };
 
-  const toggleTooltip = () => {
-    if (isVisible) {
-      hideTooltip();
-    } else {
-      showTooltip();
+  const handleClick = () => {
+    if (trigger === 'click') {
+      setIsVisible(!isVisible);
+      setShouldAnimate(!isVisible);
     }
   };
 
+  // Close tooltip when clicking outside
   useEffect(() => {
-    const handleResize = () => {
-      if (isVisible) {
-        calculatePosition();
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        trigger === 'click' &&
+        tooltipRef.current &&
+        triggerRef.current &&
+        !tooltipRef.current.contains(event.target as Node) &&
+        !triggerRef.current.contains(event.target as Node)
+      ) {
+        setIsVisible(false);
+        setShouldAnimate(false);
       }
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [isVisible, placement]);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [trigger]);
 
-  const triggerProps = trigger === 'hover' 
-    ? { onMouseEnter: showTooltip, onMouseLeave: hideTooltip }
-    : { onClick: toggleTooltip };
-
-  return (
+  const tooltipContent = (
     <>
+      {isVisible && (
+        <div
+          ref={tooltipRef}
+          className={`
+            absolute z-50 px-3 py-2 border rounded-lg shadow-lg
+            ${sizeClasses[size]}
+            ${typeClasses[type]}
+            ${placementClasses[placement]}
+            ${shouldAnimate ? 'tooltip-bounce' : ''}
+            ${persistent ? 'tooltip-wiggle' : ''}
+          `}
+          role="tooltip"
+        >
+          {title && (
+            <div className="font-semibold mb-1 flex items-center gap-1">
+              {showIcon && getIcon()}
+              {title}
+            </div>
+          )}
+          <div className={title ? '' : 'flex items-center gap-1'}>
+            {!title && showIcon && getIcon()}
+            {content}
+          </div>
+          
+          {/* Tooltip arrow */}
+          <div
+            className={`
+              absolute w-0 h-0 border-4
+              ${arrowClasses[placement]}
+              ${typeClasses[type].split(' ')[0]}
+            `}
+          />
+        </div>
+      )}
+    </>
+  );
+
+  // If children are provided, wrap them with the tooltip trigger
+  if (children) {
+    return (
       <div
         ref={triggerRef}
-        className={`inline-flex items-center cursor-help ${className}`}
-        {...triggerProps}
+        className={`relative inline-block ${className}`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
       >
-        {children || (
-          showIcon && (
-            <motion.div
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center justify-center"
-            >
-              <HelpCircle 
-                size={16} 
-                className="text-gray-400 hover:text-gray-600 transition-colors duration-200" 
-              />
-            </motion.div>
-          )
-        )}
+        {children}
+        {tooltipContent}
       </div>
+    );
+  }
 
-      <AnimatePresence>
-        {isVisible && (
-          <>
-            {/* Backdrop for click trigger */}
-            {trigger === 'click' && (
-              <div
-                className="fixed inset-0 z-40"
-                onClick={hideTooltip}
-              />
-            )}
-            
-            <motion.div
-              ref={tooltipRef}
-              initial={{ 
-                opacity: 0, 
-                scale: 0.8,
-                y: placement === 'top' ? 10 : placement === 'bottom' ? -10 : 0,
-                x: placement === 'left' ? 10 : placement === 'right' ? -10 : 0
-              }}
-              animate={{ 
-                opacity: 1, 
-                scale: 1,
-                y: 0,
-                x: 0
-              }}
-              exit={{ 
-                opacity: 0, 
-                scale: 0.8,
-                y: placement === 'top' ? 10 : placement === 'bottom' ? -10 : 0,
-                x: placement === 'left' ? 10 : placement === 'right' ? -10 : 0
-              }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 300, 
-                damping: 20,
-                duration: 0.2
-              }}
-              className={`
-                fixed z-50 rounded-lg border shadow-lg backdrop-blur-sm
-                ${getTypeColors()} ${getSizeClasses()}
-              `}
-              style={{
-                left: `${position.x}px`,
-                top: `${position.y}px`,
-              }}
-            >
-              {/* Arrow */}
-              <div
-                className={`
-                  absolute w-2 h-2 rotate-45 border
-                  ${getTypeColors()}
-                  ${placement === 'top' ? 'bottom-[-4px] left-1/2 transform -translate-x-1/2 border-t-0 border-l-0' : ''}
-                  ${placement === 'bottom' ? 'top-[-4px] left-1/2 transform -translate-x-1/2 border-b-0 border-r-0' : ''}
-                  ${placement === 'left' ? 'right-[-4px] top-1/2 transform -translate-y-1/2 border-l-0 border-b-0' : ''}
-                  ${placement === 'right' ? 'left-[-4px] top-1/2 transform -translate-y-1/2 border-r-0 border-t-0' : ''}
-                `}
-              />
-
-              {/* Close button for click trigger */}
-              {trigger === 'click' && (
-                <button
-                  onClick={hideTooltip}
-                  className="absolute top-1 right-1 p-1 rounded-full hover:bg-black/10 transition-colors"
-                >
-                  <X size={12} />
-                </button>
-              )}
-
-              {/* Content */}
-              <div className="flex items-start gap-2">
-                {showIcon && getIcon()}
-                <div className="flex-1">
-                  {title && (
-                    <div className="font-medium mb-1 flex items-center gap-1">
-                      {title}
-                    </div>
-                  )}
-                  <div className="leading-relaxed">
-                    {content}
-                  </div>
-                </div>
-              </div>
-
-              {/* Animated border glow */}
-              <motion.div
-                className="absolute inset-0 rounded-lg border-2 border-blue-400/20"
-                animate={{
-                  borderColor: [
-                    'rgba(59, 130, 246, 0.2)',
-                    'rgba(59, 130, 246, 0.4)',
-                    'rgba(59, 130, 246, 0.2)'
-                  ]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </>
+  // If no children, render as a standalone help icon
+  return (
+    <div
+      ref={triggerRef}
+      className={`
+        relative inline-flex items-center justify-center
+        w-5 h-5 rounded-full cursor-help
+        text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300
+        help-button-glow
+        ${className}
+      `}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
+      aria-label="Help"
+    >
+      {getIcon()}
+      {tooltipContent}
+    </div>
   );
 };
 

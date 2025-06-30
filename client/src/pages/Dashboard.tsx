@@ -9,6 +9,9 @@ import { useAITools } from '../components/AIToolsProvider';
 import AppointmentWidget from '../components/AppointmentWidget';
 import AIToolsCard from '../components/Dashboard/AIToolsCard';
 import DealAnalytics from '../components/DealAnalytics';
+import HelpTooltip from '../components/ui/HelpTooltip';
+import ContextualTour from '../components/ui/ContextualTour';
+import { useHelp, tourData } from '../contexts/HelpContext';
 import { 
   BarChart3, 
   TrendingUp, 

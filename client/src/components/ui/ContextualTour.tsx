@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronLeft, X, Play, SkipForward } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
+import { useHelp } from '../../contexts/HelpContext';
 
 interface TourStep {
   id: string;
@@ -30,310 +30,283 @@ const ContextualTour: React.FC<ContextualTourProps> = ({
   onClose,
   onComplete,
   autoStart = false,
-  tourId
+  tourId,
 }) => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [targetElement, setTargetElement] = useState<HTMLElement | null>(null);
-  const [isStarted, setIsStarted] = useState(autoStart);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(autoStart);
+  const [currentTarget, setCurrentTarget] = useState<Element | null>(null);
+  const { markTourCompleted, isTourCompleted, showTours } = useHelp();
 
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
+
+  // Don't render if tours are disabled or already completed
+  if (!showTours || isTourCompleted(tourId)) {
+    return null;
+  }
+
+  const currentStep = steps[currentStepIndex];
+
+  // Find the target element for the current step
   useEffect(() => {
-    if (isOpen && isStarted && steps[currentStep]) {
-      const element = document.querySelector(steps[currentStep].target) as HTMLElement;
-      setTargetElement(element);
-      
-      if (element) {
-        // Scroll element into view
-        element.scrollIntoView({ 
-          behavior: 'smooth', 
+    if (!isOpen || !currentStep) return;
+
+    const findTarget = () => {
+      const target = document.querySelector(currentStep.target);
+      if (target) {
+        setCurrentTarget(target);
+        
+        // Add highlight class if specified
+        if (currentStep.highlight) {
+          target.classList.add('tour-highlight');
+        }
+        
+        // Scroll target into view
+        target.scrollIntoView({
+          behavior: 'smooth',
           block: 'center',
           inline: 'center'
         });
-        
-        // Add highlight class
-        if (steps[currentStep].highlight) {
-          element.classList.add('tour-highlight');
-        }
       }
+    };
+
+    // Try to find target immediately
+    findTarget();
+    
+    // If not found, retry after a delay (for dynamic content)
+    if (!currentTarget) {
+      const retryTimeout = setTimeout(findTarget, 100);
+      return () => clearTimeout(retryTimeout);
+    }
+  }, [currentStep, isOpen, currentTarget]);
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (isPlaying && isOpen && currentStepIndex < steps.length - 1) {
+      intervalRef.current = setTimeout(() => {
+        nextStep();
+      }, 4000); // 4 seconds per step
     }
 
     return () => {
-      // Clean up highlight
-      if (targetElement && steps[currentStep]?.highlight) {
-        targetElement.classList.remove('tour-highlight');
+      if (intervalRef.current) {
+        clearTimeout(intervalRef.current);
       }
     };
-  }, [currentStep, isOpen, isStarted, steps, targetElement]);
+  }, [isPlaying, isOpen, currentStepIndex]);
+
+  // Cleanup highlights when tour closes or step changes
+  useEffect(() => {
+    return () => {
+      // Remove highlight from previous target
+      if (currentTarget && currentStep?.highlight) {
+        currentTarget.classList.remove('tour-highlight');
+      }
+    };
+  }, [currentStepIndex, isOpen]);
 
   const nextStep = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
+    // Remove highlight from current target
+    if (currentTarget && currentStep?.highlight) {
+      currentTarget.classList.remove('tour-highlight');
+    }
+
+    if (currentStepIndex < steps.length - 1) {
+      setCurrentStepIndex(currentStepIndex + 1);
+      setCurrentTarget(null);
     } else {
       completeTour();
     }
   };
 
   const prevStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+    // Remove highlight from current target
+    if (currentTarget && currentStep?.highlight) {
+      currentTarget.classList.remove('tour-highlight');
+    }
+
+    if (currentStepIndex > 0) {
+      setCurrentStepIndex(currentStepIndex - 1);
+      setCurrentTarget(null);
     }
   };
 
-  const skipTour = () => {
-    onClose();
-  };
-
-  const startTour = () => {
-    setIsStarted(true);
-    setCurrentStep(0);
-  };
-
   const completeTour = () => {
-    // Store completion in localStorage
-    localStorage.setItem(`tour-${tourId}-completed`, 'true');
-    setIsStarted(false);
+    // Remove highlight from current target
+    if (currentTarget && currentStep?.highlight) {
+      currentTarget.classList.remove('tour-highlight');
+    }
+
+    markTourCompleted(tourId);
     onComplete?.();
     onClose();
   };
 
-  const getTooltipPosition = () => {
-    if (!targetElement) return { x: 0, y: 0 };
+  const skipTour = () => {
+    // Remove highlight from current target
+    if (currentTarget && currentStep?.highlight) {
+      currentTarget.classList.remove('tour-highlight');
+    }
 
-    const rect = targetElement.getBoundingClientRect();
-    const placement = steps[currentStep].placement || 'bottom';
-    
-    let x = 0;
-    let y = 0;
+    onClose();
+  };
+
+  const togglePlayPause = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  const getTooltipPosition = () => {
+    if (!currentTarget) return { top: '50%', left: '50%' };
+
+    const rect = currentTarget.getBoundingClientRect();
+    const placement = currentStep.placement || 'bottom';
 
     switch (placement) {
       case 'top':
-        x = rect.left + rect.width / 2;
-        y = rect.top - 20;
-        break;
+        return {
+          top: `${rect.top - 10}px`,
+          left: `${rect.left + rect.width / 2}px`,
+          transform: 'translate(-50%, -100%)'
+        };
       case 'bottom':
-        x = rect.left + rect.width / 2;
-        y = rect.bottom + 20;
-        break;
+        return {
+          top: `${rect.bottom + 10}px`,
+          left: `${rect.left + rect.width / 2}px`,
+          transform: 'translate(-50%, 0%)'
+        };
       case 'left':
-        x = rect.left - 20;
-        y = rect.top + rect.height / 2;
-        break;
+        return {
+          top: `${rect.top + rect.height / 2}px`,
+          left: `${rect.left - 10}px`,
+          transform: 'translate(-100%, -50%)'
+        };
       case 'right':
-        x = rect.right + 20;
-        y = rect.top + rect.height / 2;
-        break;
+        return {
+          top: `${rect.top + rect.height / 2}px`,
+          left: `${rect.right + 10}px`,
+          transform: 'translate(0%, -50%)'
+        };
+      default:
+        return {
+          top: `${rect.bottom + 10}px`,
+          left: `${rect.left + rect.width / 2}px`,
+          transform: 'translate(-50%, 0%)'
+        };
     }
-
-    return { x, y };
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !currentStep) return null;
 
-  // Tour start screen
-  if (!isStarted) {
-    return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.8, opacity: 0 }}
-          className="bg-white rounded-xl p-8 max-w-md mx-4 text-center shadow-2xl"
-        >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center"
-          >
-            <Play size={32} className="text-blue-600" />
-          </motion.div>
-          
-          <h3 className="text-xl font-semibold mb-2">Welcome to Smart CRM!</h3>
-          <p className="text-gray-600 mb-6">
-            Let's take a quick tour to get you familiar with the key features. 
-            This will only take a few minutes.
-          </p>
-          
-          <div className="flex gap-3 justify-center">
-            <button
-              onClick={skipTour}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-            >
-              Skip Tour
-            </button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={startTour}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-            >
-              Start Tour
-              <ChevronRight size={16} />
-            </motion.button>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
-
-  const position = getTooltipPosition();
-  const step = steps[currentStep];
+  const tooltipStyle = getTooltipPosition();
 
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40" />
-      
-      {/* Spotlight effect */}
-      {targetElement && step.highlight && (
-        <div 
-          className="fixed pointer-events-none z-45"
-          style={{
-            left: targetElement.getBoundingClientRect().left - 8,
-            top: targetElement.getBoundingClientRect().top - 8,
-            width: targetElement.getBoundingClientRect().width + 16,
-            height: targetElement.getBoundingClientRect().height + 16,
-            boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)',
-            borderRadius: '8px'
-          }}
-        />
-      )}
+      <div
+        ref={backdropRef}
+        className="fixed inset-0 z-40 tour-backdrop"
+        onClick={skipTour}
+      />
 
-      {/* Tour tooltip */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentStep}
-          initial={{ 
-            opacity: 0, 
-            scale: 0.8,
-            x: step.placement === 'left' ? 20 : step.placement === 'right' ? -20 : 0,
-            y: step.placement === 'top' ? 20 : step.placement === 'bottom' ? -20 : 0
-          }}
-          animate={{ 
-            opacity: 1, 
-            scale: 1,
-            x: 0,
-            y: 0
-          }}
-          exit={{ 
-            opacity: 0, 
-            scale: 0.8
-          }}
-          transition={{ 
-            type: "spring", 
-            stiffness: 300, 
-            damping: 25
-          }}
-          className="fixed z-50 bg-white rounded-lg shadow-xl border max-w-sm p-6"
-          style={{
-            left: `${position.x - 150}px`,
-            top: `${position.y}px`,
-            transform: step.placement === 'left' ? 'translateX(-100%)' : 
-                      step.placement === 'right' ? 'translateX(0)' :
-                      step.placement === 'top' ? 'translateY(-100%)' : 'translateY(0)'
-          }}
-        >
-          {/* Arrow */}
-          <div
-            className={`
-              absolute w-3 h-3 bg-white border rotate-45
-              ${step.placement === 'top' ? 'bottom-[-6px] left-1/2 transform -translate-x-1/2 border-t-0 border-l-0' : ''}
-              ${step.placement === 'bottom' ? 'top-[-6px] left-1/2 transform -translate-x-1/2 border-b-0 border-r-0' : ''}
-              ${step.placement === 'left' ? 'right-[-6px] top-1/2 transform -translate-y-1/2 border-l-0 border-b-0' : ''}
-              ${step.placement === 'right' ? 'left-[-6px] top-1/2 transform -translate-y-1/2 border-r-0 border-t-0' : ''}
-            `}
-          />
-
-          {/* Close button */}
+      {/* Tour Tooltip */}
+      <div
+        className="fixed z-50 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 max-w-sm w-80 p-4 tooltip-bounce"
+        style={tooltipStyle}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+              Step {currentStepIndex + 1} of {steps.length}
+            </span>
+            <button
+              onClick={togglePlayPause}
+              className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              title={isPlaying ? 'Pause tour' : 'Play tour'}
+            >
+              {isPlaying ? (
+                <Pause className="w-3 h-3 text-gray-500" />
+              ) : (
+                <Play className="w-3 h-3 text-gray-500" />
+              )}
+            </button>
+          </div>
           <button
             onClick={skipTour}
-            className="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+            className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            title="Close tour"
           >
-            <X size={16} className="text-gray-400" />
+            <X className="w-4 h-4 text-gray-500" />
+          </button>
+        </div>
+
+        {/* Progress bar */}
+        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1 mb-4">
+          <div
+            className="bg-blue-600 h-1 rounded-full transition-all duration-300"
+            style={{ width: `${((currentStepIndex + 1) / steps.length) * 100}%` }}
+          />
+        </div>
+
+        {/* Content */}
+        <div className="mb-4">
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            {currentStep.title}
+          </h3>
+          <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+            {currentStep.content}
+          </p>
+          
+          {currentStep.action && (
+            <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-3 mb-3">
+              <p className="text-xs font-medium text-blue-800 dark:text-blue-200">
+                Try this: {currentStep.action.text}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Navigation */}
+        <div className="flex items-center justify-between">
+          <button
+            onClick={prevStep}
+            disabled={currentStepIndex === 0}
+            className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Previous
           </button>
 
-          {/* Content */}
-          <div className="pr-6">
-            <h4 className="font-semibold text-lg mb-2">{step.title}</h4>
-            <p className="text-gray-600 mb-4 leading-relaxed">{step.content}</p>
-            
-            {step.action && (
-              <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <p className="text-sm text-blue-800">
-                  <strong>Try it:</strong> {step.action.text}
-                </p>
-              </div>
+          <div className="flex gap-2">
+            {currentStepIndex === steps.length - 1 ? (
+              <button
+                onClick={completeTour}
+                className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md transition-colors"
+              >
+                Finish
+              </button>
+            ) : (
+              <button
+                onClick={nextStep}
+                className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md transition-colors"
+              >
+                Next
+                <ChevronRight className="w-4 h-4" />
+              </button>
             )}
           </div>
+        </div>
 
-          {/* Navigation */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">
-                {currentStep + 1} of {steps.length}
-              </span>
-              
-              {/* Progress dots */}
-              <div className="flex gap-1">
-                {steps.map((_, index) => (
-                  <motion.div
-                    key={index}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      index === currentStep ? 'bg-blue-600' : 
-                      index < currentStep ? 'bg-green-500' : 'bg-gray-300'
-                    }`}
-                    animate={index === currentStep ? { scale: [1, 1.2, 1] } : {}}
-                    transition={{ duration: 0.5, repeat: Infinity }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              {currentStep > 0 && (
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={prevStep}
-                  className="px-3 py-1 text-gray-600 hover:text-gray-800 transition-colors flex items-center gap-1"
-                >
-                  <ChevronLeft size={16} />
-                  Back
-                </motion.button>
-              )}
-              
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={nextStep}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1"
-              >
-                {currentStep === steps.length - 1 ? 'Finish' : 'Next'}
-                {currentStep === steps.length - 1 ? (
-                  <SkipForward size={16} />
-                ) : (
-                  <ChevronRight size={16} />
-                )}
-              </motion.button>
-            </div>
-          </div>
-
-          {/* Animated border */}
-          <motion.div
-            className="absolute inset-0 rounded-lg border-2 border-blue-400/30 pointer-events-none"
-            animate={{
-              borderColor: [
-                'rgba(59, 130, 246, 0.3)',
-                'rgba(59, 130, 246, 0.6)',
-                'rgba(59, 130, 246, 0.3)'
-              ]
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-        </motion.div>
-      </AnimatePresence>
+        {/* Skip option */}
+        <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+          <button
+            onClick={skipTour}
+            className="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+          >
+            Skip this tour
+          </button>
+        </div>
+      </div>
     </>
   );
 };

@@ -82,8 +82,9 @@ function App() {
   return (
     <TenantProvider>
       <RoleProvider>
-        <AIToolsProvider>
-          <Router>
+        <HelpProvider>
+          <AIToolsProvider>
+            <Router>
             <Routes>
               {/* Auth routes (available for future Clerk integration) */}
               <Route path="/login" element={<Login />} />
@@ -241,7 +242,8 @@ function App() {
               <Route path="/admin/white-label" element={<WhiteLabelCustomization />} />
             </Routes>
           </Router>
-        </AIToolsProvider>
+          </AIToolsProvider>
+        </HelpProvider>
       </RoleProvider>
     </TenantProvider>
   );
