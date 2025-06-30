@@ -24,8 +24,7 @@ export function AIGoalsPage() {
   const navigate = useNavigate();
   const { openTool } = useAITools();
   
-  // For now, context will be passed via props or global state
-  const context: AIGoalContext | null = null; // TODO: Implement context passing with React Router
+  // Context handling will be implemented when needed
 
   const handleGoalSelected = (goal: Goal) => {
     setSelectedGoal(goal);
@@ -105,9 +104,7 @@ export function AIGoalsPage() {
                   Context-Aware AI Execution
                 </h3>
                 <p className="text-blue-800 dark:text-blue-200">
-                  {context?.type === 'contact' && `Selected goals will be applied to contact: ${context.name}`}
-                  {context?.type === 'deal' && `Selected goals will be applied to deal: ${context.title}`}
-                  {!context && 'Ready to execute AI goals with intelligent context detection'}
+                  Ready to execute AI goals with intelligent context detection
                 </p>
               </div>
             </div>
