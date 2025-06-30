@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as edgeFunctionService from '../../services/edgeFunctionService';
-import AIToolContent from '../shared/AIToolContent';
-import { Target, CheckCircle, AlertCircle, ArrowRight, Key } from 'lucide-react';
+import StructuredAIResult from '../shared/StructuredAIResult';
+import { Target, CheckCircle, AlertCircle, ArrowRight, Key, Loader2, Mail } from 'lucide-react';
 
 const SubjectLineContent: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -132,18 +132,22 @@ Based on your inputs:
 
   return (
     <div className="space-y-6">
-      <div className="bg-rose-50 p-4 rounded-lg border border-rose-100">
-        <div className="flex items-start">
-          <Target className="text-rose-600 mt-1 mr-3 h-5 w-5" />
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-rose-50 to-pink-50 p-6 rounded-xl border border-rose-200">
+        <div className="flex items-start gap-4">
+          <div className="p-3 bg-rose-100 rounded-lg">
+            <Mail className="text-rose-600 h-6 w-6" />
+          </div>
           <div>
-            <h3 className="font-medium text-rose-800">Email Subject Line Optimizer</h3>
-            <p className="text-sm text-rose-700 mt-1">
+            <h3 className="text-lg font-semibold text-rose-800 mb-2">Email Subject Line Optimizer</h3>
+            <p className="text-rose-700">
               Generate high-converting email subject lines with performance predictions to maximize open rates and engagement.
             </p>
           </div>
         </div>
       </div>
 
+      {/* API Key Input */}
       {showApiKeyInput && (
         <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-100 mb-4">
           <div className="flex items-start">
@@ -176,26 +180,26 @@ Based on your inputs:
         </div>
       )}
 
-      <AIToolContent
-        isLoading={isLoading}
-        error={error}
-        result={result}
-        loadingMessage="Generating subject line options..."
-        resultTitle="Subject Line Recommendations"
-      >
+      {/* Main Form Section */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-3">
+          <Target className="h-6 w-6 text-rose-600" />
+          Subject Line Generator
+        </h2>
+        
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Email Purpose
             </label>
             <select
               name="purpose"
               value={formData.purpose}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-rose-500 focus:border-rose-500"
               required
             >
-              <option value="" disabled>Select purpose</option>
+              <option value="" disabled>Select email purpose</option>
               {purposeOptions.map(option => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -205,17 +209,17 @@ Based on your inputs:
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Target Audience
             </label>
             <select
               name="audience"
               value={formData.audience}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-rose-500 focus:border-rose-500"
               required
             >
-              <option value="" disabled>Select audience</option>
+              <option value="" disabled>Select target audience</option>
               {audienceOptions.map(option => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -225,14 +229,14 @@ Based on your inputs:
           </div>
           
           <div>
-            <label htmlFor="keyMessage" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="keyMessage" className="block text-sm font-medium text-gray-700 mb-2">
               Key Message or Offer
             </label>
             <textarea
               id="keyMessage"
               name="keyMessage"
               rows={3}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-rose-500 focus:border-rose-500"
               placeholder="What is the main message or value proposition of your email?"
               value={formData.keyMessage}
               onChange={handleChange}
@@ -254,14 +258,42 @@ Based on your inputs:
             <button
               type="submit"
               disabled={isLoading || !formData.purpose || !formData.audience || !formData.keyMessage}
-              className="px-4 py-2 inline-flex items-center bg-rose-600 text-white rounded-md hover:bg-rose-700 disabled:bg-rose-300 disabled:cursor-not-allowed transition-colors"
+              className="bg-gradient-to-r from-rose-600 to-pink-600 text-white py-3 px-6 rounded-lg hover:from-rose-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
             >
-              Generate Subject Lines
-              <ArrowRight className="ml-1 h-4 w-4" />
+              {isLoading ? (
+                <>
+                  <Loader2 className="animate-spin h-5 w-5" />
+                  Generating subject lines...
+                </>
+              ) : (
+                <>
+                  Generate Subject Lines
+                  <ArrowRight className="h-5 w-5" />
+                </>
+              )}
             </button>
           </div>
         </form>
-      </AIToolContent>
+      </div>
+
+      {/* Error Display */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-6">
+          <div className="flex items-center gap-3 text-red-800">
+            <AlertCircle className="h-5 w-5" />
+            <span className="font-medium">Generation Error</span>
+          </div>
+          <p className="text-red-700 mt-2">{error}</p>
+        </div>
+      )}
+
+      {/* Results Display */}
+      {result && (
+        <StructuredAIResult 
+          result={result} 
+          title="Email Subject Line Recommendations"
+        />
+      )}
     </div>
   );
 };

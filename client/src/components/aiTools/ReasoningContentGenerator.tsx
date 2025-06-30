@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useGemini } from '../../services/geminiService';
-import AIToolContent from '../shared/AIToolContent';
+import StructuredAIResult from '../shared/StructuredAIResult';
 import { 
   Brain, 
   FileText, 
@@ -11,7 +11,9 @@ import {
   Users, 
   MessageSquare,
   Sparkles,
-  Zap
+  Zap,
+  Loader2,
+  AlertTriangle
 } from 'lucide-react';
 
 interface ReasoningContentGeneratorProps {
