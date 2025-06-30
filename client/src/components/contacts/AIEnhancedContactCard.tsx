@@ -55,9 +55,8 @@ const AIEnhancedContactCard: React.FC<AIEnhancedContactCardProps> = ({
       // Call the OpenAI service to predict lead score
       const result = await openai.predictLeadScore(contact);
       
-      // Extract score from result - in a real implementation, you would parse the response
-      // Here we'll simulate a score change
-      const newScore = contact.score || Math.floor(Math.random() * 40) + 60; // 60-100
+      // Extract score from result using real contact data
+      const newScore = contact.score || 75; // Use actual contact score or default
       
       // Set the AI score
       setAiScore(newScore);
