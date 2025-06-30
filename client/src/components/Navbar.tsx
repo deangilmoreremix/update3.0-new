@@ -120,7 +120,7 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between h-16">
           {/* Logo and brand */}
-          <div className="flex items-center">
+          <div className="flex items-center" data-tour="logo">
             <Link to="/" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
               <span>Smart</span>
               <span>CRM</span>
@@ -128,7 +128,7 @@ const Navbar: React.FC = () => {
           </div>
           
           {/* Desktop navigation */}
-          <div className="hidden md:flex space-x-1">
+          <div className="hidden md:flex space-x-1" data-tour="navigation">
             {/* Main nav items */}
             <Link 
               to="/dashboard" 
@@ -179,7 +179,7 @@ const Navbar: React.FC = () => {
             </Link>
             
             {/* AI Tools dropdown */}
-            <div className="relative group inline-block">
+            <div className="relative group inline-block" data-tour="ai-tools">
               <button 
                 className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
                   isActiveParent('/ai-tools') 
@@ -719,7 +719,7 @@ const Navbar: React.FC = () => {
           </div>
           
           {/* User profile/logout */}
-          <div className="hidden md:flex items-center ml-4 relative">
+          <div className="hidden md:flex items-center ml-4 relative" data-tour="user-profile">
             <button 
               className="flex items-center space-x-2 text-gray-700 hover:text-blue-600" 
               onClick={() => setUserMenuOpen(!userMenuOpen)}

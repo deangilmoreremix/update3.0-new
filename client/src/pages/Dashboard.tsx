@@ -362,7 +362,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <header className="mb-8" data-tour="dashboard-welcome">
+      <header className="mb-8" data-tour="welcome-header">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
@@ -395,7 +395,7 @@ const Dashboard: React.FC = () => {
       </header>
       
       {/* AI Insight Panel */}
-      <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-xl shadow-sm p-6 border border-blue-100 mb-6">
+      <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-xl shadow-sm p-6 border border-blue-100 mb-6" data-tour="ai-insights">
         <div className="flex items-start">
           <div className="flex-shrink-0 p-3 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg mr-4">
             <Brain size={24} />
