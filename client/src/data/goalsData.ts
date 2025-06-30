@@ -144,6 +144,40 @@ export const aiGoalsData: GoalCategory[] = [
         realWorldExample: 'SecureDeal reduced quarterly slippage from 30% to 12%',
         successMetrics: ['Deal slippage -40%', 'Risk prediction +80%', 'Mitigation success +55%'],
         toolsNeeded: ['Risk Analytics', 'Pattern Recognition', 'Mitigation Advisor']
+      },
+      {
+        id: 'territory-optimization',
+        title: 'Territory Optimization',
+        description: 'Optimize sales territories using AI to balance workloads and maximize revenue potential.',
+        category: 'Sales',
+        priority: 'Medium',
+        complexity: 'Advanced',
+        estimatedTime: 35,
+        businessImpact: 'Increase territory revenue by 30% through optimal assignment',
+        agentsRequired: ['Territory Analyzer', 'Workload Balancer', 'Revenue Optimizer'],
+        estimatedSetupTime: '5-6 hours',
+        roi: '240%',
+        prerequisite: ['Territory data', 'Sales rep capacity', 'Customer distribution'],
+        realWorldExample: 'TerritoryPro increased overall sales efficiency by 35%',
+        successMetrics: ['Territory revenue +30%', 'Workload balance +50%', 'Travel efficiency +25%'],
+        toolsNeeded: ['Territory Analyzer', 'Workload Balancer', 'Revenue Optimizer']
+      },
+      {
+        id: 'lead-enrichment',
+        title: 'Automated Lead Enrichment',
+        description: 'Enrich lead data automatically using AI web scraping and data augmentation.',
+        category: 'Sales',
+        priority: 'High',
+        complexity: 'Intermediate',
+        estimatedTime: 20,
+        businessImpact: 'Improve lead data quality by 85% and conversion rates by 25%',
+        agentsRequired: ['Data Enricher', 'Web Scraper', 'Information Validator'],
+        estimatedSetupTime: '3-4 hours',
+        roi: '210%',
+        prerequisite: ['Lead database', 'Data sources', 'Validation rules'],
+        realWorldExample: 'EnrichCorp improved lead data completeness from 30% to 95%',
+        successMetrics: ['Data completeness +85%', 'Lead quality +60%', 'Conversion rate +25%'],
+        toolsNeeded: ['Data Enricher', 'Web Scraper', 'Information Validator']
       }
     ]
   },
@@ -272,6 +306,23 @@ export const aiGoalsData: GoalCategory[] = [
         realWorldExample: 'SEOPro increased organic traffic from 10K to 45K monthly',
         successMetrics: ['Organic traffic +80%', 'Search rankings +50%', 'Click-through +35%'],
         toolsNeeded: ['SEO Analyzer', 'Content Optimizer', 'Technical SEO']
+      },
+      {
+        id: 'brand-monitoring',
+        title: 'Real-time Brand Monitoring',
+        description: 'Monitor brand mentions and sentiment across all digital channels with instant alerts.',
+        category: 'Marketing',
+        priority: 'Medium',
+        complexity: 'Intermediate',
+        estimatedTime: 25,
+        businessImpact: 'Improve brand reputation management by 80% through real-time monitoring',
+        agentsRequired: ['Brand Monitor', 'Sentiment Tracker', 'Alert System'],
+        estimatedSetupTime: '3-4 hours',
+        roi: '180%',
+        prerequisite: ['Brand keywords', 'Social accounts', 'Alert channels'],
+        realWorldExample: 'BrandGuard detected and resolved 95% of reputation issues within 1 hour',
+        successMetrics: ['Monitoring coverage +90%', 'Response time -85%', 'Brand sentiment +30%'],
+        toolsNeeded: ['Brand Monitor', 'Sentiment Tracker', 'Alert System']
       }
     ]
   },
@@ -605,6 +656,23 @@ export const aiGoalsData: GoalCategory[] = [
         realWorldExample: 'OptimizePro increased operational efficiency by 55% in 3 months',
         successMetrics: ['Business efficiency +40%', 'Cost reduction +25%', 'Performance gains +60%'],
         toolsNeeded: ['Performance Analyzer', 'Bottleneck Detector', 'Optimization Engine']
+      },
+      {
+        id: 'financial-modeling',
+        title: 'AI Financial Modeling',
+        description: 'Create sophisticated financial models and scenarios using AI-powered analysis.',
+        category: 'Analytics',
+        priority: 'High',
+        complexity: 'Advanced',
+        estimatedTime: 50,
+        businessImpact: 'Improve financial planning accuracy by 60% through AI modeling',
+        agentsRequired: ['Financial Modeler', 'Scenario Analyzer', 'Risk Calculator'],
+        estimatedSetupTime: '7-9 hours',
+        roi: '300%',
+        prerequisite: ['Financial data', 'Business metrics', 'Market indicators'],
+        realWorldExample: 'FinanceAI created 15 scenario models vs 1 traditional per quarter',
+        successMetrics: ['Model accuracy +60%', 'Scenario coverage +1400%', 'Planning speed +80%'],
+        toolsNeeded: ['Financial Modeler', 'Scenario Analyzer', 'Risk Calculator']
       }
     ]
   },
@@ -778,6 +846,23 @@ export const aiGoalsData: GoalCategory[] = [
         toolsNeeded: ['Receipt Scanner', 'Expense Categorizer', 'Approval Router']
       },
       {
+        id: 'employee-analytics',
+        title: 'Employee Performance Analytics',
+        description: 'Analyze employee performance patterns and identify optimization opportunities.',
+        category: 'Admin',
+        priority: 'Medium',
+        complexity: 'Advanced',
+        estimatedTime: 35,
+        businessImpact: 'Improve team productivity by 45% through data-driven insights',
+        agentsRequired: ['Performance Tracker', 'Analytics Engine', 'Insight Generator'],
+        estimatedSetupTime: '5-6 hours',
+        roi: '220%',
+        prerequisite: ['HR data', 'Performance metrics', 'Team structure'],
+        realWorldExample: 'PerfAnalytics identified top performance drivers across 500 employees',
+        successMetrics: ['Productivity insights +90%', 'Performance optimization +45%', 'Retention improvement +30%'],
+        toolsNeeded: ['Performance Tracker', 'Analytics Engine', 'Insight Generator']
+      },
+      {
         id: 'contract-management',
         title: 'AI Contract Management',
         description: 'Manage contracts end-to-end with AI-powered analysis, alerts, and optimization suggestions.',
@@ -938,6 +1023,40 @@ export const aiGoalsData: GoalCategory[] = [
         realWorldExample: 'RecommendAI drove 35% of total sales through personalized suggestions',
         successMetrics: ['Sales increase by 45%', 'User engagement +60%', 'Recommendation accuracy +85%'],
         toolsNeeded: ['Recommendation AI', 'Personalization Engine', 'Behavior Analyzer']
+      },
+      {
+        id: 'knowledge-extraction',
+        title: 'Knowledge Extraction Engine',
+        description: 'Extract and structure knowledge from unstructured documents and conversations.',
+        category: 'AI-Native',
+        priority: 'Medium',
+        complexity: 'Advanced',
+        estimatedTime: 40,
+        businessImpact: 'Transform 90% of unstructured data into actionable insights',
+        agentsRequired: ['Knowledge Extractor', 'Data Structurer', 'Insight Synthesizer'],
+        estimatedSetupTime: '6-7 hours',
+        roi: '260%',
+        prerequisite: ['Document corpus', 'Knowledge taxonomy', 'Output formats'],
+        realWorldExample: 'KnowledgeAI processed 10K documents and created searchable knowledge base',
+        successMetrics: ['Knowledge extraction +90%', 'Search accuracy +80%', 'Decision speed +50%'],
+        toolsNeeded: ['Knowledge Extractor', 'Data Structurer', 'Insight Synthesizer']
+      },
+      {
+        id: 'behavioral-prediction',
+        title: 'Customer Behavior Prediction',
+        description: 'Predict customer behaviors and preferences using advanced behavioral analytics.',
+        category: 'AI-Native',
+        priority: 'High',
+        complexity: 'Advanced',
+        estimatedTime: 45,
+        businessImpact: 'Increase prediction accuracy by 75% for customer actions',
+        agentsRequired: ['Behavior Predictor', 'Pattern Analyzer', 'Preference Engine'],
+        estimatedSetupTime: '7-8 hours',
+        roi: '320%',
+        prerequisite: ['Customer data', 'Behavioral history', 'Interaction logs'],
+        realWorldExample: 'BehaviorAI predicted 87% of customer purchases 2 weeks ahead',
+        successMetrics: ['Prediction accuracy +75%', 'Customer understanding +90%', 'Personalization +65%'],
+        toolsNeeded: ['Behavior Predictor', 'Pattern Analyzer', 'Preference Engine']
       }
     ]
   }
