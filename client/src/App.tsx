@@ -66,6 +66,9 @@ import PartnerDashboard from './pages/PartnerDashboard';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import UserManagement from './pages/UserManagement';
 import WhiteLabelCustomization from './pages/WhiteLabelCustomization';
+import PartnerManagementPage from './pages/PartnerManagementPage';
+import RevenueSharingPage from './pages/RevenueSharingPage';
+import FeaturePackageManagementPage from './pages/FeaturePackageManagementPage';
 
 // Layout Components
 import Navbar from './components/Navbar';
@@ -270,6 +273,9 @@ function App() {
               <Route path="/admin/dashboard" element={<SuperAdminDashboard />} />
               <Route path="/admin/users" element={<UserManagement />} />
               <Route path="/admin/white-label" element={<WhiteLabelCustomization />} />
+              <Route path="/admin/partner-management" element={<PartnerManagementPage />} />
+              <Route path="/admin/revenue-sharing" element={<RevenueSharingPage />} />
+              <Route path="/admin/feature-packages" element={<FeaturePackageManagementPage />} />
             </Routes>
           </Router>
           </AIToolsProvider>

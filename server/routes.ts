@@ -1576,6 +1576,10 @@ Next Actions:
     }
   });
 
+  // White-label reseller platform routes
+  app.use('/api/partners', partnersRouter);
+  app.use('/api/feature-packages', featurePackagesRouter);
+
   const httpServer = createServer(app);
 
   return httpServer;
