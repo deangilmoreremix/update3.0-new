@@ -21,6 +21,21 @@ import {
 
 const router = Router();
 
+// Get all partners
+router.get('/', async (req, res) => {
+  try {
+    const allPartners = await db
+      .select()
+      .from(partners)
+      .orderBy(desc(partners.createdAt));
+
+    res.json(allPartners);
+  } catch (error) {
+    console.error('Error fetching partners:', error);
+    res.status(500).json({ error: 'Failed to fetch partners' });
+  }
+});
+
 // Get partner by Clerk organization ID
 router.get('/organization/:orgId', async (req, res) => {
   try {
