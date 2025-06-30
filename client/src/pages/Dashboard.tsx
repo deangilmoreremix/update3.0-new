@@ -793,19 +793,31 @@ const Dashboard: React.FC = () => {
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
             <div className="grid grid-cols-2 gap-3">
-              <button className="p-3 text-center bg-blue-50 hover:bg-blue-100 rounded-lg text-blue-700">
+              <Link 
+                to="/deals"
+                className="p-3 text-center bg-blue-50 hover:bg-blue-100 rounded-lg text-blue-700 transition-colors duration-200 no-underline"
+              >
                 <Plus size={20} className="mx-auto mb-1" />
                 <span className="text-sm">New Deal</span>
-              </button>
-              <button className="p-3 text-center bg-green-50 hover:bg-green-100 rounded-lg text-green-700">
+              </Link>
+              <Link 
+                to="/contacts"
+                className="p-3 text-center bg-green-50 hover:bg-green-100 rounded-lg text-green-700 transition-colors duration-200 no-underline"
+              >
                 <Plus size={20} className="mx-auto mb-1" />
                 <span className="text-sm">New Contact</span>
-              </button>
-              <button className="p-3 text-center bg-purple-50 hover:bg-purple-100 rounded-lg text-purple-700">
+              </Link>
+              <button 
+                onClick={() => openTool('meeting-scheduler')}
+                className="p-3 text-center bg-purple-50 hover:bg-purple-100 rounded-lg text-purple-700 transition-colors duration-200"
+              >
                 <Calendar size={20} className="mx-auto mb-1" />
                 <span className="text-sm">Schedule</span>
               </button>
-              <button className="p-3 text-center bg-amber-50 hover:bg-amber-100 rounded-lg text-amber-700">
+              <button 
+                onClick={() => openTool('email-composer')}
+                className="p-3 text-center bg-amber-50 hover:bg-amber-100 rounded-lg text-amber-700 transition-colors duration-200"
+              >
                 <Mail size={20} className="mx-auto mb-1" />
                 <span className="text-sm">Send Email</span>
               </button>

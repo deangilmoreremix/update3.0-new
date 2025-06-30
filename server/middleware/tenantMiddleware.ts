@@ -27,11 +27,14 @@ export const extractTenant = async (req: TenantRequest, res: Response, next: Nex
   try {
     let tenant: Tenant | undefined = undefined;
 
-    // Method 1: Extract from subdomain
+    // Method 1: Extract from subdomain (skip for Replit development environments)
     const host = req.get('host') || '';
     const subdomain = host.split('.')[0];
     
-    if (subdomain && subdomain !== 'www' && subdomain !== 'api' && subdomain !== 'localhost') {
+    // Skip tenant extraction for Replit development domains
+    const isReplitDev = host.includes('replit.dev') || host.includes('riker.replit.dev');
+    
+    if (subdomain && subdomain !== 'www' && subdomain !== 'api' && subdomain !== 'localhost' && !isReplitDev) {
       tenant = await tenantService.getTenantBySubdomain(subdomain);
     }
 
