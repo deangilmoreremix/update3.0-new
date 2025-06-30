@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Contact } from '../../types';
 import { useOpenAI } from '../../services/openaiService';
-import CustomizableAIToolbar from '../ai/CustomizableAIToolbar';
+import AIActionToolbar from '../ai/AIActionToolbar';
 import { 
   Mail, 
   Phone, 
@@ -242,14 +242,12 @@ const AIEnhancedContactCard: React.FC<AIEnhancedContactCardProps> = ({
       <div className="mt-4 pt-4 -mx-4 px-4 pb-4 bg-gradient-to-b from-gray-50/40 to-gray-50/60 border-t border-gray-100/80 rounded-b-lg">
         {/* AI Tools Section */}
         <div className="mb-4">
-          <CustomizableAIToolbar
+          <AIActionToolbar
             entityType="contact"
             entityId={contact.id}
             entityData={contact}
-            location="contact"
             layout="grid"
             size="sm"
-            className="w-full"
           />
         </div>
         
