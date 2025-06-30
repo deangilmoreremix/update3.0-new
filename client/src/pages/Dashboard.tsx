@@ -10,8 +10,9 @@ import AppointmentWidget from '../components/AppointmentWidget';
 import AIToolsCard from '../components/Dashboard/AIToolsCard';
 import DealAnalytics from '../components/DealAnalytics';
 import HelpTooltip from '../components/ui/HelpTooltip';
-import ContextualTour from '../components/ui/ContextualTour';
-import { useHelp, tourData } from '../contexts/HelpContext';
+import { ComprehensiveTour } from '../components/ui/ComprehensiveTour';
+import { useEnhancedHelp } from '../contexts/EnhancedHelpContext';
+import { dashboardTourSteps } from '../data/tourDefinitions';
 import { 
   BarChart3, 
   TrendingUp, 
@@ -427,7 +428,7 @@ const Dashboard: React.FC = () => {
       </div>
       
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6" data-tour="stats-cards">
         <div className="bg-white rounded-xl shadow-sm p-6 flex items-center">
           <div className="rounded-full p-3 mr-4 bg-gradient-to-r from-blue-50 to-blue-100">
             <Briefcase className="h-6 w-6 text-blue-600" />
@@ -870,7 +871,9 @@ const Dashboard: React.FC = () => {
       </div>
       
       {/* DealAnalytics Component */}
-      <DealAnalytics />
+      <div data-tour="pipeline-overview">
+        <DealAnalytics />
+      </div>
       
       {/* Dashboard Tour */}
       <ContextualTour

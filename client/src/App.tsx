@@ -4,6 +4,7 @@ import { AIToolsProvider } from './components/AIToolsProvider';
 import { TenantProvider } from './components/TenantProvider';
 import { RoleProvider } from './components/RoleBasedAccess';
 import { HelpProvider } from './contexts/HelpContext';
+import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
 
 // Landing Pages
 import LandingPage from './pages/Landing/LandingPage';
@@ -82,7 +83,7 @@ function App() {
   return (
     <TenantProvider>
       <RoleProvider>
-        <HelpProvider>
+        <EnhancedHelpProvider>
           <AIToolsProvider>
             <Router>
             <Routes>
@@ -243,7 +244,7 @@ function App() {
             </Routes>
           </Router>
           </AIToolsProvider>
-        </HelpProvider>
+        </EnhancedHelpProvider>
       </RoleProvider>
     </TenantProvider>
   );
