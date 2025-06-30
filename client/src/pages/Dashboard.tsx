@@ -81,7 +81,7 @@ const Dashboard: React.FC = () => {
   const { tasks, fetchTasks } = useTaskStore();
   const { fetchAppointments } = useAppointmentStore();
   const { openTool } = useAITools();
-  const { startTour, activeTour, setActiveTour } = useHelp();
+  const { showTours } = useEnhancedHelp();
   
   const gemini = useGemini();
   
@@ -371,7 +371,7 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="mt-4 md:mt-0 flex space-x-3">
             <button
-              onClick={() => startTour('dashboard')}
+              onClick={() => {/* Tour will auto-start when enabled */}}
               className="px-3 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md text-sm font-medium text-blue-700 transition-colors duration-200"
             >
               Take Tour
@@ -876,13 +876,21 @@ const Dashboard: React.FC = () => {
       </div>
       
       {/* Dashboard Tour */}
-      <ContextualTour
-        steps={tourData.dashboard.steps}
-        isOpen={activeTour === 'dashboard'}
-        onClose={() => setActiveTour(null)}
-        onComplete={() => setActiveTour(null)}
-        tourId="dashboard"
-      />
+      {showTours && (
+        <ComprehensiveTour
+          config={{
+            steps: dashboardTourSteps,
+            tourId: "dashboard",
+            defaultOpen: false,
+            showPrevNextButtons: true,
+            showCloseButton: true,
+            showNavigation: true,
+            showDots: true
+          }}
+        >
+          <div />
+        </ComprehensiveTour>
+      )}
     </div>
   );
 };
