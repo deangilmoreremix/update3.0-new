@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Goal } from '../../types/goals';
-import InteractiveGoalExplorer from '../../components/InteractiveGoalExplorerExact';
+import InteractiveGoalExplorer from '../../components/InteractiveGoalExplorer';
 import GoalExecutionModal from '../../components/GoalExecutionModalExact';
 import { aiGoalsData } from '../../data/goalsData';
 import { Button } from '../../components/ui/button';
@@ -258,10 +258,7 @@ const AIGoalsPageEnhanced: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl border border-white/50 dark:border-slate-700/50 shadow-2xl p-8">
             <InteractiveGoalExplorer 
-              aiGoalsData={aiGoalsData}
-              realMode={realMode}
-              onModeToggle={handleModeToggle}
-              onGoalSelect={handleGoalSelected}
+              onGoalSelected={handleGoalSelected}
               contextData={context}
             />
           </div>
