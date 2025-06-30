@@ -37,7 +37,8 @@ const SemanticSearchContent: React.FC = () => {
     
     try {
       // Generate embeddings for contacts
-      const contactEmbs = await embeddings.createContactEmbeddings(mockContacts);
+      const contactsArray = Object.values(contacts);
+      const contactEmbs = await embeddings.createContactEmbeddings(contactsArray);
       setContactEmbeddings(contactEmbs);
       
       // Generate embeddings for deals
@@ -79,7 +80,7 @@ const SemanticSearchContent: React.FC = () => {
       
       // Search contacts if selected
       if (searchType === 'all' || searchType === 'contacts') {
-        const contactsById = mockContacts.reduce((acc, contact) => {
+        const contactsById = Object.values(contacts).reduce((acc, contact) => {
           acc[contact.id] = contact;
           return acc;
         }, {} as Record<string, Contact>);
@@ -189,7 +190,7 @@ const SemanticSearchContent: React.FC = () => {
                 <Database size={14} className="inline mr-1" />
                 <span>
                   {isEmbeddingCreated ? (
-                    `${mockContacts.length + Object.keys(deals).length} indexed items (${mockContacts.length} contacts, ${Object.keys(deals).length} deals)`
+                    `${Object.keys(contacts).length + Object.keys(deals).length} indexed items (${Object.keys(contacts).length} contacts, ${Object.keys(deals).length} deals)`
                   ) : (
                     'Preparing search database...'
                   )}
