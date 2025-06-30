@@ -66,14 +66,14 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
 
   // Calculate stats from all goals
   useEffect(() => {
-    const allGoals = aiGoalsData.flatMap(category => category.goals);
+    const allGoals = aiGoalsData.flatMap((category: GoalCategory) => category.goals);
     setLiveStats(prev => ({
       ...prev,
       totalGoals: allGoals.length,
       completedToday: Math.floor(Math.random() * 8) + 3,
       valueGenerated: Math.floor(Math.random() * 150000) + 50000
     }));
-  }, []);
+  }, [aiGoalsData]);
 
   // Handle goal execution
   const handleExecuteGoal = async (goal: Goal) => {
@@ -119,8 +119,8 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
   };
 
   // Filter goals based on search and filters
-  const filteredGoals = aiGoalsData.reduce((acc, category) => {
-    const filteredCategoryGoals = category.goals.filter(goal => {
+  const filteredGoals = aiGoalsData.reduce((acc: GoalCategory[], category: GoalCategory) => {
+    const filteredCategoryGoals = category.goals.filter((goal: Goal) => {
       const matchesSearch = goal.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            goal.description.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === 'all' || category.id === selectedCategory;
@@ -398,7 +398,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
                   Execution Mode:
                 </div>
                 <button
-                  onClick={() => setRealMode(!realMode)}
+                  onClick={() => onModeToggle?.(!realMode)}
                   className={`px-4 py-2 rounded-xl font-medium transition-all ${
                     realMode
                       ? 'bg-red-600 text-white shadow-lg'
