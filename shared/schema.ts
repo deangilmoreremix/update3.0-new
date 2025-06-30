@@ -36,6 +36,109 @@ export const userRoles = pgTable("user_roles", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Partners table for reseller management
+export const partners = pgTable("partners", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  clerkOrganizationId: text("clerk_organization_id").notNull().unique(),
+  tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
+  companyName: text("company_name").notNull(),
+  contactEmail: text("contact_email").notNull(),
+  commissionRate: numeric("commission_rate").notNull().default("0.20"), // 20% default
+  status: text("status").notNull().default("pending"), // pending, active, suspended, cancelled
+  onboardingCompleted: boolean("onboarding_completed").default(false),
+  customDomainEnabled: boolean("custom_domain_enabled").default(false),
+  metadata: jsonb("metadata").default({}),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_partners_clerk_org").on(table.clerkOrganizationId),
+  index("idx_partners_tenant").on(table.tenantId),
+]);
+
+// Feature packages for tiered offerings
+export const featurePackages = pgTable("feature_packages", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  description: text("description"),
+  tier: text("tier").notNull(), // basic, professional, enterprise
+  price: numeric("price").notNull(),
+  billingCycle: text("billing_cycle").notNull().default("monthly"),
+  features: jsonb("features").default({}), // AI tools, analytics, etc.
+  limits: jsonb("limits").default({}), // users, storage, API calls
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Partner customers relationship
+export const partnerCustomers = pgTable("partner_customers", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  partnerId: uuid("partner_id").references(() => partners.id).notNull(),
+  clerkUserId: text("clerk_user_id").notNull(),
+  clerkOrganizationId: text("clerk_organization_id"),
+  packageId: uuid("package_id").references(() => featurePackages.id),
+  billingStatus: text("billing_status").notNull().default("active"),
+  subscriptionStart: timestamp("subscription_start").defaultNow(),
+  subscriptionEnd: timestamp("subscription_end"),
+  metadata: jsonb("metadata").default({}),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  index("idx_partner_customers_partner").on(table.partnerId),
+  index("idx_partner_customers_clerk_user").on(table.clerkUserId),
+]);
+
+// Revenue sharing records
+export const revenueSharing = pgTable("revenue_sharing", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  partnerId: uuid("partner_id").references(() => partners.id).notNull(),
+  customerId: uuid("customer_id").references(() => partnerCustomers.id).notNull(),
+  billingPeriod: text("billing_period").notNull(), // 2024-01, 2024-02
+  customerRevenue: numeric("customer_revenue").notNull(),
+  partnerCommission: numeric("partner_commission").notNull(),
+  platformFee: numeric("platform_fee").notNull(),
+  status: text("status").notNull().default("pending"), // pending, paid, disputed
+  paidAt: timestamp("paid_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => [
+  index("idx_revenue_sharing_partner").on(table.partnerId),
+  index("idx_revenue_sharing_period").on(table.billingPeriod),
+]);
+
+// Partner billing history
+export const partnerBilling = pgTable("partner_billing", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  partnerId: uuid("partner_id").references(() => partners.id).notNull(),
+  billingPeriod: text("billing_period").notNull(),
+  totalRevenue: numeric("total_revenue").notNull(),
+  totalCommission: numeric("total_commission").notNull(),
+  totalCustomers: integer("total_customers").notNull(),
+  invoiceUrl: text("invoice_url"),
+  status: text("status").notNull().default("draft"), // draft, sent, paid, overdue
+  dueDate: timestamp("due_date"),
+  paidAt: timestamp("paid_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => [
+  index("idx_partner_billing_partner").on(table.partnerId),
+  index("idx_partner_billing_period").on(table.billingPeriod),
+]);
+
+// Usage tracking for limits enforcement
+export const usageTracking = pgTable("usage_tracking", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
+  customerId: uuid("customer_id").references(() => partnerCustomers.id),
+  usageType: text("usage_type").notNull(), // storage, api_calls, users, ai_requests
+  usageValue: numeric("usage_value").notNull(),
+  billingPeriod: text("billing_period").notNull(),
+  resetDate: timestamp("reset_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => [
+  index("idx_usage_tracking_tenant").on(table.tenantId),
+  index("idx_usage_tracking_customer").on(table.customerId),
+  index("idx_usage_tracking_period").on(table.billingPeriod),
+]);
+
 // Subscription plans
 export const subscriptionPlans = pgTable("subscription_plans", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -321,6 +424,40 @@ export const insertVoiceProfileSchema = createInsertSchema(voiceProfiles).omit({
   updatedAt: true,
 });
 
+// White-label reseller schemas
+export const insertPartnerSchema = createInsertSchema(partners).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertFeaturePackageSchema = createInsertSchema(featurePackages).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPartnerCustomerSchema = createInsertSchema(partnerCustomers).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertRevenueSharingSchema = createInsertSchema(revenueSharing).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertPartnerBillingSchema = createInsertSchema(partnerBilling).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertUsageTrackingSchema = createInsertSchema(usageTracking).omit({
+  id: true,
+  createdAt: true,
+});
+
 // ============= EXPORT TYPES =============
 
 // Multi-tenant types
@@ -360,6 +497,25 @@ export type InsertContentItem = z.infer<typeof insertContentItemSchema>;
 
 export type VoiceProfile = typeof voiceProfiles.$inferSelect;
 export type InsertVoiceProfile = z.infer<typeof insertVoiceProfileSchema>;
+
+// White-label reseller types
+export type Partner = typeof partners.$inferSelect;
+export type InsertPartner = z.infer<typeof insertPartnerSchema>;
+
+export type FeaturePackage = typeof featurePackages.$inferSelect;
+export type InsertFeaturePackage = z.infer<typeof insertFeaturePackageSchema>;
+
+export type PartnerCustomer = typeof partnerCustomers.$inferSelect;
+export type InsertPartnerCustomer = z.infer<typeof insertPartnerCustomerSchema>;
+
+export type RevenueSharing = typeof revenueSharing.$inferSelect;
+export type InsertRevenueSharing = z.infer<typeof insertRevenueSharingSchema>;
+
+export type PartnerBilling = typeof partnerBilling.$inferSelect;
+export type InsertPartnerBilling = z.infer<typeof insertPartnerBillingSchema>;
+
+export type UsageTracking = typeof usageTracking.$inferSelect;
+export type InsertUsageTracking = z.infer<typeof insertUsageTrackingSchema>;
 
 // ============= FEATURE DEFINITIONS =============
 
