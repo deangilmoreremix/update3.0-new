@@ -94,6 +94,11 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
     return matchesSearch && matchesCategory && matchesPriority && matchesComplexity;
   });
 
+  // Debug logging
+  console.log('Total goals in allGoals:', allGoals.length);
+  console.log('Filtered goals count:', filteredGoals.length);
+  console.log('Filter settings:', { selectedCategory, selectedPriority, selectedComplexity, searchTerm });
+
   // Handle goal execution
   const handleExecuteGoal = async (goal: Goal) => {
     if (executingGoals.has(goal.id)) return;
