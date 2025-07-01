@@ -1,11 +1,6 @@
-// Contact module exports
-export { ContactJourneyTimeline } from './ContactJourneyTimeline';
+// Main contact components
 export { AIEnhancedContactCard } from './AIEnhancedContactCard';
+export { ContactJourneyTimeline } from './ContactJourneyTimeline';
 
-// AI Services
-export { aiEnrichmentService } from '../../services/ai/aiEnrichmentService';
-export { useOpenAI } from '../../services/ai/openaiService';
-export { geminiService } from '../../services/ai/geminiService';
-
-// Types
-export type { ContactEnrichmentData, AIProvider } from '../../services/ai/aiEnrichmentService';
+// Contact types
+export type { Contact } from '../../types/contact';

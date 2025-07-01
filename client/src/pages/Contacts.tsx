@@ -24,7 +24,7 @@ import { useDropzone } from 'react-dropzone';
 import { read, utils } from 'xlsx';
 import Fuse from 'fuse.js';
 import Select from 'react-select';
-import AIEnhancedContactCard from '../components/contacts/AIEnhancedContactCard';
+import { AIEnhancedContactCard } from '../components/contacts/AIEnhancedContactCard';
 import { 
   createColumnHelper, 
   flexRender, 

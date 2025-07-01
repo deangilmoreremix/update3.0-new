@@ -1,48 +1,46 @@
 import React from 'react';
-import Avatar from 'react-avatar';
+import { StatusIndicator } from './StatusIndicator';
 
 interface AvatarWithStatusProps {
-  src?: string;
+  src: string;
   alt: string;
   size?: 'sm' | 'md' | 'lg' | 'xl';
-  status?: 'online' | 'offline' | 'away' | 'busy';
-  className?: string;
+  status?: 'active' | 'pending' | 'inactive' | 'success' | 'warning' | 'error';
+  showStatus?: boolean;
 }
-
-const sizeMap = {
-  sm: '32',
-  md: '48',
-  lg: '64',
-  xl: '80'
-};
-
-const statusColors = {
-  online: 'bg-green-500',
-  offline: 'bg-gray-400',
-  away: 'bg-yellow-500',
-  busy: 'bg-red-500'
-};
 
 export const AvatarWithStatus: React.FC<AvatarWithStatusProps> = ({
   src,
   alt,
   size = 'md',
-  status,
-  className = ''
+  status = 'active',
+  showStatus = true
 }) => {
-  const avatarSize = sizeMap[size];
-  
+  const getSizeClass = () => {
+    switch (size) {
+      case 'sm':
+        return 'w-8 h-8';
+      case 'lg':
+        return 'w-16 h-16';
+      case 'xl':
+        return 'w-20 h-20';
+      case 'md':
+      default:
+        return 'w-12 h-12';
+    }
+  };
+
   return (
-    <div className={`relative inline-block ${className}`}>
-      <Avatar
+    <div className="relative inline-block">
+      <img
         src={src}
-        name={alt}
-        size={avatarSize}
-        round
-        className="shadow-md border-2 border-white"
+        alt={alt}
+        className={`${getSizeClass()} rounded-full object-cover border-2 border-white shadow-md`}
       />
-      {status && (
-        <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${statusColors[status]}`} />
+      {showStatus && (
+        <div className="absolute -bottom-1 -right-1">
+          <StatusIndicator status={status} size="sm" pulse />
+        </div>
       )}
     </div>
   );
