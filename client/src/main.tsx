@@ -1,11 +1,12 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react';
+import { ClerkProvider } from '@clerk/clerk-react';
 import App from './App.tsx';
 import './index.css';
 
-// Force production key to override system environment variable
-const publishableKey = 'pk_live_Y2xlcmsuc21hcnQtY3JtLnZpZGVvcmVtaXguaW8k';
+// For development in Replit, use development keys to avoid domain restrictions
+// Production keys only work on smart-crm.videoremix.io domain
+const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_Y2VudHJhbC10b3J0b2lzZS0yMS5jbGVyay5hY2NvdW50cy5kZXYk';
 
 if (!publishableKey) {
   throw new Error('Missing VITE_CLERK_PUBLISHABLE_KEY');
