@@ -5,10 +5,21 @@ export default {
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        '3xl': '1.5rem',
+      },
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+      },
+      backdropBlur: {
+        xs: '2px',
       },
       colors: {
         background: "hsl(var(--background))",
