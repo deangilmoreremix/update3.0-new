@@ -62,8 +62,7 @@ const defaultLimits = {
 };
 
 export default function FeaturePackageManager() {
-  const { userId } = useAuth();
-  const { organization } = useOrganization();
+  const { user } = useAuth();
   const [selectedPackage, setSelectedPackage] = useState<FeaturePackage | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [formData, setFormData] = useState<PackageFormData>({

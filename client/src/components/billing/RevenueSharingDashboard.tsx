@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth, useOrganization } from '@clerk/clerk-react';
+import { useAuth } from '@/hooks/useAuth';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -42,18 +42,17 @@ interface PayoutStatus {
 }
 
 export default function RevenueSharingDashboard() {
-  const { userId } = useAuth();
-  const { organization } = useOrganization();
+  const { user } = useAuth();
   const [selectedPeriod, setSelectedPeriod] = useState('last-6-months');
 
   // Fetch partner data
   const { data: partnerData } = useQuery({
-    queryKey: ['partner', organization?.id],
+    queryKey: ['partner', user?.id],
     queryFn: async () => {
-      const response = await fetch(`/api/partners/organization/${organization?.id}`);
+      const response = await fetch(`/api/partners/user/${user?.id}`);
       return response.json();
     },
-    enabled: !!organization?.id,
+    enabled: !!user?.id,
   });
 
   // Fetch revenue summary

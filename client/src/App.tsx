@@ -94,10 +94,11 @@ const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TenantProvider>
-        <RoleProvider>
-          <EnhancedHelpProvider>
-            <AIToolsProvider>
+      <AuthProvider>
+        <TenantProvider>
+          <RoleProvider>
+            <EnhancedHelpProvider>
+              <AIToolsProvider>
                 <Router>
             <Routes>
               {/* Auth routes (available for future Clerk integration) */}
@@ -342,7 +343,8 @@ function App() {
             </EnhancedHelpProvider>
           </RoleProvider>
         </TenantProvider>
-      </QueryClientProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 
