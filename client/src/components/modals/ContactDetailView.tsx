@@ -9,7 +9,7 @@ import { AIInsightsPanel } from '../contacts/AIInsightsPanel';
 import { CommunicationHub } from '../contacts/CommunicationHub';
 import { AutomationPanel } from '../contacts/AutomationPanel';
 import { ContactAnalytics } from '../contacts/ContactAnalytics';
-import { Contact } from '../../types/contact';
+import { Contact } from '../../types';
 import {
   X, Edit, Mail, Phone, Plus, MessageSquare, FileText, Calendar, MoreHorizontal,
   User, Globe, Clock, Building, Tag, Star, ExternalLink, Brain, TrendingUp,
@@ -20,34 +20,7 @@ import {
   Sparkles, Camera, Wand2
 } from 'lucide-react';
 
-interface Contact {
-  id: string;
-  firstName: string;
-  lastName: string;
-  name: string;
-  email: string;
-  phone?: string;
-  title: string;
-  company: string;
-  industry?: string;
-  avatarSrc: string;
-  sources: string[];
-  interestLevel: 'hot' | 'medium' | 'low' | 'cold';
-  status: 'active' | 'pending' | 'inactive' | 'lead' | 'prospect' | 'customer' | 'churned';
-  lastConnected?: string;
-  notes?: string;
-  aiScore?: number;
-  tags?: string[];
-  isFavorite?: boolean;
-  socialProfiles?: {
-    linkedin?: string;
-    twitter?: string;
-    website?: string;
-  };
-  customFields?: Record<string, any>;
-  createdAt: string;
-  updatedAt: string;
-}
+// Using Contact type from types/contact.ts to match exact interface structure
 
 interface ContactDetailViewProps {
   contact: Contact;

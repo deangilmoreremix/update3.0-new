@@ -6,7 +6,7 @@ import { ImportContactsModal } from './ImportContactsModal';
 import { NewContactModal } from './NewContactModal';
 import { useContactStore } from '../../store/contactStore';
 import { useOpenAI } from '../../services/openaiService';
-import { Contact } from '../../types/contact';
+import { Contact } from '../../types';
 import { AIEnhancedContactCard } from '../contacts/AIEnhancedContactCard';
 import Fuse from 'fuse.js';
 import { 
