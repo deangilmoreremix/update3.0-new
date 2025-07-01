@@ -66,7 +66,7 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
       }
     } catch (error) {
       // Only log significant errors, not network failures during development
-      console.debug('User role fetch skipped:', error.message);
+      console.debug('User role fetch skipped:', error instanceof Error ? error.message : 'Unknown error');
     } finally {
       setIsLoading(false);
     }
