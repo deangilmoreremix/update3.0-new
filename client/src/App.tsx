@@ -94,8 +94,140 @@ const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
 function App() {
   const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
+  // Handle missing Clerk key gracefully
   if (!publishableKey) {
-    throw new Error('Missing Publishable Key');
+    console.warn('Clerk authentication disabled - VITE_CLERK_PUBLISHABLE_KEY not configured');
+    
+    // Return app without Clerk wrapper for development
+    return (
+      <QueryClientProvider client={queryClient}>
+        <TenantProvider>
+          <RoleProvider>
+            <EnhancedHelpProvider>
+              <AIToolsProvider>
+                <Router>
+                  <Routes>
+                    {/* Auth routes redirect to dashboard during development */}
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+
+                    {/* Public routes */}
+                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/form/:formId" element={<FormPublic />} />
+                    <Route path="/faq" element={<FAQ />} />
+
+                    {/* All routes accessible during development */}
+                    <Route path="/dashboard" element={
+                      <AuthenticatedLayout>
+                        <Dashboard />
+                      </AuthenticatedLayout>
+                    } />
+
+                    <Route path="/contacts" element={
+                      <AuthenticatedLayout>
+                        <Contacts />
+                      </AuthenticatedLayout>
+                    } />
+
+                    <Route path="/contacts/:id" element={
+                      <AuthenticatedLayout>
+                        <ContactDetail />
+                      </AuthenticatedLayout>
+                    } />
+
+                    <Route path="/pipeline" element={
+                      <AuthenticatedLayout>
+                        <Pipeline />
+                      </AuthenticatedLayout>
+                    } />
+
+                    <Route path="/tasks" element={
+                      <AuthenticatedLayout>
+                        <Tasks />
+                      </AuthenticatedLayout>
+                    } />
+
+                    <Route path="/tasks/calendar" element={<TaskCalendarView />} />
+                    <Route path="/calendar" element={<TaskCalendarView />} />
+                    <Route path="/appointments" element={<Appointments />} />
+                    <Route path="/phone" element={<PhoneSystem />} />
+                    <Route path="/text-messages" element={<TextMessages />} />
+                    <Route path="/video-email" element={<VideoEmail />} />
+                    <Route path="/invoicing" element={<Invoicing />} />
+                    <Route path="/ai-tools" element={<AITools />} />
+                    <Route path="/sales-tools" element={<SalesTools />} />
+                    <Route path="/lead-automation" element={<LeadAutomation />} />
+                    <Route path="/circle-prospecting" element={<CircleProspecting />} />
+                    <Route path="/forms-surveys" element={<FormsAndSurveys />} />
+                    <Route path="/business-analysis" element={<BusinessAnalyzer />} />
+                    <Route path="/content-library" element={<ContentLibrary />} />
+                    <Route path="/voice-profiles" element={<VoiceProfiles />} />
+                    <Route path="/communication-hub" element={<CommunicationHub />} />
+                    <Route path="/document-center" element={<DocumentCenter />} />
+                    <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
+                    <Route path="/lead-capture" element={<LeadCapture />} />
+                    <Route path="/settings" element={<Settings />} />
+
+                    {/* Feature Pages */}
+                    <Route path="/features/ai-tools" element={<AiToolsFeaturePage />} />
+                    <Route path="/features/contacts" element={<ContactsFeaturePage />} />
+                    <Route path="/features/pipeline" element={<PipelineFeaturePage />} />
+                    <Route path="/features/ai-assistant" element={<AiAssistantFeaturePage />} />
+                    <Route path="/features/vision-analyzer" element={<VisionAnalyzerFeaturePage />} />
+                    <Route path="/features/image-generator" element={<ImageGeneratorFeaturePage />} />
+                    <Route path="/features/semantic-search" element={<SemanticSearchFeaturePage />} />
+                    <Route path="/features/function-assistant" element={<FunctionAssistantFeaturePage />} />
+                    <Route path="/features/communications" element={<CommunicationsFeaturePage />} />
+                    <Route path="/demo/goal-cards" element={<GoalCardDemo />} />
+                    <Route path="/ai-goals" element={<AIGoalsPage />} />
+                    <Route path="/partner/onboard" element={<PartnerOnboardingPage />} />
+                    <Route path="/partner/dashboard" element={
+                      <AuthenticatedLayout>
+                        <PartnerDashboard />
+                      </AuthenticatedLayout>
+                    } />
+                    <Route path="/admin/dashboard" element={
+                      <AuthenticatedLayout>
+                        <SuperAdminDashboard />
+                      </AuthenticatedLayout>
+                    } />
+                    <Route path="/admin/users" element={
+                      <AuthenticatedLayout>
+                        <UserManagement />
+                      </AuthenticatedLayout>
+                    } />
+                    <Route path="/admin/white-label" element={
+                      <AuthenticatedLayout>
+                        <WhiteLabelCustomization />
+                      </AuthenticatedLayout>
+                    } />
+                    <Route path="/admin/partner-management" element={
+                      <AuthenticatedLayout>
+                        <PartnerManagementPage />
+                      </AuthenticatedLayout>
+                    } />
+                    <Route path="/admin/revenue-sharing" element={
+                      <AuthenticatedLayout>
+                        <RevenueSharingPage />
+                      </AuthenticatedLayout>
+                    } />
+                    <Route path="/admin/feature-packages" element={
+                      <AuthenticatedLayout>
+                        <FeaturePackageManagementPage />
+                      </AuthenticatedLayout>
+                    } />
+
+                    {/* Unauthorized route */}
+                    <Route path="/unauthorized" element={<UnauthorizedPage />} />
+                  </Routes>
+                </Router>
+              </AIToolsProvider>
+            </EnhancedHelpProvider>
+          </RoleProvider>
+        </TenantProvider>
+      </QueryClientProvider>
+    );
   }
 
   return (
