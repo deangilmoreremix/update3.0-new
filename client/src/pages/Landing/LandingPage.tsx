@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import { HashLink } from 'react-router-hash-link';
 import { 
   Brain, 
@@ -49,6 +50,17 @@ import InteractiveFeaturesGrid from '../../components/Landing/InteractiveFeature
 import ParticleBackground from '../../components/Landing/ParticleBackground';
 
 const LandingPage = () => {
+  const { user, isLoaded } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect authenticated users to dashboard
+  useEffect(() => {
+    if (isLoaded && user) {
+      console.log('✅ Authenticated user detected, redirecting to dashboard');
+      navigate('/dashboard');
+    }
+  }, [isLoaded, user, navigate]);
+
   // Function to handle page initialization only once
   useEffect(() => {
     const preloadHighPriorityAssets = () => {
