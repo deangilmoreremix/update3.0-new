@@ -22,6 +22,10 @@ export interface Contact {
   };
   tags?: string[];
   userId?: string; // For Supabase association
+  // Enhanced fields for glass morphism design
+  avatar?: string;
+  isFavorite?: boolean;
+  source?: string | string[];
 }
 
 export interface Deal {

@@ -21,6 +21,7 @@ import ForgotPassword from './pages/Auth/ForgotPassword';
 // Main pages
 import Dashboard from './pages/Dashboard';
 import Contacts from './pages/Contacts';
+import ContactsNew from './pages/ContactsNew';
 import ContactDetail from './pages/ContactDetail';
 import Pipeline from './pages/Pipeline';
 import Tasks from './pages/Tasks';
