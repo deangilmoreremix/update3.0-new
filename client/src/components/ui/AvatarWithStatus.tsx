@@ -39,7 +39,7 @@ export const AvatarWithStatus: React.FC<AvatarWithStatusProps> = ({
       />
       {showStatus && (
         <div className="absolute -bottom-1 -right-1">
-          <StatusIndicator status={status} size="sm" pulse />
+          <StatusIndicator status={status} size="sm" pulsing={true} />
         </div>
       )}
     </div>
