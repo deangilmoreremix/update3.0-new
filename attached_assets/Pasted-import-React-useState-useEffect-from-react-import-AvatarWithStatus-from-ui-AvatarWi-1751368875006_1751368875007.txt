@@ -647,7 +647,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-1">
-                  {editedContact.sources && editedContact.sources.map((source, index) => (
+                  {editedContact.sources.map((source, index) => (
                     <span
                       key={index}
                       className={`
@@ -743,40 +743,218 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
           <div className="flex-1 overflow-y-auto bg-gray-50 min-h-0">
             {activeTab === 'overview' && (
               <div className="p-6 space-y-6">
+                {/* AI Enhancement Notice */}
+                {lastEnrichment && (
+                  <div className="bg-gradient-to-r from-purple-50 via-blue-50 to-green-50 border border-purple-200 rounded-xl p-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 bg-purple-500 rounded-lg">
+                        <Sparkles className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-purple-900">Contact Enhanced with AI Research</h4>
+                        <p className="text-purple-700 text-sm">
+                          This contact was enriched with additional information from OpenAI & Gemini research
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Personal Information */}
                 <div className="bg-white rounded-xl p-6 shadow-sm">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Contact Overview</h4>
-                  <p className="text-gray-600">Overview content will be displayed here.</p>
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-lg font-semibold text-gray-900 flex items-center">
+                      <User className="w-5 h-5 mr-2 text-blue-500" />
+                      Personal Information
+                    </h4>
+                    <button
+                      onClick={() => setIsEditing(!isEditing)}
+                      className="text-gray-400 hover:text-gray-600"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {[
+                      { label: 'First Name', value: editedContact.firstName || editedContact.name.split(' ')[0], icon: User, field: 'firstName' },
+                      { label: 'Last Name', value: editedContact.lastName || editedContact.name.split(' ').slice(1).join(' '), icon: User, field: 'lastName' },
+                      { label: 'Email', value: editedContact.email, icon: Mail, field: 'email' },
+                      { label: 'Phone', value: editedContact.phone || 'Not provided', icon: Phone, field: 'phone' },
+                      { label: 'Title', value: editedContact.title, icon: Building, field: 'title' },
+                      { label: 'Company', value: editedContact.company, icon: Building, field: 'company' },
+                      { label: 'Industry', value: editedContact.industry || 'Not specified', icon: Tag, field: 'industry' },
+                      { label: 'Status', value: editedContact.status, icon: Activity, field: 'status' }
+                    ].map((field, index) => {
+                      const Icon = field.icon;
+                      return (
+                        <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                              <Icon className="w-4 h-4 text-blue-600" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-700">{field.label}</p>
+                              {isEditing ? (
+                                <input
+                                  type="text"
+                                  value={editedContact[field.field as keyof Contact] as string || ''}
+                                  onChange={(e) => handleEditField(field.field, e.target.value)}
+                                  className="text-gray-900 bg-white border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                              ) : (
+                                <p className="text-gray-900">{field.value}</p>
+                              )}
+                            </div>
+                          </div>
+                          <button className="text-gray-400 hover:text-gray-600">
+                            <Edit className="w-4 h-4" />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Social Profiles */}
+                <div className="bg-white rounded-xl p-6 shadow-sm">
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-lg font-semibold text-gray-900 flex items-center">
+                      <Globe className="w-5 h-5 mr-2 text-green-500" />
+                      Social Profiles
+                    </h4>
+                    <button className="text-gray-400 hover:text-gray-600">
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {socialPlatforms.map((platform, index) => {
+                      const Icon = platform.icon;
+                      const profileUrl = editedContact.socialProfiles?.[platform.key as keyof typeof editedContact.socialProfiles];
+
+                      return (
+                        <div key={index} className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                          <div className={`${platform.color} p-2 rounded-lg`}>
+                            <Icon className="w-4 h-4 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900">{platform.name}</p>
+                            {profileUrl ? (
+                              <a href={profileUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline truncate block">
+                                View Profile
+                              </a>
+                            ) : (
+                              <p className="text-xs text-gray-500">Not connected</p>
+                            )}
+                          </div>
+                          <ExternalLink className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Custom Fields */}
+                <div className="bg-white rounded-xl p-6 shadow-sm">
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-lg font-semibold text-gray-900 flex items-center">
+                      <Database className="w-5 h-5 mr-2 text-purple-500" />
+                      Custom Fields
+                    </h4>
+                    <button
+                      onClick={() => setShowAddField(true)}
+                      className="text-gray-400 hover:text-gray-600"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {editedContact.customFields && Object.keys(editedContact.customFields).length > 0 ? (
+                    <div className="space-y-3">
+                      {Object.entries(editedContact.customFields).map(([key, value], index) => (
+                        <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+                          <div>
+                            <p className="text-sm font-medium text-gray-700">{key}</p>
+                            <p className="text-gray-900">{String(value)}</p>
+                          </div>
+                          <button className="text-gray-400 hover:text-gray-600">
+                            <Edit className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 text-sm">No custom fields added</p>
+                  )}
+
+                  {showAddField && (
+                    <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                      <div className="space-y-3">
+                        <input
+                          type="text"
+                          placeholder="Field name"
+                          value={newFieldName}
+                          onChange={(e) => setNewFieldName(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Field value"
+                          value={newFieldValue}
+                          onChange={(e) => setNewFieldValue(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <div className="flex space-x-3">
+                          <ModernButton
+                            variant="primary"
+                            size="sm"
+                            onClick={handleAddCustomField}
+                          >
+                            Add Field
+                          </ModernButton>
+                          <ModernButton
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowAddField(false)}
+                          >
+                            Cancel
+                          </ModernButton>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
 
             {activeTab === 'journey' && (
               <div className="p-6">
-                <ContactJourneyTimeline contactId={contact.id} />
+                <ContactJourneyTimeline contact={editedContact} />
               </div>
             )}
 
             {activeTab === 'analytics' && (
               <div className="p-6">
-                <ContactAnalytics contactId={contact.id} />
+                <ContactAnalytics contact={editedContact} />
               </div>
             )}
 
             {activeTab === 'communication' && (
               <div className="p-6">
-                <CommunicationHub contactId={contact.id} />
+                <CommunicationHub contact={editedContact} />
               </div>
             )}
 
             {activeTab === 'automation' && (
               <div className="p-6">
-                <AutomationPanel contactId={contact.id} />
+                <AutomationPanel contact={editedContact} />
               </div>
             )}
 
             {activeTab === 'ai-insights' && (
               <div className="p-6">
-                <AIInsightsPanel contactId={contact.id} />
+                <AIInsightsPanel contact={editedContact} />
               </div>
             )}
           </div>
