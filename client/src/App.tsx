@@ -264,7 +264,7 @@ function App() {
               <Route path="/contacts" element={
                 <UserRoute>
                   <AuthenticatedLayout>
-                    <Contacts />
+                    <ContactsNew />
                   </AuthenticatedLayout>
                 </UserRoute>
               } />
