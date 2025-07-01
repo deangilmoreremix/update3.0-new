@@ -1,5 +1,7 @@
-// AI Contact Enrichment Service - OpenAI & Gemini Integration
+// AI Contact Enrichment Service - Core service for AI-powered contact research and enhancement
+
 export interface ContactEnrichmentData {
+  // Basic Information
   firstName?: string;
   lastName?: string;
   name?: string;
@@ -8,202 +10,135 @@ export interface ContactEnrichmentData {
   title?: string;
   company?: string;
   industry?: string;
-  location?: {
-    city?: string;
-    state?: string;
-    country?: string;
-  };
+  location?: string;
+  
+  // AI Analysis Results
+  aiScore?: number;
+  interestLevel?: 'hot' | 'medium' | 'low' | 'cold';
+  sources?: string[];
+  
+  // Social Profiles
   socialProfiles?: {
     linkedin?: string;
     twitter?: string;
-    facebook?: string;
     website?: string;
   };
-  avatar?: string;
-  bio?: string;
-  notes?: string;
+  
+  // Business Intelligence
+  annualRevenue?: number;
+  employeeCount?: number;
+  leadSource?: string;
+  
+  // Enhanced Data
+  tags?: string[];
+  customFields?: Record<string, any>;
+  
+  // Analysis Metadata
   confidence?: number;
+  lastEnriched?: string;
+  enrichmentProvider?: 'openai' | 'gemini' | 'manual';
 }
 
-export interface AIProvider {
-  name: 'openai' | 'gemini';
-  enabled: boolean;
-  apiKey?: string;
+export interface EnrichmentContext {
+  searchType: 'email' | 'name' | 'linkedin' | 'auto';
+  searchQuery: {
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    company?: string;
+    linkedinUrl?: string;
+  };
+  enrichmentMode?: 'smart' | 'conservative' | 'aggressive';
 }
 
-class AIEnrichmentService {
-  private providers: AIProvider[] = [
-    { name: 'openai', enabled: true },
-    { name: 'gemini', enabled: true }
-  ];
-
-  // Simulate web search and contact enrichment
-  async enrichContactByEmail(email: string): Promise<ContactEnrichmentData> {
-    console.log(`🔍 Searching for contact information: ${email}`);
+// Mock enrichment service for development
+export const aiEnrichmentService = {
+  async enrichByEmail(email: string): Promise<ContactEnrichmentData> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
-    // Simulate AI processing time
+    // Mock enriched data based on email
+    return {
+      email,
+      firstName: email.split('@')[0].split('.')[0] || 'John',
+      lastName: email.split('@')[0].split('.')[1] || 'Doe',
+      company: email.split('@')[1]?.split('.')[0] || 'Company',
+      title: 'Senior Manager',
+      industry: 'Technology',
+      aiScore: 85,
+      interestLevel: 'medium',
+      sources: ['Email Analysis', 'AI Research'],
+      socialProfiles: {
+        linkedin: `https://linkedin.com/in/${email.split('@')[0]}`,
+        website: `https://${email.split('@')[1]}`
+      },
+      confidence: 0.85,
+      enrichmentProvider: 'openai',
+      lastEnriched: new Date().toISOString()
+    };
+  },
+
+  async enrichByName(firstName: string, lastName: string, company?: string): Promise<ContactEnrichmentData> {
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Mock enriched data based on email domain
-    const domain = email.split('@')[1];
-    const firstName = email.split('@')[0].split('.')[0];
-    const lastName = email.split('@')[0].split('.')[1] || '';
-    
-    const mockData: ContactEnrichmentData = {
-      firstName: this.capitalize(firstName),
-      lastName: this.capitalize(lastName),
-      name: `${this.capitalize(firstName)} ${this.capitalize(lastName)}`.trim(),
-      email: email,
-      phone: this.generateMockPhone(),
-      title: this.getMockTitle(domain),
-      company: this.getMockCompany(domain),
-      industry: this.getMockIndustry(domain),
-      location: this.getMockLocation(),
-      socialProfiles: this.getMockSocialProfiles(firstName, lastName, domain),
-      avatar: this.getMockAvatar(),
-      bio: `Professional with extensive experience in ${this.getMockIndustry(domain).toLowerCase()}`,
-      notes: `Contact information enriched via AI research on ${new Date().toLocaleDateString()}`,
-      confidence: Math.floor(Math.random() * 30) + 70 // 70-100% confidence
-    };
-
-    return mockData;
-  }
-
-  async enrichContactByName(firstName: string, lastName: string, company?: string): Promise<ContactEnrichmentData> {
-    console.log(`🔍 Searching for: ${firstName} ${lastName}${company ? ` at ${company}` : ''}`);
-    
-    await new Promise(resolve => setTimeout(resolve, 2500));
-    
-    const mockData: ContactEnrichmentData = {
+    return {
       firstName,
       lastName,
       name: `${firstName} ${lastName}`,
-      email: this.generateMockEmail(firstName, lastName, company),
-      phone: this.generateMockPhone(),
-      title: this.getMockTitle(company),
-      company: company || this.getMockCompany(),
-      industry: this.getMockIndustry(company),
-      location: this.getMockLocation(),
-      socialProfiles: this.getMockSocialProfiles(firstName, lastName, company),
-      avatar: this.getMockAvatar(),
-      bio: `${firstName} ${lastName} is a seasoned professional with expertise in ${this.getMockIndustry(company).toLowerCase()}`,
-      notes: `Profile researched and enriched via AI search on ${new Date().toLocaleDateString()}`,
-      confidence: Math.floor(Math.random() * 25) + 75
+      company: company || 'Unknown Company',
+      title: 'Professional',
+      industry: 'Business',
+      aiScore: 75,
+      interestLevel: 'medium',
+      sources: ['Name Research', 'AI Analysis'],
+      confidence: 0.75,
+      enrichmentProvider: 'gemini',
+      lastEnriched: new Date().toISOString()
     };
+  },
 
-    return mockData;
-  }
-
-  async enrichContactByLinkedIn(linkedinUrl: string): Promise<ContactEnrichmentData> {
-    console.log(`🔍 Analyzing LinkedIn profile: ${linkedinUrl}`);
-    
+  async enrichByLinkedIn(linkedinUrl: string): Promise<ContactEnrichmentData> {
     await new Promise(resolve => setTimeout(resolve, 1800));
     
-    const profileId = linkedinUrl.split('/in/')[1]?.replace('/', '') || 'unknown';
-    
-    const mockData: ContactEnrichmentData = {
-      firstName: this.capitalize(profileId.split('-')[0] || 'John'),
-      lastName: this.capitalize(profileId.split('-')[1] || 'Doe'),
-      name: `${this.capitalize(profileId.split('-')[0] || 'John')} ${this.capitalize(profileId.split('-')[1] || 'Doe')}`,
-      email: this.generateMockEmail(profileId.split('-')[0], profileId.split('-')[1]),
-      phone: this.generateMockPhone(),
-      title: this.getMockTitle(),
-      company: this.getMockCompany(),
-      industry: this.getMockIndustry(),
-      location: this.getMockLocation(),
-      socialProfiles: {
-        linkedin: linkedinUrl,
-        twitter: `https://twitter.com/${profileId.replace('-', '')}`,
-        website: `https://${profileId.replace('-', '')}.com`
-      },
-      avatar: this.getMockAvatar(),
-      bio: `LinkedIn professional with strong background in business development and strategy`,
-      notes: `LinkedIn profile analyzed and data extracted on ${new Date().toLocaleDateString()}`,
-      confidence: Math.floor(Math.random() * 20) + 80
-    };
-
-    return mockData;
-  }
-
-  async findContactImage(name: string, company?: string): Promise<string> {
-    console.log(`🖼️ Searching for profile image: ${name}${company ? ` at ${company}` : ''}`);
-    
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Return mock avatar
-    return this.getMockAvatar();
-  }
-
-  // Helper methods for generating mock data
-  private capitalize(str: string): string {
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-  }
-
-  private generateMockEmail(firstName: string, lastName: string, company?: string): string {
-    const domain = company ? 
-      `${company.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '')}.com` : 
-      ['gmail.com', 'outlook.com', 'yahoo.com', 'company.com'][Math.floor(Math.random() * 4)];
-    return `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${domain}`;
-  }
-
-  private generateMockPhone(): string {
-    const area = Math.floor(Math.random() * 900) + 100;
-    const exchange = Math.floor(Math.random() * 900) + 100;
-    const number = Math.floor(Math.random() * 9000) + 1000;
-    return `+1-${area}-${exchange}-${number}`;
-  }
-
-  private getMockTitle(domain?: string): string {
-    const titles = ['Senior Manager', 'Director', 'VP of Operations', 'Marketing Manager', 'Business Development', 'Sales Director', 'Product Manager', 'Executive'];
-    return titles[Math.floor(Math.random() * titles.length)];
-  }
-
-  private getMockCompany(domain?: string): string {
-    if (domain) {
-      const domainName = domain.split('.')[0];
-      return this.capitalize(domainName) + ' Corp';
-    }
-    const companies = ['Tech Solutions Inc', 'Global Enterprises', 'Innovation Labs', 'Business Partners LLC', 'Strategic Ventures'];
-    return companies[Math.floor(Math.random() * companies.length)];
-  }
-
-  private getMockIndustry(domain?: string): string {
-    const industries = ['Technology', 'Healthcare', 'Finance', 'Marketing', 'Consulting', 'Manufacturing', 'Education'];
-    return industries[Math.floor(Math.random() * industries.length)];
-  }
-
-  private getMockLocation() {
-    const locations = [
-      { city: 'New York', state: 'New York', country: 'United States' },
-      { city: 'San Francisco', state: 'California', country: 'United States' },
-      { city: 'London', state: 'England', country: 'United Kingdom' },
-      { city: 'Toronto', state: 'Ontario', country: 'Canada' },
-      { city: 'Sydney', state: 'NSW', country: 'Australia' }
-    ];
-    return locations[Math.floor(Math.random() * locations.length)];
-  }
-
-  private getMockSocialProfiles(firstName: string, lastName: string, domain?: string) {
-    const username = `${firstName.toLowerCase()}${lastName.toLowerCase()}`;
-    const companyDomain = domain ? domain.split('.')[0] : 'company';
-    
     return {
-      linkedin: `https://linkedin.com/in/${username}`,
-      twitter: `https://twitter.com/${username}`,
-      website: `https://${companyDomain}.com`
+      socialProfiles: {
+        linkedin: linkedinUrl
+      },
+      title: 'Executive',
+      industry: 'Professional Services',
+      aiScore: 90,
+      interestLevel: 'hot',
+      sources: ['LinkedIn Profile', 'AI Enhancement'],
+      confidence: 0.90,
+      enrichmentProvider: 'openai',
+      lastEnriched: new Date().toISOString()
     };
-  }
+  },
 
-  private getMockAvatar(): string {
-    const avatars = [
-      'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-      'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-      'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-      'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-      'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2'
-    ];
-    return avatars[Math.floor(Math.random() * avatars.length)];
+  async autoEnrich(context: EnrichmentContext): Promise<ContactEnrichmentData> {
+    const { searchQuery, searchType } = context;
+    
+    if (searchType === 'email' && searchQuery.email) {
+      return this.enrichByEmail(searchQuery.email);
+    }
+    
+    if (searchType === 'name' && searchQuery.firstName && searchQuery.lastName) {
+      return this.enrichByName(searchQuery.firstName, searchQuery.lastName, searchQuery.company);
+    }
+    
+    if (searchType === 'linkedin' && searchQuery.linkedinUrl) {
+      return this.enrichByLinkedIn(searchQuery.linkedinUrl);
+    }
+    
+    // Auto mode - try multiple approaches
+    if (searchQuery.email) {
+      return this.enrichByEmail(searchQuery.email);
+    }
+    
+    if (searchQuery.firstName && searchQuery.lastName) {
+      return this.enrichByName(searchQuery.firstName, searchQuery.lastName, searchQuery.company);
+    }
+    
+    throw new Error('Insufficient data for enrichment');
   }
-}
-
-export const aiEnrichmentService = new AIEnrichmentService();
+};

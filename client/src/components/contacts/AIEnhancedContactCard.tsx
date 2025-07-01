@@ -1,23 +1,29 @@
 import React, { useState } from 'react';
-import { AvatarWithStatus } from '../ui/AvatarWithStatus';
-import { CustomizableAIToolbar } from '../ui/CustomizableAIToolbar';
 import { Contact } from '../../types/contact';
+import { GlassCard } from '../ui/GlassCard';
+import { AvatarWithStatus } from '../ui/AvatarWithStatus';
+import { ModernButton } from '../ui/ModernButton';
+import { CustomizableAIToolbar } from '../ui/CustomizableAIToolbar';
 import { 
-  Edit, 
-  MoreHorizontal, 
+  Sparkles, 
+  Star, 
+  MapPin, 
+  Building, 
   Mail, 
   Phone, 
-  User, 
-  BarChart, 
-  ThumbsUp, 
-  ThumbsDown,
+  Globe,
+  Linkedin,
+  Twitter,
   ExternalLink,
-  Star,
-  Brain,
-  Loader2,
-  Sparkles,
-  Target,
-  Zap
+  TrendingUp,
+  MessageSquare,
+  Calendar,
+  FileText,
+  MoreHorizontal,
+  CheckCircle,
+  AlertCircle,
+  Clock,
+  Target
 } from 'lucide-react';
 
 interface AIEnhancedContactCardProps {
@@ -29,37 +35,6 @@ interface AIEnhancedContactCardProps {
   isAnalyzing?: boolean;
 }
 
-const interestColors = {
-  hot: 'bg-red-500',
-  medium: 'bg-yellow-500',
-  low: 'bg-blue-500',
-  cold: 'bg-gray-400'
-};
-
-const interestLabels = {
-  hot: 'Hot Client',
-  medium: 'Medium Interest',
-  low: 'Low Interest',
-  cold: 'Non Interest'
-};
-
-const sourceColors: { [key: string]: string } = {
-  'LinkedIn': 'bg-blue-600',
-  'Facebook': 'bg-blue-500',
-  'Email': 'bg-green-500',
-  'Website': 'bg-purple-500',
-  'Referral': 'bg-orange-500',
-  'Typeform': 'bg-pink-500',
-  'Cold Call': 'bg-gray-600'
-};
-
-const getScoreColor = (score: number) => {
-  if (score >= 80) return 'bg-green-500';
-  if (score >= 60) return 'bg-blue-500';
-  if (score >= 40) return 'bg-yellow-500';
-  return 'bg-red-500';
-};
-
 export const AIEnhancedContactCard: React.FC<AIEnhancedContactCardProps> = ({
   contact,
   isSelected,
@@ -68,23 +43,18 @@ export const AIEnhancedContactCard: React.FC<AIEnhancedContactCardProps> = ({
   onAnalyze,
   isAnalyzing = false
 }) => {
-  const [showAIInsights, setShowAIInsights] = useState(false);
+  const [showInsights, setShowInsights] = useState(false);
   const [localAnalyzing, setLocalAnalyzing] = useState(false);
 
-  const handleCardClick = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest('button') || (e.target as HTMLElement).closest('input')) {
-      return;
-    }
-    onClick();
-  };
-
-  const handleAnalyzeClick = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!onAnalyze || isAnalyzing || localAnalyzing) return;
+  const handleAnalyze = async () => {
+    if (!onAnalyze) return;
     
     setLocalAnalyzing(true);
     try {
-      await onAnalyze(contact);
+      const success = await onAnalyze(contact);
+      if (success) {
+        setShowInsights(true);
+      }
     } catch (error) {
       console.error('Analysis failed:', error);
     } finally {
@@ -92,260 +62,272 @@ export const AIEnhancedContactCard: React.FC<AIEnhancedContactCardProps> = ({
     }
   };
 
-  const analyzing = isAnalyzing || localAnalyzing;
+  const getInterestLevelColor = (level?: string) => {
+    switch (level) {
+      case 'hot':
+        return 'text-red-500 bg-red-50';
+      case 'medium':
+        return 'text-orange-500 bg-orange-50';
+      case 'low':
+        return 'text-yellow-500 bg-yellow-50';
+      case 'cold':
+        return 'text-blue-500 bg-blue-50';
+      default:
+        return 'text-gray-500 bg-gray-50';
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'active':
+        return 'text-green-500 bg-green-50';
+      case 'prospect':
+        return 'text-blue-500 bg-blue-50';
+      case 'customer':
+        return 'text-purple-500 bg-purple-50';
+      case 'lead':
+        return 'text-orange-500 bg-orange-50';
+      default:
+        return 'text-gray-500 bg-gray-50';
+    }
+  };
+
+  const getAIScoreColor = (score?: number) => {
+    if (!score) return 'text-gray-400';
+    if (score >= 80) return 'text-green-500';
+    if (score >= 60) return 'text-orange-500';
+    return 'text-red-500';
+  };
+
+  const formatLastConnected = (date?: string) => {
+    if (!date) return 'Never';
+    return new Date(date).toLocaleDateString();
+  };
 
   return (
-    <div
-      onClick={handleCardClick}
-      className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group relative border border-gray-200 hover:border-gray-300 overflow-hidden"
+    <GlassCard 
+      className={`
+        p-6 transition-all duration-200 cursor-pointer
+        ${isSelected ? 'ring-2 ring-blue-500 bg-blue-50/50' : ''}
+        hover:shadow-lg
+      `}
+      onClick={onClick}
     >
-      {/* Selection Checkbox */}
-      <div className="absolute top-4 left-4 z-10">
-        <input
-          type="checkbox"
-          checked={isSelected}
-          onChange={(e) => {
-            e.stopPropagation();
-            onSelect();
-          }}
-          className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 bg-white border-gray-300"
-        />
-      </div>
-
-      {/* Header Actions */}
-      <div className="absolute top-4 right-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-        {/* AI Analysis Button - Prominently Featured */}
-        {onAnalyze && (
-          <button 
-            onClick={handleAnalyzeClick}
-            disabled={analyzing}
-            className={`p-2 rounded-lg transition-all duration-200 relative ${
-              contact.aiScore 
-                ? 'bg-purple-100 text-purple-600 hover:bg-purple-200' 
-                : 'bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 shadow-lg'
-            }`}
-            title={contact.aiScore ? 'Re-analyze with AI' : 'Analyze with AI'}
-          >
-            {analyzing ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Brain className="w-4 h-4" />
-            )}
-            {!contact.aiScore && !analyzing && (
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
-            )}
-          </button>
-        )}
-        
-        <button 
-          onClick={(e) => {
-            e.stopPropagation();
-            // Handle edit action
-          }}
-          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <Edit className="w-3 h-3" />
-        </button>
-        <button 
-          onClick={(e) => {
-            e.stopPropagation();
-            // Handle more actions
-          }}
-          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <MoreHorizontal className="w-3 h-3" />
-        </button>
-      </div>
-
-      <div className="p-6">
-        {/* Avatar and AI Score Section */}
-        <div className="flex items-start justify-between mb-4 mt-4">
-          <div className="text-center flex-1">
-            <div className="relative inline-block mb-3">
-              <AvatarWithStatus
-                src={contact.avatarSrc}
-                alt={contact.name}
-                size="lg"
-                status={contact.status === 'lead' ? 'pending' : contact.status === 'prospect' ? 'warning' : contact.status === 'customer' ? 'success' : 'inactive'}
-              />
-              
-              {/* Analysis Loading Indicator */}
-              {analyzing && (
-                <div className="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center">
-                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                </div>
+      {/* Header Section */}
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center space-x-4">
+          <AvatarWithStatus
+            src={contact.avatarSrc || contact.avatar || '/api/placeholder/avatar.jpg'}
+            alt={contact.name}
+            size="lg"
+            status={contact.status === 'active' ? 'active' : 'inactive'}
+          />
+          
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center space-x-2">
+              <h3 className="text-lg font-semibold text-gray-900 truncate">
+                {contact.firstName} {contact.lastName}
+              </h3>
+              {contact.isFavorite && (
+                <Star className="w-4 h-4 text-yellow-500 fill-current" />
               )}
             </div>
-            <h3 className="text-gray-900 font-semibold text-lg mb-1 group-hover:text-blue-600 transition-colors">
-              {contact.name}
-            </h3>
-            <p className="text-gray-600 text-sm">{contact.title}</p>
-            <p className="text-gray-500 text-xs">{contact.company}</p>
+            
+            <p className="text-sm text-gray-600 truncate">
+              {contact.title} {contact.title && contact.company && '•'} {contact.company}
+            </p>
+            
+            <div className="flex items-center space-x-2 mt-1">
+              <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(contact.status)}`}>
+                {contact.status}
+              </span>
+              
+              {contact.interestLevel && (
+                <span className={`px-2 py-1 text-xs rounded-full ${getInterestLevelColor(contact.interestLevel)}`}>
+                  {contact.interestLevel}
+                </span>
+              )}
+            </div>
           </div>
+        </div>
+
+        <div className="flex flex-col items-end space-y-2">
+          {contact.aiScore && (
+            <div className={`text-right ${getAIScoreColor(contact.aiScore)}`}>
+              <div className="text-lg font-bold">{contact.aiScore}</div>
+              <div className="text-xs text-gray-500">AI Score</div>
+            </div>
+          )}
           
-          {/* AI Score Display */}
-          <div className="flex flex-col items-center space-y-2">
-            {contact.aiScore ? (
-              <div className={`h-12 w-12 rounded-full ${getScoreColor(contact.aiScore)} text-white flex items-center justify-center font-bold text-lg shadow-lg ring-2 ring-white relative`}>
-                {contact.aiScore}
-                <Sparkles className="absolute -top-1 -right-1 w-3 h-3 text-yellow-300" />
-              </div>
-            ) : (
-              <button
-                onClick={handleAnalyzeClick}
-                disabled={analyzing}
-                className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white flex items-center justify-center font-bold text-lg shadow-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 hover:scale-110 relative"
-                title="Click to get AI score"
-              >
-                {analyzing ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <Brain className="w-5 h-5" />
-                )}
-                {!analyzing && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse">
-                    <div className="absolute inset-0 bg-yellow-400 rounded-full animate-ping"></div>
-                  </div>
-                )}
-              </button>
-            )}
-            <span className="text-xs text-gray-500 font-medium">
-              {contact.aiScore ? 'AI Score' : 'Click to Score'}
-            </span>
+          <ModernButton
+            variant="outline"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect();
+            }}
+            className="opacity-60 hover:opacity-100"
+          >
+            {isSelected ? <CheckCircle className="w-4 h-4" /> : <Target className="w-4 h-4" />}
+          </ModernButton>
+        </div>
+      </div>
+
+      {/* Contact Information */}
+      <div className="space-y-2 mb-4">
+        {contact.email && (
+          <div className="flex items-center space-x-2 text-sm text-gray-600">
+            <Mail className="w-4 h-4" />
+            <span className="truncate">{contact.email}</span>
           </div>
-        </div>
+        )}
+        
+        {contact.phone && (
+          <div className="flex items-center space-x-2 text-sm text-gray-600">
+            <Phone className="w-4 h-4" />
+            <span>{contact.phone}</span>
+          </div>
+        )}
+        
+        {contact.location && (
+          <div className="flex items-center space-x-2 text-sm text-gray-600">
+            <MapPin className="w-4 h-4" />
+            <span className="truncate">{contact.location}</span>
+          </div>
+        )}
+      </div>
 
-        {/* Interest Level */}
-        <div className="flex items-center justify-center space-x-2 mb-4">
-          <div className={`w-2 h-2 rounded-full ${interestColors[contact.interestLevel]} animate-pulse`} />
-          <span className="text-xs text-gray-600 font-medium">
-            {interestLabels[contact.interestLevel]}
-          </span>
-        </div>
-
-        {/* Sources */}
+      {/* Data Sources */}
+      {contact.sources && contact.sources.length > 0 && (
         <div className="mb-4">
-          <p className="text-xs text-gray-500 mb-2 text-center">Source</p>
-          <div className="flex justify-center flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1">
             {contact.sources.map((source, index) => (
-              <span
+              <span 
                 key={index}
-                className={`
-                  ${sourceColors[source] || 'bg-gray-600'} 
-                  text-white text-xs px-2 py-1 rounded-md font-medium hover:scale-110 transition-transform cursor-pointer
-                `}
+                className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded"
               >
                 {source}
               </span>
             ))}
           </div>
         </div>
+      )}
 
-        {/* Interest Level Dots */}
-        <div className="flex items-center justify-center space-x-1 mb-4">
-          {Array.from({ length: 5 }, (_, i) => {
-            const isActive = 
-              (contact.interestLevel === 'hot' && i < 5) ||
-              (contact.interestLevel === 'medium' && i < 3) ||
-              (contact.interestLevel === 'low' && i < 2) ||
-              (contact.interestLevel === 'cold' && i < 1);
-            
-            return (
-              <div
-                key={i}
-                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                  isActive 
-                    ? `${interestColors[contact.interestLevel]} shadow-lg` 
-                    : 'bg-gray-300 hover:bg-gray-400'
-                }`}
-              />
-            );
-          })}
+      {/* Social Profiles */}
+      {contact.socialProfiles && (
+        <div className="flex items-center space-x-2 mb-4">
+          {contact.socialProfiles.linkedin && (
+            <a
+              href={contact.socialProfiles.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1 text-blue-600 hover:bg-blue-50 rounded"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Linkedin className="w-4 h-4" />
+            </a>
+          )}
+          
+          {contact.socialProfiles.twitter && (
+            <a
+              href={contact.socialProfiles.twitter}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1 text-blue-400 hover:bg-blue-50 rounded"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Twitter className="w-4 h-4" />
+            </a>
+          )}
+          
+          {contact.socialProfiles.website && (
+            <a
+              href={contact.socialProfiles.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1 text-gray-600 hover:bg-gray-50 rounded"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Globe className="w-4 h-4" />
+            </a>
+          )}
         </div>
+      )}
 
-        {/* AI Insights Section */}
-        {contact.aiScore && (
-          <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
-            <div className="flex justify-between items-center mb-2">
-              <h4 className="text-sm font-medium text-gray-900 flex items-center">
-                <BarChart className="w-4 h-4 mr-2 text-blue-500" />
-                AI Insights
-              </h4>
-              <div className="flex space-x-1">
-                <button className="p-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-600">
-                  <ThumbsUp className="w-3 h-3" />
-                </button>
-                <button className="p-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-600">
-                  <ThumbsDown className="w-3 h-3" />
-                </button>
+      {/* Tags */}
+      {contact.tags && contact.tags.length > 0 && (
+        <div className="mb-4">
+          <div className="flex flex-wrap gap-1">
+            {contact.tags.map((tag, index) => (
+              <span 
+                key={index}
+                className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded-full"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Last Connected */}
+      <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+        <span className="flex items-center space-x-1">
+          <Clock className="w-3 h-3" />
+          <span>Last: {formatLastConnected(contact.lastConnected)}</span>
+        </span>
+        
+        {contact.createdAt && (
+          <span>Added: {new Date(contact.createdAt).toLocaleDateString()}</span>
+        )}
+      </div>
+
+      {/* AI Analysis Section */}
+      {onAnalyze && (
+        <div className="border-t pt-4 space-y-3">
+          <ModernButton
+            variant="glass"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAnalyze();
+            }}
+            loading={isAnalyzing || localAnalyzing}
+            disabled={isAnalyzing || localAnalyzing}
+            className="w-full"
+          >
+            <Sparkles className="w-4 h-4 mr-2" />
+            {isAnalyzing || localAnalyzing ? 'Analyzing...' : 'AI Analysis'}
+          </ModernButton>
+
+          {showInsights && (
+            <div className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-100">
+              <div className="flex items-center space-x-2 mb-2">
+                <Sparkles className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-900">AI Insights</span>
+              </div>
+              <div className="text-xs text-blue-800 space-y-1">
+                <div>• High engagement potential detected</div>
+                <div>• Optimal contact time: Weekday mornings</div>
+                <div>• Recommended approach: Professional email</div>
               </div>
             </div>
-            <p className="text-xs text-gray-700">
-              {contact.aiScore >= 80 ? 'High conversion potential - prioritize for immediate follow-up.' :
-               contact.aiScore >= 60 ? 'Good engagement potential - schedule follow-up within 48 hours.' :
-               contact.aiScore >= 40 ? 'Moderate interest - nurture with valuable content.' :
-               'Low engagement - consider re-qualification.'}
-            </p>
-            <div className="mt-2 flex items-center space-x-1">
-              <Sparkles className="w-3 h-3 text-purple-500" />
-              <span className="text-xs text-purple-700 font-medium">AI-powered analysis</span>
-            </div>
-          </div>
-        )}
-
-        {/* AI Tools Section */}
-        {contact.aiScore && (
-          <div className="mb-4">
-            <CustomizableAIToolbar
-              entityType="contact"
-              entityId={contact.id}
-              entityData={contact}
-              location="contactCards"
-              layout="grid"
-              size="sm"
-              showCustomizeButton={false}
-            />
-          </div>
-        )}
-
-        {/* Traditional Action Buttons */}
-        <div className="grid grid-cols-3 gap-1.5">
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              // Handle email action
-            }}
-            className="flex items-center justify-center py-1.5 px-2 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 rounded-full hover:from-blue-100 hover:to-blue-200 text-xs font-medium transition-all duration-200 border border-blue-200/50 shadow-sm"
-          >
-            <Mail className="w-3 h-3 mr-1" /> Email
-          </button>
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              // Handle call action
-            }}
-            className="flex items-center justify-center py-1.5 px-2 bg-gradient-to-r from-green-50 to-green-100 text-green-700 rounded-full hover:from-green-100 hover:to-green-200 text-xs font-medium transition-all duration-200 border border-green-200/50 shadow-sm"
-          >
-            <Phone className="w-3 h-3 mr-1" /> Call
-          </button>
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              onClick();
-            }}
-            className="flex items-center justify-center py-1.5 px-2 bg-gradient-to-r from-purple-50 to-purple-100 text-purple-700 rounded-full hover:from-purple-100 hover:to-purple-200 text-xs font-medium transition-all duration-200 border border-purple-200/50 shadow-sm"
-          >
-            <User className="w-3 h-3 mr-1" /> View
-          </button>
+          )}
         </div>
+      )}
 
-        {/* Click indicator */}
-        <div className="mt-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <p className="text-xs text-blue-500 font-medium">
-            {contact.aiScore ? 'Click to view details' : 'Click AI button to score • Click card for details'}
-          </p>
-        </div>
+      {/* AI Action Toolbar */}
+      <div className="border-t pt-4">
+        <CustomizableAIToolbar
+          entityType="contact"
+          entityId={contact.id}
+          entityData={contact}
+          location="contact-card"
+          layout="grid"
+          size="sm"
+          showCustomizeButton={false}
+        />
       </div>
-    </div>
+    </GlassCard>
   );
 };

@@ -98,7 +98,7 @@ const defaultQuickActions = [
 ];
 
 const QuickAIButton: React.FC<QuickAIButtonProps> = ({
-  icon: IconComponent,
+  icon: Icon,
   label,
   toolName,
   entityType,
@@ -113,28 +113,34 @@ const QuickAIButton: React.FC<QuickAIButtonProps> = ({
     if (onClick) {
       onClick();
     } else {
-      // Handle AI tool execution
-      console.log(`Executing ${toolName} for ${entityType} ${entityId}`, entityData);
+      // Default behavior - could integrate with AI tools provider
+      console.log(`AI Tool: ${toolName} for ${entityType}:${entityId}`, entityData);
     }
   };
 
-  const sizeClasses = size === 'sm' ? 'p-2 text-xs' : 'p-3 text-sm';
-  const variantClasses = variant === 'primary' 
-    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700' 
-    : 'bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 hover:from-gray-100 hover:to-gray-200';
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-3 py-2 text-sm'
+  };
+
+  const variantClasses = {
+    primary: 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700',
+    secondary: 'bg-white/70 text-gray-700 border border-gray-200 hover:bg-white hover:shadow-md'
+  };
 
   return (
     <button
       onClick={handleClick}
       className={`
-        ${sizeClasses} ${variantClasses} ${className}
-        flex flex-col items-center justify-center rounded-lg font-medium transition-all duration-200 
-        border shadow-sm hover:shadow-md hover:scale-105 min-h-[3rem]
-        ${variant === 'primary' ? 'border-blue-300/50' : 'border-gray-200/50'}
+        ${sizeClasses[size]}
+        ${variantClasses[variant]}
+        rounded-full font-medium transition-all duration-200
+        flex items-center space-x-1 backdrop-blur-sm
+        ${className}
       `}
     >
-      <IconComponent size={size === 'sm' ? 12 : 16} className="mb-1" />
-      <span className="leading-tight text-center">{label}</span>
+      <Icon className="w-3 h-3" />
+      <span>{label}</span>
     </button>
   );
 };
@@ -144,22 +150,33 @@ export const AIGoalsButton: React.FC<{
   entityId: string;
   entityData: any;
   size?: 'sm' | 'md';
-  variant?: 'primary' | 'secondary';
   className?: string;
-}> = ({ entityType, entityId, entityData, size = 'sm', variant = 'primary', className = '' }) => {
+}> = ({ entityType, entityId, entityData, size = 'md', className = '' }) => {
+  const handleGoalsClick = () => {
+    // Navigate to AI Goals with pre-populated context
+    console.log(`AI Goals for ${entityType}:${entityId}`, entityData);
+  };
+
+  const sizeClasses = {
+    sm: 'px-3 py-2 text-sm',
+    md: 'px-4 py-2 text-base'
+  };
+
   return (
     <button
+      onClick={handleGoalsClick}
       className={`
+        ${sizeClasses[size]}
+        bg-gradient-to-r from-purple-500 to-pink-600 text-white
+        hover:from-purple-600 hover:to-pink-700
+        rounded-full font-medium transition-all duration-200
+        flex items-center space-x-2 backdrop-blur-sm shadow-md
+        hover:shadow-lg w-full justify-center
         ${className}
-        flex items-center justify-center py-2 px-3 
-        bg-gradient-to-r from-indigo-500 to-purple-500 text-white 
-        rounded-lg hover:from-indigo-600 hover:to-purple-600 
-        ${size === 'sm' ? 'text-sm' : 'text-base'} font-medium 
-        transition-all duration-200 border border-indigo-300/50 shadow-sm hover:shadow-md hover:scale-105
       `}
     >
-      <Target size={size === 'sm' ? 14 : 16} className="mr-2" />
-      AI Goals
+      <Brain className="w-4 h-4" />
+      <span>AI Goals</span>
     </button>
   );
 };
@@ -173,25 +190,27 @@ export const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
   size,
   showCustomizeButton = true
 }) => {
-  const [showCustomizeModal, setShowCustomizeModal] = useState(false);
-  const [customQuickActions, setCustomQuickActions] = useState(defaultQuickActions);
+  const [isCustomizing, setIsCustomizing] = useState(false);
+
+  const layoutClasses = {
+    grid: 'grid grid-cols-2 gap-2',
+    row: 'flex flex-wrap gap-2'
+  };
 
   return (
     <div className="space-y-3">
-      {/* AI Goals Button */}
+      {/* AI Goals Button - Full Width */}
       <AIGoalsButton
         entityType={entityType}
         entityId={entityId}
         entityData={entityData}
         size={size}
-        variant="primary"
-        className="w-full justify-center"
       />
 
-      {/* Quick AI Actions Grid */}
-      <div className="grid grid-cols-2 gap-1.5">
-        {customQuickActions.map((action, index) => {
-          const IconComponent = iconMap[action.icon as keyof typeof iconMap];
+      {/* Quick Actions - Grid Layout */}
+      <div className={layoutClasses[layout]}>
+        {defaultQuickActions.map((action, index) => {
+          const IconComponent = iconMap[action.icon];
           return (
             <QuickAIButton
               key={index}
@@ -203,7 +222,6 @@ export const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
               entityData={entityData}
               size={size}
               variant={action.variant as 'primary' | 'secondary'}
-              className="w-full justify-center text-center"
             />
           );
         })}
@@ -211,21 +229,27 @@ export const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
 
       {/* Customize Button */}
       {showCustomizeButton && (
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => setShowCustomizeModal(true)}
-            className="flex-1 flex items-center justify-center py-2 px-3 bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 rounded-lg hover:from-indigo-100 hover:to-purple-100 text-sm font-medium transition-all duration-200 border border-indigo-200/50 shadow-sm border-dashed mr-2"
-          >
-            <Plus size={14} className="mr-2" />
-            Add Custom AI Goals
-          </button>
-          <button
-            onClick={() => setShowCustomizeModal(true)}
-            className="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-            title="Customize buttons"
-          >
-            <Settings size={16} />
-          </button>
+        <button
+          onClick={() => setIsCustomizing(!isCustomizing)}
+          className="w-full px-2 py-1 text-xs text-gray-500 hover:text-gray-700 border border-dashed border-gray-300 hover:border-gray-400 rounded transition-colors"
+        >
+          <Settings className="w-3 h-3 inline mr-1" />
+          Customize Tools
+        </button>
+      )}
+
+      {/* Customization Panel */}
+      {isCustomizing && (
+        <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 space-y-2">
+          <div className="text-xs font-medium text-gray-700 mb-2">Available AI Tools</div>
+          <div className="grid grid-cols-2 gap-1 text-xs">
+            <button className="p-1 text-left hover:bg-white rounded">+ Lead Scoring</button>
+            <button className="p-1 text-left hover:bg-white rounded">+ Risk Analysis</button>
+            <button className="p-1 text-left hover:bg-white rounded">+ Email AI</button>
+            <button className="p-1 text-left hover:bg-white rounded">+ Proposal Gen</button>
+            <button className="p-1 text-left hover:bg-white rounded">+ Next Action</button>
+            <button className="p-1 text-left hover:bg-white rounded">+ Insights</button>
+          </div>
         </div>
       )}
     </div>
