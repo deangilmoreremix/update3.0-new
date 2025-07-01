@@ -92,12 +92,13 @@ const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TenantProvider>
-        <RoleProvider>
-          <EnhancedHelpProvider>
-            <AIToolsProvider>
-              <Router>
+    <ClerkProvider>
+      <QueryClientProvider client={queryClient}>
+        <TenantProvider>
+          <RoleProvider>
+            <EnhancedHelpProvider>
+              <AIToolsProvider>
+                <Router>
             <Routes>
               {/* Auth routes (available for future Clerk integration) */}
               <Route path="/login" element={<Login />} />
@@ -109,35 +110,45 @@ function App() {
               <Route path="/form/:formId" element={<FormPublic />} />
               <Route path="/faq" element={<FAQ />} />
               
-              {/* Protected routes (temporarily open for development) */}
+              {/* Protected routes with role-based access */}
               <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
+                <UserRoute>
+                  <AuthenticatedLayout>
+                    <Dashboard />
+                  </AuthenticatedLayout>
+                </UserRoute>
               } />
               
               <Route path="/contacts" element={
-                <ProtectedRoute>
-                  <Contacts />
-                </ProtectedRoute>
+                <UserRoute>
+                  <AuthenticatedLayout>
+                    <Contacts />
+                  </AuthenticatedLayout>
+                </UserRoute>
               } />
               
               <Route path="/contacts/:id" element={
-                <ProtectedRoute>
-                  <ContactDetail />
-                </ProtectedRoute>
+                <UserRoute>
+                  <AuthenticatedLayout>
+                    <ContactDetail />
+                  </AuthenticatedLayout>
+                </UserRoute>
               } />
               
               <Route path="/pipeline" element={
-                <ProtectedRoute>
-                  <Pipeline />
-                </ProtectedRoute>
+                <UserRoute>
+                  <AuthenticatedLayout>
+                    <Pipeline />
+                  </AuthenticatedLayout>
+                </UserRoute>
               } />
               
               <Route path="/tasks" element={
-                <ProtectedRoute>
-                  <Tasks />
-                </ProtectedRoute>
+                <UserRoute>
+                  <AuthenticatedLayout>
+                    <Tasks />
+                  </AuthenticatedLayout>
+                </UserRoute>
               } />
               
               <Route path="/tasks/calendar" element={
@@ -273,20 +284,66 @@ function App() {
               <Route path="/demo/goal-cards" element={<GoalCardDemo />} />
               <Route path="/ai-goals" element={<AIGoalsPage />} />
               <Route path="/partner/onboard" element={<PartnerOnboardingPage />} />
-              <Route path="/partner/dashboard" element={<PartnerDashboard />} />
-              <Route path="/admin/dashboard" element={<SuperAdminDashboard />} />
-              <Route path="/admin/users" element={<UserManagement />} />
-              <Route path="/admin/white-label" element={<WhiteLabelCustomization />} />
-              <Route path="/admin/partner-management" element={<PartnerManagementPage />} />
-              <Route path="/admin/revenue-sharing" element={<RevenueSharingPage />} />
-              <Route path="/admin/feature-packages" element={<FeaturePackageManagementPage />} />
+              <Route path="/partner/dashboard" element={
+                <ResellerRoute>
+                  <AuthenticatedLayout>
+                    <PartnerDashboard />
+                  </AuthenticatedLayout>
+                </ResellerRoute>
+              } />
+              <Route path="/admin/dashboard" element={
+                <SuperAdminRoute>
+                  <AuthenticatedLayout>
+                    <SuperAdminDashboard />
+                  </AuthenticatedLayout>
+                </SuperAdminRoute>
+              } />
+              <Route path="/admin/users" element={
+                <SuperAdminRoute>
+                  <AuthenticatedLayout>
+                    <UserManagement />
+                  </AuthenticatedLayout>
+                </SuperAdminRoute>
+              } />
+              <Route path="/admin/white-label" element={
+                <SuperAdminRoute>
+                  <AuthenticatedLayout>
+                    <WhiteLabelCustomization />
+                  </AuthenticatedLayout>
+                </SuperAdminRoute>
+              } />
+              <Route path="/admin/partner-management" element={
+                <SuperAdminRoute>
+                  <AuthenticatedLayout>
+                    <PartnerManagementPage />
+                  </AuthenticatedLayout>
+                </SuperAdminRoute>
+              } />
+              <Route path="/admin/revenue-sharing" element={
+                <SuperAdminRoute>
+                  <AuthenticatedLayout>
+                    <RevenueSharingPage />
+                  </AuthenticatedLayout>
+                </SuperAdminRoute>
+              } />
+              <Route path="/admin/feature-packages" element={
+                <SuperAdminRoute>
+                  <AuthenticatedLayout>
+                    <FeaturePackageManagementPage />
+                  </AuthenticatedLayout>
+                </SuperAdminRoute>
+              } />
+              
+              {/* Unauthorized route */}
+              <Route path="/unauthorized" element={<UnauthorizedPage />} />
             </Routes>
-          </Router>
-          </AIToolsProvider>
-        </EnhancedHelpProvider>
-      </RoleProvider>
-    </TenantProvider>
-    </QueryClientProvider>
+                </Router>
+              </AIToolsProvider>
+            </EnhancedHelpProvider>
+          </RoleProvider>
+        </TenantProvider>
+      </QueryClientProvider>
+    </ClerkProvider>
   );
 }
 
