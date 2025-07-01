@@ -20,8 +20,6 @@ import {
   Sparkles, Camera, Wand2
 } from 'lucide-react';
 
-// Using Contact type from types/contact.ts to match exact interface structure
-
 interface ContactDetailViewProps {
   contact: Contact;
   isOpen: boolean;
@@ -72,175 +70,138 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedContact, setEditedContact] = useState(contact);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [showAddField, setShowAddField] = useState(false);
-  const [newFieldName, setNewFieldName] = useState('');
-  const [newFieldValue, setNewFieldValue] = useState('');
+  const [aiInsights, setAiInsights] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
-  const [isEnriching, setIsEnriching] = useState(false);
-  const [lastEnrichment, setLastEnrichment] = useState<ContactEnrichmentData | null>(null);
 
   useEffect(() => {
     setEditedContact(contact);
   }, [contact]);
 
-  const tabs = [
-    { id: 'overview', label: 'Overview', icon: User },
-    { id: 'journey', label: 'Journey', icon: TrendingUp },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { id: 'communication', label: 'Communication', icon: MessageSquare },
-    { id: 'automation', label: 'Automation', icon: Zap },
-    { id: 'ai-insights', label: 'AI Insights', icon: Brain },
-  ];
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'auto';
+    };
+  }, [isOpen, onClose]);
+
+  const handleInputChange = (field: keyof Contact, value: any) => {
+    setEditedContact(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
 
   const handleSave = async () => {
-    if (onUpdate) {
-      setIsSaving(true);
-      try {
-        await onUpdate(contact.id, editedContact);
-        setIsEditing(false);
-      } catch (error) {
-        console.error('Failed to update contact:', error);
-      } finally {
-        setIsSaving(false);
-      }
+    if (!onUpdate) return;
+    
+    setIsSaving(true);
+    try {
+      await onUpdate(editedContact.id, editedContact);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error saving contact:', error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleCancel = () => {
     setEditedContact(contact);
     setIsEditing(false);
-    setShowAddField(false);
-    setNewFieldName('');
-    setNewFieldValue('');
   };
 
   const handleToggleFavorite = async () => {
-    const updatedContact = { ...editedContact, isFavorite: !editedContact.isFavorite };
+    if (!onUpdate) return;
+    
+    const updatedContact = {
+      ...editedContact,
+      isFavorite: !editedContact.isFavorite
+    };
+    
     setEditedContact(updatedContact);
-
-    if (onUpdate) {
-      try {
-        await onUpdate(contact.id, { isFavorite: updatedContact.isFavorite });
-      } catch (error) {
-        console.error('Failed to update favorite status:', error);
-        // Revert on error
-        setEditedContact(prev => ({ ...prev, isFavorite: !updatedContact.isFavorite }));
-      }
-    }
-  };
-
-  const handleEditField = (field: string, value: any) => {
-    setEditedContact(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleAddCustomField = () => {
-    if (newFieldName && newFieldValue) {
-      setEditedContact(prev => ({
-        ...prev,
-        customFields: {
-          ...prev.customFields,
-          [newFieldName]: newFieldValue
-        }
-      }));
-      setNewFieldName('');
-      setNewFieldValue('');
-      setShowAddField(false);
-    }
+    await onUpdate(editedContact.id, { isFavorite: !editedContact.isFavorite });
   };
 
   const handleAnalyzeContact = async () => {
     setIsAnalyzing(true);
     try {
-      // Simulate AI analysis
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      const newScore = Math.floor(Math.random() * 40) + 60; // Random score between 60-100
-      const updatedContact = { ...editedContact, aiScore: newScore };
-      setEditedContact(updatedContact);
-
-      if (onUpdate) {
-        await onUpdate(contact.id, { aiScore: newScore });
-      }
+      const insights = await aiEnrichmentService.analyzeContact(editedContact);
+      setAiInsights(insights);
     } catch (error) {
-      console.error('Analysis failed:', error);
+      console.error('Error analyzing contact:', error);
+      setAiInsights('Error analyzing contact. Please try again.');
     } finally {
       setIsAnalyzing(false);
     }
   };
 
   const handleAIEnrichment = async (enrichmentData: ContactEnrichmentData) => {
-    setLastEnrichment(enrichmentData);
-    setIsEnriching(true);
-
     try {
-      // Apply enrichment data to contact
-      const updates: any = {};
-
-      if (enrichmentData.phone && !editedContact.phone) {
-        updates.phone = enrichmentData.phone;
+      const enrichedContact = await aiEnrichmentService.enrichContact(editedContact, enrichmentData);
+      setEditedContact(enrichedContact);
+      
+      if (onUpdate) {
+        await onUpdate(editedContact.id, enrichedContact);
       }
-      if (enrichmentData.industry && !editedContact.industry) {
-        updates.industry = enrichmentData.industry;
-      }
-      if (enrichmentData.avatar && enrichmentData.avatar !== editedContact.avatarSrc) {
-        updates.avatarSrc = enrichmentData.avatar;
-      }
-      if (enrichmentData.notes) {
-        updates.notes = editedContact.notes ?
-          `${editedContact.notes}\n\nAI Research: ${enrichmentData.notes}` :
-          enrichmentData.notes;
-      }
-
-      // Social profiles
-      if (enrichmentData.socialProfiles) {
-        const socialUpdates: any = {};
-        Object.entries(enrichmentData.socialProfiles).forEach(([key, value]) => {
-          if (value && !editedContact.socialProfiles?.[key as keyof typeof editedContact.socialProfiles]) {
-            socialUpdates[key] = value;
-          }
-        });
-        if (Object.keys(socialUpdates).length > 0) {
-          updates.socialProfiles = { ...editedContact.socialProfiles, ...socialUpdates };
-        }
-      }
-
-      // Update AI score if provided
-      if (enrichmentData.confidence) {
-        updates.aiScore = Math.round(enrichmentData.confidence);
-      }
-
-      const updatedContact = { ...editedContact, ...updates };
-      setEditedContact(updatedContact);
-
-      if (onUpdate && Object.keys(updates).length > 0) {
-        await onUpdate(contact.id, updates);
-      }
-
     } catch (error) {
-      console.error('Failed to apply enrichment:', error);
-    } finally {
-      setIsEnriching(false);
+      console.error('Error enriching contact:', error);
     }
   };
 
-  const handleFindNewImage = async () => {
-    try {
-      setIsEnriching(true);
-      const newImageUrl = await aiEnrichmentService.findContactImage(
-        editedContact.name,
-        editedContact.company
-      );
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: User },
+    { id: 'communication', label: 'Communication', icon: MessageSquare },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'ai-insights', label: 'AI Insights', icon: Brain },
+    { id: 'automation', label: 'Automation', icon: Zap },
+    { id: 'journey', label: 'Journey', icon: Activity },
+  ];
 
-      const updatedContact = { ...editedContact, avatarSrc: newImageUrl };
-      setEditedContact(updatedContact);
+  const quickActions = [
+    { label: 'Call', icon: Phone, color: 'bg-green-500', action: () => {} },
+    { label: 'Email', icon: Mail, color: 'bg-blue-500', action: () => {} },
+    { label: 'Message', icon: MessageSquare, color: 'bg-purple-500', action: () => {} },
+    { label: 'Meeting', icon: Calendar, color: 'bg-orange-500', action: () => {} },
+    { label: 'Note', icon: FileText, color: 'bg-gray-500', action: () => {} },
+    { label: 'Task', icon: CheckCircle, color: 'bg-indigo-500', action: () => {} },
+  ];
 
-      if (onUpdate) {
-        await onUpdate(contact.id, { avatarSrc: newImageUrl });
-      }
-    } catch (error) {
-      console.error('Failed to find new image:', error);
-    } finally {
-      setIsEnriching(false);
-    }
+  const getStatusColor = (status: string) => {
+    const colors = {
+      active: 'bg-green-500',
+      pending: 'bg-yellow-500',
+      inactive: 'bg-gray-500',
+      lead: 'bg-blue-500',
+      prospect: 'bg-purple-500',
+      customer: 'bg-green-600',
+      churned: 'bg-red-500'
+    };
+    return colors[status as keyof typeof colors] || 'bg-gray-500';
+  };
+
+  const getScoreColor = (score: number = 0) => {
+    if (score >= 80) return 'text-green-600 bg-green-50 border-green-200';
+    if (score >= 60) return 'text-blue-600 bg-blue-50 border-blue-200';
+    if (score >= 40) return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+    return 'text-red-600 bg-red-50 border-red-200';
+  };
+
+  const getScoreLabel = (score: number = 0) => {
+    if (score >= 80) return 'Excellent';
+    if (score >= 60) return 'Good';
+    if (score >= 40) return 'Fair';
+    return 'Poor';
   };
 
   if (!isOpen) return null;
@@ -266,7 +227,6 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
             </h2>
             <div className="flex space-x-2">
               <AIResearchButton
-                searchType="auto"
                 searchQuery={{
                   email: editedContact.email,
                   firstName: editedContact.firstName,
@@ -301,634 +261,459 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
             </div>
           </div>
 
-          {/* Scrollable Content Area */}
-          <div className="flex-1 overflow-y-auto">
-            {/* Avatar and Basic Info with AI Enhancement */}
-            <div className="p-5 text-center border-b border-gray-100 bg-white">
-              <div className="relative inline-block mb-4">
+          {/* Scrollable Profile Content */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {/* Profile Header */}
+            <div className="text-center space-y-3">
+              <div className="relative inline-block">
                 <AvatarWithStatus
                   src={editedContact.avatarSrc}
                   alt={editedContact.name}
                   size="xl"
-                  status={editedContact.status as any}
+                  status={editedContact.status === 'active' ? 'online' : 'offline'}
+                  className="ring-4 ring-white shadow-lg"
                 />
-
-                {/* AI Score Badge */}
-                {editedContact.aiScore && (
-                  <div className={`absolute -top-1 -right-1 h-7 w-7 rounded-full ${
-                    editedContact.aiScore >= 80 ? 'bg-green-500' :
-                    editedContact.aiScore >= 60 ? 'bg-blue-500' :
-                    editedContact.aiScore >= 40 ? 'bg-yellow-500' : 'bg-red-500'
-                  } text-white flex items-center justify-center text-xs font-bold shadow-lg ring-2 ring-white`}>
-                    {editedContact.aiScore}
-                  </div>
-                )}
-
-                {/* Favorite Badge */}
-                {editedContact.isFavorite && (
-                  <div className="absolute -top-1 -left-1 h-6 w-6 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg ring-2 ring-white">
-                    <Heart className="w-3 h-3" />
-                  </div>
-                )}
-
-                {/* AI Enhancement Indicator */}
-                {lastEnrichment && (
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-purple-500 text-white flex items-center justify-center shadow-lg ring-2 ring-white">
-                    <Sparkles className="w-2.5 h-2.5" />
-                  </div>
-                )}
-
-                {/* AI Image Search Button */}
                 <button
-                  onClick={handleFindNewImage}
-                  disabled={isEnriching}
-                  className="absolute -bottom-1 -right-1 p-1.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full hover:from-purple-700 hover:to-blue-700 transition-colors shadow-lg relative"
+                  onClick={handleToggleFavorite}
+                  className="absolute -bottom-1 -right-1 p-1.5 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200"
                 >
-                  {isEnriching ? (
-                    <div className="animate-spin w-3 h-3 border border-white border-t-transparent rounded-full" />
+                  {editedContact.isFavorite ? (
+                    <Heart className="w-4 h-4 text-red-500 fill-current" />
                   ) : (
-                    <Camera className="w-3 h-3" />
+                    <HeartOff className="w-4 h-4 text-gray-400" />
                   )}
                 </button>
               </div>
+              
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">{editedContact.name}</h3>
+                <p className="text-gray-600 font-medium">{editedContact.title}</p>
+                <p className="text-gray-500">{editedContact.company}</p>
+              </div>
 
-              {/* Name and Title */}
-              <h3 className="text-xl font-bold text-gray-900 mb-2 leading-tight">{editedContact.name}</h3>
-              <p className="text-gray-600 font-medium mb-1">{editedContact.title}</p>
-              <p className="text-gray-500 text-sm">{editedContact.company}</p>
-              {editedContact.industry && (
-                <span className="inline-block mt-2 px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
-                  {editedContact.industry}
+              {/* Status and Score */}
+              <div className="flex items-center justify-center space-x-3">
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white ${getStatusColor(editedContact.status)}`}>
+                  {editedContact.status}
                 </span>
-              )}
-
-              {/* AI Enhancement Badge */}
-              {lastEnrichment && (
-                <div className="mt-3 p-2 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg">
-                  <div className="flex items-center justify-center space-x-2">
-                    <Sparkles className="w-3 h-3 text-purple-600" />
-                    <span className="text-xs font-medium text-purple-900">
-                      Enhanced with AI ({lastEnrichment.confidence}% confidence)
-                    </span>
+                {editedContact.aiScore && (
+                  <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getScoreColor(editedContact.aiScore)}`}>
+                    <Star className="w-3 h-3 mr-1" />
+                    {editedContact.aiScore}% {getScoreLabel(editedContact.aiScore)}
                   </div>
+                )}
+              </div>
+
+              {/* Interest Level */}
+              <div className="flex items-center justify-center">
+                <div className={`inline-flex items-center px-3 py-1 rounded-full text-white text-sm font-medium ${interestColors[editedContact.interestLevel]}`}>
+                  <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
+                  {interestLabels[editedContact.interestLevel]}
                 </div>
-              )}
-            </div>
-
-            {/* AI Tools Section - PROMINENTLY DISPLAYED */}
-            <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-blue-50">
-              <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
-                <Brain className="w-4 h-4 mr-2 text-purple-600" />
-                AI Assistant Tools
-              </h4>
-
-              {/* AI Goals Button */}
-              <div className="mb-3">
-                <button className="w-full flex items-center justify-center py-3 px-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg hover:from-indigo-600 hover:to-purple-600 text-sm font-medium transition-all duration-200 border border-indigo-300/50 shadow-sm hover:shadow-md hover:scale-105">
-                  <Target className="w-4 h-4 mr-2" />
-                  AI Goals
-                </button>
-              </div>
-
-              {/* Quick AI Actions Grid */}
-              <div className="grid grid-cols-2 gap-2 mb-3">
-                {/* Lead Score */}
-                <button className="p-3 flex flex-col items-center justify-center rounded-lg font-medium transition-all duration-200 border shadow-sm hover:shadow-md hover:scale-105 min-h-[3.5rem] bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 border-blue-300/50">
-                  <BarChart3 className="w-4 h-4 mb-1" />
-                  <span className="text-xs leading-tight text-center">Lead Score</span>
-                </button>
-
-                {/* Email AI */}
-                <button className="p-3 flex flex-col items-center justify-center rounded-lg font-medium transition-all duration-200 border shadow-sm hover:shadow-md hover:scale-105 min-h-[3.5rem] bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 hover:from-gray-100 hover:to-gray-200 border-gray-200/50">
-                  <Mail className="w-4 h-4 mb-1" />
-                  <span className="text-xs leading-tight text-center">Email AI</span>
-                </button>
-
-                {/* Enrich */}
-                <button className="p-3 flex flex-col items-center justify-center rounded-lg font-medium transition-all duration-200 border shadow-sm hover:shadow-md hover:scale-105 min-h-[3.5rem] bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 hover:from-gray-100 hover:to-gray-200 border-gray-200/50">
-                  <Search className="w-4 h-4 mb-1" />
-                  <span className="text-xs leading-tight text-center">Enrich</span>
-                </button>
-
-                {/* Insights */}
-                <button className="p-3 flex flex-col items-center justify-center rounded-lg font-medium transition-all duration-200 border shadow-sm hover:shadow-md hover:scale-105 min-h-[3.5rem] bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 hover:from-gray-100 hover:to-gray-200 border-gray-200/50">
-                  <TrendingUp className="w-4 h-4 mb-1" />
-                  <span className="text-xs leading-tight text-center">Insights</span>
-                </button>
-              </div>
-
-              {/* AI Auto-Enrich Button */}
-              <button
-                onClick={() => handleAIEnrichment(lastEnrichment || {} as ContactEnrichmentData)}
-                className="w-full flex items-center justify-center py-2 px-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 text-sm font-medium transition-all duration-200 border border-purple-300/50 shadow-sm hover:shadow-md hover:scale-105"
-              >
-                <Wand2 className="w-4 h-4 mr-2" />
-                AI Auto-Enrich
-                <Sparkles className="w-3 h-3 ml-2 text-yellow-300" />
-              </button>
-            </div>
-
-            {/* Quick Action Buttons */}
-            <div className="p-4 border-b border-gray-100 bg-white">
-              <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
-                <Zap className="w-4 h-4 mr-2 text-blue-500" />
-                Quick Actions
-              </h4>
-              <div className="grid grid-cols-3 gap-2">
-                <button className="p-3 flex flex-col items-center hover:bg-blue-50 rounded-lg transition-all text-center">
-                  <Edit className="w-4 h-4 mb-1 text-blue-600" />
-                  <span className="text-xs font-medium">Edit</span>
-                </button>
-                <button className="p-3 flex flex-col items-center hover:bg-green-50 rounded-lg transition-all text-center">
-                  <Mail className="w-4 h-4 mb-1 text-green-600" />
-                  <span className="text-xs font-medium">Email</span>
-                </button>
-                <button className="p-3 flex flex-col items-center hover:bg-yellow-50 rounded-lg transition-all text-center">
-                  <Phone className="w-4 h-4 mb-1 text-yellow-600" />
-                  <span className="text-xs font-medium">Call</span>
-                </button>
-                <button className="p-3 flex flex-col items-center hover:bg-purple-50 rounded-lg transition-all text-center">
-                  <Plus className="w-4 h-4 mb-1 text-purple-600" />
-                  <span className="text-xs font-medium">Add</span>
-                </button>
-                <button className="p-3 flex flex-col items-center hover:bg-orange-50 rounded-lg transition-all text-center">
-                  <FileText className="w-4 h-4 mb-1 text-orange-600" />
-                  <span className="text-xs font-medium">Files</span>
-                </button>
-                <button className="p-3 flex flex-col items-center hover:bg-indigo-50 rounded-lg transition-all text-center">
-                  <Calendar className="w-4 h-4 mb-1 text-indigo-600" />
-                  <span className="text-xs font-medium">Meet</span>
-                </button>
               </div>
             </div>
 
             {/* Contact Information */}
-            <div className="p-4 border-b border-gray-100 bg-white">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="text-sm font-semibold text-gray-900 flex items-center">
-                  <User className="w-4 h-4 mr-2 text-blue-500" />
-                  Contact Info
-                </h4>
-                <button className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors">
-                  <Edit className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="space-y-3">
-                {/* Email */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3 min-w-0 flex-1">
-                    <div className="w-6 h-6 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Mail className="w-3 h-3 text-green-600" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Email</p>
-                      <p className="text-sm font-medium text-gray-900 truncate">{editedContact.email}</p>
-                    </div>
-                  </div>
-                  <button className="p-1 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
-                    <Edit className="w-3 h-3" />
-                  </button>
+            <div className="space-y-3">
+              <h4 className="font-semibold text-gray-900 flex items-center">
+                <User className="w-4 h-4 mr-2" />
+                Contact Information
+              </h4>
+              
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center text-gray-700">
+                  <Mail className="w-4 h-4 mr-3 text-gray-400" />
+                  <span className="font-medium">{editedContact.email}</span>
                 </div>
-
-                {/* Phone */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3 min-w-0 flex-1">
-                    <div className="w-6 h-6 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Phone className="w-3 h-3 text-yellow-600" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Phone</p>
-                      <p className="text-sm font-medium text-gray-900">{editedContact.phone || '+91 120 222 313'}</p>
-                    </div>
+                {editedContact.phone && (
+                  <div className="flex items-center text-gray-700">
+                    <Phone className="w-4 h-4 mr-3 text-gray-400" />
+                    <span>{editedContact.phone}</span>
                   </div>
-                  <button className="p-1 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
-                    <Edit className="w-3 h-3" />
-                  </button>
+                )}
+                <div className="flex items-center text-gray-700">
+                  <Building className="w-4 h-4 mr-3 text-gray-400" />
+                  <span>{editedContact.company}</span>
                 </div>
-
-                {/* Company */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3 min-w-0 flex-1">
-                    <div className="w-6 h-6 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Building className="w-3 h-3 text-indigo-600" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Company</p>
-                      <p className="text-sm font-medium text-gray-900">{editedContact.company}</p>
-                    </div>
-                  </div>
-                  <button className="p-1 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
-                    <Edit className="w-3 h-3" />
-                  </button>
-                </div>
-
-                {/* Social Media */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3 min-w-0 flex-1">
-                    <div className="w-6 h-6 bg-pink-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Globe className="w-3 h-3 text-pink-600" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Socials</p>
-                      <div className="flex space-x-1 mt-1">
-                        {socialPlatforms.slice(0, 4).map((social, index) => {
-                          const Icon = social.icon;
-                          return (
-                            <div
-                              key={index}
-                              className={`${social.color} p-1 rounded-md text-white hover:opacity-80 transition-opacity cursor-pointer`}
-                              title={social.name}
-                            >
-                              <Icon className="w-2.5 h-2.5" />
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                  <button className="p-1 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
-                    <Plus className="w-3 h-3" />
-                  </button>
-                </div>
-
-                {/* Last Connected - Full Text Visible */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3 min-w-0 flex-1">
-                    <div className="w-6 h-6 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Clock className="w-3 h-3 text-red-600" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Last Connected</p>
-                      <p className="text-sm font-medium text-gray-900 leading-tight">06/15/2023 at 7:16 pm</p>
-                    </div>
-                  </div>
-                  <button className="p-1 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
-                    <Edit className="w-3 h-3" />
-                  </button>
+                <div className="flex items-center text-gray-700">
+                  <Briefcase className="w-4 h-4 mr-3 text-gray-400" />
+                  <span>{editedContact.title}</span>
                 </div>
               </div>
             </div>
 
-            {/* Interest Level & Sources */}
-            <div className="p-4 bg-white">
-              <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
-                <Target className="w-4 h-4 mr-2 text-orange-500" />
-                Lead Information
-              </h4>
-
-              {/* Interest Level */}
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Interest Level</p>
-                  <button className="text-gray-400 hover:text-gray-600">
-                    <Edit className="w-3 h-3" />
-                  </button>
-                </div>
-                <div className="flex items-center space-x-2 mb-2">
-                  <div className={`w-2 h-2 rounded-full ${interestColors[editedContact.interestLevel]} animate-pulse`} />
-                  <span className="text-sm font-medium text-gray-900">{interestLabels[editedContact.interestLevel]}</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  {Array.from({ length: 5 }, (_, i) => {
-                    const isActive =
-                      (editedContact.interestLevel === 'hot' && i < 5) ||
-                      (editedContact.interestLevel === 'medium' && i < 3) ||
-                      (editedContact.interestLevel === 'low' && i < 2) ||
-                      (editedContact.interestLevel === 'cold' && i < 1);
-
+            {/* Social Profiles */}
+            {editedContact.socialProfiles && Object.keys(editedContact.socialProfiles).length > 0 && (
+              <div className="space-y-3">
+                <h4 className="font-semibold text-gray-900 flex items-center">
+                  <Globe className="w-4 h-4 mr-2" />
+                  Social Profiles
+                </h4>
+                <div className="grid grid-cols-2 gap-2">
+                  {Object.entries(editedContact.socialProfiles).map(([platform, url]) => {
+                    if (!url) return null;
+                    const PlatformIcon = socialPlatforms.find(p => p.key === platform)?.icon || Globe;
+                    const platformColor = socialPlatforms.find(p => p.key === platform)?.color || 'bg-gray-500';
+                    
                     return (
-                      <div
-                        key={i}
-                        className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                          isActive
-                            ? `${interestColors[editedContact.interestLevel]} shadow-sm`
-                            : 'bg-gray-300'
-                        }`}
-                      />
+                      <a
+                        key={platform}
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`flex items-center justify-center p-2 ${platformColor} text-white rounded-lg hover:opacity-80 transition-opacity`}
+                      >
+                        <PlatformIcon className="w-4 h-4" />
+                      </a>
                     );
                   })}
                 </div>
               </div>
+            )}
 
-              {/* Sources */}
-              <div className="pb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Sources</p>
-                  <button className="text-gray-400 hover:text-gray-600">
-                    <Plus className="w-3 h-3" />
-                  </button>
-                </div>
-                <div className="flex flex-wrap gap-1">
-                  {editedContact.sources && editedContact.sources.map((source, index) => (
+            {/* Sources */}
+            <div className="space-y-3">
+              <h4 className="font-semibold text-gray-900 flex items-center">
+                <Database className="w-4 h-4 mr-2" />
+                Sources
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {editedContact.sources.map((source, index) => (
+                  <span
+                    key={index}
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white ${
+                      sourceColors[source] || 'bg-gray-500'
+                    }`}
+                  >
+                    {source}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Tags */}
+            {editedContact.tags && editedContact.tags.length > 0 && (
+              <div className="space-y-3">
+                <h4 className="font-semibold text-gray-900 flex items-center">
+                  <Tag className="w-4 h-4 mr-2" />
+                  Tags
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {editedContact.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className={`
-                        ${sourceColors[source] || 'bg-gray-600'}
-                        text-white text-xs px-2 py-1 rounded-md font-medium hover:opacity-90 transition-opacity cursor-pointer
-                      `}
+                      className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
                     >
-                      {source}
+                      {tag}
                     </span>
                   ))}
                 </div>
               </div>
+            )}
+
+            {/* Last Connected */}
+            {editedContact.lastConnected && (
+              <div className="space-y-3">
+                <h4 className="font-semibold text-gray-900 flex items-center">
+                  <Clock className="w-4 h-4 mr-2" />
+                  Last Connected
+                </h4>
+                <p className="text-sm text-gray-600">{editedContact.lastConnected}</p>
+              </div>
+            )}
+
+            {/* Quick Actions */}
+            <div className="space-y-3">
+              <h4 className="font-semibold text-gray-900 flex items-center">
+                <Zap className="w-4 h-4 mr-2" />
+                Quick Actions
+              </h4>
+              <div className="grid grid-cols-2 gap-2">
+                {quickActions.map((action, index) => (
+                  <button
+                    key={index}
+                    onClick={action.action}
+                    className={`flex items-center justify-center p-3 ${action.color} text-white rounded-lg hover:opacity-90 transition-opacity`}
+                  >
+                    <action.icon className="w-4 h-4 mr-2" />
+                    <span className="text-sm font-medium">{action.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* AI Toolbar */}
+            <div className="pt-4 border-t border-gray-200">
+              <CustomizableAIToolbar
+                context={{
+                  type: 'contact',
+                  data: editedContact
+                }}
+                size="sm"
+                layout="vertical"
+              />
+            </div>
+          </div>
+
+          {/* Fixed Footer with Edit/Save Buttons */}
+          <div className="border-t border-gray-200 p-4 bg-white flex-shrink-0">
+            {isEditing ? (
+              <div className="flex space-x-2">
+                <ModernButton
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  variant="primary"
+                  size="sm"
+                  className="flex-1"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  {isSaving ? 'Saving...' : 'Save'}
+                </ModernButton>
+                <ModernButton
+                  onClick={handleCancel}
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                >
+                  <Cancel className="w-4 h-4 mr-2" />
+                  Cancel
+                </ModernButton>
+              </div>
+            ) : (
+              <ModernButton
+                onClick={() => setIsEditing(true)}
+                variant="outline"
+                size="sm"
+                className="w-full"
+              >
+                <Edit className="w-4 h-4 mr-2" />
+                Edit Contact
+              </ModernButton>
+            )}
           </div>
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col h-full min-w-0">
-          {/* Tab Navigation */}
-          <div className="border-b border-gray-200 bg-white flex-shrink-0">
-            <div className="flex items-center justify-between p-5">
-              <div className="flex space-x-1">
-                {tabs.map((tab) => {
-                  const Icon = tab.icon;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`
-                        flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200
-                        ${activeTab === tab.id
-                          ? 'bg-blue-100 text-blue-700 shadow-sm'
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                        }
-                      `}
-                    >
-                      <Icon className="w-4 h-4" />
-                      <span>{tab.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="flex items-center space-x-3">
-                <ModernButton
-                  variant={editedContact.isFavorite ? "primary" : "outline"}
-                  size="sm"
-                  onClick={handleToggleFavorite}
-                  className="flex items-center space-x-2"
+        <div className="flex-1 flex flex-col h-full">
+          {/* Enhanced Tab Navigation */}
+          <div className="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white px-6 py-4">
+            <div className="flex space-x-1">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                    activeTab === tab.id
+                      ? 'bg-blue-100 text-blue-700 shadow-md'
+                      : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                  }`}
                 >
-                  {editedContact.isFavorite ? <Heart className="w-4 h-4" /> : <HeartOff className="w-4 h-4" />}
-                  <span>{editedContact.isFavorite ? 'Favorited' : 'Add to Favorites'}</span>
-                </ModernButton>
-
-                {isEditing ? (
-                  <div className="flex items-center space-x-2">
-                    <ModernButton
-                      variant="primary"
-                      size="sm"
-                      onClick={handleSave}
-                      loading={isSaving}
-                      className="flex items-center space-x-2"
-                    >
-                      <Save className="w-4 h-4" />
-                      <span>Save</span>
-                    </ModernButton>
-                    <ModernButton
-                      variant="outline"
-                      size="sm"
-                      onClick={handleCancel}
-                      className="flex items-center space-x-2"
-                    >
-                      <Cancel className="w-4 h-4" />
-                      <span>Cancel</span>
-                    </ModernButton>
-                  </div>
-                ) : (
-                  <ModernButton
-                    variant="primary"
-                    size="sm"
-                    onClick={() => setIsEditing(true)}
-                    className="flex items-center space-x-2"
-                  >
-                    <Edit className="w-4 h-4" />
-                    <span>Edit Contact</span>
-                  </ModernButton>
-                )}
-              </div>
+                  <tab.icon className="w-4 h-4 mr-2" />
+                  {tab.label}
+                </button>
+              ))}
             </div>
           </div>
 
           {/* Tab Content */}
-          <div className="flex-1 overflow-y-auto bg-gray-50 min-h-0">
+          <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
             {activeTab === 'overview' && (
-              <div className="p-6 space-y-6">
-                {/* AI Enhancement Notice */}
-                {lastEnrichment && (
-                  <div className="bg-gradient-to-r from-purple-50 via-blue-50 to-green-50 border border-purple-200 rounded-xl p-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-purple-500 rounded-lg">
-                        <Sparkles className="w-5 h-5 text-white" />
-                      </div>
+              <div className="space-y-6">
+                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <User className="w-5 h-5 mr-2 text-blue-500" />
+                    Contact Overview
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
                       <div>
-                        <h4 className="font-semibold text-purple-900">Contact Enhanced with AI Research</h4>
-                        <p className="text-purple-700 text-sm">
-                          This contact was enriched with additional information from OpenAI & Gemini research
-                        </p>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editedContact.name}
+                            onChange={(e) => handleInputChange('name', e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        ) : (
+                          <p className="text-gray-900 font-medium">{editedContact.name}</p>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        {isEditing ? (
+                          <input
+                            type="email"
+                            value={editedContact.email}
+                            onChange={(e) => handleInputChange('email', e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        ) : (
+                          <p className="text-gray-900">{editedContact.email}</p>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                        {isEditing ? (
+                          <input
+                            type="tel"
+                            value={editedContact.phone || ''}
+                            onChange={(e) => handleInputChange('phone', e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        ) : (
+                          <p className="text-gray-900">{editedContact.phone || 'Not provided'}</p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editedContact.company}
+                            onChange={(e) => handleInputChange('company', e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        ) : (
+                          <p className="text-gray-900">{editedContact.company}</p>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editedContact.title}
+                            onChange={(e) => handleInputChange('title', e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        ) : (
+                          <p className="text-gray-900">{editedContact.title}</p>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        {isEditing ? (
+                          <select
+                            value={editedContact.status}
+                            onChange={(e) => handleInputChange('status', e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          >
+                            <option value="active">Active</option>
+                            <option value="pending">Pending</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="lead">Lead</option>
+                            <option value="prospect">Prospect</option>
+                            <option value="customer">Customer</option>
+                            <option value="churned">Churned</option>
+                          </select>
+                        ) : (
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white ${getStatusColor(editedContact.status)}`}>
+                            {editedContact.status}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
-                )}
-
-                {/* Personal Information */}
-                <div className="bg-white rounded-xl p-6 shadow-sm">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-lg font-semibold text-gray-900 flex items-center">
-                      <User className="w-5 h-5 mr-2 text-blue-500" />
-                      Personal Information
-                    </h4>
-                    <button
-                      onClick={() => setIsEditing(!isEditing)}
-                      className="text-gray-400 hover:text-gray-600"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {[
-                      { label: 'First Name', value: editedContact.firstName || editedContact.name.split(' ')[0], icon: User, field: 'firstName' },
-                      { label: 'Last Name', value: editedContact.lastName || editedContact.name.split(' ').slice(1).join(' '), icon: User, field: 'lastName' },
-                      { label: 'Email', value: editedContact.email, icon: Mail, field: 'email' },
-                      { label: 'Phone', value: editedContact.phone || 'Not provided', icon: Phone, field: 'phone' },
-                      { label: 'Title', value: editedContact.title, icon: Building, field: 'title' },
-                      { label: 'Company', value: editedContact.company, icon: Building, field: 'company' },
-                      { label: 'Industry', value: editedContact.industry || 'Not specified', icon: Tag, field: 'industry' },
-                      { label: 'Status', value: editedContact.status, icon: Activity, field: 'status' }
-                    ].map((field, index) => {
-                      const Icon = field.icon;
-                      return (
-                        <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
-                              <Icon className="w-4 h-4 text-blue-600" />
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-gray-700">{field.label}</p>
-                              {isEditing ? (
-                                <input
-                                  type="text"
-                                  value={editedContact[field.field as keyof Contact] as string || ''}
-                                  onChange={(e) => handleEditField(field.field, e.target.value)}
-                                  className="text-gray-900 bg-white border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                              ) : (
-                                <p className="text-gray-900">{field.value}</p>
-                              )}
-                            </div>
-                          </div>
-                          <button className="text-gray-400 hover:text-gray-600">
-                            <Edit className="w-4 h-4" />
-                          </button>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Social Profiles */}
-                <div className="bg-white rounded-xl p-6 shadow-sm">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-lg font-semibold text-gray-900 flex items-center">
-                      <Globe className="w-5 h-5 mr-2 text-green-500" />
-                      Social Profiles
-                    </h4>
-                    <button className="text-gray-400 hover:text-gray-600">
-                      <Plus className="w-4 h-4" />
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {socialPlatforms.map((platform, index) => {
-                      const Icon = platform.icon;
-                      const profileUrl = editedContact.socialProfiles?.[platform.key as keyof typeof editedContact.socialProfiles];
-
-                      return (
-                        <div key={index} className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                          <div className={`${platform.color} p-2 rounded-lg`}>
-                            <Icon className="w-4 h-4 text-white" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900">{platform.name}</p>
-                            {profileUrl ? (
-                              <a href={profileUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline truncate block">
-                                View Profile
-                              </a>
-                            ) : (
-                              <p className="text-xs text-gray-500">Not connected</p>
-                            )}
-                          </div>
-                          <ExternalLink className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                        </div>
-                      );
-                    })}
+                  
+                  {/* Notes Section */}
+                  <div className="mt-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                    {isEditing ? (
+                      <textarea
+                        value={editedContact.notes || ''}
+                        onChange={(e) => handleInputChange('notes', e.target.value)}
+                        rows={4}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Add notes about this contact..."
+                      />
+                    ) : (
+                      <div className="bg-gray-50 rounded-lg p-4 min-h-[100px]">
+                        <p className="text-gray-700 whitespace-pre-wrap">
+                          {editedContact.notes || 'No notes available.'}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* Custom Fields */}
-                <div className="bg-white rounded-xl p-6 shadow-sm">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-lg font-semibold text-gray-900 flex items-center">
-                      <Database className="w-5 h-5 mr-2 text-purple-500" />
+                {editedContact.customFields && Object.keys(editedContact.customFields).length > 0 && (
+                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                      <Settings className="w-5 h-5 mr-2 text-blue-500" />
                       Custom Fields
-                    </h4>
-                    <button
-                      onClick={() => setShowAddField(true)}
-                      className="text-gray-400 hover:text-gray-600"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
-                  </div>
-
-                  {editedContact.customFields && Object.keys(editedContact.customFields).length > 0 ? (
-                    <div className="space-y-3">
-                      {Object.entries(editedContact.customFields).map(([key, value], index) => (
-                        <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                          <div>
-                            <p className="text-sm font-medium text-gray-700">{key}</p>
-                            <p className="text-gray-900">{String(value)}</p>
-                          </div>
-                          <button className="text-gray-400 hover:text-gray-600">
-                            <Edit className="w-4 h-4" />
-                          </button>
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {Object.entries(editedContact.customFields).map(([key, value]) => (
+                        <div key={key}>
+                          <label className="block text-sm font-medium text-gray-700 mb-1 capitalize">
+                            {key.replace(/([A-Z])/g, ' $1').trim()}
+                          </label>
+                          <p className="text-gray-900">{String(value)}</p>
                         </div>
                       ))}
                     </div>
-                  ) : (
-                    <p className="text-gray-500 text-sm">No custom fields added</p>
-                  )}
-
-                  {showAddField && (
-                    <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                      <div className="space-y-3">
-                        <input
-                          type="text"
-                          placeholder="Field name"
-                          value={newFieldName}
-                          onChange={(e) => setNewFieldName(e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        <input
-                          type="text"
-                          placeholder="Field value"
-                          value={newFieldValue}
-                          onChange={(e) => setNewFieldValue(e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        <div className="flex space-x-3">
-                          <ModernButton
-                            variant="primary"
-                            size="sm"
-                            onClick={handleAddCustomField}
-                          >
-                            Add Field
-                          </ModernButton>
-                          <ModernButton
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setShowAddField(false)}
-                          >
-                            Cancel
-                          </ModernButton>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'journey' && (
-              <div className="p-6">
-                <ContactJourneyTimeline contact={editedContact} />
-              </div>
-            )}
-
-            {activeTab === 'analytics' && (
-              <div className="p-6">
-                <ContactAnalytics contact={editedContact} />
+                  </div>
+                )}
               </div>
             )}
 
             {activeTab === 'communication' && (
-              <div className="p-6">
-                <CommunicationHub contact={editedContact} />
-              </div>
+              <CommunicationHub
+                contact={editedContact}
+                onContactUpdate={(updates) => {
+                  setEditedContact(prev => ({ ...prev, ...updates }));
+                  if (onUpdate) {
+                    onUpdate(editedContact.id, updates);
+                  }
+                }}
+              />
             )}
 
-            {activeTab === 'automation' && (
-              <div className="p-6">
-                <AutomationPanel contact={editedContact} />
-              </div>
+            {activeTab === 'analytics' && (
+              <ContactAnalytics
+                contact={editedContact}
+                onInsightGenerated={(insight) => {
+                  setAiInsights(insight);
+                }}
+              />
             )}
 
             {activeTab === 'ai-insights' && (
-              <div className="p-6">
-                <AIInsightsPanel contact={editedContact} />
-              </div>
+              <AIInsightsPanel
+                contact={editedContact}
+                insights={aiInsights}
+                onInsightUpdate={setAiInsights}
+                isAnalyzing={isAnalyzing}
+                onAnalyze={handleAnalyzeContact}
+              />
+            )}
+
+            {activeTab === 'automation' && (
+              <AutomationPanel
+                contact={editedContact}
+                onAutomationTriggered={(automation) => {
+                  console.log('Automation triggered:', automation);
+                }}
+              />
+            )}
+
+            {activeTab === 'journey' && (
+              <ContactJourneyTimeline
+                contact={editedContact}
+                onEventAdd={(event) => {
+                  console.log('New event added:', event);
+                }}
+              />
             )}
           </div>
         </div>
