@@ -1,5 +1,4 @@
-import { useUser, useAuth as useClerkAuth } from '@clerk/clerk-react';
-import { useDemoAuth } from '../components/auth/DemoAuthProvider';
+import { useState, useEffect } from 'react';
 
 export interface AuthUser {
   id: string;
@@ -10,37 +9,32 @@ export interface AuthUser {
 }
 
 export const useAuth = () => {
-  try {
-    // Try to use Clerk first
-    const { user: clerkUser, isLoaded } = useUser();
-    const { signOut } = useClerkAuth();
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-    // If Clerk is working, transform Clerk user to our AuthUser format
-    if (clerkUser) {
-      const user: AuthUser = {
-        id: clerkUser.id,
-        email: clerkUser.emailAddresses[0]?.emailAddress || '',
-        firstName: clerkUser.firstName || undefined,
-        lastName: clerkUser.lastName || undefined,
-        role: (clerkUser.publicMetadata?.role as 'super_admin' | 'reseller' | 'user') || 'super_admin'
-      };
-
-      return {
-        user,
-        isLoaded,
-        signOut
-      };
-    }
-
-    // If Clerk is loaded but no user, return null user
-    return {
-      user: null,
-      isLoaded,
-      signOut
+  useEffect(() => {
+    // Auto-login as super admin for immediate testing
+    const superAdminUser: AuthUser = {
+      id: 'super-admin-1',
+      email: 'superadmin@smart-crm.com',
+      firstName: 'Super',
+      lastName: 'Admin',
+      role: 'super_admin'
     };
-  } catch (error) {
-    // If Clerk hooks fail, fall back to demo auth
-    console.log('Falling back to demo authentication');
-    return useDemoAuth();
-  }
+    
+    setUser(superAdminUser);
+    setIsLoaded(true);
+    console.log('✅ Auto-logged in as Super Admin for testing');
+  }, []);
+
+  const signOut = () => {
+    setUser(null);
+    console.log('✅ Signed out successfully');
+  };
+
+  return {
+    user,
+    isLoaded,
+    signOut
+  };
 };
