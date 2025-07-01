@@ -1,0 +1,771 @@
+import React, { useState } from 'react';
+import { ModernButton } from '../ui/ModernButton';
+import { AIAutoFillButton } from '../ui/AIAutoFillButton';
+import { AIResearchButton } from '../ui/AIResearchButton';
+import { useContactStore } from '../../store/contactStore';
+import { ContactEnrichmentData } from '../../services/aiEnrichmentService';
+import { Contact } from '../../types/index';
+import { 
+  X, 
+  User, 
+  Mail, 
+  Phone, 
+  Building, 
+  Tag, 
+  Globe, 
+  Target,
+  Save,
+  UserPlus,
+  AlertCircle,
+  CheckCircle,
+  Heart,
+  MessageSquare,
+  Linkedin,
+  Twitter,
+  Facebook,
+  Instagram,
+  Plus,
+  Database,
+  Smartphone,
+  Clock,
+  Star,
+  Briefcase,
+  MapPin,
+  Calendar,
+  Brain,
+  Sparkles,
+  Wand2,
+  RefreshCw,
+  Camera
+} from 'lucide-react';
+
+interface NewContactModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const interestLevels = [
+  { value: 'hot', label: 'Hot Client', color: 'bg-red-500' },
+  { value: 'medium', label: 'Medium Interest', color: 'bg-yellow-500' },
+  { value: 'low', label: 'Low Interest', color: 'bg-blue-500' },
+  { value: 'cold', label: 'Non Interest', color: 'bg-gray-400' }
+];
+
+const statusOptions = [
+  { value: 'lead', label: 'Lead' },
+  { value: 'prospect', label: 'Prospect' },
+  { value: 'customer', label: 'Customer' },
+  { value: 'active', label: 'Active' },
+  { value: 'pending', label: 'Pending' },
+  { value: 'inactive', label: 'Inactive' },
+  { value: 'churned', label: 'Churned' }
+];
+
+const sourceOptions = [
+  'LinkedIn', 'Facebook', 'Email', 'Website', 'Referral', 'Typeform', 'Cold Call', 
+  'Trade Show', 'Webinar', 'Advertisement', 'Google Ads', 'Social Media', 'Blog', 
+  'Podcast', 'YouTube', 'Direct Mail', 'Partnership'
+];
+
+const industryOptions = [
+  'Technology', 'Healthcare', 'Finance', 'Education', 'Manufacturing', 'Retail', 
+  'Real Estate', 'Consulting', 'Media', 'Transportation', 'Energy', 'Agriculture',
+  'Construction', 'Entertainment', 'Government', 'Non-Profit', 'Other'
+];
+
+const socialPlatforms = [
+  { key: 'whatsapp', name: 'WhatsApp', icon: MessageSquare, color: 'bg-green-500', placeholder: '+1-555-0123' },
+  { key: 'linkedin', name: 'LinkedIn', icon: Linkedin, color: 'bg-blue-500', placeholder: 'https://linkedin.com/in/username' },
+  { key: 'twitter', name: 'Twitter', icon: Twitter, color: 'bg-blue-400', placeholder: 'https://twitter.com/username' },
+  { key: 'facebook', name: 'Facebook', icon: Facebook, color: 'bg-blue-700', placeholder: 'https://facebook.com/username' },
+  { key: 'instagram', name: 'Instagram', icon: Instagram, color: 'bg-pink-500', placeholder: 'https://instagram.com/username' },
+  { key: 'website', name: 'Website', icon: Globe, color: 'bg-purple-500', placeholder: 'https://company.com' }
+];
+
+export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClose }) => {
+  const [formData, setFormData] = useState({
+    // Basic Information
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    avatarSrc: '',
+    
+    // Professional Information
+    title: '',
+    company: '',
+    industry: '',
+    department: '',
+    
+    // Location Information
+    address: '',
+    city: '',
+    state: '',
+    country: '',
+    zipCode: '',
+    
+    // Lead Information
+    interestLevel: 'medium' as const,
+    status: 'lead' as const,
+    sources: [] as string[],
+    
+    // Personal Details
+    birthday: '',
+    timezone: '',
+    preferredContact: 'email',
+    
+    // Social & Contact
+    socialProfiles: {
+      whatsapp: '',
+      linkedin: '',
+      twitter: '',
+      facebook: '',
+      instagram: '',
+      website: ''
+    },
+    
+    // Additional Information
+    notes: '',
+    tags: '',
+    isFavorite: false,
+    
+    // Custom Fields
+    customFields: {} as Record<string, string>
+  });
+  
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [newCustomField, setNewCustomField] = useState({ name: '', value: '' });
+  const [showCustomFields, setShowCustomFields] = useState(false);
+  const [lastEnrichmentData, setLastEnrichmentData] = useState<ContactEnrichmentData | null>(null);
+  
+  const { createContact } = useContactStore();
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+    
+    if (!formData.email) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Invalid email format';
+    }
+    
+    if (!formData.firstName) {
+      newErrors.firstName = 'First name is required';
+    }
+    
+    if (!formData.lastName) {
+      newErrors.lastName = 'Last name is required';
+    }
+    
+    if (!formData.company) {
+      newErrors.company = 'Company is required';
+    }
+    
+    if (!formData.title) {
+      newErrors.title = 'Title is required';
+    }
+    
+    // Validate social profile URLs
+    Object.entries(formData.socialProfiles).forEach(([key, value]) => {
+      if (value && key !== 'whatsapp' && !value.startsWith('http')) {
+        newErrors[`social_${key}`] = `${key} must be a valid URL`;
+      }
+    });
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleInputChange = (field: string, value: string | boolean) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
+  const handleSocialProfileChange = (platform: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      socialProfiles: {
+        ...prev.socialProfiles,
+        [platform]: value
+      }
+    }));
+    if (errors[`social_${platform}`]) {
+      setErrors(prev => ({ ...prev, [`social_${platform}`]: '' }));
+    }
+  };
+
+  const handleSourceToggle = (source: string) => {
+    setFormData(prev => ({
+      ...prev,
+      sources: prev.sources.includes(source)
+        ? prev.sources.filter(s => s !== source)
+        : [...prev.sources, source]
+    }));
+  };
+
+  const handleAddCustomField = () => {
+    if (newCustomField.name && newCustomField.value) {
+      setFormData(prev => ({
+        ...prev,
+        customFields: {
+          ...prev.customFields,
+          [newCustomField.name]: newCustomField.value
+        }
+      }));
+      setNewCustomField({ name: '', value: '' });
+    }
+  };
+
+  const handleRemoveCustomField = (fieldName: string) => {
+    setFormData(prev => ({
+      ...prev,
+      customFields: Object.fromEntries(
+        Object.entries(prev.customFields).filter(([key]) => key !== fieldName)
+      )
+    }));
+  };
+
+  const handleAIAutoFill = (enrichmentData: ContactEnrichmentData) => {
+    setLastEnrichmentData(enrichmentData);
+    
+    // Apply enrichment data to form
+    const updates: any = {};
+    
+    if (enrichmentData.firstName && !formData.firstName) {
+      updates.firstName = enrichmentData.firstName;
+    }
+    if (enrichmentData.lastName && !formData.lastName) {
+      updates.lastName = enrichmentData.lastName;
+    }
+    if (enrichmentData.email && !formData.email) {
+      updates.email = enrichmentData.email;
+    }
+    if (enrichmentData.phone && !formData.phone) {
+      updates.phone = enrichmentData.phone;
+    }
+    if (enrichmentData.title && !formData.title) {
+      updates.title = enrichmentData.title;
+    }
+    if (enrichmentData.company && !formData.company) {
+      updates.company = enrichmentData.company;
+    }
+    if (enrichmentData.industry && !formData.industry) {
+      updates.industry = enrichmentData.industry;
+    }
+    if (enrichmentData.avatar && !formData.avatarSrc) {
+      updates.avatarSrc = enrichmentData.avatar;
+    }
+    
+    // Location data
+    if (enrichmentData.location) {
+      if (enrichmentData.location.city && !formData.city) {
+        updates.city = enrichmentData.location.city;
+      }
+      if (enrichmentData.location.state && !formData.state) {
+        updates.state = enrichmentData.location.state;
+      }
+      if (enrichmentData.location.country && !formData.country) {
+        updates.country = enrichmentData.location.country;
+      }
+    }
+    
+    // Social profiles
+    if (enrichmentData.socialProfiles) {
+      const socialUpdates: any = {};
+      Object.entries(enrichmentData.socialProfiles).forEach(([key, value]) => {
+        if (value && !formData.socialProfiles[key as keyof typeof formData.socialProfiles]) {
+          socialUpdates[key] = value;
+        }
+      });
+      if (Object.keys(socialUpdates).length > 0) {
+        updates.socialProfiles = { ...formData.socialProfiles, ...socialUpdates };
+      }
+    }
+    
+    // Notes
+    if (enrichmentData.notes && !formData.notes) {
+      updates.notes = enrichmentData.notes;
+    } else if (enrichmentData.bio && !formData.notes) {
+      updates.notes = enrichmentData.bio;
+    }
+    
+    setFormData(prev => ({ ...prev, ...updates }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
+    
+    setIsSubmitting(true);
+    try {
+      const contactData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        name: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        title: formData.title,
+        company: formData.company,
+        industry: formData.industry || undefined,
+        avatarSrc: formData.avatarSrc || `https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2`,
+        sources: formData.sources.length > 0 ? formData.sources : ['Manual Entry'],
+        interestLevel: formData.interestLevel,
+        status: formData.status,
+        notes: formData.notes || undefined,
+        tags: formData.tags ? formData.tags.split(',').map(t => t.trim()).filter(Boolean) : undefined,
+        isFavorite: formData.isFavorite,
+        socialProfiles: Object.fromEntries(
+          Object.entries(formData.socialProfiles).filter(([_, value]) => value)
+        ),
+        customFields: Object.keys(formData.customFields).length > 0 ? formData.customFields : undefined
+      };
+      
+      await createContact(contactData);
+      setIsSuccess(true);
+      
+      // Auto-close after 2 seconds
+      setTimeout(() => {
+        handleClose();
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Failed to create contact:', error);
+      setErrors({ submit: 'Failed to create contact. Please try again.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleClose = () => {
+    setFormData({
+      firstName: '', lastName: '', email: '', phone: '', avatarSrc: '', title: '', company: '',
+      industry: '', department: '', address: '', city: '', state: '', country: '',
+      zipCode: '', interestLevel: 'medium', status: 'lead', sources: [], birthday: '',
+      timezone: '', preferredContact: 'email', socialProfiles: { whatsapp: '', linkedin: '',
+      twitter: '', facebook: '', instagram: '', website: '' }, notes: '', tags: '',
+      isFavorite: false, customFields: {}
+    });
+    setErrors({});
+    setIsSubmitting(false);
+    setIsSuccess(false);
+    setNewCustomField({ name: '', value: '' });
+    setShowCustomFields(false);
+    setLastEnrichmentData(null);
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  if (isSuccess) {
+    return (
+      <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-xl p-8 max-w-md w-full text-center shadow-2xl">
+          <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+          <h3 className="text-2xl font-bold text-green-900 mb-2">Contact Created!</h3>
+          <p className="text-green-700 mb-4">
+            {formData.firstName} {formData.lastName} has been added to your contacts.
+          </p>
+          {lastEnrichmentData && (
+            <p className="text-sm text-gray-600 mb-4">
+              ✨ Enhanced with AI research data
+            </p>
+          )}
+          <ModernButton variant="primary" onClick={handleClose}>
+            Close
+          </ModernButton>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl w-full max-w-6xl max-h-[95vh] overflow-hidden flex flex-col shadow-2xl">
+        {/* Header with AI Features */}
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 flex-shrink-0">
+          <div className="flex items-center space-x-3">
+            <div className="p-3 bg-gradient-to-r from-blue-500 via-purple-600 to-pink-600 rounded-xl text-white">
+              <UserPlus className="w-6 h-6" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+                Add New Contact
+                <Sparkles className="w-5 h-5 ml-2 text-yellow-500" />
+              </h2>
+              <p className="text-gray-600">Create a new contact with AI-powered enrichment</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-3">
+            {/* AI Auto-Fill Button */}
+            <AIAutoFillButton
+              searchQuery={{
+                email: formData.email,
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                company: formData.company
+              }}
+              onDataFound={handleAIAutoFill}
+              variant="secondary"
+              size="sm"
+              className="bg-purple-100 text-purple-700 hover:bg-purple-200 border-purple-200"
+              disabled={!formData.email && !formData.firstName}
+            />
+            
+            <button
+              onClick={handleClose}
+              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
+
+        {/* Form Content */}
+        <div className="flex-1 overflow-y-auto">
+          <form onSubmit={handleSubmit} className="p-6 space-y-8">
+            {/* Basic Information */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                <User className="w-5 h-5 mr-2 text-blue-600" />
+                Basic Information
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    First Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.firstName}
+                    onChange={(e) => handleInputChange('firstName', e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      errors.firstName ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="John"
+                  />
+                  {errors.firstName && (
+                    <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Last Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.lastName}
+                    onChange={(e) => handleInputChange('lastName', e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      errors.lastName ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="Smith"
+                  />
+                  {errors.lastName && (
+                    <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      errors.email ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="john.smith@company.com"
+                  />
+                  {errors.email && (
+                    <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => handleInputChange('phone', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="+1-555-0123"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Professional Information */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                <Briefcase className="w-5 h-5 mr-2 text-purple-600" />
+                Professional Information
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Job Title *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => handleInputChange('title', e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      errors.title ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="Marketing Director"
+                  />
+                  {errors.title && (
+                    <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Company *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.company}
+                    onChange={(e) => handleInputChange('company', e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      errors.company ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="Tech Corp"
+                  />
+                  {errors.company && (
+                    <p className="text-red-500 text-sm mt-1">{errors.company}</p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Industry
+                </label>
+                <select
+                  value={formData.industry}
+                  onChange={(e) => handleInputChange('industry', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">Select Industry</option>
+                  {industryOptions.map(industry => (
+                    <option key={industry} value={industry}>{industry}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Lead Information */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                <Target className="w-5 h-5 mr-2 text-green-600" />
+                Lead Information
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Interest Level
+                  </label>
+                  <div className="space-y-2">
+                    {interestLevels.map(level => (
+                      <label key={level.value} className="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                        <input
+                          type="radio"
+                          name="interestLevel"
+                          value={level.value}
+                          checked={formData.interestLevel === level.value}
+                          onChange={(e) => handleInputChange('interestLevel', e.target.value)}
+                          className="sr-only"
+                        />
+                        <div className={`w-4 h-4 rounded-full ${level.color} flex items-center justify-center`}>
+                          {formData.interestLevel === level.value && (
+                            <div className="w-2 h-2 bg-white rounded-full"></div>
+                          )}
+                        </div>
+                        <span className="text-gray-700">{level.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Status
+                  </label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => handleInputChange('status', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    {statusOptions.map(status => (
+                      <option key={status.value} value={status.value}>{status.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Sources */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Lead Sources
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {sourceOptions.map(source => (
+                    <label key={source} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                      <input
+                        type="checkbox"
+                        checked={formData.sources.includes(source)}
+                        onChange={() => handleSourceToggle(source)}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <span className="text-sm text-gray-700">{source}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Social Profiles */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                <Globe className="w-5 h-5 mr-2 text-blue-600" />
+                Social Profiles
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {socialPlatforms.map(platform => {
+                  const Icon = platform.icon;
+                  return (
+                    <div key={platform.key}>
+                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                        <Icon className={`w-4 h-4 mr-2 text-white p-0.5 rounded ${platform.color}`} />
+                        {platform.name}
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.socialProfiles[platform.key as keyof typeof formData.socialProfiles]}
+                        onChange={(e) => handleSocialProfileChange(platform.key, e.target.value)}
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                          errors[`social_${platform.key}`] ? 'border-red-500' : 'border-gray-300'
+                        }`}
+                        placeholder={platform.placeholder}
+                      />
+                      {errors[`social_${platform.key}`] && (
+                        <p className="text-red-500 text-sm mt-1">{errors[`social_${platform.key}`]}</p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Additional Information */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                <Database className="w-5 h-5 mr-2 text-gray-600" />
+                Additional Information
+              </h3>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Notes
+                </label>
+                <textarea
+                  value={formData.notes}
+                  onChange={(e) => handleInputChange('notes', e.target.value)}
+                  rows={4}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Add any additional notes about this contact..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tags (comma-separated)
+                </label>
+                <input
+                  type="text"
+                  value={formData.tags}
+                  onChange={(e) => handleInputChange('tags', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="VIP, Enterprise, Decision Maker"
+                />
+              </div>
+
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  id="favorite"
+                  checked={formData.isFavorite}
+                  onChange={(e) => handleInputChange('isFavorite', e.target.checked)}
+                  className="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                />
+                <label htmlFor="favorite" className="text-sm font-medium text-gray-700 flex items-center">
+                  <Heart className="w-4 h-4 mr-1 text-red-500" />
+                  Mark as Favorite
+                </label>
+              </div>
+            </div>
+
+            {/* Submit Buttons */}
+            <div className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+              <ModernButton
+                type="button"
+                variant="secondary"
+                onClick={handleClose}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </ModernButton>
+              
+              <ModernButton
+                type="submit"
+                variant="primary"
+                disabled={isSubmitting}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              >
+                {isSubmitting ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                    Creating Contact...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    Create Contact
+                  </>
+                )}
+              </ModernButton>
+            </div>
+
+            {/* Error Display */}
+            {errors.submit && (
+              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <div className="flex items-center">
+                  <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
+                  <span className="text-red-700">{errors.submit}</span>
+                </div>
+              </div>
+            )}
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};

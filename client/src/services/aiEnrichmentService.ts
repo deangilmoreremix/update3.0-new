@@ -1,5 +1,32 @@
 import { Contact } from '../types';
 
+export interface ContactEnrichmentData {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  title?: string;
+  company?: string;
+  industry?: string;
+  avatar?: string;
+  notes?: string;
+  bio?: string;
+  confidence?: number;
+  location?: {
+    city?: string;
+    state?: string;
+    country?: string;
+  };
+  socialProfiles?: {
+    linkedin?: string;
+    twitter?: string;
+    facebook?: string;
+    instagram?: string;
+    website?: string;
+    whatsapp?: string;
+  };
+}
+
 export interface EnrichmentResult {
   success: boolean;
   enrichedData?: Partial<Contact>;
@@ -192,6 +219,25 @@ export class AIEnrichmentService {
     }
 
     return insights;
+  }
+
+  async findContactImage(name: string, company: string): Promise<string> {
+    try {
+      // In a real implementation, this would call an AI service to find professional images
+      // For now, return a professional placeholder
+      const imageUrls = [
+        'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+        'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+        'https://images.pexels.com/photos/1674752/pexels-photo-1674752.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+        'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2'
+      ];
+      
+      // Return a random professional image
+      return imageUrls[Math.floor(Math.random() * imageUrls.length)];
+    } catch (error) {
+      console.error('Image search failed:', error);
+      return 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2';
+    }
   }
 
   private calculateBasicScore(contact: Contact): number {
