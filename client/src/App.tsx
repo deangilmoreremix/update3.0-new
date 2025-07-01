@@ -102,10 +102,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ClerkProvider 
         publishableKey={publishableKey}
-        afterSignInUrl="/dashboard"
-        afterSignUpUrl="/dashboard"
-        signInUrl="/login"
-        signUpUrl="/register"
       >
         <TenantProvider>
           <RoleProvider>

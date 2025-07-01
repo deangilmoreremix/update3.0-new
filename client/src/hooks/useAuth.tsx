@@ -1,4 +1,5 @@
 import { useUser, useAuth as useClerkAuth } from '@clerk/clerk-react';
+import { useDemoAuth } from '../components/auth/DemoAuthProvider';
 
 export interface AuthUser {
   id: string;
@@ -9,22 +10,37 @@ export interface AuthUser {
 }
 
 export const useAuth = () => {
-  const { user: clerkUser, isLoaded } = useUser();
-  const { signOut } = useClerkAuth();
+  try {
+    // Try to use Clerk first
+    const { user: clerkUser, isLoaded } = useUser();
+    const { signOut } = useClerkAuth();
 
-  // Transform Clerk user to our AuthUser format
-  const user: AuthUser | null = clerkUser ? {
-    id: clerkUser.id,
-    email: clerkUser.emailAddresses[0]?.emailAddress || '',
-    firstName: clerkUser.firstName || undefined,
-    lastName: clerkUser.lastName || undefined,
-    // Default to super_admin for now - this would normally come from user metadata
-    role: (clerkUser.publicMetadata?.role as 'super_admin' | 'reseller' | 'user') || 'super_admin'
-  } : null;
+    // If Clerk is working, transform Clerk user to our AuthUser format
+    if (clerkUser) {
+      const user: AuthUser = {
+        id: clerkUser.id,
+        email: clerkUser.emailAddresses[0]?.emailAddress || '',
+        firstName: clerkUser.firstName || undefined,
+        lastName: clerkUser.lastName || undefined,
+        role: (clerkUser.publicMetadata?.role as 'super_admin' | 'reseller' | 'user') || 'super_admin'
+      };
 
-  return {
-    user,
-    isLoaded,
-    signOut
-  };
+      return {
+        user,
+        isLoaded,
+        signOut
+      };
+    }
+
+    // If Clerk is loaded but no user, return null user
+    return {
+      user: null,
+      isLoaded,
+      signOut
+    };
+  } catch (error) {
+    // If Clerk hooks fail, fall back to demo auth
+    console.log('Falling back to demo authentication');
+    return useDemoAuth();
+  }
 };
