@@ -1,5 +1,5 @@
 // Enhanced OpenAI service with robust contact analysis
-import { ContactEnrichmentData } from './aiEnrichmentService';
+import { ContactEnrichmentData } from '../aiEnrichmentService';
 
 interface ContactAnalysisResult {
   score: number;
@@ -51,124 +51,123 @@ export const useOpenAI = () => {
         break;
     }
 
-    // Company size analysis
-    if (contact.company) {
-      if (contact.company.toLowerCase().includes('microsoft') || 
-          contact.company.toLowerCase().includes('google') || 
-          contact.company.toLowerCase().includes('amazon')) {
-        score += 25;
-        insights.push('Enterprise-level company indicates high-value opportunity');
-        recommendations.push('Prepare enterprise-focused presentation and pricing');
-        opportunities.push('Potentially large deal size with expansion opportunities');
-      } else if (contact.company.toLowerCase().includes('startup') || 
-                 contact.company.toLowerCase().includes('inc')) {
-        score += 10;
-        insights.push('Growing company suggests good expansion potential');
-        recommendations.push('Focus on scalability and growth benefits');
-        opportunities.push('Opportunity for long-term partnership');
-      }
-    }
+    // Source scoring
+    const highValueSources = ['Referral', 'LinkedIn'];
+    const mediumValueSources = ['Website', 'Email'];
+    const lowValueSources = ['Cold Call', 'Facebook'];
 
-    // Title analysis
-    if (contact.position || contact.title) {
-      const title = (contact.position || contact.title).toLowerCase();
-      if (title.includes('ceo') || title.includes('founder') || title.includes('president')) {
-        score += 25;
-        insights.push('C-level executive has strong decision-making authority');
-        recommendations.push('Focus on strategic value and ROI presentation');
-        opportunities.push('Direct access to key decision maker');
-      } else if (title.includes('director') || title.includes('manager') || title.includes('vp')) {
+    contact.sources?.forEach((source: string) => {
+      if (highValueSources.includes(source)) {
         score += 15;
-        insights.push('Management level contact has influence over decisions');
-        recommendations.push('Address operational benefits and team impact');
-        opportunities.push('Good champion for internal advocacy');
-      } else if (title.includes('analyst') || title.includes('coordinator')) {
-        score += 5;
-        insights.push('Individual contributor role may require approval process');
-        recommendations.push('Identify and engage decision-making stakeholders');
-        riskFactors.push('May need multiple touchpoints for decision process');
+        insights.push(`${source} source indicates higher quality lead`);
+        opportunities.push(`Leverage ${source} connection for warm approach`);
+      } else if (mediumValueSources.includes(source)) {
+        score += 8;
+        insights.push(`${source} source shows proactive interest`);
+      } else if (lowValueSources.includes(source)) {
+        score += 3;
+        riskFactors.push(`${source} source may require more qualification`);
       }
+    });
+
+    // Company and title analysis
+    const seniorTitles = ['CEO', 'CTO', 'VP', 'Director', 'President', 'Head of'];
+    const managerTitles = ['Manager', 'Lead', 'Senior'];
+    
+    if (seniorTitles.some(title => contact.title?.includes(title))) {
+      score += 20;
+      insights.push('Senior-level title indicates decision-making authority');
+      opportunities.push('Direct access to decision maker');
+      recommendations.push('Tailor messaging for executive-level concerns');
+    } else if (managerTitles.some(title => contact.title?.includes(title))) {
+      score += 10;
+      insights.push('Management-level role suggests influence in decision process');
+      recommendations.push('Identify and connect with ultimate decision maker');
+    } else {
+      score += 5;
+      riskFactors.push('May not have final decision authority');
+      recommendations.push('Identify key stakeholders and decision makers');
     }
 
-    // Email engagement analysis
-    if (contact.email) {
-      const domain = contact.email.split('@')[1];
-      if (domain && !['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'].includes(domain)) {
+    // Industry analysis
+    const highValueIndustries = ['Technology', 'Finance', 'Healthcare', 'Software'];
+    const mediumValueIndustries = ['Manufacturing', 'Consulting', 'Marketing'];
+    
+    if (contact.industry && highValueIndustries.includes(contact.industry)) {
+      score += 15;
+      insights.push(`${contact.industry} industry typically has higher budget for solutions`);
+      opportunities.push('Industry shows strong growth potential');
+    } else if (contact.industry && mediumValueIndustries.includes(contact.industry)) {
+      score += 8;
+      insights.push(`${contact.industry} industry shows steady market demand`);
+    }
+
+    // Engagement scoring based on notes/interactions
+    if (contact.notes && contact.notes.length > 100) {
+      score += 12;
+      insights.push('Detailed interaction history indicates active engagement');
+      opportunities.push('Strong engagement history suggests higher conversion probability');
+    } else if (contact.notes && contact.notes.length > 50) {
+      score += 6;
+      insights.push('Some interaction history available');
+    } else {
+      score -= 5;
+      riskFactors.push('Limited interaction history - need more engagement');
+      recommendations.push('Increase touchpoints and document interactions');
+    }
+
+    // Social presence analysis
+    if (contact.socialProfiles) {
+      const profileCount = Object.keys(contact.socialProfiles).filter(key => 
+        contact.socialProfiles[key]
+      ).length;
+      
+      if (profileCount >= 3) {
         score += 10;
-        insights.push('Business email domain suggests professional context');
-        recommendations.push('Leverage professional communication channels');
-      } else {
-        score -= 5;
-        insights.push('Personal email domain may indicate individual purchaser');
-        riskFactors.push('May have limited purchasing authority');
+        insights.push('Strong social media presence indicates professional engagement');
+        opportunities.push('Multiple channels available for research and outreach');
+      } else if (profileCount >= 1) {
+        score += 5;
+        insights.push('Some social media presence available');
       }
     }
 
-    // Contact recency analysis
-    if (contact.lastContact) {
-      const daysSinceContact = Math.floor((Date.now() - new Date(contact.lastContact).getTime()) / (1000 * 60 * 60 * 24));
+    // Tags analysis
+    if (contact.tags && contact.tags.length > 0) {
+      const highValueTags = ['Enterprise', 'High Value', 'Referral', 'Hot Lead'];
+      const hasHighValueTag = contact.tags.some((tag: string) => 
+        highValueTags.includes(tag)
+      );
+      
+      if (hasHighValueTag) {
+        score += 15;
+        insights.push('Tagged with high-value indicators');
+        opportunities.push('Previously identified as high-potential prospect');
+      }
+    }
+
+    // Recency analysis
+    if (contact.lastConnected) {
+      const lastContactDate = new Date(contact.lastConnected);
+      const daysSinceContact = (Date.now() - lastContactDate.getTime()) / (1000 * 60 * 60 * 24);
+      
       if (daysSinceContact <= 7) {
         score += 15;
-        insights.push('Recent interaction shows active engagement');
-        recommendations.push('Maintain momentum with timely follow-up');
-        opportunities.push('High engagement window for conversion');
+        insights.push('Recent contact indicates active relationship');
+        opportunities.push('Momentum from recent interaction');
       } else if (daysSinceContact <= 30) {
-        score += 5;
-        insights.push('Moderate recency suggests continued interest');
-        recommendations.push('Re-engage with relevant updates or offers');
+        score += 8;
+        insights.push('Moderately recent contact');
+        recommendations.push('Schedule follow-up to maintain momentum');
       } else if (daysSinceContact > 90) {
         score -= 10;
-        insights.push('Extended time since last contact may indicate cooling interest');
-        recommendations.push('Re-qualification needed before advancing');
-        riskFactors.push('May require renewed interest development');
+        riskFactors.push('Long time since last contact - relationship may be cooling');
+        recommendations.push('Re-engagement campaign needed');
       }
     }
 
-    // Source analysis
-    if (contact.source) {
-      switch (contact.source.toLowerCase()) {
-        case 'referral':
-          score += 20;
-          insights.push('Referral source indicates higher trust and qualification');
-          recommendations.push('Leverage referral relationship for credibility');
-          opportunities.push('Pre-qualified lead with higher conversion probability');
-          break;
-        case 'linkedin':
-          score += 15;
-          insights.push('Professional network source suggests business interest');
-          recommendations.push('Utilize professional context for engagement');
-          opportunities.push('Professional network expansion potential');
-          break;
-        case 'website':
-          score += 10;
-          insights.push('Direct website inquiry shows active research');
-          recommendations.push('Address specific interests from website behavior');
-          opportunities.push('Self-qualified interest in solutions');
-          break;
-        case 'cold_outreach':
-          score -= 5;
-          insights.push('Cold outreach requires additional qualification');
-          recommendations.push('Focus on value discovery and needs assessment');
-          riskFactors.push('Lower initial engagement probability');
-          break;
-      }
-    }
-
-    // Ensure score stays within reasonable bounds
+    // Ensure score stays within bounds
     score = Math.max(0, Math.min(100, score));
-
-    // Add general recommendations if none were added
-    if (recommendations.length === 0) {
-      recommendations.push('Conduct discovery call to understand specific needs');
-      recommendations.push('Provide relevant case studies and social proof');
-    }
-
-    // Add general insights if none were added
-    if (insights.length === 0) {
-      insights.push('Contact profile requires additional information for complete analysis');
-    }
-
-    console.log(`✅ OpenAI analysis complete for ${contact.name} - Score: ${score}`);
 
     return {
       score,
@@ -179,146 +178,111 @@ export const useOpenAI = () => {
     };
   };
 
-  const generatePersonalizedEmail = async (contact: any, purpose: string): Promise<string> => {
-    console.log(`✉️ Generating personalized email for ${contact.name}`);
+  const generatePersonalizedEmail = async (contact: any, emailType: 'follow-up' | 'introduction' | 'proposal'): Promise<string> => {
+    console.log(`✍️ OpenAI generating ${emailType} email for ${contact.name}`);
     
-    // Simulate AI processing time
     await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
-
+    
     const templates = {
-      introduction: `Subject: Introduction - ${contact.company ? `Partnership Opportunity with ${contact.company}` : 'Exploring Mutual Benefits'}
+      'follow-up': `Hi ${contact.firstName || contact.name},
 
-Dear ${contact.name},
+I hope this email finds you well. I wanted to follow up on our recent conversation about ${contact.company}'s needs in the ${contact.industry || 'business'} sector.
 
-I hope this email finds you well. I came across your profile ${contact.company ? `and your work at ${contact.company}` : ''} and was impressed by ${contact.title ? `your role as ${contact.title}` : 'your professional background'}.
+Based on our discussion, I believe our solution could help ${contact.company} achieve significant improvements in operational efficiency. Given your role as ${contact.title}, I think you'd be particularly interested in:
 
-${contact.company ? `Given ${contact.company}'s` : 'Given your'} focus ${contact.industry ? `in the ${contact.industry} industry` : ''}, I believe there could be significant value in exploring how our solutions can support your objectives.
+• Cost reduction opportunities we've identified for companies similar to ${contact.company}
+• Implementation timeline that minimizes disruption to your current operations
+• ROI projections based on similar ${contact.industry || 'industry'} implementations
 
-I'd love to schedule a brief 15-minute call to discuss how we've helped similar ${contact.company ? 'organizations' : 'professionals'} achieve measurable results.
+Would you be available for a brief 15-minute call this week to discuss next steps? I have some specific case studies from the ${contact.industry || 'business'} industry that I think would be valuable for your evaluation.
 
-Would you be available for a quick conversation this week?
+Best regards,
+[Your Name]
+
+P.S. I noticed ${contact.company} is expanding - congratulations! This could be the perfect time to implement solutions that scale with your growth.`,
+
+      'introduction': `Hi ${contact.firstName || contact.name},
+
+I hope you don't mind the direct outreach. I came across your profile and was impressed by your work at ${contact.company} in the ${contact.industry || 'industry'} space.
+
+I'm reaching out because we've been helping companies like ${contact.company} solve challenges around operational efficiency and cost management. Given your role as ${contact.title}, I thought you might be interested in how we've helped similar organizations:
+
+• Reduced operational costs by 25-30% on average
+• Streamlined processes to save 15+ hours per week
+• Improved team productivity and satisfaction
+
+I'd love to share a brief case study of how a ${contact.industry || 'similar'} company achieved these results. Would you be open to a quick 10-minute conversation to see if this might be relevant for ${contact.company}?
 
 Best regards,
 [Your Name]`,
 
-      follow_up: `Subject: Following Up - ${contact.company ? `${contact.company}` : 'Our Previous Conversation'}
+      'proposal': `Hi ${contact.firstName || contact.name},
 
-Hi ${contact.name},
+Thank you for your time during our recent discussions about ${contact.company}'s objectives. Based on our conversations, I've prepared a customized proposal that addresses the specific challenges you mentioned.
 
-I wanted to follow up on our previous conversation regarding ${contact.company ? `${contact.company}'s` : 'your'} ${contact.industry ? `${contact.industry}` : 'business'} objectives.
+The proposal includes:
 
-${contact.interestLevel === 'hot' ? 
-  'Given your strong interest, I\'ve prepared some specific recommendations that could deliver immediate value.' :
-  'I understand timing is important, and I wanted to share some insights that might be relevant to your current priorities.'
-}
+• Tailored solution design for ${contact.company}'s ${contact.industry || 'business'} operations
+• Implementation roadmap with minimal disruption to your team
+• ROI projections based on your current metrics
+• Success metrics and KPIs aligned with your business goals
 
-${contact.title && contact.title.toLowerCase().includes('director') ? 
-  'As a leader in your organization, you\'ll appreciate the strategic impact these solutions can have.' :
-  'I believe these solutions align well with your role and responsibilities.'
-}
+Given your experience as ${contact.title}, I believe you'll appreciate the strategic approach we've outlined. The proposal demonstrates how we can help ${contact.company} achieve the 20-30% efficiency improvements we discussed.
 
-Would you have 10 minutes this week to discuss the next steps?
+I'd love to schedule a 30-minute presentation to walk through the proposal details and answer any questions you might have. Are you available this week for a discussion?
 
-Best regards,
-[Your Name]`,
-
-      proposal: `Subject: Proposal - ${contact.company ? `Tailored Solution for ${contact.company}` : 'Custom Solution Proposal'}
-
-Dear ${contact.name},
-
-Thank you for taking the time to discuss ${contact.company ? `${contact.company}'s` : 'your'} requirements. Based on our conversation, I've prepared a tailored proposal that addresses your specific needs.
-
-Key highlights:
-• ${contact.industry ? `Industry-specific solutions for ${contact.industry}` : 'Customized approach based on your requirements'}
-• Measurable ROI within the first quarter
-• Seamless integration with your existing processes
-• Dedicated support throughout implementation
-
-${contact.title && (contact.title.toLowerCase().includes('ceo') || contact.title.toLowerCase().includes('founder')) ?
-  'As a key decision-maker, you\'ll appreciate the strategic value and competitive advantage this solution provides.' :
-  'I believe this aligns perfectly with your objectives and organizational goals.'
-}
-
-I'd be happy to walk through the proposal details at your convenience. When would be a good time for a 30-minute discussion?
+Looking forward to the opportunity to partner with ${contact.company}.
 
 Best regards,
 [Your Name]`
     };
 
-    const emailTemplate = templates[purpose as keyof typeof templates] || templates.introduction;
-    
-    console.log(`✅ Personalized email generated for ${contact.name}`);
-    return emailTemplate;
+    return templates[emailType];
   };
 
-  const generateContactInsights = async (contact: any): Promise<string[]> => {
-    console.log(`🧠 Generating insights for ${contact.name}`);
+  const enrichContactData = async (name: string, company: string): Promise<ContactEnrichmentData> => {
+    console.log(`🔍 OpenAI researching: ${name} at ${company}`);
     
-    // Simulate AI processing time
-    await new Promise(resolve => setTimeout(resolve, 1200 + Math.random() * 800));
+    await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1000));
+    
+    const firstName = name.split(' ')[0];
+    const lastName = name.split(' ').slice(1).join(' ');
+    
+    return {
+      firstName,
+      lastName,
+      email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${company.toLowerCase().replace(/\s+/g, '')}.com`,
+      phone: `+1-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
+      title: ['Senior Manager', 'Director', 'VP of Operations', 'Business Development Manager'][Math.floor(Math.random() * 4)],
+      company,
+      industry: ['Technology', 'Healthcare', 'Finance', 'Manufacturing'][Math.floor(Math.random() * 4)],
+      avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+      bio: `${name} is an experienced professional at ${company} with expertise in business development and strategic planning.`,
+      notes: `Profile researched and enriched by OpenAI on ${new Date().toLocaleDateString()}`,
+      confidence: Math.floor(Math.random() * 25) + 75
+    };
+  };
 
-    const insights: string[] = [];
-
-    // Professional insights
-    if (contact.title) {
-      insights.push(`Professional role as ${contact.title} suggests ${
-        contact.title.toLowerCase().includes('director') || contact.title.toLowerCase().includes('manager') ? 
-        'management responsibilities and budget authority' :
-        'individual contributor role with potential influence'
-      }`);
-    }
-
-    // Company insights
-    if (contact.company) {
-      insights.push(`Employment at ${contact.company} ${
-        contact.industry ? `in the ${contact.industry} sector` : ''
-      } indicates ${
-        contact.company.toLowerCase().includes('startup') ? 
-        'growth-oriented environment with agile decision-making' :
-        'established organization with structured processes'
-      }`);
-    }
-
-    // Communication insights
-    if (contact.email) {
-      const domain = contact.email.split('@')[1];
-      if (domain && !['gmail.com', 'yahoo.com', 'hotmail.com'].includes(domain)) {
-        insights.push(`Corporate email domain suggests professional purchasing context and potential budget allocation`);
-      }
-    }
-
-    // Engagement insights
-    if (contact.interestLevel) {
-      insights.push(`Current interest level (${contact.interestLevel}) indicates ${
-        contact.interestLevel === 'hot' ? 'immediate opportunity for engagement and conversion' :
-        contact.interestLevel === 'medium' ? 'active evaluation phase requiring nurturing' :
-        'early-stage awareness needing education and value demonstration'
-      }`);
-    }
-
-    // Timeline insights
-    if (contact.lastContact) {
-      const daysSince = Math.floor((Date.now() - new Date(contact.lastContact).getTime()) / (1000 * 60 * 60 * 24));
-      insights.push(`Last contact ${daysSince} days ago suggests ${
-        daysSince <= 7 ? 'active engagement window with high responsiveness' :
-        daysSince <= 30 ? 'moderate engagement requiring re-activation' :
-        'dormant relationship needing re-qualification and renewed interest'
-      }`);
-    }
-
-    // Default insights if none generated
-    if (insights.length === 0) {
-      insights.push('Contact profile shows professional potential with opportunities for strategic engagement');
-      insights.push('Additional qualification needed to determine specific needs and decision-making process');
-    }
-
-    console.log(`✅ Generated ${insights.length} insights for ${contact.name}`);
-    return insights;
+  const generateBusinessInsights = async (contact: any): Promise<string[]> => {
+    console.log(`📊 OpenAI generating business insights for ${contact.name}`);
+    
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    
+    const insights = [
+      `${contact.company} shows strong potential for enterprise solutions based on ${contact.title} role and ${contact.industry} industry trends`,
+      `Contact's ${contact.interestLevel} interest level suggests ${contact.interestLevel === 'hot' ? 'immediate' : 'strategic'} engagement approach`,
+      `Company size and industry position indicate budget availability for solutions in the $50K-$200K range`,
+      `Recent market activity in ${contact.industry} suggests urgency around digital transformation initiatives`,
+      `${contact.title} role typically influences decisions on operational efficiency and technology investments`
+    ];
+    
+    return insights.slice(0, 3 + Math.floor(Math.random() * 2));
   };
 
   return {
     analyzeContact,
     generatePersonalizedEmail,
-    generateContactInsights
+    enrichContactData,
+    generateBusinessInsights
   };
 };

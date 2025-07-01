@@ -180,13 +180,14 @@ export const useContactStore = create<ContactStore>((set, get) => ({
   importContacts: async (newContacts) => {
     const contactsWithIds = newContacts.map(contact => ({
       ...contact,
-      id: contact.id || Date.now().toString() + Math.random().toString(36).substr(2, 9),
-      createdAt: contact.createdAt || new Date().toISOString(),
-      updatedAt: contact.updatedAt || new Date().toISOString(),
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+      isFavorite: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     }));
-
+    
     set(state => ({
       contacts: [...state.contacts, ...contactsWithIds]
     }));
-  }
+  },
 }));

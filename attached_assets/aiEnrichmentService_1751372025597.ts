@@ -130,8 +130,50 @@ class AIEnrichmentService {
     
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Return mock avatar
-    return this.getMockAvatar();
+    // Return a random professional avatar from Pexels
+    const avatars = [
+      'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+      'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+      'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+      'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+      'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+      'https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+      'https://images.pexels.com/photos/1587009/pexels-photo-1587009.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+      'https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2'
+    ];
+    
+    return avatars[Math.floor(Math.random() * avatars.length)];
+  }
+
+  async bulkEnrichContacts(contacts: Array<{email?: string, name?: string, company?: string}>): Promise<ContactEnrichmentData[]> {
+    console.log(`🔍 Bulk enriching ${contacts.length} contacts...`);
+    
+    const results: ContactEnrichmentData[] = [];
+    
+    for (let i = 0; i < contacts.length; i++) {
+      const contact = contacts[i];
+      
+      // Simulate processing time
+      await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
+      
+      let enrichedData: ContactEnrichmentData;
+      
+      if (contact.email) {
+        enrichedData = await this.enrichContactByEmail(contact.email);
+      } else if (contact.name) {
+        const [firstName, ...lastName] = contact.name.split(' ');
+        enrichedData = await this.enrichContactByName(firstName, lastName.join(' '), contact.company);
+      } else {
+        enrichedData = {
+          confidence: 0,
+          notes: 'Insufficient data for enrichment'
+        };
+      }
+      
+      results.push(enrichedData);
+    }
+    
+    return results;
   }
 
   // Helper methods for generating mock data
@@ -139,11 +181,11 @@ class AIEnrichmentService {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   }
 
-  private generateMockEmail(firstName: string, lastName: string, company?: string): string {
-    const domain = company ? 
-      `${company.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '')}.com` : 
-      ['gmail.com', 'outlook.com', 'yahoo.com', 'company.com'][Math.floor(Math.random() * 4)];
-    return `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${domain}`;
+  private generateMockEmail(firstName?: string, lastName?: string, company?: string): string {
+    const first = firstName || 'contact';
+    const last = lastName || 'person';
+    const domain = company ? `${company.toLowerCase().replace(/\s+/g, '')}.com` : 'company.com';
+    return `${first.toLowerCase()}.${last.toLowerCase()}@${domain}`;
   }
 
   private generateMockPhone(): string {
@@ -153,54 +195,80 @@ class AIEnrichmentService {
     return `+1-${area}-${exchange}-${number}`;
   }
 
-  private getMockTitle(domain?: string): string {
-    const titles = ['Senior Manager', 'Director', 'VP of Operations', 'Marketing Manager', 'Business Development', 'Sales Director', 'Product Manager', 'Executive'];
+  private getMockTitle(company?: string): string {
+    const titles = [
+      'Marketing Director', 'Sales Manager', 'CEO', 'CTO', 'VP of Sales',
+      'Product Manager', 'Business Development Manager', 'Operations Director',
+      'Marketing Manager', 'Senior Developer', 'Account Executive', 'Strategy Director'
+    ];
     return titles[Math.floor(Math.random() * titles.length)];
   }
 
   private getMockCompany(domain?: string): string {
     if (domain) {
-      const domainName = domain.split('.')[0];
-      return this.capitalize(domainName) + ' Corp';
+      const companyNames = {
+        'microsoft.com': 'Microsoft',
+        'google.com': 'Google',
+        'apple.com': 'Apple',
+        'amazon.com': 'Amazon',
+        'salesforce.com': 'Salesforce',
+        'oracle.com': 'Oracle',
+        'adobe.com': 'Adobe',
+        'netflix.com': 'Netflix'
+      };
+      return companyNames[domain as keyof typeof companyNames] || this.getRandomCompany();
     }
-    const companies = ['Tech Solutions Inc', 'Global Enterprises', 'Innovation Labs', 'Business Partners LLC', 'Strategic Ventures'];
+    return this.getRandomCompany();
+  }
+
+  private getRandomCompany(): string {
+    const companies = [
+      'TechCorp Solutions', 'Innovation Labs', 'Global Dynamics', 'Future Systems',
+      'Digital Ventures', 'Smart Solutions Inc', 'Advanced Technologies', 'Growth Partners'
+    ];
     return companies[Math.floor(Math.random() * companies.length)];
   }
 
-  private getMockIndustry(domain?: string): string {
-    const industries = ['Technology', 'Healthcare', 'Finance', 'Marketing', 'Consulting', 'Manufacturing', 'Education'];
+  private getMockIndustry(company?: string): string {
+    const industries = [
+      'Technology', 'Software', 'Healthcare', 'Finance', 'Manufacturing',
+      'Consulting', 'Marketing', 'E-commerce', 'Education', 'Real Estate'
+    ];
     return industries[Math.floor(Math.random() * industries.length)];
   }
 
   private getMockLocation() {
     const locations = [
-      { city: 'New York', state: 'New York', country: 'United States' },
       { city: 'San Francisco', state: 'California', country: 'United States' },
+      { city: 'New York', state: 'New York', country: 'United States' },
       { city: 'London', state: 'England', country: 'United Kingdom' },
       { city: 'Toronto', state: 'Ontario', country: 'Canada' },
-      { city: 'Sydney', state: 'NSW', country: 'Australia' }
+      { city: 'Sydney', state: 'NSW', country: 'Australia' },
+      { city: 'Berlin', state: 'Berlin', country: 'Germany' },
+      { city: 'Tokyo', state: 'Tokyo', country: 'Japan' }
     ];
     return locations[Math.floor(Math.random() * locations.length)];
   }
 
-  private getMockSocialProfiles(firstName: string, lastName: string, domain?: string) {
-    const username = `${firstName.toLowerCase()}${lastName.toLowerCase()}`;
-    const companyDomain = domain ? domain.split('.')[0] : 'company';
+  private getMockSocialProfiles(firstName?: string, lastName?: string, company?: string) {
+    const username = `${firstName?.toLowerCase()}${lastName?.toLowerCase()}`.replace(/\s+/g, '');
+    const companyDomain = company?.toLowerCase().replace(/\s+/g, '') || 'company';
     
     return {
       linkedin: `https://linkedin.com/in/${username}`,
       twitter: `https://twitter.com/${username}`,
-      website: `https://${companyDomain}.com`
+      website: `https://${companyDomain}.com`,
+      facebook: `https://facebook.com/${username}`
     };
   }
 
   private getMockAvatar(): string {
     const avatars = [
+      'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
       'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
       'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
       'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-      'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-      'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2'
+      'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2'
     ];
     return avatars[Math.floor(Math.random() * avatars.length)];
   }

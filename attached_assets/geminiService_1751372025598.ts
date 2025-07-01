@@ -1,5 +1,5 @@
 // Gemini AI service for contact research and enhancement
-import { ContactEnrichmentData } from '../aiEnrichmentService';
+import { ContactEnrichmentData } from './aiEnrichmentService';
 
 class GeminiAIService {
   private apiKey: string | null = null;
@@ -89,90 +89,69 @@ class GeminiAIService {
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     const templates = {
-      email: `Subject: Quick question about ${contact.company}'s ${contact.industry || 'business'} strategy
-
-Hi ${contact.firstName || contact.name},
-
-I hope this message finds you well. I came across your profile and was impressed by your work as ${contact.title} at ${contact.company}.
-
-I've been helping ${contact.industry || 'similar'} companies optimize their operations and thought you might be interested in a brief conversation about how companies like ${contact.company} are tackling current market challenges.
-
-Would you be open to a quick 10-minute call to share insights? I have some relevant case studies that might be valuable for your planning.
-
-Best regards,
-[Your Name]`,
-
-      linkedin: `Hi ${contact.firstName || contact.name},
-
-I noticed your impressive background as ${contact.title} at ${contact.company}. Your experience in ${contact.industry || 'the industry'} caught my attention.
-
-I've been working with similar companies on strategic initiatives and thought we might have some interesting overlap. Would you be open to connecting and potentially sharing insights about trends in ${contact.industry || 'your industry'}?
-
-Looking forward to connecting!
-
-Best,
-[Your Name]`,
-
-      'cold-outreach': `Hi ${contact.firstName || contact.name},
-
-I hope you don't mind the direct outreach. I've been researching leading ${contact.industry || 'companies'} and ${contact.company} consistently appears as an innovator in the space.
-
-As ${contact.title}, you're likely focused on operational efficiency and growth. I work with companies like ${contact.company} to identify opportunities for process optimization.
-
-Would you be interested in a brief conversation about some trends we're seeing in ${contact.industry || 'your industry'}? I have some insights that might be relevant to your current initiatives.
-
-Best regards,
-[Your Name]
-
-P.S. This is a short exploratory conversation - no sales pitch, just industry insights that might be valuable.`
+      email: `Hi ${contact.firstName},\n\nI came across your profile and was impressed by your work at ${contact.company}. As a ${contact.title}, I imagine you're focused on driving growth and innovation.\n\nI'd love to share some insights that might be valuable for your current initiatives. Would you be open to a brief conversation?\n\nBest regards,\n[Your Name]`,
+      
+      linkedin: `Hi ${contact.firstName}, I noticed we share similar interests in ${contact.industry || 'business development'}. Your experience at ${contact.company} is impressive! I'd love to connect and exchange insights about industry trends.`,
+      
+      'cold-outreach': `Hello ${contact.firstName},\n\nI hope this message finds you well. I've been researching leaders in ${contact.industry || 'your industry'} and your work at ${contact.company} caught my attention.\n\nI believe there might be some interesting synergies between what you're doing and some solutions we've developed. Would you be interested in a brief conversation to explore potential collaboration?\n\nLooking forward to connecting!\n\nBest,\n[Your Name]`
     };
-
+    
     return templates[messageType];
   }
 
-  async generateEngagementStrategy(contact: any): Promise<string[]> {
-    console.log(`📋 Gemini creating engagement strategy for ${contact.name}`);
+  async analyzeContactEngagement(contact: any): Promise<{
+    engagementScore: number;
+    recommendations: string[];
+    bestContactTime: string;
+    preferredChannel: string;
+  }> {
+    console.log(`📊 Gemini analyzing engagement for ${contact.name}`);
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    return {
+      engagementScore: Math.floor(Math.random() * 40) + 60,
+      recommendations: [
+        'Focus on industry-specific value propositions',
+        'Share relevant case studies from similar companies',
+        'Propose a short discovery call',
+        'Connect on LinkedIn before direct outreach'
+      ],
+      bestContactTime: 'Tuesday-Thursday, 2-4 PM',
+      preferredChannel: Math.random() > 0.5 ? 'email' : 'linkedin'
+    };
+  }
+
+  async findSimilarContacts(contact: any): Promise<Array<{
+    name: string;
+    company: string;
+    similarity: number;
+    reason: string;
+  }>> {
+    console.log(`🔍 Gemini finding similar contacts to ${contact.name}`);
     
     await new Promise(resolve => setTimeout(resolve, 1200));
     
-    const strategies = [
-      `Research ${contact.company}'s recent ${contact.industry || 'industry'} initiatives and reference them in outreach`,
-      `Connect with ${contact.name} on LinkedIn with personalized message about ${contact.title} role`,
-      `Share relevant ${contact.industry || 'industry'} insights and case studies via email`,
-      `Schedule follow-up based on ${contact.company}'s quarterly business cycle`,
-      `Engage with ${contact.name}'s professional content on social media platforms`
+    return [
+      {
+        name: 'Sarah Johnson',
+        company: 'TechFlow Solutions',
+        similarity: 87,
+        reason: 'Same industry and role level'
+      },
+      {
+        name: 'Michael Chen',
+        company: 'Innovation Labs',
+        similarity: 82,
+        reason: 'Similar company size and market focus'
+      },
+      {
+        name: 'Emily Rodriguez',
+        company: 'Future Systems',
+        similarity: 78,
+        reason: 'Comparable decision-making authority'
+      }
     ];
-    
-    // Return 2-3 strategies based on contact profile
-    return strategies.slice(0, 2 + Math.floor(Math.random() * 2));
-  }
-
-  async analyzeCompanyContext(company: string, industry?: string): Promise<{
-    insights: string[];
-    opportunities: string[];
-    challenges: string[];
-  }> {
-    console.log(`🏢 Gemini analyzing company context: ${company}`);
-    
-    await new Promise(resolve => setTimeout(resolve, 1800));
-    
-    return {
-      insights: [
-        `${company} operates in a competitive ${industry || 'market'} with focus on innovation`,
-        `Company size suggests enterprise-level decision making processes`,
-        `${industry || 'Industry'} trends indicate increased investment in operational efficiency`
-      ],
-      opportunities: [
-        `${company} likely evaluating solutions for process optimization`,
-        `Growth phase companies often prioritize scalable technology solutions`,
-        `${industry || 'Industry'} regulations may create compliance automation needs`
-      ],
-      challenges: [
-        `Budget approval cycles in ${industry || 'industry'} can be 3-6 months`,
-        `Multiple stakeholders typically involved in technology decisions`,
-        `Competitive landscape requires differentiated value proposition`
-      ]
-    };
   }
 
   private capitalize(str: string): string {
@@ -181,13 +160,14 @@ P.S. This is a short exploratory conversation - no sales pitch, just industry in
 
   private getRandomAvatar(): string {
     const avatars = [
+      'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
       'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
       'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
       'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-      'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2'
+      'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2'
     ];
     return avatars[Math.floor(Math.random() * avatars.length)];
   }
 }
 
-export const geminiAIService = new GeminiAIService();
+export const geminiService = new GeminiAIService();
