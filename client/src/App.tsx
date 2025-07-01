@@ -105,12 +105,12 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
-              
+
               {/* Public routes */}
               <Route path="/" element={<LandingPage />} />
               <Route path="/form/:formId" element={<FormPublic />} />
               <Route path="/faq" element={<FAQ />} />
-              
+
               {/* Protected routes with role-based access */}
               <Route path="/dashboard" element={
                 <UserRoute>
@@ -119,7 +119,7 @@ function App() {
                   </AuthenticatedLayout>
                 </UserRoute>
               } />
-              
+
               <Route path="/contacts" element={
                 <UserRoute>
                   <AuthenticatedLayout>
@@ -127,7 +127,7 @@ function App() {
                   </AuthenticatedLayout>
                 </UserRoute>
               } />
-              
+
               <Route path="/contacts/:id" element={
                 <UserRoute>
                   <AuthenticatedLayout>
@@ -135,7 +135,7 @@ function App() {
                   </AuthenticatedLayout>
                 </UserRoute>
               } />
-              
+
               <Route path="/pipeline" element={
                 <UserRoute>
                   <AuthenticatedLayout>
@@ -143,7 +143,7 @@ function App() {
                   </AuthenticatedLayout>
                 </UserRoute>
               } />
-              
+
               <Route path="/tasks" element={
                 <UserRoute>
                   <AuthenticatedLayout>
@@ -151,127 +151,127 @@ function App() {
                   </AuthenticatedLayout>
                 </UserRoute>
               } />
-              
+
               <Route path="/tasks/calendar" element={
                 <ProtectedRoute>
                   <TaskCalendarView />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/calendar" element={
                 <ProtectedRoute>
                   <TaskCalendarView />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/appointments" element={
                 <ProtectedRoute>
                   <Appointments />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/phone" element={
                 <ProtectedRoute>
                   <PhoneSystem />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/text-messages" element={
                 <ProtectedRoute>
                   <TextMessages />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/video-email" element={
                 <ProtectedRoute>
                   <VideoEmail />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/invoicing" element={
                 <ProtectedRoute>
                   <Invoicing />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/ai-tools" element={
                 <ProtectedRoute>
                   <AITools />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/sales-tools" element={
                 <ProtectedRoute>
                   <SalesTools />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/lead-automation" element={
                 <ProtectedRoute>
                   <LeadAutomation />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/circle-prospecting" element={
                 <ProtectedRoute>
                   <CircleProspecting />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/forms-surveys" element={
                 <ProtectedRoute>
                   <FormsAndSurveys />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/business-analysis" element={
                 <ProtectedRoute>
                   <BusinessAnalyzer />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/content-library" element={
                 <ProtectedRoute>
                   <ContentLibrary />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/voice-profiles" element={
                 <ProtectedRoute>
                   <VoiceProfiles />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/communication-hub" element={
                 <ProtectedRoute>
                   <CommunicationHub />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/document-center" element={
                 <ProtectedRoute>
                   <DocumentCenter />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/analytics-dashboard" element={
                 <ProtectedRoute>
                   <AnalyticsDashboard />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/lead-capture" element={
                 <ProtectedRoute>
                   <LeadCapture />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/settings" element={
                 <ProtectedRoute>
                   <Settings />
                 </ProtectedRoute>
               } />
-              
+
               {/* Feature Pages */}
               <Route path="/features/ai-tools" element={<AiToolsFeaturePage />} />
               <Route path="/features/contacts" element={<ContactsFeaturePage />} />
@@ -334,7 +334,7 @@ function App() {
                   </AuthenticatedLayout>
                 </SuperAdminRoute>
               } />
-              
+
               {/* Unauthorized route */}
               <Route path="/unauthorized" element={<UnauthorizedPage />} />
             </Routes>
