@@ -1,9 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { AIToolsProvider } from './components/AIToolsProvider';
 import { TenantProvider } from './components/TenantProvider';
 import { RoleProvider } from './components/RoleBasedAccess';
 import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
+import { queryClient } from './lib/queryClient';
 
 // Landing Pages
 import LandingPage from './pages/Landing/LandingPage';
@@ -89,11 +91,12 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <TenantProvider>
-      <RoleProvider>
-        <EnhancedHelpProvider>
-          <AIToolsProvider>
-            <Router>
+    <QueryClientProvider client={queryClient}>
+      <TenantProvider>
+        <RoleProvider>
+          <EnhancedHelpProvider>
+            <AIToolsProvider>
+              <Router>
             <Routes>
               {/* Auth routes (available for future Clerk integration) */}
               <Route path="/login" element={<Login />} />
@@ -282,6 +285,7 @@ function App() {
         </EnhancedHelpProvider>
       </RoleProvider>
     </TenantProvider>
+    </QueryClientProvider>
   );
 }
 

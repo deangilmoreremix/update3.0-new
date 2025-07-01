@@ -42,30 +42,26 @@ interface CustomerAnalytics {
 }
 
 export default function PartnerManagement() {
-  const { userId } = useAuth();
-  const { organization } = useOrganization();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPackage, setSelectedPackage] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
-  // Fetch partner data based on Clerk organization
-  const { data: partnerData, isLoading: partnerLoading } = useQuery({
-    queryKey: ['partner', organization?.id],
+  // Fetch all partners
+  const { data: partnersData, isLoading: partnersLoading } = useQuery({
+    queryKey: ['partners'],
     queryFn: async () => {
-      const response = await fetch(`/api/partners/organization/${organization?.id}`);
+      const response = await fetch('/api/partners');
       return response.json();
     },
-    enabled: !!organization?.id,
   });
 
-  // Fetch partner metrics
-  const { data: metrics, isLoading: metricsLoading } = useQuery<PartnerMetrics>({
-    queryKey: ['partner-metrics', partnerData?.id],
+  // Fetch feature packages
+  const { data: featurePackages, isLoading: packagesLoading } = useQuery({
+    queryKey: ['feature-packages'],
     queryFn: async () => {
-      const response = await fetch(`/api/partners/${partnerData.id}/metrics`);
+      const response = await fetch('/api/feature-packages');
       return response.json();
     },
-    enabled: !!partnerData?.id,
   });
 
   // Fetch customer analytics
