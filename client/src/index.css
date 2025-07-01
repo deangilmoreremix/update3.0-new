@@ -11,13 +11,6 @@
 /* Enhanced Global Styles */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* Apply dark theme by default */
-body {
-  font-family: var(--font-family-primary);
-  background: var(--color-dark-bg);
-  color: var(--color-dark-text-primary);
-}
-
 /* Custom animations */
 @keyframes fadeIn {
   from {

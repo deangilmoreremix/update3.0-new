@@ -40,7 +40,6 @@ import {
   Settings,
   Palette
 } from 'lucide-react';
-import { GlassCard, ModernButton, AvatarWithStatus, StatusIndicator, FloatingActionButton } from '@/components/modern-ui';
 
 // Import AI tools components
 import StreamingChat from '../components/aiTools/StreamingChat';
@@ -70,20 +69,20 @@ const Dashboard: React.FC = () => {
     stageValues,
     totalPipelineValue 
   } = useDealStore();
-
+  
   const { 
     contacts, 
     fetchContacts, 
     isLoading: contactsLoading 
   } = useContactStore();
-
+  
   const { tasks, fetchTasks } = useTaskStore();
   const { fetchAppointments } = useAppointmentStore();
   const { openTool } = useAITools();
   const { showTours } = useEnhancedHelp();
-
+  
   const gemini = useGemini();
-
+  
   const [pipelineInsight, setPipelineInsight] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [timeframe, setTimeframe] = useState('month'); // 'week', 'month', 'quarter', 'year'
@@ -94,31 +93,31 @@ const Dashboard: React.FC = () => {
     efficiency: 32,
     qualityScore: 87
   });
-
+  
   useEffect(() => {
     // Fetch all data when component mounts
     fetchDeals();
     fetchContacts();
     fetchTasks();
     fetchAppointments();
-
+    
     // Generate AI recommendations
     generateRecommendations();
-
+    
     // Set up timer to refresh data periodically
     const intervalId = setInterval(() => {
       fetchDeals();
       fetchContacts();
     }, 300000); // refresh every 5 minutes
-
+    
     return () => clearInterval(intervalId);
   }, []);
-
+  
   const generateRecommendations = async () => {
     try {
       // Use real AI to generate recommendations based on actual CRM data
       const contactsArray = Object.values(contacts);
-
+      
       const response = await fetch('/api/ai/business-analyzer', {
         method: 'POST',
         headers: {
@@ -136,11 +135,11 @@ const Dashboard: React.FC = () => {
       }
 
       const data = await response.json();
-
+      
       // Parse AI recommendations or use structured fallback
       let recommendations = [];
       const aiResponse = data.result || data.insights || data.content;
-
+      
       try {
         const aiResult = JSON.parse(aiResponse || '{}');
         recommendations = aiResult.recommendations || [];
@@ -158,7 +157,7 @@ const Dashboard: React.FC = () => {
           }
         ];
       }
-
+      
       setAiRecommendations(recommendations);
     } catch (error) {
       console.error('Error generating recommendations:', error);
@@ -166,21 +165,21 @@ const Dashboard: React.FC = () => {
       setAiRecommendations([]);
     }
   };
-
+  
   // Generate AI insight for the pipeline using real data
   const generatePipelineInsight = async () => {
     setIsAnalyzing(true);
-
+    
     try {
       // Convert contacts object to array for API
       const contactsArray = Object.values(contacts);
-
+      
       // Prepare real data for the AI analysis
       const requestData = {
         contacts: contactsArray,
         deals: deals
       };
-
+      
       // Call the real AI sales insights API
       const response = await fetch('/api/ai/sales-insights', {
         method: 'POST',
@@ -189,11 +188,11 @@ const Dashboard: React.FC = () => {
         },
         body: JSON.stringify(requestData),
       });
-
+      
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
-
+      
       const data = await response.json();
       setPipelineInsight(data.result || data.insights || data.content || data.message);
     } catch (error) {
@@ -212,18 +211,18 @@ const Dashboard: React.FC = () => {
     let totalAtRisk = 0;
     let totalValue = 0;
     let wonValue = 0;
-
+    
     Object.values(deals).forEach(deal => {
       // Count active deals (not closed)
       if (deal.stage !== 'closed-won' && deal.stage !== 'closed-lost') {
         totalActiveDeals++;
         totalValue += deal.value;
-
+        
         // Deals closing this month
         if (deal.dueDate && deal.dueDate.getMonth() === now.getMonth()) {
           totalClosingThisMonth++;
         }
-
+        
         // Deals at risk (high priority or stalled)
         if (
           deal.priority === 'high' || 
@@ -232,13 +231,13 @@ const Dashboard: React.FC = () => {
           totalAtRisk++;
         }
       }
-
+      
       // Count won deals value
       if (deal.stage === 'closed-won') {
         wonValue += deal.value;
       }
     });
-
+    
     return {
       totalActiveDeals,
       totalClosingThisMonth,
@@ -248,7 +247,7 @@ const Dashboard: React.FC = () => {
       wonValue
     };
   };
-
+  
   const metrics = calculateMetrics();
 
   // Prepare data for charts
@@ -259,7 +258,7 @@ const Dashboard: React.FC = () => {
       { stage: 'Proposal', value: stageValues.proposal || 0 },
       { stage: 'Negotiation', value: stageValues.negotiation || 0 },
     ];
-
+    
     // Deal probability distribution
     const dealProbability = [
       { range: '0-25%', count: 0 },
@@ -267,7 +266,7 @@ const Dashboard: React.FC = () => {
       { range: '51-75%', count: 0 },
       { range: '76-100%', count: 0 },
     ];
-
+    
     Object.values(deals).forEach(deal => {
       const probability = deal.probability || 0;
       if (probability <= 25) dealProbability[0].count++;
@@ -275,7 +274,7 @@ const Dashboard: React.FC = () => {
       else if (probability <= 75) dealProbability[2].count++;
       else dealProbability[3].count++;
     });
-
+    
     // Monthly trend data (simulated for demo)
     const monthlyTrend = [
       { month: 'Jan', deals: 15, value: 125000 },
@@ -285,10 +284,10 @@ const Dashboard: React.FC = () => {
       { month: 'May', deals: 25, value: 210000 },
       { month: 'Jun', deals: 30, value: 275000 },
     ];
-
+    
     return { pipelineByStage, dealProbability, monthlyTrend };
   };
-
+  
   const chartData = prepareChartData();
 
   // Get upcoming deals (sorting by dueDate)
@@ -296,7 +295,7 @@ const Dashboard: React.FC = () => {
     const activeDeals = Object.values(deals).filter(
       deal => deal.stage !== 'closed-won' && deal.stage !== 'closed-lost'
     );
-
+    
     // Sort by due date (ascending)
     return activeDeals
       .filter(deal => deal.dueDate)
@@ -306,24 +305,24 @@ const Dashboard: React.FC = () => {
       })
       .slice(0, 5); // Get top 5
   };
-
+  
   // Get overdue and today's tasks
   const getImportantTasks = () => {
     const now = new Date();
     now.setHours(0, 0, 0, 0);
-
+    
     const tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
-
+    
     const overdueTasks = Object.values(tasks).filter(task => 
       !task.completed && task.dueDate && task.dueDate < now
     );
-
+    
     const todayTasks = Object.values(tasks).filter(task => 
       !task.completed && task.dueDate && 
       task.dueDate >= now && task.dueDate < tomorrow
     );
-
+    
     return [...overdueTasks, ...todayTasks].sort((a, b) => {
       if (!a.dueDate || !b.dueDate) return 0;
       return a.dueDate.getTime() - b.dueDate.getTime();
@@ -332,7 +331,7 @@ const Dashboard: React.FC = () => {
 
   const upcomingDeals = getUpcomingDeals();
   const importantTasks = getImportantTasks();
-
+  
   // Format currency values
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -342,18 +341,18 @@ const Dashboard: React.FC = () => {
       maximumFractionDigits: 0
     }).format(value);
   };
-
+  
   // Format date
   const formatDate = (date?: Date) => {
     if (!date) return 'No date';
-
+    
     const today = new Date();
     const tomorrow = new Date();
     tomorrow.setDate(today.getDate() + 1);
-
+    
     if (date.toDateString() === today.toDateString()) return 'Today';
     if (date.toDateString() === tomorrow.toDateString()) return 'Tomorrow';
-
+    
     return date.toLocaleDateString(undefined, {
       month: 'short',
       day: 'numeric'
@@ -393,7 +392,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </header>
-
+      
       {/* AI Insight Panel */}
       <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-xl shadow-sm p-6 border border-blue-100 mb-6" data-tour="ai-insights">
         <div className="flex items-start">
@@ -411,7 +410,7 @@ const Dashboard: React.FC = () => {
                 {isAnalyzing ? 'Analyzing...' : pipelineInsight ? 'Refresh' : 'Generate Insight'}
               </button>
             </div>
-
+            
             {isAnalyzing ? (
               <div className="mt-2 flex items-center text-blue-700">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mr-2"></div>
@@ -425,7 +424,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
-
+      
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6" data-tour="stats-cards">
         <div className="bg-white rounded-xl shadow-sm p-6 flex items-center">
@@ -443,7 +442,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
-
+        
         <div className="bg-white rounded-xl shadow-sm p-6 flex items-center">
           <div className="rounded-full p-3 mr-4 bg-gradient-to-r from-indigo-50 to-indigo-100">
             <DollarSign className="h-6 w-6 text-indigo-600" />
@@ -459,7 +458,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
-
+        
         <div className="bg-white rounded-xl shadow-sm p-6 flex items-center">
           <div className="rounded-full p-3 mr-4 bg-gradient-to-r from-purple-50 to-purple-100">
             <Calendar className="h-6 w-6 text-purple-600" />
@@ -475,7 +474,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
-
+        
         <div className="bg-white rounded-xl shadow-sm p-6 flex items-center">
           <div className="rounded-full p-3 mr-4 bg-gradient-to-r from-amber-50 to-amber-100">
             <AlertCircle className="h-6 w-6 text-amber-600" />
@@ -492,7 +491,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
-
+      
       {/* AI Performance Metrics */}
       <div className="bg-white rounded-xl shadow-sm p-6 border border-indigo-100 mb-6">
         <div className="flex items-center mb-4">
@@ -501,7 +500,7 @@ const Dashboard: React.FC = () => {
           </div>
           <h2 className="text-lg font-semibold">AI Enhancement Metrics</h2>
         </div>
-
+        
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div>
             <p className="text-sm text-gray-500">Active Suggestions</p>
@@ -510,7 +509,7 @@ const Dashboard: React.FC = () => {
               <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: `${aiMetrics.activeSuggestions * 5}%` }}></div>
             </div>
           </div>
-
+          
           <div>
             <p className="text-sm text-gray-500">Suggestions Accepted</p>
             <p className="text-2xl font-semibold mt-1">{aiMetrics.acceptedSuggestions}</p>
@@ -518,7 +517,7 @@ const Dashboard: React.FC = () => {
               <div className="bg-green-500 h-1.5 rounded-full" style={{ width: `${aiMetrics.acceptedSuggestions * 10}%` }}></div>
             </div>
           </div>
-
+          
           <div>
             <p className="text-sm text-gray-500">Efficiency Boost</p>
             <p className="text-2xl font-semibold mt-1">{aiMetrics.efficiency}%</p>
@@ -526,7 +525,7 @@ const Dashboard: React.FC = () => {
               <div className="bg-purple-500 h-1.5 rounded-full" style={{ width: `${aiMetrics.efficiency}%` }}></div>
             </div>
           </div>
-
+          
           <div>
             <p className="text-sm text-gray-500">AI Quality Score</p>
             <p className="text-2xl font-semibold mt-1">{aiMetrics.qualityScore}/100</p>
@@ -536,7 +535,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
-
+      
       {/* Connected Apps Section */}
       <div className="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
         <div className="flex items-center justify-between mb-6">
@@ -553,7 +552,7 @@ const Dashboard: React.FC = () => {
             View All <ExternalLink size={14} className="ml-1" />
           </button>
         </div>
-
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* FunnelCraft AI - Marketing Team */}
           <a 
@@ -628,7 +627,7 @@ const Dashboard: React.FC = () => {
           </a>
         </div>
       </div>
-
+      
       {/* Main Content - 3-column grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {/* AI Chat and Tools column */}
@@ -649,7 +648,7 @@ const Dashboard: React.FC = () => {
               />
             </div>
           </div>
-
+          
           {/* Quick Search */}
           <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
             <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-cyan-50 to-blue-50">
@@ -662,11 +661,11 @@ const Dashboard: React.FC = () => {
               <SmartSearchRealtime />
             </div>
           </div>
-
+          
           {/* AI Tools Card */}
           <AIToolsCard />
         </div>
-
+        
         {/* Middle column - Pipeline and deals */}
         <div className="space-y-6">
           {/* Deal Analysis */}
@@ -684,7 +683,7 @@ const Dashboard: React.FC = () => {
               <LiveDealAnalysis />
             </div>
           </div>
-
+          
           {/* AI Recommendations */}
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <div className="flex justify-between items-center mb-4">
@@ -696,7 +695,7 @@ const Dashboard: React.FC = () => {
                 View all
               </button>
             </div>
-
+            
             <div className="divide-y divide-gray-100">
               {aiRecommendations.map((rec) => (
                 <div key={rec.id} className="py-3 first:pt-0 last:pb-0">
@@ -727,7 +726,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
-
+        
         {/* Right column - Tasks and upcoming activity */}
         <div className="space-y-6">
           {/* Important Tasks */}
@@ -741,7 +740,7 @@ const Dashboard: React.FC = () => {
                 View all <ChevronRight size={16} className="ml-1" />
               </Link>
             </div>
-
+            
             {importantTasks.length > 0 ? (
               <div className="space-y-3">
                 {importantTasks.map(task => (
@@ -780,7 +779,7 @@ const Dashboard: React.FC = () => {
                     </div>
                   </div>
                 ))}
-
+                
                 <Link to="/tasks" className="flex justify-center text-sm text-blue-600 hover:text-blue-800 py-2">
                   View all tasks
                 </Link>
@@ -795,10 +794,10 @@ const Dashboard: React.FC = () => {
               </div>
             )}
           </div>
-
+          
           {/* Upcoming Appointments */}
           <AppointmentWidget limit={3} />
-
+          
           {/* Quick Actions */}
           <div id="quick-actions" className="bg-white rounded-xl shadow-sm p-6 border border-gray-100" data-tour="quick-actions">
             <div className="flex items-center justify-between mb-4">
@@ -822,7 +821,7 @@ const Dashboard: React.FC = () => {
                   <span className="text-sm">New Deal</span>
                 </Link>
               </HelpTooltip>
-
+              
               <HelpTooltip 
                 content="Click here to go to the contacts page where you can add a new contact to your CRM."
                 placement="top"
@@ -836,7 +835,7 @@ const Dashboard: React.FC = () => {
                   <span className="text-sm">New Contact</span>
                 </Link>
               </HelpTooltip>
-
+              
               <HelpTooltip 
                 content="Opens the AI meeting scheduler to help you organize and plan meetings with contacts."
                 placement="bottom"
@@ -850,7 +849,7 @@ const Dashboard: React.FC = () => {
                   <span className="text-sm">Schedule</span>
                 </button>
               </HelpTooltip>
-
+              
               <HelpTooltip 
                 content="Opens the AI email composer to help you write personalized emails using AI."
                 placement="bottom"
@@ -868,12 +867,12 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
-
+      
       {/* DealAnalytics Component */}
       <div data-tour="pipeline-overview">
         <DealAnalytics />
       </div>
-
+      
       {/* Dashboard Tour - Temporarily disabled for syntax fix */}
     </div>
   );
