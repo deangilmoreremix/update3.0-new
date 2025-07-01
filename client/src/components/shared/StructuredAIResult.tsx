@@ -120,15 +120,15 @@ const StructuredAIResult: React.FC<StructuredAIResultProps> = ({ result, title =
   if (!sections.length) {
     // Fallback for unstructured content
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-xl shadow-sm p-6 border border-blue-100 mb-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-blue-100 rounded-lg">
             <BarChart3 className="h-5 w-5 text-blue-600" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
         </div>
-        <div className="prose prose-sm max-w-none text-gray-700 whitespace-pre-wrap">
-          {result}
+        <div className="prose prose-sm max-w-none whitespace-pre-wrap">
+          <p className="mt-2 text-gray-700">{result}</p>
         </div>
       </div>
     );
@@ -136,20 +136,20 @@ const StructuredAIResult: React.FC<StructuredAIResultProps> = ({ result, title =
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+      <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-xl shadow-sm p-6 border border-blue-100 mb-6">
         <div className="flex items-center gap-3 mb-2">
           <div className="p-2 bg-blue-100 rounded-lg">
             <BarChart3 className="h-6 w-6 text-blue-600" />
           </div>
           <h2 className="text-xl font-bold text-gray-900">{title}</h2>
         </div>
-        <p className="text-blue-700">Comprehensive AI analysis completed with actionable insights</p>
+        <p className="mt-2 text-gray-700">Comprehensive AI analysis completed with actionable insights</p>
       </div>
 
       {sections.map((section, index) => (
-        <div key={index} className={`rounded-xl border-2 ${getSectionColor(section.title)} p-6 transition-all duration-200 hover:shadow-md`}>
+        <div key={index} className={`bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-xl shadow-sm p-6 border border-blue-100 transition-all duration-200 hover:shadow-md`}>
           <div className="flex items-start gap-3 mb-4">
-            <div className="p-2 bg-white rounded-lg border">
+            <div className="p-2 bg-white rounded-lg border border-blue-200">
               {getSectionIcon(section.title)}
             </div>
             <div className="flex-1">
@@ -157,7 +157,7 @@ const StructuredAIResult: React.FC<StructuredAIResultProps> = ({ result, title =
               
               {/* Section content */}
               {section.content.map((content: string, contentIndex: number) => (
-                <p key={contentIndex} className="text-gray-700 mb-2">{content}</p>
+                <p key={contentIndex} className="mt-2 text-gray-700">{content}</p>
               ))}
             </div>
           </div>
@@ -173,9 +173,9 @@ const StructuredAIResult: React.FC<StructuredAIResultProps> = ({ result, title =
               {subsection.items.length > 0 && (
                 <div className="space-y-2">
                   {subsection.items.map((item: string, itemIndex: number) => (
-                    <div key={itemIndex} className="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-100">
+                    <div key={itemIndex} className="flex items-start gap-3 p-3 bg-white rounded-lg border border-blue-100 shadow-sm">
                       {getItemIcon(item)}
-                      <span className="text-gray-700 text-sm leading-relaxed">{item}</span>
+                      <span className="mt-2 text-gray-700 text-sm leading-relaxed">{item}</span>
                     </div>
                   ))}
                 </div>
