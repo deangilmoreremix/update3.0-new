@@ -42,7 +42,8 @@ const sampleContacts: Contact[] = [
       website: 'https://microsoft.com'
     },
     createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-15T14:30:00Z'
+    updatedAt: '2024-01-15T14:30:00Z',
+    userId: 'user-1'
   },
   {
     id: '2',
@@ -64,7 +65,8 @@ const sampleContacts: Contact[] = [
     tags: ['Finance', 'Cost-Conscious'],
     isFavorite: true,
     createdAt: '2024-01-02T00:00:00Z',
-    updatedAt: '2024-01-12T16:15:00Z'
+    updatedAt: '2024-01-12T16:15:00Z',
+    userId: 'user-1'
   },
   {
     id: '3',

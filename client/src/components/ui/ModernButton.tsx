@@ -3,12 +3,14 @@ import { Loader2 } from 'lucide-react';
 
 interface ModernButtonProps {
   children: React.ReactNode;
-  variant?: 'primary' | 'glass' | 'outline' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'glass' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
   disabled?: boolean;
   onClick?: () => void;
   className?: string;
+  title?: string;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export const ModernButton: React.FC<ModernButtonProps> = ({
@@ -18,7 +20,9 @@ export const ModernButton: React.FC<ModernButtonProps> = ({
   loading = false,
   disabled = false,
   onClick,
-  className = ''
+  className = '',
+  title,
+  type = 'button'
 }) => {
   const getVariantClass = () => {
     switch (variant) {
@@ -28,6 +32,8 @@ export const ModernButton: React.FC<ModernButtonProps> = ({
         return 'bg-transparent border border-gray-300 text-gray-700 hover:bg-gray-50';
       case 'ghost':
         return 'bg-transparent text-gray-700 hover:bg-gray-100';
+      case 'secondary':
+        return 'bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 hover:from-gray-100 hover:to-gray-200 border border-gray-200';
       case 'primary':
       default:
         return 'bg-blue-600 text-white hover:bg-blue-700';
@@ -48,8 +54,10 @@ export const ModernButton: React.FC<ModernButtonProps> = ({
 
   return (
     <button
+      type={type}
       onClick={onClick}
       disabled={disabled || loading}
+      title={title}
       className={`
         ${getVariantClass()}
         ${getSizeClass()}
