@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { ClerkProvider } from './contexts/ClerkProvider';
+
 import { AIToolsProvider } from './components/AIToolsProvider';
 import { TenantProvider } from './components/TenantProvider';
 import { RoleProvider } from './components/RoleBasedAccess';
@@ -92,12 +92,11 @@ const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <ClerkProvider>
-      <QueryClientProvider client={queryClient}>
-        <TenantProvider>
-          <RoleProvider>
-            <EnhancedHelpProvider>
-              <AIToolsProvider>
+    <QueryClientProvider client={queryClient}>
+      <TenantProvider>
+        <RoleProvider>
+          <EnhancedHelpProvider>
+            <AIToolsProvider>
                 <Router>
             <Routes>
               {/* Auth routes (available for future Clerk integration) */}
@@ -343,7 +342,6 @@ function App() {
           </RoleProvider>
         </TenantProvider>
       </QueryClientProvider>
-    </ClerkProvider>
   );
 }
 
