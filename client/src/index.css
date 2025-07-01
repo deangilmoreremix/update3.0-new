@@ -5,6 +5,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Modern Design System */
+@import './styles/modern-theme.css';
+
+/* Enhanced Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 /* Custom animations */
 @keyframes fadeIn {
   from {

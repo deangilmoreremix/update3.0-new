@@ -78,6 +78,7 @@ import UnauthorizedPage from './pages/UnauthorizedPage';
 
 // Layout Components
 import Navbar from './components/Navbar';
+import { useEffect } from 'react';
 
 // Layout wrapper for authenticated pages
 const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
@@ -92,12 +93,18 @@ const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
+  useEffect(() => {
+    // Apply dark theme by default
+    document.body.classList.add('dark-theme');
+    document.documentElement.style.backgroundColor = '#0f172a';
+  }, []);
+
   const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
   // Handle missing Clerk key gracefully
   if (!publishableKey) {
     console.warn('Clerk authentication disabled - VITE_CLERK_PUBLISHABLE_KEY not configured');
-    
+
     // Return app without Clerk wrapper for development
     return (
       <QueryClientProvider client={queryClient}>
