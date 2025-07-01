@@ -1,0 +1,106 @@
+Here’s how you can take all of those preview URLs and redirect settings and wire them into your Vite-powered React app.
+
+1. Your .env.local (in your project root)
+bash
+Copy
+Edit
+# Clerk publishable key (from Dashboard → API keys)
+VITE_CLERK_PUBLISHABLE_KEY=pk_live_Y2xlcmsuc21hcnQtY3JtLnZpZGVvcmVtaXguaW8k
+
+# Which Clerk frontend API to hit
+VITE_CLERK_FRONTEND_API=https://clerk.smart-crm.videoremix.io
+
+# The Account Portal (hosted) pages you saw in Clerk
+VITE_CLERK_SIGN_IN_URL=https://accounts.smart-crm.videoremix.io/sign-in
+VITE_CLERK_SIGN_UP_URL=https://accounts.smart-crm.videoremix.io/sign-up
+VITE_CLERK_UNAUTHORIZED_URL=https://accounts.smart-crm.videoremix.io/unauthorized-sign-in
+
+# After sign-in / sign-up fallbacks
+VITE_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=https://smart-crm.videoremix.io/dashboard
+VITE_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=https://smart-crm.videoremix.io/dashboard
+
+# Logo click redirect (optional)
+VITE_CLERK_AFTER_LOGO_CLICK_URL=https://smart-crm.videoremix.io/home
+
+# Organization flows (these get picked up by your Account Portal)
+VITE_CLERK_AFTER_CREATE_ORGANIZATION_URL=https://smart-crm.videoremix.io/blog
+VITE_CLERK_AFTER_LEAVE_ORGANIZATION_URL=https://smart-crm.videoremix.io/sign-in
+Don’t forget: whenever you change .env.local you must stop and re-run the dev server (npm run dev or yarn dev).
+
+2. Bootstrapping in src/main.jsx (or index.jsx)
+tsx
+Copy
+Edit
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  RedirectToSignIn
+} from '@clerk/clerk-react'
+import App from './App'
+
+const frontendApi = import.meta.env.VITE_CLERK_FRONTEND_API!
+const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY!
+
+if (!publishableKey || !frontendApi) {
+  throw new Error('🛑 Missing Clerk env vars – check .env.local')
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <ClerkProvider
+    publishableKey={publishableKey}
+    frontendApi={frontendApi}
+
+    // these URLs come straight from your .env.local
+    signInUrl={import.meta.env.VITE_CLERK_SIGN_IN_URL}
+    signUpUrl={import.meta.env.VITE_CLERK_SIGN_UP_URL}
+    unauthorizedUrl={import.meta.env.VITE_CLERK_UNAUTHORIZED_URL}
+
+    signInFallbackRedirectUrl={import.meta.env.VITE_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL}
+    signUpFallbackRedirectUrl={import.meta.env.VITE_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL}
+
+    // optional
+    afterSignOutUrl={import.meta.env.VITE_CLERK_AFTER_LOGO_CLICK_URL}
+  >
+    <SignedIn>
+      <App />
+    </SignedIn>
+    <SignedOut>
+      <RedirectToSignIn />
+    </SignedOut>
+  </ClerkProvider>
+)
+A few notes
+Org redirects (after create/leave organization) are configured in the Account Portal → Redirects section of the Clerk Dashboard, not in your React code.
+
+You can also pass those org URLs as props to <ClerkProvider> if you’re embedding Clerk’s Organization components directly—but for most teams it’s easiest to manage them in the dashboard UI.
+
+Never put your CLERK_SECRET_KEY (the sk_…) into any frontend .env. That one belongs only in your backend.
+
+With that in place, your React app will:
+
+Point to the fully-hosted Clerk Account Portal (all those /accounts.smart-crm… URLs)
+
+Know where to send users after sign-in, sign-up, logo-click, etc.
+
+Keep all your keys and URLs centralized in .env.local, so it’s trivial to change later.
+
+Let me know if you hit any other gremlins!
+
+
+
+
+
+
+
+
+
+Ask ChatGPT
+
+
+
+Tools
+
+
