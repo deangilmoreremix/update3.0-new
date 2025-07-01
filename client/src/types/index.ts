@@ -1,21 +1,28 @@
 export interface Contact {
   id: string;
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   name: string;
   email: string;
   phone?: string;
-  title: string;
-  company: string;
+  title?: string;
+  company?: string;
+  position?: string;
   industry?: string;
-  avatarSrc: string;
-  sources: string[];
-  interestLevel: 'hot' | 'medium' | 'low' | 'cold';
+  location?: string;
+  avatar?: string;
+  avatarSrc?: string;
+  source?: string;
+  sources?: string[];
+  interestLevel?: 'hot' | 'medium' | 'low' | 'cold';
   status: 'active' | 'pending' | 'inactive' | 'lead' | 'prospect' | 'customer' | 'churned';
+  lastContact?: string;
   lastConnected?: string;
   notes?: string;
+  score?: number;
   aiScore?: number;
   tags?: string[];
+  favorite?: boolean;
   isFavorite?: boolean;
   socialProfiles?: {
     linkedin?: string;
@@ -23,8 +30,13 @@ export interface Contact {
     website?: string;
   };
   customFields?: Record<string, any>;
-  createdAt: string;
-  updatedAt: string;
+  leadSource?: string;
+  annualRevenue?: number;
+  employeeCount?: number;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  userId: string;
+  tenantId?: string;
 }
 
 export interface Deal {

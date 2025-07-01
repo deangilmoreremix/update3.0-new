@@ -88,7 +88,8 @@ const sampleContacts: Contact[] = [
     tags: ['Operations'],
     isFavorite: false,
     createdAt: '2024-01-03T00:00:00Z',
-    updatedAt: '2024-01-08T11:00:00Z'
+    updatedAt: '2024-01-08T11:00:00Z',
+    userId: 'user-1'
   },
   {
     id: '4',
@@ -110,7 +111,8 @@ const sampleContacts: Contact[] = [
     tags: ['Developer', 'Referral'],
     isFavorite: true,
     createdAt: '2024-01-04T00:00:00Z',
-    updatedAt: '2024-01-16T09:45:00Z'
+    updatedAt: '2024-01-16T09:45:00Z',
+    userId: 'user-1'
   }
 ];
 

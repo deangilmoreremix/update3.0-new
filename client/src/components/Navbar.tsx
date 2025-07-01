@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 // import { useUser, useClerk } from '@clerk/clerk-react';
-import { useAITools } from '../components/AIToolsProvider';
+import { useAITools } from './AIToolsProvider';
 import { 
   Home, 
   Users, 
