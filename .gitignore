@@ -4,3 +4,28 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gz
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Build artifacts
+*.tsbuildinfo
+.vite/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+*.log
+
+# Database files
+*.sqlite
+*.sqlite3
+
+# Replit specific
+.replit
+.config/
