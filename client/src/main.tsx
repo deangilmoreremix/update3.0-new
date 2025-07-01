@@ -5,27 +5,16 @@ import App from './App.tsx';
 import './index.css';
 
 const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-const frontendApi = import.meta.env.VITE_CLERK_FRONTEND_API;
-const jsUrl = import.meta.env.VITE_CLERK_JS_URL;
 
-if (!publishableKey || !frontendApi || !jsUrl) {
-  throw new Error('Missing one of VITE_CLERK_PUBLISHABLE_KEY, VITE_CLERK_FRONTEND_API, or VITE_CLERK_JS_URL');
+if (!publishableKey) {
+  throw new Error('Missing VITE_CLERK_PUBLISHABLE_KEY');
 }
 
 // Create root and render app immediately without any delays or deferment
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ClerkProvider
-      publishableKey={publishableKey}
-      frontendApi={frontendApi}
-      clerkJSUrl={jsUrl}
-    >
-      <SignedIn>
-        <App />
-      </SignedIn>
-      <SignedOut>
-        <RedirectToSignIn />
-      </SignedOut>
+    <ClerkProvider publishableKey={publishableKey}>
+      <App />
     </ClerkProvider>
   </StrictMode>
 );
