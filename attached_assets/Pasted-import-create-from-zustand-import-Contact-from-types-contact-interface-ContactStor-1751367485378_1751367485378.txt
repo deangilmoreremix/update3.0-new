@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Contact } from '../types';
+import { Contact } from '../types/contact';
 
 interface ContactStore {
   contacts: Contact[];
@@ -14,10 +14,9 @@ interface ContactStore {
   deleteContact: (id: string) => Promise<void>;
   selectContact: (contact: Contact | null) => void;
   importContacts: (contacts: Contact[]) => Promise<void>;
-  getContact: (id: string) => Promise<Contact | null>;
 }
 
-// Sample data with proper Contact interface
+// Sample data
 const sampleContacts: Contact[] = [
   {
     id: '1',
@@ -190,10 +189,5 @@ export const useContactStore = create<ContactStore>((set, get) => ({
     set(state => ({
       contacts: [...state.contacts, ...contactsWithIds]
     }));
-  },
-
-  getContact: async (id: string) => {
-    const contact = get().contacts.find(c => c.id === id);
-    return contact || null;
   },
 }));
