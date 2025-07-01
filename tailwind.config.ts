@@ -36,39 +36,23 @@ export default {
         'fade-scale': 'fadeInScale 0.3s ease-out',
       },
       colors: {
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        // Modern theme colors
+        'dark-bg': 'var(--color-dark-bg)',
+        'dark-surface': 'var(--color-dark-surface)',
+        'dark-surface-elevated': 'var(--color-dark-surface-elevated)',
+        'dark-border': 'var(--color-dark-border)',
+        'dark-text-primary': 'var(--color-dark-text-primary)',
+        'dark-text-secondary': 'var(--color-dark-text-secondary)',
+        'dark-text-muted': 'var(--color-dark-text-muted)',
+        'status-success': 'var(--status-success)',
+        'status-warning': 'var(--status-warning)',
+        'status-error': 'var(--status-error)',
+        'status-info': 'var(--status-info)',
         chart: {
           "1": "hsl(var(--chart-1))",
           "2": "hsl(var(--chart-2))",
