@@ -301,4 +301,3 @@ export const ContactJourneyTimeline: React.FC<ContactJourneyTimelineProps> = ({ 
     </div>
   );
 };
-
