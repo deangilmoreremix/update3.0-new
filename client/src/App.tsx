@@ -1,11 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { ClerkProvider } from './contexts/ClerkProvider';
 import { AIToolsProvider } from './components/AIToolsProvider';
 import { TenantProvider } from './components/TenantProvider';
 import { RoleProvider } from './components/RoleBasedAccess';
 import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
 import { queryClient } from './lib/queryClient';
+import { ProtectedRoute, SuperAdminRoute, ResellerRoute, UserRoute } from './components/auth/ProtectedRoute';
 
 // Landing Pages
 import LandingPage from './pages/Landing/LandingPage';
@@ -71,14 +73,13 @@ import WhiteLabelCustomization from './pages/WhiteLabelCustomization';
 import PartnerManagementPage from './pages/PartnerManagementPage';
 import RevenueSharingPage from './pages/RevenueSharingPage';
 import FeaturePackageManagementPage from './pages/FeaturePackageManagementPage';
+import UnauthorizedPage from './pages/UnauthorizedPage';
 
 // Layout Components
 import Navbar from './components/Navbar';
 
-// Protected Route wrapper (simplified without Clerk)
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  // For now, all routes are accessible without authentication
-  // This can be updated when Clerk is re-enabled
+// Layout wrapper for authenticated pages
+const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
