@@ -13,7 +13,7 @@ export function ProtectedRoute({
   requiredRole = 'user', 
   fallbackPath = '/unauthorized' 
 }: ProtectedRouteProps) {
-  const { user, isLoaded, isSignedIn, hasPermission } = useAuth();
+  const { user, isLoaded } = useAuth();
 
   // Show loading while auth is initializing
   if (!isLoaded) {
@@ -25,11 +25,26 @@ export function ProtectedRoute({
   }
 
   // Show sign-in if not authenticated (redirect to login page)
-  if (!isSignedIn) {
+  if (!user) {
     return <Navigate to="/login" state={{ from: window.location.pathname }} replace />;
   }
 
   // Check role permissions
+  const hasPermission = (role: UserRole) => {
+    if (!user) return false;
+    
+    // Super admin has access to everything
+    if (user.role === 'super_admin') return true;
+    
+    // Reseller can access reseller and user level
+    if (user.role === 'reseller' && (role === 'reseller' || role === 'user')) return true;
+    
+    // Users can only access user level
+    if (user.role === 'user' && role === 'user') return true;
+    
+    return false;
+  };
+
   if (!hasPermission(requiredRole)) {
     return <Navigate to={fallbackPath} replace />;
   }
