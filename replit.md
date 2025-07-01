@@ -171,6 +171,23 @@ Any updates must maintain the exact visual design and component structure provid
 
 ## Recent Changes
 
+### July 1, 2025 - Enhanced Navigation and External Link Updates
+- **White-Label Integration**: Updated navbar to include internal White-Label Customization link
+  - Changed from external URL to internal `/admin/white-label` route for direct access
+  - Updated link styling and description to "White-Label Customization" with "Branding & Themes"
+  - Replaced external link icon with chevron right for internal navigation consistency
+  - Super Admin users can now access white-label features directly from navbar dropdown
+- **External Link Updates**: Updated FunnelCraft AI links across the application
+  - Updated navbar dropdown FunnelCraft AI link from `/landing` to root domain
+  - Updated dashboard Connected Applications FunnelCraft AI card link
+  - Both links now point to `https://funnelcraft-ai.videoremix.io/` for consistency
+  - Maintained purple gradient styling and marketing team branding
+- **Navigation Enhancement**: Improved user experience with streamlined access patterns
+  - Direct internal routing to white-label customization features
+  - Consistent external link behavior across navbar and dashboard
+  - Enhanced Super Admin workflow efficiency
+- **Impact**: Simplified navigation flow with direct access to white-label features and consistent external application links
+
 ### July 1, 2025 - Complete Clerk Authentication System with Three-Tier Role-Based Access Control
 - **Clerk Authentication Integration**: Re-implemented complete Clerk authentication system for admin access control
   - ClerkProvider context wrapper with production-ready configuration and custom styling
