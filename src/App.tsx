@@ -101,16 +101,15 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         
         {/* Application routes - these remain under authentication */}
-        <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <div className="flex flex-col min-h-screen bg-gray-50">
-              <Navbar />
-              <main className="flex-1">
-                <Dashboard />
-              </main>
-            </div>
-          </ProtectedRoute>
+           <Route path="/dashboard" element={
+          <div className="flex flex-col min-h-screen bg-gray-50">
+            <Navbar />
+            <main className="flex-1">
+              <Dashboard />
+            </main>
+          </div>
         } />
+
         
         <Route path="/contacts" element={
           <ProtectedRoute>
