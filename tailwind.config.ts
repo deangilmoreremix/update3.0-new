@@ -5,35 +5,10 @@ export default {
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
-      fontFamily: {
-        'sans': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
-      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        'modern-sm': '6px',
-        'modern-md': '8px',
-        'modern-lg': '12px',
-        'modern-xl': '16px',
-        'modern-2xl': '20px',
-      },
-      spacing: {
-        'modern-xs': '0.25rem',
-        'modern-sm': '0.5rem',
-        'modern-md': '1rem',
-        'modern-lg': '1.5rem',
-        'modern-xl': '2rem',
-        'modern-2xl': '3rem',
-      },
-      backdropBlur: {
-        'modern': '16px',
-        'heavy': '20px',
-      },
-      animation: {
-        'pulse-modern': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'slide-up': 'slideInUp 0.5s ease-out',
-        'fade-scale': 'fadeInScale 0.3s ease-out',
       },
       colors: {
         background: "hsl(var(--background))",
