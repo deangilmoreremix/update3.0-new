@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Contact } from '../../types/contact';
+import { Contact } from '../../types';
 import { GlassCard } from '../ui/GlassCard';
 import { AvatarWithStatus } from '../ui/AvatarWithStatus';
 import { ModernButton } from '../ui/ModernButton';

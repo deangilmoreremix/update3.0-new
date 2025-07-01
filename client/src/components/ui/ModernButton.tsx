@@ -7,7 +7,7 @@ interface ModernButtonProps {
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
   disabled?: boolean;
-  onClick?: () => void;
+  onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
   title?: string;
   type?: 'button' | 'submit' | 'reset';
@@ -55,7 +55,7 @@ export const ModernButton: React.FC<ModernButtonProps> = ({
   return (
     <button
       type={type}
-      onClick={onClick}
+      onClick={(e) => onClick?.(e)}
       disabled={disabled || loading}
       title={title}
       className={`
