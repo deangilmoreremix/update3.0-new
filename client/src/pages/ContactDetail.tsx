@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useContactStore } from '../store/contactStore';
+import { Contact } from '../types';
 import { GlassCard } from '../components/ui/GlassCard';
 import { ModernButton } from '../components/ui/ModernButton';
 import { AvatarWithStatus } from '../components/ui/AvatarWithStatus';
