@@ -1,31 +1,40 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { AvatarWithStatus } from '../ui/AvatarWithStatus';
 import { ModernButton } from '../ui/ModernButton';
-import { ContactDetailView } from '../contacts/ContactDetailView';
-import { NewContactModal } from './NewContactModal';
+import { ContactDetailView } from './ContactDetailView';
 import { ImportContactsModal } from './ImportContactsModal';
-import { AIEnhancedContactCard } from '../contacts/AIEnhancedContactCard';
+import { NewContactModal } from './NewContactModal';
 import { useContactStore } from '../../store/contactStore';
-import { Contact } from '../../types/index';
-import { aiEnrichmentService } from '../../services/aiEnrichmentService';
-import {
-  X,
-  Search,
-  Filter,
-  ChevronDown,
-  Grid3X3,
-  List,
+import { useOpenAI } from '../../services/openaiService';
+import { Contact } from '../../types/contact';
+import { AIEnhancedContactCard } from '../contacts/AIEnhancedContactCard';
+import Fuse from 'fuse.js';
+import { 
+  X, 
+  Search, 
+  Filter, 
+  MoreHorizontal, 
+  Edit,
   Plus,
   Users,
-  Upload,
+  ChevronDown,
+  Brain,
   Download,
+  Upload,
   Zap,
-  Target,
   CheckCheck,
-  CheckCircle,
-  Loader2,
+  Grid3X3,
+  List,
+  ArrowUp,
+  ArrowDown,
+  Settings,
+  Target,
+  BarChart3,
+  RefreshCw,
   Sparkles,
-  Brain
+  AlertCircle,
+  CheckCircle,
+  Loader2
 } from 'lucide-react';
 
 interface ContactsModalProps {
@@ -33,114 +42,129 @@ interface ContactsModalProps {
   onClose: () => void;
 }
 
+const interestColors = {
+  hot: 'bg-red-500',
+  medium: 'bg-yellow-500',
+  low: 'bg-blue-500',
+  cold: 'bg-gray-400'
+};
+
+const interestLabels = {
+  hot: 'Hot Client',
+  medium: 'Medium Interest',
+  low: 'Low Interest',
+  cold: 'Non Interest'
+};
+
+const sourceColors: { [key: string]: string } = {
+  'LinkedIn': 'bg-blue-600',
+  'Facebook': 'bg-blue-500',
+  'Email': 'bg-green-500',
+  'Website': 'bg-purple-500',
+  'Referral': 'bg-orange-500',
+  'Typeform': 'bg-pink-500',
+  'Cold Call': 'bg-gray-600'
+};
+
 const filterOptions = [
-  { value: 'all', label: 'All Contacts' },
-  { value: 'hot', label: 'Hot Prospects' },
-  { value: 'medium', label: 'Medium Interest' },
-  { value: 'low', label: 'Low Interest' },
-  { value: 'cold', label: 'Cold Contacts' },
-  { value: 'favorites', label: 'Favorites' },
-  { value: 'recent', label: 'Recently Added' }
+  { label: 'All', value: 'all' },
+  { label: 'Hot Client', value: 'hot' },
+  { label: 'Medium Interest', value: 'medium' },
+  { label: 'Low Interest', value: 'low' },
+  { label: 'Non Interest', value: 'cold' }
 ];
 
 const statusOptions = [
-  { value: 'all', label: 'All Status' },
-  { value: 'lead', label: 'Leads' },
-  { value: 'prospect', label: 'Prospects' },
-  { value: 'customer', label: 'Customers' },
-  { value: 'active', label: 'Active' },
-  { value: 'pending', label: 'Pending' },
-  { value: 'inactive', label: 'Inactive' },
-  { value: 'churned', label: 'Churned' }
+  { label: 'All Status', value: 'all' },
+  { label: 'Lead', value: 'lead' },
+  { label: 'Prospect', value: 'prospect' },
+  { label: 'Customer', value: 'customer' },
+  { label: 'Churned', value: 'churned' }
 ];
 
 export const ContactsModal: React.FC<ContactsModalProps> = ({ isOpen, onClose }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const { contacts, isLoading, updateContact, createContact } = useContactStore();
+  const openai = useOpenAI();
+  
+  // UI State
   const [activeFilter, setActiveFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
-  const [bulkActionDropdown, setBulkActionDropdown] = useState(false);
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [viewMode, setViewMode] = useState<'card' | 'table'>('card');
+  const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [bulkActionDropdown, setBulkActionDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<'name' | 'company' | 'score' | 'updated'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  
-  // Selection state
-  const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
-  
-  // Modal states
-  const [isNewContactModalOpen, setIsNewContactModalOpen] = useState(false);
-  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
-  
-  // AI Analysis states
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisProgress, setAnalysisProgress] = useState<{current: number, total: number} | null>(null);
+  const [aiResults, setAiResults] = useState<{success: number, failed: number} | null>(null);
   const [analyzingContactIds, setAnalyzingContactIds] = useState<string[]>([]);
-  const [analysisProgress, setAnalysisProgress] = useState<{ current: number; total: number } | null>(null);
-  const [aiResults, setAiResults] = useState<{ success: number; failed: number } | null>(null);
   
-  const { contacts, fetchContacts, updateContact } = useContactStore();
+  // Modal States
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isNewContactModalOpen, setIsNewContactModalOpen] = useState(false);
 
-  // Load contacts on mount
-  useEffect(() => {
-    if (isOpen) {
-      fetchContacts();
-    }
-  }, [isOpen, fetchContacts]);
+  // Initialize Fuse.js for fuzzy search
+  const fuse = useMemo(() => {
+    return new Fuse(contacts, {
+      keys: ['name', 'company', 'title', 'email', 'industry'],
+      threshold: 0.3,
+    });
+  }, [contacts]);
 
-  // Close dropdowns when clicking outside
+  // Handle ESC key to close modal
   useEffect(() => {
-    const handleClickOutside = () => {
-      setIsFilterDropdownOpen(false);
-      setIsStatusDropdownOpen(false);
-      setBulkActionDropdown(false);
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.keyCode === 27) {
+        if (selectedContact) {
+          setSelectedContact(null);
+        } else if (isImportModalOpen) {
+          setIsImportModalOpen(false);
+        } else if (isNewContactModalOpen) {
+          setIsNewContactModalOpen(false);
+        } else {
+          onClose();
+        }
+      }
     };
-
-    if (isFilterDropdownOpen || isStatusDropdownOpen || bulkActionDropdown) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
+    
+    if (isOpen) {
+      document.addEventListener('keydown', handleEsc, false);
+      document.body.style.overflow = 'hidden';
     }
-  }, [isFilterDropdownOpen, isStatusDropdownOpen, bulkActionDropdown]);
 
-  // Computed values
-  const activeFilterLabel = filterOptions.find(f => f.value === activeFilter)?.label || 'All Contacts';
-  const activeStatusLabel = statusOptions.find(s => s.value === statusFilter)?.label || 'All Status';
+    return () => {
+      document.removeEventListener('keydown', handleEsc, false);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose, selectedContact, isImportModalOpen, isNewContactModalOpen]);
 
   // Filter and search contacts
   const filteredContacts = useMemo(() => {
-    let filtered = [...contacts];
+    let result = contacts;
 
-    // Apply search filter
-    if (searchTerm) {
-      const searchLower = searchTerm.toLowerCase();
-      filtered = filtered.filter(contact =>
-        contact.name.toLowerCase().includes(searchLower) ||
-        contact.email.toLowerCase().includes(searchLower) ||
-        contact.company.toLowerCase().includes(searchLower) ||
-        contact.title.toLowerCase().includes(searchLower)
-      );
+    // Apply search
+    if (searchTerm.trim()) {
+      const searchResults = fuse.search(searchTerm);
+      result = searchResults.map(result => result.item);
     }
 
     // Apply interest level filter
     if (activeFilter !== 'all') {
-      if (activeFilter === 'favorites') {
-        filtered = filtered.filter(contact => contact.isFavorite);
-      } else if (activeFilter === 'recent') {
-        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-        filtered = filtered.filter(contact => new Date(contact.createdAt) > weekAgo);
-      } else {
-        filtered = filtered.filter(contact => contact.interestLevel === activeFilter);
-      }
+      result = result.filter(contact => contact.interestLevel === activeFilter);
     }
 
     // Apply status filter
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(contact => contact.status === statusFilter);
+      result = result.filter(contact => contact.status === statusFilter);
     }
 
     // Apply sorting
-    filtered.sort((a, b) => {
-      let aValue, bValue;
+    result.sort((a, b) => {
+      let aValue: any, bValue: any;
       
       switch (sortBy) {
         case 'name':
@@ -148,46 +172,114 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({ isOpen, onClose })
           bValue = b.name.toLowerCase();
           break;
         case 'company':
-          aValue = a.company.toLowerCase();
-          bValue = b.company.toLowerCase();
+          aValue = a.company?.toLowerCase() || '';
+          bValue = b.company?.toLowerCase() || '';
           break;
         case 'score':
           aValue = a.aiScore || 0;
           bValue = b.aiScore || 0;
           break;
         case 'updated':
-          aValue = new Date(a.updatedAt).getTime();
-          bValue = new Date(b.updatedAt).getTime();
+          aValue = new Date(a.updatedAt);
+          bValue = new Date(b.updatedAt);
           break;
         default:
-          aValue = a.name.toLowerCase();
-          bValue = b.name.toLowerCase();
+          return 0;
       }
 
-      if (sortOrder === 'asc') {
-        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-      } else {
-        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-      }
+      if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
     });
 
-    return filtered;
-  }, [contacts, searchTerm, activeFilter, statusFilter, sortBy, sortOrder]);
+    return result;
+  }, [contacts, searchTerm, activeFilter, statusFilter, sortBy, sortOrder, fuse]);
 
-  // Event handlers
-  const handleFilterClick = (filterValue: string) => {
-    setActiveFilter(filterValue);
-    setIsFilterDropdownOpen(false);
+  // AI Analysis Functions
+  const handleAnalyzeContact = async (contact: Contact) => {
+    setAnalyzingContactIds(prev => [...prev, contact.id]);
+
+    try {
+      const score = await openai.analyzeContact(contact);
+      await updateContact(contact.id, { aiScore: score.score });
+    } catch (error) {
+      console.error('Failed to analyze contact:', error);
+    } finally {
+      setAnalyzingContactIds(prev => prev.filter(id => id !== contact.id));
+    }
   };
 
-  const handleStatusFilterClick = (statusValue: string) => {
-    setStatusFilter(statusValue);
-    setIsStatusDropdownOpen(false);
+  const handleAnalyzeSelected = async () => {
+    if (selectedContacts.length === 0) return;
+    
+    setIsAnalyzing(true);
+    setAnalysisProgress({ current: 0, total: selectedContacts.length });
+    setBulkActionDropdown(false);
+
+    let successCount = 0;
+    let failedCount = 0;
+
+    for (let i = 0; i < selectedContacts.length; i++) {
+      const contactId = selectedContacts[i];
+      const contact = contacts.find(c => c.id === contactId);
+      
+      if (contact) {
+        try {
+          const score = await openai.analyzeContact(contact);
+          await updateContact(contactId, { aiScore: score.score });
+          successCount++;
+        } catch (error) {
+          failedCount++;
+        }
+      }
+
+      setAnalysisProgress({ current: i + 1, total: selectedContacts.length });
+      
+      // Small delay to prevent overwhelming OpenAI
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    setIsAnalyzing(false);
+    setAnalysisProgress(null);
+    setAiResults({ success: successCount, failed: failedCount });
+    setSelectedContacts([]);
   };
 
+  const handleBulkAIAnalysis = async () => {
+    if (filteredContacts.length === 0) return;
+    
+    setIsAnalyzing(true);
+    setAnalysisProgress({ current: 0, total: filteredContacts.length });
+
+    let successCount = 0;
+    let failedCount = 0;
+
+    for (let i = 0; i < filteredContacts.length; i++) {
+      const contact = filteredContacts[i];
+      
+      try {
+        const score = await openai.analyzeContact(contact);
+        await updateContact(contact.id, { aiScore: score.score });
+        successCount++;
+      } catch (error) {
+        failedCount++;
+      }
+
+      setAnalysisProgress({ current: i + 1, total: filteredContacts.length });
+      
+      // Small delay to prevent overwhelming OpenAI
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    setIsAnalyzing(false);
+    setAnalysisProgress(null);
+    setAiResults({ success: successCount, failed: failedCount });
+  };
+
+  // Event Handlers
   const handleContactSelect = (contactId: string) => {
-    setSelectedContacts(prev =>
-      prev.includes(contactId)
+    setSelectedContacts(prev => 
+      prev.includes(contactId) 
         ? prev.filter(id => id !== contactId)
         : [...prev, contactId]
     );
@@ -225,96 +317,18 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({ isOpen, onClose })
     setIsImportModalOpen(false);
   };
 
-  const handleAnalyzeContact = async (contactId: string) => {
-    const contact = contacts.find(c => c.id === contactId);
-    if (!contact) return;
-
-    setAnalyzingContactIds(prev => [...prev, contactId]);
-
-    try {
-      const result = await aiEnrichmentService.enrichContact(contact);
-      if (result.success && result.enrichedData) {
-        await updateContact(contactId, result.enrichedData);
-      }
-    } catch (error) {
-      console.error('Failed to analyze contact:', error);
-    } finally {
-      setAnalyzingContactIds(prev => prev.filter(id => id !== contactId));
-    }
+  const handleFilterClick = (filterValue: string) => {
+    setActiveFilter(filterValue);
+    setIsFilterDropdownOpen(false);
   };
 
-  const handleAnalyzeSelected = async () => {
-    if (selectedContacts.length === 0) return;
-
-    setIsAnalyzing(true);
-    setAnalysisProgress({ current: 0, total: selectedContacts.length });
-    setBulkActionDropdown(false);
-
-    let successCount = 0;
-    let failedCount = 0;
-
-    for (let i = 0; i < selectedContacts.length; i++) {
-      const contactId = selectedContacts[i];
-      const contact = contacts.find(c => c.id === contactId);
-      
-      if (contact) {
-        try {
-          const result = await aiEnrichmentService.enrichContact(contact);
-          if (result.success && result.enrichedData) {
-            await updateContact(contactId, result.enrichedData);
-            successCount++;
-          } else {
-            failedCount++;
-          }
-        } catch (error) {
-          failedCount++;
-        }
-      }
-
-      setAnalysisProgress({ current: i + 1, total: selectedContacts.length });
-      
-      // Small delay to prevent overwhelming the API
-      await new Promise(resolve => setTimeout(resolve, 500));
-    }
-
-    setIsAnalyzing(false);
-    setAnalysisProgress(null);
-    setAiResults({ success: successCount, failed: failedCount });
-    setSelectedContacts([]);
+  const handleStatusFilterClick = (statusValue: string) => {
+    setStatusFilter(statusValue);
+    setIsStatusDropdownOpen(false);
   };
 
-  const handleBulkAIAnalysis = async () => {
-    setIsAnalyzing(true);
-    setAnalysisProgress({ current: 0, total: filteredContacts.length });
-
-    let successCount = 0;
-    let failedCount = 0;
-
-    for (let i = 0; i < filteredContacts.length; i++) {
-      const contact = filteredContacts[i];
-      
-      try {
-        const result = await aiEnrichmentService.enrichContact(contact);
-        if (result.success && result.enrichedData) {
-          await updateContact(contact.id, result.enrichedData);
-          successCount++;
-        } else {
-          failedCount++;
-        }
-      } catch (error) {
-        failedCount++;
-      }
-
-      setAnalysisProgress({ current: i + 1, total: filteredContacts.length });
-      
-      // Small delay to prevent overwhelming the API
-      await new Promise(resolve => setTimeout(resolve, 500));
-    }
-
-    setIsAnalyzing(false);
-    setAnalysisProgress(null);
-    setAiResults({ success: successCount, failed: failedCount });
-  };
+  const activeFilterLabel = filterOptions.find(f => f.value === activeFilter)?.label || 'All';
+  const activeStatusLabel = statusOptions.find(s => s.value === statusFilter)?.label || 'All Status';
 
   if (!isOpen) return null;
 
