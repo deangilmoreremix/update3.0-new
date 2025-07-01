@@ -73,10 +73,15 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
           if (data.tenant) {
             applyTenantBranding(data.tenant);
           }
+        } else {
+          // Silently handle non-200 responses without logging errors
+          // This prevents console spam during development
+          console.debug('Tenant info not available:', response.status);
         }
       }
     } catch (error) {
-      console.error('Failed to fetch tenant info:', error);
+      // Only log significant errors, not network failures during development
+      console.debug('Tenant info fetch skipped:', error instanceof Error ? error.message : 'Unknown error');
     } finally {
       setIsLoading(false);
     }

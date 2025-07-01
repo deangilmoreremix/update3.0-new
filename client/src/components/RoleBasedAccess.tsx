@@ -60,9 +60,13 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
       if (response.ok) {
         const userData = await response.json();
         setUser(userData.user);
+      } else {
+        // Silently handle non-200 responses during development
+        console.debug('User role not available:', response.status);
       }
     } catch (error) {
-      console.error('Failed to fetch user role:', error);
+      // Only log significant errors, not network failures during development
+      console.debug('User role fetch skipped:', error.message);
     } finally {
       setIsLoading(false);
     }
