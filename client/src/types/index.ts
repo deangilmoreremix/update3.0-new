@@ -24,14 +24,24 @@ export interface Contact {
   userId?: string; // For Supabase association
   // Enhanced fields for glass morphism design
   avatar?: string;
-  isFavorite?: boolean;
-  source?: string | string[];
-  // AI-enhanced fields
   avatarSrc?: string;
+  isFavorite?: boolean;
+  favorite?: boolean;
+  source?: string | string[];
+  sources?: string[];
+  // AI-enhanced fields
   title?: string;
   aiScore?: number;
   interestLevel?: 'hot' | 'medium' | 'low' | 'cold';
-  sources?: string[];
+  // Additional contact management fields
+  lastInteraction?: Date;
+  journeyStage?: string;
+  automationRules?: string[];
+  communicationPreferences?: {
+    preferredChannel?: 'email' | 'phone' | 'linkedin' | 'sms';
+    bestTime?: string;
+    timezone?: string;
+  };
 }
 
 export interface Deal {

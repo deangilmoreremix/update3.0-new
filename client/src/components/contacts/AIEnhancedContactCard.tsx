@@ -96,7 +96,10 @@ const AIEnhancedContactCard: React.FC<AIEnhancedContactCardProps> = ({
 
   // Set default values for enhanced properties
   const interestLevel = contact.interestLevel || 'medium';
-  const sources = contact.sources || [contact.leadSource || 'Website'];
+  const sources = contact.sources || 
+                  (Array.isArray(contact.source) ? contact.source : 
+                   contact.leadSource ? [contact.leadSource] : 
+                   contact.source ? [contact.source] : ['Website']);
   const aiScore = contact.aiScore || contact.score;
 
   return (

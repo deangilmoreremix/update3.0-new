@@ -1,717 +1,364 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useOpenAI } from '../services/openaiService';
-import { useGemini } from '../services/geminiService';
 import { useContactStore } from '../store/contactStore';
-import { Contact } from '../types';
-import CustomizableAIToolbar from '../components/ai/CustomizableAIToolbar';
+import { GlassCard } from '../components/ui/GlassCard';
+import { ModernButton } from '../components/ui/ModernButton';
+import { AvatarWithStatus } from '../components/ui/AvatarWithStatus';
+import { AutomationPanel } from '../components/contacts/AutomationPanel';
+import { CommunicationHub } from '../components/contacts/CommunicationHub';
+import { ContactAnalytics } from '../components/contacts/ContactAnalytics';
+import { ContactJourneyTimeline } from '../components/contacts/ContactJourneyTimeline';
 import { 
-  Mail, 
-  Phone, 
-  Building, 
-  User, 
-  Calendar, 
-  RefreshCw, 
-  AlertOctagon, 
-  FileText, 
-  MessageSquare, 
-  BarChart3, 
-  Brain,
-  Edit,
-  Trash2,
-  Flag,
-  Tag,
-  MapPin,
   ArrowLeft,
-  Check,
-  X
+  Edit,
+  Save,
+  Star,
+  Mail,
+  Phone,
+  Calendar,
+  MessageSquare,
+  BarChart3,
+  Zap,
+  Clock,
+  MapPin,
+  Building,
+  Users,
+  DollarSign,
+  Target,
+  Linkedin,
+  Twitter,
+  ExternalLink
 } from 'lucide-react';
-import Avatar from 'react-avatar';
 
-const ContactDetail: React.FC = () => {
+export default function ContactDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
-  // Get contact from store instead of local state
-  const { contacts, updateContact, deleteContact, selectContact } = useContactStore();
-  const [contact, setContact] = useState<Contact | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { contacts: contactsRecord, updateContact, getContact } = useContactStore();
+  const [contact, setContact] = useState<Contact | undefined>(
+    id ? contactsRecord[id] : undefined
+  );
   const [isEditing, setIsEditing] = useState(false);
-  const [editFormData, setEditFormData] = useState<Partial<Contact>>({});
-  
-  const openai = useOpenAI();
-  const gemini = useGemini();
-  
-  const [leadScoreResult, setLeadScoreResult] = useState<string | null>(null);
-  const [leadScoreLoading, setLeadScoreLoading] = useState(false);
-  const [leadScoreError, setLeadScoreError] = useState<string | null>(null);
-  
-  const [personalizationResult, setPersonalizationResult] = useState<any>(null);
-  const [personalizationLoading, setPersonalizationLoading] = useState(false);
-  const [personalizationError, setPersonalizationError] = useState<string | null>(null);
-  
+  const [activeTab, setActiveTab] = useState('overview');
+
   useEffect(() => {
-    setIsLoading(true);
-    
-    // Get contact from store if it exists
-    if (id && contacts[id]) {
-      setContact(contacts[id]);
-      setEditFormData(contacts[id]);
-      setIsLoading(false);
-    } else if (id) {
-      // If not in store yet (e.g., direct URL access), set a mock contact for demo
-      const mockContact: Contact = {
-        id: id,
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        phone: '(555) 123-4567',
-        company: 'Acme Inc',
-        position: 'CTO',
-        status: 'customer',
-        score: 85,
-        lastContact: new Date('2023-06-15'),
-        notes: 'Interested in enterprise plan',
-        industry: 'Technology',
-        location: 'San Francisco, CA'
-      };
-      
-      setContact(mockContact);
-      setEditFormData(mockContact);
-      setIsLoading(false);
-    }
-  }, [id, contacts]);
-  
-  // Handle editing the contact
-  const handleEditToggle = () => {
-    if (isEditing && contact) {
-      setEditFormData(contact); // Reset form data if canceling
-    }
-    setIsEditing(!isEditing);
-  };
-  
-  // Handle saving the edited contact
-  const handleSaveContact = () => {
-    if (contact && editFormData) {
-      // Update contact in Supabase via store
-      updateContact(contact.id, editFormData)
-        .then(() => {
-          setContact({ ...contact, ...editFormData });
-          setIsEditing(false);
-        })
-        .catch(error => {
-          console.error("Failed to update contact:", error);
+    if (id) {
+      const foundContact = contactsRecord[id];
+      if (foundContact) {
+        setContact(foundContact);
+      } else {
+        // Try to fetch the contact if not in store
+        getContact(id).then((fetchedContact) => {
+          if (fetchedContact) {
+            setContact(fetchedContact);
+          }
         });
+      }
     }
-  };
-  
-  // Handle delete contact
-  const handleDeleteContact = () => {
-    if (contact && confirm('Are you sure you want to delete this contact?')) {
-      deleteContact(contact.id)
-        .then(() => {
-          navigate('/contacts');
-        })
-        .catch(error => {
-          console.error("Failed to delete contact:", error);
-        });
-    }
-  };
-  
-  // Handle form input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setEditFormData({
-      ...editFormData,
-      [name]: value
-    });
-  };
-  
-  const previousInteractions = [
-    "Initial call: Discussed basic features of our platform. John expressed interest in the enterprise plan but had concerns about implementation timeline.",
-    "Email follow-up: Sent detailed information about implementation process. John replied with questions about security certifications.",
-    "Demo meeting: Showcased enterprise features. John had technical questions about API integration capabilities."
-  ];
-  
-  const handleLeadScoreAnalysis = async () => {
-    if (!contact) return;
-    
-    setLeadScoreLoading(true);
-    setLeadScoreError(null);
-    
-    try {
-      const result = await openai.predictLeadScore(contact);
-      setLeadScoreResult(result);
-    } catch (err) {
-      setLeadScoreError(err instanceof Error ? err.message : 'An unknown error occurred');
-    } finally {
-      setLeadScoreLoading(false);
-    }
-  };
-  
-  const handlePersonalization = async () => {
-    if (!contact) return;
-    
-    setPersonalizationLoading(true);
-    setPersonalizationError(null);
-    
-    try {
-      const result = await gemini.suggestPersonalization(contact, previousInteractions);
-      setPersonalizationResult(result);
-    } catch (err) {
-      setPersonalizationError(err instanceof Error ? err.message : 'An unknown error occurred');
-    } finally {
-      setPersonalizationLoading(false);
-    }
-  };
-  
-  const statusColors = {
-    lead: 'bg-yellow-100 text-yellow-800',
-    prospect: 'bg-purple-100 text-purple-800',
-    customer: 'bg-green-100 text-green-800',
-    churned: 'bg-red-100 text-red-800'
-  };
-  
-  // Handle initiating a phone call
-  const handleCallContact = () => {
-    if (contact && contact.phone) {
-      // Clean phone number
-      const cleanNumber = contact.phone.replace(/\D/g, '');
-      window.location.href = `tel:${cleanNumber}`;
-    }
-  };
-  
-  // Handle sending an email
-  const handleSendEmail = () => {
-    if (contact && contact.email) {
-      window.location.href = `mailto:${contact.email}`;
-    }
-  };
-  
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="flex justify-center items-center h-64">
-          <RefreshCw size={40} className="animate-spin text-blue-500" />
-        </div>
-      </div>
-    );
-  }
-  
+  }, [id, contactsRecord, getContact]);
+
   if (!contact) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="bg-red-50 p-4 rounded-lg">
-          <p className="text-red-700">Contact not found</p>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Contact Not Found</h1>
+          <ModernButton onClick={() => navigate('/contacts')} variant="primary">
+            Back to Contacts
+          </ModernButton>
         </div>
       </div>
     );
   }
 
+  const handleSave = async () => {
+    if (contact) {
+      await updateContact(contact.id, contact);
+      setIsEditing(false);
+    }
+  };
+
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: Users, component: null },
+    { id: 'automation', label: 'Automation', icon: Zap, component: <AutomationPanel contact={contact} /> },
+    { id: 'communication', label: 'Communication', icon: MessageSquare, component: <CommunicationHub contact={contact} /> },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3, component: <ContactAnalytics contact={contact} /> },
+    { id: 'timeline', label: 'Journey', icon: Clock, component: <ContactJourneyTimeline contact={contact} /> }
+  ];
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <header className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center">
-          <button 
-            onClick={() => navigate('/contacts')}
-            className="mr-3 p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">{contact.name}</h1>
-            <p className="text-gray-600 mt-1">{contact.position} at {contact.company}</p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center space-x-4">
+            <ModernButton
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/contacts')}
+              className="flex items-center space-x-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back</span>
+            </ModernButton>
+            <h1 className="text-3xl font-bold text-gray-900">Contact Details</h1>
+          </div>
+          
+          <div className="flex items-center space-x-3">
+            {isEditing ? (
+              <>
+                <ModernButton
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsEditing(false)}
+                >
+                  Cancel
+                </ModernButton>
+                <ModernButton
+                  variant="primary"
+                  size="sm"
+                  onClick={handleSave}
+                  className="flex items-center space-x-2"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>Save</span>
+                </ModernButton>
+              </>
+            ) : (
+              <ModernButton
+                variant="primary"
+                size="sm"
+                onClick={() => setIsEditing(true)}
+                className="flex items-center space-x-2"
+              >
+                <Edit className="w-4 h-4" />
+                <span>Edit</span>
+              </ModernButton>
+            )}
           </div>
         </div>
-        
-        <div className="mt-4 sm:mt-0 flex flex-wrap gap-2">
-          <button 
-            onClick={handleEditToggle}
-            className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200/60 shadow-sm text-sm font-semibold rounded-full text-gray-700 hover:from-gray-100 hover:to-gray-200 transition-all duration-200"
-          >
-            {isEditing ? (
-              <>
-                <X size={16} className="mr-2" />
-                Cancel
-              </>
-            ) : (
-              <>
-                <Edit size={16} className="mr-2" />
-                Edit
-              </>
-            )}
-          </button>
-          {isEditing ? (
-            <button 
-              onClick={handleSaveContact}
-              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 border border-blue-300/20 shadow-sm text-sm font-semibold rounded-full text-white hover:from-blue-600 hover:to-blue-700 transition-all duration-200"
-            >
-              <Check size={16} className="mr-2" />
-              Save
-            </button>
-          ) : (
-            <button 
-              onClick={handleDeleteContact}
-              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 border border-red-300/20 shadow-sm text-sm font-semibold rounded-full text-white hover:from-red-600 hover:to-red-700 transition-all duration-200"
-            >
-              <Trash2 size={16} className="mr-2" />
-              Delete
-            </button>
-          )}
-        </div>
-      </header>
-      
-      <div className="grid grid-cols-1 md:flex md:flex-wrap md:-mx-4">
-        {/* Left Column - Main Info */}
-        <div className="md:w-2/3 md:px-4 mb-8">
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
-            {/* Status Badge */}
-            <div className="mb-4">
-              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                statusColors[contact.status as keyof typeof statusColors]
-              }`}>
-                {contact.status.charAt(0).toUpperCase() + contact.status.slice(1)}
-              </span>
+
+        {/* Contact Header Card */}
+        <GlassCard className="p-8 mb-8">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start space-x-6">
+              {/* Avatar */}
+              <div className="relative">
+                <AvatarWithStatus
+                  src={contact.avatarSrc || contact.avatar}
+                  alt={contact.name}
+                  size="xl"
+                  status={contact.status === 'customer' ? 'online' : contact.status === 'prospect' ? 'away' : 'offline'}
+                />
+                <button className="absolute -top-1 -right-1 p-1 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow">
+                  <Star className={`w-4 h-4 ${contact.favorite || contact.isFavorite ? 'text-yellow-500 fill-current' : 'text-gray-400'}`} />
+                </button>
+              </div>
+
+              {/* Contact Info */}
+              <div className="flex-1">
+                <div className="flex items-center space-x-3 mb-2">
+                  <h2 className="text-2xl font-bold text-gray-900">{contact.name}</h2>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    contact.status === 'customer' ? 'bg-green-100 text-green-800' :
+                    contact.status === 'prospect' ? 'bg-blue-100 text-blue-800' :
+                    contact.status === 'lead' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-gray-100 text-gray-800'
+                  }`}>
+                    {contact.status.charAt(0).toUpperCase() + contact.status.slice(1)}
+                  </span>
+                  {contact.aiScore && (
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      contact.aiScore >= 80 ? 'bg-green-100 text-green-800' :
+                      contact.aiScore >= 60 ? 'bg-blue-100 text-blue-800' :
+                      contact.aiScore >= 40 ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      AI Score: {contact.aiScore}%
+                    </span>
+                  )}
+                </div>
+                
+                <p className="text-lg text-gray-600 mb-4">{contact.title || contact.position}</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {contact.email && (
+                    <div className="flex items-center space-x-2 text-gray-600">
+                      <Mail className="w-4 h-4" />
+                      <span>{contact.email}</span>
+                    </div>
+                  )}
+                  {contact.phone && (
+                    <div className="flex items-center space-x-2 text-gray-600">
+                      <Phone className="w-4 h-4" />
+                      <span>{contact.phone}</span>
+                    </div>
+                  )}
+                  {contact.company && (
+                    <div className="flex items-center space-x-2 text-gray-600">
+                      <Building className="w-4 h-4" />
+                      <span>{contact.company}</span>
+                    </div>
+                  )}
+                  {contact.location && (
+                    <div className="flex items-center space-x-2 text-gray-600">
+                      <MapPin className="w-4 h-4" />
+                      <span>{contact.location}</span>
+                    </div>
+                  )}
+                  {contact.leadSource && (
+                    <div className="flex items-center space-x-2 text-gray-600">
+                      <Target className="w-4 h-4" />
+                      <span>{contact.leadSource}</span>
+                    </div>
+                  )}
+                  {contact.annualRevenue && (
+                    <div className="flex items-center space-x-2 text-gray-600">
+                      <DollarSign className="w-4 h-4" />
+                      <span>${contact.annualRevenue.toLocaleString()}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          
-            {isEditing ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={editFormData.name || ''}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={editFormData.email || ''}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={editFormData.phone || ''}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Company
-                  </label>
-                  <input
-                    type="text"
-                    name="company"
-                    value={editFormData.company || ''}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Position
-                  </label>
-                  <input
-                    type="text"
-                    name="position"
-                    value={editFormData.position || ''}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Status
-                  </label>
-                  <select
-                    name="status"
-                    value={editFormData.status || 'lead'}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option value="lead">Lead</option>
-                    <option value="prospect">Prospect</option>
-                    <option value="customer">Customer</option>
-                    <option value="churned">Churned</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Industry
-                  </label>
-                  <input
-                    type="text"
-                    name="industry"
-                    value={editFormData.industry || ''}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Location
-                  </label>
-                  <input
-                    type="text"
-                    name="location"
-                    value={editFormData.location || ''}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-                
-                <div className="col-span-1 md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Notes
-                  </label>
-                  <textarea
-                    name="notes"
-                    value={editFormData.notes || ''}
-                    onChange={handleInputChange}
-                    rows={4}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  ></textarea>
-                </div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-4">Contact Information</h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center">
-                      <Mail className="h-5 w-5 text-gray-400 mr-3" />
-                      <div>
-                        <a 
-                          href={`mailto:${contact.email}`}
-                          className="text-sm font-medium text-gray-900 hover:text-blue-600"
-                        >
-                          {contact.email}
-                        </a>
-                        <p className="text-xs text-gray-500">Email</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <Phone className="h-5 w-5 text-gray-400 mr-3" />
-                      <div>
-                        <a 
-                          href={`tel:${contact.phone?.replace(/\D/g, '')}`}
-                          className="text-sm font-medium text-gray-900 hover:text-blue-600"
-                          onClick={(e) => {
-                            // Let the default tel: behavior handle the call
-                          }}
-                        >
-                          {contact.phone || 'Not provided'}
-                        </a>
-                        <p className="text-xs text-gray-500">Phone</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <MapPin className="h-5 w-5 text-gray-400 mr-3" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">{contact.location || 'Not specified'}</p>
-                        <p className="text-xs text-gray-500">Location</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <Calendar className="h-5 w-5 text-gray-400 mr-3" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {contact.lastContact ? contact.lastContact.toLocaleDateString() : 'Never contacted'}
-                        </p>
-                        <p className="text-xs text-gray-500">Last Contact</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-4">Company Information</h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center">
-                      <Building className="h-5 w-5 text-gray-400 mr-3" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">{contact.company || 'Not provided'}</p>
-                        <p className="text-xs text-gray-500">Company</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <User className="h-5 w-5 text-gray-400 mr-3" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">{contact.position || 'Not provided'}</p>
-                        <p className="text-xs text-gray-500">Position</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <Tag className="h-5 w-5 text-gray-400 mr-3" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">{contact.industry || 'Not specified'}</p>
-                        <p className="text-xs text-gray-500">Industry</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <Flag className="h-5 w-5 text-gray-400 mr-3" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">{contact.score || 'N/A'}/100</p>
-                        <p className="text-xs text-gray-500">Lead Score</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {contact.notes && (
-                  <div className="col-span-1 md:col-span-2">
-                    <h4 className="text-sm font-medium text-gray-500 mb-2">Notes</h4>
-                    <div className="bg-gray-50 rounded-md p-3 border border-gray-100">
-                      <p className="text-sm text-gray-700 whitespace-pre-line">{contact.notes}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            
+
+            {/* Quick Actions */}
+            <div className="flex flex-col space-y-2">
+              <ModernButton variant="primary" size="sm" className="flex items-center space-x-2">
+                <Mail className="w-4 h-4" />
+                <span>Email</span>
+              </ModernButton>
+              <ModernButton variant="outline" size="sm" className="flex items-center space-x-2">
+                <Phone className="w-4 h-4" />
+                <span>Call</span>
+              </ModernButton>
+              <ModernButton variant="outline" size="sm" className="flex items-center space-x-2">
+                <Calendar className="w-4 h-4" />
+                <span>Meet</span>
+              </ModernButton>
+            </div>
+          </div>
+
+          {/* Social Links */}
+          {contact.socialProfiles && (
             <div className="mt-6 pt-6 border-t border-gray-200">
-              <h4 className="text-sm font-medium text-gray-500 mb-4">Quick Actions</h4>
-              <div className="flex flex-wrap gap-2">
-                <button 
-                  onClick={handleSendEmail}
-                  className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  <Mail size={16} className="mr-1.5" />
-                  Send Email
-                </button>
-                <button 
-                  onClick={handleCallContact}
-                  className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  <Phone size={16} className="mr-1.5" />
-                  Call
-                </button>
-                <button className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                  <Calendar size={16} className="mr-1.5" />
-                  Schedule Meeting
-                </button>
-                <button className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                  <MessageSquare size={16} className="mr-1.5" />
-                  Add Note
-                </button>
+              <div className="flex items-center space-x-4">
+                <span className="text-sm font-medium text-gray-700">Social:</span>
+                {contact.socialProfiles.linkedin && (
+                  <a 
+                    href={contact.socialProfiles.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-1 text-blue-600 hover:text-blue-800"
+                  >
+                    <Linkedin className="w-4 h-4" />
+                    <span>LinkedIn</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
+                {contact.socialProfiles.twitter && (
+                  <a 
+                    href={contact.socialProfiles.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-1 text-blue-400 hover:text-blue-600"
+                  >
+                    <Twitter className="w-4 h-4" />
+                    <span>Twitter</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
               </div>
             </div>
-          </div>
-          
-          {/* Interaction History */}
-          <div className="bg-white rounded-lg shadow-sm p-6 mt-6 border border-gray-100">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Interaction History</h3>
-            
-            <div className="space-y-4">
-              {previousInteractions.map((interaction, idx) => (
-                <div key={idx} className="border-b pb-4 last:border-0">
-                  <div className="flex items-start">
-                    <div className="mr-3 mt-1">
-                      {idx === 0 && <MessageSquare size={16} className="text-blue-500" />}
-                      {idx === 1 && <Mail size={16} className="text-purple-500" />}
-                      {idx === 2 && <FileText size={16} className="text-green-500" />}
-                    </div>
-                    <div>
-                      <p className="text-gray-800 text-sm">{interaction}</p>
-                      <p className="text-gray-400 text-xs mt-1">
-                        {new Date(Date.now() - (idx * 7 * 24 * 60 * 60 * 1000)).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          )}
+        </GlassCard>
+
+        {/* Tab Navigation */}
+        <div className="border-b border-gray-200 mb-8">
+          <nav className="flex space-x-8">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center space-x-2 py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === tab.id
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </nav>
         </div>
-        
-        {/* Right Column - AI Insights */}
-        <div className="md:w-1/3 md:px-4">
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border border-gray-100">
-            <div className="flex items-center mb-4">
-              <Brain size={20} className="text-blue-500 mr-2" />
-              <h3 className="text-lg font-medium">AI Insights</h3>
-            </div>
-            
-            {/* AI Action Toolbar */}
-            <div className="mb-6 pb-4 border-b border-gray-100">
-              <CustomizableAIToolbar
-                entityType="contact"
-                entityId={contact.id}
-                entityData={contact}
-                location="contactDetail"
-                layout="vertical"
-                size="md"
-                className="w-full"
-                showCustomizeButton={true}
-              />
-            </div>
-            
-            <div className="space-y-4">
-              <button
-                onClick={handleLeadScoreAnalysis}
-                disabled={leadScoreLoading}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-3 px-4 rounded-full font-semibold transition-all duration-200 disabled:from-blue-300 disabled:to-blue-400 shadow-sm border border-blue-300/20"
-              >
-                {leadScoreLoading ? (
-                  <>
-                    <RefreshCw size={18} className="animate-spin" />
-                    Analyzing...
-                  </>
-                ) : (
-                  <>
-                    <Brain size={18} />
-                    Analyze Lead Potential
-                  </>
-                )}
-              </button>
-              
-              {leadScoreError && (
-                <div className="bg-red-50 text-red-700 p-3 rounded-md flex items-center gap-2">
-                  <AlertOctagon size={18} />
-                  <span>{leadScoreError}</span>
-                </div>
-              )}
-              
-              {leadScoreResult && !leadScoreError && (
-                <div className="bg-blue-50 text-gray-800 p-4 rounded-md">
-                  <h3 className="font-medium mb-2">Lead Analysis</h3>
-                  <div className="whitespace-pre-wrap text-sm">{leadScoreResult}</div>
-                </div>
-              )}
-              
-              <button
-                onClick={handlePersonalization}
-                disabled={personalizationLoading}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white py-3 px-4 rounded-full font-semibold transition-all duration-200 disabled:from-indigo-300 disabled:to-indigo-400 shadow-sm border border-indigo-300/20 mt-2"
-              >
-                {personalizationLoading ? (
-                  <>
-                    <RefreshCw size={18} className="animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  "Generate Personalization Recommendations"
-                )}
-              </button>
-              
-              {personalizationError && (
-                <div className="bg-red-50 text-red-700 p-3 rounded-md flex items-center gap-2">
-                  <AlertOctagon size={18} />
-                  <span>{personalizationError}</span>
-                </div>
-              )}
-              
-              {personalizationResult && !personalizationError && (
-                <div className="bg-blue-50 text-gray-800 p-4 rounded-md">
-                  <h3 className="font-medium mb-3">Personalization Recommendations</h3>
-                  <div className="space-y-3 text-sm">
-                    {typeof personalizationResult === 'string' ? (
-                      <div className="whitespace-pre-wrap">{personalizationResult}</div>
-                    ) : (
-                      <>
-                        {personalizationResult.personalizedMessage && (
-                          <div>
-                            <h4 className="font-medium text-gray-700 mb-1">Personalized Message:</h4>
-                            <p className="text-gray-600">{personalizationResult.personalizedMessage}</p>
-                          </div>
-                        )}
-                        {personalizationResult.talkingPoints && (
-                          <div>
-                            <h4 className="font-medium text-gray-700 mb-1">Talking Points:</h4>
-                            <p className="text-gray-600">{personalizationResult.talkingPoints}</p>
-                          </div>
-                        )}
-                        {personalizationResult.iceBreakers && (
-                          <div>
-                            <h4 className="font-medium text-gray-700 mb-1">Ice Breakers:</h4>
-                            <p className="text-gray-600">{personalizationResult.iceBreakers}</p>
-                          </div>
-                        )}
-                        {personalizationResult.followUpSuggestions && (
-                          <div>
-                            <h4 className="font-medium text-gray-700 mb-1">Follow-up Suggestions:</h4>
-                            <p className="text-gray-600">{personalizationResult.followUpSuggestions}</p>
-                          </div>
-                        )}
-                      </>
-                    )}
+
+        {/* Tab Content */}
+        <div className="space-y-8">
+          {activeTab === 'overview' ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Contact Information */}
+              <GlassCard className="p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
+                    <p className="text-gray-900">{contact.industry || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Employee Count</label>
+                    <p className="text-gray-900">{contact.employeeCount || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Last Contact</label>
+                    <p className="text-gray-900">
+                      {contact.lastContact ? new Date(contact.lastContact).toLocaleDateString() : 'Never'}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+                    <div className="flex flex-wrap gap-2">
+                      {contact.tags && contact.tags.length > 0 ? (
+                        contact.tags.map((tag, index) => (
+                          <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-xs">
+                            {tag}
+                          </span>
+                        ))
+                      ) : (
+                        <p className="text-gray-500 text-sm">No tags</p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              )}
+              </GlassCard>
+
+              {/* Notes */}
+              <GlassCard className="p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Notes</h3>
+                <div className="space-y-4">
+                  {isEditing ? (
+                    <textarea
+                      value={contact.notes || ''}
+                      onChange={(e) => setContact({ ...contact, notes: e.target.value })}
+                      rows={6}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Add notes about this contact..."
+                    />
+                  ) : (
+                    <p className="text-gray-700 whitespace-pre-wrap">
+                      {contact.notes || 'No notes available.'}
+                    </p>
+                  )}
+                </div>
+              </GlassCard>
             </div>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
-            <div className="flex items-center mb-4">
-              <BarChart3 size={22} className="text-indigo-500 mr-2" />
-              <h3 className="text-lg font-medium">Engagement Summary</h3>
-            </div>
-            
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-gray-500">Email Engagement</span>
-                  <span className="font-medium">64%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-blue-500 h-2 rounded-full" style={{ width: '64%' }}></div>
-                </div>
-              </div>
-              
-              <div>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-gray-500">Meeting Attendance</span>
-                  <span className="font-medium">100%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-green-500 h-2 rounded-full" style={{ width: '100%' }}></div>
-                </div>
-              </div>
-              
-              <div>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-gray-500">Response Time</span>
-                  <span className="font-medium">8 hours avg.</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '70%' }}></div>
-                </div>
-              </div>
-            </div>
-          </div>
+          ) : (
+            // Render the component for the active tab
+            tabs.find(tab => tab.id === activeTab)?.component
+          )}
         </div>
       </div>
     </div>
   );
-};
-
-export default ContactDetail;
+}
