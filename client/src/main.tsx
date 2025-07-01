@@ -1,23 +1,11 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ClerkProvider } from '@clerk/clerk-react';
 import App from './App.tsx';
 import './index.css';
 
-// For development in Replit, use development keys to avoid domain restrictions
-// Production keys only work on smart-crm.videoremix.io domain
-const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_Y2VudHJhbC10b3J0b2lzZS0yMS5jbGVyay5hY2NvdW50cy5kZXYk';
-
-if (!publishableKey) {
-  throw new Error('Missing VITE_CLERK_PUBLISHABLE_KEY');
-}
-
-// Create root and render app immediately without any delays or deferment
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ClerkProvider publishableKey={publishableKey}>
-      <App />
-    </ClerkProvider>
+    <App />
   </StrictMode>
 );
 

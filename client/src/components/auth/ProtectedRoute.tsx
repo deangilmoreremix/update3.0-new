@@ -1,7 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth, UserRole } from '@/hooks/useAuth';
-import { SignIn } from '@clerk/clerk-react';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -16,7 +15,7 @@ export function ProtectedRoute({
 }: ProtectedRouteProps) {
   const { user, isLoaded, isSignedIn, hasPermission } = useAuth();
 
-  // Show loading while Clerk is initializing
+  // Show loading while auth is initializing
   if (!isLoaded) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -25,23 +24,9 @@ export function ProtectedRoute({
     );
   }
 
-  // Show sign-in if not authenticated
+  // Show sign-in if not authenticated (redirect to login page)
   if (!isSignedIn) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-md w-full">
-          <SignIn 
-            redirectUrl={window.location.pathname}
-            appearance={{
-              elements: {
-                formButtonPrimary: 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700',
-                card: 'shadow-xl border-0',
-              }
-            }}
-          />
-        </div>
-      </div>
-    );
+    return <Navigate to="/login" state={{ from: window.location.pathname }} replace />;
   }
 
   // Check role permissions

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth, useOrganization } from '@clerk/clerk-react';
+import { useAuth } from '@/hooks/useAuth';
 import { 
   Package, 
   Users, 
