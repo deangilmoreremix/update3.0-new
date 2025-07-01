@@ -26,6 +26,12 @@ export interface Contact {
   avatar?: string;
   isFavorite?: boolean;
   source?: string | string[];
+  // AI-enhanced fields
+  avatarSrc?: string;
+  title?: string;
+  aiScore?: number;
+  interestLevel?: 'hot' | 'medium' | 'low' | 'cold';
+  sources?: string[];
 }
 
 export interface Deal {
