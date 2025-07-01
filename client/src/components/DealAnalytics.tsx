@@ -40,7 +40,7 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({
 
   // Calculate advanced KPI metrics from real data
   const calculateKPIs = (): KPIMetric[] => {
-    const dealsArray = Object.values(deals);
+    const dealsArray = deals ? Object.values(deals) : [];
     const totalRevenue = dealsArray
       .filter(deal => deal.stage === 'closed-won')
       .reduce((sum, deal) => sum + deal.value, 0);
@@ -48,7 +48,7 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({
     const totalDeals = dealsArray.length;
     const wonDeals = dealsArray.filter(deal => deal.stage === 'closed-won').length;
     const conversionRate = totalDeals > 0 ? (wonDeals / totalDeals) * 100 : 0;
-    const totalContacts = contacts.length;
+    const totalContacts = contacts?.length || 0;
 
     // Calculate average deal size
     const avgDealSize = wonDeals > 0 ? totalRevenue / wonDeals : 0;
