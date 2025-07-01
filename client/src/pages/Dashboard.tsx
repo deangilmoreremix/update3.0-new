@@ -556,7 +556,7 @@ const Dashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* FunnelCraft AI - Marketing Team */}
           <a 
-            href="https://funnelcraft-ai.videoremix.io/landing" 
+            href="https://funnelcraft-ai.videoremix.io/" 
             target="_blank" 
             rel="noopener noreferrer"
             className="group p-4 rounded-lg border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all duration-200 bg-gradient-to-br from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100"

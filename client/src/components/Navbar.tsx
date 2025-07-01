@@ -634,7 +634,7 @@ const Navbar: React.FC = () => {
                   <div className="grid grid-cols-1 gap-3">
                     {/* FunnelCraft AI */}
                     <a 
-                      href="https://funnelcraft-ai.videoremix.io/landing" 
+                      href="https://funnelcraft-ai.videoremix.io/" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex items-center p-3 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-200"
