@@ -4,7 +4,8 @@ import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from '@clerk/cle
 import App from './App.tsx';
 import './index.css';
 
-const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+// Force production key to override system environment variable
+const publishableKey = 'pk_live_Y2xlcmsuc21hcnQtY3JtLnZpZGVvcmVtaXguaW8k';
 
 if (!publishableKey) {
   throw new Error('Missing VITE_CLERK_PUBLISHABLE_KEY');
