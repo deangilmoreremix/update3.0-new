@@ -684,21 +684,19 @@ const Navbar: React.FC = () => {
                     </a>
 
                     {/* White-Label Platform */}
-                    <a 
-                      href="https://moonlit-tarsier-239e70.netlify.app" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
+                    <Link 
+                      to="/admin/white-label"
                       className="flex items-center p-3 rounded-lg border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-200"
                     >
                       <div className="p-2 rounded-lg bg-orange-100 text-orange-600 mr-3">
                         <Palette size={16} />
                       </div>
                       <div className="flex-1">
-                        <div className="font-medium text-gray-900 text-sm">White-Label Platform</div>
-                        <div className="text-xs text-gray-500">Platform Management</div>
+                        <div className="font-medium text-gray-900 text-sm">White-Label Customization</div>
+                        <div className="text-xs text-gray-500">Branding & Themes</div>
                       </div>
-                      <ExternalLink size={14} className="text-gray-400" />
-                    </a>
+                      <ChevronRight size={14} className="text-gray-400" />
+                    </Link>
                   </div>
                 </div>
               </div>
