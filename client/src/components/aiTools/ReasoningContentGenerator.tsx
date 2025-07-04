@@ -196,7 +196,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
         </div>
       </div>
 
-      <AIToolContent
+      <StructuredAIResult
         isLoading={isLoading}
         error={error}
         result={result}
@@ -319,7 +319,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
             </button>
           </div>
         </form>
-      </AIToolContent>
+      </StructuredAIResult>
 
       {result && !isLoading && !error && (
         <div className="mt-6">

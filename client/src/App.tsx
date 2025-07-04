@@ -31,7 +31,7 @@ import PhoneSystem from './pages/PhoneSystem';
 import TextMessages from './pages/TextMessages';
 import VideoEmail from './pages/VideoEmail';
 import Invoicing from './pages/Invoicing';
-import Settings from './pages/Settings';
+
 import AITools from './pages/AITools';
 import SalesTools from './pages/SalesTools';
 import LeadAutomation from './pages/LeadAutomation';
@@ -168,7 +168,7 @@ function App() {
                     <Route path="/document-center" element={<DocumentCenter />} />
                     <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
                     <Route path="/lead-capture" element={<LeadCapture />} />
-                    <Route path="/settings" element={<Settings />} />
+
 
                     {/* Feature Pages */}
                     <Route path="/features/ai-tools" element={<AiToolsFeaturePage />} />
@@ -407,11 +407,7 @@ function App() {
                 </ProtectedRoute>
               } />
 
-              <Route path="/settings" element={
-                <ProtectedRoute>
-                  <Settings />
-                </ProtectedRoute>
-              } />
+
 
               {/* Feature Pages */}
               <Route path="/features/ai-tools" element={<AiToolsFeaturePage />} />

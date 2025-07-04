@@ -7,7 +7,7 @@ import {
   Users, 
   Briefcase, 
   CheckSquare, 
-  Settings, 
+
   Menu, 
   X,
   Brain,
@@ -751,14 +751,7 @@ const Navbar: React.FC = () => {
                   </p>
                 </div>
                 
-                <Link 
-                  to="/settings" 
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => setUserMenuOpen(false)}
-                >
-                  <Settings size={16} className="inline mr-2 text-gray-500" />
-                  Settings
-                </Link>
+
                 <button
                   onClick={handleLogout}
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -902,14 +895,7 @@ const Navbar: React.FC = () => {
                 </div>
               </div>
               
-              <Link
-                to="/settings"
-                className="flex items-center px-3 py-2 mt-1 text-base font-medium rounded-md text-gray-700 hover:text-blue-600 hover:bg-blue-50"
-                onClick={() => setIsOpen(false)}
-              >
-                <Settings size={20} className="mr-3" />
-                Settings
-              </Link>
+
               
               <button
                 onClick={handleLogout}

@@ -52,6 +52,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use(extractTenant);
   app.use(addTenantContext);
 
+  // Authentication endpoints
+  app.post("/api/auth/login", async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+
+      // Find user by email
+      let user = await storage.getUserByEmail(email);
+      
+      if (!user) {
+        // Create new user if they don't exist
+        user = await storage.createUser({
+          email,
+          fullName: email.split('@')[0], // Use email prefix as default name
+          accountStatus: 'active'
+        });
+      }
+
+      res.json({
+        success: true,
+        user: {
+          id: user.id,
+          email: user.email,
+          fullName: user.fullName,
+          accountStatus: user.accountStatus,
+          isAdmin: user.isAdmin
+        },
+        message: "Login successful"
+      });
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({ error: "Login failed" });
+    }
+  });
+
+  app.post("/api/auth/logout", async (req: Request, res: Response) => {
+    try {
+      res.json({
+        success: true,
+        message: "Logout successful"
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      res.status(500).json({ error: "Logout failed" });
+    }
+  });
+
+  app.get("/api/auth/user", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const userId = req.userId;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res.json({
+        id: user.id,
+        email: user.email,
+        fullName: user.fullName,
+        avatarUrl: user.avatarUrl,
+        jobTitle: user.jobTitle,
+        company: user.company,
+        accountStatus: user.accountStatus,
+        isAdmin: user.isAdmin
+      });
+    } catch (error) {
+      console.error('Get user error:', error);
+      res.status(500).json({ error: "Failed to get user" });
+    }
+  });
+
   // White Label Platform Integration Routes
   app.post("/api/webhooks/white-label", handleWebhook);
 
