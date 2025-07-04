@@ -164,7 +164,7 @@ const AIToolsCard: React.FC = () => {
           <h2 className="text-lg font-semibold text-gray-900">AI Tools</h2>
         </div>
         <Link
-          to="/ai-tools"
+          to="/ai-goals"
           className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
         >
           View all <ChevronRight className="h-4 w-4 ml-1" />

@@ -504,35 +504,35 @@ const Navbar: React.FC = () => {
               
               <div className="hidden group-hover:block absolute z-10 w-64 mt-1 bg-white rounded-md shadow-lg border border-gray-100">
                 <div className="py-1">
-                  <Link to="/sales-tools" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                  <button onClick={() => openTool('sales-insights')} className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                     <Target size={18} className="mr-2" />
-                    Sales Tools
-                  </Link>
+                    Sales Analysis
+                  </button>
                   
-                  <Link to="/lead-automation" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                  <button onClick={() => openTool('customer-persona')} className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                     <BarChart3 size={18} className="mr-2" />
-                    Lead Automation
-                  </Link>
+                    Customer Persona
+                  </button>
                   
-                  <Link to="/circle-prospecting" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                  <button onClick={() => openTool('smart-search-realtime')} className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                     <Map size={18} className="mr-2" />
-                    Circle Prospecting
-                  </Link>
+                    Prospect Search
+                  </button>
                   
-                  <Link to="/appointments" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                  <button onClick={() => openTool('meeting-agenda')} className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                     <CalendarDays size={18} className="mr-2" />
-                    Appointments
-                  </Link>
+                    Meeting Planner
+                  </button>
                   
-                  <Link to="/phone-system" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                  <button onClick={() => openTool('call-script')} className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                     <Phone size={18} className="mr-2" />
-                    Phone System
-                  </Link>
+                    Call Scripts
+                  </button>
                   
-                  <Link to="/invoicing" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                  <button onClick={() => openTool('proposal-generator')} className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                     <Receipt size={18} className="mr-2" />
-                    Invoicing
-                  </Link>
+                    Proposal Generator
+                  </button>
                 </div>
               </div>
             </div>
@@ -549,15 +549,15 @@ const Navbar: React.FC = () => {
               
               <div className="hidden group-hover:block absolute z-10 w-64 mt-1 bg-white rounded-md shadow-lg border border-gray-100">
                 <div className="py-1">
-                  <Link to="/video-email" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                  <button onClick={() => openTool('visual-content-generator')} className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                     <Video size={18} className="mr-2" />
-                    Video Email
-                  </Link>
+                    Video Content
+                  </button>
                   
-                  <Link to="/text-messages" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                  <button onClick={() => openTool('realtime-email-composer')} className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                     <MessageSquare size={18} className="mr-2" />
-                    Text Messages
-                  </Link>
+                    Real-time Email
+                  </button>
                   
                   <button
                     onClick={() => openTool('email-composer')}
@@ -567,10 +567,10 @@ const Navbar: React.FC = () => {
                     Email Composer
                   </button>
                   
-                  <Link to="/campaigns" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                  <button onClick={() => openTool('email-response')} className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                     <Target size={18} className="mr-2" />
-                    Campaigns
-                  </Link>
+                    Email Response
+                  </button>
                 </div>
               </div>
             </div>
