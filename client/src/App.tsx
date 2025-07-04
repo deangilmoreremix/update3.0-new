@@ -8,15 +8,17 @@ import { RoleProvider } from './components/RoleBasedAccess';
 import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
 import { HelpProvider } from './contexts/HelpContext';
 import { queryClient } from './lib/queryClient';
+import Navbar from './components/Navbar';
 
 // Main pages
 import Dashboard from './pages/Dashboard';
 import Contacts from './pages/Contacts';
 import Pipeline from './pages/Pipeline';
 
-// Simple layout wrapper
+// Simple layout wrapper with navbar
 const SimpleLayout = ({ children }: { children: React.ReactNode }) => (
   <div className="min-h-screen bg-gray-50">
+    <Navbar />
     {children}
   </div>
 );
