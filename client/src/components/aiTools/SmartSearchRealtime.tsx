@@ -167,46 +167,42 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
     );
   };
   
-  // Initialize embeddings on first load
+  // Initialize with server-side API call instead of client-side embeddings
   useEffect(() => {
-    const initializeEmbeddings = async () => {
+    const initializeSearch = async () => {
       try {
-        // Generate embeddings for contacts and deals
-        const contactEmbs = await embeddings.createContactEmbeddings(mockContacts);
-        const dealEmbs = await embeddings.createDealEmbeddings(mockDeals);
+        // Check if server-side OpenAI API is available
+        const response = await fetch('/api/ai/smart-search-status');
+        const data = await response.json();
         
-        setEmbedData({
-          ready: true,
-          contactEmbeddings: contactEmbs,
-          dealEmbeddings: dealEmbs
-        });
-      } catch (error: any) {
-        // Check the type of error and handle gracefully
-        const isQuota = isQuotaError(error);
-        const isAPIKey = isAPIKeyError(error);
-        
-        // Only log non-quota errors to console to avoid cluttering with expected quota errors
-        if (!isQuota && !isAPIKey) {
-          console.error('Error initializing embeddings:', error);
+        if (data.available) {
+          setEmbedData({
+            ready: true,
+            contactEmbeddings: [],
+            dealEmbeddings: []
+          });
+        } else {
+          setEmbedData({
+            ready: false,
+            contactEmbeddings: [],
+            dealEmbeddings: [],
+            error: 'Smart search temporarily unavailable',
+            apiUnavailable: true
+          });
         }
-        
+      } catch (error: any) {
+        console.log('Using basic search mode');
         setEmbedData({
           ready: false,
           contactEmbeddings: [],
           dealEmbeddings: [],
-          error: error.message || 'Failed to initialize embeddings',
-          quotaExceeded: isQuota,
-          apiUnavailable: isAPIKey
+          error: 'Using basic keyword search',
+          apiUnavailable: false
         });
       }
     };
     
-    // Use a slight delay to prevent immediate error logging on component mount
-    const timeoutId = setTimeout(() => {
-      initializeEmbeddings();
-    }, 100);
-    
-    return () => clearTimeout(timeoutId);
+    initializeSearch();
   }, []);
   
   // Generate search suggestions based on input

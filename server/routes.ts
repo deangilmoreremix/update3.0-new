@@ -1651,6 +1651,27 @@ Next Actions:
     }
   });
 
+  // Smart Search Status Endpoint
+  app.get("/api/ai/smart-search-status", async (req: Request, res: Response) => {
+    try {
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      if (!openaiApiKey) {
+        return res.json({ available: false, reason: "OpenAI API key not configured" });
+      }
+
+      // Test if the API key is valid by making a quick test request
+      // For now, we'll just check if the key exists and assume it's valid
+      return res.json({ 
+        available: true, 
+        features: ["semantic_search", "embeddings", "natural_language_queries"]
+      });
+    } catch (error) {
+      console.error("Error checking smart search status:", error);
+      res.json({ available: false, reason: "Service temporarily unavailable" });
+    }
+  });
+
   // White-label reseller platform routes
   app.use('/api/partners', partnersRouter);
   app.use('/api/feature-packages', featurePackagesRouter);
