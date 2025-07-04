@@ -318,3 +318,5 @@ export function AIGoalsPage() {
     </div>
   );
 }
+
+export default AIGoalsPage;
