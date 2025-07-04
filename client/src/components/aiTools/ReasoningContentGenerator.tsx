@@ -85,9 +85,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
         Format your response as a strategic analysis that would help a sales or marketing professional understand the reasoning behind the content creation approach.
       `;
       
-      const reasoningResult = await gemini.getGenerativeModel({ model: 'gemini-pro' }).generateContent(reasoningPrompt);
-      const reasoningResponse = await reasoningResult.response;
-      const reasoningText = reasoningResponse.text();
+      const reasoningText = await gemini.generateReasoning(reasoningPrompt);
       setReasoningInsights(reasoningText);
       
       // Now generate the actual content using the reasoning insights
@@ -111,9 +109,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
         ${getContentSpecificInstructions()}
       `;
       
-      const contentResult = await gemini.getGenerativeModel({ model: 'gemini-pro' }).generateContent(contentPrompt);
-      const contentResponse = await contentResult.response;
-      const contentText = contentResponse.text();
+      const contentText = await gemini.generateReasoning(contentPrompt);
       
       setResult(contentText);
       setCopied(false);
@@ -196,14 +192,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
         </div>
       </div>
 
-      <StructuredAIResult
-        isLoading={isLoading}
-        error={error}
-        result={result}
-        loadingMessage={`Generating your ${contentType}...`}
-        resultTitle={`Generated ${getContentTitle()}`}
-      >
-        <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
               <Users className="h-4 w-4 mr-1 text-gray-500" />
@@ -319,55 +308,58 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
             </button>
           </div>
         </form>
-      </StructuredAIResult>
 
       {result && !isLoading && !error && (
-        <div className="mt-6">
-          <div className="flex justify-between items-center mb-2">
-            <button 
-              onClick={() => setReasoningVisible(!reasoningVisible)}
-              className="text-purple-600 hover:text-purple-800 text-sm font-medium flex items-center"
-            >
-              <Brain size={16} className="mr-1" />
-              {reasoningVisible ? 'Hide AI Reasoning' : 'Show AI Reasoning'}
-            </button>
-            
-            <div className="flex space-x-2">
-              <button 
-                onClick={handleCopy}
-                className={`inline-flex items-center px-3 py-1.5 rounded text-sm transition-colors ${
-                  copied 
-                    ? 'bg-green-100 text-green-700' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {copied ? (
-                  <>
-                    <Check size={16} className="mr-1" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <Copy size={16} className="mr-1" />
-                    Copy to Clipboard
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
+        <>
+          <StructuredAIResult result={result} title={`Generated ${getContentTitle()}`} />
           
-          {reasoningVisible && reasoningInsights && (
-            <div className="mb-4 bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-100">
-              <div className="flex items-center mb-2">
-                <Sparkles size={16} className="text-purple-600 mr-2" />
-                <h4 className="font-medium text-purple-800">AI Reasoning Insights</h4>
-              </div>
-              <div className="text-sm text-gray-700 whitespace-pre-line">
-                {reasoningInsights}
+          <div className="mt-6">
+            <div className="flex justify-between items-center mb-2">
+              <button 
+                onClick={() => setReasoningVisible(!reasoningVisible)}
+                className="text-purple-600 hover:text-purple-800 text-sm font-medium flex items-center"
+              >
+                <Brain size={16} className="mr-1" />
+                {reasoningVisible ? 'Hide AI Reasoning' : 'Show AI Reasoning'}
+              </button>
+              
+              <div className="flex space-x-2">
+                <button 
+                  onClick={handleCopy}
+                  className={`inline-flex items-center px-3 py-1.5 rounded text-sm transition-colors ${
+                    copied 
+                      ? 'bg-green-100 text-green-700' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {copied ? (
+                    <>
+                      <Check size={16} className="mr-1" />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={16} className="mr-1" />
+                      Copy to Clipboard
+                    </>
+                  )}
+                </button>
               </div>
             </div>
-          )}
-        </div>
+            
+            {reasoningVisible && reasoningInsights && (
+              <div className="mb-4 bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-100">
+                <div className="flex items-center mb-2">
+                  <Sparkles size={16} className="text-purple-600 mr-2" />
+                  <h4 className="font-medium text-purple-800">AI Reasoning Insights</h4>
+                </div>
+                <div className="text-sm text-gray-700 whitespace-pre-line">
+                  {reasoningInsights}
+                </div>
+              </div>
+            )}
+          </div>
+        </>
       )}
     </div>
   );

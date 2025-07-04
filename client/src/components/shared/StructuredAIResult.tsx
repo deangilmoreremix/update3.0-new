@@ -20,6 +20,23 @@ interface StructuredAIResultProps {
 }
 
 const StructuredAIResult: React.FC<StructuredAIResultProps> = ({ result, title = "AI Analysis Results" }) => {
+  // Handle null or undefined result
+  if (!result || typeof result !== 'string') {
+    return (
+      <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-xl shadow-sm p-6 border border-blue-100 mb-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-blue-100 rounded-lg">
+            <BarChart3 className="h-5 w-5 text-blue-600" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+        </div>
+        <div className="prose prose-sm max-w-none">
+          <p className="mt-2 text-gray-700">Generating AI analysis...</p>
+        </div>
+      </div>
+    );
+  }
+
   // Parse the markdown-like result into structured sections
   const parseResult = (text: string) => {
     const sections: any[] = [];
