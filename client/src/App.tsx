@@ -68,36 +68,7 @@ function App() {
                       <AIGoalsPage />
                     </SimpleLayout>
                   } />
-                  <Route path="/sales-tools" element={
-                    <SimpleLayout>
-                      <PlaceholderPage title="Sales Tools" />
-                    </SimpleLayout>
-                  } />
-                  <Route path="/lead-automation" element={
-                    <SimpleLayout>
-                      <PlaceholderPage title="Lead Automation" />
-                    </SimpleLayout>
-                  } />
-                  <Route path="/circle-prospecting" element={
-                    <SimpleLayout>
-                      <PlaceholderPage title="Circle Prospecting" />
-                    </SimpleLayout>
-                  } />
-                  <Route path="/appointments" element={
-                    <SimpleLayout>
-                      <PlaceholderPage title="Appointments" />
-                    </SimpleLayout>
-                  } />
-                  <Route path="/phone-system" element={
-                    <SimpleLayout>
-                      <PlaceholderPage title="Phone System" />
-                    </SimpleLayout>
-                  } />
-                  <Route path="/invoicing" element={
-                    <SimpleLayout>
-                      <PlaceholderPage title="Invoicing" />
-                    </SimpleLayout>
-                  } />
+
                   <Route path="/video-email" element={
                     <SimpleLayout>
                       <PlaceholderPage title="Video Email" />

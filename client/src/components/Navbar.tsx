@@ -490,9 +490,9 @@ const Navbar: React.FC = () => {
             {/* Sales Tools dropdown */}
             <div className="relative group inline-block">
               <Link 
-                to="/sales-tools"
+                to="/ai-goals"
                 className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                  isActiveParent('/sales-tools') 
+                  isActiveParent('/ai-goals') 
                     ? 'text-blue-600 bg-blue-50' 
                     : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50/50'
                 } transition-colors duration-200`}
