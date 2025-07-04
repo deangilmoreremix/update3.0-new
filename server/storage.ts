@@ -8,6 +8,7 @@ import {
   voiceProfiles,
   type User, 
   type InsertUser,
+  type UpsertUser,
   type Contact,
   type InsertContact,
   type Deal,
@@ -31,6 +32,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: string, user: Partial<InsertUser>): Promise<User>;
   deleteUser(id: string): Promise<void>;
+  upsertUser(user: UpsertUser): Promise<User>;
 
   // Contact methods
   getContacts(userId: string): Promise<Contact[]>;
@@ -99,6 +101,21 @@ export class DatabaseStorage implements IStorage {
 
   async deleteUser(id: string): Promise<void> {
     await db.delete(users).where(eq(users.id, id));
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return user;
   }
 
   // Contact methods

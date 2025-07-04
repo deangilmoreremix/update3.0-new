@@ -199,12 +199,14 @@ export const sessions = pgTable("sessions", {
 
 // ============= CORE APPLICATION TABLES =============
 
-// Users table for basic authentication
+// Users table for Replit Auth integration
 export const users = pgTable("users", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  email: text("email").notNull().unique(),
+  id: text("id").primaryKey().notNull(), // Replit user ID (string)
+  email: text("email").unique(),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  profileImageUrl: text("profile_image_url"),
   fullName: text("full_name"),
-  avatarUrl: text("avatar_url"),
   jobTitle: text("job_title"),
   company: text("company"),
   phone: text("phone"),
@@ -212,6 +214,12 @@ export const users = pgTable("users", {
   preferences: jsonb("preferences").default({}),
   socialLinks: jsonb("social_links").default({}),
   accountStatus: text("account_status").default("active"),
+  // Subscription and payment fields
+  subscriptionStatus: text("subscription_status").default("free"), // free, paid, trial, cancelled
+  subscriptionPlanId: uuid("subscription_plan_id").references(() => subscriptionPlans.id),
+  subscriptionStartDate: timestamp("subscription_start_date"),
+  subscriptionEndDate: timestamp("subscription_end_date"),
+  paymentStatus: text("payment_status").default("none"), // none, active, failed, cancelled
   // Multi-tenant fields - nullable during migration
   tenantId: uuid("tenant_id").references(() => tenants.id),
   roleId: uuid("role_id").references(() => userRoles.id),
@@ -222,6 +230,7 @@ export const users = pgTable("users", {
 }, (table) => [
   index("idx_users_tenant").on(table.tenantId),
   index("idx_users_email_tenant").on(table.email, table.tenantId),
+  index("idx_users_subscription").on(table.subscriptionStatus),
 ]);
 
 // Contacts table
@@ -479,6 +488,7 @@ export type InsertFeatureUsage = z.infer<typeof insertFeatureUsageSchema>;
 // Core application types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type UpsertUser = typeof users.$inferInsert;
 
 export type Contact = typeof contacts.$inferSelect;
 export type InsertContact = z.infer<typeof insertContactSchema>;

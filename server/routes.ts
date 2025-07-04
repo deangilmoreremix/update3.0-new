@@ -17,6 +17,7 @@ import { whiteLabelClient } from "./integrations/whiteLabelClient";
 import { partnerService } from "./services/partnerService";
 import partnersRouter from "./routes/partners";
 import featurePackagesRouter from "./routes/feature-packages";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 
 // Middleware to extract user ID from request headers or create demo user
 const requireAuth = async (req: Request, res: Response, next: any) => {
@@ -48,6 +49,9 @@ const requireAuth = async (req: Request, res: Response, next: any) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup Replit Auth middleware
+  await setupAuth(app);
+  
   // Apply tenant extraction middleware to all routes
   app.use(extractTenant);
   app.use(addTenantContext);
@@ -102,7 +106,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/auth/user", requireAuth, async (req: Request, res: Response) => {
+  // Replit Auth user endpoint
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  app.get("/api/auth/user-legacy", requireAuth, async (req: Request, res: Response) => {
     try {
       const userId = req.userId;
       const user = await storage.getUser(userId);
@@ -115,7 +131,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         id: user.id,
         email: user.email,
         fullName: user.fullName,
-        avatarUrl: user.avatarUrl,
+        profileImageUrl: user.profileImageUrl,
         jobTitle: user.jobTitle,
         company: user.company,
         accountStatus: user.accountStatus,
