@@ -369,7 +369,7 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="mt-4 md:mt-0 flex space-x-3">
             <button
-              onClick={() => {/* Tour will auto-start when enabled */}}
+              onClick={() => console.log('Tour temporarily disabled')}
               className="px-3 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md text-sm font-medium text-blue-700 transition-colors duration-200"
             >
               Take Tour

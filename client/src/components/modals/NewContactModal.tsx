@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ModernButton } from '../ui/ModernButton';
 import { AIAutoFillButton } from '../ui/AIAutoFillButton';
 import { AIResearchButton } from '../ui/AIResearchButton';
+import { ImageUpload } from '../ui/ImageUpload';
 import { useContactStore } from '../../store/contactStore';
 import { ContactEnrichmentData } from '../../services/aiEnrichmentService';
 import { Contact } from '../../types/index';
@@ -139,6 +140,8 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
   const [newCustomField, setNewCustomField] = useState({ name: '', value: '' });
   const [showCustomFields, setShowCustomFields] = useState(false);
   const [lastEnrichmentData, setLastEnrichmentData] = useState<ContactEnrichmentData | null>(null);
+  const [uploadedImageFile, setUploadedImageFile] = useState<File | null>(null);
+  const [isRefreshingImage, setIsRefreshingImage] = useState(false);
   
   const { createContact } = useContactStore();
 
