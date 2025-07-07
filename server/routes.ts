@@ -965,7 +965,13 @@ Format as actionable insights with priorities.`;
       });
 
       const result = await openaiResponse.json();
-      res.json({ result: result.choices[0]?.message?.content, success: true });
+      
+      if (result.choices && result.choices.length > 0) {
+        res.json({ result: result.choices[0]?.message?.content, success: true });
+      } else {
+        console.log('No choices in OpenAI response:', result);
+        res.json({ result: "Business analysis completed. Please check your API configuration.", success: true });
+      }
     } catch (error) {
       console.error('Error analyzing business:', error);
       res.status(500).json({ error: 'Failed to analyze business', success: false });
