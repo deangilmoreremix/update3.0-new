@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, User, Phone, Building, Shield, Crown } from 'lucide-react';
+import { DemoInstructions } from '../../components/DemoInstructions';
 
 interface SignUpFormData {
   firstName: string;
@@ -117,7 +118,8 @@ export const SignUp: React.FC = () => {
   };
 
   const handleReplitAuth = () => {
-    window.location.href = '/api/login';
+    // For demo purposes, show alert instead of Replit Auth popup
+    alert('Replit Auth integration available. For now, please complete the signup form below.');
   };
 
   return (
@@ -140,6 +142,9 @@ export const SignUp: React.FC = () => {
             Join thousands of businesses using Smart CRM
           </p>
         </div>
+
+        {/* Demo Instructions */}
+        <DemoInstructions />
 
         {/* Sign Up Form */}
         <div className="bg-white rounded-xl shadow-lg p-8">
@@ -178,13 +183,14 @@ export const SignUp: React.FC = () => {
             </div>
           </div>
 
-          {/* Replit Auth Button */}
+          {/* Replit Auth Button (Disabled in Demo) */}
           <button
             onClick={handleReplitAuth}
-            className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors mb-6"
+            className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-gray-100 text-sm font-medium text-gray-500 cursor-not-allowed mb-6"
+            disabled
           >
-            <Shield className="w-5 h-5 mr-2 text-purple-600" />
-            Continue with Replit
+            <Shield className="w-5 h-5 mr-2 text-gray-400" />
+            Continue with Replit (Demo Mode)
           </button>
 
           <div className="relative mb-6">

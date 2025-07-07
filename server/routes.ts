@@ -1955,6 +1955,62 @@ Next Actions:
     }
   });
 
+  app.post('/api/auth/login', async (req, res) => {
+    try {
+      const { email, password, rememberMe } = req.body;
+
+      // Validate required fields
+      if (!email || !password) {
+        return res.status(400).json({ message: 'Email and password are required' });
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: 'Invalid email format' });
+      }
+
+      // For demo purposes, create a mock user login
+      // In production, this would validate against the database
+      let mockUser;
+      
+      if (email.includes('admin')) {
+        mockUser = {
+          id: 'user-admin-' + Date.now(),
+          firstName: 'Admin',
+          lastName: 'User',
+          email: email,
+          role: 'super_admin',
+          subscriptionPlan: 'enterprise',
+          isActive: true,
+          createdAt: new Date().toISOString()
+        };
+      } else {
+        mockUser = {
+          id: 'user-' + Date.now(),
+          firstName: 'Demo',
+          lastName: 'User',
+          email: email,
+          role: 'user',
+          subscriptionPlan: 'free',
+          isActive: true,
+          createdAt: new Date().toISOString()
+        };
+      }
+
+      console.log(`User login: ${email} (${mockUser.role})`);
+      
+      res.status(200).json({ 
+        message: 'Login successful',
+        user: mockUser,
+        sessionDuration: rememberMe ? '30 days' : '24 hours'
+      });
+    } catch (error) {
+      console.error('Error during login:', error);
+      res.status(500).json({ message: 'Login failed' });
+    }
+  });
+
   app.post('/api/admin/super-admin-signup', async (req, res) => {
     try {
       const {
