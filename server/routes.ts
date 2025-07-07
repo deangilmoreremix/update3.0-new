@@ -110,26 +110,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // User endpoint (temporarily using demo user for development)
+  // User endpoint (simplified for development)
   app.get('/api/auth/user', async (req: any, res) => {
     try {
-      // For development, return demo user data
-      const demoUser = await storage.getUserByEmail('demo@smartcrm.com');
-      if (demoUser) {
-        res.json({
-          id: demoUser.id,
-          email: demoUser.email,
-          firstName: demoUser.firstName,
-          lastName: demoUser.lastName,
-          subscriptionPlan: demoUser.subscriptionPlan || 'professional',
-          subscriptionStatus: demoUser.subscriptionStatus || 'active',
-          paymentStatus: demoUser.paymentStatus || 'paid',
-          isAdmin: demoUser.isAdmin || true,
-          role: demoUser.isAdmin ? 'super_admin' : 'user'
-        });
-      } else {
-        res.status(404).json({ message: "User not found" });
-      }
+      // Return demo user data without database dependency
+      res.json({
+        id: 'demo-user-123',
+        email: 'demo@smartcrm.com',
+        firstName: 'Demo',
+        lastName: 'User',
+        subscriptionPlan: 'professional',
+        subscriptionStatus: 'active',
+        paymentStatus: 'paid',
+        isAdmin: true,
+        role: 'super_admin'
+      });
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });

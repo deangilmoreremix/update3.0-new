@@ -216,7 +216,7 @@ export const users = pgTable("users", {
   accountStatus: text("account_status").default("active"),
   // Subscription and payment fields
   subscriptionStatus: text("subscription_status").default("free"), // free, paid, trial, cancelled
-  subscriptionPlanId: uuid("subscription_plan_id").references(() => subscriptionPlans.id),
+  subscriptionPlan: text("subscription_plan").default("basic"), // free, basic, professional, enterprise
   subscriptionStartDate: timestamp("subscription_start_date"),
   subscriptionEndDate: timestamp("subscription_end_date"),
   paymentStatus: text("payment_status").default("none"), // none, active, failed, cancelled
