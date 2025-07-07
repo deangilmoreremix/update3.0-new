@@ -18,6 +18,7 @@ import AIGoalsPage from './pages/AIGoalsPage';
 import { FeatureTestPage } from './pages/FeatureTestPage';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import SuperAdminSignup from './pages/SuperAdminSignup';
+import LandingPage from './pages/Landing/LandingPage';
 
 // Create placeholder pages for missing routes
 const PlaceholderPage = ({ title }: { title: string }) => (
@@ -129,11 +130,8 @@ function App() {
                       <PlaceholderPage title="White Label Admin" />
                     </SimpleLayout>
                   } />
-                  <Route path="/" element={
-                    <SimpleLayout>
-                      <Dashboard />
-                    </SimpleLayout>
-                  } />
+                  <Route path="/landing" element={<LandingPage />} />
+                  <Route path="/" element={<LandingPage />} />
                 </Routes>
               </Router>
               </AIToolsProvider>
