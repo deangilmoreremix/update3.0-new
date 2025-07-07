@@ -159,7 +159,7 @@ function App() {
                   } />
                   <Route path="/features/pipeline" element={
                     <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
-                      <PlaceholderPage title="Deal Pipeline" />
+                      <Pipeline />
                     </SimpleLayout>
                   } />
                   <Route path="/features/ai-assistant" element={
