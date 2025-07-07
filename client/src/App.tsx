@@ -145,6 +145,121 @@ function App() {
                       <PlaceholderPage title="White Label Admin" />
                     </SimpleLayout>
                   } />
+                  
+                  {/* Feature pages from landing navigation */}
+                  <Route path="/features/ai-tools" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="AI Sales Tools" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/features/contacts" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Contact Management" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/features/pipeline" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Deal Pipeline" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/features/ai-assistant" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="AI Assistant" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/features/vision-analyzer" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Vision Analyzer" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/features/image-generator" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Image Generator" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/features/function-assistant" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Function Assistant" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/features/speech-to-text" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Speech to Text" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/features/semantic-search" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Semantic Search" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/features/communications" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Communication Tools" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/features/automation" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Sales Automation" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/features/appointments" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Appointment Scheduling" />
+                    </SimpleLayout>
+                  } />
+                  
+                  {/* Company pages from footer */}
+                  <Route path="/about" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="About Us" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/contact" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Contact" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/faq" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="FAQ" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/blog" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Blog" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/careers" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Careers" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/press" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Press" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/partners" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Partners" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/privacy" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Privacy Policy" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/terms" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Terms of Service" />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/security" element={
+                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <PlaceholderPage title="Security" />
+                    </SimpleLayout>
+                  } />
+                  
                   <Route path="/landing" element={<LandingPage />} />
                   <Route path="/" element={<LandingPage />} />
                 </Routes>
