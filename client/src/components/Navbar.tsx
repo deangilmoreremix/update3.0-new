@@ -57,7 +57,11 @@ import {
   Palette
 } from 'lucide-react';
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  onContactsClick?: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ onContactsClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [aiMenuOpen, setAiMenuOpen] = useState(false);
   const [salesMenuOpen, setSalesMenuOpen] = useState(false);
@@ -144,8 +148,8 @@ const Navbar: React.FC = () => {
               <span className="ml-2">Dashboard</span>
             </Link>
             
-            <Link 
-              to="/contacts" 
+            <button 
+              onClick={onContactsClick}
               className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
                 isActiveParent('/contacts') 
                   ? 'text-blue-600 bg-blue-50' 
@@ -154,7 +158,7 @@ const Navbar: React.FC = () => {
             >
               <Users size={20} className="mr-2" />
               <span className="ml-2">Contacts</span>
-            </Link>
+            </button>
             
             <Link 
               to="/pipeline" 
@@ -805,18 +809,20 @@ const Navbar: React.FC = () => {
               Dashboard
             </Link>
             
-            <Link
-              to="/contacts"
-              className={`flex items-center px-3 py-2 text-base font-medium rounded-md ${
+            <button
+              onClick={() => {
+                setIsOpen(false);
+                onContactsClick?.();
+              }}
+              className={`flex items-center px-3 py-2 text-base font-medium rounded-md w-full text-left ${
                 isActiveParent('/contacts') 
                   ? 'text-blue-600 bg-blue-50' 
                   : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
               }`}
-              onClick={() => setIsOpen(false)}
             >
               <Users size={20} className="mr-3" />
               Contacts
-            </Link>
+            </button>
             
             <Link
               to="/pipeline"

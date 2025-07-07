@@ -61,7 +61,11 @@ import {
   ResponsiveContainer 
 } from 'recharts';
 
-const Dashboard: React.FC = () => {
+interface DashboardProps {
+  onContactsClick?: () => void;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ onContactsClick }) => {
   const { 
     deals, 
     fetchDeals, 
