@@ -58,7 +58,17 @@ function App() {
                       <Contacts />
                     </SimpleLayout>
                   } />
+                  <Route path="/contacts/:id" element={
+                    <SimpleLayout>
+                      <Contacts />
+                    </SimpleLayout>
+                  } />
                   <Route path="/pipeline" element={
+                    <SimpleLayout>
+                      <Pipeline />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/deals" element={
                     <SimpleLayout>
                       <Pipeline />
                     </SimpleLayout>
