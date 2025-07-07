@@ -1,246 +1,277 @@
-import React from 'react';
-import { KPICards } from '../components/dashboard/KPICards';
-import { ExecutiveOverviewSection } from '../components/sections/ExecutiveOverviewSection';
-import { ContactCard } from '../components/ContactCard';
-import { GlassCard } from '../components/ui/GlassCard';
-import { ModernButton } from '../components/ui/ModernButton';
-import { Avatar } from '../components/ui/Avatar';
-import { Brain, Zap, Star, Mail, Phone, Download, Settings, Plus } from 'lucide-react';
+import React, { useState } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
+import { useVideoCall } from '../contexts/VideoCallContext';
+import { useDashboardLayout } from '../contexts/DashboardLayoutContext';
+import { Sun, Moon, Camera, Phone, Layout, User, Mail, Calendar, BarChart3, Settings } from 'lucide-react';
 
 const DesignShowcase: React.FC = () => {
-  // Sample data for components
-  const sampleMetrics = {
-    totalContacts: 1247,
-    activeDeals: 23,
-    monthlyRevenue: 125000,
-    conversionRate: 24
-  };
+  const { theme, toggleTheme } = useTheme();
+  const { startCall } = useVideoCall();
+  const { layout, toggleSidebar, setWidgetLayout } = useDashboardLayout();
+  const [activeTab, setActiveTab] = useState('components');
 
-  const sampleAIMetrics = {
-    activeSuggestions: 12,
-    efficiency: 32,
-    qualityScore: 87,
-    automatedTasks: 45
-  };
-
-  const sampleContact = {
+  const demoParticipant = {
     id: '1',
-    firstName: 'John',
-    lastName: 'Doe',
+    name: 'John Doe',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
     email: 'john.doe@example.com',
-    phone: '+1 (555) 123-4567',
-    company: 'Tech Corp',
-    title: 'Senior Developer',
-    status: 'active' as const,
-    rating: 4
+    phone: '+1 (555) 123-4567'
+  };
+
+  const startDemoCall = () => {
+    startCall(demoParticipant);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-8">
-      <div className="max-w-7xl mx-auto space-y-12">
-        
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4">
-            Enhanced Design System Showcase
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Design System Showcase
           </h1>
-          <p className="text-xl text-gray-300">
-            Distributed Tailwind CSS with Glass Morphism & Modern Components
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Explore all the enhanced components and features in Smart CRM
           </p>
         </div>
 
-        {/* KPI Cards Section */}
-        <section>
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-white mb-2">KPI Cards</h2>
-            <p className="text-gray-300">Enhanced metrics cards with glass morphism effects</p>
-          </div>
-          <KPICards metrics={sampleMetrics} />
-        </section>
-
-        {/* Executive Overview Section */}
-        <ExecutiveOverviewSection aiMetrics={sampleAIMetrics} />
-
-        {/* Contact Card Demo */}
-        <section>
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-white mb-2">Contact Cards</h2>
-            <p className="text-gray-300">Professional contact cards with modern styling</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <ContactCard contact={sampleContact} />
-            <ContactCard 
-              contact={{
-                ...sampleContact,
-                id: '2',
-                firstName: 'Jane',
-                lastName: 'Smith',
-                email: 'jane.smith@company.com',
-                company: 'Design Studio',
-                title: 'Creative Director',
-                status: 'pending',
-                rating: 5
-              }}
-            />
-            <ContactCard 
-              contact={{
-                ...sampleContact,
-                id: '3',
-                firstName: 'Mike',
-                lastName: 'Johnson',
-                email: 'mike@startup.io',
-                company: 'Startup Inc',
-                title: 'Founder',
-                status: 'inactive',
-                rating: 3
-              }}
-            />
-          </div>
-        </section>
-
-        {/* Glass Card Variants */}
-        <section>
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-white mb-2">Glass Card Variants</h2>
-            <p className="text-gray-300">Different glass morphism intensities</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <GlassCard variant="default" className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Default Glass</h3>
-              <p className="text-gray-700">Standard glass morphism with high opacity</p>
-            </GlassCard>
-            <GlassCard variant="strong" className="p-6">
-              <h3 className="text-lg font-semibold text-white mb-2">Strong Glass</h3>
-              <p className="text-gray-200">Enhanced blur with medium opacity</p>
-            </GlassCard>
-            <GlassCard variant="subtle" className="p-6">
-              <h3 className="text-lg font-semibold text-white mb-2">Subtle Glass</h3>
-              <p className="text-gray-300">Light blur with low opacity</p>
-            </GlassCard>
-          </div>
-        </section>
-
-        {/* Modern Button Showcase */}
-        <section>
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-white mb-2">Modern Buttons</h2>
-            <p className="text-gray-300">Enhanced button variants with glass effects</p>
-          </div>
-          <div className="space-y-6">
-            {/* Button Variants */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-white">Button Variants</h3>
-              <div className="flex flex-wrap gap-4">
-                <ModernButton variant="primary">
-                  <Plus size={16} />
-                  Primary
-                </ModernButton>
-                <ModernButton variant="glass">
-                  <Brain size={16} />
-                  Glass
-                </ModernButton>
-                <ModernButton variant="outline">
-                  <Settings size={16} />
-                  Outline
-                </ModernButton>
-                <ModernButton variant="ghost">
-                  <Mail size={16} />
-                  Ghost
-                </ModernButton>
-                <ModernButton variant="secondary">
-                  <Download size={16} />
-                  Secondary
-                </ModernButton>
-              </div>
-            </div>
-
-            {/* Button Sizes */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-white">Button Sizes</h3>
-              <div className="flex flex-wrap items-center gap-4">
-                <ModernButton size="sm" variant="glass">Small</ModernButton>
-                <ModernButton size="md" variant="glass">Medium</ModernButton>
-                <ModernButton size="lg" variant="glass">Large</ModernButton>
-              </div>
-            </div>
-
-            {/* Loading States */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-white">Loading States</h3>
-              <div className="flex flex-wrap gap-4">
-                <ModernButton loading variant="primary">Processing</ModernButton>
-                <ModernButton loading variant="glass">Analyzing</ModernButton>
-                <ModernButton disabled variant="outline">Disabled</ModernButton>
-              </div>
+        {/* Theme Controls */}
+        <div className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Theme Controls</h2>
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={toggleTheme}
+              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+            >
+              {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+              <span>Switch to {theme === 'light' ? 'Dark' : 'Light'} Mode</span>
+            </button>
+            <div className="text-sm text-gray-600 dark:text-gray-300">
+              Current theme: <span className="font-medium">{theme}</span>
             </div>
           </div>
-        </section>
-
-        {/* Avatar Showcase */}
-        <section>
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-white mb-2">Avatar Components</h2>
-            <p className="text-gray-300">User avatars with status indicators</p>
-          </div>
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-white">Avatar Sizes</h3>
-              <div className="flex items-center gap-4">
-                <Avatar size="sm" fallback="S" showStatus status="online" />
-                <Avatar size="md" fallback="M" showStatus status="away" />
-                <Avatar size="lg" fallback="L" showStatus status="busy" />
-                <Avatar size="xl" fallback="XL" showStatus status="offline" />
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-white">Status Indicators</h3>
-              <div className="flex items-center gap-4">
-                <Avatar fallback="ON" showStatus status="online" />
-                <Avatar fallback="AW" showStatus status="away" />
-                <Avatar fallback="BS" showStatus status="busy" />
-                <Avatar fallback="OF" showStatus status="offline" />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Animation Showcase */}
-        <section>
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-white mb-2">Custom Animations</h2>
-            <p className="text-gray-300">Enhanced animations from the design system</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <GlassCard variant="subtle" className="p-6 animate-float-up">
-              <Zap className="h-8 w-8 text-yellow-400 mb-3" />
-              <h3 className="text-white font-medium">Float Up</h3>
-              <p className="text-gray-300 text-sm">Smooth entry animation</p>
-            </GlassCard>
-            <GlassCard variant="subtle" className="p-6 animate-scale-up">
-              <Star className="h-8 w-8 text-purple-400 mb-3" />
-              <h3 className="text-white font-medium">Scale Up</h3>
-              <p className="text-gray-300 text-sm">Scaling entrance effect</p>
-            </GlassCard>
-            <GlassCard variant="subtle" className="p-6 animate-slide-in">
-              <Brain className="h-8 w-8 text-blue-400 mb-3" />
-              <h3 className="text-white font-medium">Slide In</h3>
-              <p className="text-gray-300 text-sm">Horizontal slide animation</p>
-            </GlassCard>
-            <GlassCard variant="subtle" className="p-6 animate-glow">
-              <Phone className="h-8 w-8 text-green-400 mb-3" />
-              <h3 className="text-white font-medium">Glow Effect</h3>
-              <p className="text-gray-300 text-sm">Pulsing glow animation</p>
-            </GlassCard>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <div className="text-center pt-12 border-t border-white/10">
-          <p className="text-gray-400">
-            Enhanced Design System • Distributed Tailwind CSS • Glass Morphism Effects
-          </p>
         </div>
+
+        {/* Tab Navigation */}
+        <div className="mb-8">
+          <div className="border-b border-gray-200 dark:border-gray-700">
+            <nav className="-mb-px flex space-x-8">
+              {[
+                { id: 'components', label: 'Components', icon: Layout },
+                { id: 'video', label: 'Video Calls', icon: Camera },
+                { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
+                { id: 'glass', label: 'Glass Effects', icon: Settings }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center space-x-2 py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === tab.id
+                      ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                  }`}
+                >
+                  <tab.icon size={16} />
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
+        </div>
+
+        {/* Content based on active tab */}
+        {activeTab === 'components' && (
+          <div className="space-y-8">
+            {/* Modern Buttons */}
+            <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Modern Buttons</h3>
+              <div className="flex flex-wrap gap-4">
+                <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                  Primary Button
+                </button>
+                <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-full font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                  Gradient Button
+                </button>
+                <button className="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 rounded-full font-medium transition-all duration-200">
+                  Outline Button
+                </button>
+                <button className="btn-glass">
+                  Glass Button
+                </button>
+              </div>
+            </div>
+
+            {/* Avatar Gallery */}
+            <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Avatar Components</h3>
+              <div className="flex items-center space-x-6">
+                {/* Small Avatar */}
+                <div className="text-center">
+                  <div className="relative">
+                    <img
+                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face"
+                      alt="User"
+                      className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md"
+                    />
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Small</p>
+                </div>
+
+                {/* Medium Avatar */}
+                <div className="text-center">
+                  <div className="relative">
+                    <img
+                      src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=48&h=48&fit=crop&crop=face"
+                      alt="User"
+                      className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
+                    />
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full border-2 border-white"></div>
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Medium</p>
+                </div>
+
+                {/* Large Avatar */}
+                <div className="text-center">
+                  <div className="relative">
+                    <img
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face"
+                      alt="User"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-md"
+                    />
+                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-red-400 rounded-full border-2 border-white"></div>
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Large</p>
+                </div>
+
+                {/* Extra Large Avatar */}
+                <div className="text-center">
+                  <div className="relative">
+                    <img
+                      src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face"
+                      alt="User"
+                      className="w-20 h-20 rounded-full object-cover border-2 border-white shadow-md"
+                    />
+                    <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-gray-400 rounded-full border-2 border-white"></div>
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Extra Large</p>
+                </div>
+              </div>
+            </div>
+
+            {/* KPI Cards */}
+            <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">KPI Cards</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  { label: 'Total Contacts', value: '2,547', change: '+12%', icon: User, color: 'blue' },
+                  { label: 'Active Deals', value: '89', change: '+5%', icon: BarChart3, color: 'green' },
+                  { label: 'Meetings Today', value: '7', change: '-2%', icon: Calendar, color: 'purple' },
+                  { label: 'Emails Sent', value: '156', change: '+8%', icon: Mail, color: 'orange' }
+                ].map((kpi, index) => (
+                  <div key={index} className="p-4 bg-gradient-to-br from-white to-gray-50 dark:from-gray-700 dark:to-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-200">
+                    <div className="flex items-center justify-between mb-2">
+                      <kpi.icon className={`w-6 h-6 text-${kpi.color}-600`} />
+                      <span className={`text-sm font-medium ${kpi.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+                        {kpi.change}
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{kpi.value}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{kpi.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'video' && (
+          <div className="space-y-8">
+            <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Video Call System</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
+                Test the video calling functionality with a demo call. This will show the full-screen overlay and controls.
+              </p>
+              <button
+                onClick={startDemoCall}
+                className="flex items-center space-x-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
+              >
+                <Phone size={20} />
+                <span>Start Demo Video Call</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'dashboard' && (
+          <div className="space-y-8">
+            <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Dashboard Layout Controls</h3>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={toggleSidebar}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                  >
+                    {layout.sidebarCollapsed ? 'Expand' : 'Collapse'} Sidebar
+                  </button>
+                  <span className="text-sm text-gray-600 dark:text-gray-300">
+                    Sidebar is currently {layout.sidebarCollapsed ? 'collapsed' : 'expanded'}
+                  </span>
+                </div>
+                
+                <div className="flex items-center space-x-4">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Widget Layout:</label>
+                  {(['grid', 'list', 'compact'] as const).map((layoutType) => (
+                    <button
+                      key={layoutType}
+                      onClick={() => setWidgetLayout(layoutType)}
+                      className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                        layout.widgetLayout === layoutType
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                      }`}
+                    >
+                      {layoutType.charAt(0).toUpperCase() + layoutType.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'glass' && (
+          <div className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Default Glass Card */}
+              <div className="glass-card p-6">
+                <h4 className="text-lg font-semibold text-white mb-2">Default Glass</h4>
+                <p className="text-white/80">This card uses the default glass morphism effect with subtle transparency.</p>
+              </div>
+              
+              {/* Strong Glass Card */}
+              <div className="glass-card-strong p-6">
+                <h4 className="text-lg font-semibold text-white mb-2">Strong Glass</h4>
+                <p className="text-white/80">This card has a stronger glass effect with more opacity and blur.</p>
+              </div>
+              
+              {/* Subtle Glass Card */}
+              <div className="glass-card-subtle p-6">
+                <h4 className="text-lg font-semibold text-white mb-2">Subtle Glass</h4>
+                <p className="text-white/80">This card uses a subtle glass effect for minimal distraction.</p>
+              </div>
+            </div>
+
+            <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Glass Morphism Effects</h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                The glass morphism effects above demonstrate different levels of transparency and blur. 
+                These effects work best over gradient backgrounds or images.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

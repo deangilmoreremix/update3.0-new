@@ -7,9 +7,17 @@ import { TenantProvider } from './components/TenantProvider';
 import { RoleProvider } from './components/RoleBasedAccess';
 import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
 import { HelpProvider } from './contexts/HelpContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { NavigationProvider } from './contexts/NavigationContext';
+import { DashboardLayoutProvider } from './contexts/DashboardLayoutContext';
+import { VideoCallProvider } from './contexts/VideoCallContext';
 import { queryClient } from './lib/queryClient';
 import Navbar from './components/Navbar';
 import { ContactsModal } from './components/modals/ContactsModal';
+import VideoCallOverlay from './components/VideoCallOverlay';
+import VideoCallPreviewWidget from './components/VideoCallPreviewWidget';
+import DevicePermissionChecker from './components/DevicePermissionChecker';
+import './components/styles/design-system.css';
 
 // Main pages
 import Dashboard from './pages/Dashboard';
@@ -37,6 +45,7 @@ import SemanticSearchFeaturePage from './pages/Landing/FeaturePage/SemanticSearc
 import SpeechToTextFeaturePage from './pages/Landing/FeaturePage/SpeechToTextFeaturePage';
 import AutomationFeaturePage from './pages/Landing/FeaturePage/AutomationFeaturePage';
 import AppointmentsFeaturePage from './pages/Landing/FeaturePage/AppointmentsFeaturePage';
+import DesignShowcase from './pages/DesignShowcase';
 
 // Create placeholder pages for missing routes
 const PlaceholderPage = ({ title }: { title: string }) => (
@@ -51,15 +60,26 @@ const PlaceholderPage = ({ title }: { title: string }) => (
   </div>
 );
 
-// Simple layout wrapper with navbar and modal support
-const SimpleLayout = ({ children, isContactsModalOpen, setIsContactsModalOpen }: { 
+// Enhanced layout wrapper with video call support and theme-aware design
+const EnhancedLayout = ({ children, isContactsModalOpen, setIsContactsModalOpen }: { 
   children: React.ReactNode;
   isContactsModalOpen: boolean;
   setIsContactsModalOpen: (open: boolean) => void;
 }) => (
-  <div className="min-h-screen bg-gray-50">
+  <div className="min-h-screen h-full w-full flex flex-col transition-all duration-300 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+    <DevicePermissionChecker />
     <Navbar onContactsClick={() => setIsContactsModalOpen(true)} />
-    {children}
+    <div className="flex-1 w-full overflow-hidden">
+      {children}
+    </div>
+    <VideoCallOverlay />
+    <VideoCallPreviewWidget />
+    
+    {/* ContactsModal rendered at the root level */}
+    <ContactsModal
+      isOpen={isContactsModalOpen}
+      onClose={() => setIsContactsModalOpen(false)}
+    />
   </div>
 );
 
@@ -67,48 +87,57 @@ function App() {
   const [isContactsModalOpen, setIsContactsModalOpen] = useState(false);
   return (
     <QueryClientProvider client={queryClient}>
-      <TenantProvider>
-        <RoleProvider>
-          <HelpProvider>
-            <EnhancedHelpProvider>
-              <AIToolsProvider>
+      <ThemeProvider>
+        <VideoCallProvider>
+          <TenantProvider>
+            <RoleProvider>
+              <HelpProvider>
+                <EnhancedHelpProvider>
+                  <AIToolsProvider>
+                    <NavigationProvider>
+                      <DashboardLayoutProvider>
               <Router>
                 <Routes>
                   <Route path="/dashboard" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <Dashboard onContactsClick={() => setIsContactsModalOpen(true)} />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/contacts" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <Dashboard onContactsClick={() => setIsContactsModalOpen(true)} />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/contacts/:id" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <Dashboard onContactsClick={() => setIsContactsModalOpen(true)} />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/pipeline" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <Pipeline />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/deals" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <Pipeline />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   {/* Main navigation routes */}
                   <Route path="/ai-goals" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <AIGoalsPage />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/features" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <FeatureTestPage />
-                    </SimpleLayout>
+                    </EnhancedLayout>
+                  } />
+                  <Route path="/design-showcase" element={
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                      <DesignShowcase />
+                    </EnhancedLayout>
                   } />
                   <Route path="/super-admin-dashboard" element={<SuperAdminDashboard />} />
                   <Route path="/super-admin-signup" element={<SuperAdminSignup />} />
@@ -120,44 +149,44 @@ function App() {
                   <Route path="/forgot-password" element={<ForgotPassword />} />
 
                   <Route path="/video-email" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Video Email" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/text-messages" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Text Messages" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/campaigns" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Campaigns" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/content-library" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Content Library" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/voice-profiles" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Voice Profiles" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/business-analysis" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Business Analysis" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/forms" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Forms" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/admin/white-label" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="White Label Admin" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   
                   {/* Feature pages from landing navigation */}
@@ -178,54 +207,54 @@ function App() {
                   
                   {/* Company pages from footer */}
                   <Route path="/about" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="About Us" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/contact" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Contact" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/faq" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="FAQ" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/blog" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Blog" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/careers" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Careers" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/press" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Press" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/partners" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Partners" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/privacy" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Privacy Policy" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/terms" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Terms of Service" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   <Route path="/security" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
+                    <EnhancedLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Security" />
-                    </SimpleLayout>
+                    </EnhancedLayout>
                   } />
                   
                   <Route path="/landing" element={<LandingPage />} />
@@ -238,11 +267,15 @@ function App() {
                   onClose={() => setIsContactsModalOpen(false)} 
                 />
               </Router>
-              </AIToolsProvider>
-            </EnhancedHelpProvider>
-          </HelpProvider>
-        </RoleProvider>
-      </TenantProvider>
+                      </DashboardLayoutProvider>
+                    </NavigationProvider>
+                  </AIToolsProvider>
+                </EnhancedHelpProvider>
+              </HelpProvider>
+            </RoleProvider>
+          </TenantProvider>
+        </VideoCallProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
