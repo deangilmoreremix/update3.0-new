@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAITools } from '../AIToolsProvider';
 import { 
   BarChart3, 
   Mail, 
@@ -109,12 +111,16 @@ const QuickAIButton: React.FC<QuickAIButtonProps> = ({
   className = '',
   onClick
 }) => {
+  const { openTool } = useAITools();
+  
   const handleClick = () => {
     if (onClick) {
       onClick();
     } else {
-      // Default behavior - could integrate with AI tools provider
-      console.log(`AI Tool: ${toolName} for ${entityType}:${entityId}`, entityData);
+      // Map the tool name to actual AI tool and open modal
+      const actualToolName = toolMapping[toolName] || toolName;
+      console.log(`Opening AI Tool: ${actualToolName} for ${entityType}:${entityId}`, entityData);
+      openTool(actualToolName);
     }
   };
 
@@ -152,9 +158,12 @@ export const AIGoalsButton: React.FC<{
   size?: 'sm' | 'md';
   className?: string;
 }> = ({ entityType, entityId, entityData, size = 'md', className = '' }) => {
+  const navigate = useNavigate();
+  
   const handleGoalsClick = () => {
     // Navigate to AI Goals with pre-populated context
     console.log(`AI Goals for ${entityType}:${entityId}`, entityData);
+    navigate('/ai-goals');
   };
 
   const sizeClasses = {
