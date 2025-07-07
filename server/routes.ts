@@ -33,7 +33,11 @@ const requireAuth = async (req: Request, res: Response, next: any) => {
         // Create demo user if doesn't exist
         demoUser = await storage.createUser({
           email: 'demo@smartcrm.com',
-          fullName: 'Demo User'
+          fullName: 'Demo User',
+          subscriptionStatus: 'active',
+          subscriptionPlan: 'professional',
+          paymentStatus: 'paid',
+          isAdmin: true
         });
       }
       
@@ -106,15 +110,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Replit Auth user endpoint
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  // User endpoint (temporarily using demo user for development)
+  app.get('/api/auth/user', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
+      // For development, return demo user data
+      const demoUser = await storage.getUserByEmail('demo@smartcrm.com');
+      if (demoUser) {
+        res.json({
+          id: demoUser.id,
+          email: demoUser.email,
+          firstName: demoUser.firstName,
+          lastName: demoUser.lastName,
+          subscriptionPlan: demoUser.subscriptionPlan || 'professional',
+          subscriptionStatus: demoUser.subscriptionStatus || 'active',
+          paymentStatus: demoUser.paymentStatus || 'paid',
+          isAdmin: demoUser.isAdmin || true,
+          role: demoUser.isAdmin ? 'super_admin' : 'user'
+        });
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Usage stats endpoint
+  app.get('/api/auth/usage-stats', async (req: any, res) => {
+    try {
+      // Return mock usage stats for demo
+      const stats = {
+        contactsCount: 45,
+        dealsCount: 12,
+        aiRequestsThisMonth: 150,
+        emailsSentThisMonth: 89,
+        smssSentThisMonth: 25,
+        storageUsedGB: 2.1,
+        teamMembersCount: 1
+      };
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching usage stats:", error);
+      res.status(500).json({ message: "Failed to fetch usage stats" });
     }
   });
 

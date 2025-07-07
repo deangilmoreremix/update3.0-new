@@ -15,6 +15,7 @@ import Dashboard from './pages/Dashboard';
 import Contacts from './pages/Contacts';
 import Pipeline from './pages/Pipeline';
 import AIGoalsPage from './pages/AIGoalsPage';
+import { FeatureTestPage } from './pages/FeatureTestPage';
 
 // Create placeholder pages for missing routes
 const PlaceholderPage = ({ title }: { title: string }) => (
@@ -66,6 +67,11 @@ function App() {
                   <Route path="/ai-goals" element={
                     <SimpleLayout>
                       <AIGoalsPage />
+                    </SimpleLayout>
+                  } />
+                  <Route path="/features" element={
+                    <SimpleLayout>
+                      <FeatureTestPage />
                     </SimpleLayout>
                   } />
 
