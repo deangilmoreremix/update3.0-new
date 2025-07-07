@@ -27,28 +27,28 @@ export const ModernButton: React.FC<ModernButtonProps> = ({
   const getVariantClass = () => {
     switch (variant) {
       case 'glass':
-        return 'bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30';
+        return 'bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 hover:border-white/30';
       case 'outline':
-        return 'bg-transparent border border-gray-300 text-gray-700 hover:bg-gray-50';
+        return 'bg-transparent border border-white/20 text-white hover:bg-white/10 hover:border-white/30';
       case 'ghost':
-        return 'bg-transparent text-gray-700 hover:bg-gray-100';
+        return 'bg-transparent text-white hover:bg-white/10';
       case 'secondary':
-        return 'bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 hover:from-gray-100 hover:to-gray-200 border border-gray-200';
+        return 'bg-gray-500/20 border border-gray-400/30 text-gray-300 hover:bg-gray-500/30 hover:text-white';
       case 'primary':
       default:
-        return 'bg-blue-600 text-white hover:bg-blue-700';
+        return 'bg-blue-500/80 backdrop-blur-sm border border-blue-400/30 text-white hover:bg-blue-500 hover:border-blue-400/50';
     }
   };
 
   const getSizeClass = () => {
     switch (size) {
       case 'sm':
-        return 'px-3 py-1.5 text-sm';
+        return 'px-4 py-2 text-sm';
       case 'lg':
-        return 'px-6 py-3 text-lg';
+        return 'px-8 py-4 text-lg';
       case 'md':
       default:
-        return 'px-4 py-2 text-base';
+        return 'px-6 py-3 text-base';
     }
   };
 
@@ -61,9 +61,10 @@ export const ModernButton: React.FC<ModernButtonProps> = ({
       className={`
         ${getVariantClass()}
         ${getSizeClass()}
-        rounded-lg font-medium transition-all duration-200
+        rounded-xl font-medium transition-all duration-300
         disabled:opacity-50 disabled:cursor-not-allowed
         flex items-center justify-center gap-2
+        shadow-lg hover:shadow-xl hover:scale-105
         ${className}
       `}
     >
