@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { ModernButton } from './ModernButton';
 import { AIResearchButton } from './AIResearchButton';
 import { ContactEnrichmentData } from '../../services/aiEnrichmentService';
+import { useApiStore } from '../../store/apiStore';
+import ApiConfigurationModal from '../Settings/ApiConfigurationModal';
 import { 
   Wand2, 
   Brain, 
@@ -12,7 +14,8 @@ import {
   ChevronDown,
   Mail,
   User,
-  Globe
+  Globe,
+  Key
 } from 'lucide-react';
 
 interface AIAutoFillButtonProps {
@@ -30,6 +33,8 @@ export const AIAutoFillButton: React.FC<AIAutoFillButtonProps> = ({
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [autoFillMode, setAutoFillMode] = useState<'smart' | 'conservative' | 'aggressive'>('smart');
+  const [showApiConfig, setShowApiConfig] = useState(false);
+  const { hasRequiredKeys } = useApiStore();
 
   const getSearchQuery = () => {
     if (!formData) {
@@ -245,6 +250,25 @@ export const AIAutoFillButton: React.FC<AIAutoFillButtonProps> = ({
                 </div>
               </div>
             )}
+
+            {!hasRequiredKeys() && (
+              <div className="p-3 bg-orange-50 rounded-lg mb-2">
+                <div className="flex items-start space-x-2">
+                  <Key className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm text-orange-700 mb-2">
+                      No AI API keys configured. Set up OpenAI or Gemini keys for full functionality.
+                    </p>
+                    <button
+                      onClick={() => setShowApiConfig(true)}
+                      className="text-xs text-orange-600 hover:text-orange-800 underline font-medium"
+                    >
+                      Configure API Keys
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Footer */}
@@ -264,6 +288,12 @@ export const AIAutoFillButton: React.FC<AIAutoFillButtonProps> = ({
           </div>
         </div>
       )}
+
+      {/* API Configuration Modal */}
+      <ApiConfigurationModal
+        isOpen={showApiConfig}
+        onClose={() => setShowApiConfig(false)}
+      />
     </div>
   );
 };
