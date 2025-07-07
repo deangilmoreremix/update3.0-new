@@ -32,6 +32,16 @@ export const AIAutoFillButton: React.FC<AIAutoFillButtonProps> = ({
   const [autoFillMode, setAutoFillMode] = useState<'smart' | 'conservative' | 'aggressive'>('smart');
 
   const getSearchQuery = () => {
+    if (!formData) {
+      return {
+        email: '',
+        firstName: '',
+        lastName: '',
+        company: '',
+        linkedinUrl: ''
+      };
+    }
+    
     return {
       email: formData.email || '',
       firstName: formData.firstName || '',
@@ -50,7 +60,7 @@ export const AIAutoFillButton: React.FC<AIAutoFillButtonProps> = ({
         // Only fill empty fields
         Object.keys(mergedData).forEach(key => {
           const typedKey = key as keyof ContactEnrichmentData;
-          if (formData[typedKey] && formData[typedKey] !== '') {
+          if (formData && formData[typedKey] && formData[typedKey] !== '') {
             delete mergedData[typedKey];
           }
         });
@@ -65,7 +75,7 @@ export const AIAutoFillButton: React.FC<AIAutoFillButtonProps> = ({
         // Smart merge - keep user data for important fields, AI for others
         const keepUserData = ['email', 'firstName', 'lastName'];
         keepUserData.forEach(field => {
-          if (formData[field] && formData[field] !== '') {
+          if (formData && formData[field] && formData[field] !== '') {
             delete mergedData[field as keyof ContactEnrichmentData];
           }
         });
