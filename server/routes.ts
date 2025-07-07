@@ -1899,6 +1899,62 @@ Next Actions:
     }
   });
 
+  app.post('/api/auth/signup', async (req, res) => {
+    try {
+      const {
+        firstName,
+        lastName,
+        email,
+        password,
+        organizationName,
+        phoneNumber
+      } = req.body;
+
+      // Validate required fields
+      if (!firstName || !lastName || !email || !password) {
+        return res.status(400).json({ message: 'Missing required fields' });
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: 'Invalid email format' });
+      }
+
+      // Validate password strength
+      if (password.length < 8) {
+        return res.status(400).json({ message: 'Password must be at least 8 characters long' });
+      }
+
+      // Check if user already exists
+      console.log(`Checking if user exists: ${email}`);
+      
+      // Create new user account
+      const newUser = {
+        id: 'user-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+        firstName,
+        lastName,
+        email,
+        role: 'user',
+        subscriptionPlan: 'free',
+        organizationName,
+        phoneNumber,
+        isActive: true,
+        createdAt: new Date().toISOString()
+      };
+
+      console.log(`Created user account: ${firstName} ${lastName} (${email})`);
+      
+      res.status(201).json({ 
+        message: 'Account created successfully',
+        user: newUser
+      });
+    } catch (error) {
+      console.error('Error creating user account:', error);
+      res.status(500).json({ message: 'Failed to create account' });
+    }
+  });
+
   app.post('/api/admin/super-admin-signup', async (req, res) => {
     try {
       const {
@@ -1916,16 +1972,40 @@ Next Actions:
         return res.status(400).json({ message: 'Invalid super admin code' });
       }
 
-      console.log(`Creating super admin: ${firstName} ${lastName} (${email})`);
+      // Validate required fields
+      if (!firstName || !lastName || !email || !password) {
+        return res.status(400).json({ message: 'Missing required fields' });
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: 'Invalid email format' });
+      }
+
+      // Create super admin account
+      const newSuperAdmin = {
+        id: 'super-admin-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+        firstName,
+        lastName,
+        email,
+        role: 'super_admin',
+        subscriptionPlan: 'enterprise',
+        organizationName,
+        phoneNumber,
+        isActive: true,
+        createdAt: new Date().toISOString()
+      };
+
+      console.log(`Created super admin: ${firstName} ${lastName} (${email})`);
       
-      // For demo purposes, just return success
       res.status(201).json({ 
-        message: 'Super admin created successfully',
-        userId: 'new-super-admin-' + Date.now()
+        message: 'Super admin account created successfully',
+        user: newSuperAdmin
       });
     } catch (error) {
       console.error('Error creating super admin:', error);
-      res.status(500).json({ message: 'Failed to create super admin' });
+      res.status(500).json({ message: 'Failed to create super admin account' });
     }
   });
 

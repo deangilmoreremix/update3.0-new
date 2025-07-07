@@ -18,6 +18,9 @@ import AIGoalsPage from './pages/AIGoalsPage';
 import { FeatureTestPage } from './pages/FeatureTestPage';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import SuperAdminSignup from './pages/SuperAdminSignup';
+import { SignIn } from './pages/auth/SignIn';
+import { SignUp } from './pages/auth/SignUp';
+import { ForgotPassword } from './pages/auth/ForgotPassword';
 import LandingPage from './pages/Landing/LandingPage';
 
 // Create placeholder pages for missing routes
@@ -89,6 +92,12 @@ function App() {
                   } />
                   <Route path="/super-admin-dashboard" element={<SuperAdminDashboard />} />
                   <Route path="/super-admin-signup" element={<SuperAdminSignup />} />
+                  
+                  {/* Authentication routes */}
+                  <Route path="/signin" element={<SignIn />} />
+                  <Route path="/login" element={<SignIn />} />
+                  <Route path="/signup" element={<SignUp />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
 
                   <Route path="/video-email" element={
                     <SimpleLayout>
