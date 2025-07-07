@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { BulkUserUpload } from '../components/admin/BulkUserUpload';
+import { MassRoleAssignment } from '../components/admin/MassRoleAssignment';
 import { GlassCard } from '../components/ui/GlassCard';
 import { ModernButton } from '../components/ui/ModernButton';
 import {
@@ -490,18 +491,35 @@ const SuperAdminDashboard: React.FC = () => {
         )}
 
         {activeTab === 'bulk-upload' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900">Bulk User Upload</h2>
-              <div className="text-sm text-gray-600">
-                Upload CSV files to add multiple users at once with role assignments
+          <div className="space-y-8">
+            {/* Bulk User Upload Section */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-900">Bulk User Upload</h2>
+                <div className="text-sm text-gray-600">
+                  Upload CSV files to add multiple users at once
+                </div>
               </div>
+              
+              <BulkUserUpload onUsersUploaded={(users) => {
+                // Refresh users list after bulk upload
+                loadDashboardData();
+              }} />
             </div>
-            
-            <BulkUserUpload onUsersUploaded={(users) => {
-              // Refresh users list after bulk upload
-              loadDashboardData();
-            }} />
+
+            {/* Divider */}
+            <div className="border-t border-gray-200"></div>
+
+            {/* Mass Role Assignment Section */}
+            <div className="space-y-6">
+              <MassRoleAssignment 
+                users={users}
+                onRolesAssigned={(assignments) => {
+                  // Refresh users list after role assignments
+                  loadDashboardData();
+                }}
+              />
+            </div>
           </div>
         )}
 
