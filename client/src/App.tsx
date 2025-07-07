@@ -24,6 +24,17 @@ import { SignUp } from './pages/auth/SignUp';
 import { ForgotPassword } from './pages/auth/ForgotPassword';
 import LandingPage from './pages/Landing/LandingPage';
 
+// Feature pages
+import ContactsFeaturePage from './pages/Landing/FeaturePage/ContactsFeaturePage';
+import PipelineFeaturePage from './pages/Landing/FeaturePage/PipelineFeaturePage';
+import AiToolsFeaturePage from './pages/Landing/FeaturePage/AiToolsFeaturePage';
+import CommunicationsFeaturePage from './pages/Landing/FeaturePage/CommunicationsFeaturePage';
+import AiAssistantFeaturePage from './pages/Landing/FeaturePage/AiAssistantFeaturePage';
+import VisionAnalyzerFeaturePage from './pages/Landing/FeaturePage/VisionAnalyzerFeaturePage';
+import ImageGeneratorFeaturePage from './pages/Landing/FeaturePage/ImageGeneratorFeaturePage';
+import FunctionAssistantFeaturePage from './pages/Landing/FeaturePage/FunctionAssistantFeaturePage';
+import SemanticSearchFeaturePage from './pages/Landing/FeaturePage/SemanticSearchFeaturePage';
+
 // Create placeholder pages for missing routes
 const PlaceholderPage = ({ title }: { title: string }) => (
   <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -147,54 +158,20 @@ function App() {
                   } />
                   
                   {/* Feature pages from landing navigation */}
-                  <Route path="/features/ai-tools" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
-                      <PlaceholderPage title="AI Sales Tools" />
-                    </SimpleLayout>
-                  } />
-                  <Route path="/features/contacts" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
-                      <PlaceholderPage title="Contact Management" />
-                    </SimpleLayout>
-                  } />
-                  <Route path="/features/pipeline" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
-                      <Pipeline />
-                    </SimpleLayout>
-                  } />
-                  <Route path="/features/ai-assistant" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
-                      <PlaceholderPage title="AI Assistant" />
-                    </SimpleLayout>
-                  } />
-                  <Route path="/features/vision-analyzer" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
-                      <PlaceholderPage title="Vision Analyzer" />
-                    </SimpleLayout>
-                  } />
-                  <Route path="/features/image-generator" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
-                      <PlaceholderPage title="Image Generator" />
-                    </SimpleLayout>
-                  } />
-                  <Route path="/features/function-assistant" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
-                      <PlaceholderPage title="Function Assistant" />
-                    </SimpleLayout>
-                  } />
+                  <Route path="/features/ai-tools" element={<AiToolsFeaturePage />} />
+                  <Route path="/features/contacts" element={<ContactsFeaturePage />} />
+                  <Route path="/features/pipeline" element={<PipelineFeaturePage />} />
+                  <Route path="/features/ai-assistant" element={<AiAssistantFeaturePage />} />
+                  <Route path="/features/vision-analyzer" element={<VisionAnalyzerFeaturePage />} />
+                  <Route path="/features/image-generator" element={<ImageGeneratorFeaturePage />} />
+                  <Route path="/features/function-assistant" element={<FunctionAssistantFeaturePage />} />
+                  <Route path="/features/semantic-search" element={<SemanticSearchFeaturePage />} />
+                  <Route path="/features/communications" element={<CommunicationsFeaturePage />} />
+                  
+                  {/* Missing feature pages - keep as placeholders for now */}
                   <Route path="/features/speech-to-text" element={
                     <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
                       <PlaceholderPage title="Speech to Text" />
-                    </SimpleLayout>
-                  } />
-                  <Route path="/features/semantic-search" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
-                      <PlaceholderPage title="Semantic Search" />
-                    </SimpleLayout>
-                  } />
-                  <Route path="/features/communications" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
-                      <PlaceholderPage title="Communication Tools" />
                     </SimpleLayout>
                   } />
                   <Route path="/features/automation" element={
