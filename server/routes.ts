@@ -1929,6 +1929,70 @@ Next Actions:
     }
   });
 
+  app.post('/api/admin/users/bulk-create', async (req, res) => {
+    try {
+      const {
+        firstName,
+        lastName,
+        email,
+        role,
+        subscriptionPlan,
+        organizationName,
+        phoneNumber
+      } = req.body;
+
+      // Validate required fields
+      if (!firstName || !lastName || !email) {
+        return res.status(400).json({ message: 'Missing required fields: firstName, lastName, email' });
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: 'Invalid email format' });
+      }
+
+      // Validate role
+      const validRoles = ['user', 'admin', 'super_admin'];
+      if (role && !validRoles.includes(role)) {
+        return res.status(400).json({ message: 'Invalid role. Must be one of: user, admin, super_admin' });
+      }
+
+      // Validate subscription plan
+      const validPlans = ['free', 'basic', 'professional', 'enterprise'];
+      if (subscriptionPlan && !validPlans.includes(subscriptionPlan)) {
+        return res.status(400).json({ message: 'Invalid subscription plan. Must be one of: free, basic, professional, enterprise' });
+      }
+
+      // Check if user already exists
+      console.log(`Checking if user exists: ${email}`);
+      
+      // For demo purposes, simulate user creation
+      const newUser = {
+        id: 'bulk-user-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+        firstName,
+        lastName,
+        email,
+        role: role || 'user',
+        subscriptionPlan: subscriptionPlan || 'free',
+        organizationName,
+        phoneNumber,
+        isActive: true,
+        createdAt: new Date().toISOString()
+      };
+
+      console.log(`Created user: ${firstName} ${lastName} (${email}) - ${role || 'user'} - ${subscriptionPlan || 'free'}`);
+      
+      res.status(201).json({ 
+        message: 'User created successfully',
+        user: newUser
+      });
+    } catch (error) {
+      console.error('Error creating user:', error);
+      res.status(500).json({ message: 'Failed to create user' });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

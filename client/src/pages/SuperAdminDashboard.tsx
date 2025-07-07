@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { BulkUserUpload } from '../components/admin/BulkUserUpload';
 import { GlassCard } from '../components/ui/GlassCard';
 import { ModernButton } from '../components/ui/ModernButton';
 import {
@@ -39,7 +40,7 @@ interface FeatureToggle {
 const SuperAdminDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user, isLoading } = useAuth();
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'features' | 'analytics'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'bulk-upload' | 'features' | 'analytics'>('overview');
   const [users, setUsers] = useState<User[]>([]);
   const [features, setFeatures] = useState<FeatureToggle[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -286,6 +287,7 @@ const SuperAdminDashboard: React.FC = () => {
             {[
               { id: 'overview', label: 'Overview', icon: BarChart3 },
               { id: 'users', label: 'Users', icon: Users },
+              { id: 'bulk-upload', label: 'Bulk Upload', icon: Upload },
               { id: 'features', label: 'Features', icon: Settings },
               { id: 'analytics', label: 'Analytics', icon: TrendingUp }
             ].map((tab) => (
@@ -484,6 +486,22 @@ const SuperAdminDashboard: React.FC = () => {
                 </table>
               </div>
             </GlassCard>
+          </div>
+        )}
+
+        {activeTab === 'bulk-upload' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-900">Bulk User Upload</h2>
+              <div className="text-sm text-gray-600">
+                Upload CSV files to add multiple users at once with role assignments
+              </div>
+            </div>
+            
+            <BulkUserUpload onUsersUploaded={(users) => {
+              // Refresh users list after bulk upload
+              loadDashboardData();
+            }} />
           </div>
         )}
 
