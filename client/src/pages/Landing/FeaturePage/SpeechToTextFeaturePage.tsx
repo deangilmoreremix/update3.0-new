@@ -130,51 +130,51 @@ const SpeechToTextFeaturePage: React.FC = () => {
               <div className="p-3 bg-blue-100 rounded-full w-min mb-4">
                 <Mic className="h-6 w-6 text-blue-600" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Live Meeting Transcription</h3>
+              <h3 className="text-xl font-bold mb-3">Sales Call Transcriber</h3>
               <p className="text-gray-600 mb-4 flex-grow">
-                Real-time transcription for video calls, meetings, and conferences with speaker identification and timestamps.
+                Automatically transcribe sales calls with speaker identification, sentiment analysis, and key moment highlighting for CRM integration.
               </p>
-              <Link to="/features/speech-to-text/live-transcription" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Learn More <ArrowRight className="h-4 w-4 ml-1" />
+              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
+                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
             
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <div className="p-3 bg-purple-100 rounded-full w-min mb-4">
-                <FileText className="h-6 w-6 text-purple-600" />
+                <MessageSquare className="h-6 w-6 text-purple-600" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Audio File Processing</h3>
+              <h3 className="text-xl font-bold mb-3">Meeting Note Generator</h3>
               <p className="text-gray-600 mb-4 flex-grow">
-                Batch process audio files with automatic chapter detection, noise reduction, and quality enhancement.
+                Convert recorded meetings into structured notes with action items, decisions, and follow-up tasks automatically extracted.
               </p>
-              <Link to="/features/speech-to-text/file-processing" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Learn More <ArrowRight className="h-4 w-4 ml-1" />
+              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
+                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
             
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <div className="p-3 bg-emerald-100 rounded-full w-min mb-4">
-                <Volume2 className="h-6 w-6 text-emerald-600" />
+                <Phone className="h-6 w-6 text-emerald-600" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Voice Command Recognition</h3>
+              <h3 className="text-xl font-bold mb-3">Voice Command CRM</h3>
               <p className="text-gray-600 mb-4 flex-grow">
-                Convert voice commands into CRM actions, data entry, and automated workflow triggers.
+                Update contacts, create deals, and manage tasks using voice commands that integrate directly with your CRM database.
               </p>
-              <Link to="/features/speech-to-text/voice-commands" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Learn More <ArrowRight className="h-4 w-4 ml-1" />
+              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
+                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
             
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <div className="p-3 bg-indigo-100 rounded-full w-min mb-4">
-                <Globe className="h-6 w-6 text-indigo-600" />
+                <FileAudio className="h-6 w-6 text-indigo-600" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Multi-Language Support</h3>
+              <h3 className="text-xl font-bold mb-3">Voicemail Transcription</h3>
               <p className="text-gray-600 mb-4 flex-grow">
-                Transcribe content in 90+ languages with automatic language detection and translation capabilities.
+                Automatically transcribe and categorize voicemails with urgency scoring and suggested response templates.
               </p>
-              <Link to="/features/speech-to-text/languages" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Learn More <ArrowRight className="h-4 w-4 ml-1" />
+              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
+                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
             
@@ -182,25 +182,25 @@ const SpeechToTextFeaturePage: React.FC = () => {
               <div className="p-3 bg-rose-100 rounded-full w-min mb-4">
                 <Search className="h-6 w-6 text-rose-600" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Smart Search & Analysis</h3>
+              <h3 className="text-xl font-bold mb-3">Call Analytics Engine</h3>
               <p className="text-gray-600 mb-4 flex-grow">
-                Search through transcriptions with keyword highlighting, sentiment analysis, and topic extraction.
+                Search and analyze all transcribed calls for keywords, sentiment trends, and conversion patterns to improve sales performance.
               </p>
-              <Link to="/features/speech-to-text/search" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Learn More <ArrowRight className="h-4 w-4 ml-1" />
+              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
+                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
             
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <div className="p-3 bg-amber-100 rounded-full w-min mb-4">
-                <BarChart3 className="h-6 w-6 text-amber-600" />
+                <Users className="h-6 w-6 text-amber-600" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Analytics & Insights</h3>
+              <h3 className="text-xl font-bold mb-3">Team Call Review</h3>
               <p className="text-gray-600 mb-4 flex-grow">
-                Get detailed analytics on speech patterns, conversation insights, and transcription accuracy metrics.
+                Generate coaching insights from sales call transcriptions with performance scoring and improvement recommendations.
               </p>
-              <Link to="/features/speech-to-text/analytics" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Learn More <ArrowRight className="h-4 w-4 ml-1" />
+              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
+                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
           </div>

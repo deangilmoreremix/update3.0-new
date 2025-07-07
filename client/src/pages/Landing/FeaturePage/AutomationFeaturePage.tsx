@@ -128,12 +128,12 @@ const AutomationFeaturePage: React.FC = () => {
               <div className="p-3 bg-blue-100 rounded-full w-min mb-4">
                 <Brain className="h-6 w-6 text-blue-600" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Smart Lead Scoring</h3>
+              <h3 className="text-xl font-bold mb-3">AI Lead Scorer</h3>
               <p className="text-gray-600 mb-4 flex-grow">
-                Automatically score and prioritize leads based on behavior, demographics, and engagement patterns with AI.
+                Automatically analyze and score incoming leads using 50+ data points including website behavior, email engagement, and demographic fit.
               </p>
-              <Link to="/features/automation/lead-scoring" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Learn More <ArrowRight className="h-4 w-4 ml-1" />
+              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
+                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
             
@@ -141,12 +141,12 @@ const AutomationFeaturePage: React.FC = () => {
               <div className="p-3 bg-green-100 rounded-full w-min mb-4">
                 <Mail className="h-6 w-6 text-green-600" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Email Sequence Automation</h3>
+              <h3 className="text-xl font-bold mb-3">Email Sequence Builder</h3>
               <p className="text-gray-600 mb-4 flex-grow">
-                Create personalized email campaigns that trigger based on user actions and engagement levels automatically.
+                Create smart email drip campaigns that adapt based on recipient behavior with personalized content and optimal send timing.
               </p>
-              <Link to="/features/automation/email-sequences" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Learn More <ArrowRight className="h-4 w-4 ml-1" />
+              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
+                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
             
@@ -154,12 +154,12 @@ const AutomationFeaturePage: React.FC = () => {
               <div className="p-3 bg-purple-100 rounded-full w-min mb-4">
                 <Calendar className="h-6 w-6 text-purple-600" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Follow-up Automation</h3>
+              <h3 className="text-xl font-bold mb-3">Smart Task Scheduler</h3>
               <p className="text-gray-600 mb-4 flex-grow">
-                Never miss a follow-up with automated reminders and task creation based on deal stages and timelines.
+                Automatically create and schedule follow-up tasks based on deal stages, customer actions, and optimal timing algorithms.
               </p>
-              <Link to="/features/automation/follow-ups" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Learn More <ArrowRight className="h-4 w-4 ml-1" />
+              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
+                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
             
@@ -167,38 +167,38 @@ const AutomationFeaturePage: React.FC = () => {
               <div className="p-3 bg-orange-100 rounded-full w-min mb-4">
                 <Workflow className="h-6 w-6 text-orange-600" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Pipeline Management</h3>
+              <h3 className="text-xl font-bold mb-3">Pipeline Automator</h3>
               <p className="text-gray-600 mb-4 flex-grow">
-                Automatically move deals through your pipeline based on predefined criteria and customer actions.
+                Automatically advance deals through pipeline stages based on custom triggers, actions, and AI-driven progression rules.
               </p>
-              <Link to="/features/automation/pipeline" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Learn More <ArrowRight className="h-4 w-4 ml-1" />
+              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
+                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
             
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <div className="p-3 bg-red-100 rounded-full w-min mb-4">
-                <BarChart3 className="h-6 w-6 text-red-600" />
+                <Target className="h-6 w-6 text-red-600" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Performance Analytics</h3>
+              <h3 className="text-xl font-bold mb-3">Opportunity Detector</h3>
               <p className="text-gray-600 mb-4 flex-grow">
-                Track automation performance and optimize workflows with detailed analytics and AI-powered insights.
+                Monitor customer behavior and automatically flag upsell opportunities, renewal risks, and expansion possibilities.
               </p>
-              <Link to="/features/automation/analytics" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Learn More <ArrowRight className="h-4 w-4 ml-1" />
+              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
+                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
             
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <div className="p-3 bg-teal-100 rounded-full w-min mb-4">
-                <Settings className="h-6 w-6 text-teal-600" />
+                <MessageSquare className="h-6 w-6 text-teal-600" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Custom Workflows</h3>
+              <h3 className="text-xl font-bold mb-3">Response Automator</h3>
               <p className="text-gray-600 mb-4 flex-grow">
-                Build custom automation workflows that match your unique sales process and business rules perfectly.
+                Automatically respond to common inquiries with personalized messages while routing complex questions to appropriate team members.
               </p>
-              <Link to="/features/automation/custom-workflows" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Learn More <ArrowRight className="h-4 w-4 ml-1" />
+              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
+                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
           </div>
