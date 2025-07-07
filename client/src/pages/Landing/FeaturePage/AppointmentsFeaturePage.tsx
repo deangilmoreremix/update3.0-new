@@ -124,82 +124,64 @@ const AppointmentsFeaturePage: React.FC = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-blue-100 rounded-full w-min mb-4">
                 <Calendar className="h-6 w-6 text-blue-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Meeting Scheduler</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Let prospects book meetings directly from your emails with intelligent calendar sync and automated confirmation workflows.
               </p>
-              <Link to="/dashboard" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-green-100 rounded-full w-min mb-4">
                 <Clock className="h-6 w-6 text-green-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Smart Availability</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 AI-powered scheduling that suggests optimal meeting times based on your productivity patterns and prospect preferences.
               </p>
-              <Link to="/dashboard" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-purple-100 rounded-full w-min mb-4">
                 <Bell className="h-6 w-6 text-purple-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">No-Show Predictor</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Analyze booking patterns to predict and prevent no-shows with targeted reminder campaigns and rescheduling suggestions.
               </p>
-              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-orange-100 rounded-full w-min mb-4">
                 <Users className="h-6 w-6 text-orange-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Team Round-Robin</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Automatically distribute appointments across team members based on availability, expertise, and workload balancing.
               </p>
-              <Link to="/dashboard" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-red-100 rounded-full w-min mb-4">
                 <Video className="h-6 w-6 text-red-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Meeting Prep Assistant</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Automatically research attendees and prepare meeting briefs with conversation starters and relevant context from your CRM.
               </p>
-              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-teal-100 rounded-full w-min mb-4">
                 <BarChart3 className="h-6 w-6 text-teal-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Booking Analytics</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Track appointment trends, conversion rates, and optimize your scheduling process with detailed booking performance insights.
               </p>
-              <Link to="/dashboard" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
           </div>
         </div>

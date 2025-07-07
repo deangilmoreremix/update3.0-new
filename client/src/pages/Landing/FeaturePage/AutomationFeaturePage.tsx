@@ -124,82 +124,64 @@ const AutomationFeaturePage: React.FC = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-blue-100 rounded-full w-min mb-4">
                 <Brain className="h-6 w-6 text-blue-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">AI Lead Scorer</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Automatically analyze and score incoming leads using 50+ data points including website behavior, email engagement, and demographic fit.
               </p>
-              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-green-100 rounded-full w-min mb-4">
                 <Mail className="h-6 w-6 text-green-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Email Sequence Builder</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Create smart email drip campaigns that adapt based on recipient behavior with personalized content and optimal send timing.
               </p>
-              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-purple-100 rounded-full w-min mb-4">
                 <Calendar className="h-6 w-6 text-purple-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Smart Task Scheduler</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Automatically create and schedule follow-up tasks based on deal stages, customer actions, and optimal timing algorithms.
               </p>
-              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-orange-100 rounded-full w-min mb-4">
                 <Workflow className="h-6 w-6 text-orange-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Pipeline Automator</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Automatically advance deals through pipeline stages based on custom triggers, actions, and AI-driven progression rules.
               </p>
-              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-red-100 rounded-full w-min mb-4">
                 <Target className="h-6 w-6 text-red-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Opportunity Detector</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Monitor customer behavior and automatically flag upsell opportunities, renewal risks, and expansion possibilities.
               </p>
-              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-teal-100 rounded-full w-min mb-4">
                 <MessageSquare className="h-6 w-6 text-teal-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Response Automator</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Automatically respond to common inquiries with personalized messages while routing complex questions to appropriate team members.
               </p>
-              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
           </div>
         </div>

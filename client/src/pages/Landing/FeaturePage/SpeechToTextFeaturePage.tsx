@@ -126,82 +126,64 @@ const SpeechToTextFeaturePage: React.FC = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-blue-100 rounded-full w-min mb-4">
                 <Mic className="h-6 w-6 text-blue-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Sales Call Transcriber</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Automatically transcribe sales calls with speaker identification, sentiment analysis, and key moment highlighting for CRM integration.
               </p>
-              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-purple-100 rounded-full w-min mb-4">
                 <MessageSquare className="h-6 w-6 text-purple-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Meeting Note Generator</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Convert recorded meetings into structured notes with action items, decisions, and follow-up tasks automatically extracted.
               </p>
-              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-emerald-100 rounded-full w-min mb-4">
                 <Phone className="h-6 w-6 text-emerald-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Voice Command CRM</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Update contacts, create deals, and manage tasks using voice commands that integrate directly with your CRM database.
               </p>
-              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-indigo-100 rounded-full w-min mb-4">
                 <FileAudio className="h-6 w-6 text-indigo-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Voicemail Transcription</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Automatically transcribe and categorize voicemails with urgency scoring and suggested response templates.
               </p>
-              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-rose-100 rounded-full w-min mb-4">
                 <Search className="h-6 w-6 text-rose-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Call Analytics Engine</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Search and analyze all transcribed calls for keywords, sentiment trends, and conversion patterns to improve sales performance.
               </p>
-              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-amber-100 rounded-full w-min mb-4">
                 <Users className="h-6 w-6 text-amber-600" />
               </div>
               <h3 className="text-xl font-bold mb-3">Team Call Review</h3>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600">
                 Generate coaching insights from sales call transcriptions with performance scoring and improvement recommendations.
               </p>
-              <Link to="/ai-tools" className="text-blue-600 hover:text-blue-800 font-medium flex items-center mt-auto">
-                Try Tool <ArrowRight className="h-4 w-4 ml-1" />
-              </Link>
             </div>
           </div>
         </div>
