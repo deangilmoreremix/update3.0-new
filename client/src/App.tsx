@@ -16,6 +16,8 @@ import Contacts from './pages/Contacts';
 import Pipeline from './pages/Pipeline';
 import AIGoalsPage from './pages/AIGoalsPage';
 import { FeatureTestPage } from './pages/FeatureTestPage';
+import SuperAdminDashboard from './pages/SuperAdminDashboard';
+import SuperAdminSignup from './pages/SuperAdminSignup';
 
 // Create placeholder pages for missing routes
 const PlaceholderPage = ({ title }: { title: string }) => (
@@ -84,6 +86,8 @@ function App() {
                       <FeatureTestPage />
                     </SimpleLayout>
                   } />
+                  <Route path="/super-admin-dashboard" element={<SuperAdminDashboard />} />
+                  <Route path="/super-admin-signup" element={<SuperAdminSignup />} />
 
                   <Route path="/video-email" element={
                     <SimpleLayout>

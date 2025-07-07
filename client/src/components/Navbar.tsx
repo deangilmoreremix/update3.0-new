@@ -756,12 +756,12 @@ const Navbar: React.FC = () => {
                 {/* Super Admin Link */}
                 {isAdmin && (
                   <Link
-                    to="/features"
+                    to="/super-admin-dashboard"
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => setUserMenuOpen(false)}
                   >
                     <Crown size={16} className="inline mr-2 text-purple-600" />
-                    Super Admin Panel
+                    Super Admin Dashboard
                   </Link>
                 )}
 

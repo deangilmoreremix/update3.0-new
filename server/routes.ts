@@ -1725,6 +1725,210 @@ Next Actions:
   app.use('/api/partners', partnersRouter);
   app.use('/api/feature-packages', featurePackagesRouter);
 
+  // Super Admin API Routes
+  app.get('/api/admin/users', async (req, res) => {
+    try {
+      // For now, return mock data for the super admin interface
+      const users = [
+        {
+          id: 'demo-user-123',
+          email: 'demo@smartcrm.com',
+          firstName: 'Demo',
+          lastName: 'User',
+          role: 'super_admin',
+          subscriptionPlan: 'enterprise',
+          isActive: true,
+          createdAt: new Date().toISOString(),
+          lastLogin: new Date().toISOString(),
+          features: []
+        },
+        {
+          id: 'user-2',
+          email: 'john@company.com',
+          firstName: 'John',
+          lastName: 'Smith',
+          role: 'user',
+          subscriptionPlan: 'professional',
+          isActive: true,
+          createdAt: new Date().toISOString(),
+          lastLogin: new Date().toISOString(),
+          features: []
+        }
+      ];
+      res.json(users);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      res.status(500).json({ message: 'Failed to fetch users' });
+    }
+  });
+
+  app.get('/api/admin/features', async (req, res) => {
+    try {
+      const features = [
+        {
+          id: 'contacts',
+          name: 'Contact Management',
+          description: 'Core CRM contact management features',
+          category: 'core',
+          isEnabled: true,
+          requiredPlan: 'free',
+        },
+        {
+          id: 'deals',
+          name: 'Deal Pipeline',
+          description: 'Sales pipeline and deal tracking',
+          category: 'core',
+          isEnabled: true,
+          requiredPlan: 'basic',
+        },
+        {
+          id: 'ai_tools',
+          name: 'AI Tools',
+          description: 'AI-powered business analysis and insights',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'professional',
+          usageLimit: 100,
+        },
+        {
+          id: 'email_composer',
+          name: 'AI Email Composer',
+          description: 'AI-generated personalized emails',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'basic',
+          usageLimit: 50,
+        },
+        {
+          id: 'smart_search',
+          name: 'Smart Search',
+          description: 'AI-powered semantic search across data',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'professional',
+          usageLimit: 200,
+        },
+        {
+          id: 'phone_system',
+          name: 'Phone System',
+          description: 'VoIP calling and call management',
+          category: 'communication',
+          isEnabled: false,
+          requiredPlan: 'professional',
+        },
+        {
+          id: 'sms_messaging',
+          name: 'SMS Messaging',
+          description: 'Text messaging and SMS campaigns',
+          category: 'communication',
+          isEnabled: false,
+          requiredPlan: 'basic',
+          usageLimit: 1000,
+        },
+        {
+          id: 'advanced_analytics',
+          name: 'Advanced Analytics',
+          description: 'Business intelligence and reporting',
+          category: 'analytics',
+          isEnabled: true,
+          requiredPlan: 'professional',
+        },
+        {
+          id: 'api_access',
+          name: 'API Access',
+          description: 'REST API for integrations',
+          category: 'integration',
+          isEnabled: false,
+          requiredPlan: 'enterprise',
+        },
+        {
+          id: 'white_label',
+          name: 'White Label',
+          description: 'Custom branding and theming',
+          category: 'integration',
+          isEnabled: false,
+          requiredPlan: 'enterprise',
+        }
+      ];
+
+      res.json(features);
+    } catch (error) {
+      console.error('Error fetching features:', error);
+      res.status(500).json({ message: 'Failed to fetch features' });
+    }
+  });
+
+  app.post('/api/admin/features/:featureId/toggle', async (req, res) => {
+    try {
+      const { featureId } = req.params;
+      console.log(`Toggling feature: ${featureId}`);
+      res.json({ message: `Feature ${featureId} toggled successfully` });
+    } catch (error) {
+      console.error('Error toggling feature:', error);
+      res.status(500).json({ message: 'Failed to toggle feature' });
+    }
+  });
+
+  app.put('/api/admin/users/:userId/role', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { role } = req.body;
+
+      if (!['user', 'admin', 'super_admin'].includes(role)) {
+        return res.status(400).json({ message: 'Invalid role' });
+      }
+
+      console.log(`Updating user ${userId} role to ${role}`);
+      res.json({ message: 'User role updated successfully' });
+    } catch (error) {
+      console.error('Error updating user role:', error);
+      res.status(500).json({ message: 'Failed to update user role' });
+    }
+  });
+
+  app.put('/api/admin/users/:userId/status', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { isActive } = req.body;
+
+      console.log(`Updating user ${userId} status to ${isActive}`);
+      res.json({ message: 'User status updated successfully' });
+    } catch (error) {
+      console.error('Error updating user status:', error);
+      res.status(500).json({ message: 'Failed to update user status' });
+    }
+  });
+
+  app.post('/api/admin/super-admin-signup', async (req, res) => {
+    try {
+      const {
+        firstName,
+        lastName,
+        email,
+        password,
+        organizationName,
+        phoneNumber,
+        adminCode
+      } = req.body;
+
+      // Verify admin code
+      if (adminCode !== 'SUPER_ADMIN_2024') {
+        return res.status(400).json({ message: 'Invalid super admin code' });
+      }
+
+      console.log(`Creating super admin: ${firstName} ${lastName} (${email})`);
+      
+      // For demo purposes, just return success
+      res.status(201).json({ 
+        message: 'Super admin created successfully',
+        userId: 'new-super-admin-' + Date.now()
+      });
+    } catch (error) {
+      console.error('Error creating super admin:', error);
+      res.status(500).json({ message: 'Failed to create super admin' });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

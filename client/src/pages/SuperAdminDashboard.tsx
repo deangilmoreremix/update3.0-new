@@ -1,739 +1,588 @@
-import { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { Shield, Users, Building2, DollarSign, Settings, CheckCircle, XCircle, Clock, Eye, Edit, Trash2, Plus } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import { GlassCard } from '../components/ui/GlassCard';
+import { ModernButton } from '../components/ui/ModernButton';
+import {
+  Crown, Users, Settings, Shield, BarChart3, Database, 
+  Toggle, CheckCircle, XCircle, AlertTriangle, Plus,
+  Search, Filter, Download, Upload, Mail, Eye, EyeOff,
+  Zap, Target, Brain, Phone, MessageSquare, Calendar,
+  FileText, TrendingUp, DollarSign, Globe, Lock
+} from 'lucide-react';
 
-interface Tenant {
+interface User {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: 'super_admin' | 'admin' | 'user';
+  subscriptionPlan: 'free' | 'basic' | 'professional' | 'enterprise';
+  isActive: boolean;
+  createdAt: string;
+  lastLogin?: string;
+  features: string[];
+}
+
+interface FeatureToggle {
   id: string;
   name: string;
-  subdomain: string;
-  customDomain?: string;
-  status: 'active' | 'pending' | 'suspended';
-  type: 'partner' | 'customer';
-  plan: 'basic' | 'pro' | 'enterprise';
-  contactEmail: string;
-  monthlyRevenue: number;
-  userCount: number;
-  createdAt: string;
-  parentPartnerId?: string;
+  description: string;
+  category: 'core' | 'ai' | 'communication' | 'analytics' | 'integration';
+  isEnabled: boolean;
+  requiredPlan: 'free' | 'basic' | 'professional' | 'enterprise';
+  usageLimit?: number;
+  icon: React.ComponentType<any>;
 }
 
-interface PlatformStats {
-  totalTenants: number;
-  totalPartners: number;
-  totalCustomers: number;
-  totalRevenue: number;
-  pendingApprovals: number;
-}
+const SuperAdminDashboard: React.FC = () => {
+  const navigate = useNavigate();
+  const { user, isLoading } = useAuth();
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'features' | 'analytics'>('overview');
+  const [users, setUsers] = useState<User[]>([]);
+  const [features, setFeatures] = useState<FeatureToggle[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterRole, setFilterRole] = useState<string>('all');
+  const [loading, setLoading] = useState(true);
 
-export default function SuperAdminDashboard() {
-  const [stats, setStats] = useState<PlatformStats | null>(null);
-  const [tenants, setTenants] = useState<Tenant[]>([]);
-  const [pendingPartners, setPendingPartners] = useState<Tenant[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
-  const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-
+  // Redirect if not super admin
   useEffect(() => {
-    fetchAdminData();
-  }, []);
+    if (!isLoading && (!user || user.role !== 'super_admin')) {
+      navigate('/dashboard');
+    }
+  }, [user, isLoading, navigate]);
 
-  const fetchAdminData = async () => {
+  // Initialize data
+  useEffect(() => {
+    if (user?.role === 'super_admin') {
+      loadDashboardData();
+    }
+  }, [user]);
+
+  const loadDashboardData = async () => {
     try {
-      // Fetch all tenants
-      const tenantsResponse = await fetch('/api/white-label/tenants');
-      if (tenantsResponse.ok) {
-        const tenantsData = await tenantsResponse.json();
-        setTenants(tenantsData);
-      }
+      // Load users
+      const usersResponse = await fetch('/api/admin/users');
+      const usersData = await usersResponse.json();
+      setUsers(usersData);
 
-      // Fetch pending partners
-      const pendingResponse = await fetch('/api/partners/pending');
-      if (pendingResponse.ok) {
-        const pendingData = await pendingResponse.json();
-        setPendingPartners(pendingData);
-      }
+      // Load features
+      const featuresResponse = await fetch('/api/admin/features');
+      const featuresData = await featuresResponse.json();
+      setFeatures(featuresData);
 
-      // Calculate stats
-      calculatePlatformStats();
+      setLoading(false);
     } catch (error) {
-      console.error('Failed to fetch admin data:', error);
-    } finally {
-      setIsLoading(false);
+      console.error('Error loading dashboard data:', error);
+      setLoading(false);
     }
   };
 
-  const calculatePlatformStats = () => {
-    const partners = tenants.filter(t => t.type === 'partner');
-    const customers = tenants.filter(t => t.type === 'customer');
-    const totalRevenue = tenants.reduce((sum, t) => sum + t.monthlyRevenue, 0);
-
-    setStats({
-      totalTenants: tenants.length,
-      totalPartners: partners.length,
-      totalCustomers: customers.length,
-      totalRevenue,
-      pendingApprovals: pendingPartners.length,
-    });
-  };
-
-  const approvePartner = async (partnerId: string) => {
+  const toggleFeature = async (featureId: string) => {
     try {
-      const response = await fetch(`/api/partners/${partnerId}/approve`, {
+      const response = await fetch(`/api/admin/features/${featureId}/toggle`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
       });
-
+      
       if (response.ok) {
-        alert('Partner approved successfully!');
-        fetchAdminData(); // Refresh data
+        setFeatures(prev => 
+          prev.map(feature => 
+            feature.id === featureId 
+              ? { ...feature, isEnabled: !feature.isEnabled }
+              : feature
+          )
+        );
       }
     } catch (error) {
-      alert('Failed to approve partner');
+      console.error('Error toggling feature:', error);
     }
   };
 
-  const suspendTenant = async (tenantId: string) => {
-    if (confirm('Are you sure you want to suspend this tenant?')) {
-      try {
-        const response = await fetch(`/api/white-label/tenants/${tenantId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'suspended' }),
-        });
-
-        if (response.ok) {
-          alert('Tenant suspended successfully!');
-          fetchAdminData();
-        }
-      } catch (error) {
-        alert('Failed to suspend tenant');
+  const updateUserRole = async (userId: string, newRole: string) => {
+    try {
+      const response = await fetch(`/api/admin/users/${userId}/role`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: newRole })
+      });
+      
+      if (response.ok) {
+        setUsers(prev => 
+          prev.map(user => 
+            user.id === userId ? { ...user, role: newRole as any } : user
+          )
+        );
       }
+    } catch (error) {
+      console.error('Error updating user role:', error);
     }
   };
 
-  const deleteTenant = async (tenantId: string) => {
-    if (confirm('Are you sure you want to delete this tenant? This action cannot be undone.')) {
-      try {
-        const response = await fetch(`/api/white-label/tenants/${tenantId}`, {
-          method: 'DELETE',
-        });
-
-        if (response.ok) {
-          alert('Tenant deleted successfully!');
-          fetchAdminData();
-        }
-      } catch (error) {
-        alert('Failed to delete tenant');
+  const updateUserStatus = async (userId: string, isActive: boolean) => {
+    try {
+      const response = await fetch(`/api/admin/users/${userId}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isActive })
+      });
+      
+      if (response.ok) {
+        setUsers(prev => 
+          prev.map(user => 
+            user.id === userId ? { ...user, isActive } : user
+          )
+        );
       }
+    } catch (error) {
+      console.error('Error updating user status:', error);
     }
   };
 
-  // Sample growth data
-  const growthData = [
-    { month: 'Jan', partners: 5, customers: 45, revenue: 15000 },
-    { month: 'Feb', partners: 8, customers: 72, revenue: 24000 },
-    { month: 'Mar', partners: 12, customers: 108, revenue: 36000 },
-    { month: 'Apr', partners: 18, customers: 162, revenue: 54000 },
-    { month: 'May', partners: 25, customers: 230, revenue: 76500 },
-    { month: 'Jun', partners: 35, customers: 315, revenue: 105000 },
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesRole = filterRole === 'all' || user.role === filterRole;
+    return matchesSearch && matchesRole;
+  });
+
+  const defaultFeatures: FeatureToggle[] = [
+    {
+      id: 'contacts',
+      name: 'Contact Management',
+      description: 'Core CRM contact management features',
+      category: 'core',
+      isEnabled: true,
+      requiredPlan: 'free',
+      icon: Users
+    },
+    {
+      id: 'deals',
+      name: 'Deal Pipeline',
+      description: 'Sales pipeline and deal tracking',
+      category: 'core',
+      isEnabled: true,
+      requiredPlan: 'basic',
+      icon: TrendingUp
+    },
+    {
+      id: 'ai_tools',
+      name: 'AI Tools',
+      description: 'AI-powered business analysis and insights',
+      category: 'ai',
+      isEnabled: true,
+      requiredPlan: 'professional',
+      usageLimit: 100,
+      icon: Brain
+    },
+    {
+      id: 'email_composer',
+      name: 'AI Email Composer',
+      description: 'AI-generated personalized emails',
+      category: 'ai',
+      isEnabled: true,
+      requiredPlan: 'basic',
+      usageLimit: 50,
+      icon: Mail
+    },
+    {
+      id: 'smart_search',
+      name: 'Smart Search',
+      description: 'AI-powered semantic search across data',
+      category: 'ai',
+      isEnabled: true,
+      requiredPlan: 'professional',
+      usageLimit: 200,
+      icon: Search
+    },
+    {
+      id: 'phone_system',
+      name: 'Phone System',
+      description: 'VoIP calling and call management',
+      category: 'communication',
+      isEnabled: false,
+      requiredPlan: 'professional',
+      icon: Phone
+    },
+    {
+      id: 'sms_messaging',
+      name: 'SMS Messaging',
+      description: 'Text messaging and SMS campaigns',
+      category: 'communication',
+      isEnabled: false,
+      requiredPlan: 'basic',
+      usageLimit: 1000,
+      icon: MessageSquare
+    },
+    {
+      id: 'advanced_analytics',
+      name: 'Advanced Analytics',
+      description: 'Business intelligence and reporting',
+      category: 'analytics',
+      isEnabled: true,
+      requiredPlan: 'professional',
+      icon: BarChart3
+    },
+    {
+      id: 'api_access',
+      name: 'API Access',
+      description: 'REST API for integrations',
+      category: 'integration',
+      isEnabled: false,
+      requiredPlan: 'enterprise',
+      icon: Globe
+    },
+    {
+      id: 'white_label',
+      name: 'White Label',
+      description: 'Custom branding and theming',
+      category: 'integration',
+      isEnabled: false,
+      requiredPlan: 'enterprise',
+      icon: Settings
+    }
   ];
 
-  if (isLoading) {
+  const displayFeatures = features.length > 0 ? features : defaultFeatures;
+
+  if (isLoading || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading super admin dashboard...</p>
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-800 shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <Shield className="h-8 w-8 text-red-600 mr-3" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-3 rounded-xl">
+                <Crown className="w-8 h-8 text-white" />
+              </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  Super Admin Dashboard
-                </h1>
-                <p className="text-gray-600 dark:text-gray-300">
-                  Manage all white-label partners and tenants
-                </p>
+                <h1 className="text-3xl font-bold text-gray-900">Super Admin Dashboard</h1>
+                <p className="text-gray-600">Platform management and feature control</p>
               </div>
             </div>
-            <div className="flex gap-3">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                Create Tenant
-              </button>
-              <button className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-                <Settings className="h-4 w-4" />
-                Platform Settings
-              </button>
-            </div>
+            <ModernButton 
+              onClick={() => navigate('/dashboard')}
+              variant="outline"
+              className="flex items-center space-x-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Dashboard</span>
+            </ModernButton>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Navigation Tabs */}
-        <div className="border-b border-gray-200 dark:border-gray-700 mb-8">
-          <nav className="-mb-px flex space-x-8">
+        <div className="mb-8">
+          <div className="flex space-x-1 bg-white/60 backdrop-blur-sm rounded-xl p-1">
             {[
-              { id: 'overview', label: 'Overview', icon: BarChart },
-              { id: 'tenants', label: 'All Tenants', icon: Building2 },
-              { id: 'pending', label: `Pending (${pendingPartners.length})`, icon: Clock },
-              { id: 'analytics', label: 'Platform Analytics', icon: DollarSign },
-              { id: 'settings', label: 'System Settings', icon: Settings },
+              { id: 'overview', label: 'Overview', icon: BarChart3 },
+              { id: 'users', label: 'Users', icon: Users },
+              { id: 'features', label: 'Features', icon: Settings },
+              { id: 'analytics', label: 'Analytics', icon: TrendingUp }
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${
-                  activeTab === tab.id
-                    ? 'border-red-500 text-red-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`
+                  flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all
+                  ${activeTab === tab.id
+                    ? 'bg-white text-purple-600 shadow-sm'
+                    : 'text-gray-600 hover:text-purple-600 hover:bg-white/50'
+                  }
+                `}
               >
-                <tab.icon className="h-4 w-4" />
-                {tab.label}
+                <tab.icon className="w-4 h-4" />
+                <span>{tab.label}</span>
               </button>
             ))}
-          </nav>
+          </div>
         </div>
 
-        {/* Overview Tab */}
+        {/* Content */}
         {activeTab === 'overview' && (
-          <div className="space-y-8">
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                <div className="flex items-center">
-                  <Building2 className="h-8 w-8 text-blue-600" />
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                      Total Tenants
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {stats?.totalTenants || 0}
-                    </p>
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <GlassCard className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Total Users</p>
+                  <p className="text-2xl font-bold text-gray-900">{users.length}</p>
                 </div>
+                <Users className="w-8 h-8 text-purple-600" />
               </div>
-
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                <div className="flex items-center">
-                  <Users className="h-8 w-8 text-green-600" />
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                      Partners
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {stats?.totalPartners || 0}
-                    </p>
-                  </div>
+            </GlassCard>
+            <GlassCard className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Active Features</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {displayFeatures.filter(f => f.isEnabled).length}
+                  </p>
                 </div>
+                <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
-
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                <div className="flex items-center">
-                  <Building2 className="h-8 w-8 text-purple-600" />
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                      Customers
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {stats?.totalCustomers || 0}
-                    </p>
-                  </div>
+            </GlassCard>
+            <GlassCard className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Super Admins</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {users.filter(u => u.role === 'super_admin').length}
+                  </p>
                 </div>
+                <Shield className="w-8 h-8 text-orange-600" />
               </div>
-
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                <div className="flex items-center">
-                  <DollarSign className="h-8 w-8 text-yellow-600" />
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                      Monthly Revenue
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                      ${stats?.totalRevenue?.toLocaleString() || '0'}
-                    </p>
-                  </div>
+            </GlassCard>
+            <GlassCard className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Platform Health</p>
+                  <p className="text-2xl font-bold text-green-600">Excellent</p>
                 </div>
+                <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
-
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                <div className="flex items-center">
-                  <Clock className="h-8 w-8 text-red-600" />
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                      Pending Approvals
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {stats?.pendingApprovals || 0}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Platform Growth Chart */}
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Platform Growth Trends
-              </h3>
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={growthData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="partners" stroke="#3B82F6" strokeWidth={2} />
-                  <Line type="monotone" dataKey="customers" stroke="#10B981" strokeWidth={2} />
-                  <Line type="monotone" dataKey="revenue" stroke="#F59E0B" strokeWidth={2} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Recent Activity */}
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Recent Tenant Activity
-              </h3>
-              <div className="space-y-4">
-                {tenants.slice(0, 5).map((tenant) => (
-                  <div key={tenant.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <div className="flex items-center">
-                      <div className={`w-3 h-3 rounded-full mr-3 ${
-                        tenant.status === 'active' ? 'bg-green-500' :
-                        tenant.status === 'pending' ? 'bg-yellow-500' : 'bg-red-500'
-                      }`}></div>
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-white">{tenant.name}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          {tenant.type} • {tenant.plan} plan
-                        </p>
-                      </div>
-                    </div>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
-                      {new Date(tenant.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            </GlassCard>
           </div>
         )}
 
-        {/* All Tenants Tab */}
-        {activeTab === 'tenants' && (
+        {activeTab === 'users' && (
           <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  All Tenants Management
-                </h3>
+            {/* User Management Controls */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+                  <Search className="w-5 h-5 absolute left-3 top-3 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search users..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                </div>
+                <select
+                  value={filterRole}
+                  onChange={(e) => setFilterRole(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                >
+                  <option value="all">All Roles</option>
+                  <option value="super_admin">Super Admin</option>
+                  <option value="admin">Admin</option>
+                  <option value="user">User</option>
+                </select>
               </div>
+              <ModernButton
+                onClick={() => navigate('/super-admin-signup')}
+                variant="primary"
+                className="flex items-center space-x-2"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add Super Admin</span>
+              </ModernButton>
+            </div>
+
+            {/* Users Table */}
+            <GlassCard className="overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-700">
+                <table className="w-full">
+                  <thead className="bg-gray-50/50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        Tenant
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        User
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        Type
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Role
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Plan
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Status
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        Users
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        Revenue
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                    {tenants.map((tenant) => (
-                      <tr key={tenant.id}>
+                  <tbody className="divide-y divide-gray-200">
+                    {filteredUsers.map((user) => (
+                      <tr key={user.id} className="hover:bg-gray-50/50">
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div>
-                            <div className="text-sm font-medium text-gray-900 dark:text-white">
-                              {tenant.name}
-                            </div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
-                              {tenant.subdomain}.smartcrm.com
+                          <div className="flex items-center">
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">
+                                {user.firstName} {user.lastName}
+                              </div>
+                              <div className="text-sm text-gray-500">{user.email}</div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            tenant.type === 'partner' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
-                          }`}>
-                            {tenant.type}
+                          <select
+                            value={user.role}
+                            onChange={(e) => updateUserRole(user.id, e.target.value)}
+                            className="text-sm border border-gray-300 rounded px-2 py-1"
+                          >
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                            <option value="super_admin">Super Admin</option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`
+                            px-2 py-1 text-xs font-medium rounded-full
+                            ${user.subscriptionPlan === 'enterprise' ? 'bg-purple-100 text-purple-800' :
+                              user.subscriptionPlan === 'professional' ? 'bg-blue-100 text-blue-800' :
+                              user.subscriptionPlan === 'basic' ? 'bg-green-100 text-green-800' :
+                              'bg-gray-100 text-gray-800'}
+                          `}>
+                            {user.subscriptionPlan}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            tenant.plan === 'enterprise' ? 'bg-purple-100 text-purple-800' :
-                            tenant.plan === 'pro' ? 'bg-blue-100 text-blue-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
-                            {tenant.plan}
-                          </span>
+                          <button
+                            onClick={() => updateUserStatus(user.id, !user.isActive)}
+                            className={`
+                              flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium
+                              ${user.isActive 
+                                ? 'bg-green-100 text-green-800 hover:bg-green-200' 
+                                : 'bg-red-100 text-red-800 hover:bg-red-200'}
+                            `}
+                          >
+                            {user.isActive ? (
+                              <>
+                                <CheckCircle className="w-3 h-3" />
+                                <span>Active</span>
+                              </>
+                            ) : (
+                              <>
+                                <XCircle className="w-3 h-3" />
+                                <span>Inactive</span>
+                              </>
+                            )}
+                          </button>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            tenant.status === 'active' ? 'bg-green-100 text-green-800' :
-                            tenant.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-red-100 text-red-800'
-                          }`}>
-                            {tenant.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                          {tenant.userCount}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                          ${tenant.monthlyRevenue}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex gap-2">
-                            <button className="text-blue-600 hover:text-blue-900 flex items-center gap-1">
-                              <Eye className="h-4 w-4" />
-                              View
-                            </button>
-                            <button 
-                              onClick={() => {setSelectedTenant(tenant); setShowEditModal(true);}}
-                              className="text-gray-600 hover:text-gray-900 flex items-center gap-1"
-                            >
-                              <Edit className="h-4 w-4" />
-                              Edit
-                            </button>
-                            <button 
-                              onClick={() => suspendTenant(tenant.id)}
-                              className="text-yellow-600 hover:text-yellow-900 flex items-center gap-1"
-                            >
-                              <XCircle className="h-4 w-4" />
-                              Suspend
-                            </button>
-                            <button 
-                              onClick={() => deleteTenant(tenant.id)}
-                              className="text-red-600 hover:text-red-900 flex items-center gap-1"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                              Delete
-                            </button>
-                          </div>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <button className="text-purple-600 hover:text-purple-900 mr-2">
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button className="text-red-600 hover:text-red-900">
+                            <Lock className="w-4 h-4" />
+                          </button>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-            </div>
+            </GlassCard>
           </div>
         )}
 
-        {/* Pending Approvals Tab */}
-        {activeTab === 'pending' && (
+        {activeTab === 'features' && (
           <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Pending Partner Approvals
-                </h3>
-              </div>
-              {pendingPartners.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead className="bg-gray-50 dark:bg-gray-700">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                          Company
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                          Contact
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                          Subdomain
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                          Applied
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                      {pendingPartners.map((partner) => (
-                        <tr key={partner.id}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                            {partner.name}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                            {partner.contactEmail}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                            {partner.subdomain}.smartcrm.com
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                            {new Date(partner.createdAt).toLocaleDateString()}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div className="flex gap-2">
-                              <button 
-                                onClick={() => approvePartner(partner.id)}
-                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded flex items-center gap-1"
-                              >
-                                <CheckCircle className="h-4 w-4" />
-                                Approve
-                              </button>
-                              <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded flex items-center gap-1">
-                                <XCircle className="h-4 w-4" />
-                                Reject
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <div className="p-8 text-center text-gray-500 dark:text-gray-300">
-                  No pending partner applications
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Analytics Tab */}
-        {activeTab === 'analytics' && (
-          <div className="space-y-8">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Platform Revenue Trends
-              </h3>
-              <ResponsiveContainer width="100%" height={400}>
-                <BarChart data={growthData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="revenue" fill="#3B82F6" />
-                </BarChart>
-              </ResponsiveContainer>
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-900">Feature Management</h2>
+              <ModernButton variant="outline" className="flex items-center space-x-2">
+                <Download className="w-4 h-4" />
+                <span>Export Config</span>
+              </ModernButton>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
-                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                  Average Revenue Per Tenant
-                </h4>
-                <p className="text-3xl font-bold text-blue-600">$425</p>
-              </div>
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
-                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                  Platform Growth Rate
-                </h4>
-                <p className="text-3xl font-bold text-green-600">+87%</p>
-              </div>
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
-                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                  Tenant Retention Rate
-                </h4>
-                <p className="text-3xl font-bold text-purple-600">96%</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* System Settings Tab */}
-        {activeTab === 'settings' && (
-          <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Platform Configuration
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Default Partner Revenue Share (%)
-                  </label>
-                  <input
-                    type="number"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    defaultValue="30"
-                    min="0"
-                    max="100"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Auto-Approve Partners
-                  </label>
-                  <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="false">Manual Approval Required</option>
-                    <option value="true">Auto-Approve All</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Maximum Users Per Tenant
-                  </label>
-                  <input
-                    type="number"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    defaultValue="500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Trial Period (days)
-                  </label>
-                  <input
-                    type="number"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    defaultValue="14"
-                  />
-                </div>
-              </div>
-              <button className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-                Save Configuration
-              </button>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Feature Flag Management
-              </h3>
-              <div className="space-y-4">
-                {[
-                  { name: 'AI Tools', key: 'aiTools', enabled: true },
-                  { name: 'Advanced Analytics', key: 'advancedAnalytics', enabled: true },
-                  { name: 'Custom Integrations', key: 'customIntegrations', enabled: false },
-                  { name: 'White-label Branding', key: 'whitelabelBranding', enabled: true },
-                  { name: 'API Access', key: 'apiAccess', enabled: false },
-                ].map((feature) => (
-                  <div key={feature.key} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">{feature.name}</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Available to all tenants
-                      </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {displayFeatures.map((feature) => (
+                <GlassCard key={feature.id} className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className={`p-2 rounded-lg ${
+                        feature.category === 'core' ? 'bg-blue-100 text-blue-600' :
+                        feature.category === 'ai' ? 'bg-purple-100 text-purple-600' :
+                        feature.category === 'communication' ? 'bg-green-100 text-green-600' :
+                        feature.category === 'analytics' ? 'bg-orange-100 text-orange-600' :
+                        'bg-gray-100 text-gray-600'
+                      }`}>
+                        <feature.icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-gray-900">{feature.name}</h3>
+                        <p className="text-sm text-gray-600">{feature.description}</p>
+                      </div>
                     </div>
                     <button
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        feature.enabled ? 'bg-blue-600' : 'bg-gray-200'
-                      }`}
+                      onClick={() => toggleFeature(feature.id)}
+                      className={`
+                        relative inline-flex h-6 w-11 items-center rounded-full transition-colors
+                        ${feature.isEnabled ? 'bg-green-500' : 'bg-gray-300'}
+                      `}
                     >
-                      <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                          feature.enabled ? 'translate-x-6' : 'translate-x-1'
-                        }`}
-                      />
+                      <span className={`
+                        inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+                        ${feature.isEnabled ? 'translate-x-6' : 'translate-x-1'}
+                      `} />
                     </button>
                   </div>
-                ))}
-              </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Required Plan:</span>
+                      <span className="font-medium capitalize">{feature.requiredPlan}</span>
+                    </div>
+                    {feature.usageLimit && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600">Usage Limit:</span>
+                        <span className="font-medium">{feature.usageLimit}/month</span>
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Status:</span>
+                      <span className={`font-medium ${
+                        feature.isEnabled ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {feature.isEnabled ? 'Enabled' : 'Disabled'}
+                      </span>
+                    </div>
+                  </div>
+                </GlassCard>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'analytics' && (
+          <div className="space-y-6">
+            <h2 className="text-xl font-bold text-gray-900">Platform Analytics</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <GlassCard className="p-6">
+                <h3 className="font-medium text-gray-900 mb-4">User Growth</h3>
+                <div className="h-64 flex items-center justify-center text-gray-500">
+                  <div className="text-center">
+                    <BarChart3 className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                    <p>Analytics charts will be implemented here</p>
+                  </div>
+                </div>
+              </GlassCard>
+              <GlassCard className="p-6">
+                <h3 className="font-medium text-gray-900 mb-4">Feature Usage</h3>
+                <div className="h-64 flex items-center justify-center text-gray-500">
+                  <div className="text-center">
+                    <TrendingUp className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                    <p>Feature usage analytics will be implemented here</p>
+                  </div>
+                </div>
+              </GlassCard>
             </div>
           </div>
         )}
       </div>
-
-      {/* Edit Tenant Modal */}
-      {showEditModal && selectedTenant && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              Edit Tenant: {selectedTenant.name}
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Tenant Name
-                </label>
-                <input
-                  type="text"
-                  defaultValue={selectedTenant.name}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Plan
-                </label>
-                <select 
-                  defaultValue={selectedTenant.plan}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="basic">Basic</option>
-                  <option value="pro">Pro</option>
-                  <option value="enterprise">Enterprise</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Status
-                </label>
-                <select 
-                  defaultValue={selectedTenant.status}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="active">Active</option>
-                  <option value="suspended">Suspended</option>
-                  <option value="pending">Pending</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Monthly Revenue
-                </label>
-                <input
-                  type="number"
-                  defaultValue={selectedTenant.monthlyRevenue}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-            <div className="flex justify-end gap-3 mt-6">
-              <button
-                onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  // Save logic here
-                  setShowEditModal(false);
-                  alert('Tenant updated successfully!');
-                }}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              >
-                Save Changes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
-}
+};
+
+export default SuperAdminDashboard;
