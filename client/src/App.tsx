@@ -34,6 +34,9 @@ import VisionAnalyzerFeaturePage from './pages/Landing/FeaturePage/VisionAnalyze
 import ImageGeneratorFeaturePage from './pages/Landing/FeaturePage/ImageGeneratorFeaturePage';
 import FunctionAssistantFeaturePage from './pages/Landing/FeaturePage/FunctionAssistantFeaturePage';
 import SemanticSearchFeaturePage from './pages/Landing/FeaturePage/SemanticSearchFeaturePage';
+import SpeechToTextFeaturePage from './pages/Landing/FeaturePage/SpeechToTextFeaturePage';
+import AutomationFeaturePage from './pages/Landing/FeaturePage/AutomationFeaturePage';
+import AppointmentsFeaturePage from './pages/Landing/FeaturePage/AppointmentsFeaturePage';
 
 // Create placeholder pages for missing routes
 const PlaceholderPage = ({ title }: { title: string }) => (
@@ -168,22 +171,10 @@ function App() {
                   <Route path="/features/semantic-search" element={<SemanticSearchFeaturePage />} />
                   <Route path="/features/communications" element={<CommunicationsFeaturePage />} />
                   
-                  {/* Missing feature pages - keep as placeholders for now */}
-                  <Route path="/features/speech-to-text" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
-                      <PlaceholderPage title="Speech to Text" />
-                    </SimpleLayout>
-                  } />
-                  <Route path="/features/automation" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
-                      <PlaceholderPage title="Sales Automation" />
-                    </SimpleLayout>
-                  } />
-                  <Route path="/features/appointments" element={
-                    <SimpleLayout isContactsModalOpen={isContactsModalOpen} setIsContactsModalOpen={setIsContactsModalOpen}>
-                      <PlaceholderPage title="Appointment Scheduling" />
-                    </SimpleLayout>
-                  } />
+                  {/* Newly created feature pages */}
+                  <Route path="/features/speech-to-text" element={<SpeechToTextFeaturePage />} />
+                  <Route path="/features/automation" element={<AutomationFeaturePage />} />
+                  <Route path="/features/appointments" element={<AppointmentsFeaturePage />} />
                   
                   {/* Company pages from footer */}
                   <Route path="/about" element={
