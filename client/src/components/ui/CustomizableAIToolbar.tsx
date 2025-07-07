@@ -1,33 +1,6 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAITools } from '../AIToolsProvider';
-import { 
-  BarChart3, 
-  Mail, 
-  TrendingUp, 
-  AlertTriangle, 
-  Navigation, 
-  FileText, 
-  Send, 
-  Calendar, 
-  DollarSign, 
-  Heart, 
-  UserPlus, 
-  Search, 
-  BarChart, 
-  Zap, 
-  Clock, 
-  GitBranch, 
-  PenTool, 
-  Video, 
-  FileSearch, 
-  Package, 
-  Settings, 
-  Plus,
-  Brain,
-  Target,
-  Phone
-} from 'lucide-react';
+import React from 'react';
+import { ModernButton } from './ModernButton';
+import { Brain, Zap, MessageSquare, Target, BarChart3, Lightbulb, Search, Edit3 } from 'lucide-react';
 
 interface QuickAIButtonProps {
   icon: React.ComponentType<any>;
@@ -52,53 +25,6 @@ interface CustomizableAIToolbarProps {
   showCustomizeButton?: boolean;
 }
 
-const iconMap: Record<string, React.ComponentType<any>> = {
-  BarChart3,
-  Mail,
-  TrendingUp,
-  AlertTriangle,
-  Navigation,
-  FileText,
-  Send,
-  Calendar,
-  DollarSign,
-  Heart,
-  UserPlus,
-  Search,
-  BarChart,
-  Zap,
-  Clock,
-  GitBranch,
-  PenTool,
-  Video,
-  FileSearch,
-  Package,
-  Settings,
-  Plus,
-  Brain,
-  Target,
-  Phone
-};
-
-const toolMapping: Record<string, string> = {
-  'leadScoring': 'business-analyzer',
-  'emailPersonalization': 'email-composer', 
-  'contactEnrichment': 'smart-search',
-  'dealRiskAssessment': 'business-analyzer',
-  'nextBestAction': 'business-analyzer',
-  'proposalGeneration': 'proposal-generator',
-  'businessIntelligence': 'smart-search',
-  'companyHealthScoring': 'business-analyzer',
-  'opportunityIdentification': 'business-analyzer'
-};
-
-const defaultQuickActions = [
-  { icon: 'BarChart3', label: 'Lead Score', toolName: 'leadScoring', variant: 'primary' },
-  { icon: 'Mail', label: 'Email AI', toolName: 'emailPersonalization', variant: 'secondary' },
-  { icon: 'Search', label: 'Enrich', toolName: 'contactEnrichment', variant: 'secondary' },
-  { icon: 'TrendingUp', label: 'Insights', toolName: 'businessIntelligence', variant: 'secondary' }
-];
-
 const QuickAIButton: React.FC<QuickAIButtonProps> = ({
   icon: Icon,
   label,
@@ -111,43 +37,27 @@ const QuickAIButton: React.FC<QuickAIButtonProps> = ({
   className = '',
   onClick
 }) => {
-  const { openTool } = useAITools();
-  
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (onClick) {
       onClick();
     } else {
-      // Map the tool name to actual AI tool and open modal
-      const actualToolName = toolMapping[toolName] || toolName;
-      console.log(`Opening AI Tool: ${actualToolName} for ${entityType}:${entityId}`, entityData);
-      openTool(actualToolName);
+      console.log(`Opening AI tool: ${toolName} for ${entityType}:`, entityId);
+      // In real implementation, this would open the AI tool modal
+      // with pre-populated context from entityData
     }
   };
 
-  const sizeClasses = {
-    sm: 'px-2 py-1 text-xs',
-    md: 'px-3 py-2 text-sm'
-  };
-
-  const variantClasses = {
-    primary: 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700',
-    secondary: 'bg-white/70 text-gray-700 border border-gray-200 hover:bg-white hover:shadow-md'
-  };
-
   return (
-    <button
+    <ModernButton
+      variant={variant === 'primary' ? 'primary' : 'outline'}
+      size={size}
       onClick={handleClick}
-      className={`
-        ${sizeClasses[size]}
-        ${variantClasses[variant]}
-        rounded-full font-medium transition-all duration-200
-        flex items-center space-x-1 backdrop-blur-sm
-        ${className}
-      `}
+      className={`${className} flex items-center justify-center`}
     >
-      <Icon className="w-3 h-3" />
-      <span>{label}</span>
-    </button>
+      <Icon className={`${size === 'sm' ? 'w-3 h-3' : 'w-4 h-4'} mr-2`} />
+      <span className="text-xs">{label}</span>
+    </ModernButton>
   );
 };
 
@@ -157,36 +67,24 @@ export const AIGoalsButton: React.FC<{
   entityData: any;
   size?: 'sm' | 'md';
   className?: string;
-}> = ({ entityType, entityId, entityData, size = 'md', className = '' }) => {
-  const navigate = useNavigate();
-  
-  const handleGoalsClick = () => {
-    // Navigate to AI Goals with pre-populated context
-    console.log(`AI Goals for ${entityType}:${entityId}`, entityData);
-    navigate('/ai-goals');
-  };
-
-  const sizeClasses = {
-    sm: 'px-3 py-2 text-sm',
-    md: 'px-4 py-2 text-base'
+}> = ({ entityType, entityId, entityData, size = 'sm', className = '' }) => {
+  const handleAIGoalsClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log(`Opening AI Goals for ${entityType}:`, entityId);
+    // In real implementation, navigate to AI Goals page with context
+    // window.location.href = `/ai-goals?entity=${entityType}&id=${entityId}`;
   };
 
   return (
-    <button
-      onClick={handleGoalsClick}
-      className={`
-        ${sizeClasses[size]}
-        bg-gradient-to-r from-purple-500 to-pink-600 text-white
-        hover:from-purple-600 hover:to-pink-700
-        rounded-full font-medium transition-all duration-200
-        flex items-center space-x-2 backdrop-blur-sm shadow-md
-        hover:shadow-lg w-full justify-center
-        ${className}
-      `}
+    <ModernButton
+      variant="primary"
+      size={size}
+      onClick={handleAIGoalsClick}
+      className={`w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 ${className}`}
     >
-      <Brain className="w-4 h-4" />
-      <span>AI Goals</span>
-    </button>
+      <Brain className={`${size === 'sm' ? 'w-3 h-3' : 'w-4 h-4'} mr-2`} />
+      <span className="text-xs font-medium">AI Goals & Automation</span>
+    </ModernButton>
   );
 };
 
@@ -197,18 +95,59 @@ export const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
   location,
   layout,
   size,
-  showCustomizeButton = true
+  showCustomizeButton = false
 }) => {
-  const [isCustomizing, setIsCustomizing] = useState(false);
+  // Define AI tools based on entity type and location
+  const getAITools = () => {
+    const commonTools = [
+      { icon: Brain, label: 'Analysis', toolName: 'business-analyzer' },
+      { icon: MessageSquare, label: 'Email', toolName: 'email-composer' },
+      { icon: Search, label: 'Research', toolName: 'smart-search' },
+    ];
 
-  const layoutClasses = {
-    grid: 'grid grid-cols-2 gap-2',
-    row: 'flex flex-wrap gap-2'
+    switch (entityType) {
+      case 'contact':
+        return [
+          ...commonTools,
+          { icon: Target, label: 'Lead Score', toolName: 'lead-scoring' },
+          { icon: Edit3, label: 'Personalize', toolName: 'personalization' },
+        ];
+      case 'deal':
+        return [
+          ...commonTools,
+          { icon: BarChart3, label: 'Forecast', toolName: 'deal-forecast' },
+          { icon: Lightbulb, label: 'Insights', toolName: 'deal-insights' },
+        ];
+      case 'company':
+        return [
+          ...commonTools,
+          { icon: BarChart3, label: 'Analytics', toolName: 'company-analytics' },
+          { icon: Target, label: 'Opportunities', toolName: 'opportunity-finder' },
+        ];
+      default:
+        return commonTools;
+    }
   };
+
+  const tools = getAITools();
+
+  if (layout === 'row') {
+    return (
+      <div className="w-full">
+        <AIGoalsButton
+          entityType={entityType}
+          entityId={entityId}
+          entityData={entityData}
+          size={size}
+          className="mb-2"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">
-      {/* AI Goals Button - Full Width */}
+      {/* AI Goals Button */}
       <AIGoalsButton
         entityType={entityType}
         entityId={entityId}
@@ -216,50 +155,37 @@ export const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
         size={size}
       />
 
-      {/* Quick Actions - Grid Layout */}
-      <div className={layoutClasses[layout]}>
-        {defaultQuickActions.map((action, index) => {
-          const IconComponent = iconMap[action.icon];
-          return (
-            <QuickAIButton
-              key={index}
-              icon={IconComponent}
-              label={action.label}
-              toolName={action.toolName}
-              entityType={entityType}
-              entityId={entityId}
-              entityData={entityData}
-              size={size}
-              variant={action.variant as 'primary' | 'secondary'}
-            />
-          );
-        })}
+      {/* Quick Action Tools */}
+      <div className={`grid ${layout === 'grid' ? 'grid-cols-2' : 'grid-cols-1'} gap-2`}>
+        {tools.slice(0, 4).map((tool, index) => (
+          <QuickAIButton
+            key={index}
+            icon={tool.icon}
+            label={tool.label}
+            toolName={tool.toolName}
+            entityType={entityType}
+            entityId={entityId}
+            entityData={entityData}
+            size={size}
+            variant="secondary"
+          />
+        ))}
       </div>
 
       {/* Customize Button */}
       {showCustomizeButton && (
-        <button
-          onClick={() => setIsCustomizing(!isCustomizing)}
-          className="w-full px-2 py-1 text-xs text-gray-500 hover:text-gray-700 border border-dashed border-gray-300 hover:border-gray-400 rounded transition-colors"
+        <ModernButton
+          variant="ghost"
+          size="sm"
+          className="w-full text-gray-500 hover:text-gray-700"
+          onClick={(e) => {
+            e.stopPropagation();
+            console.log('Customize AI toolbar for:', entityType);
+          }}
         >
-          <Settings className="w-3 h-3 inline mr-1" />
+          <Edit3 className="w-3 h-3 mr-2" />
           Customize Tools
-        </button>
-      )}
-
-      {/* Customization Panel */}
-      {isCustomizing && (
-        <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 space-y-2">
-          <div className="text-xs font-medium text-gray-700 mb-2">Available AI Tools</div>
-          <div className="grid grid-cols-2 gap-1 text-xs">
-            <button className="p-1 text-left hover:bg-white rounded">+ Lead Scoring</button>
-            <button className="p-1 text-left hover:bg-white rounded">+ Risk Analysis</button>
-            <button className="p-1 text-left hover:bg-white rounded">+ Email AI</button>
-            <button className="p-1 text-left hover:bg-white rounded">+ Proposal Gen</button>
-            <button className="p-1 text-left hover:bg-white rounded">+ Next Action</button>
-            <button className="p-1 text-left hover:bg-white rounded">+ Insights</button>
-          </div>
-        </div>
+        </ModernButton>
       )}
     </div>
   );

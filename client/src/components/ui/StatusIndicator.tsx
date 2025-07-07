@@ -1,59 +1,57 @@
 import React from 'react';
 
 interface StatusIndicatorProps {
-  status: 'active' | 'pending' | 'inactive' | 'success' | 'warning' | 'error';
+  status: 'success' | 'warning' | 'error' | 'info' | 'pending';
   size?: 'sm' | 'md' | 'lg';
-  pulse?: boolean;
+  showLabel?: boolean;
   label?: string;
 }
 
-export const StatusIndicator: React.FC<StatusIndicatorProps> = ({ 
-  status, 
-  size = 'md', 
-  pulse = false,
-  label 
+export const StatusIndicator: React.FC<StatusIndicatorProps> = ({
+  status,
+  size = 'md',
+  showLabel = false,
+  label
 }) => {
-  const getStatusColor = () => {
-    switch (status) {
-      case 'active':
-      case 'success':
-        return 'bg-green-500';
-      case 'pending':
-        return 'bg-blue-500';
-      case 'warning':
-        return 'bg-yellow-500';
-      case 'error':
-        return 'bg-red-500';
-      case 'inactive':
-      default:
-        return 'bg-gray-400';
-    }
+  const sizeClasses = {
+    sm: 'w-2 h-2',
+    md: 'w-3 h-3',
+    lg: 'w-4 h-4'
   };
 
-  const getSizeClass = () => {
-    switch (size) {
-      case 'sm':
-        return 'w-2 h-2';
-      case 'lg':
-        return 'w-4 h-4';
-      case 'md':
-      default:
-        return 'w-3 h-3';
-    }
+  const colorClasses = {
+    success: 'bg-green-500',
+    warning: 'bg-yellow-500',
+    error: 'bg-red-500',
+    info: 'bg-blue-500',
+    pending: 'bg-gray-400'
+  };
+
+  const labelColors = {
+    success: 'text-green-700',
+    warning: 'text-yellow-700',
+    error: 'text-red-700',
+    info: 'text-blue-700',
+    pending: 'text-gray-700'
+  };
+
+  const defaultLabels = {
+    success: 'Active',
+    warning: 'Warning',
+    error: 'Error',
+    info: 'Info',
+    pending: 'Pending'
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center space-x-2">
       <div
-        className={`
-          ${getSizeClass()} 
-          ${getStatusColor()} 
-          rounded-full
-          ${pulse ? 'animate-pulse' : ''}
-        `}
+        className={`${sizeClasses[size]} ${colorClasses[status]} rounded-full flex-shrink-0`}
       />
-      {label && (
-        <span className="text-sm text-gray-600 font-medium">{label}</span>
+      {showLabel && (
+        <span className={`text-sm ${labelColors[status]}`}>
+          {label || defaultLabels[status]}
+        </span>
       )}
     </div>
   );

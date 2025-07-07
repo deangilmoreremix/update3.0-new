@@ -8,29 +8,6 @@ interface AvatarWithStatusProps {
   showStatus?: boolean;
 }
 
-const sizeClasses = {
-  sm: 'w-8 h-8',
-  md: 'w-12 h-12', 
-  lg: 'w-16 h-16',
-  xl: 'w-20 h-20'
-};
-
-const statusClasses = {
-  active: 'bg-green-500',
-  pending: 'bg-yellow-500',
-  inactive: 'bg-gray-400',
-  success: 'bg-green-500',
-  warning: 'bg-yellow-500',
-  error: 'bg-red-500'
-};
-
-const statusSizes = {
-  sm: 'w-2 h-2',
-  md: 'w-3 h-3',
-  lg: 'w-4 h-4', 
-  xl: 'w-5 h-5'
-};
-
 export const AvatarWithStatus: React.FC<AvatarWithStatusProps> = ({
   src,
   alt,
@@ -38,6 +15,29 @@ export const AvatarWithStatus: React.FC<AvatarWithStatusProps> = ({
   status = 'active',
   showStatus = true
 }) => {
+  const sizeClasses = {
+    sm: 'w-8 h-8',
+    md: 'w-10 h-10',
+    lg: 'w-12 h-12',
+    xl: 'w-16 h-16'
+  };
+
+  const statusSizes = {
+    sm: 'w-2 h-2',
+    md: 'w-3 h-3',
+    lg: 'w-3 h-3',
+    xl: 'w-4 h-4'
+  };
+
+  const statusColors = {
+    active: 'bg-green-500',
+    pending: 'bg-yellow-500',
+    inactive: 'bg-gray-400',
+    success: 'bg-green-500',
+    warning: 'bg-yellow-500',
+    error: 'bg-red-500'
+  };
+
   return (
     <div className="relative inline-block">
       <img
@@ -47,12 +47,7 @@ export const AvatarWithStatus: React.FC<AvatarWithStatusProps> = ({
       />
       {showStatus && (
         <div
-          className={`
-            absolute -bottom-0.5 -right-0.5 
-            ${statusSizes[size]} 
-            ${statusClasses[status]} 
-            rounded-full border-2 border-white
-          `}
+          className={`absolute bottom-0 right-0 ${statusSizes[size]} ${statusColors[status]} rounded-full border-2 border-white`}
         />
       )}
     </div>

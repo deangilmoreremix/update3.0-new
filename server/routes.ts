@@ -19,36 +19,20 @@ import partnersRouter from "./routes/partners";
 import featurePackagesRouter from "./routes/feature-packages";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 
-// Middleware to extract user ID from request headers or create demo user
+// Simplified authentication middleware for demo mode
 const requireAuth = async (req: Request, res: Response, next: any) => {
-  let userId = req.headers['x-user-id'] as string;
-  
-  // If no user ID provided, create or use demo user for development
-  if (!userId) {
-    try {
-      // Try to find existing demo user
-      let demoUser = await storage.getUserByEmail('demo@smartcrm.com');
-      
-      if (!demoUser) {
-        // Create demo user if doesn't exist
-        demoUser = await storage.createUser({
-          email: 'demo@smartcrm.com',
-          fullName: 'Demo User',
-          subscriptionStatus: 'active',
-          subscriptionPlan: 'professional',
-          paymentStatus: 'paid',
-          isAdmin: true
-        });
-      }
-      
-      userId = demoUser.id;
-    } catch (error) {
-      console.error('Error creating demo user:', error);
-      return res.status(500).json({ error: "Authentication setup failed" });
-    }
-  }
-  
-  req.userId = userId;
+  // Demo mode: Create mock user without database dependency
+  const mockUser = {
+    id: 'demo-user-' + Date.now(),
+    email: 'demo@smartcrm.io',
+    firstName: 'Demo',
+    lastName: 'User',
+    tenantId: '630ed3be-0533-43ff-a569-2051df9c4d20'
+  };
+
+  req.userId = mockUser.id;
+  req.user = mockUser;
+  console.log('Demo authentication successful for:', mockUser.email);
   next();
 };
 
