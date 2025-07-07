@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 // import { useUser, useClerk } from '@clerk/clerk-react';
 import { useAITools } from './AIToolsProvider';
+import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { 
   Home, 
   Users, 
@@ -79,6 +80,7 @@ const Navbar: React.FC = () => {
   const isSignedIn = true;
   
   const { openTool } = useAITools();
+  const { isAdmin } = useFeatureAccess();
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleAiMenu = () => setAiMenuOpen(!aiMenuOpen);
@@ -751,6 +753,17 @@ const Navbar: React.FC = () => {
                   </p>
                 </div>
                 
+                {/* Super Admin Link */}
+                {isAdmin && (
+                  <Link
+                    to="/features"
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setUserMenuOpen(false)}
+                  >
+                    <Crown size={16} className="inline mr-2 text-purple-600" />
+                    Super Admin Panel
+                  </Link>
+                )}
 
                 <button
                   onClick={handleLogout}

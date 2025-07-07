@@ -53,6 +53,11 @@ export interface EnrichmentContext {
 
 // Mock enrichment service for development
 export const aiEnrichmentService = {
+  // Alias for compatibility
+  async enrichContactByEmail(email: string): Promise<ContactEnrichmentData> {
+    return this.enrichByEmail(email);
+  },
+
   async enrichByEmail(email: string): Promise<ContactEnrichmentData> {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1500));
@@ -78,6 +83,11 @@ export const aiEnrichmentService = {
     };
   },
 
+  // Alias for compatibility
+  async enrichContactByName(firstName: string, lastName: string, company?: string): Promise<ContactEnrichmentData> {
+    return this.enrichByName(firstName, lastName, company);
+  },
+
   async enrichByName(firstName: string, lastName: string, company?: string): Promise<ContactEnrichmentData> {
     await new Promise(resolve => setTimeout(resolve, 2000));
     
@@ -95,6 +105,11 @@ export const aiEnrichmentService = {
       enrichmentProvider: 'gemini',
       lastEnriched: new Date().toISOString()
     };
+  },
+
+  // Alias for compatibility  
+  async enrichContactByLinkedIn(linkedinUrl: string): Promise<ContactEnrichmentData> {
+    return this.enrichByLinkedIn(linkedinUrl);
   },
 
   async enrichByLinkedIn(linkedinUrl: string): Promise<ContactEnrichmentData> {
