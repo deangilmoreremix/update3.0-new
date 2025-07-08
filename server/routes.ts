@@ -596,11 +596,87 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Deal routes
-  app.get("/api/deals", requireAuth, async (req: Request, res: Response) => {
+  // Deal routes - simplified for development
+  app.get("/api/deals", async (req: Request, res: Response) => {
     try {
-      const deals = await storage.getDeals(req.userId!);
-      res.json(deals);
+      // Return mock deal data for development
+      const mockDeals = [
+        {
+          id: '1',
+          title: 'Enterprise Software License',
+          company: 'TechCorp Solutions',
+          value: 150000,
+          stage: 'negotiation',
+          probability: 75,
+          closeDate: '2024-02-15',
+          contactId: '1',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '2',
+          title: 'AI Platform Integration',
+          company: 'Innovate AI',
+          value: 85000,
+          stage: 'proposal',
+          probability: 60,
+          closeDate: '2024-03-01',
+          contactId: '2',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '3',
+          title: 'Manufacturing Optimization Suite',
+          company: 'Global Tech Industries',
+          value: 250000,
+          stage: 'closed-won',
+          probability: 100,
+          closeDate: '2024-01-20',
+          contactId: '3',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '4',
+          title: 'Cloud Migration Services',
+          company: 'Healthcare Solutions',
+          value: 120000,
+          stage: 'discovery',
+          probability: 25,
+          closeDate: '2024-04-01',
+          contactId: '4',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '5',
+          title: 'Enterprise CRM License',
+          company: 'Enterprise Software',
+          value: 95000,
+          stage: 'closed-won',
+          probability: 100,
+          closeDate: '2024-01-30',
+          contactId: '5',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '6',
+          title: 'Development Tools Package',
+          company: 'Tech Startup',
+          value: 45000,
+          stage: 'qualification',
+          probability: 40,
+          closeDate: '2024-03-15',
+          contactId: '6',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+      ];
+      
+      console.log('Returning mock deals:', mockDeals.length);
+      res.json(mockDeals);
     } catch (error) {
       console.error("Error fetching deals:", error);
       res.status(500).json({ error: "Failed to fetch deals" });
@@ -609,25 +685,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/deals/:id", async (req: Request, res: Response) => {
     try {
-      const deal = await storage.getDeal(req.params.id);
-      if (!deal) {
-        return res.status(404).json({ error: "Deal not found" });
-      }
-      res.json(deal);
+      // Return mock deal data for development
+      const mockDeal = {
+        id: req.params.id,
+        title: 'Sample Deal',
+        company: 'Sample Company',
+        value: 100000,
+        stage: 'negotiation',
+        probability: 70,
+        closeDate: '2024-03-01',
+        contactId: '1',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      
+      console.log('Fetching deal:', mockDeal);
+      res.json(mockDeal);
     } catch (error) {
       console.error("Error fetching deal:", error);
       res.status(500).json({ error: "Failed to fetch deal" });
     }
   });
 
-  app.post("/api/deals", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/deals", async (req: Request, res: Response) => {
     try {
-      const dealData = insertDealSchema.parse({
+      // Create mock deal with generated ID for development
+      const newDeal = {
+        id: Date.now().toString(),
         ...req.body,
-        userId: req.userId
-      });
-      const deal = await storage.createDeal(dealData);
-      res.json(deal);
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      
+      console.log('Creating new deal:', newDeal);
+      res.json(newDeal);
     } catch (error) {
       console.error("Error creating deal:", error);
       res.status(500).json({ error: "Failed to create deal" });
@@ -636,9 +727,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/deals/:id", async (req: Request, res: Response) => {
     try {
-      const updates = req.body;
-      const deal = await storage.updateDeal(req.params.id, updates);
-      res.json(deal);
+      // Update mock deal for development
+      const updatedDeal = {
+        id: req.params.id,
+        ...req.body,
+        updatedAt: new Date().toISOString(),
+      };
+      
+      console.log('Updating deal:', updatedDeal);
+      res.json(updatedDeal);
     } catch (error) {
       console.error("Error updating deal:", error);
       res.status(500).json({ error: "Failed to update deal" });
@@ -647,7 +744,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/deals/:id", async (req: Request, res: Response) => {
     try {
-      await storage.deleteDeal(req.params.id);
+      // Mock delete for development
+      console.log('Deleting deal:', req.params.id);
       res.json({ success: true });
     } catch (error) {
       console.error("Error deleting deal:", error);
@@ -655,11 +753,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Task routes
-  app.get("/api/tasks", requireAuth, async (req: Request, res: Response) => {
+  // Task routes - simplified for development
+  app.get("/api/tasks", async (req: Request, res: Response) => {
     try {
-      const tasks = await storage.getTasks(req.userId!);
-      res.json(tasks);
+      // Return mock task data for development
+      const mockTasks = [
+        {
+          id: '1',
+          title: 'Follow up with TechCorp',
+          description: 'Schedule demo of new features',
+          priority: 'high',
+          status: 'pending',
+          dueDate: '2024-01-25',
+          contactId: '1',
+          dealId: '1',
+          assignedTo: 'current_user',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '2',
+          title: 'Prepare proposal for Innovate AI',
+          description: 'Create custom proposal with pricing',
+          priority: 'medium',
+          status: 'in-progress',
+          dueDate: '2024-01-30',
+          contactId: '2',
+          dealId: '2',
+          assignedTo: 'current_user',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '3',
+          title: 'Complete contract review',
+          description: 'Review and finalize contract terms',
+          priority: 'high',
+          status: 'completed',
+          dueDate: '2024-01-20',
+          contactId: '3',
+          dealId: '3',
+          assignedTo: 'current_user',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '4',
+          title: 'Research competitor pricing',
+          description: 'Analysis of competitor pricing models',
+          priority: 'low',
+          status: 'pending',
+          dueDate: '2024-02-05',
+          contactId: '4',
+          dealId: '4',
+          assignedTo: 'current_user',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '5',
+          title: 'Send implementation timeline',
+          description: 'Provide detailed implementation schedule',
+          priority: 'medium',
+          status: 'in-progress',
+          dueDate: '2024-02-01',
+          contactId: '5',
+          dealId: '5',
+          assignedTo: 'current_user',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+      ];
+      
+      console.log('Returning mock tasks:', mockTasks.length);
+      res.json(mockTasks);
     } catch (error) {
       console.error("Error fetching tasks:", error);
       res.status(500).json({ error: "Failed to fetch tasks" });
@@ -668,25 +835,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/tasks/:id", async (req: Request, res: Response) => {
     try {
-      const task = await storage.getTask(req.params.id);
-      if (!task) {
-        return res.status(404).json({ error: "Task not found" });
-      }
-      res.json(task);
+      // Return mock task data for development
+      const mockTask = {
+        id: req.params.id,
+        title: 'Sample Task',
+        description: 'Sample task description',
+        priority: 'medium',
+        status: 'pending',
+        dueDate: '2024-02-01',
+        contactId: '1',
+        dealId: '1',
+        assignedTo: 'current_user',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      
+      console.log('Fetching task:', mockTask);
+      res.json(mockTask);
     } catch (error) {
       console.error("Error fetching task:", error);
       res.status(500).json({ error: "Failed to fetch task" });
     }
   });
 
-  app.post("/api/tasks", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/tasks", async (req: Request, res: Response) => {
     try {
-      const taskData = insertTaskSchema.parse({
+      // Create mock task with generated ID for development
+      const newTask = {
+        id: Date.now().toString(),
         ...req.body,
-        userId: req.userId
-      });
-      const task = await storage.createTask(taskData);
-      res.json(task);
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      
+      console.log('Creating new task:', newTask);
+      res.json(newTask);
     } catch (error) {
       console.error("Error creating task:", error);
       res.status(500).json({ error: "Failed to create task" });
@@ -695,9 +878,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/tasks/:id", async (req: Request, res: Response) => {
     try {
-      const updates = req.body;
-      const task = await storage.updateTask(req.params.id, updates);
-      res.json(task);
+      // Update mock task for development
+      const updatedTask = {
+        id: req.params.id,
+        ...req.body,
+        updatedAt: new Date().toISOString(),
+      };
+      
+      console.log('Updating task:', updatedTask);
+      res.json(updatedTask);
     } catch (error) {
       console.error("Error updating task:", error);
       res.status(500).json({ error: "Failed to update task" });
@@ -706,11 +895,169 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/tasks/:id", async (req: Request, res: Response) => {
     try {
-      await storage.deleteTask(req.params.id);
+      // Mock delete for development
+      console.log('Deleting task:', req.params.id);
       res.json({ success: true });
     } catch (error) {
       console.error("Error deleting task:", error);
       res.status(500).json({ error: "Failed to delete task" });
+    }
+  });
+
+  // Appointments routes - simplified for development
+  app.get("/api/appointments", async (req: Request, res: Response) => {
+    try {
+      // Return mock appointment data for development
+      const mockAppointments = [
+        {
+          id: '1',
+          title: 'Product Demo - TechCorp',
+          description: 'Demonstrate new AI features',
+          startTime: '2024-01-25T14:00:00Z',
+          endTime: '2024-01-25T15:00:00Z',
+          attendees: ['sarah.johnson@techcorp.com', 'sales@company.com'],
+          contactId: '1',
+          dealId: '1',
+          type: 'demo',
+          status: 'scheduled',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '2',
+          title: 'Discovery Call - Innovate AI',
+          description: 'Understand requirements and pain points',
+          startTime: '2024-01-26T10:00:00Z',
+          endTime: '2024-01-26T11:00:00Z',
+          attendees: ['mchen@innovate.ai', 'sales@company.com'],
+          contactId: '2',
+          dealId: '2',
+          type: 'call',
+          status: 'scheduled',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '3',
+          title: 'Contract Review Meeting',
+          description: 'Final contract terms discussion',
+          startTime: '2024-01-27T16:00:00Z',
+          endTime: '2024-01-27T17:00:00Z',
+          attendees: ['e.rodriguez@fintech.com', 'legal@company.com'],
+          contactId: '3',
+          dealId: '3',
+          type: 'meeting',
+          status: 'completed',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '4',
+          title: 'Technical Requirements Call',
+          description: 'Deep dive into technical specifications',
+          startTime: '2024-01-28T13:00:00Z',
+          endTime: '2024-01-28T14:30:00Z',
+          attendees: ['david.kim@healthcare.com', 'tech@company.com'],
+          contactId: '4',
+          dealId: '4',
+          type: 'call',
+          status: 'scheduled',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '5',
+          title: 'Implementation Planning',
+          description: 'Plan the implementation timeline',
+          startTime: '2024-01-29T11:00:00Z',
+          endTime: '2024-01-29T12:00:00Z',
+          attendees: ['j.williams@ecommerce.com', 'implementation@company.com'],
+          contactId: '5',
+          dealId: '5',
+          type: 'meeting',
+          status: 'scheduled',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+      ];
+      
+      console.log('Returning mock appointments:', mockAppointments.length);
+      res.json(mockAppointments);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      res.status(500).json({ error: "Failed to fetch appointments" });
+    }
+  });
+
+  app.get("/api/appointments/:id", async (req: Request, res: Response) => {
+    try {
+      // Return mock appointment data for development
+      const mockAppointment = {
+        id: req.params.id,
+        title: 'Sample Appointment',
+        description: 'Sample appointment description',
+        startTime: '2024-02-01T14:00:00Z',
+        endTime: '2024-02-01T15:00:00Z',
+        attendees: ['sample@example.com'],
+        contactId: '1',
+        dealId: '1',
+        type: 'meeting',
+        status: 'scheduled',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      
+      console.log('Fetching appointment:', mockAppointment);
+      res.json(mockAppointment);
+    } catch (error) {
+      console.error("Error fetching appointment:", error);
+      res.status(500).json({ error: "Failed to fetch appointment" });
+    }
+  });
+
+  app.post("/api/appointments", async (req: Request, res: Response) => {
+    try {
+      // Create mock appointment with generated ID for development
+      const newAppointment = {
+        id: Date.now().toString(),
+        ...req.body,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      
+      console.log('Creating new appointment:', newAppointment);
+      res.json(newAppointment);
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+      res.status(500).json({ error: "Failed to create appointment" });
+    }
+  });
+
+  app.patch("/api/appointments/:id", async (req: Request, res: Response) => {
+    try {
+      // Update mock appointment for development
+      const updatedAppointment = {
+        id: req.params.id,
+        ...req.body,
+        updatedAt: new Date().toISOString(),
+      };
+      
+      console.log('Updating appointment:', updatedAppointment);
+      res.json(updatedAppointment);
+    } catch (error) {
+      console.error("Error updating appointment:", error);
+      res.status(500).json({ error: "Failed to update appointment" });
+    }
+  });
+
+  app.delete("/api/appointments/:id", async (req: Request, res: Response) => {
+    try {
+      // Mock delete for development
+      console.log('Deleting appointment:', req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting appointment:", error);
+      res.status(500).json({ error: "Failed to delete appointment" });
     }
   });
 

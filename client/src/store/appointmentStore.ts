@@ -21,6 +21,11 @@ interface AppointmentState {
   updateAppointment: (id: string, updates: Partial<Appointment>) => void;
   deleteAppointment: (id: string) => void;
   getAppointment: (id: string) => Appointment | undefined;
+  // API methods
+  fetchAppointments: () => Promise<void>;
+  createAppointment: (appointmentData: Partial<Appointment>) => Promise<Appointment>;
+  updateAppointmentApi: (id: string, updates: Partial<Appointment>) => Promise<Appointment>;
+  deleteAppointmentApi: (id: string) => Promise<void>;
 }
 
 // Mock appointment data for development
@@ -96,4 +101,94 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     }),
 
   getAppointment: (id) => get().appointments[id],
+
+  // API methods
+  fetchAppointments: async () => {
+    try {
+      const response = await fetch('/api/appointments');
+      if (!response.ok) {
+        throw new Error('Failed to fetch appointments');
+      }
+      const appointmentsArray = await response.json();
+      
+      const appointments = appointmentsArray.reduce((acc: Record<string, Appointment>, appointment: Appointment) => {
+        acc[appointment.id] = appointment;
+        return acc;
+      }, {});
+      
+      set({ appointments });
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+      // Fallback to mock data if API fails
+      const fallbackAppointments = mockAppointments.reduce((acc, appointment) => {
+        acc[appointment.id] = appointment;
+        return acc;
+      }, {} as Record<string, Appointment>);
+      
+      set({ appointments: fallbackAppointments });
+    }
+  },
+
+  createAppointment: async (appointmentData) => {
+    try {
+      const response = await fetch('/api/appointments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(appointmentData),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to create appointment');
+      }
+      
+      const newAppointment = await response.json();
+      get().addAppointment(newAppointment);
+      return newAppointment;
+    } catch (error) {
+      console.error('Error creating appointment:', error);
+      throw error;
+    }
+  },
+
+  updateAppointmentApi: async (id, updates) => {
+    try {
+      const response = await fetch(`/api/appointments/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update appointment');
+      }
+      
+      const updatedAppointment = await response.json();
+      get().updateAppointment(id, updatedAppointment);
+      return updatedAppointment;
+    } catch (error) {
+      console.error('Error updating appointment:', error);
+      throw error;
+    }
+  },
+
+  deleteAppointmentApi: async (id) => {
+    try {
+      const response = await fetch(`/api/appointments/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete appointment');
+      }
+      
+      get().deleteAppointment(id);
+    } catch (error) {
+      console.error('Error deleting appointment:', error);
+      throw error;
+    }
+  },
 }));

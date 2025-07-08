@@ -295,7 +295,7 @@ const Pipeline: React.FC = () => {
           // Kanban Board View
           <div className="overflow-x-auto pb-4">
             <div className="grid grid-flow-col auto-cols-min gap-4 min-w-max">
-              {columnOrder.map(columnId => {
+              {columnOrder && columnOrder.length > 0 ? columnOrder.map(columnId => {
                 const column = columns[columnId];
                 const columnDeals = column.dealIds
                   .map(dealId => deals[dealId])
@@ -408,7 +408,7 @@ const Pipeline: React.FC = () => {
                     </div>
                   </div>
                 );
-              })}
+              }) : null}
             </div>
           </div>
         ) : (

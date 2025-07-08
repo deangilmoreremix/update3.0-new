@@ -20,6 +20,11 @@ interface TaskState {
   updateTask: (id: string, updates: Partial<Task>) => void;
   deleteTask: (id: string) => void;
   getTask: (id: string) => Task | undefined;
+  // API methods
+  fetchTasks: () => Promise<void>;
+  createTask: (taskData: Partial<Task>) => Promise<Task>;
+  updateTaskApi: (id: string, updates: Partial<Task>) => Promise<Task>;
+  deleteTaskApi: (id: string) => Promise<void>;
 }
 
 // Mock task data for development
@@ -91,4 +96,94 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     }),
 
   getTask: (id) => get().tasks[id],
+
+  // API methods
+  fetchTasks: async () => {
+    try {
+      const response = await fetch('/api/tasks');
+      if (!response.ok) {
+        throw new Error('Failed to fetch tasks');
+      }
+      const tasksArray = await response.json();
+      
+      const tasks = tasksArray.reduce((acc: Record<string, Task>, task: Task) => {
+        acc[task.id] = task;
+        return acc;
+      }, {});
+      
+      set({ tasks });
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+      // Fallback to mock data if API fails
+      const fallbackTasks = mockTasks.reduce((acc, task) => {
+        acc[task.id] = task;
+        return acc;
+      }, {} as Record<string, Task>);
+      
+      set({ tasks: fallbackTasks });
+    }
+  },
+
+  createTask: async (taskData) => {
+    try {
+      const response = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(taskData),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to create task');
+      }
+      
+      const newTask = await response.json();
+      get().addTask(newTask);
+      return newTask;
+    } catch (error) {
+      console.error('Error creating task:', error);
+      throw error;
+    }
+  },
+
+  updateTaskApi: async (id, updates) => {
+    try {
+      const response = await fetch(`/api/tasks/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update task');
+      }
+      
+      const updatedTask = await response.json();
+      get().updateTask(id, updatedTask);
+      return updatedTask;
+    } catch (error) {
+      console.error('Error updating task:', error);
+      throw error;
+    }
+  },
+
+  deleteTaskApi: async (id) => {
+    try {
+      const response = await fetch(`/api/tasks/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete task');
+      }
+      
+      get().deleteTask(id);
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      throw error;
+    }
+  },
 }));

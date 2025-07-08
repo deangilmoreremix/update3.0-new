@@ -13,16 +13,39 @@ interface Deal {
   updatedAt: string;
 }
 
+interface Column {
+  id: string;
+  title: string;
+  dealIds: string[];
+}
+
 interface DealState {
   deals: Record<string, Deal>;
   // Computed values
   totalPipelineValue: number;
   stageValues: Record<string, number>;
+  // Kanban board data
+  columns: Record<string, Column>;
+  columnOrder: string[];
+  // UI state
+  isLoading: boolean;
+  error: string | null;
+  selectedDeal: Deal | null;
+  aiInsight: string | null;
+  isAnalyzing: boolean;
   // Actions
   addDeal: (deal: Deal) => void;
   updateDeal: (id: string, updates: Partial<Deal>) => void;
   deleteDeal: (id: string) => void;
   getDeal: (id: string) => Deal | undefined;
+  selectDeal: (deal: Deal | null) => void;
+  moveDealToStage: (dealId: string, newStage: string) => void;
+  generateAiInsight: (deal: Deal) => Promise<void>;
+  // API methods
+  fetchDeals: () => Promise<void>;
+  createDeal: (dealData: Partial<Deal>) => Promise<Deal>;
+  updateDealApi: (id: string, updates: Partial<Deal>) => Promise<Deal>;
+  deleteDealApi: (id: string) => Promise<void>;
 }
 
 // Mock deal data for development
@@ -125,26 +148,57 @@ export const useDealStore = create<DealState>((set, get) => {
     return { totalPipelineValue, stageValues };
   };
 
+  const updateKanbanColumns = (deals: Record<string, Deal>) => {
+    const stages = ['discovery', 'qualification', 'proposal', 'negotiation', 'closed-won', 'closed-lost'];
+    const columns: Record<string, Column> = {};
+    const columnOrder: string[] = [];
+
+    stages.forEach(stage => {
+      const dealIds = Object.values(deals)
+        .filter(deal => deal.stage === stage)
+        .map(deal => deal.id);
+      
+      columns[stage] = {
+        id: stage,
+        title: stage.charAt(0).toUpperCase() + stage.slice(1).replace('-', ' '),
+        dealIds
+      };
+      columnOrder.push(stage);
+    });
+
+    return { columns, columnOrder };
+  };
+
   const initialDeals = mockDeals.reduce((acc, deal) => {
     acc[deal.id] = deal;
     return acc;
   }, {} as Record<string, Deal>);
 
   const initialValues = computeValues(initialDeals);
+  const initialKanban = updateKanbanColumns(initialDeals);
 
   return {
     deals: initialDeals,
     totalPipelineValue: initialValues.totalPipelineValue,
     stageValues: initialValues.stageValues,
+    columns: initialKanban.columns,
+    columnOrder: initialKanban.columnOrder,
+    isLoading: false,
+    error: null,
+    selectedDeal: null,
+    aiInsight: null,
+    isAnalyzing: false,
 
     addDeal: (deal) =>
       set((state) => {
         const newDeals = { ...state.deals, [deal.id]: deal };
         const computed = computeValues(newDeals);
+        const kanban = updateKanbanColumns(newDeals);
         return {
           deals: newDeals,
           totalPipelineValue: computed.totalPipelineValue,
           stageValues: computed.stageValues,
+          ...kanban,
         };
       }),
 
@@ -155,10 +209,12 @@ export const useDealStore = create<DealState>((set, get) => {
           [id]: { ...state.deals[id], ...updates, updatedAt: new Date().toISOString() },
         };
         const computed = computeValues(newDeals);
+        const kanban = updateKanbanColumns(newDeals);
         return {
           deals: newDeals,
           totalPipelineValue: computed.totalPipelineValue,
           stageValues: computed.stageValues,
+          ...kanban,
         };
       }),
 
@@ -167,13 +223,140 @@ export const useDealStore = create<DealState>((set, get) => {
         const newDeals = { ...state.deals };
         delete newDeals[id];
         const computed = computeValues(newDeals);
+        const kanban = updateKanbanColumns(newDeals);
         return {
           deals: newDeals,
           totalPipelineValue: computed.totalPipelineValue,
           stageValues: computed.stageValues,
+          ...kanban,
         };
       }),
 
     getDeal: (id) => get().deals[id],
+
+    selectDeal: (deal) => set({ selectedDeal: deal }),
+
+    moveDealToStage: (dealId, newStage) => {
+      const { updateDeal } = get();
+      updateDeal(dealId, { stage: newStage });
+    },
+
+    generateAiInsight: async (deal) => {
+      set({ isAnalyzing: true, aiInsight: null });
+      try {
+        // Mock AI insight generation
+        const insights = [
+          `Deal ${deal.title} has a ${deal.probability}% probability of closing. Consider focusing on addressing budget concerns.`,
+          `Based on deal size ($${deal.value.toLocaleString()}) and stage, this opportunity shows strong potential. Recommend scheduling technical demo.`,
+          `Deal timeline suggests urgency. Contact ${deal.company} within 48 hours to maintain momentum.`,
+          `High-value opportunity detected. Consider involving senior stakeholders for better closing rate.`
+        ];
+        
+        const randomInsight = insights[Math.floor(Math.random() * insights.length)];
+        
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        set({ aiInsight: randomInsight, isAnalyzing: false });
+      } catch (error) {
+        console.error('Error generating AI insight:', error);
+        set({ isAnalyzing: false, error: 'Failed to generate AI insight' });
+      }
+    },
+
+    // API methods
+    fetchDeals: async () => {
+      set({ isLoading: true, error: null });
+      try {
+        const response = await fetch('/api/deals');
+        if (!response.ok) {
+          throw new Error('Failed to fetch deals');
+        }
+        const dealsArray = await response.json();
+        
+        const deals = dealsArray.reduce((acc: Record<string, Deal>, deal: Deal) => {
+          acc[deal.id] = deal;
+          return acc;
+        }, {});
+        
+        const computed = computeValues(deals);
+        const kanban = updateKanbanColumns(deals);
+        set({ deals, ...computed, ...kanban, isLoading: false });
+      } catch (error) {
+        console.error('Error fetching deals:', error);
+        // Fallback to mock data if API fails
+        const fallbackDeals = mockDeals.reduce((acc, deal) => {
+          acc[deal.id] = deal;
+          return acc;
+        }, {} as Record<string, Deal>);
+        
+        const computed = computeValues(fallbackDeals);
+        const kanban = updateKanbanColumns(fallbackDeals);
+        set({ deals: fallbackDeals, ...computed, ...kanban, isLoading: false, error: 'Using fallback data' });
+      }
+    },
+
+    createDeal: async (dealData) => {
+      try {
+        const response = await fetch('/api/deals', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dealData),
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to create deal');
+        }
+        
+        const newDeal = await response.json();
+        get().addDeal(newDeal);
+        return newDeal;
+      } catch (error) {
+        console.error('Error creating deal:', error);
+        throw error;
+      }
+    },
+
+    updateDealApi: async (id, updates) => {
+      try {
+        const response = await fetch(`/api/deals/${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updates),
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to update deal');
+        }
+        
+        const updatedDeal = await response.json();
+        get().updateDeal(id, updatedDeal);
+        return updatedDeal;
+      } catch (error) {
+        console.error('Error updating deal:', error);
+        throw error;
+      }
+    },
+
+    deleteDealApi: async (id) => {
+      try {
+        const response = await fetch(`/api/deals/${id}`, {
+          method: 'DELETE',
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to delete deal');
+        }
+        
+        get().deleteDeal(id);
+      } catch (error) {
+        console.error('Error deleting deal:', error);
+        throw error;
+      }
+    },
   };
 });
