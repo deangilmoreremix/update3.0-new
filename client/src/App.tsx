@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient } from './lib/queryClient';
-import Navbar from './components/Navbar';
+import SimpleNavbar from './components/SimpleNavbar';
 import Dashboard from './components/Dashboard';
 import VideoCallOverlay from './components/VideoCallOverlay';
 import VideoCallPreviewWidget from './components/VideoCallPreviewWidget';
@@ -20,37 +17,33 @@ function App() {
   const [isContactsModalOpen, setIsContactsModalOpen] = useState(false);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <ThemeProvider>
-          <VideoCallProvider>
-            <AIToolsProvider>
-              <NavigationProvider>
-                <DashboardLayoutProvider>
-                  <EnhancedHelpProvider>
-                    <div className="min-h-screen h-full w-full flex flex-col transition-all duration-300 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-gradient-to-br from-gray-50 via-white to-gray-100">
-                      <DevicePermissionChecker />
-                      <Navbar />
-                      <div className="flex-1 w-full overflow-hidden">
-                        <Dashboard />
-                      </div>
-                      <VideoCallOverlay />
-                      <VideoCallPreviewWidget />
-                      
-                      {/* ContactsModal rendered at the root level */}
-                      <ContactsModal
-                        isOpen={isContactsModalOpen}
-                        onClose={() => setIsContactsModalOpen(false)}
-                      />
-                    </div>
-                  </EnhancedHelpProvider>
-                </DashboardLayoutProvider>
-              </NavigationProvider>
-            </AIToolsProvider>
-          </VideoCallProvider>
-        </ThemeProvider>
-      </Router>
-    </QueryClientProvider>
+    <ThemeProvider>
+      <VideoCallProvider>
+        <AIToolsProvider>
+          <NavigationProvider>
+            <DashboardLayoutProvider>
+              <EnhancedHelpProvider>
+                <div className="min-h-screen h-full w-full flex flex-col transition-all duration-300 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+                  <DevicePermissionChecker />
+                  <SimpleNavbar />
+                  <div className="flex-1 w-full overflow-hidden">
+                    <Dashboard />
+                  </div>
+                  <VideoCallOverlay />
+                  <VideoCallPreviewWidget />
+                  
+                  {/* ContactsModal rendered at the root level */}
+                  <ContactsModal
+                    isOpen={isContactsModalOpen}
+                    onClose={() => setIsContactsModalOpen(false)}
+                  />
+                </div>
+              </EnhancedHelpProvider>
+            </DashboardLayoutProvider>
+          </NavigationProvider>
+        </AIToolsProvider>
+      </VideoCallProvider>
+    </ThemeProvider>
   );
 }
 

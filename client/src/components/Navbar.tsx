@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
 // import { useUser, useClerk } from '@clerk/clerk-react';
 import { useAITools } from './AIToolsProvider';
-import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { 
   Home, 
   Users, 
@@ -69,8 +67,6 @@ const Navbar: React.FC<NavbarProps> = ({ onContactsClick }) => {
   const [contentMenuOpen, setContentMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   
-  const location = useLocation();
-  const navigate = useNavigate();
   // const { user, isSignedIn } = useUser();
   // const { signOut } = useClerk();
   
@@ -84,7 +80,6 @@ const Navbar: React.FC<NavbarProps> = ({ onContactsClick }) => {
   const isSignedIn = true;
   
   const { openTool } = useAITools();
-  const { isAdmin } = useFeatureAccess();
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleAiMenu = () => setAiMenuOpen(!aiMenuOpen);
