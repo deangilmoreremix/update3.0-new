@@ -73,5 +73,4 @@ const Avatar: React.FC<AvatarProps> = ({
   );
 };
 
-export { Avatar };
 export default Avatar;
