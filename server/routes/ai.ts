@@ -357,4 +357,101 @@ router.post('/chat', async (req, res) => {
   }
 });
 
+// Email suggestions endpoint
+router.post('/email-suggestions', async (req, res) => {
+  try {
+    const { subject, body, to } = req.body;
+
+    if (openai) {
+      const prompt = `Analyze this email and provide 3-5 specific suggestions to improve it:
+      
+Subject: ${subject}
+Body: ${body}
+To: ${to}
+
+Please provide actionable suggestions for improvement focusing on:
+- Subject line optimization
+- Email structure and flow
+- Call-to-action clarity
+- Personalization opportunities
+- Overall effectiveness
+
+Format as a simple array of suggestion strings.`;
+
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an email marketing expert. Provide concise, actionable suggestions to improve email effectiveness.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        max_tokens: 400,
+        temperature: 0.7
+      });
+
+      const content = response.choices[0]?.message?.content || '';
+      // Try to extract suggestions from response
+      const suggestions = content.split('\n').filter(line => line.trim().length > 0 && !line.includes('suggestions')).map(line => line.replace(/^\d+\.\s*/, '').replace(/^[-•]\s*/, '').trim());
+      
+      res.json({ suggestions: suggestions.slice(0, 5) });
+    } else {
+      // Fallback suggestions
+      const suggestions = [
+        "Consider adding a clear call-to-action at the end",
+        "The subject line could be more specific to increase open rates",
+        "Adding a personal touch about their company could improve engagement",
+        "Including a meeting link would make it easier to schedule",
+        "The email could benefit from a shorter, more concise opening"
+      ];
+      res.json({ suggestions });
+    }
+  } catch (error) {
+    console.error('Email suggestions error:', error);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      message: 'Failed to generate email suggestions'
+    });
+  }
+});
+
+// Image generation endpoint
+router.post('/generate-image', async (req, res) => {
+  try {
+    const { prompt, style, size, model, quality } = req.body;
+
+    if (openai) {
+      const response = await openai.images.generate({
+        model: model === 'dall-e-3' ? 'dall-e-3' : 'dall-e-2',
+        prompt: `${prompt} ${style ? `in ${style} style` : ''}`,
+        n: 1,
+        size: size || '1024x1024',
+        quality: quality || 'standard'
+      });
+
+      const imageUrl = response.data[0]?.url;
+      res.json({ imageUrl, prompt, settings: { style, size, model, quality } });
+    } else {
+      // Fallback - return a placeholder image URL
+      const placeholderUrl = `https://images.unsplash.com/photo-${Date.now()}?w=300&h=300&fit=crop`;
+      res.json({ 
+        imageUrl: placeholderUrl, 
+        prompt, 
+        settings: { style, size, model, quality },
+        note: 'This is a placeholder image. Configure OpenAI API key for real image generation.'
+      });
+    }
+  } catch (error) {
+    console.error('Image generation error:', error);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      message: 'Failed to generate image'
+    });
+  }
+});
+
 export default router;

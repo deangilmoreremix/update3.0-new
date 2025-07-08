@@ -9,6 +9,8 @@ const SalesAnalytics = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('month');
   const [selectedMetric, setSelectedMetric] = useState('revenue');
   const [loading, setLoading] = useState(false);
+  const [aiInsights, setAiInsights] = useState(null);
+  const [generatingInsights, setGeneratingInsights] = useState(false);
 
   const periods = [
     { value: 'week', label: 'This Week' },
@@ -73,6 +75,48 @@ const SalesAnalytics = () => {
     a.download = `sales-analytics-${selectedPeriod}.json`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const generateAIInsights = async () => {
+    setGeneratingInsights(true);
+    
+    try {
+      const prompt = `Analyze this sales data and provide strategic insights:
+      
+      Revenue: $${analytics.totalRevenue.toLocaleString()}
+      Average Deal Size: $${analytics.avgDealSize.toLocaleString()}
+      Win Rate: ${analytics.winRate.toFixed(1)}%
+      Conversion Rate: ${analytics.conversion.toFixed(1)}%
+      Won Deals: ${analytics.wonDeals}
+      Lost Deals: ${analytics.lostDeals}
+      Active Deals: ${analytics.activeDeals}
+      Total Contacts: ${analytics.totalContacts}
+      
+      Provide specific recommendations for improvement.`;
+
+      const response = await fetch('/api/ai/business-analysis', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt,
+          analysisType: 'sales-performance'
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAiInsights(data.analysis);
+      } else {
+        setAiInsights('AI analysis temporarily unavailable. Please try again later.');
+      }
+    } catch (error) {
+      console.error('Error generating AI insights:', error);
+      setAiInsights('Error generating insights. Please check your connection and try again.');
+    }
+    
+    setGeneratingInsights(false);
   };
 
   return (

@@ -126,21 +126,45 @@ Best regards,
     setShowContacts(false);
   };
 
-  const generateAISuggestions = () => {
+  const generateAISuggestions = async () => {
     setIsGeneratingAI(true);
     
-    // Simulate AI generation
-    setTimeout(() => {
-      const suggestions = [
+    try {
+      const response = await fetch('/api/ai/email-suggestions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          subject: email.subject,
+          body: email.body,
+          to: email.to
+        }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setAiSuggestions(data.suggestions || []);
+      } else {
+        // Fallback suggestions
+        setAiSuggestions([
+          "Consider adding a clear call-to-action at the end",
+          "The subject line could be more specific to increase open rates",
+          "Adding a personal touch about their company could improve engagement",
+          "Including a meeting link would make it easier to schedule",
+          "The email could benefit from a shorter, more concise opening"
+        ]);
+      }
+    } catch (error) {
+      console.error('Error generating AI suggestions:', error);
+      setAiSuggestions([
         "Consider adding a clear call-to-action at the end",
         "The subject line could be more specific to increase open rates",
-        "Adding a personal touch about their company could improve engagement",
-        "Including a meeting link would make it easier to schedule",
-        "The email could benefit from a shorter, more concise opening"
-      ];
-      setAiSuggestions(suggestions);
-      setIsGeneratingAI(false);
-    }, 2000);
+        "Adding a personal touch about their company could improve engagement"
+      ]);
+    }
+    
+    setIsGeneratingAI(false);
   };
 
   const handleFileUpload = (event) => {

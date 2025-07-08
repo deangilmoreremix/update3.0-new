@@ -73,8 +73,47 @@ const ImageGenerator = () => {
 
     setIsGenerating(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/ai/generate-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: prompt,
+          style: settings.style,
+          size: settings.size,
+          model: settings.model,
+          quality: settings.quality
+        }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const newImage = {
+          id: Date.now().toString(),
+          url: data.imageUrl || `https://images.unsplash.com/photo-${Date.now()}?w=300&h=300&fit=crop`,
+          prompt: prompt,
+          timestamp: new Date().toISOString(),
+          settings: { ...settings }
+        };
+        
+        setGeneratedImages([newImage, ...generatedImages]);
+      } else {
+        // Fallback to placeholder
+        const newImage = {
+          id: Date.now().toString(),
+          url: `https://images.unsplash.com/photo-${Date.now()}?w=300&h=300&fit=crop`,
+          prompt: prompt,
+          timestamp: new Date().toISOString(),
+          settings: { ...settings }
+        };
+        
+        setGeneratedImages([newImage, ...generatedImages]);
+      }
+    } catch (error) {
+      console.error('Error generating image:', error);
+      // Fallback to placeholder
       const newImage = {
         id: Date.now().toString(),
         url: `https://images.unsplash.com/photo-${Date.now()}?w=300&h=300&fit=crop`,
@@ -84,8 +123,9 @@ const ImageGenerator = () => {
       };
       
       setGeneratedImages([newImage, ...generatedImages]);
-      setIsGenerating(false);
-    }, 3000);
+    }
+    
+    setIsGenerating(false);
   };
 
   const downloadImage = (imageUrl, filename) => {
