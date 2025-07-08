@@ -15,6 +15,10 @@ interface Deal {
 
 interface DealState {
   deals: Record<string, Deal>;
+  // Computed values
+  totalPipelineValue: number;
+  stageValues: Record<string, number>;
+  // Actions
   addDeal: (deal: Deal) => void;
   updateDeal: (id: string, updates: Partial<Deal>) => void;
   deleteDeal: (id: string) => void;
@@ -109,31 +113,67 @@ const mockDeals: Deal[] = [
   }
 ];
 
-export const useDealStore = create<DealState>((set, get) => ({
-  deals: mockDeals.reduce((acc, deal) => {
+export const useDealStore = create<DealState>((set, get) => {
+  const computeValues = (deals: Record<string, Deal>) => {
+    const dealsList = Object.values(deals);
+    const totalPipelineValue = dealsList.reduce((sum, deal) => sum + deal.value, 0);
+    const stageValues = dealsList.reduce((acc, deal) => {
+      acc[deal.stage] = (acc[deal.stage] || 0) + deal.value;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    return { totalPipelineValue, stageValues };
+  };
+
+  const initialDeals = mockDeals.reduce((acc, deal) => {
     acc[deal.id] = deal;
     return acc;
-  }, {} as Record<string, Deal>),
+  }, {} as Record<string, Deal>);
 
-  addDeal: (deal) =>
-    set((state) => ({
-      deals: { ...state.deals, [deal.id]: deal },
-    })),
+  const initialValues = computeValues(initialDeals);
 
-  updateDeal: (id, updates) =>
-    set((state) => ({
-      deals: {
-        ...state.deals,
-        [id]: { ...state.deals[id], ...updates, updatedAt: new Date().toISOString() },
-      },
-    })),
+  return {
+    deals: initialDeals,
+    totalPipelineValue: initialValues.totalPipelineValue,
+    stageValues: initialValues.stageValues,
 
-  deleteDeal: (id) =>
-    set((state) => {
-      const newDeals = { ...state.deals };
-      delete newDeals[id];
-      return { deals: newDeals };
-    }),
+    addDeal: (deal) =>
+      set((state) => {
+        const newDeals = { ...state.deals, [deal.id]: deal };
+        const computed = computeValues(newDeals);
+        return {
+          deals: newDeals,
+          totalPipelineValue: computed.totalPipelineValue,
+          stageValues: computed.stageValues,
+        };
+      }),
 
-  getDeal: (id) => get().deals[id],
-}));
+    updateDeal: (id, updates) =>
+      set((state) => {
+        const newDeals = {
+          ...state.deals,
+          [id]: { ...state.deals[id], ...updates, updatedAt: new Date().toISOString() },
+        };
+        const computed = computeValues(newDeals);
+        return {
+          deals: newDeals,
+          totalPipelineValue: computed.totalPipelineValue,
+          stageValues: computed.stageValues,
+        };
+      }),
+
+    deleteDeal: (id) =>
+      set((state) => {
+        const newDeals = { ...state.deals };
+        delete newDeals[id];
+        const computed = computeValues(newDeals);
+        return {
+          deals: newDeals,
+          totalPipelineValue: computed.totalPipelineValue,
+          stageValues: computed.stageValues,
+        };
+      }),
+
+    getDeal: (id) => get().deals[id],
+  };
+});

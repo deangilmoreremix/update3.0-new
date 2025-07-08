@@ -35,16 +35,20 @@ import QuickActions from './dashboard/QuickActions';
 const Dashboard: React.FC = () => {
   const { 
     deals, 
+    fetchDeals, 
+    isLoading,
     stageValues,
     totalPipelineValue 
   } = useDealStore();
   
   const { 
-    contacts 
+    contacts, 
+    fetchContacts, 
+    isLoading: contactsLoading 
   } = useContactStore();
   
-  const { tasks } = useTaskStore();
-  const { appointments } = useAppointmentStore();
+  const { tasks, fetchTasks } = useTaskStore();
+  const { fetchAppointments } = useAppointmentStore();
   const { openTool } = useAITools();
   const { isDark } = useTheme();
   const { sectionOrder } = useDashboardLayout();
@@ -52,12 +56,20 @@ const Dashboard: React.FC = () => {
   const gemini = useGemini();
   
   useEffect(() => {
-    // All data is pre-loaded in the stores via mock data
-    // Periodic refresh can be added when connecting to real APIs
-    const dealsList = Object.values(deals);
-    const contactsList = Object.values(contacts);
-    console.log('Dashboard mounted with', dealsList.length, 'deals and', contactsList.length, 'contacts');
-  }, [deals, contacts]);
+    // Fetch all data when component mounts
+    fetchDeals();
+    fetchContacts();
+    fetchTasks();
+    fetchAppointments();
+    
+    // Set up timer to refresh data periodically
+    const intervalId = setInterval(() => {
+      fetchDeals();
+      fetchContacts();
+    }, 300000); // refresh every 5 minutes
+    
+    return () => clearInterval(intervalId);
+  }, []);
   
   // Render section content based on section ID
   const renderSectionContent = (sectionId: string) => {
@@ -113,9 +125,6 @@ const Dashboard: React.FC = () => {
 
       case 'apps-section':
         return <ConnectedApps />;
-
-      case 'new-leads-section':
-        return <NewLeadsSection />;
 
       default:
         return null;
