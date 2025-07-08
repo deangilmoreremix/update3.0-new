@@ -6,7 +6,8 @@ import { useDealStore } from '../store/dealStore';
 import { useContactStore } from '../store/contactStore';
 import { useTaskStore } from '../store/taskStore';
 import { useAppointmentStore } from '../store/appointmentStore';
-import { AvatarWithStatus } from './modern-ui/AvatarWithStatus';
+import Avatar from './ui/Avatar';
+import { getInitials } from '../utils/avatars';
 
 const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -506,13 +507,12 @@ const Navbar = () => {
                   }}
                   className={`flex items-center space-x-1 p-1 rounded-full transition-all duration-300 transform hover:scale-105 ${isDark ? 'hover:bg-white/20 text-white hover:text-white' : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'}`}
                 >
-                  <AvatarWithStatus
+                  <Avatar
                     src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2"
                     alt="John Doe"
-                    name="John Doe"
                     size="sm"
                     status="online"
-                    showStatus={true}
+                    fallback={getInitials("John Doe")}
                   />
                   <ChevronDown size={12} className={`transition-transform duration-300 ${activeDropdown === 'profile' ? 'rotate-180' : ''}`} />
                 </button>
@@ -521,13 +521,12 @@ const Navbar = () => {
                   <div className={`absolute top-12 right-0 w-64 ${isDark ? 'bg-gray-900/98 border-white/20' : 'bg-white/98 border-gray-200'} backdrop-blur-2xl border rounded-2xl shadow-2xl z-50 overflow-hidden animate-fade-in`}>
                     <div className="p-4">
                       <div className="flex items-center space-x-3 mb-4">
-                        <AvatarWithStatus
+                        <Avatar
                           src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2"
                           alt="John Doe"
-                          name="John Doe"
                           size="md"
                           status="online"
-                          showStatus={true}
+                          fallback={getInitials("John Doe")}
                         />
                         <div>
                           <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>John Doe</p>
