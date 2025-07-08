@@ -224,7 +224,7 @@ const ExactNavbar = () => {
                     >
                       <tab.icon 
                         size={14} 
-                        className={`transition-transform duration-300 ${
+                        className={`w-3.5 h-3.5 transition-transform duration-300 ${
                           isActive ? 'scale-110' : 'group-hover:scale-110'
                         }`} 
                       />
@@ -270,11 +270,11 @@ const ExactNavbar = () => {
                       group
                     `}
                   >
-                    <menu.icon size={14} className="transition-transform duration-300 group-hover:scale-110" />
+                    <menu.icon size={14} className="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-110" />
                     <span className="text-xs font-medium">{menu.label}</span>
                     <ChevronDown 
                       size={12} 
-                      className={`transition-transform duration-300 ${
+                      className={`w-3 h-3 transition-transform duration-300 ${
                         activeDropdown === menu.id ? 'rotate-180' : ''
                       }`} 
                     />
@@ -294,22 +294,29 @@ const ExactNavbar = () => {
             {/* Right Side Controls */}
             <div className="hidden lg:flex items-center space-x-2">
               {/* Search */}
-              <button className={`p-1.5 rounded-full transition-all duration-300 transform hover:scale-105 ${isDark ? 'hover:bg-white/20 text-white hover:text-white' : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'}`}>
-                <Search size={16} />
+              <button 
+                title="Search"
+                className={`p-1.5 rounded-full transition-all duration-300 transform hover:scale-105 ${isDark ? 'hover:bg-white/20 text-white hover:text-white' : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'}`}
+              >
+                <Search size={16} className="w-4 h-4" />
               </button>
               
               {/* Notifications */}
-              <button className={`relative p-1.5 rounded-full transition-all duration-300 transform hover:scale-105 ${isDark ? 'hover:bg-white/20 text-white hover:text-white' : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'}`}>
-                <Bell size={16} />
+              <button 
+                title="Notifications"
+                className={`relative p-1.5 rounded-full transition-all duration-300 transform hover:scale-105 ${isDark ? 'hover:bg-white/20 text-white hover:text-white' : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'}`}
+              >
+                <Bell size={16} className="w-4 h-4" />
                 {counters.totalNotifications > 0 && renderBadge(counters.totalNotifications)}
               </button>
 
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
+                title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                 className={`p-1.5 rounded-full transition-all duration-500 transform hover:scale-105 ${isDark ? 'bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'}`}
               >
-                {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                {isDark ? <Sun size={16} className="w-4 h-4" /> : <Moon size={16} className="w-4 h-4" />}
               </button>
               
               {/* User Profile */}
@@ -324,7 +331,7 @@ const ExactNavbar = () => {
                   <div className="w-7 h-7 bg-gradient-to-r from-green-400 to-teal-500 rounded-full flex items-center justify-center shadow-lg ring-2 ring-white/20">
                     <span className="text-xs font-bold text-white">JD</span>
                   </div>
-                  <ChevronDown size={12} className={`transition-transform duration-300 ${activeDropdown === 'profile' ? 'rotate-180' : ''}`} />
+                  <ChevronDown size={12} className={`w-3 h-3 transition-transform duration-300 ${activeDropdown === 'profile' ? 'rotate-180' : ''}`} />
                 </button>
                 
                 {activeDropdown === 'profile' && (
@@ -342,14 +349,14 @@ const ExactNavbar = () => {
                       
                       <div className="space-y-1">
                         <button className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/10 text-white hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}>
-                          <Settings size={16} />
+                          <Settings size={16} className="w-4 h-4" />
                           <span className="text-sm font-medium">Settings</span>
                         </button>
                         
                         <hr className={`my-2 ${isDark ? 'border-white/20' : 'border-gray-200'}`} />
                         
                         <button className="w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 text-red-400 hover:bg-red-500/10">
-                          <LogOut size={16} />
+                          <LogOut size={16} className="w-4 h-4" />
                           <span className="text-sm font-medium">Sign Out</span>
                         </button>
                       </div>
