@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAITools } from '../components/AIToolsProvider';
 import { 
   Brain, 
@@ -12,20 +12,11 @@ import {
   BarChart3,
   PieChart, 
   ChevronRight,
-  CheckCheck,
-  ArrowRight,
-  Play,
-  User,
-  Clock,
-  Star,
-  ExternalLink,
-  BarChart,
+  Search,
   Users,
-  Briefcase,
   Eye,
   Image,
   Mic,
-  Search,
   Zap,
   MessagesSquare,
   CheckCircle,
@@ -36,7 +27,6 @@ import {
   Calendar,
   X
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import StreamingChat from '../components/aiTools/StreamingChat';
 import RealTimeFormValidation from '../components/aiTools/RealTimeFormValidation';
 import LiveDealAnalysis from '../components/aiTools/LiveDealAnalysis';
@@ -68,7 +58,7 @@ const AITools: React.FC = () => {
   ];
   
   const aiFeatures = [
-    // Original tools
+    // Core AI Tools
     {
       title: "Smart Email Composer",
       description: "Generate personalized, professional emails for your contacts in seconds",
@@ -169,7 +159,7 @@ const AITools: React.FC = () => {
     },
     {
       title: "Visual Content Generator",
-      description: "Generate professional visual content ideas for sales presentations, marketing materials, and client communications",
+      description: "Generate professional visual content ideas for sales presentations",
       icon: <Image className="h-6 w-6 text-rose-600" />,
       id: "visual-content-generator" as const,
       categories: ['content']
@@ -185,7 +175,7 @@ const AITools: React.FC = () => {
     // Advanced AI features
     {
       title: "AI Assistant",
-      description: "Interact with a persistent AI assistant that remembers context and can help with various sales tasks",
+      description: "Interact with a persistent AI assistant for various sales tasks",
       icon: <Brain className="h-6 w-6 text-violet-600" />,
       id: "ai-assistant" as const,
       categories: ['advanced', 'sales'],
@@ -193,7 +183,7 @@ const AITools: React.FC = () => {
     },
     {
       title: "Vision Analyzer",
-      description: "Analyze images, screenshots, and visual content to extract insights and information",
+      description: "Analyze images, screenshots, and visual content to extract insights",
       icon: <Eye className="h-6 w-6 text-fuchsia-600" />,
       id: "vision-analyzer" as const,
       categories: ['vision', 'analysis'],
@@ -201,7 +191,7 @@ const AITools: React.FC = () => {
     },
     {
       title: "Image Generator",
-      description: "Create professional images for presentations, proposals, and marketing materials",
+      description: "Create professional images for presentations and marketing",
       icon: <Image className="h-6 w-6 text-emerald-600" />,
       id: "image-generator" as const,
       categories: ['vision', 'content'],
@@ -209,29 +199,29 @@ const AITools: React.FC = () => {
     },
     {
       title: "Semantic Search",
-      description: "Find anything in your CRM with natural language queries and contextual understanding",
+      description: "Find anything in your CRM with natural language queries",
       icon: <Search className="h-6 w-6 text-blue-600" />,
       id: "semantic-search" as const,
       categories: ['advanced', 'analysis'],
       new: true
     },
     
-    // Real-time/streaming features
+    // Real-time features
     {
       title: "Real-time Chat",
-      description: "Experience real-time AI responses with our streaming chat interface",
+      description: "Experience real-time AI responses with streaming chat interface",
       icon: <MessagesSquare className="h-6 w-6 text-blue-600" />,
       id: "streaming-chat" as const,
-      categories: ['advanced', 'sales', 'realtime'],
+      categories: ['advanced', 'realtime'],
       new: true,
       demoId: "streaming-chat"
     },
     {
       title: "Function Assistant",
-      description: "Chat with an AI that can perform real actions in your CRM through natural conversation",
+      description: "Chat with an AI that can perform real CRM actions",
       icon: <Zap className="h-6 w-6 text-yellow-600" />,
       id: "function-assistant" as const,
-      categories: ['advanced', 'sales', 'realtime'],
+      categories: ['advanced', 'realtime'],
       new: true
     },
     {
@@ -248,40 +238,40 @@ const AITools: React.FC = () => {
       description: "Get real-time insights and recommendations on your deals",
       icon: <BarChart3 className="h-6 w-6 text-purple-600" />,
       id: "live-deal-analysis" as const,
-      categories: ['analysis', 'sales', 'realtime'],
+      categories: ['sales', 'analysis', 'realtime'],
       new: true,
       demoId: "live-deal-analysis"
     },
     {
       title: "Instant Response Generator",
-      description: "Generate professional responses to common scenarios in milliseconds",
-      icon: <Sparkles className="h-6 w-6 text-teal-600" />,
+      description: "Generate immediate responses to customer inquiries",
+      icon: <Sparkles className="h-6 w-6 text-sky-600" />,
       id: "instant-response" as const,
-      categories: ['content', 'email', 'realtime'],
+      categories: ['email', 'realtime'],
       new: true,
       demoId: "instant-response"
     },
     {
-      title: "Real-time Document Analyzer",
-      description: "Extract insights from documents and images with live progress updates",
-      icon: <Eye className="h-6 w-6 text-indigo-600" />,
+      title: "Document Analyzer",
+      description: "Real-time analysis of uploaded documents and files",
+      icon: <FileText className="h-6 w-6 text-indigo-600" />,
       id: "document-analyzer-realtime" as const,
-      categories: ['vision', 'analysis', 'realtime'],
+      categories: ['analysis', 'realtime'],
       new: true,
       demoId: "document-analyzer"
     },
     {
       title: "Real-time Email Composer",
-      description: "Write emails with real-time AI suggestions and sentiment analysis",
+      description: "Compose emails with live AI assistance and suggestions",
       icon: <Mail className="h-6 w-6 text-blue-600" />,
       id: "realtime-email-composer" as const,
-      categories: ['email', 'content', 'realtime'],
+      categories: ['email', 'realtime'],
       new: true,
       demoId: "realtime-email"
     },
     {
       title: "Real-time Voice Analysis",
-      description: "Analyze voice calls in real-time for sentiment, pacing, and coaching",
+      description: "Analyze voice calls in real-time for sentiment and coaching",
       icon: <Mic className="h-6 w-6 text-purple-600" />,
       id: "voice-analysis-realtime" as const,
       categories: ['voice', 'analysis', 'realtime'],
@@ -326,221 +316,218 @@ const AITools: React.FC = () => {
     setShowDemo(true);
   };
 
+  // Helper function to get gradient colors based on tool ID
+  const getGradientColors = (id: string): string => {
+    switch(id) {
+      case 'email-analysis':
+      case 'email-composer':
+      case 'email-response':
+      case 'realtime-email-composer':
+        return 'rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.2)';
+      case 'meeting-summary':
+      case 'meeting-agenda':
+      case 'voice-tone-optimizer':
+        return 'rgba(147, 51, 234, 0.1), rgba(147, 51, 234, 0.2)';
+      case 'proposal-generator':
+      case 'customer-persona':
+        return 'rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2)';
+      case 'call-script':
+      case 'objection-handler':
+        return 'rgba(79, 70, 229, 0.1), rgba(79, 70, 229, 0.2)';
+      case 'subject-optimizer':
+      case 'visual-content-generator':
+        return 'rgba(244, 63, 94, 0.1), rgba(244, 63, 94, 0.2)';
+      case 'competitor-analysis':
+        return 'rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.2)';
+      case 'market-trends':
+        return 'rgba(6, 182, 212, 0.1), rgba(6, 182, 212, 0.2)';
+      case 'sales-insights':
+        return 'rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2)';
+      case 'sales-forecast':
+        return 'rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.2)';
+      case 'ai-assistant':
+        return 'rgba(124, 58, 237, 0.1), rgba(124, 58, 237, 0.2)';
+      case 'vision-analyzer':
+        return 'rgba(217, 70, 239, 0.1), rgba(217, 70, 239, 0.2)';
+      case 'image-generator':
+        return 'rgba(6, 182, 212, 0.1), rgba(6, 182, 212, 0.2)';
+      case 'semantic-search':
+      case 'smart-search-realtime':
+        return 'rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.2)';
+      case 'streaming-chat':
+        return 'rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.2)';
+      case 'function-assistant':
+        return 'rgba(250, 204, 21, 0.1), rgba(250, 204, 21, 0.2)';
+      case 'form-validation':
+      case 'auto-form-completer':
+        return 'rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2)';
+      case 'live-deal-analysis':
+        return 'rgba(147, 51, 234, 0.1), rgba(147, 51, 234, 0.2)';
+      case 'instant-response':
+        return 'rgba(14, 165, 233, 0.1), rgba(14, 165, 233, 0.2)';
+      case 'document-analyzer-realtime':
+        return 'rgba(79, 70, 229, 0.1), rgba(79, 70, 229, 0.2)';
+      case 'voice-analysis-realtime':
+        return 'rgba(168, 85, 247, 0.1), rgba(168, 85, 247, 0.2)';
+      default:
+        return 'rgba(107, 114, 128, 0.1), rgba(107, 114, 128, 0.2)';
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 overflow-y-auto">
+    <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">AI Tools</h1>
-          <p className="text-gray-600 mt-1">Advanced AI capabilities for your CRM</p>
-        </header>
-      
-      <div className="flex flex-col md:flex-row justify-between gap-4 mb-8">
-        {/* Search Bar */}
-        <div className="relative max-w-md w-full">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-gray-400" />
-          </div>
-          <input
-            type="text"
-            placeholder="Search AI tools..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none"
-          />
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">AI Tools</h1>
+          <p className="text-xl text-gray-600">Supercharge your sales and productivity with our AI-powered tools</p>
         </div>
-        
-        {/* Category Filters */}
-        <div className="flex flex-wrap gap-2">
-          {categories.map(category => (
-            <button
-              key={category.id}
-              onClick={() => setActiveCategory(activeCategory === category.id ? 'all' : category.id)}
-              className={`px-4 py-2 rounded-full text-sm transition-colors ${
-                activeCategory === category.id 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {category.name}
-            </button>
-          ))}
-        </div>
-      </div>
-      
-      <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 p-8 rounded-xl shadow-sm mb-10 border border-blue-100">
-        <div className="flex flex-col md:flex-row items-center gap-6">
-          <div className="p-5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full text-white shadow-lg">
-            <Zap className="h-10 w-10" />
+
+        {/* Search and Filters */}
+        <div className="flex flex-col md:flex-row justify-between gap-4 mb-8">
+          {/* Search Bar */}
+          <div className="relative max-w-md w-full">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search AI tools..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            />
           </div>
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">New Real-time AI Features</h2>
-            <p className="text-gray-700 text-lg">
-              Experience our latest real-time AI capabilities powered by Gemini 2.5 Flash and Pro models. Get instant responses, live analysis, and streaming results that feel more natural and responsive than ever before.
-              <span className="font-medium text-indigo-600 ml-1">Try the interactive demos below!</span>
-            </p>
+          
+          {/* Category Filters */}
+          <div className="flex flex-wrap gap-2">
+            {categories.map(category => (
+              <button
+                key={category.id}
+                onClick={() => setActiveCategory(category.id)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  activeCategory === category.id 
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {category.name}
+              </button>
+            ))}
           </div>
         </div>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTools.length > 0 ? (
-          filteredTools.map((feature) => (
-            <div 
-              key={feature.id} 
-              onClick={() => feature.demoId ? handleOpenDemoTool(feature.demoId) : openTool(feature.id)}
-              className="card-modern p-6 hover:shadow-md transition-all duration-300 group cursor-pointer"
-            >
-              <div className="flex flex-col h-full">
-                <div className="mb-4 p-4 rounded-2xl bg-gradient-to-r transition-all duration-300 group-hover:scale-105 group-hover:shadow-sm relative" 
-                      style={{backgroundImage: `linear-gradient(to right, ${getGradientColors(feature.id)})`}}>
-                  {feature.icon}
-                  {feature.new && (
-                    <span className="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">NEW</span>
-                  )}
+
+        {/* Info Banner */}
+        <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 p-8 rounded-xl shadow-sm mb-8 border border-blue-100">
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <div className="p-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full text-white shadow-lg">
+              <Zap className="h-8 w-8" />
+            </div>
+            <div className="flex-1 text-center md:text-left">
+              <h2 className="text-2xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+                AI-Powered Business Tools
+              </h2>
+              <p className="text-gray-700 text-lg">
+                Access our comprehensive suite of AI tools designed to boost your sales performance and productivity. 
+                Click on any tool to get started instantly!
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Tools Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredTools.length > 0 ? (
+            filteredTools.map((tool) => (
+              <div 
+                key={tool.id} 
+                onClick={() => tool.demoId ? handleOpenDemoTool(tool.demoId) : openTool(tool.id)}
+                className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all duration-300 cursor-pointer group"
+              >
+                <div className="flex flex-col h-full">
+                  <div className="mb-4 p-3 rounded-lg bg-gradient-to-r transition-all duration-300 group-hover:scale-105 relative" 
+                        style={{backgroundImage: `linear-gradient(to right, ${getGradientColors(tool.id)})`}}>
+                    {tool.icon}
+                    {tool.new && (
+                      <span className="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                        NEW
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2 text-gray-900">{tool.title}</h3>
+                  <p className="text-gray-600 mb-4 flex-1 text-sm leading-relaxed">{tool.description}</p>
+                  <div className="mt-auto">
+                    <span className="inline-flex items-center text-blue-600 font-medium group-hover:text-blue-700 transition-colors">
+                      {tool.demoId ? 'Try Interactive Demo' : 'Open Tool'}
+                      <ChevronRight className="w-4 h-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" />
+                    </span>
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600 mb-4 flex-1">{feature.description}</p>
-                <div className="mt-auto">
-                  <span className={`inline-flex items-center font-medium transition-all duration-300 group-hover:translate-x-1 ${
-                    feature.demoId ? 'text-blue-700' : 'text-blue-600'
-                  }`}>
-                    {feature.demoId ? 'Try Interactive Demo' : 'Open Tool'}
-                    <ChevronRight className="w-4 h-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" />
-                  </span>
+              </div>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-16">
+              <Brain className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+              <h3 className="text-xl font-medium text-gray-700 mb-2">No matching tools found</h3>
+              <p className="text-gray-500">Try adjusting your search or filter criteria</p>
+            </div>
+          )}
+        </div>
+
+        {/* Demo Modal */}
+        {showDemo && activeDemoTool && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+              <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gradient-to-r from-indigo-50 to-blue-50">
+                <h3 className="font-bold text-lg flex items-center">
+                  <Sparkles className="text-yellow-500 mr-2 h-5 w-5" />
+                  {activeDemoTool === "streaming-chat" ? "Real-time Streaming Chat" : 
+                   activeDemoTool === "form-validation" ? "Real-time Form Validation" :
+                   activeDemoTool === "live-deal-analysis" ? "Live Deal Analysis" :
+                   activeDemoTool === "instant-response" ? "Instant Response Generator" :
+                   activeDemoTool === "document-analyzer" ? "Real-time Document Analyzer" :
+                   activeDemoTool === "realtime-email" ? "Real-time Email Composer" :
+                   activeDemoTool === "voice-analysis" ? "Real-time Voice Analysis" :
+                   activeDemoTool === "smart-search" ? "Smart Search with Typeahead" :
+                   activeDemoTool === "auto-form" ? "AI Form Auto-completion" : "Interactive Demo"}
+                  <span className="ml-2 text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">Demo</span>
+                </h3>
+                <button 
+                  onClick={() => setShowDemo(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+              
+              <div className="p-6 overflow-y-auto max-h-[70vh]">
+                {activeDemoTool === "streaming-chat" && <StreamingChat />}
+                {activeDemoTool === "form-validation" && <RealTimeFormValidation />}
+                {activeDemoTool === "live-deal-analysis" && <LiveDealAnalysis />}
+                {activeDemoTool === "instant-response" && <InstantAIResponseGenerator />}
+                {activeDemoTool === "document-analyzer" && <DocumentAnalyzerRealtime />}
+                {activeDemoTool === "realtime-email" && <RealTimeEmailComposer />}
+                {activeDemoTool === "voice-analysis" && <VoiceAnalysisRealtime />}
+                {activeDemoTool === "smart-search" && <SmartSearchRealtime />}
+                {activeDemoTool === "auto-form" && <AutoFormCompleter />}
+              </div>
+              
+              <div className="p-4 border-t border-gray-200 bg-gray-50">
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => setShowDemo(false)}
+                    className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                  >
+                    Close Demo
+                  </button>
                 </div>
               </div>
             </div>
-          ))
-        ) : (
-          <div className="col-span-full text-center py-16">
-            <Brain className="h-16 w-16 mx-auto text-gray-300 mb-4" />
-            <h3 className="text-xl font-medium text-gray-700">No matching tools found</h3>
-            <p className="text-gray-500 mt-2">Try adjusting your search or filter criteria</p>
           </div>
         )}
       </div>
-      
-      {/* Interactive Demo Modal */}
-      {showDemo && activeDemoTool && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-            <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gradient-to-r from-indigo-50 to-blue-50">
-              <h3 className="font-bold text-lg flex items-center">
-                <Star className="text-yellow-500 mr-2 h-5 w-5" />
-                {activeDemoTool === "streaming-chat" ? "Real-time Streaming Chat" : 
-                 activeDemoTool === "form-validation" ? "Real-time Form Validation" :
-                 activeDemoTool === "live-deal-analysis" ? "Live Deal Analysis" :
-                 activeDemoTool === "instant-response" ? "Instant Response Generator" :
-                 activeDemoTool === "document-analyzer" ? "Real-time Document Analyzer" :
-                 activeDemoTool === "realtime-email" ? "Real-time Email Composer" :
-                 activeDemoTool === "voice-analysis" ? "Real-time Voice Analysis" :
-                 activeDemoTool === "smart-search" ? "Smart Search with Typeahead" :
-                 activeDemoTool === "auto-form" ? "AI Form Auto-completion" : "Interactive Demo"}
-                <span className="ml-2 text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full font-normal">Interactive Demo</span>
-              </h3>
-              <button 
-                onClick={() => {
-                  setShowDemo(false);
-                  setActiveDemoTool(null);
-                }}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <X size={24} />
-              </button>
-            </div>
-            
-            <div className="p-6 overflow-y-auto flex-1">
-              {activeDemoTool === "streaming-chat" && <StreamingChat />}
-              {activeDemoTool === "form-validation" && <RealTimeFormValidation />}
-              {activeDemoTool === "live-deal-analysis" && <LiveDealAnalysis />}
-              {activeDemoTool === "instant-response" && <InstantAIResponseGenerator />}
-              {activeDemoTool === "document-analyzer" && <DocumentAnalyzerRealtime />}
-              {activeDemoTool === "realtime-email" && <RealTimeEmailComposer />}
-              {activeDemoTool === "voice-analysis" && <VoiceAnalysisRealtime />}
-              {activeDemoTool === "smart-search" && <SmartSearchRealtime />}
-              {activeDemoTool === "auto-form" && <AutoFormCompleter />}
-            </div>
-            
-            <div className="p-4 border-t border-gray-200 bg-gray-50">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">
-                  Powered by Gemini 2.5 and OpenAI's latest models
-                </span>
-                <button
-                  onClick={() => {
-                    setShowDemo(false);
-                    setActiveDemoTool(null);
-                  }}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-                >
-                  Close Demo
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      </div>
     </div>
   );
-};
-
-// Helper function to get gradient colors based on tool ID
-const getGradientColors = (id: string): string => {
-  switch(id) {
-    case 'email-analysis':
-    case 'email-composer':
-    case 'email-response':
-    case 'realtime-email-composer':
-      return 'rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.2)';
-    case 'meeting-summary':
-    case 'meeting-agenda':
-    case 'voice-tone-optimizer':
-      return 'rgba(147, 51, 234, 0.1), rgba(147, 51, 234, 0.2)';
-    case 'proposal-generator':
-    case 'customer-persona':
-      return 'rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2)';
-    case 'call-script':
-    case 'objection-handler':
-      return 'rgba(79, 70, 229, 0.1), rgba(79, 70, 229, 0.2)';
-    case 'subject-optimizer':
-    case 'visual-content-generator':
-      return 'rgba(244, 63, 94, 0.1), rgba(244, 63, 94, 0.2)';
-    case 'competitor-analysis':
-      return 'rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.2)';
-    case 'market-trends':
-      return 'rgba(6, 182, 212, 0.1), rgba(6, 182, 212, 0.2)';
-    case 'sales-insights':
-      return 'rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2)';
-    case 'sales-forecast':
-      return 'rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.2)';
-    case 'ai-assistant':
-      return 'rgba(124, 58, 237, 0.1), rgba(124, 58, 237, 0.2)';
-    case 'vision-analyzer':
-      return 'rgba(217, 70, 239, 0.1), rgba(217, 70, 239, 0.2)';
-    case 'image-generator':
-      return 'rgba(6, 182, 212, 0.1), rgba(6, 182, 212, 0.2)';
-    case 'semantic-search':
-    case 'smart-search-realtime':
-      return 'rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.2)';
-    case 'streaming-chat':
-      return 'rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.2)';
-    case 'function-assistant':
-      return 'rgba(250, 204, 21, 0.1), rgba(250, 204, 21, 0.2)';
-    case 'form-validation':
-    case 'auto-form-completer':
-      return 'rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2)';
-    case 'live-deal-analysis':
-      return 'rgba(147, 51, 234, 0.1), rgba(147, 51, 234, 0.2)';
-    case 'instant-response':
-      return 'rgba(14, 165, 233, 0.1), rgba(14, 165, 233, 0.2)';
-    case 'document-analyzer-realtime':
-      return 'rgba(79, 70, 229, 0.1), rgba(79, 70, 229, 0.2)';
-    case 'voice-analysis-realtime':
-      return 'rgba(168, 85, 247, 0.1), rgba(168, 85, 247, 0.2)';
-    default:
-      return 'rgba(107, 114, 128, 0.1), rgba(107, 114, 128, 0.2)';
-  }
 };
 
 export default AITools;
