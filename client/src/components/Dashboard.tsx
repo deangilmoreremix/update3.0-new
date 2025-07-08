@@ -30,20 +30,16 @@ import AIInsightsPanel from './AIInsightsPanel';
 const Dashboard: React.FC = () => {
   const { 
     deals, 
-    fetchDeals, 
-    isLoading,
     stageValues,
     totalPipelineValue 
   } = useDealStore();
   
   const { 
-    contacts, 
-    fetchContacts, 
-    isLoading: contactsLoading 
+    contacts 
   } = useContactStore();
   
-  const { tasks, fetchTasks } = useTaskStore();
-  const { fetchAppointments } = useAppointmentStore();
+  const { tasks } = useTaskStore();
+  const { appointments } = useAppointmentStore();
   const { openTool } = useAITools();
   const { isDark } = useTheme();
   const { sectionOrder } = useDashboardLayout();
@@ -51,20 +47,9 @@ const Dashboard: React.FC = () => {
   const gemini = useGemini();
   
   useEffect(() => {
-    // Fetch all data when component mounts
-    fetchDeals();
-    fetchContacts();
-    fetchTasks();
-    fetchAppointments();
-    
-    // Set up timer to refresh data periodically
-    const intervalId = setInterval(() => {
-      fetchDeals();
-      fetchContacts();
-    }, 300000); // refresh every 5 minutes
-    
-    return () => clearInterval(intervalId);
-  }, [fetchDeals, fetchContacts, fetchTasks, fetchAppointments]);
+    // All data is already loaded via mock data stores
+    // No fetch operations needed for development
+  }, []);
   
   // Render section content based on section ID
   const renderSectionContent = (sectionId: string) => {
