@@ -38,6 +38,14 @@ import ProjectTracker from './pages/ProjectTracker';
 import TimeTracking from './pages/TimeTracking';
 import WorkflowBuilder from './pages/WorkflowBuilder';
 import DeadlineManager from './pages/DeadlineManager';
+import SalesAnalytics from './pages/SalesAnalytics';
+import QuoteBuilder from './pages/QuoteBuilder';
+import CommissionTracker from './pages/CommissionTracker';
+import FollowUpReminders from './pages/FollowUpReminders';
+import TerritoryManagement from './pages/TerritoryManagement';
+import EmailComposer from './pages/EmailComposer';
+import Campaigns from './pages/Campaigns';
+import ImageGenerator from './pages/ImageGenerator';
 
 import './components/styles/design-system.css';
 
@@ -80,6 +88,8 @@ function App() {
                         <Route path="/document-center" element={<DocumentCenter />} />
                         <Route path="/video-email" element={<VideoEmail />} />
                         <Route path="/text-messages" element={<TextMessages />} />
+                        <Route path="/email-composer" element={<EmailComposer />} />
+                        <Route path="/campaigns" element={<Campaigns />} />
                         
                         {/* Sales Tools Pages */}
                         <Route path="/sales-tools" element={<SalesTools />} />
@@ -87,6 +97,11 @@ function App() {
                         <Route path="/appointments" element={<Appointments />} />
                         <Route path="/phone-system" element={<PhoneSystem />} />
                         <Route path="/invoicing" element={<Invoicing />} />
+                        <Route path="/sales-analytics" element={<SalesAnalytics />} />
+                        <Route path="/quote-builder" element={<QuoteBuilder />} />
+                        <Route path="/commission-tracker" element={<CommissionTracker />} />
+                        <Route path="/follow-up-reminders" element={<FollowUpReminders />} />
+                        <Route path="/territory-management" element={<TerritoryManagement />} />
                         
                         {/* Content & AI Pages */}
                         <Route path="/content-library" element={<ContentLibrary />} />
@@ -94,6 +109,7 @@ function App() {
                         <Route path="/business-analysis" element={<BusinessAnalyzer />} />
                         <Route path="/forms" element={<FormsAndSurveys />} />
                         <Route path="/ai-tools" element={<AITools />} />
+                        <Route path="/image-generator" element={<ImageGenerator />} />
                         
                         {/* Redirect unknown routes to dashboard */}
                         <Route path="*" element={<Navigate to="/" replace />} />
