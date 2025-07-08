@@ -1,124 +1,240 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-interface DashboardLayout {
-  sidebarCollapsed: boolean;
-  widgetLayout: 'grid' | 'list' | 'compact';
-  activeWidgets: string[];
-  customizations: {
-    [key: string]: any;
-  };
+export interface SectionConfig {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  component: React.ComponentType | null;
+  color: string;
 }
 
 interface DashboardLayoutContextType {
-  layout: DashboardLayout;
-  toggleSidebar: () => void;
-  setWidgetLayout: (layout: 'grid' | 'list' | 'compact') => void;
-  toggleWidget: (widgetId: string) => void;
-  updateCustomizations: (key: string, value: any) => void;
-  resetLayout: () => void;
+  sectionOrder: string[];
+  setSectionOrder: (order: string[]) => void;
+  isDragging: boolean;
+  setIsDragging: (dragging: boolean) => void;
+  draggedItem: string | null;
+  setDraggedItem: (item: string | null) => void;
+  getSectionConfig: (id: string) => SectionConfig | undefined;
+  reorderSections: (startIndex: number, endIndex: number) => void;
+  resetToDefault: () => void;
 }
-
-const defaultLayout: DashboardLayout = {
-  sidebarCollapsed: false,
-  widgetLayout: 'grid',
-  activeWidgets: [
-    'kpi-cards',
-    'ai-insights',
-    'recent-activity',
-    'quick-actions',
-    'pipeline-overview',
-    'upcoming-tasks'
-  ],
-  customizations: {}
-};
 
 const DashboardLayoutContext = createContext<DashboardLayoutContextType | undefined>(undefined);
 
 export const useDashboardLayout = () => {
   const context = useContext(DashboardLayoutContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useDashboardLayout must be used within a DashboardLayoutProvider');
   }
   return context;
 };
 
-interface DashboardLayoutProviderProps {
-  children: React.ReactNode;
-}
+// Default section order
+const defaultSectionOrder = [
+  'executive-overview-section',
+  'kpi-cards-section',
+  'quick-actions-section',
+  'ai-smart-features-hub',
+  'sales-pipeline-deal-analytics',
+  'customer-lead-management',
+  'activities-communications',
+  'ai-insights-section',
+  'metrics-cards-section',
+  'interaction-history-section',
+  'customer-profile-section',
+  'recent-activity-section',
+  'tasks-and-funnel-section',
+  'integrations-system',
+  'charts-section',
+  'analytics-section',
+  'apps-section'
+];
 
-export const DashboardLayoutProvider: React.FC<DashboardLayoutProviderProps> = ({ children }) => {
-  const [layout, setLayout] = useState<DashboardLayout>(() => {
-    // Try to load saved layout from localStorage
-    const savedLayout = localStorage.getItem('smart-crm-dashboard-layout');
-    if (savedLayout) {
-      try {
-        return { ...defaultLayout, ...JSON.parse(savedLayout) };
-      } catch (error) {
-        console.warn('Failed to parse saved dashboard layout:', error);
-      }
-    }
-    return defaultLayout;
+// Section configurations
+const sectionConfigs: Record<string, SectionConfig> = {
+  'executive-overview-section': {
+    id: 'executive-overview-section',
+    title: 'Executive Overview',
+    description: 'High-level business metrics and insights',
+    icon: 'BarChart3',
+    component: null,
+    color: 'from-blue-500 to-indigo-500'
+  },
+  'kpi-cards-section': {
+    id: 'kpi-cards-section',
+    title: 'Key Performance Indicators',
+    description: 'Essential business metrics at a glance',
+    icon: 'TrendingUp',
+    component: null,
+    color: 'from-green-500 to-emerald-500'
+  },
+  'quick-actions-section': {
+    id: 'quick-actions-section',
+    title: 'Quick Actions',
+    description: 'Frequently used CRM actions',
+    icon: 'Zap',
+    component: null,
+    color: 'from-yellow-500 to-orange-500'
+  },
+  'ai-smart-features-hub': {
+    id: 'ai-smart-features-hub',
+    title: 'AI Smart Features Hub',
+    description: 'Intelligent automation and insights',
+    icon: 'Brain',
+    component: null,
+    color: 'from-purple-500 to-pink-500'
+  },
+  'sales-pipeline-deal-analytics': {
+    id: 'sales-pipeline-deal-analytics',
+    title: 'Sales Pipeline & Deal Analytics',
+    description: 'Comprehensive sales performance tracking',
+    icon: 'Target',
+    component: null,
+    color: 'from-green-500 to-teal-500'
+  },
+  'customer-lead-management': {
+    id: 'customer-lead-management',
+    title: 'Customer & Lead Management',
+    description: 'Manage and nurture your prospect relationships',
+    icon: 'Users',
+    component: null,
+    color: 'from-blue-500 to-cyan-500'
+  },
+  'activities-communications': {
+    id: 'activities-communications',
+    title: 'Activities & Communications',
+    description: 'Task management and communication tracking',
+    icon: 'MessageSquare',
+    component: null,
+    color: 'from-indigo-500 to-purple-500'
+  },
+  'ai-insights-section': {
+    id: 'ai-insights-section',
+    title: 'AI Insights & Recommendations',
+    description: 'Machine learning powered business insights',
+    icon: 'Lightbulb',
+    component: null,
+    color: 'from-amber-500 to-yellow-500'
+  },
+  'metrics-cards-section': {
+    id: 'metrics-cards-section',
+    title: 'Performance Metrics',
+    description: 'Detailed performance tracking cards',
+    icon: 'BarChart3',
+    component: null,
+    color: 'from-cyan-500 to-blue-500'
+  },
+  'integrations-system': {
+    id: 'integrations-system',
+    title: 'Integrations & System Tools',
+    description: 'Connect with external tools and platforms',
+    icon: 'Settings',
+    component: null,
+    color: 'from-gray-500 to-slate-500'
+  },
+  'interaction-history-section': {
+    id: 'interaction-history-section',
+    title: 'Interaction History',
+    description: 'Recent contact interactions and communications',
+    icon: 'MessageSquare',
+    component: null,
+    color: 'from-purple-500 to-blue-500'
+  },
+  'customer-profile-section': {
+    id: 'customer-profile-section',
+    title: 'Customer Profile',
+    description: 'Detailed customer information and insights',
+    icon: 'User',
+    component: null,
+    color: 'from-blue-500 to-indigo-500'
+  },
+  'recent-activity-section': {
+    id: 'recent-activity-section',
+    title: 'Recent Activity',
+    description: 'Latest actions and events in your CRM',
+    icon: 'Clock',
+    component: null,
+    color: 'from-gray-500 to-gray-600'
+  },
+  'tasks-and-funnel-section': {
+    id: 'tasks-and-funnel-section',
+    title: 'Tasks & Sales Funnel',
+    description: 'Task management and sales pipeline visualization',
+    icon: 'Target',
+    component: null,
+    color: 'from-amber-500 to-orange-500'
+  },
+  'apps-section': {
+    id: 'apps-section',
+    title: 'Connected Apps & Integrations',
+    description: 'Access your entire business toolkit',
+    icon: 'Grid3X3',
+    component: null,
+    color: 'from-purple-500 to-indigo-500'
+  },
+  'charts-section': {
+    id: 'charts-section',
+    title: 'Sales Charts & Analytics',
+    description: 'Visualization of key sales metrics',
+    icon: 'BarChart3',
+    component: null,
+    color: 'from-blue-500 to-teal-500'
+  },
+  'analytics-section': {
+    id: 'analytics-section',
+    title: 'Comprehensive Analytics',
+    description: 'Detailed charts and performance metrics',
+    icon: 'BarChart3',
+    component: null,
+    color: 'from-indigo-500 to-purple-500'
+  }
+};
+
+export const DashboardLayoutProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [sectionOrder, setSectionOrder] = useState<string[]>(() => {
+    // Load from localStorage first, then use default
+    const saved = localStorage.getItem('dashboard-section-order');
+    return saved ? JSON.parse(saved) : defaultSectionOrder;
   });
+  
+  const [isDragging, setIsDragging] = useState(false);
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
 
-  const saveLayout = useCallback((newLayout: DashboardLayout) => {
-    localStorage.setItem('smart-crm-dashboard-layout', JSON.stringify(newLayout));
-  }, []);
+  // Save to localStorage whenever order changes
+  useEffect(() => {
+    localStorage.setItem('dashboard-section-order', JSON.stringify(sectionOrder));
+  }, [sectionOrder]);
 
-  const toggleSidebar = useCallback(() => {
-    setLayout(prev => {
-      const newLayout = { ...prev, sidebarCollapsed: !prev.sidebarCollapsed };
-      saveLayout(newLayout);
-      return newLayout;
-    });
-  }, [saveLayout]);
+  const getSectionConfig = (id: string): SectionConfig | undefined => {
+    return sectionConfigs[id];
+  };
 
-  const setWidgetLayout = useCallback((widgetLayout: 'grid' | 'list' | 'compact') => {
-    setLayout(prev => {
-      const newLayout = { ...prev, widgetLayout };
-      saveLayout(newLayout);
-      return newLayout;
-    });
-  }, [saveLayout]);
+  const reorderSections = (startIndex: number, endIndex: number) => {
+    const newOrder = Array.from(sectionOrder);
+    const [removed] = newOrder.splice(startIndex, 1);
+    newOrder.splice(endIndex, 0, removed);
+    setSectionOrder(newOrder);
+  };
 
-  const toggleWidget = useCallback((widgetId: string) => {
-    setLayout(prev => {
-      const activeWidgets = prev.activeWidgets.includes(widgetId)
-        ? prev.activeWidgets.filter(id => id !== widgetId)
-        : [...prev.activeWidgets, widgetId];
-      
-      const newLayout = { ...prev, activeWidgets };
-      saveLayout(newLayout);
-      return newLayout;
-    });
-  }, [saveLayout]);
-
-  const updateCustomizations = useCallback((key: string, value: any) => {
-    setLayout(prev => {
-      const newLayout = {
-        ...prev,
-        customizations: { ...prev.customizations, [key]: value }
-      };
-      saveLayout(newLayout);
-      return newLayout;
-    });
-  }, [saveLayout]);
-
-  const resetLayout = useCallback(() => {
-    setLayout(defaultLayout);
-    localStorage.removeItem('smart-crm-dashboard-layout');
-  }, []);
-
-  const value: DashboardLayoutContextType = {
-    layout,
-    toggleSidebar,
-    setWidgetLayout,
-    toggleWidget,
-    updateCustomizations,
-    resetLayout
+  const resetToDefault = () => {
+    setSectionOrder([...defaultSectionOrder]);
+    localStorage.removeItem('dashboard-section-order');
   };
 
   return (
-    <DashboardLayoutContext.Provider value={value}>
+    <DashboardLayoutContext.Provider value={{
+      sectionOrder,
+      setSectionOrder,
+      isDragging,
+      setIsDragging,
+      draggedItem,
+      setDraggedItem,
+      getSectionConfig,
+      reorderSections,
+      resetToDefault
+    }}>
       {children}
     </DashboardLayoutContext.Provider>
   );

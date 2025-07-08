@@ -3,11 +3,20 @@ import { useVideoCall } from '../contexts/VideoCallContext';
 import { Video, VideoOff, Phone, PhoneOff, Maximize2, Minimize2 } from 'lucide-react';
 
 const VideoCallPreviewWidget: React.FC = () => {
-  const { callState, hidePreview, endCall } = useVideoCall();
+  const videoCall = useVideoCall();
 
-  if (!callState.isPreviewVisible) {
+  // Only show preview widget when connected
+  if (!videoCall.currentCall || videoCall.callStatus !== 'connected') {
     return null;
   }
+
+  // Map new context to expected callState interface
+  const callState = {
+    isCallActive: videoCall.currentCall !== null && videoCall.callStatus === 'connected',
+    isVideoEnabled: videoCall.isVideoEnabled,
+    callDuration: videoCall.currentCall?.duration || 0,
+    isPreviewVisible: true
+  };
 
   return (
     <div className="fixed bottom-4 right-4 z-40 bg-gray-900 rounded-lg shadow-2xl border border-gray-700 overflow-hidden">
@@ -33,7 +42,7 @@ const VideoCallPreviewWidget: React.FC = () => {
         <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-50 transition-all duration-200 flex items-center justify-center opacity-0 hover:opacity-100">
           <div className="flex space-x-2">
             <button
-              onClick={hidePreview}
+              onClick={() => console.log('Hide preview')}
               className="p-2 bg-gray-800 hover:bg-gray-700 rounded-full text-white transition-all duration-200"
               title="Minimize"
             >
@@ -42,7 +51,7 @@ const VideoCallPreviewWidget: React.FC = () => {
             
             {callState.isCallActive && (
               <button
-                onClick={endCall}
+                onClick={videoCall.endCall}
                 className="p-2 bg-red-500 hover:bg-red-600 rounded-full text-white transition-all duration-200"
                 title="End call"
               >

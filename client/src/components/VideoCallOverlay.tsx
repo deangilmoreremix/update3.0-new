@@ -3,11 +3,22 @@ import { useVideoCall } from '../contexts/VideoCallContext';
 import { Phone, PhoneOff, Mic, MicOff, Video, VideoOff, MoreHorizontal, Maximize2 } from 'lucide-react';
 
 const VideoCallOverlay: React.FC = () => {
-  const { callState, endCall, toggleMute, toggleVideo } = useVideoCall();
+  const videoCall = useVideoCall();
 
-  if (!callState.isCallActive) {
+  if (!videoCall.currentCall || videoCall.callStatus === 'idle') {
     return null;
   }
+
+  // Map new context to expected callState interface
+  const callState = {
+    isCallActive: videoCall.currentCall !== null && videoCall.callStatus === 'connected',
+    connectionStatus: videoCall.callStatus,
+    callDuration: videoCall.currentCall?.duration || 0,
+    isVideoEnabled: videoCall.isVideoEnabled,
+    isMuted: !videoCall.isMuted,
+    callParticipant: videoCall.currentCall?.participant,
+    callQuality: videoCall.connectionQuality
+  };
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -100,7 +111,7 @@ const VideoCallOverlay: React.FC = () => {
         {/* Controls */}
         <div className="flex items-center justify-center space-x-6">
           <button
-            onClick={toggleMute}
+            onClick={videoCall.toggleMute}
             className={`p-4 rounded-full transition-all duration-200 ${
               callState.isMuted 
                 ? 'bg-red-500 hover:bg-red-600 text-white' 
@@ -112,7 +123,7 @@ const VideoCallOverlay: React.FC = () => {
           </button>
 
           <button
-            onClick={toggleVideo}
+            onClick={videoCall.toggleVideo}
             className={`p-4 rounded-full transition-all duration-200 ${
               callState.isVideoEnabled 
                 ? 'bg-gray-700 hover:bg-gray-600 text-white' 
@@ -124,7 +135,7 @@ const VideoCallOverlay: React.FC = () => {
           </button>
 
           <button
-            onClick={endCall}
+            onClick={videoCall.endCall}
             className="p-4 bg-red-500 hover:bg-red-600 rounded-full text-white transition-all duration-200 hover:scale-105"
             title="End call"
           >
