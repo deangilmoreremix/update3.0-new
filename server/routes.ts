@@ -17,6 +17,7 @@ import { whiteLabelClient } from "./integrations/whiteLabelClient";
 import { partnerService } from "./services/partnerService";
 import partnersRouter from "./routes/partners";
 import featurePackagesRouter from "./routes/feature-packages";
+import aiRoutes from "./routes/ai";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 
 // Simplified authentication middleware for demo mode
@@ -2206,6 +2207,9 @@ Next Actions:
       recommendation: 'Assignment approved by AI validation'
     };
   }
+
+  // AI Routes Integration
+  app.use("/api/ai", aiRoutes);
 
   const httpServer = createServer(app);
 

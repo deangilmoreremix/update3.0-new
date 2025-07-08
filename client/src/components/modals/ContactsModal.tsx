@@ -109,7 +109,8 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({ isOpen, onClose })
 
   // Initialize Fuse.js for fuzzy search
   const fuse = useMemo(() => {
-    return new Fuse(contacts, {
+    const contactsArray = Object.values(contacts || {});
+    return new Fuse(contactsArray, {
       keys: ['name', 'company', 'title', 'email', 'industry'],
       threshold: 0.3,
     });
@@ -144,12 +145,14 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({ isOpen, onClose })
 
   // Filter and search contacts
   const filteredContacts = useMemo(() => {
-    let result = contacts;
+    // Convert contacts Record to array
+    const contactsArray = Object.values(contacts || {});
+    let result = Array.isArray(contactsArray) ? contactsArray : [];
 
     // Apply search
     if (searchTerm.trim()) {
       const searchResults = fuse.search(searchTerm);
-      result = searchResults.map(result => result.item);
+      result = searchResults.map(searchResult => searchResult.item);
     }
 
     // Apply interest level filter

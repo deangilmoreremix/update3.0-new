@@ -8,6 +8,8 @@ import { useContactStore } from '../store/contactStore';
 import { useTaskStore } from '../store/taskStore';
 import { useAppointmentStore } from '../store/appointmentStore';
 import DashboardLayoutControls from './DashboardLayoutControls';
+import AIInsightsPanel from './AIInsightsPanel';
+import { SmartAIControls } from './ai/SmartAIControls';
 
 // Executive Overview Section Component
 const ExecutiveOverviewSection: React.FC = () => {
@@ -328,44 +330,25 @@ const ActivitiesCommunications: React.FC = () => {
 const AIInsightsSection: React.FC = () => {
   const { isDark } = useTheme();
   const { openAITool } = useNavigation();
-  
-  const insights = [
-    { title: 'High-Value Lead Detected', description: 'TechCorp shows 85% conversion probability', confidence: 85, type: 'opportunity' },
-    { title: 'Follow-up Recommended', description: '3 contacts need immediate attention', confidence: 92, type: 'action' },
-    { title: 'Pipeline Risk Alert', description: '$50K deal may stall without intervention', confidence: 78, type: 'warning' },
-    { title: 'Revenue Forecast', description: 'Q1 target 23% ahead of schedule', confidence: 91, type: 'success' }
-  ];
+  const { contacts } = useContactStore();
   
   return (
     <div id="ai-insights-section" className={`mb-8 p-6 rounded-2xl backdrop-blur-sm ${isDark ? 'bg-white/5 border-white/10' : 'bg-white/90 border-gray-200'} border shadow-lg`}>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h3 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>AI Insights & Recommendations</h3>
-          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'} mt-1`}>Machine learning powered business insights</p>
-        </div>
-        <button onClick={() => openAITool('business-analyzer')} className="px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-white rounded-lg hover:from-amber-600 hover:to-yellow-600 transition-all duration-200">
-          Generate Insights
-        </button>
+      {/* AI Pipeline Intelligence Panel */}
+      <AIInsightsPanel />
+      
+      {/* Smart AI Controls */}
+      <div className="mt-6">
+        <SmartAIControls 
+          contacts={Object.values(contacts)}
+          onAnalysisComplete={(results) => {
+            console.log('AI Analysis completed:', results);
+            // Handle analysis results - could update contact store, show notifications, etc.
+          }}
+        />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {insights.map((insight, index) => (
-          <div key={index} className={`p-4 rounded-xl ${isDark ? 'bg-gray-800/50' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-200'} hover:shadow-lg transition-all duration-200`}>
-            <div className="flex items-center justify-between mb-2">
-              <Lightbulb className={`w-5 h-5 ${isDark ? 'text-amber-400' : 'text-amber-500'}`} />
-              <span className={`text-xs px-2 py-1 rounded-full ${
-                insight.type === 'success' ? 'bg-green-100 text-green-800' :
-                insight.type === 'warning' ? 'bg-yellow-100 text-yellow-800' :
-                insight.type === 'opportunity' ? 'bg-blue-100 text-blue-800' :
-                'bg-gray-100 text-gray-800'
-              }`}>
-                {insight.confidence}% confidence
-              </span>
-            </div>
-            <h4 className={`font-medium mb-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>{insight.title}</h4>
-            <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{insight.description}</p>
-          </div>
-        ))}
-      </div>
+      
+
     </div>
   );
 };
