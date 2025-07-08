@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Brain, Zap, Settings, BarChart3, Search } from 'lucide-react';
+import { Brain, Zap, Settings, BarChart3 } from 'lucide-react';
 import AIInsightsPanel from '../dashboard/AIInsightsPanel';
 import { SmartAIControls } from '../ai/SmartAIControls';
 import AIModelUsageStats from '../AIModelUsageStats';
@@ -102,4 +102,5 @@ const AISmartFeaturesHub: React.FC = () => {
   );
 };
 
+import { Search } from 'lucide-react';
 export default AISmartFeaturesHub;
