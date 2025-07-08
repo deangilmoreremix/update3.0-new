@@ -1259,7 +1259,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const { GoogleGenerativeAI } = await import('@google/generative-ai');
           const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
           const model = genAI.getGenerativeModel({ 
-            model: 'gemma-2-27b-it',
+            model: 'gemini-1.5-flash',
             generationConfig: {
               temperature: 0.7,
               topK: 40,
@@ -1668,7 +1668,7 @@ Format as actionable insights with priorities.`;
         throw new Error('Gemini API key not configured');
       }
       
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemma-2-27b-it:generateContent?key=${geminiApiKey}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

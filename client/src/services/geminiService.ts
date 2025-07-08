@@ -2,9 +2,9 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
 
-// Use Gemma 7B for complex agentic tasks requiring planning, tool use, and reasoning
+// Use Gemini 1.5 Flash for complex agentic tasks requiring planning, tool use, and reasoning
 const model = genAI.getGenerativeModel({ 
-  model: 'gemma-2-27b-it',
+  model: 'gemini-1.5-flash',
   generationConfig: {
     temperature: 0.7,
     topK: 40,
