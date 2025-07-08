@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { Brain, Zap, Settings, BarChart3, Search } from 'lucide-react';
 import AIInsightsPanel from '../dashboard/AIInsightsPanel';
-
+import AIControlsPanel from '../aiTools/AIControlsPanel';
+import AIPerformancePanel from '../aiTools/AIPerformancePanel';
 import LiveDealAnalysis from '../aiTools/LiveDealAnalysis';
 import SmartSearchRealtime from '../aiTools/SmartSearchRealtime';
 
@@ -59,23 +60,9 @@ const AISmartFeaturesHub: React.FC = () => {
       <div className="mb-6">
         {activeTab === 'insights' && <AIInsightsPanel />}
         
-        {activeTab === 'controls' && (
-          <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl p-6`}>
-            <div className={`text-center py-8 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              <Settings className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>AI Controls panel coming soon...</p>
-            </div>
-          </div>
-        )}
+        {activeTab === 'controls' && <AIControlsPanel />}
         
-        {activeTab === 'performance' && (
-          <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl p-6`}>
-            <div className={`text-center py-8 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>AI Performance metrics coming soon...</p>
-            </div>
-          </div>
-        )}
+        {activeTab === 'performance' && <AIPerformancePanel />}
         
         {activeTab === 'tools' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
