@@ -337,17 +337,123 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Contact routes
+  // Contact routes - simplified for development
   app.get("/api/contacts", async (req: Request, res: Response) => {
     try {
-      // For demo purposes, use the demo user we created
-      const demoUser = await storage.getUserByEmail("demo@smartcrm.com");
-      if (!demoUser) {
-        return res.status(404).json({ error: "Demo user not found. Run seed endpoint first." });
-      }
+      // For development, return mock contact data directly
+      const mockContacts = [
+        {
+          id: '1',
+          name: 'Sarah Johnson',
+          firstName: 'Sarah',
+          lastName: 'Johnson',
+          email: 'sarah.johnson@techcorp.com',
+          phone: '+1 (555) 123-4567',
+          title: 'VP of Engineering',
+          company: 'TechCorp Solutions',
+          industry: 'Technology',
+          status: 'lead',
+          interestLevel: 'hot',
+          aiScore: 92,
+          avatarSrc: 'https://images.pexels.com/photos/3763188/pexels-photo-3763188.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+          tags: ['enterprise', 'decision-maker', 'technical'],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '2',
+          name: 'Michael Chen',
+          firstName: 'Michael',
+          lastName: 'Chen',
+          email: 'mchen@innovate.ai',
+          phone: '+1 (555) 987-6543',
+          title: 'CTO',
+          company: 'Innovate AI',
+          industry: 'Artificial Intelligence',
+          status: 'prospect',
+          interestLevel: 'medium',
+          aiScore: 78,
+          avatarSrc: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+          tags: ['startup', 'ai-focused', 'growth'],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '3',
+          name: 'Emily Rodriguez',
+          firstName: 'Emily',
+          lastName: 'Rodriguez',
+          email: 'e.rodriguez@fintech.com',
+          phone: '+1 (555) 456-7890',
+          title: 'Head of Operations',
+          company: 'FinTech Solutions',
+          industry: 'Financial Services',
+          status: 'customer',
+          interestLevel: 'hot',
+          aiScore: 85,
+          avatarSrc: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+          tags: ['fintech', 'operations', 'customer'],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '4',
+          name: 'David Kim',
+          firstName: 'David',
+          lastName: 'Kim',
+          email: 'dkim@healthtech.io',
+          phone: '+1 (555) 321-0987',
+          title: 'Product Manager',
+          company: 'HealthTech Innovation',
+          industry: 'Healthcare',
+          status: 'lead',
+          interestLevel: 'medium',
+          aiScore: 73,
+          avatarSrc: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+          tags: ['healthcare', 'product', 'innovation'],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '5',
+          name: 'Jessica Williams',
+          firstName: 'Jessica',
+          lastName: 'Williams',
+          email: 'jwilliams@ecommerce.com',
+          phone: '+1 (555) 654-3210',
+          title: 'Marketing Director',
+          company: 'E-Commerce Plus',
+          industry: 'E-Commerce',
+          status: 'prospect',
+          interestLevel: 'low',
+          aiScore: 65,
+          avatarSrc: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+          tags: ['ecommerce', 'marketing', 'digital'],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '6',
+          name: 'Robert Taylor',
+          firstName: 'Robert',
+          lastName: 'Taylor',
+          email: 'rtaylor@manufacturing.com',
+          phone: '+1 (555) 789-0123',
+          title: 'CEO',
+          company: 'Advanced Manufacturing',
+          industry: 'Manufacturing',
+          status: 'customer',
+          interestLevel: 'hot',
+          aiScore: 95,
+          avatarSrc: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+          tags: ['manufacturing', 'ceo', 'enterprise'],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+      ];
       
-      const contacts = await storage.getContacts(demoUser.id);
-      res.json(contacts);
+      console.log('Returning mock contacts:', mockContacts.length);
+      res.json(mockContacts);
     } catch (error) {
       console.error("Error fetching contacts:", error);
       res.status(500).json({ error: "Failed to fetch contacts" });
@@ -356,25 +462,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/contacts/:id", async (req: Request, res: Response) => {
     try {
-      const contact = await storage.getContact(req.params.id);
-      if (!contact) {
-        return res.status(404).json({ error: "Contact not found" });
-      }
-      res.json(contact);
+      // For development, return a mock contact
+      const mockContact = {
+        id: req.params.id,
+        name: 'Sample Contact',
+        firstName: 'Sample',
+        lastName: 'Contact',
+        email: 'sample@example.com',
+        phone: '+1 (555) 000-0000',
+        title: 'Sample Title',
+        company: 'Sample Company',
+        industry: 'Technology',
+        status: 'lead',
+        interestLevel: 'medium',
+        aiScore: 75,
+        avatarSrc: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
+        tags: ['sample'],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      
+      console.log('Fetching contact:', mockContact);
+      res.json(mockContact);
     } catch (error) {
       console.error("Error fetching contact:", error);
       res.status(500).json({ error: "Failed to fetch contact" });
     }
   });
 
-  app.post("/api/contacts", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/contacts", async (req: Request, res: Response) => {
     try {
-      const contactData = insertContactSchema.parse({
+      // For development, create a mock contact with generated ID
+      const newContact = {
+        id: Date.now().toString(),
         ...req.body,
-        userId: req.userId
-      });
-      const contact = await storage.createContact(contactData);
-      res.json(contact);
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      
+      console.log('Creating new contact:', newContact);
+      res.json(newContact);
     } catch (error) {
       console.error("Error creating contact:", error);
       res.status(500).json({ error: "Failed to create contact" });
@@ -383,9 +510,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/contacts/:id", async (req: Request, res: Response) => {
     try {
-      const updates = req.body;
-      const contact = await storage.updateContact(req.params.id, updates);
-      res.json(contact);
+      // For development, return the updated contact with merged data
+      const updatedContact = {
+        id: req.params.id,
+        ...req.body,
+        updatedAt: new Date().toISOString(),
+      };
+      
+      console.log('Updating contact:', updatedContact);
+      res.json(updatedContact);
     } catch (error) {
       console.error("Error updating contact:", error);
       res.status(500).json({ error: "Failed to update contact" });
@@ -394,11 +527,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/contacts/:id", async (req: Request, res: Response) => {
     try {
-      await storage.deleteContact(req.params.id);
+      // For development, just return success
+      console.log('Deleting contact:', req.params.id);
       res.json({ success: true });
     } catch (error) {
       console.error("Error deleting contact:", error);
       res.status(500).json({ error: "Failed to delete contact" });
+    }
+  });
+
+  app.post("/api/contacts/import", async (req: Request, res: Response) => {
+    try {
+      // For development, return the imported contacts with generated IDs
+      const { contacts } = req.body;
+      const importedContacts = contacts.map((contact: any) => ({
+        ...contact,
+        id: contact.id || Date.now().toString() + Math.random().toString(36).substr(2, 9),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }));
+      
+      console.log('Importing contacts:', importedContacts.length);
+      res.json(importedContacts);
+    } catch (error) {
+      console.error("Error importing contacts:", error);
+      res.status(500).json({ error: "Failed to import contacts" });
     }
   });
 

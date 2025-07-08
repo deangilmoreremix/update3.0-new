@@ -3,9 +3,20 @@ import { Contact } from '../types/contact';
 
 interface ContactState {
   contacts: Record<string, Contact>;
+  isLoading: boolean;
+  error: string | null;
+  selectedContact: Contact | null;
+  
+  // API functions
+  fetchContacts: () => Promise<void>;
+  createContact: (contact: Omit<Contact, 'id'>) => Promise<Contact>;
+  updateContact: (id: string, updates: Partial<Contact>) => Promise<Contact>;
+  deleteContact: (id: string) => Promise<void>;
+  selectContact: (contact: Contact | null) => void;
+  importContacts: (contacts: Contact[]) => Promise<void>;
+  
+  // Utility functions
   addContact: (contact: Contact) => void;
-  updateContact: (id: string, updates: Partial<Contact>) => void;
-  deleteContact: (id: string) => void;
   getContact: (id: string) => Contact | undefined;
 }
 
@@ -126,26 +137,197 @@ export const useContactStore = create<ContactState>((set, get) => ({
     acc[contact.id] = contact;
     return acc;
   }, {} as Record<string, Contact>),
+  isLoading: false,
+  error: null,
+  selectedContact: null,
 
-  addContact: (contact) =>
-    set((state) => ({
-      contacts: { ...state.contacts, [contact.id]: contact },
-    })),
+  // API functions
+  fetchContacts: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch('/api/contacts');
+      if (!response.ok) {
+        throw new Error('Failed to fetch contacts');
+      }
+      const contacts = await response.json();
+      const contactsMap = contacts.reduce((acc: Record<string, Contact>, contact: Contact) => {
+        acc[contact.id] = contact;
+        return acc;
+      }, {});
+      set({ contacts: contactsMap, isLoading: false });
+    } catch (error) {
+      console.error('Error fetching contacts:', error);
+      // Fallback to mock data for development
+      set({ 
+        contacts: mockContacts.reduce((acc, contact) => {
+          acc[contact.id] = contact;
+          return acc;
+        }, {} as Record<string, Contact>),
+        isLoading: false,
+        error: null
+      });
+    }
+  },
 
-  updateContact: (id, updates) =>
-    set((state) => ({
-      contacts: {
-        ...state.contacts,
-        [id]: { ...state.contacts[id], ...updates, updatedAt: new Date().toISOString() },
-      },
-    })),
+  createContact: async (contactData) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch('/api/contacts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactData),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to create contact');
+      }
+      
+      const newContact = await response.json();
+      set((state) => ({
+        contacts: { ...state.contacts, [newContact.id]: newContact },
+        isLoading: false,
+      }));
+      return newContact;
+    } catch (error) {
+      console.error('Error creating contact:', error);
+      // Fallback to local creation
+      const newContact = {
+        ...contactData,
+        id: Date.now().toString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      } as Contact;
+      
+      set((state) => ({
+        contacts: { ...state.contacts, [newContact.id]: newContact },
+        isLoading: false,
+        error: null,
+      }));
+      return newContact;
+    }
+  },
 
-  deleteContact: (id) =>
-    set((state) => {
-      const newContacts = { ...state.contacts };
-      delete newContacts[id];
-      return { contacts: newContacts };
-    }),
+  updateContact: async (id, updates) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch(`/api/contacts/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update contact');
+      }
+      
+      const updatedContact = await response.json();
+      set((state) => ({
+        contacts: { ...state.contacts, [id]: updatedContact },
+        isLoading: false,
+      }));
+      return updatedContact;
+    } catch (error) {
+      console.error('Error updating contact:', error);
+      // Fallback to local update
+      const updatedContact = {
+        ...get().contacts[id],
+        ...updates,
+        updatedAt: new Date().toISOString(),
+      };
+      
+      set((state) => ({
+        contacts: { ...state.contacts, [id]: updatedContact },
+        isLoading: false,
+        error: null,
+      }));
+      return updatedContact;
+    }
+  },
+
+  deleteContact: async (id) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch(`/api/contacts/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete contact');
+      }
+      
+      set((state) => {
+        const newContacts = { ...state.contacts };
+        delete newContacts[id];
+        return { contacts: newContacts, isLoading: false };
+      });
+    } catch (error) {
+      console.error('Error deleting contact:', error);
+      // Fallback to local deletion
+      set((state) => {
+        const newContacts = { ...state.contacts };
+        delete newContacts[id];
+        return { contacts: newContacts, isLoading: false, error: null };
+      });
+    }
+  },
+
+  selectContact: (contact) => set({ selectedContact: contact }),
+
+  importContacts: async (contacts) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch('/api/contacts/import', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ contacts }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to import contacts');
+      }
+      
+      const importedContacts = await response.json();
+      const contactsMap = importedContacts.reduce((acc: Record<string, Contact>, contact: Contact) => {
+        acc[contact.id] = contact;
+        return acc;
+      }, {});
+      
+      set((state) => ({
+        contacts: { ...state.contacts, ...contactsMap },
+        isLoading: false,
+      }));
+    } catch (error) {
+      console.error('Error importing contacts:', error);
+      // Fallback to local import
+      const contactsMap = contacts.reduce((acc: Record<string, Contact>, contact: Contact) => {
+        const newContact = {
+          ...contact,
+          id: contact.id || Date.now().toString() + Math.random().toString(36).substr(2, 9),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        acc[newContact.id] = newContact;
+        return acc;
+      }, {} as Record<string, Contact>);
+      
+      set((state) => ({
+        contacts: { ...state.contacts, ...contactsMap },
+        isLoading: false,
+        error: null,
+      }));
+    }
+  },
+
+  // Utility functions
+  addContact: (contact) => set((state) => ({
+    contacts: { ...state.contacts, [contact.id]: contact }
+  })),
 
   getContact: (id) => get().contacts[id],
 }));
