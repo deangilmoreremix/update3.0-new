@@ -12,6 +12,8 @@ import AIInsightsPanel from './AIInsightsPanel';
 import { SmartAIControls } from './ai/SmartAIControls';
 import { RecentActivity } from './dashboard/RecentActivity';
 import KPICards from './dashboard/KPICards';
+import { TeamMembers } from './dashboard/TeamMembers';
+import { UpcomingMeetings } from './dashboard/UpcomingMeetings';
 
 // Executive Overview Section Component
 const ExecutiveOverviewSection: React.FC = () => {
@@ -846,6 +848,28 @@ const AppsSection: React.FC = () => {
   );
 };
 
+// Team Members Section
+const TeamMembersSection: React.FC = () => {
+  const { isDark } = useTheme();
+  
+  return (
+    <div id="team-members-section" className={`mb-8 ${isDark ? 'bg-white/5 border-white/10' : 'bg-white/90 border-gray-200'} backdrop-blur-sm border rounded-2xl shadow-lg`}>
+      <TeamMembers />
+    </div>
+  );
+};
+
+// Upcoming Meetings Section
+const UpcomingMeetingsSection: React.FC = () => {
+  const { isDark } = useTheme();
+  
+  return (
+    <div id="upcoming-meetings-section" className={`mb-8 ${isDark ? 'bg-white/5 border-white/10' : 'bg-white/90 border-gray-200'} backdrop-blur-sm border rounded-2xl shadow-lg`}>
+      <UpcomingMeetings />
+    </div>
+  );
+};
+
 const Dashboard: React.FC = () => {
   const { isDark } = useTheme();
   const { sectionOrder, getSectionConfig } = useDashboardLayout();
@@ -886,6 +910,10 @@ const Dashboard: React.FC = () => {
         return <AnalyticsSection key={sectionId} />;
       case 'apps-section':
         return <AppsSection key={sectionId} />;
+      case 'team-members-section':
+        return <TeamMembersSection key={sectionId} />;
+      case 'upcoming-meetings-section':
+        return <UpcomingMeetingsSection key={sectionId} />;
       default:
         // Placeholder for other sections
         const config = getSectionConfig(sectionId);
