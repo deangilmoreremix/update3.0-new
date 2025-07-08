@@ -224,3 +224,5 @@ export const RecentActivity: React.FC = () => {
     </GlassCard>
   );
 };
+
+export default RecentActivity;
