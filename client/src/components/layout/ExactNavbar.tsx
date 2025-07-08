@@ -164,14 +164,6 @@ const Navbar = () => {
       color: 'from-pink-500 to-rose-500'
     },
     {
-      id: 'tasks',
-      label: 'Tasks',
-      icon: CheckSquare,
-      action: () => handleNavigation('/tasks', 'tasks'),
-      badge: taskTools.length,
-      color: 'from-orange-500 to-red-500'
-    },
-    {
       id: 'appointments',
       label: 'Calendar',
       icon: Calendar,
