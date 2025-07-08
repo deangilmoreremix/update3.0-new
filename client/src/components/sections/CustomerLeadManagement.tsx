@@ -3,6 +3,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { Users, UserPlus } from 'lucide-react';
 import CustomerProfile from '../dashboard/CustomerProfile';
 import RecentActivity from '../dashboard/RecentActivity';
+import NewLeadsSection from '../dashboard/NewLeadsSection';
 
 const CustomerLeadManagement: React.FC = () => {
   const { isDark } = useTheme();
@@ -19,6 +20,11 @@ const CustomerLeadManagement: React.FC = () => {
             Manage your customer relationships and track lead progress
           </p>
         </div>
+      </div>
+
+      {/* New Hot Leads Section */}
+      <div className="mb-6">
+        <NewLeadsSection />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
