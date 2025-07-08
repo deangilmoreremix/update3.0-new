@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useGemini } from '../../services/geminiService';
+import { edgeFunctionService } from '../../services/edgeFunctionService';
 import { MessageSquare, Copy, RefreshCw, Sparkles, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 

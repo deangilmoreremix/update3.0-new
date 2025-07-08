@@ -1337,7 +1337,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-4',
+          model: 'gpt-4o-mini',
           messages: [
             { 
               role: 'system', 
@@ -1354,7 +1354,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       const result = await openaiResponse.json();
-      res.json({ result: result.choices[0]?.message?.content, success: true });
+      if (result.choices && result.choices.length > 0) {
+        res.json({ result: result.choices[0]?.message?.content, success: true });
+      } else {
+        console.error('No choices in OpenAI response:', result);
+        res.status(500).json({ error: 'Invalid OpenAI response format', success: false });
+      }
     } catch (error) {
       console.error('Error analyzing email:', error);
       res.status(500).json({ error: 'Failed to analyze email', success: false });
@@ -1574,6 +1579,1119 @@ Format as actionable insights with priorities.`;
     } catch (error) {
       console.error('Error in real-time analysis:', error);
       res.status(500).json({ error: 'Failed to perform analysis', success: false });
+    }
+  });
+
+  // ==================== COMPREHENSIVE AI TOOLS API ENDPOINTS ====================
+  // Using OpenAI GPT-4o-mini, Gemini 1.5 Flash, and Gemma models
+
+  // 1. Call Script Generator (OpenAI)
+  app.post("/api/ai/call-script", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { contactInfo, callPurpose, industry } = req.body;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      if (!openaiApiKey) {
+        return res.status(400).json({ error: "OpenAI API key is required" });
+      }
+
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { 
+              role: 'system', 
+              content: 'You are a sales call script expert. Create personalized, effective call scripts that build rapport and drive conversions.' 
+            },
+            { 
+              role: 'user', 
+              content: `Create a sales call script for:
+              Contact: ${JSON.stringify(contactInfo)}
+              Purpose: ${callPurpose}
+              Industry: ${industry}
+              
+              Include: opening, rapport building, needs discovery, value proposition, and closing.` 
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 2000,
+        }),
+      });
+
+      const result = await openaiResponse.json();
+      if (result.choices && result.choices.length > 0) {
+        res.json({ result: result.choices[0]?.message?.content, success: true });
+      } else {
+        res.status(500).json({ error: 'Invalid OpenAI response format', success: false });
+      }
+    } catch (error) {
+      console.error('Error generating call script:', error);
+      res.status(500).json({ error: 'Failed to generate call script', success: false });
+    }
+  });
+
+  // 2. Objection Handler (Gemini)
+  app.post("/api/ai/objection-handler", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { objection, context, productInfo } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ 
+            parts: [{ 
+              text: `You are a sales objection handling expert. Provide professional, empathetic responses to customer objections.
+              
+              Objection: ${objection}
+              Context: ${context}
+              Product: ${JSON.stringify(productInfo)}
+              
+              Provide a thoughtful response that acknowledges the concern and offers a solution or alternative perspective.` 
+            }] 
+          }],
+          generationConfig: {
+            temperature: 0.6,
+            maxOutputTokens: 1500,
+          }
+        }),
+      });
+
+      const result = await response.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0].content.parts[0].text, success: true });
+      } else {
+        res.status(500).json({ error: 'Invalid Gemini response format', success: false });
+      }
+    } catch (error) {
+      console.error('Error handling objection:', error);
+      res.status(500).json({ error: 'Failed to handle objection', success: false });
+    }
+  });
+
+  // 3. Customer Persona Generator (Gemini)
+  app.post("/api/ai/customer-persona", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { customerData, industry, behaviorData } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ 
+            parts: [{ 
+              text: `Create a detailed customer persona based on this data:
+              
+              Customer Data: ${JSON.stringify(customerData)}
+              Industry: ${industry}
+              Behavior Data: ${JSON.stringify(behaviorData)}
+              
+              Include: demographics, pain points, motivations, preferred communication style, buying behavior, and engagement preferences.` 
+            }] 
+          }],
+          generationConfig: {
+            temperature: 0.5,
+            maxOutputTokens: 2000,
+          }
+        }),
+      });
+
+      const result = await response.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0].content.parts[0].text, success: true });
+      } else {
+        res.status(500).json({ error: 'Invalid Gemini response format', success: false });
+      }
+    } catch (error) {
+      console.error('Error generating customer persona:', error);
+      res.status(500).json({ error: 'Failed to generate customer persona', success: false });
+    }
+  });
+
+  // 4. Voice Tone Optimizer (Gemini)
+  app.post("/api/ai/voice-tone-optimizer", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { content, targetTone, audience } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ 
+            parts: [{ 
+              text: `You are a voice and tone optimization expert. Rewrite this content to match the target tone and audience.
+              
+              Original Content: ${content}
+              Target Tone: ${targetTone}
+              Audience: ${audience}
+              
+              Provide the optimized version with improved tone, clarity, and engagement.` 
+            }] 
+          }],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 1500,
+          }
+        }),
+      });
+
+      const result = await response.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0].content.parts[0].text, success: true });
+      } else {
+        res.status(500).json({ error: 'Invalid Gemini response format', success: false });
+      }
+    } catch (error) {
+      console.error('Error optimizing voice tone:', error);
+      res.status(500).json({ error: 'Failed to optimize voice tone', success: false });
+    }
+  });
+
+  // 5. Email Response Generator (Gemini)
+  app.post("/api/ai/email-response", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { originalEmail, responseType, context } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ 
+            parts: [{ 
+              text: `Generate a professional email response:
+              
+              Original Email: ${originalEmail}
+              Response Type: ${responseType}
+              Context: ${context}
+              
+              Create a well-structured, professional email response that addresses the sender's needs appropriately.` 
+            }] 
+          }],
+          generationConfig: {
+            temperature: 0.6,
+            maxOutputTokens: 1200,
+          }
+        }),
+      });
+
+      const result = await response.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0].content.parts[0].text, success: true });
+      } else {
+        res.status(500).json({ error: 'Invalid Gemini response format', success: false });
+      }
+    } catch (error) {
+      console.error('Error generating email response:', error);
+      res.status(500).json({ error: 'Failed to generate email response', success: false });
+    }
+  });
+
+  // 6. Real-time Email Composer (OpenAI)
+  app.post("/api/ai/realtime-email-composer", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { recipientInfo, emailType, keyPoints, tone } = req.body;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      if (!openaiApiKey) {
+        return res.status(400).json({ error: "OpenAI API key is required" });
+      }
+
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { 
+              role: 'system', 
+              content: 'You are a professional email composer. Create compelling, personalized emails that drive engagement and conversions.' 
+            },
+            { 
+              role: 'user', 
+              content: `Compose an email:
+              Recipient: ${JSON.stringify(recipientInfo)}
+              Type: ${emailType}
+              Key Points: ${JSON.stringify(keyPoints)}
+              Tone: ${tone}
+              
+              Create a professional email with subject line and body.` 
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 1500,
+        }),
+      });
+
+      const result = await openaiResponse.json();
+      if (result.choices && result.choices.length > 0) {
+        res.json({ result: result.choices[0]?.message?.content, success: true });
+      } else {
+        res.status(500).json({ error: 'Invalid OpenAI response format', success: false });
+      }
+    } catch (error) {
+      console.error('Error composing email:', error);
+      res.status(500).json({ error: 'Failed to compose email', success: false });
+    }
+  });
+
+  // 7. Meeting Agenda Generator - Removed duplicate (using Gemini version below)
+
+  // 8. Voice Analysis Real-time - Removed duplicate (using Gemini version below)
+
+  // 9. Form Validation AI (OpenAI)
+  app.post("/api/ai/form-validation", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { formData, validationRules, context } = req.body;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      if (!openaiApiKey) {
+        return res.status(400).json({ error: "OpenAI API key is required" });
+      }
+
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { 
+              role: 'system', 
+              content: 'You are a form validation expert. Analyze form data for completeness, accuracy, and provide intelligent suggestions for improvement.' 
+            },
+            { 
+              role: 'user', 
+              content: `Validate this form data:
+              Form Data: ${JSON.stringify(formData)}
+              Validation Rules: ${JSON.stringify(validationRules)}
+              Context: ${context}
+              
+              Provide validation results and suggestions for improvement.` 
+            }
+          ],
+          temperature: 0.3,
+          max_tokens: 1000,
+        }),
+      });
+
+      const result = await openaiResponse.json();
+      if (result.choices && result.choices.length > 0) {
+        res.json({ result: result.choices[0]?.message?.content, success: true });
+      } else {
+        res.status(500).json({ error: 'Invalid OpenAI response format', success: false });
+      }
+    } catch (error) {
+      console.error('Error validating form:', error);
+      res.status(500).json({ error: 'Failed to validate form', success: false });
+    }
+  });
+
+  // 10. Auto Form Completer (OpenAI)
+  app.post("/api/ai/auto-form-completer", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { partialData, formSchema, userContext } = req.body;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      if (!openaiApiKey) {
+        return res.status(400).json({ error: "OpenAI API key is required" });
+      }
+
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { 
+              role: 'system', 
+              content: 'You are an intelligent form completion assistant. Analyze partial form data and suggest relevant completions based on context and common patterns.' 
+            },
+            { 
+              role: 'user', 
+              content: `Complete this form intelligently:
+              Partial Data: ${JSON.stringify(partialData)}
+              Form Schema: ${JSON.stringify(formSchema)}
+              User Context: ${JSON.stringify(userContext)}
+              
+              Provide suggested completions for empty fields based on existing data and context.` 
+            }
+          ],
+          temperature: 0.4,
+          max_tokens: 1200,
+        }),
+      });
+
+      const result = await openaiResponse.json();
+      if (result.choices && result.choices.length > 0) {
+        res.json({ result: result.choices[0]?.message?.content, success: true });
+      } else {
+        res.status(500).json({ error: 'Invalid OpenAI response format', success: false });
+      }
+    } catch (error) {
+      console.error('Error completing form:', error);
+      res.status(500).json({ error: 'Failed to complete form', success: false });
+    }
+  });
+
+  // 11. Sales Forecast Generator (OpenAI)
+  app.post("/api/ai/sales-forecast", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { historicalData, timeframe, factors } = req.body;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      if (!openaiApiKey) {
+        return res.status(400).json({ error: "OpenAI API key is required" });
+      }
+
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { 
+              role: 'system', 
+              content: 'You are a sales forecasting expert. Generate accurate sales forecasts based on historical data and market factors.' 
+            },
+            { 
+              role: 'user', 
+              content: `Generate a sales forecast:
+              Historical Data: ${JSON.stringify(historicalData)}
+              Timeframe: ${timeframe}
+              Factors: ${JSON.stringify(factors)}
+              
+              Provide forecast with confidence levels and key assumptions.` 
+            }
+          ],
+          temperature: 0.4,
+          max_tokens: 1500,
+        }),
+      });
+
+      const result = await openaiResponse.json();
+      if (result.choices && result.choices.length > 0) {
+        res.json({ result: result.choices[0]?.message?.content, success: true });
+      } else {
+        console.error('OpenAI API Response:', result);
+        res.status(500).json({ error: `OpenAI API Error: ${result.error?.message || 'Unknown error'}`, success: false });
+      }
+    } catch (error) {
+      console.error('Error generating sales forecast:', error);
+      res.status(500).json({ error: 'Failed to generate sales forecast', success: false });
+    }
+  });
+
+  // 12. Content Creator (Gemini)
+  app.post("/api/ai/content-creator", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { contentType, topic, audience, tone, length } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Create ${contentType} content about ${topic} for ${audience} with ${tone} tone, approximately ${length} words. 
+                  
+                  Make it engaging, informative, and tailored to the specified audience.`
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.7,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 2000,
+          },
+        }),
+      });
+
+      const result = await geminiResponse.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0]?.content?.parts?.[0]?.text, success: true });
+      } else {
+        console.error('Gemini API Response:', result);
+        res.status(500).json({ error: `Gemini API Error: ${result.error?.message || 'Unknown error'}`, success: false });
+      }
+    } catch (error) {
+      console.error('Error creating content:', error);
+      res.status(500).json({ error: 'Failed to create content', success: false });
+    }
+  });
+
+  // 13. Business Intelligence (Gemini)
+  app.post("/api/ai/business-intelligence", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { businessData, analysisType, metrics } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Analyze this business data and provide insights:
+                  Business Data: ${JSON.stringify(businessData)}
+                  Analysis Type: ${analysisType}
+                  Key Metrics: ${JSON.stringify(metrics)}
+                  
+                  Provide actionable insights, trends, and recommendations.`
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.3,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 2000,
+          },
+        }),
+      });
+
+      const result = await geminiResponse.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0]?.content?.parts?.[0]?.text, success: true });
+      } else {
+        console.error('Gemini API Response:', result);
+        res.status(500).json({ error: `Gemini API Error: ${result.error?.message || 'Unknown error'}`, success: false });
+      }
+    } catch (error) {
+      console.error('Error analyzing business intelligence:', error);
+      res.status(500).json({ error: 'Failed to analyze business intelligence', success: false });
+    }
+  });
+
+  // 14. Lead Scoring (OpenAI)
+  app.post("/api/ai/lead-scoring", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { leadData, scoringCriteria, companyProfile } = req.body;
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      
+      if (!openaiApiKey) {
+        return res.status(400).json({ error: "OpenAI API key is required" });
+      }
+
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { 
+              role: 'system', 
+              content: 'You are a lead scoring expert. Evaluate leads based on criteria and provide actionable scoring with explanations.' 
+            },
+            { 
+              role: 'user', 
+              content: `Score this lead:
+              Lead Data: ${JSON.stringify(leadData)}
+              Scoring Criteria: ${JSON.stringify(scoringCriteria)}
+              Company Profile: ${JSON.stringify(companyProfile)}
+              
+              Provide a score (1-100) with detailed reasoning and next steps.` 
+            }
+          ],
+          temperature: 0.3,
+          max_tokens: 1200,
+        }),
+      });
+
+      const result = await openaiResponse.json();
+      if (result.choices && result.choices.length > 0) {
+        res.json({ result: result.choices[0]?.message?.content, success: true });
+      } else {
+        console.error('OpenAI API Response:', result);
+        res.status(500).json({ error: `OpenAI API Error: ${result.error?.message || 'Unknown error'}`, success: false });
+      }
+    } catch (error) {
+      console.error('Error scoring lead:', error);
+      res.status(500).json({ error: 'Failed to score lead', success: false });
+    }
+  });
+
+  // 15. Document Analyzer (Gemini)
+  app.post("/api/ai/document-analyzer", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { documentText, analysisType, context } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Analyze this document:
+                  Document Text: ${documentText}
+                  Analysis Type: ${analysisType}
+                  Context: ${context}
+                  
+                  Provide key insights, sentiment analysis, and actionable recommendations.`
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.4,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 2000,
+          },
+        }),
+      });
+
+      const result = await geminiResponse.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0]?.content?.parts?.[0]?.text, success: true });
+      } else {
+        console.error('Gemini API Response:', result);
+        res.status(500).json({ error: `Gemini API Error: ${result.error?.message || 'Unknown error'}`, success: false });
+      }
+    } catch (error) {
+      console.error('Error analyzing document:', error);
+      res.status(500).json({ error: 'Failed to analyze document', success: false });
+    }
+  });
+
+  // 16. Smart Search (Gemini)
+  app.post("/api/ai/smart-search", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { query, context, filters } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Perform intelligent search and analysis for: "${query}"
+                  Context: ${JSON.stringify(context)}
+                  Filters: ${JSON.stringify(filters)}
+                  
+                  Provide relevant results with explanations, insights, and actionable recommendations.`
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.4,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 2000,
+          },
+        }),
+      });
+
+      const result = await geminiResponse.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0]?.content?.parts?.[0]?.text, success: true });
+      } else {
+        console.error('Gemini API Response:', result);
+        res.status(500).json({ error: `Gemini API Error: ${result.error?.message || 'Unknown error'}`, success: false });
+      }
+    } catch (error) {
+      console.error('Error performing smart search:', error);
+      res.status(500).json({ error: 'Failed to perform smart search', success: false });
+    }
+  });
+
+  // 17. Competitive Analysis (Gemini)
+  app.post("/api/ai/competitive-analysis", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { competitors, yourCompany, industry, analysisType } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Perform competitive analysis:
+                  Your Company: ${JSON.stringify(yourCompany)}
+                  Competitors: ${JSON.stringify(competitors)}
+                  Industry: ${industry}
+                  Analysis Type: ${analysisType}
+                  
+                  Provide competitive positioning, strengths, weaknesses, opportunities, and strategic recommendations.`
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.3,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 2000,
+          },
+        }),
+      });
+
+      const result = await geminiResponse.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0]?.content?.parts?.[0]?.text, success: true });
+      } else {
+        console.error('Gemini API Response:', result);
+        res.status(500).json({ error: `Gemini API Error: ${result.error?.message || 'Unknown error'}`, success: false });
+      }
+    } catch (error) {
+      console.error('Error performing competitive analysis:', error);
+      res.status(500).json({ error: 'Failed to perform competitive analysis', success: false });
+    }
+  });
+
+  // 18. Smart Recommendations (Gemini)
+  app.post("/api/ai/smart-recommendations", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { userProfile, dataContext, recommendationType, preferences } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Generate smart recommendations:
+                  User Profile: ${JSON.stringify(userProfile)}
+                  Data Context: ${JSON.stringify(dataContext)}
+                  Recommendation Type: ${recommendationType}
+                  Preferences: ${JSON.stringify(preferences)}
+                  
+                  Provide personalized, actionable recommendations with reasoning and priority levels.`
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.5,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 2000,
+          },
+        }),
+      });
+
+      const result = await geminiResponse.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0]?.content?.parts?.[0]?.text, success: true });
+      } else {
+        console.error('Gemini API Response:', result);
+        res.status(500).json({ error: `Gemini API Error: ${result.error?.message || 'Unknown error'}`, success: false });
+      }
+    } catch (error) {
+      console.error('Error generating smart recommendations:', error);
+      res.status(500).json({ error: 'Failed to generate smart recommendations', success: false });
+    }
+  });
+
+  // 19. Subject Line Optimizer (Gemini)
+  app.post("/api/ai/subject-line-optimizer", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { emailContent, audience, goals, tone } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Optimize email subject lines:
+                  Email Content: ${emailContent}
+                  Audience: ${audience}
+                  Goals: ${JSON.stringify(goals)}
+                  Tone: ${tone}
+                  
+                  Generate 5-10 high-performing subject line options with open rate predictions and A/B testing suggestions.`
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.7,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 1500,
+          },
+        }),
+      });
+
+      const result = await geminiResponse.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0]?.content?.parts?.[0]?.text, success: true });
+      } else {
+        console.error('Gemini API Response:', result);
+        res.status(500).json({ error: `Gemini API Error: ${result.error?.message || 'Unknown error'}`, success: false });
+      }
+    } catch (error) {
+      console.error('Error optimizing subject lines:', error);
+      res.status(500).json({ error: 'Failed to optimize subject lines', success: false });
+    }
+  });
+
+  // 20. Proposal Generator (Gemini)
+  app.post("/api/ai/proposal-generator", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { clientInfo, projectDetails, pricing, timeline, requirements } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Generate professional business proposal:
+                  Client Info: ${JSON.stringify(clientInfo)}
+                  Project Details: ${JSON.stringify(projectDetails)}
+                  Pricing: ${JSON.stringify(pricing)}
+                  Timeline: ${JSON.stringify(timeline)}
+                  Requirements: ${JSON.stringify(requirements)}
+                  
+                  Create a comprehensive, persuasive proposal with executive summary, project scope, methodology, deliverables, and terms.`
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.5,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 3000,
+          },
+        }),
+      });
+
+      const result = await geminiResponse.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0]?.content?.parts?.[0]?.text, success: true });
+      } else {
+        console.error('Gemini API Response:', result);
+        res.status(500).json({ error: `Gemini API Error: ${result.error?.message || 'Unknown error'}`, success: false });
+      }
+    } catch (error) {
+      console.error('Error generating proposal:', error);
+      res.status(500).json({ error: 'Failed to generate proposal', success: false });
+    }
+  });
+
+  // 21. Meeting Agenda (Gemini)
+  app.post("/api/ai/meeting-agenda", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { meetingTitle, objective, duration, attendees, preparationNotes } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Generate professional meeting agenda:
+                  Meeting Title: ${meetingTitle}
+                  Objective: ${objective}
+                  Duration: ${duration} minutes
+                  Attendees: ${JSON.stringify(attendees)}
+                  Preparation Notes: ${preparationNotes}
+                  
+                  Create a structured agenda with time allocations, topics, and action items.`
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.4,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 2000,
+          },
+        }),
+      });
+
+      const result = await geminiResponse.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0]?.content?.parts?.[0]?.text, success: true });
+      } else {
+        console.error('Gemini API Response:', result);
+        res.status(500).json({ error: `Gemini API Error: ${result.error?.message || 'Unknown error'}`, success: false });
+      }
+    } catch (error) {
+      console.error('Error generating meeting agenda:', error);
+      res.status(500).json({ error: 'Failed to generate meeting agenda', success: false });
+    }
+  });
+
+  // 22. Voice Analysis (Gemini)
+  app.post("/api/ai/voice-analysis", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { audioTranscript, analysisType, context } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Analyze voice/audio content:
+                  Audio Transcript: ${audioTranscript}
+                  Analysis Type: ${analysisType}
+                  Context: ${JSON.stringify(context)}
+                  
+                  Provide sentiment analysis, key insights, action items, and communication recommendations.`
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.3,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 2000,
+          },
+        }),
+      });
+
+      const result = await geminiResponse.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0]?.content?.parts?.[0]?.text, success: true });
+      } else {
+        console.error('Gemini API Response:', result);
+        res.status(500).json({ error: `Gemini API Error: ${result.error?.message || 'Unknown error'}`, success: false });
+      }
+    } catch (error) {
+      console.error('Error analyzing voice:', error);
+      res.status(500).json({ error: 'Failed to analyze voice', success: false });
+    }
+  });
+
+  // 23. Form Validation (Gemini)
+  app.post("/api/ai/form-validation", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { formData, validationRules, context } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Validate form data with AI:
+                  Form Data: ${JSON.stringify(formData)}
+                  Validation Rules: ${JSON.stringify(validationRules)}
+                  Context: ${JSON.stringify(context)}
+                  
+                  Provide validation results, error messages, and suggestions for improvement.`
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.2,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 1500,
+          },
+        }),
+      });
+
+      const result = await geminiResponse.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0]?.content?.parts?.[0]?.text, success: true });
+      } else {
+        console.error('Gemini API Response:', result);
+        res.status(500).json({ error: `Gemini API Error: ${result.error?.message || 'Unknown error'}`, success: false });
+      }
+    } catch (error) {
+      console.error('Error validating form:', error);
+      res.status(500).json({ error: 'Failed to validate form', success: false });
+    }
+  });
+
+  // 24. Auto Form Completer (Gemini)
+  app.post("/api/ai/auto-form-completer", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { partialFormData, formType, context } = req.body;
+      const geminiApiKey = process.env.GEMINI_API_KEY;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ error: "Gemini API key is required" });
+      }
+
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Auto-complete form data:
+                  Partial Form Data: ${JSON.stringify(partialFormData)}
+                  Form Type: ${formType}
+                  Context: ${JSON.stringify(context)}
+                  
+                  Suggest completion values for empty fields based on existing data and context.`
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.3,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 1500,
+          },
+        }),
+      });
+
+      const result = await geminiResponse.json();
+      if (result.candidates && result.candidates.length > 0) {
+        res.json({ result: result.candidates[0]?.content?.parts?.[0]?.text, success: true });
+      } else {
+        console.error('Gemini API Response:', result);
+        res.status(500).json({ error: `Gemini API Error: ${result.error?.message || 'Unknown error'}`, success: false });
+      }
+    } catch (error) {
+      console.error('Error completing form:', error);
+      res.status(500).json({ error: 'Failed to complete form', success: false });
     }
   });
 

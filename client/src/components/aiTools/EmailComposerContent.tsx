@@ -1,8 +1,5 @@
-import { supabase } from '../../services/supabaseClient';
-import { sendGmailEmail } from '../../services/composioService'; // You'll create this file below
 import React, { useState } from 'react';
-import * as edgeFunctionService from '../../services/edgeFunctionService';
-import { useOpenAI } from '../../services/openaiService';
+import { edgeFunctionService } from '../../services/edgeFunctionService';
 import AIToolContent from '../shared/AIToolContent';
 import { Mail, User, Building, RefreshCw, Copy, FileText, Send } from 'lucide-react';
 import Select from 'react-select';

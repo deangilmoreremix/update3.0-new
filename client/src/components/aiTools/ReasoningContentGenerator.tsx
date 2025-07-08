@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useGemini } from '../../services/geminiService';
+import { edgeFunctionService } from '../../services/edgeFunctionService';
 import StructuredAIResult from '../shared/StructuredAIResult';
 import { 
   Brain, 

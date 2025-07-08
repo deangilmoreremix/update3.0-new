@@ -8,7 +8,7 @@ interface ApiOptions {
 // Generic API request helper for Express endpoints
 const apiRequest = async (endpoint: string, data: any) => {
   try {
-    const response = await fetch(`/api/ai/${endpoint}`, {
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -22,10 +22,21 @@ const apiRequest = async (endpoint: string, data: any) => {
     }
 
     const result = await response.json();
-    return result.result;
+    return result;
   } catch (error) {
     console.error(`Error calling ${endpoint}:`, error);
     throw error;
+  }
+};
+
+// Edge function service object
+export const edgeFunctionService = {
+  callAIFunction: async (endpoint: string, data: any) => {
+    return apiRequest(endpoint, data);
+  },
+  
+  callEdgeFunction: async (endpoint: string, data: any) => {
+    return apiRequest(endpoint, data);
   }
 };
 

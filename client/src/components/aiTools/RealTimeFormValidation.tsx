@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useGemini } from '../../services/geminiService';
+import { edgeFunctionService } from '../../services/edgeFunctionService';
 import { CheckCircle, XCircle, AlertCircle, RefreshCw } from 'lucide-react';
 
 interface FormField {

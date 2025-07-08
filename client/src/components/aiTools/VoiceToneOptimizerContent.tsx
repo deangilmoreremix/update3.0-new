@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useGemini } from '../../services/geminiService';
+import { edgeFunctionService } from '../../services/edgeFunctionService';
 import AIToolContent from '../shared/AIToolContent';
 import { Volume2, User, MessageCircle, RefreshCw, Copy, Check } from 'lucide-react';
 
@@ -14,8 +14,6 @@ const VoiceToneOptimizerContent: React.FC = () => {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-
-  const gemini = useGemini();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -33,13 +31,13 @@ const VoiceToneOptimizerContent: React.FC = () => {
     setError(null);
     
     try {
-      const optimizedContent = await gemini.optimizeVoiceTone(
-        formData.content,
-        formData.targetAudience,
-        formData.communicationGoal
-      );
+      const response = await edgeFunctionService.callAIFunction('/api/ai/voice-tone-optimizer', {
+        content: formData.content,
+        targetTone: formData.communicationGoal,
+        audience: formData.targetAudience
+      });
       
-      setResult(optimizedContent);
+      setResult(response.result);
       setCopied(false);
     } catch (err) {
       console.error('Error optimizing voice tone:', err);
