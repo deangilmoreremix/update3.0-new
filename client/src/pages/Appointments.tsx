@@ -158,6 +158,7 @@ const Appointments: React.FC = () => {
   };
   
   const isSameDay = (date1: Date, date2: Date) => {
+    if (!date1 || !date2) return false;
     return (
       date1.getFullYear() === date2.getFullYear() &&
       date1.getMonth() === date2.getMonth() &&
@@ -219,8 +220,8 @@ const Appointments: React.FC = () => {
     slotTime.setHours(hour, minute, 0, 0);
     
     return Object.values(appointments).find(appointment => {
-      const appointmentStartTime = appointment.date;
-      const appointmentEndTime = appointment.endDate;
+      const appointmentStartTime = new Date(appointment.date);
+      const appointmentEndTime = new Date(appointment.endDate);
       
       return (
         isSameDay(appointmentStartTime, selectedDate) &&

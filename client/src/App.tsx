@@ -32,6 +32,12 @@ import VoiceProfiles from './pages/VoiceProfiles/VoiceProfiles';
 import BusinessAnalyzer from './pages/BusinessAnalysis/BusinessAnalyzer';
 import FormsAndSurveys from './pages/FormsAndSurveys';
 import AITools from './pages/AITools';
+import TaskManagement from './pages/TaskManagement';
+import TaskAutomation from './pages/TaskAutomation';
+import ProjectTracker from './pages/ProjectTracker';
+import TimeTracking from './pages/TimeTracking';
+import WorkflowBuilder from './pages/WorkflowBuilder';
+import DeadlineManager from './pages/DeadlineManager';
 
 import './components/styles/design-system.css';
 
@@ -60,6 +66,14 @@ function App() {
                         <Route path="/pipeline" element={<Pipeline />} />
                         <Route path="/tasks" element={<Tasks />} />
                         <Route path="/analytics" element={<AnalyticsDashboard />} />
+                        
+                        {/* Task Tool Pages */}
+                        <Route path="/task-management" element={<TaskManagement />} />
+                        <Route path="/task-automation" element={<TaskAutomation />} />
+                        <Route path="/project-tracker" element={<ProjectTracker />} />
+                        <Route path="/time-tracking" element={<TimeTracking />} />
+                        <Route path="/workflow-builder" element={<WorkflowBuilder />} />
+                        <Route path="/deadline-manager" element={<DeadlineManager />} />
                         
                         {/* Communication Pages */}
                         <Route path="/communication-hub" element={<CommunicationHub />} />
