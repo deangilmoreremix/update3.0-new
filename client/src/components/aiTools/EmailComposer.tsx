@@ -40,10 +40,33 @@ const EmailComposer: React.FC<EmailComposerProps> = ({ onClose }) => {
   const handleGenerate = async () => {
     setIsGenerating(true);
     
-    // Simulate AI email generation
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    const sampleEmails = {
+    try {
+      const response = await fetch('/api/ai/generate-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipientName: formData.recipientName,
+          recipientCompany: formData.recipientCompany,
+          subject: formData.subject,
+          emailType: formData.emailType,
+          tone: formData.tone,
+          keyPoints: formData.keyPoints,
+          context: formData.context
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate email');
+      }
+
+      const data = await response.json();
+      setGeneratedEmail(data.email);
+    } catch (error) {
+      console.error('Error generating email:', error);
+      // Fallback to sample emails if API fails
+      const sampleEmails = {
       followup: `Subject: ${formData.subject || 'Following up on our conversation'}
 
 Hi ${formData.recipientName || 'there'},
@@ -93,8 +116,10 @@ Best regards,
 [Your Name]`
     };
 
-    const selectedEmail = sampleEmails[formData.emailType as keyof typeof sampleEmails] || sampleEmails.followup;
-    setGeneratedEmail(selectedEmail);
+      const selectedEmail = sampleEmails[formData.emailType as keyof typeof sampleEmails] || sampleEmails.followup;
+      setGeneratedEmail(selectedEmail);
+    }
+    
     setIsGenerating(false);
   };
 
