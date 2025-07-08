@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, User, Bell, Search, Settings, LogOut, BarChart3, Users, Target, MessageSquare, Video, FileText, Zap, TrendingUp, Calendar, Phone, Receipt, BookOpen, Mic, Sun, Moon, Brain, Mail, Grid3X3, Briefcase, Building2, Megaphone, Activity, CheckSquare, Home, Sparkles, PresentationChart, UserPlus, ClipboardList, Lightbulb, PieChart, Clock, Shield, Globe, Database, Headphones, Camera, Layers, Repeat, Palette, HelpCircle, Plus, DollarSign, HeartHandshake, Volume2, Image, Bot, Eye, Code, MessageCircle, AlertTriangle, LineChart, Edit3, ExternalLink, Menu, X } from 'lucide-react';
-import { useTheme } from '../../contexts/ThemeContext';
-import { useNavigation } from '../../contexts/NavigationContext';
-import { useDealStore } from '../../store/dealStore';
-import { useContactStore } from '../../store/contactStore';
-import { useTaskStore } from '../../store/taskStore';
-import { useAppointmentStore } from '../../store/appointmentStore';
+import { ChevronDown, User, Bell, Search, Settings, LogOut, BarChart3, Users, Target, MessageSquare, Video, FileText, Zap, TrendingUp, Calendar, Phone, Receipt, BookOpen, Mic, Sun, Moon, Brain, Mail, Grid3X3, Briefcase, Building2, Megaphone, Activity, CheckSquare, Home, Sparkles, Presentation as PresentationChart, UserPlus, ClipboardList, Lightbulb, PieChart, Clock, Shield, Globe, Database, Headphones, Camera, Layers, Repeat, Palette, HelpCircle, Plus, DollarSign, HeartHandshake, Edit3, Monitor, MoreHorizontal, ExternalLink, Eye, Zap as ZapIcon, Workflow, Bot, Image, Hash, MessageCircle, Volume2, AlertTriangle, LineChart, TrendingDown, Workflow as WorkflowIcon, Map, Cpu, Code, TestTube, FileImage, Brush, Palette as PaletteIcon, Menu, X } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
+import { useNavigation } from '../contexts/NavigationContext';
+import { useDealStore } from '../store/dealStore';
+import { useContactStore } from '../store/contactStore';
+import { useTaskStore } from '../store/taskStore';
+import { useAppointmentStore } from '../store/appointmentStore';
 
 const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -35,10 +35,8 @@ const Navbar = () => {
     ).length;
     
     const todayAppointments = Object.values(appointments).filter(apt => {
-      if (!apt.startTime) return false;
       const today = new Date();
-      const aptDate = new Date(apt.startTime);
-      return aptDate.toDateString() === today.toDateString() && apt.status === 'scheduled';
+      return apt.startTime.toDateString() === today.toDateString() && apt.status === 'scheduled';
     }).length;
 
     return {
@@ -570,11 +568,6 @@ const Navbar = () => {
                 >
                   {isDark ? <Sun size={18} /> : <Moon size={18} />}
                   <span className="font-medium">{isDark ? 'Light Mode' : 'Dark Mode'}</span>
-                </button>
-                
-                <button className="flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 text-red-400 hover:bg-red-500/10">
-                  <LogOut size={18} />
-                  <span className="font-medium">Sign Out</span>
                 </button>
               </div>
             </div>

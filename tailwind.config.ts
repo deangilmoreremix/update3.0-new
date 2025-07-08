@@ -119,14 +119,14 @@ export default {
             height: "0",
           },
         },
-        "pulse-glow": {
-          "0%, 100%": {
-            opacity: "1",
-            transform: "scale(1)",
+        "fade-in": {
+          from: {
+            opacity: "0",
+            transform: "translateY(-10px) scale(0.95)",
           },
-          "50%": {
-            opacity: "0.8",
-            transform: "scale(1.05)",
+          to: {
+            opacity: "1",
+            transform: "translateY(0) scale(1)",
           },
         },
         "slide-up": {
@@ -137,6 +137,43 @@ export default {
           to: {
             opacity: "1",
             transform: "translateY(0)",
+          },
+        },
+        "bounce-gentle": {
+          "0%, 20%, 50%, 80%, 100%": {
+            transform: "translateY(0)",
+          },
+          "40%": {
+            transform: "translateY(-4px)",
+          },
+          "60%": {
+            transform: "translateY(-2px)",
+          },
+        },
+        "glow-pulse": {
+          "0%, 100%": {
+            "box-shadow": "0 0 20px rgba(59, 130, 246, 0.3)",
+          },
+          "50%": {
+            "box-shadow": "0 0 30px rgba(59, 130, 246, 0.5)",
+          },
+        },
+        "badge-bounce": {
+          "0%, 100%": {
+            transform: "scale(1)",
+          },
+          "50%": {
+            transform: "scale(1.1)",
+          },
+        },
+        "pulse-glow": {
+          "0%, 100%": {
+            opacity: "1",
+            transform: "scale(1)",
+          },
+          "50%": {
+            opacity: "0.8",
+            transform: "scale(1.05)",
           },
         },
         "slide-in": {
@@ -189,13 +226,23 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "pulse-glow": "pulse-glow 2s infinite",
+        "fade-in": "fade-in 0.3s ease-out",
         "slide-up": "slide-up 0.3s ease-out",
+        "bounce-gentle": "bounce-gentle 2s infinite",
+        "glow-pulse": "glow-pulse 2s infinite",
+        "badge-bounce": "badge-bounce 0.5s ease-in-out",
+        "pulse-glow": "pulse-glow 2s infinite",
         "slide-in": "slide-in 0.3s ease-out",
         "shimmer": "shimmer 1.5s infinite",
         "glow": "glow 2s infinite",
         "float-up": "float-up 0.6s ease-out",
         "scale-up": "scale-up 0.4s ease-out",
+      },
+      boxShadow: {
+        "3xl": "0 35px 60px -12px rgba(0, 0, 0, 0.25)",
+        "glow": "0 0 20px rgba(59, 130, 246, 0.3)",
+        "glow-green": "0 0 20px rgba(34, 197, 94, 0.3)",
+        "glow-purple": "0 0 20px rgba(147, 51, 234, 0.3)",
       },
     },
   },
