@@ -35,10 +35,8 @@ const Navbar = () => {
     ).length;
     
     const todayAppointments = Object.values(appointments).filter(apt => {
-      if (!apt.startTime) return false;
       const today = new Date();
-      const aptDate = new Date(apt.startTime);
-      return aptDate.toDateString() === today.toDateString() && apt.status === 'scheduled';
+      return apt.startTime.toDateString() === today.toDateString() && apt.status === 'scheduled';
     }).length;
 
     return {
@@ -202,7 +200,7 @@ const Navbar = () => {
     { name: 'FunnelCraft AI', url: 'https://funnelcraft-ai.videoremix.io/', icon: Megaphone, isExternal: true },
     { name: 'SmartCRM Closer', url: 'https://smartcrm-closer.videoremix.io', icon: Users, isExternal: true },
     { name: 'ContentAI', url: 'https://content-ai.videoremix.io', icon: FileText, isExternal: true },
-    { name: 'White-Label Platform', url: 'https://moonlit-tarsier-239e70.netlify.app', icon: Palette, isExternal: false }
+    { name: 'White-Label Customization', url: '/white-label', icon: Palette, isExternal: false }
   ];
 
   // Dropdown menu configurations with color and badge counts
@@ -519,29 +517,23 @@ const Navbar = () => {
                           <span className="text-lg font-bold text-white">JD</span>
                         </div>
                         <div>
-                          <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>John Doe</p>
-                          <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Sales Manager</p>
+                          <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>John Doe</h3>
+                          <p className={`text-sm ${isDark ? 'text-gray-200' : 'text-gray-600'}`}>Sales Manager</p>
                         </div>
                       </div>
-                      <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
-                        <button className={`w-full text-left flex items-center space-x-3 p-2 rounded-lg transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}>
-                          <User size={16} />
-                          <span className="text-sm">Profile Settings</span>
-                        </button>
-                        <button className={`w-full text-left flex items-center space-x-3 p-2 rounded-lg transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}>
+                      
+                      <div className="space-y-1">
+                        <button className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/10 text-white hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}>
                           <Settings size={16} />
-                          <span className="text-sm">Preferences</span>
+                          <span className="text-sm font-medium">Settings</span>
                         </button>
-                        <button className={`w-full text-left flex items-center space-x-3 p-2 rounded-lg transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}>
-                          <HelpCircle size={16} />
-                          <span className="text-sm">Help & Support</span>
+                        
+                        <hr className={`my-2 ${isDark ? 'border-white/20' : 'border-gray-200'}`} />
+                        
+                        <button className="w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 text-red-400 hover:bg-red-500/10">
+                          <LogOut size={16} />
+                          <span className="text-sm font-medium">Sign Out</span>
                         </button>
-                        <div className="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
-                          <button className={`w-full text-left flex items-center space-x-3 p-2 rounded-lg transition-all duration-200 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20`}>
-                            <LogOut size={16} />
-                            <span className="text-sm">Sign Out</span>
-                          </button>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -550,52 +542,38 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className={`lg:hidden mt-4 ${isDark ? 'bg-gray-900/98' : 'bg-white/98'} backdrop-blur-2xl border ${isDark ? 'border-white/10' : 'border-gray-200'} rounded-2xl shadow-2xl overflow-hidden animate-slide-down`}>
-          <div className="p-4 space-y-2">
-            {/* Mobile main tabs */}
-            {mainTabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={tab.action}
-                className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${
-                  activeTab === tab.id 
-                    ? `bg-gradient-to-r ${tab.color} text-white` 
-                    : `${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`
-                }`}
-              >
-                <tab.icon size={18} />
-                <span className="font-medium">{tab.label}</span>
-                {tab.badge && (
-                  <div className="ml-auto">
-                    {renderBadge(tab.badge, 'bg-red-500')}
-                  </div>
-                )}
-              </button>
-            ))}
-            
-            {/* Mobile AI Tools section */}
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-3 mt-3">
-              <p className={`text-xs font-semibold uppercase tracking-wide mb-2 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>AI Tools</p>
-              <div className="grid grid-cols-2 gap-2">
-                {aiTools.slice(0, 6).map((tool, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleAIToolClick(tool.tool)}
-                    className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
-                  >
-                    <tool.icon size={14} />
-                    <span className="text-xs">{tool.name}</span>
-                  </button>
-                ))}
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className={`lg:hidden mt-4 ${isDark ? 'bg-gray-900/95' : 'bg-white/95'} backdrop-blur-2xl border ${isDark ? 'border-white/20' : 'border-gray-200'} rounded-2xl shadow-2xl overflow-hidden animate-fade-in`}>
+            <div className="p-4 space-y-3">
+              {mainTabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={tab.action}
+                  className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
+                >
+                  <tab.icon size={18} />
+                  <span className="font-medium">{tab.label}</span>
+                  {tab.badge && renderBadge(tab.badge, 'bg-blue-500')}
+                </button>
+              ))}
+              
+              <hr className={`${isDark ? 'border-white/20' : 'border-gray-200'}`} />
+              
+              <div className="flex items-center justify-between">
+                <button
+                  onClick={toggleTheme}
+                  className={`flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
+                >
+                  {isDark ? <Sun size={18} /> : <Moon size={18} />}
+                  <span className="font-medium">{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+                </button>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </nav>
   );
 };
