@@ -6,6 +6,7 @@ import { useDealStore } from '../store/dealStore';
 import { useContactStore } from '../store/contactStore';
 import { useTaskStore } from '../store/taskStore';
 import { useAppointmentStore } from '../store/appointmentStore';
+import { AvatarWithStatus } from './modern-ui/AvatarWithStatus';
 
 const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -505,9 +506,14 @@ const Navbar = () => {
                   }}
                   className={`flex items-center space-x-1 p-1 rounded-full transition-all duration-300 transform hover:scale-105 ${isDark ? 'hover:bg-white/20 text-white hover:text-white' : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'}`}
                 >
-                  <div className="w-7 h-7 bg-gradient-to-r from-green-400 to-teal-500 rounded-full flex items-center justify-center shadow-lg ring-2 ring-white/20">
-                    <span className="text-xs font-bold text-white">JD</span>
-                  </div>
+                  <AvatarWithStatus
+                    src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2"
+                    alt="John Doe"
+                    name="John Doe"
+                    size="sm"
+                    status="online"
+                    showStatus={true}
+                  />
                   <ChevronDown size={12} className={`transition-transform duration-300 ${activeDropdown === 'profile' ? 'rotate-180' : ''}`} />
                 </button>
                 
@@ -515,9 +521,14 @@ const Navbar = () => {
                   <div className={`absolute top-12 right-0 w-64 ${isDark ? 'bg-gray-900/98 border-white/20' : 'bg-white/98 border-gray-200'} backdrop-blur-2xl border rounded-2xl shadow-2xl z-50 overflow-hidden animate-fade-in`}>
                     <div className="p-4">
                       <div className="flex items-center space-x-3 mb-4">
-                        <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-teal-500 rounded-full flex items-center justify-center shadow-lg">
-                          <span className="text-lg font-bold text-white">JD</span>
-                        </div>
+                        <AvatarWithStatus
+                          src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2"
+                          alt="John Doe"
+                          name="John Doe"
+                          size="md"
+                          status="online"
+                          showStatus={true}
+                        />
                         <div>
                           <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>John Doe</p>
                           <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Sales Manager</p>
