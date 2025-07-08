@@ -50,7 +50,7 @@ import AutoFormCompleter from '../components/aiTools/AutoFormCompleter';
 const AITools: React.FC = () => {
   const { openTool } = useAITools();
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string>('all');
   const [showDemo, setShowDemo] = useState(false);
   const [activeDemoTool, setActiveDemoTool] = useState<string | null>(null);
 
@@ -315,7 +315,6 @@ const AITools: React.FC = () => {
       tool.description.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesCategory = 
-      !activeCategory || 
       activeCategory === 'all' || 
       tool.categories.includes(activeCategory);
     
@@ -328,11 +327,12 @@ const AITools: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">AI Tools</h1>
-        <p className="text-gray-600 mt-1">Advanced AI capabilities for your CRM</p>
-      </header>
+    <div className="min-h-screen bg-gray-50 overflow-y-auto">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">AI Tools</h1>
+          <p className="text-gray-600 mt-1">Advanced AI capabilities for your CRM</p>
+        </header>
       
       <div className="flex flex-col md:flex-row justify-between gap-4 mb-8">
         {/* Search Bar */}
@@ -480,6 +480,7 @@ const AITools: React.FC = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };
