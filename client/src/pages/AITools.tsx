@@ -27,22 +27,13 @@ import {
   Calendar,
   X
 } from 'lucide-react';
-import StreamingChat from '../components/aiTools/StreamingChat';
-import RealTimeFormValidation from '../components/aiTools/RealTimeFormValidation';
-import LiveDealAnalysis from '../components/aiTools/LiveDealAnalysis';
-import InstantAIResponseGenerator from '../components/aiTools/InstantAIResponseGenerator';
-import DocumentAnalyzerRealtime from '../components/aiTools/DocumentAnalyzerRealtime';
-import RealTimeEmailComposer from '../components/aiTools/RealTimeEmailComposer';
-import VoiceAnalysisRealtime from '../components/aiTools/VoiceAnalysisRealtime';
-import SmartSearchRealtime from '../components/aiTools/SmartSearchRealtime';
-import AutoFormCompleter from '../components/aiTools/AutoFormCompleter';
+
 
 const AITools: React.FC = () => {
   const { openTool } = useAITools();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('all');
-  const [showDemo, setShowDemo] = useState(false);
-  const [activeDemoTool, setActiveDemoTool] = useState<string | null>(null);
+
 
   const categories = [
     { id: 'all', name: 'All Tools' },
@@ -213,8 +204,7 @@ const AITools: React.FC = () => {
       icon: <MessagesSquare className="h-6 w-6 text-blue-600" />,
       id: "streaming-chat" as const,
       categories: ['advanced', 'realtime'],
-      new: true,
-      demoId: "streaming-chat"
+      new: true
     },
     {
       title: "Function Assistant",
@@ -230,8 +220,7 @@ const AITools: React.FC = () => {
       icon: <CheckCircle className="h-6 w-6 text-green-600" />,
       id: "form-validation" as const,
       categories: ['analysis', 'realtime'],
-      new: true,
-      demoId: "form-validation"
+      new: true
     },
     {
       title: "Live Deal Analysis",
@@ -239,8 +228,7 @@ const AITools: React.FC = () => {
       icon: <BarChart3 className="h-6 w-6 text-purple-600" />,
       id: "live-deal-analysis" as const,
       categories: ['sales', 'analysis', 'realtime'],
-      new: true,
-      demoId: "live-deal-analysis"
+      new: true
     },
     {
       title: "Instant Response Generator",
@@ -248,8 +236,7 @@ const AITools: React.FC = () => {
       icon: <Sparkles className="h-6 w-6 text-sky-600" />,
       id: "instant-response" as const,
       categories: ['email', 'realtime'],
-      new: true,
-      demoId: "instant-response"
+      new: true
     },
     {
       title: "Document Analyzer",
@@ -257,8 +244,7 @@ const AITools: React.FC = () => {
       icon: <FileText className="h-6 w-6 text-indigo-600" />,
       id: "document-analyzer-realtime" as const,
       categories: ['analysis', 'realtime'],
-      new: true,
-      demoId: "document-analyzer"
+      new: true
     },
     {
       title: "Real-time Email Composer",
@@ -266,8 +252,7 @@ const AITools: React.FC = () => {
       icon: <Mail className="h-6 w-6 text-blue-600" />,
       id: "realtime-email-composer" as const,
       categories: ['email', 'realtime'],
-      new: true,
-      demoId: "realtime-email"
+      new: true
     },
     {
       title: "Real-time Voice Analysis",
@@ -275,8 +260,7 @@ const AITools: React.FC = () => {
       icon: <Mic className="h-6 w-6 text-purple-600" />,
       id: "voice-analysis-realtime" as const,
       categories: ['voice', 'analysis', 'realtime'],
-      new: true,
-      demoId: "voice-analysis"
+      new: true
     },
     {
       title: "Smart Search with Typeahead",
@@ -284,8 +268,7 @@ const AITools: React.FC = () => {
       icon: <Search className="h-6 w-6 text-cyan-600" />,
       id: "smart-search-realtime" as const,
       categories: ['advanced', 'realtime'],
-      new: true,
-      demoId: "smart-search"
+      new: true
     },
     {
       title: "AI Form Auto-completion",
@@ -293,8 +276,7 @@ const AITools: React.FC = () => {
       icon: <CheckCircle className="h-6 w-6 text-emerald-600" />,
       id: "auto-form-completer" as const,
       categories: ['content', 'realtime'],
-      new: true,
-      demoId: "auto-form"
+      new: true
     }
   ];
 
@@ -311,10 +293,7 @@ const AITools: React.FC = () => {
     return matchesSearch && matchesCategory;
   });
   
-  const handleOpenDemoTool = (demoId: string) => {
-    setActiveDemoTool(demoId);
-    setShowDemo(true);
-  };
+
 
   // Helper function to get gradient colors based on tool ID
   const getGradientColors = (id: string): string => {
@@ -441,7 +420,7 @@ const AITools: React.FC = () => {
             filteredTools.map((tool) => (
               <div 
                 key={tool.id} 
-                onClick={() => tool.demoId ? handleOpenDemoTool(tool.demoId) : openTool(tool.id)}
+                onClick={() => openTool(tool.id)}
                 className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all duration-300 cursor-pointer group"
               >
                 <div className="flex flex-col h-full">
@@ -458,7 +437,7 @@ const AITools: React.FC = () => {
                   <p className="text-gray-600 mb-4 flex-1 text-sm leading-relaxed">{tool.description}</p>
                   <div className="mt-auto">
                     <span className="inline-flex items-center text-blue-600 font-medium group-hover:text-blue-700 transition-colors">
-                      {tool.demoId ? 'Try Interactive Demo' : 'Open Tool'}
+                      Open Tool
                       <ChevronRight className="w-4 h-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" />
                     </span>
                   </div>
@@ -474,57 +453,7 @@ const AITools: React.FC = () => {
           )}
         </div>
 
-        {/* Demo Modal */}
-        {showDemo && activeDemoTool && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-              <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gradient-to-r from-indigo-50 to-blue-50">
-                <h3 className="font-bold text-lg flex items-center">
-                  <Sparkles className="text-yellow-500 mr-2 h-5 w-5" />
-                  {activeDemoTool === "streaming-chat" ? "Real-time Streaming Chat" : 
-                   activeDemoTool === "form-validation" ? "Real-time Form Validation" :
-                   activeDemoTool === "live-deal-analysis" ? "Live Deal Analysis" :
-                   activeDemoTool === "instant-response" ? "Instant Response Generator" :
-                   activeDemoTool === "document-analyzer" ? "Real-time Document Analyzer" :
-                   activeDemoTool === "realtime-email" ? "Real-time Email Composer" :
-                   activeDemoTool === "voice-analysis" ? "Real-time Voice Analysis" :
-                   activeDemoTool === "smart-search" ? "Smart Search with Typeahead" :
-                   activeDemoTool === "auto-form" ? "AI Form Auto-completion" : "Interactive Demo"}
-                  <span className="ml-2 text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">Demo</span>
-                </h3>
-                <button 
-                  onClick={() => setShowDemo(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <X size={24} />
-                </button>
-              </div>
-              
-              <div className="p-6 overflow-y-auto max-h-[70vh]">
-                {activeDemoTool === "streaming-chat" && <StreamingChat />}
-                {activeDemoTool === "form-validation" && <RealTimeFormValidation />}
-                {activeDemoTool === "live-deal-analysis" && <LiveDealAnalysis />}
-                {activeDemoTool === "instant-response" && <InstantAIResponseGenerator />}
-                {activeDemoTool === "document-analyzer" && <DocumentAnalyzerRealtime />}
-                {activeDemoTool === "realtime-email" && <RealTimeEmailComposer />}
-                {activeDemoTool === "voice-analysis" && <VoiceAnalysisRealtime />}
-                {activeDemoTool === "smart-search" && <SmartSearchRealtime />}
-                {activeDemoTool === "auto-form" && <AutoFormCompleter />}
-              </div>
-              
-              <div className="p-4 border-t border-gray-200 bg-gray-50">
-                <div className="flex justify-center">
-                  <button
-                    onClick={() => setShowDemo(false)}
-                    className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-                  >
-                    Close Demo
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+
       </div>
     </div>
   );
