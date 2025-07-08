@@ -49,6 +49,14 @@ import RealTimeEmailComposer from '../components/aiTools/RealTimeEmailComposer';
 import VoiceAnalysisRealtime from '../components/aiTools/VoiceAnalysisRealtime';
 import SmartSearchRealtime from '../components/aiTools/SmartSearchRealtime';
 import AutoFormCompleter from '../components/aiTools/AutoFormCompleter';
+import EmailComposer from '../components/aiTools/EmailComposer';
+import MeetingSummarizer from '../components/aiTools/MeetingSummarizer';
+import ProposalGenerator from '../components/aiTools/ProposalGenerator';
+import CallScriptGenerator from '../components/aiTools/CallScriptGenerator';
+import EmailAnalysis from '../components/aiTools/EmailAnalysis';
+import SubjectLineOptimizer from '../components/aiTools/SubjectLineOptimizer';
+import CompetitorAnalysis from '../components/aiTools/CompetitorAnalysis';
+import MarketTrends from '../components/aiTools/MarketTrends';
 
 // Import AI tool components
 import EmailAnalysisContent from './aiTools/EmailAnalysisContent';
@@ -167,43 +175,43 @@ export const AIToolsProvider: React.FC<AIToolsProviderProps> = ({ children }) =>
         return {
           title: 'Email Analysis',
           icon: <Mail size={24} />,
-          component: <EmailAnalysisContent />
+          component: <EmailAnalysis />
         };
       case 'meeting-summary':
         return {
           title: 'Meeting Summarizer',
           icon: <MessageSquare size={24} />,
-          component: <MeetingSummaryContent />
+          component: <MeetingSummarizer />
         };
       case 'proposal-generator':
         return {
           title: 'Proposal Generator',
           icon: <FileText size={24} />,
-          component: null
+          component: <ProposalGenerator />
         };
       case 'call-script':
         return {
           title: 'Call Script Generator',
           icon: <Phone size={24} />,
-          component: <CallScriptContent />
+          component: <CallScriptGenerator />
         };
       case 'subject-optimizer':
         return {
           title: 'Email Subject Line Optimizer',
           icon: <Target size={24} />,
-          component: <SubjectLineContent />
+          component: <SubjectLineOptimizer />
         };
       case 'competitor-analysis':
         return {
           title: 'Competitor Analysis',
           icon: <FileSearch size={24} />,
-          component: <CompetitorAnalysisContent />
+          component: <CompetitorAnalysis />
         };
       case 'market-trends':
         return {
           title: 'Market Trend Analysis',
           icon: <TrendingUp size={24} />,
-          component: <MarketTrendContent />
+          component: <MarketTrends />
         };
       case 'sales-insights':
         return {
@@ -221,7 +229,7 @@ export const AIToolsProvider: React.FC<AIToolsProviderProps> = ({ children }) =>
         return {
           title: 'Smart Email Composer',
           icon: <Mail size={24} />,
-          component: <EmailComposerContent />
+          component: <EmailComposer />
         };
       case 'objection-handler':
         return {
