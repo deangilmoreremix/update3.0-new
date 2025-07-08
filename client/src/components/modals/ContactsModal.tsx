@@ -171,8 +171,8 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({ isOpen, onClose })
       
       switch (sortBy) {
         case 'name':
-          aValue = a.name.toLowerCase();
-          bValue = b.name.toLowerCase();
+          aValue = (a.name || '').toLowerCase();
+          bValue = (b.name || '').toLowerCase();
           break;
         case 'company':
           aValue = a.company?.toLowerCase() || '';
@@ -183,8 +183,8 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({ isOpen, onClose })
           bValue = b.aiScore || 0;
           break;
         case 'updated':
-          aValue = new Date(a.updatedAt);
-          bValue = new Date(b.updatedAt);
+          aValue = new Date(a.updatedAt || '');
+          bValue = new Date(b.updatedAt || '');
           break;
         default:
           return 0;
