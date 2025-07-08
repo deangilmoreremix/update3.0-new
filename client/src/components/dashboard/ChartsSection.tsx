@@ -3,6 +3,8 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { useDealStore } from '../../store/dealStore';
 import { useContactStore } from '../../store/contactStore';
 import { TrendingUp, DollarSign, Users, Target, Calendar } from 'lucide-react';
+import Avatar from '../ui/Avatar';
+import { getAvatarByIndex, getInitials } from '../../services/avatarCollection';
 
 const ChartsSection: React.FC = () => {
   const { isDark } = useTheme();
@@ -44,9 +46,18 @@ const ChartsSection: React.FC = () => {
           : 'border-gray-200 bg-white/50 backdrop-blur-sm'
       }`}>
         <div className="flex items-center justify-between mb-6">
-          <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            Revenue Trend
-          </h3>
+          <div className="flex items-center space-x-3">
+            <Avatar
+              src={getAvatarByIndex(1, 'executives')}
+              alt="Revenue Manager"
+              size="sm"
+              fallback="RM"
+              status="online"
+            />
+            <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              Revenue Trend
+            </h3>
+          </div>
           <div className="flex items-center space-x-2">
             <TrendingUp className={`h-5 w-5 ${isDark ? 'text-green-400' : 'text-green-600'}`} />
             <span className={`text-sm ${isDark ? 'text-green-400' : 'text-green-600'}`}>
@@ -109,9 +120,18 @@ const ChartsSection: React.FC = () => {
           : 'border-gray-200 bg-white/50 backdrop-blur-sm'
       }`}>
         <div className="flex items-center justify-between mb-6">
-          <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            Pipeline Stages
-          </h3>
+          <div className="flex items-center space-x-3">
+            <Avatar
+              src={getAvatarByIndex(2, 'executives')}
+              alt="Sales Manager"
+              size="sm"
+              fallback="SM"
+              status="online"
+            />
+            <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              Pipeline Stages
+            </h3>
+          </div>
           <div className="flex items-center space-x-2">
             <Target className={`h-5 w-5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
             <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>

@@ -3,6 +3,8 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
 import { useDealStore } from '../../store/dealStore';
 import { Brain, TrendingUp, Target, AlertTriangle, Lightbulb, Zap } from 'lucide-react';
+import Avatar from '../ui/Avatar';
+import { getAvatarByIndex, getInitials } from '../../services/avatarCollection';
 
 const AIInsightsPanel: React.FC = () => {
   const { isDark } = useTheme();
@@ -130,8 +132,17 @@ const AIInsightsPanel: React.FC = () => {
           return (
             <div key={insight.id} className={`p-4 rounded-lg border ${getInsightColor(insight.color)} hover:scale-[1.02] transition-all duration-200`}>
               <div className="flex items-start space-x-4">
-                <div className={`p-2 rounded-lg ${getInsightColor(insight.color).replace('text-', 'bg-').replace('border-', '').replace('/20', '/10')}`}>
-                  <InsightIcon className="h-5 w-5" />
+                <div className="flex items-center space-x-2">
+                  <Avatar
+                    src={getAvatarByIndex(insight.id, 'tech')}
+                    alt={insight.title}
+                    size="sm"
+                    fallback={getInitials(insight.title)}
+                    status={insight.impact === 'high' ? 'busy' : insight.confidence >= 90 ? 'online' : 'away'}
+                  />
+                  <div className={`p-2 rounded-lg ${getInsightColor(insight.color).replace('text-', 'bg-').replace('border-', '').replace('/20', '/10')}`}>
+                    <InsightIcon className="h-5 w-5" />
+                  </div>
                 </div>
                 
                 <div className="flex-1 min-w-0">

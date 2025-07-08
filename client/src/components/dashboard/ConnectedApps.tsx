@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { CheckCircle, AlertCircle, Clock, ExternalLink, Settings, Zap } from 'lucide-react';
+import Avatar from '../ui/Avatar';
+import { getAvatarByIndex } from '../../services/avatarCollection';
 
 const ConnectedApps: React.FC = () => {
   const { isDark } = useTheme();
@@ -169,7 +171,15 @@ const ConnectedApps: React.FC = () => {
           } hover:scale-[1.02] transition-all duration-200`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="text-2xl">{app.icon}</div>
+                <div className="flex items-center space-x-2">
+                  <div className="text-2xl">{app.icon}</div>
+                  <Avatar
+                    src={getAvatarByIndex(index, 'tech')}
+                    alt={app.name}
+                    size="sm"
+                    status={app.status === 'connected' ? 'online' : app.status === 'syncing' ? 'away' : 'offline'}
+                  />
+                </div>
                 <div>
                   <div className="flex items-center space-x-2">
                     <h3 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>

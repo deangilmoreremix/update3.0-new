@@ -2,6 +2,8 @@ import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAITools } from '../AIToolsProvider';
 import { Plus, Phone, Mail, Calendar, Search, Zap, MessageSquare, FileText } from 'lucide-react';
+import Avatar from '../ui/Avatar';
+import { getAvatarByIndex, getInitials } from '../../services/avatarCollection';
 
 const QuickActions: React.FC = () => {
   const { isDark } = useTheme();
@@ -78,9 +80,18 @@ const QuickActions: React.FC = () => {
         ? 'border-white/10 bg-white/5 backdrop-blur-sm' 
         : 'border-gray-200 bg-white/50 backdrop-blur-sm'
     }`}>
-      <h2 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-        Quick Actions
-      </h2>
+      <div className="flex items-center space-x-3 mb-4">
+        <Avatar
+          src={getAvatarByIndex(0, 'tech')}
+          alt="AI Assistant"
+          size="sm"
+          fallback="AI"
+          status="online"
+        />
+        <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          Quick Actions
+        </h2>
+      </div>
       
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {quickActions.map((action, index) => (

@@ -2,6 +2,8 @@ import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
 import { Star, MapPin, Phone, Mail, Calendar, TrendingUp } from 'lucide-react';
+import Avatar from '../ui/Avatar';
+import { getAvatarByIndex, getInitials } from '../../services/avatarCollection';
 
 const CustomerProfile: React.FC = () => {
   const { isDark } = useTheme();
@@ -59,12 +61,14 @@ const CustomerProfile: React.FC = () => {
             isDark ? 'border-white/10 bg-white/5' : 'border-gray-100 bg-white/50'
           } hover:scale-[1.02] transition-all duration-200`}>
             <div className="flex items-start space-x-4">
-              {/* Avatar */}
+              {/* Avatar with Professional Image */}
               <div className="relative">
-                <img
-                  src={contact.avatarSrc || contact.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(contact.name)}&background=random`}
+                <Avatar
+                  src={contact.avatarSrc || contact.avatar || getAvatarByIndex(parseInt(contact.id) || 0)}
                   alt={contact.name}
-                  className="w-12 h-12 rounded-full object-cover"
+                  size="lg"
+                  fallback={getInitials(contact.name)}
+                  status={contact.interestLevel === 'hot' ? 'busy' : contact.interestLevel === 'medium' ? 'away' : 'online'}
                 />
                 <div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 ${
                   contact.interestLevel === 'hot' 

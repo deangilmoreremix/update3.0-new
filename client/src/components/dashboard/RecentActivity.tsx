@@ -1,6 +1,8 @@
 import React from 'react';
 import { AvatarWithStatus } from '../modern-ui/AvatarWithStatus';
 import { GlassCard } from '../modern-ui/GlassCard';
+import Avatar from '../ui/Avatar';
+import { getAvatarByIndex, getInitials } from '../../services/avatarCollection';
 import { 
   Mail, 
   Phone, 
@@ -197,13 +199,12 @@ export const RecentActivity: React.FC = () => {
                   {/* Contact Avatar and Info */}
                   {contact && (
                     <div className="flex items-center space-x-2 mt-2">
-                      <AvatarWithStatus
-                        src={contact.avatarSrc}
+                      <Avatar
+                        src={contact.avatarSrc || contact.avatar || getAvatarByIndex(parseInt(contact.id) || 0)}
                         alt={contact.name}
-                        name={contact.name}
                         size="sm"
+                        fallback={getInitials(contact.name)}
                         status="online"
-                        showStatus={false}
                       />
                       <span className="text-xs text-gray-500">{contact.name}</span>
                     </div>

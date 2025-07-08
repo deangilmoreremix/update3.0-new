@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { TrendingUp, Users, DollarSign, Target } from 'lucide-react';
+import Avatar from '../ui/Avatar';
+import { getAvatarByIndex } from '../../services/avatarCollection';
 
 const MetricsCards: React.FC = () => {
   const { isDark } = useTheme();
@@ -52,18 +54,26 @@ const MetricsCards: React.FC = () => {
           } hover:scale-105 transition-all duration-300`}
         >
           <div className="flex items-center justify-between mb-4">
-            <div className={`p-3 rounded-lg ${
-              metric.color === 'blue' ? (isDark ? 'bg-blue-500/20' : 'bg-blue-100') :
-              metric.color === 'green' ? (isDark ? 'bg-green-500/20' : 'bg-green-100') :
-              metric.color === 'purple' ? (isDark ? 'bg-purple-500/20' : 'bg-purple-100') :
-              (isDark ? 'bg-orange-500/20' : 'bg-orange-100')
-            }`}>
-              <metric.icon className={`h-6 w-6 ${
-                metric.color === 'blue' ? (isDark ? 'text-blue-400' : 'text-blue-600') :
-                metric.color === 'green' ? (isDark ? 'text-green-400' : 'text-green-600') :
-                metric.color === 'purple' ? (isDark ? 'text-purple-400' : 'text-purple-600') :
-                (isDark ? 'text-orange-400' : 'text-orange-600')
-              }`} />
+            <div className="flex items-center space-x-3">
+              <div className={`p-3 rounded-lg ${
+                metric.color === 'blue' ? (isDark ? 'bg-blue-500/20' : 'bg-blue-100') :
+                metric.color === 'green' ? (isDark ? 'bg-green-500/20' : 'bg-green-100') :
+                metric.color === 'purple' ? (isDark ? 'bg-purple-500/20' : 'bg-purple-100') :
+                (isDark ? 'bg-orange-500/20' : 'bg-orange-100')
+              }`}>
+                <metric.icon className={`h-6 w-6 ${
+                  metric.color === 'blue' ? (isDark ? 'text-blue-400' : 'text-blue-600') :
+                  metric.color === 'green' ? (isDark ? 'text-green-400' : 'text-green-600') :
+                  metric.color === 'purple' ? (isDark ? 'text-purple-400' : 'text-purple-600') :
+                  (isDark ? 'text-orange-400' : 'text-orange-600')
+                }`} />
+              </div>
+              <Avatar
+                src={getAvatarByIndex(index, 'executives')}
+                alt={metric.title}
+                size="sm"
+                status="online"
+              />
             </div>
             <span className={`text-sm font-medium px-2 py-1 rounded-full ${
               isDark ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-600'

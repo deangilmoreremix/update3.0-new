@@ -3,6 +3,8 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { useTaskStore } from '../../store/taskStore';
 import { useDealStore } from '../../store/dealStore';
 import { CheckSquare, Clock, AlertCircle, TrendingUp } from 'lucide-react';
+import Avatar from '../ui/Avatar';
+import { getAvatarByIndex, getInitials } from '../../services/avatarCollection';
 
 const TasksAndFunnel: React.FC = () => {
   const { isDark } = useTheme();
@@ -92,6 +94,13 @@ const TasksAndFunnel: React.FC = () => {
               }`}>
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-3">
+                    <Avatar
+                      src={getAvatarByIndex(parseInt(task.id) || 0, 'executives')}
+                      alt={`Task ${task.id}`}
+                      size="sm"
+                      fallback={getInitials(task.title || 'Task')}
+                      status={task.status === 'completed' ? 'online' : task.status === 'in-progress' ? 'busy' : 'away'}
+                    />
                     <TaskIcon className={`h-5 w-5 mt-0.5 ${getTaskStatusColor(task.status)}`} />
                     <div className="flex-1">
                       <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>

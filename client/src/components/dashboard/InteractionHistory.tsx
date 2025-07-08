@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { Phone, Mail, Calendar, MessageSquare, Video, Clock } from 'lucide-react';
+import Avatar from '../ui/Avatar';
+import { getAvatarByIndex, getInitials } from '../../services/avatarCollection';
 
 const InteractionHistory: React.FC = () => {
   const { isDark } = useTheme();
@@ -105,8 +107,15 @@ const InteractionHistory: React.FC = () => {
       </div>
       
       <div className="space-y-4">
-        {interactions.map((interaction) => (
+        {interactions.map((interaction, index) => (
           <div key={interaction.id} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-white/10 transition-colors">
+            <Avatar
+              src={getAvatarByIndex(index)}
+              alt={interaction.contact}
+              size="md"
+              fallback={getInitials(interaction.contact)}
+              status={interaction.status === 'completed' ? 'online' : interaction.status === 'scheduled' ? 'away' : 'busy'}
+            />
             <div className={`p-2 rounded-lg ${getIconColor(interaction.color)}`}>
               <interaction.icon size={16} />
             </div>
