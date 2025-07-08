@@ -357,6 +357,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           aiScore: 92,
           avatarSrc: 'https://images.pexels.com/photos/3763188/pexels-photo-3763188.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
           tags: ['enterprise', 'decision-maker', 'technical'],
+          sources: ['linkedin', 'website', 'referral'],
+          notes: 'Senior VP with deep technical background. Key decision maker for enterprise solutions.',
+          isFavorite: false,
+          socialProfiles: {
+            linkedin: 'https://linkedin.com/in/sarah-johnson-tech',
+            website: 'https://techcorp.com/team/sarah-johnson'
+          },
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
@@ -375,6 +382,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           aiScore: 78,
           avatarSrc: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
           tags: ['startup', 'ai-focused', 'growth'],
+          sources: ['cold-email', 'conference', 'ai-directory'],
+          notes: 'CTO of promising AI startup. Interested in scalable AI solutions.',
+          isFavorite: false,
+          socialProfiles: {
+            linkedin: 'https://linkedin.com/in/michael-chen-ai',
+            twitter: 'https://twitter.com/mchen_ai'
+          },
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
@@ -393,6 +407,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           aiScore: 85,
           avatarSrc: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
           tags: ['fintech', 'operations', 'customer'],
+          sources: ['referral', 'website', 'demo-request'],
+          notes: 'Existing customer, very satisfied with current services. Potential for expansion.',
+          isFavorite: true,
+          socialProfiles: {
+            linkedin: 'https://linkedin.com/in/emily-rodriguez-fintech',
+            website: 'https://fintech.com/leadership/emily-rodriguez'
+          },
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
@@ -411,6 +432,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           aiScore: 73,
           avatarSrc: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
           tags: ['healthcare', 'product', 'innovation'],
+          sources: ['linkedin', 'industry-event', 'newsletter'],
+          notes: 'Product manager interested in healthcare innovation tools.',
+          isFavorite: false,
+          socialProfiles: {
+            linkedin: 'https://linkedin.com/in/david-kim-healthtech'
+          },
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
@@ -429,6 +456,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           aiScore: 65,
           avatarSrc: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
           tags: ['ecommerce', 'marketing', 'digital'],
+          sources: ['google-search', 'social-media', 'ad-campaign'],
+          notes: 'Marketing director exploring digital marketing automation tools.',
+          isFavorite: false,
+          socialProfiles: {
+            linkedin: 'https://linkedin.com/in/jessica-williams-marketing',
+            twitter: 'https://twitter.com/jwilliams_mkt'
+          },
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
@@ -447,6 +481,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           aiScore: 95,
           avatarSrc: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
           tags: ['manufacturing', 'ceo', 'enterprise'],
+          sources: ['referral', 'industry-partner', 'board-connection'],
+          notes: 'CEO of major manufacturing company. Key enterprise client with expansion potential.',
+          isFavorite: true,
+          socialProfiles: {
+            linkedin: 'https://linkedin.com/in/robert-taylor-manufacturing',
+            website: 'https://advancedmanufacturing.com/leadership/robert-taylor'
+          },
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         }

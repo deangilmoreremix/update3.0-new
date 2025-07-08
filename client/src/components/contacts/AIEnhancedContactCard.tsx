@@ -227,17 +227,21 @@ export const AIEnhancedContactCard: React.FC<AIEnhancedContactCardProps> = ({
         <div className="mb-4">
           <p className="text-xs text-gray-500 mb-2 text-center">Source</p>
           <div className="flex justify-center flex-wrap gap-1">
-            {contact.sources.map((source, index) => (
-              <span
-                key={index}
-                className={`
-                  ${sourceColors[source] || 'bg-gray-600'} 
-                  text-white text-xs px-2 py-1 rounded-md font-medium hover:scale-110 transition-transform cursor-pointer
-                `}
-              >
-                {source}
-              </span>
-            ))}
+            {contact.sources && contact.sources.length > 0 ? (
+              contact.sources.map((source, index) => (
+                <span
+                  key={index}
+                  className={`
+                    ${sourceColors[source] || 'bg-gray-600'} 
+                    text-white text-xs px-2 py-1 rounded-md font-medium hover:scale-110 transition-transform cursor-pointer
+                  `}
+                >
+                  {source}
+                </span>
+              ))
+            ) : (
+              <span className="text-xs text-gray-400">No sources</span>
+            )}
           </div>
         </div>
 
