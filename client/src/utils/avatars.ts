@@ -1,40 +1,32 @@
-// Generate initials from name
 export const getInitials = (name: string): string => {
   if (!name) return '?';
-  return name
-    .split(' ')
+  
+  const words = name.trim().split(' ');
+  if (words.length === 1) {
+    return words[0].charAt(0).toUpperCase();
+  }
+  
+  return words.slice(0, 2)
     .map(word => word.charAt(0).toUpperCase())
-    .slice(0, 2)
     .join('');
 };
 
-// Professional avatar collection from Pexels
-export const avatarCollection = {
-  // Business Professionals - Men
-  men: [
-    'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-    'https://images.pexels.com/photos/2625122/pexels-photo-2625122.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-    'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-    'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2'
-  ],
+export const getAvatarColor = (name: string): string => {
+  const colors = [
+    'bg-blue-500',
+    'bg-green-500', 
+    'bg-purple-500',
+    'bg-red-500',
+    'bg-yellow-500',
+    'bg-indigo-500',
+    'bg-pink-500',
+    'bg-teal-500'
+  ];
   
-  // Business Professionals - Women
-  women: [
-    'https://images.pexels.com/photos/3763188/pexels-photo-3763188.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-    'https://images.pexels.com/photos/3756679/pexels-photo-3756679.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-    'https://images.pexels.com/photos/3760069/pexels-photo-3760069.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
-    'https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2'
-  ]
-};
-
-// Get random avatar from specific category or all
-export const getRandomAvatar = (category?: keyof typeof avatarCollection): string => {
-  if (category && avatarCollection[category]) {
-    const categoryAvatars = avatarCollection[category];
-    return categoryAvatars[Math.floor(Math.random() * categoryAvatars.length)];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
   
-  // Get from all categories
-  const allAvatars = Object.values(avatarCollection).flat();
-  return allAvatars[Math.floor(Math.random() * allAvatars.length)];
+  return colors[Math.abs(hash) % colors.length];
 };

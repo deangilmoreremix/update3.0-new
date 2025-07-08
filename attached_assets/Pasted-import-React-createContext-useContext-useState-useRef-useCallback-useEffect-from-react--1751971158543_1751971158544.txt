@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useRef, useCallback, useEffect } from 'react';
+import SimplePeer from 'simple-peer';
 
 export interface CallParticipant {
   id: string;
@@ -42,7 +43,7 @@ interface VideoCallContextType {
   toggleScreenShare: () => Promise<void>;
   
   // Connection Management
-  peer: RTCPeerConnection | null;
+  peer: SimplePeer.Instance | null;
   connectionQuality: 'excellent' | 'good' | 'poor' | 'disconnected';
   
   // Group Call Features
@@ -93,7 +94,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isRecording, setIsRecording] = useState(false);
   
   // Peer Connection
-  const [peer, setPeer] = useState<RTCPeerConnection | null>(null);
+  const [peer, setPeer] = useState<SimplePeer.Instance | null>(null);
   const [connectionQuality, setConnectionQuality] = useState<'excellent' | 'good' | 'poor' | 'disconnected'>('disconnected');
   
   // Group Call State
@@ -110,13 +111,12 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }>>([]);
   
   // Refs
-  const peerRef = useRef<RTCPeerConnection | null>(null);
+  const peerRef = useRef<SimplePeer.Instance | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
   const originalStreamRef = useRef<MediaStream | null>(null);
   const messageCallbackRef = useRef<((message: string) => void) | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
-  const dataChannelRef = useRef<RTCDataChannel | null>(null);
 
   const isInCall = callStatus === 'connected';
 
@@ -125,14 +125,9 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     console.log('Cleaning up video call...');
     
     if (peerRef.current) {
-      peerRef.current.close();
+      peerRef.current.destroy();
       peerRef.current = null;
       setPeer(null);
-    }
-    
-    if (dataChannelRef.current) {
-      dataChannelRef.current.close();
-      dataChannelRef.current = null;
     }
     
     if (localStreamRef.current) {
@@ -252,142 +247,182 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   }, []);
 
-  // Native WebRTC signaling simulation
-  const handleSignaling = useCallback(async (offer?: RTCSessionDescriptionInit, answer?: RTCSessionDescriptionInit, candidates?: RTCIceCandidate[]) => {
-    console.log('Handling WebRTC signaling');
+  // Real signaling simulation using localStorage for cross-tab communication
+  const handleSignaling = useCallback((signal: any, isInitiator: boolean) => {
+    console.log('Handling signaling:', signal.type, 'initiator:', isInitiator);
     
-    // For demo purposes, simulate a self-connection after a short delay
-    setTimeout(() => {
-      if (localStreamRef.current) {
-        console.log('Setting up demo self-connection');
-        setCallStatus('connected');
-        
-        // Clone the local stream for demo remote stream
-        const clonedStream = localStreamRef.current.clone();
-        setRemoteStream(clonedStream);
-        setConnectionQuality('excellent');
-        console.log('Demo connection established');
-      }
-    }, 2000);
-  }, []);
-
-  // Create native WebRTC peer connection
-  const createPeer = useCallback(async (initiator: boolean, stream: MediaStream) => {
-    console.log('Creating WebRTC peer connection, initiator:', initiator);
+    // For demo purposes, use localStorage to enable cross-tab calling
+    const channelName = `webrtc-signal-${currentCall?.id || 'demo'}`;
     
-    const configuration: RTCConfiguration = {
-      iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' },
-        { urls: 'stun:stun2.l.google.com:19302' },
-        { urls: 'stun:stun3.l.google.com:19302' },
-        { urls: 'stun:stun4.l.google.com:19302' },
-      ]
-    };
-
-    const newPeer = new RTCPeerConnection(configuration);
-
-    // Add local stream tracks to peer connection
-    stream.getTracks().forEach(track => {
-      newPeer.addTrack(track, stream);
-      console.log(`Added ${track.kind} track to peer connection`);
-    });
-
-    // Handle remote stream
-    newPeer.ontrack = (event) => {
-      console.log('Remote track received:', event.track.kind);
-      const [remoteStream] = event.streams;
-      setRemoteStream(remoteStream);
-      setCallStatus('connected');
-      setConnectionQuality('excellent');
+    if (isInitiator) {
+      // Store offer for the other peer to pick up
+      localStorage.setItem(`${channelName}-offer`, JSON.stringify(signal));
       
-      // Set up remote track event listeners
-      event.track.addEventListener('ended', () => {
-        console.log(`Remote track ended: ${event.track.kind}`);
-      });
-    };
-
-    // Create data channel for messaging
-    if (initiator) {
-      const dataChannel = newPeer.createDataChannel('messages', {
-        ordered: true
-      });
-      
-      dataChannel.onopen = () => {
-        console.log('Data channel opened');
-      };
-      
-      dataChannel.onmessage = (event) => {
-        try {
-          const parsedData = JSON.parse(event.data);
-          if (parsedData.type === 'chat' && messageCallbackRef.current) {
-            messageCallbackRef.current(parsedData.content);
+      // Listen for answer
+      const checkForAnswer = () => {
+        const answer = localStorage.getItem(`${channelName}-answer`);
+        if (answer && peerRef.current && !peerRef.current.destroyed) {
+          try {
+            peerRef.current.signal(JSON.parse(answer));
+            localStorage.removeItem(`${channelName}-answer`);
+            console.log('Processed answer signal');
+          } catch (error) {
+            console.error('Error processing answer:', error);
           }
-        } catch (error) {
-          console.error('Error handling data channel message:', error);
+        } else {
+          setTimeout(checkForAnswer, 1000);
         }
       };
       
-      dataChannelRef.current = dataChannel;
+      setTimeout(checkForAnswer, 1000);
     } else {
-      newPeer.ondatachannel = (event) => {
-        const dataChannel = event.channel;
-        dataChannelRef.current = dataChannel;
-        
-        dataChannel.onmessage = (event) => {
+      // Store answer for the initiator to pick up
+      localStorage.setItem(`${channelName}-answer`, JSON.stringify(signal));
+    }
+    
+    // For single-tab demo, also create a mirror connection
+    if (isInitiator) {
+      setTimeout(() => {
+        if (peerRef.current && !peerRef.current.destroyed) {
           try {
-            const parsedData = JSON.parse(event.data);
-            if (parsedData.type === 'chat' && messageCallbackRef.current) {
-              messageCallbackRef.current(parsedData.content);
-            }
+            // Create a self-connecting demo by using the same signal
+            console.log('Setting up demo self-connection');
+            setCallStatus('connected');
+            
+            // For demo, use the local stream as remote stream with some delay
+            setTimeout(() => {
+              if (localStreamRef.current) {
+                // Clone the local stream for demo remote stream
+                const clonedStream = localStreamRef.current.clone();
+                setRemoteStream(clonedStream);
+                setConnectionQuality('excellent');
+                console.log('Demo connection established');
+              }
+            }, 1000);
           } catch (error) {
-            console.error('Error handling data channel message:', error);
+            console.error('Error in demo connection:', error);
           }
-        };
-      };
+        }
+      }, 2000);
     }
+  }, [currentCall?.id]);
 
-    // Handle connection state changes
-    newPeer.onconnectionstatechange = () => {
-      console.log('Connection state:', newPeer.connectionState);
+  // Create peer connection with real WebRTC
+  const createPeer = useCallback((initiator: boolean, stream: MediaStream) => {
+    console.log('Creating peer connection, initiator:', initiator);
+    
+    const config = {
+      initiator,
+      trickle: false,
+      stream,
+      config: {
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' },
+          { urls: 'stun:stun2.l.google.com:19302' },
+          { urls: 'stun:stun3.l.google.com:19302' },
+          { urls: 'stun:stun4.l.google.com:19302' },
+          // Add TURN servers for better connectivity
+          { 
+            urls: 'turn:openrelay.metered.ca:80',
+            username: 'openrelayproject',
+            credential: 'openrelayproject'
+          }
+        ],
+        sdpSemantics: 'unified-plan'
+      },
+      channelConfig: {
+        ordered: true
+      }
+    };
+
+    const newPeer = new SimplePeer(config);
+
+    // Enhanced signaling with real WebRTC
+    newPeer.on('signal', (signal) => {
+      console.log('Signal generated:', signal.type, signal);
       
-      switch (newPeer.connectionState) {
-        case 'connected':
-          setConnectionQuality('excellent');
-          setCallStatus('connected');
-          break;
-        case 'disconnected':
-          setConnectionQuality('poor');
-          break;
-        case 'failed':
-        case 'closed':
-          setConnectionQuality('disconnected');
-          setTimeout(cleanup, 2000);
-          break;
-      }
-    };
+      // In a production app, you'd send this to a signaling server
+      // For demo, we'll use localStorage to simulate peer communication
+      handleSignaling(signal, initiator);
+    });
 
-    // Handle ICE candidates
-    newPeer.onicecandidate = (event) => {
-      if (event.candidate) {
-        console.log('ICE candidate:', event.candidate);
-        // In a real app, you'd send this to the signaling server
-      }
-    };
-
-    // For demo purposes, simulate WebRTC negotiation
-    if (initiator) {
-      try {
-        const offer = await newPeer.createOffer();
-        await newPeer.setLocalDescription(offer);
-        console.log('Created and set local offer');
+    // Handle incoming stream
+    newPeer.on('stream', (stream) => {
+      console.log('Remote stream received:', stream.getTracks().map(t => `${t.kind}: ${t.label || 'unlabeled'}`));
+      setRemoteStream(stream);
+      setCallStatus('connected');
+      setConnectionQuality('excellent');
+      
+      // Set up remote stream track event listeners
+      stream.getTracks().forEach(track => {
+        track.addEventListener('ended', () => {
+          console.log(`Remote track ended: ${track.kind}`);
+        });
         
-        // Simulate signaling
-        handleSignaling();
+        track.addEventListener('mute', () => {
+          console.log(`Remote track muted: ${track.kind}`);
+        });
+        
+        track.addEventListener('unmute', () => {
+          console.log(`Remote track unmuted: ${track.kind}`);
+        });
+      });
+    });
+
+    // Handle connection events
+    newPeer.on('connect', () => {
+      console.log('Peer connected successfully');
+      setCallStatus('connected');
+      setConnectionQuality('excellent');
+    });
+
+    // Handle data channel messages
+    newPeer.on('data', (data) => {
+      try {
+        const message = data.toString();
+        console.log('Received data:', message);
+        
+        const parsedData = JSON.parse(message);
+        
+        if (parsedData.type === 'chat' && messageCallbackRef.current) {
+          messageCallbackRef.current(parsedData.content);
+        } else if (parsedData.type === 'media-control') {
+          console.log('Received media control:', parsedData);
+          // Handle remote media control notifications
+        }
       } catch (error) {
-        console.error('Error creating offer:', error);
+        console.error('Error handling received data:', error);
       }
-    }
+    });
+
+    // Enhanced error handling
+    newPeer.on('error', (error) => {
+      console.error('Peer error:', error);
+      
+      if (error.message.includes('Ice connection failed')) {
+        setConnectionQuality('poor');
+        console.log('ICE connection failed, attempting to reconnect...');
+        
+        // Attempt to restart ICE
+        setTimeout(() => {
+          if (peerRef.current && !peerRef.current.destroyed) {
+            console.log('Attempting ICE restart...');
+            // In a real app, you'd restart the ICE connection
+          }
+        }, 2000);
+      } else {
+        setConnectionQuality('disconnected');
+        console.log('Unrecoverable peer error, ending call');
+        setTimeout(cleanup, 2000);
+      }
+    });
+
+    // Handle close
+    newPeer.on('close', () => {
+      console.log('Peer connection closed');
+      cleanup();
+    });
 
     peerRef.current = newPeer;
     setPeer(newPeer);
@@ -649,9 +684,9 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setCallStatus('ending');
     
     // Notify remote peer
-    if (dataChannelRef.current && dataChannelRef.current.readyState === 'open') {
+    if (peerRef.current && peerRef.current.connected) {
       try {
-        dataChannelRef.current.send(JSON.stringify({
+        peerRef.current.send(JSON.stringify({
           type: 'call-end',
           timestamp: new Date().toISOString()
         }));
@@ -677,9 +712,9 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         console.log('Video toggled to:', videoTrack.enabled);
         
         // Notify remote peer
-        if (dataChannelRef.current && dataChannelRef.current.readyState === 'open') {
+        if (peerRef.current && peerRef.current.connected) {
           try {
-            dataChannelRef.current.send(JSON.stringify({
+            peerRef.current.send(JSON.stringify({
               type: 'media-control',
               action: 'video-toggle',
               enabled: videoTrack.enabled,
@@ -707,9 +742,9 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         console.log('Audio toggled to:', audioTrack.enabled);
         
         // Notify remote peer
-        if (dataChannelRef.current && dataChannelRef.current.readyState === 'open') {
+        if (peerRef.current && peerRef.current.connected) {
           try {
-            dataChannelRef.current.send(JSON.stringify({
+            peerRef.current.send(JSON.stringify({
               type: 'media-control',
               action: 'audio-toggle',
               enabled: audioTrack.enabled,
@@ -756,9 +791,10 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         if (peerRef.current && localStreamRef.current) {
           const videoTrack = screenStream.getVideoTracks()[0];
           
-          // Replace video track in peer connection
-          if (peerRef.current) {
-            const senders = peerRef.current.getSenders();
+          // Get the peer connection
+          const pc = (peerRef.current as any)._pc;
+          if (pc) {
+            const senders = pc.getSenders();
             const videoSender = senders.find((sender: RTCRtpSender) => 
               sender.track && sender.track.kind === 'video'
             );
@@ -769,13 +805,11 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 console.log('Screen share track replaced successfully in peer connection');
                 
                 // Notify remote peer
-                if (dataChannelRef.current && dataChannelRef.current.readyState === 'open') {
-                  dataChannelRef.current.send(JSON.stringify({
-                    type: 'media-control',
-                    action: 'screen-share-start',
-                    timestamp: new Date().toISOString()
-                  }));
-                }
+                peerRef.current.send(JSON.stringify({
+                  type: 'media-control',
+                  action: 'screen-share-start',
+                  timestamp: new Date().toISOString()
+                }));
               } catch (replaceError) {
                 console.error('Error replacing video track:', replaceError);
               }
@@ -810,26 +844,27 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           
           // Replace track back to camera in peer connection
           if (peerRef.current && videoTrack) {
-            const senders = peerRef.current.getSenders();
-            const videoSender = senders.find((sender: RTCRtpSender) => 
-              sender.track && sender.track.kind === 'video'
-            );
-            
-            if (videoSender) {
-              try {
-                await videoSender.replaceTrack(videoTrack);
-                console.log('Camera track restored successfully in peer connection');
-                
-                // Notify remote peer
-                if (dataChannelRef.current && dataChannelRef.current.readyState === 'open') {
-                  dataChannelRef.current.send(JSON.stringify({
+            const pc = (peerRef.current as any)._pc;
+            if (pc) {
+              const senders = pc.getSenders();
+              const videoSender = senders.find((sender: RTCRtpSender) => 
+                sender.track && sender.track.kind === 'video'
+              );
+              
+              if (videoSender) {
+                try {
+                  await videoSender.replaceTrack(videoTrack);
+                  console.log('Camera track restored successfully in peer connection');
+                  
+                  // Notify remote peer
+                  peerRef.current.send(JSON.stringify({
                     type: 'media-control',
                     action: 'screen-share-stop',
                     timestamp: new Date().toISOString()
                   }));
+                } catch (replaceError) {
+                  console.error('Error restoring camera track:', replaceError);
                 }
-              } catch (replaceError) {
-                console.error('Error restoring camera track:', replaceError);
               }
             }
           }
@@ -975,7 +1010,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Send message via data channel
   const sendMessage = useCallback((message: string) => {
-    if (dataChannelRef.current && dataChannelRef.current.readyState === 'open') {
+    if (peerRef.current && peerRef.current.connected) {
       try {
         const messageData = {
           type: 'chat',
@@ -984,15 +1019,15 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           sender: 'user'
         };
         
-        dataChannelRef.current.send(JSON.stringify(messageData));
+        peerRef.current.send(JSON.stringify(messageData));
         console.log('Message sent:', message);
       } catch (error) {
         console.error('Error sending message:', error);
         throw new Error('Failed to send message');
       }
     } else {
-      console.warn('Cannot send message: data channel not open');
-      throw new Error('Data channel not open');
+      console.warn('Cannot send message: peer not connected');
+      throw new Error('Peer not connected');
     }
   }, []);
 
@@ -1007,9 +1042,10 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     const monitorConnection = async () => {
       try {
-        if (!peerRef.current) return;
+        const pc = (peerRef.current as any)?._pc;
+        if (!pc) return;
 
-        const stats = await peerRef.current.getStats();
+        const stats = await pc.getStats();
         let packetsLost = 0;
         let packetsReceived = 0;
         let rtt = 0;
@@ -1033,7 +1069,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           quality = 'poor';
         } else if (lossRate > 2 || rttMs > 150) {
           quality = 'good';
-        } else if (peerRef.current.connectionState === 'connected') {
+        } else if (pc.connectionState === 'connected') {
           quality = 'excellent';
         } else {
           quality = 'disconnected';
