@@ -38,12 +38,12 @@ const DashboardLayoutControls: React.FC = () => {
   };
 
   const allSections = [
-    'executive-overview-section',
-    'ai-smart-features-hub',
-    'sales-pipeline-deal-analytics',
-    'customer-lead-management',
-    'activities-communications',
-    'integrations-system'
+    'ai-section',
+    'pipeline-section', 
+    'contacts-section',
+    'tasks-section',
+    'apps-section',
+    'analytics-section'
   ];
 
   return (
