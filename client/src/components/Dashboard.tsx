@@ -10,6 +10,8 @@ import { useAppointmentStore } from '../store/appointmentStore';
 import DashboardLayoutControls from './DashboardLayoutControls';
 import AIInsightsPanel from './AIInsightsPanel';
 import { SmartAIControls } from './ai/SmartAIControls';
+import { RecentActivity } from './dashboard/RecentActivity';
+import KPICards from './dashboard/KPICards';
 
 // Executive Overview Section Component
 const ExecutiveOverviewSection: React.FC = () => {
@@ -384,33 +386,13 @@ const MetricsCardsSection: React.FC = () => {
   );
 };
 
-// Recent Activity Section
+// Recent Activity Section - Enhanced with Avatars
 const RecentActivitySection: React.FC = () => {
   const { isDark } = useTheme();
   
-  const activities = [
-    { id: 1, type: 'deal', message: 'TechCorp deal moved to negotiation', time: '5 min ago', user: 'Sarah M.', icon: Target },
-    { id: 2, type: 'contact', message: 'New contact added: John Smith', time: '15 min ago', user: 'You', icon: Users },
-    { id: 3, type: 'email', message: 'Email campaign sent to 25 prospects', time: '1 hour ago', user: 'Marketing Team', icon: Mail },
-    { id: 4, type: 'task', message: 'Follow-up call scheduled', time: '2 hours ago', user: 'Alex R.', icon: Phone }
-  ];
-  
   return (
-    <div id="recent-activity-section" className={`mb-8 p-6 rounded-2xl backdrop-blur-sm ${isDark ? 'bg-white/5 border-white/10' : 'bg-white/90 border-gray-200'} border shadow-lg`}>
-      <h3 className={`text-xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Recent Activity</h3>
-      <div className="space-y-4">
-        {activities.map((activity) => (
-          <div key={activity.id} className={`flex items-center space-x-4 p-3 rounded-lg ${isDark ? 'bg-gray-800/50' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-            <div className={`w-10 h-10 rounded-lg ${isDark ? 'bg-gray-700' : 'bg-gray-100'} flex items-center justify-center`}>
-              <activity.icon className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
-            </div>
-            <div className="flex-1">
-              <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{activity.message}</p>
-              <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>by {activity.user} • {activity.time}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div id="recent-activity-section" className={`mb-8 ${isDark ? 'bg-white/5 border-white/10' : 'bg-white/90 border-gray-200'} backdrop-blur-sm border rounded-2xl shadow-lg`}>
+      <RecentActivity />
     </div>
   );
 };
@@ -491,11 +473,14 @@ const CustomerProfileSection: React.FC = () => {
         {featuredProfiles.map((contact) => (
           <div key={contact.id} className={`p-4 rounded-xl ${isDark ? 'bg-gray-800/50' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-200'} hover:shadow-lg transition-all duration-200`}>
             <div className="flex items-center space-x-3 mb-3">
-              <img
-                src={contact.avatarSrc || '/api/placeholder/40/40'}
-                alt={contact.name}
-                className="w-12 h-12 rounded-full object-cover"
-              />
+              <div className="relative">
+                <img
+                  src={contact.avatarSrc || '/api/placeholder/40/40'}
+                  alt={contact.name}
+                  className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
+                />
+                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+              </div>
               <div>
                 <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{contact.name}</p>
                 <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{contact.title}</p>

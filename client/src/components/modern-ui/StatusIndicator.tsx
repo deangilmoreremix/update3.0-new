@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 interface StatusIndicatorProps {
-  status: 'online' | 'away' | 'busy' | 'offline';
+  status: 'online' | 'away' | 'busy' | 'offline' | 'active' | 'pending' | 'inactive' | 'success' | 'warning' | 'error';
   size?: 'sm' | 'md' | 'lg';
   pulse?: boolean;
   className?: string;
@@ -14,30 +14,56 @@ export const StatusIndicator: React.FC<StatusIndicatorProps> = ({
   pulse = false,
   className
 }) => {
-  const sizeClasses = {
-    sm: 'w-2 h-2',
-    md: 'w-3 h-3',
-    lg: 'w-4 h-4'
+  const getSizeClasses = () => {
+    switch (size) {
+      case 'sm': return 'w-2 h-2';
+      case 'lg': return 'w-4 h-4';
+      case 'md':
+      default: return 'w-3 h-3';
+    }
   };
 
-  const statusClasses = {
-    online: 'bg-green-500',
-    away: 'bg-yellow-500',
-    busy: 'bg-red-500',
-    offline: 'bg-gray-500'
+  const getStatusColor = () => {
+    switch (status) {
+      case 'online':
+      case 'active':
+      case 'success':
+        return 'bg-green-400';
+      case 'away':
+      case 'warning':
+        return 'bg-yellow-400';
+      case 'busy':
+      case 'error':
+        return 'bg-red-400';
+      case 'pending':
+        return 'bg-orange-400';
+      case 'offline':
+      case 'inactive':
+      default:
+        return 'bg-gray-400';
+    }
   };
-
-  const pulseClass = pulse && status === 'online' ? 'animate-pulse-glow' : '';
 
   return (
-    <div
-      className={cn(
-        'rounded-full border-2 border-white',
-        sizeClasses[size],
-        statusClasses[status],
-        pulseClass,
-        className
+    <div className={cn('relative', className)}>
+      <div 
+        className={cn(
+          'rounded-full border-2 border-white',
+          getSizeClasses(),
+          getStatusColor(),
+          pulse && 'animate-pulse'
+        )}
+      />
+      {pulse && (
+        <div 
+          className={cn(
+            'absolute inset-0 rounded-full animate-ping',
+            getSizeClasses(),
+            getStatusColor(),
+            'opacity-75'
+          )}
+        />
       )}
-    />
+    </div>
   );
 };
