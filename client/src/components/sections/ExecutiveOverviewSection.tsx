@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import DashboardHeader from '../dashboard/DashboardHeader';
-import KPICardsWithAvatars from '../dashboard/KPICardsWithAvatars';
+import KPICards from '../dashboard/KPICards';
 import QuickActions from '../dashboard/QuickActions';
 import MetricsCards from '../dashboard/MetricsCards';
 
@@ -15,7 +15,7 @@ const ExecutiveOverviewSection: React.FC = () => {
       
       {/* KPI Cards */}
       <div className="mb-8">
-        <KPICardsWithAvatars />
+        <KPICards />
       </div>
       
       {/* Quick Actions */}

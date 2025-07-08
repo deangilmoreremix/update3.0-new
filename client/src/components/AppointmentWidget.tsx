@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAppointmentStore } from '../store/appointmentStore';
 import { Calendar, Clock, Video, Phone, MapPin, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+
 
 interface AppointmentWidgetProps {
   limit?: number;
@@ -14,12 +14,17 @@ const AppointmentWidget: React.FC<AppointmentWidgetProps> = ({
   showHeader = true,
   className = ''
 }) => {
-  const { appointments, getUpcomingAppointments, selectAppointment } = useAppointmentStore();
+  const { appointments } = useAppointmentStore();
   const [upcomingAppointments, setUpcomingAppointments] = useState<any[]>([]);
   
   useEffect(() => {
-    // Get the upcoming appointments
-    const upcoming = getUpcomingAppointments(limit);
+    // Get the upcoming appointments - filter from all appointments
+    const appointmentList = Object.values(appointments || {});
+    const now = new Date();
+    const upcoming = appointmentList
+      .filter(apt => new Date(apt.startTime) > now && apt.status === 'scheduled')
+      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+      .slice(0, limit);
     setUpcomingAppointments(upcoming);
   }, [appointments, limit]);
   
@@ -63,9 +68,12 @@ const AppointmentWidget: React.FC<AppointmentWidgetProps> = ({
       {showHeader && (
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium">Upcoming Appointments</h3>
-          <Link to="/appointments" className="text-sm text-blue-600 hover:text-blue-800">
+          <button 
+            onClick={() => console.log('View all appointments')}
+            className="text-sm text-blue-600 hover:text-blue-800 cursor-pointer"
+          >
             View All
-          </Link>
+          </button>
         </div>
       )}
       
@@ -75,7 +83,7 @@ const AppointmentWidget: React.FC<AppointmentWidgetProps> = ({
             <div 
               key={appointment.id} 
               className="border rounded-lg p-3 hover:border-blue-300 hover:bg-blue-50 transition-colors cursor-pointer"
-              onClick={() => selectAppointment(appointment.id)}
+              onClick={() => console.log('Selected appointment:', appointment.id)}
             >
               <div className="flex justify-between">
                 <div>
@@ -126,12 +134,12 @@ const AppointmentWidget: React.FC<AppointmentWidgetProps> = ({
         <div className="text-center py-6">
           <Calendar size={32} className="mx-auto text-gray-300 mb-2" />
           <p className="text-gray-500">No upcoming appointments</p>
-          <Link 
-            to="/appointments"
-            className="mt-2 inline-block text-sm text-blue-600 hover:text-blue-800"
+          <button 
+            onClick={() => console.log('Schedule appointment')}
+            className="mt-2 inline-block text-sm text-blue-600 hover:text-blue-800 cursor-pointer"
           >
             Schedule one now
-          </Link>
+          </button>
         </div>
       )}
     </div>

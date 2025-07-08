@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Brain, Zap, Settings, BarChart3, Search } from 'lucide-react';
+import { Brain, Zap, Settings, BarChart3 } from 'lucide-react';
 import AIInsightsPanel from '../dashboard/AIInsightsPanel';
-
+import { SmartAIControls } from '../ai/SmartAIControls';
+import AIModelUsageStats from '../AIModelUsageStats';
 import LiveDealAnalysis from '../aiTools/LiveDealAnalysis';
 import SmartSearchRealtime from '../aiTools/SmartSearchRealtime';
 
@@ -61,19 +62,13 @@ const AISmartFeaturesHub: React.FC = () => {
         
         {activeTab === 'controls' && (
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl p-6`}>
-            <div className={`text-center py-8 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              <Settings className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>AI Controls panel coming soon...</p>
-            </div>
+            <SmartAIControls />
           </div>
         )}
         
         {activeTab === 'performance' && (
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl p-6`}>
-            <div className={`text-center py-8 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>AI Performance metrics coming soon...</p>
-            </div>
+            <AIModelUsageStats />
           </div>
         )}
         
@@ -107,4 +102,5 @@ const AISmartFeaturesHub: React.FC = () => {
   );
 };
 
+import { Search } from 'lucide-react';
 export default AISmartFeaturesHub;

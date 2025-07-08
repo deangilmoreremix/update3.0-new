@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { CheckSquare, Calendar, MessageSquare } from 'lucide-react';
+import TasksSection from '../TasksSection';
 import AppointmentWidget from '../AppointmentWidget';
 import InteractionHistory from '../dashboard/InteractionHistory';
 import TasksAndFunnel from '../dashboard/TasksAndFunnel';
@@ -31,7 +32,7 @@ const ActivitiesCommunications: React.FC = () => {
               <CheckSquare className="h-5 w-5 mr-2 text-orange-500" />
               Tasks & Activities
             </h3>
-            <TasksAndFunnel />
+            <TasksSection />
           </div>
           
           {/* Interaction History */}
