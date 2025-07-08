@@ -1,159 +1,76 @@
-// AI Contact Enrichment Service - Core service for AI-powered contact research and enhancement
-
+// Types for contact enrichment data
 export interface ContactEnrichmentData {
-  // Basic Information
-  firstName?: string;
+  firstName: string;
   lastName?: string;
-  name?: string;
+  name: string;
   email?: string;
   phone?: string;
   title?: string;
   company?: string;
   industry?: string;
-  location?: string;
-  
-  // AI Analysis Results
-  aiScore?: number;
-  interestLevel?: 'hot' | 'medium' | 'low' | 'cold';
-  sources?: string[];
-  
-  // Social Profiles
+  location?: {
+    city?: string;
+    state?: string;
+    country?: string;
+  };
   socialProfiles?: {
     linkedin?: string;
     twitter?: string;
     website?: string;
   };
-  
-  // Business Intelligence
-  annualRevenue?: number;
-  employeeCount?: number;
-  leadSource?: string;
-  
-  // Enhanced Data
-  tags?: string[];
-  customFields?: Record<string, any>;
-  
-  // Analysis Metadata
-  confidence?: number;
-  lastEnriched?: string;
-  enrichmentProvider?: 'openai' | 'gemini' | 'manual';
+  bio?: string;
+  confidence: number;
+  notes?: string;
+  [key: string]: any;
 }
 
-export interface EnrichmentContext {
-  searchType: 'email' | 'name' | 'linkedin' | 'auto';
-  searchQuery: {
-    email?: string;
-    firstName?: string;
-    lastName?: string;
-    company?: string;
-    linkedinUrl?: string;
-  };
-  enrichmentMode?: 'smart' | 'conservative' | 'aggressive';
-}
-
-// Mock enrichment service for development
-export const aiEnrichmentService = {
-  // Alias for compatibility
+// AI Enrichment Service Implementation
+class AIEnrichmentService {
   async enrichContactByEmail(email: string): Promise<ContactEnrichmentData> {
-    return this.enrichByEmail(email);
-  },
-
-  async enrichByEmail(email: string): Promise<ContactEnrichmentData> {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Mock enriched data based on email
+    // Mock implementation for development
     return {
+      firstName: 'John',
+      lastName: 'Doe',
+      name: 'John Doe',
       email,
-      firstName: email.split('@')[0].split('.')[0] || 'John',
-      lastName: email.split('@')[0].split('.')[1] || 'Doe',
-      company: email.split('@')[1]?.split('.')[0] || 'Company',
-      title: 'Senior Manager',
-      industry: 'Technology',
-      aiScore: 85,
-      interestLevel: 'medium',
-      sources: ['Email Analysis', 'AI Research'],
-      socialProfiles: {
-        linkedin: `https://linkedin.com/in/${email.split('@')[0]}`,
-        website: `https://${email.split('@')[1]}`
-      },
+      company: 'Tech Corp',
+      title: 'Software Engineer',
       confidence: 0.85,
-      enrichmentProvider: 'openai',
-      lastEnriched: new Date().toISOString()
+      notes: 'Generated from email enrichment'
     };
-  },
+  }
 
-  // Alias for compatibility
   async enrichContactByName(firstName: string, lastName: string, company?: string): Promise<ContactEnrichmentData> {
-    return this.enrichByName(firstName, lastName, company);
-  },
-
-  async enrichByName(firstName: string, lastName: string, company?: string): Promise<ContactEnrichmentData> {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
+    // Mock implementation for development
     return {
       firstName,
       lastName,
       name: `${firstName} ${lastName}`,
       company: company || 'Unknown Company',
       title: 'Professional',
-      industry: 'Business',
-      aiScore: 75,
-      interestLevel: 'medium',
-      sources: ['Name Research', 'AI Analysis'],
       confidence: 0.75,
-      enrichmentProvider: 'gemini',
-      lastEnriched: new Date().toISOString()
+      notes: 'Generated from name enrichment'
     };
-  },
+  }
 
-  // Alias for compatibility  
   async enrichContactByLinkedIn(linkedinUrl: string): Promise<ContactEnrichmentData> {
-    return this.enrichByLinkedIn(linkedinUrl);
-  },
-
-  async enrichByLinkedIn(linkedinUrl: string): Promise<ContactEnrichmentData> {
-    await new Promise(resolve => setTimeout(resolve, 1800));
-    
+    // Mock implementation for development
     return {
+      firstName: 'Jane',
+      lastName: 'Smith',
+      name: 'Jane Smith',
+      company: 'LinkedIn Corp',
+      title: 'Senior Manager',
       socialProfiles: {
         linkedin: linkedinUrl
       },
-      title: 'Executive',
-      industry: 'Professional Services',
-      aiScore: 90,
-      interestLevel: 'hot',
-      sources: ['LinkedIn Profile', 'AI Enhancement'],
       confidence: 0.90,
-      enrichmentProvider: 'openai',
-      lastEnriched: new Date().toISOString()
+      notes: 'Generated from LinkedIn enrichment'
     };
-  },
-
-  async autoEnrich(context: EnrichmentContext): Promise<ContactEnrichmentData> {
-    const { searchQuery, searchType } = context;
-    
-    if (searchType === 'email' && searchQuery.email) {
-      return this.enrichByEmail(searchQuery.email);
-    }
-    
-    if (searchType === 'name' && searchQuery.firstName && searchQuery.lastName) {
-      return this.enrichByName(searchQuery.firstName, searchQuery.lastName, searchQuery.company);
-    }
-    
-    if (searchType === 'linkedin' && searchQuery.linkedinUrl) {
-      return this.enrichByLinkedIn(searchQuery.linkedinUrl);
-    }
-    
-    // Auto mode - try multiple approaches
-    if (searchQuery.email) {
-      return this.enrichByEmail(searchQuery.email);
-    }
-    
-    if (searchQuery.firstName && searchQuery.lastName) {
-      return this.enrichByName(searchQuery.firstName, searchQuery.lastName, searchQuery.company);
-    }
-    
-    throw new Error('Insufficient data for enrichment');
   }
-};
+}
+
+export const aiEnrichmentService = new AIEnrichmentService();
+
+// This service would contain the actual implementation of contact enrichment
+// For now, it's just a type definition file

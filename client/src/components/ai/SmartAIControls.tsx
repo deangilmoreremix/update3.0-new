@@ -1,428 +1,165 @@
 import React, { useState } from 'react';
-import { useSmartAI, useTaskOptimization } from '../../hooks/useSmartAI';
-import { ModernButton } from '../ui/ModernButton';
-import { GlassCard } from '../ui/GlassCard';
-import { Contact } from '../../types/contact';
-import {
-  Brain,
-  Zap,
-  Target,
-  BarChart3,
-  Settings,
-  Sparkles,
-  TrendingUp,
-  Clock,
-  DollarSign,
-  CheckCircle,
-  AlertCircle,
-  Info,
-  Layers,
-  RefreshCw
-} from 'lucide-react';
+import { useTheme } from '../../contexts/ThemeContext';
+import { useContactStore } from '../../store/contactStore';
+import { Play, Pause, Settings, BarChart3, Users, Zap, RefreshCw } from 'lucide-react';
 
-interface SmartAIControlsProps {
-  contact?: Contact;
-  contacts?: Contact[];
-  onAnalysisComplete?: (results: any) => void;
-}
-
-export const SmartAIControls: React.FC<SmartAIControlsProps> = ({
-  contact,
-  contacts = [],
-  onAnalysisComplete
-}) => {
-  const {
-    smartScoreContact,
-    smartEnrichContact,
-    smartCategorizeAndTag,
-    smartQualifyLead,
-    smartBulkAnalysis,
-    analyzing,
-    enriching,
-    results,
-    errors
-  } = useSmartAI();
-
-  const { getRecommendations, getInsights, performance } = useTaskOptimization();
-
-  const [selectedOperation, setSelectedOperation] = useState<string>('score');
-  const [urgency, setUrgency] = useState<'low' | 'medium' | 'high'>('medium');
-  const [bulkSettings, setBulkSettings] = useState({
-    costLimit: 1.0,
-    timeLimit: 30000,
-    analysisType: 'contact_scoring' as const
-  });
-
-  const handleSingleAnalysis = async () => {
-    if (!contact) return;
-
-    try {
-      let result;
-      
-      switch (selectedOperation) {
-        case 'score':
-          result = await smartScoreContact(contact.id, contact, urgency);
-          break;
-        case 'enrich':
-          result = await smartEnrichContact(contact.id, contact, urgency === 'high' ? 'premium' : 'standard');
-          break;
-        case 'categorize':
-          result = await smartCategorizeAndTag(contact.id, contact);
-          break;
-        case 'qualify':
-          result = await smartQualifyLead(contact.id, contact);
-          break;
-      }
-      
-      if (onAnalysisComplete && result) {
-        onAnalysisComplete(result);
-      }
-    } catch (error) {
-      console.error('Analysis failed:', error);
-    }
-  };
+export const SmartAIControls: React.FC = () => {
+  const { isDark } = useTheme();
+  const { contacts } = useContactStore();
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisProgress, setAnalysisProgress] = useState(0);
 
   const handleBulkAnalysis = async () => {
-    if (contacts.length === 0) return;
-
-    try {
-      const contactData = contacts.map(c => ({ contactId: c.id, contact: c }));
-      
-      const result = await smartBulkAnalysis(contactData, bulkSettings.analysisType, {
-        urgency,
-        costLimit: bulkSettings.costLimit,
-        timeLimit: bulkSettings.timeLimit
-      });
-      
-      if (onAnalysisComplete) {
-        onAnalysisComplete(result);
-      }
-    } catch (error) {
-      console.error('Bulk analysis failed:', error);
+    setIsAnalyzing(true);
+    setAnalysisProgress(0);
+    
+    // Simulate analysis progress
+    for (let i = 0; i <= 100; i += 10) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      setAnalysisProgress(i);
     }
+    
+    setIsAnalyzing(false);
+    setAnalysisProgress(0);
   };
 
-  const getRecommendationsForTask = (taskType: string) => {
-    const recommendations = getRecommendations(taskType);
-    return recommendations;
-  };
-
-  const operations = [
-    {
-      id: 'score',
-      name: 'Smart Scoring',
-      description: 'AI-powered contact scoring with optimal model selection',
-      icon: Target,
-      color: 'bg-blue-500',
-      estimatedTime: '2-5s',
-      bestModel: 'Auto-selected'
-    },
-    {
-      id: 'enrich',
-      name: 'Smart Enrichment',
-      description: 'Comprehensive data enrichment using best available models',
-      icon: Sparkles,
-      color: 'bg-purple-500',
-      estimatedTime: '3-8s',
-      bestModel: 'Auto-selected'
-    },
-    {
-      id: 'categorize',
-      name: 'Quick Categorize',
-      description: 'Fast categorization and tagging with optimized models',
-      icon: Layers,
-      color: 'bg-green-500',
-      estimatedTime: '1-3s',
-      bestModel: 'Gemma preferred'
-    },
-    {
-      id: 'qualify',
-      name: 'Lead Qualification',
-      description: 'Comprehensive lead qualification with business context',
-      icon: CheckCircle,
-      color: 'bg-orange-500',
-      estimatedTime: '4-10s',
-      bestModel: 'High accuracy'
-    }
-  ];
+  const contactCount = Object.keys(contacts).length;
 
   return (
     <div className="space-y-6">
-      {/* AI Model Performance Overview */}
-      {performance && (
-        <GlassCard className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-            <BarChart3 className="w-5 h-5 mr-2 text-blue-500" />
-            AI Performance Overview
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            Smart AI Controls
           </h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900 dark:text-white">{performance.totalTasks}</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Total Tasks</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">
-                {Math.round(performance.overallSuccessRate * 100)}%
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Success Rate</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">
-                {Math.round(performance.avgResponseTime)}ms
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Avg Response</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">
-                {performance.modelPerformance.length}
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Active Models</div>
-            </div>
-          </div>
-        </GlassCard>
-      )}
+          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+            Bulk AI operations and intelligent automation
+          </p>
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          <Settings className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
+        </div>
+      </div>
 
-      {/* Single Contact Analysis */}
-      {contact && (
-        <GlassCard className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-            <Brain className="w-5 h-5 mr-2 text-purple-600" />
-            Smart AI Analysis - {contact.name}
-          </h3>
-          
-          {/* Operation Selection */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            {operations.map((op) => {
-              const Icon = op.icon;
-              const recommendations = getRecommendationsForTask(op.id.replace('score', 'contact_scoring'));
-              
-              return (
-                <div
-                  key={op.id}
-                  onClick={() => setSelectedOperation(op.id)}
-                  className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
-                    selectedOperation === op.id
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10'
-                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-white dark:bg-gray-800'
-                  }`}
-                >
-                  <div className="flex items-center space-x-3 mb-2">
-                    <div className={`p-2 rounded-lg ${op.color}`}>
-                      <Icon className="w-4 h-4 text-white" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-white">{op.name}</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{op.description}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mt-3">
-                    <div className="flex items-center space-x-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{op.estimatedTime}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Target className="w-3 h-3" />
-                      <span>{op.bestModel}</span>
-                    </div>
-                  </div>
-                  
-                  {recommendations && (
-                    <div className="mt-2 p-2 bg-gray-100 dark:bg-gray-700 rounded text-xs">
-                      <strong>Recommended:</strong> {recommendations.recommendedProvider}/{recommendations.recommendedModel}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Urgency Setting */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Analysis Urgency (affects model selection)
-            </label>
-            <div className="flex space-x-2">
-              {[
-                { value: 'low', label: 'Low', desc: 'Cost-optimized' },
-                { value: 'medium', label: 'Medium', desc: 'Balanced' },
-                { value: 'high', label: 'High', desc: 'Accuracy-focused' }
-              ].map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => setUrgency(option.value as any)}
-                  className={`flex-1 p-3 rounded-lg border text-center transition-colors ${
-                    urgency === option.value
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
-                  }`}
-                >
-                  <div className="font-medium">{option.label}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">{option.desc}</div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Execute Button */}
-          <ModernButton
-            onClick={handleSingleAnalysis}
-            loading={analyzing || enriching}
-            className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-600"
-          >
-            <Zap className="w-4 h-4" />
-            <span>
-              {analyzing || enriching 
-                ? 'Analyzing with optimal model...' 
-                : `Run ${operations.find(op => op.id === selectedOperation)?.name}`}
-            </span>
-          </ModernButton>
-
-          {/* Results Display */}
-          {Object.keys(results).length > 0 && (
-            <div className="mt-6 p-4 bg-green-50 dark:bg-green-500/10 rounded-lg">
-              <h4 className="font-semibold text-green-900 dark:text-green-400 mb-2 flex items-center">
-                <CheckCircle className="w-4 h-4 mr-2" />
-                Analysis Complete
-              </h4>
-              <div className="space-y-2">
-                {Object.entries(results).map(([key, result]: [string, any]) => (
-                  <div key={key} className="text-sm">
-                    <span className="font-medium text-green-800 dark:text-green-400">{key}:</span>
-                    <span className="text-green-700 dark:text-green-300 ml-2">
-                      {result.modelUsed && `Used ${result.modelUsed}`}
-                      {result.results && Object.keys(result.results).length > 0 && ` - ${Object.keys(result.results).length} tasks completed`}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Errors Display */}
-          {Object.keys(errors).length > 0 && (
-            <div className="mt-6 p-4 bg-red-50 dark:bg-red-500/10 rounded-lg">
-              <h4 className="font-semibold text-red-900 dark:text-red-400 mb-2 flex items-center">
-                <AlertCircle className="w-4 h-4 mr-2" />
-                Analysis Errors
-              </h4>
-              <div className="space-y-1">
-                {Object.entries(errors).map(([key, error]) => (
-                  <div key={key} className="text-sm text-red-700 dark:text-red-300">
-                    <span className="font-medium">{key}:</span> {error}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </GlassCard>
-      )}
-
-      {/* Bulk Analysis */}
-      {contacts.length > 1 && (
-        <GlassCard className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-            <Layers className="w-5 h-5 mr-2 text-green-600" />
-            Smart Bulk Analysis ({contacts.length} contacts)
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Analysis Type */}
+      {/* Bulk Analysis Section */}
+      <div className={`p-4 rounded-lg ${isDark ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-200'}`}>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-3">
+            <Users className={`w-5 h-5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Bulk Analysis Type
-              </label>
-              <select
-                value={bulkSettings.analysisType}
-                onChange={(e) => setBulkSettings(prev => ({ ...prev, analysisType: e.target.value as any }))}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-              >
-                <option value="contact_scoring">Contact Scoring</option>
-                <option value="categorization">Categorization</option>
-                <option value="tagging">Tagging</option>
-                <option value="lead_qualification">Lead Qualification</option>
-              </select>
-            </div>
-
-            {/* Constraints */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Cost Limit ($)
-              </label>
-              <input
-                type="number"
-                step="0.10"
-                value={bulkSettings.costLimit}
-                onChange={(e) => setBulkSettings(prev => ({ ...prev, costLimit: parseFloat(e.target.value) }))}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                placeholder="1.00"
-              />
+              <h4 className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                Bulk Contact Analysis
+              </h4>
+              <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                Analyze {contactCount} contacts with AI
+              </p>
             </div>
           </div>
-
-          {/* Estimated Metrics */}
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-3 bg-blue-50 dark:bg-blue-500/10 rounded-lg text-center">
-              <DollarSign className="w-4 h-4 text-blue-600 mx-auto mb-1" />
-              <div className="text-sm font-medium text-blue-900 dark:text-blue-400">Est. Cost</div>
-              <div className="text-xs text-blue-700 dark:text-blue-300">${(contacts.length * 0.05).toFixed(2)}</div>
-            </div>
-            <div className="p-3 bg-green-50 dark:bg-green-500/10 rounded-lg text-center">
-              <Clock className="w-4 h-4 text-green-600 mx-auto mb-1" />
-              <div className="text-sm font-medium text-green-900 dark:text-green-400">Est. Time</div>
-              <div className="text-xs text-green-700 dark:text-green-300">{Math.ceil(contacts.length / 10)}s</div>
-            </div>
-            <div className="p-3 bg-purple-50 dark:bg-purple-500/10 rounded-lg text-center">
-              <Brain className="w-4 h-4 text-purple-600 mx-auto mb-1" />
-              <div className="text-sm font-medium text-purple-900 dark:text-purple-400">Auto Model</div>
-              <div className="text-xs text-purple-700 dark:text-purple-300">Optimized</div>
-            </div>
-          </div>
-
-          <ModernButton
+          
+          <button
             onClick={handleBulkAnalysis}
-            loading={analyzing}
-            className="w-full mt-6 flex items-center justify-center space-x-2 bg-gradient-to-r from-green-600 to-blue-600"
+            disabled={isAnalyzing}
+            className={`
+              flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200
+              ${isAnalyzing
+                ? (isDark ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-gray-300 text-gray-500 cursor-not-allowed')
+                : (isDark ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30' : 'bg-blue-100 text-blue-700 hover:bg-blue-200')
+              }
+            `}
           >
-            <Layers className="w-4 h-4" />
-            <span>
-              {analyzing 
-                ? `Processing ${contacts.length} contacts...` 
-                : `Analyze ${contacts.length} Contacts`}
+            {isAnalyzing ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+            <span className="text-sm">
+              {isAnalyzing ? 'Analyzing...' : 'Start Analysis'}
             </span>
-          </ModernButton>
-        </GlassCard>
-      )}
+          </button>
+        </div>
 
-      {/* Model Performance Stats */}
-      {performance?.modelPerformance && performance.modelPerformance.length > 0 && (
-        <GlassCard className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-            <TrendingUp className="w-5 h-5 mr-2 text-green-600" />
-            Model Performance Stats
-          </h3>
-          
-          <div className="space-y-3">
-            {performance.modelPerformance.slice(0, 5).map((model: any, index: number) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <div>
-                  <div className="font-medium text-gray-900 dark:text-white">{model.model}</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
-                    {Math.round(model.successRate * 100)}% success • {Math.round(model.avgTime)}ms avg
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm font-medium text-gray-900 dark:text-white">
-                    ${model.avgCost.toFixed(4)}
-                  </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">avg cost</div>
-                </div>
-              </div>
-            ))}
+        {/* Progress Bar */}
+        {isAnalyzing && (
+          <div className="mb-4">
+            <div className={`w-full bg-gray-200 rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
+              <div 
+                className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${analysisProgress}%` }}
+              ></div>
+            </div>
+            <p className={`text-xs mt-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              Processing contact {Math.floor((analysisProgress / 100) * contactCount)} of {contactCount}
+            </p>
           </div>
-        </GlassCard>
-      )}
+        )}
+      </div>
+
+      {/* Quick Actions Grid */}
+      <div className="grid grid-cols-2 gap-4">
+        <button className={`
+          p-4 rounded-lg text-left transition-all duration-200 hover:scale-105
+          ${isDark ? 'bg-purple-500/10 border border-purple-500/20 hover:bg-purple-500/20' : 'bg-purple-50 border border-purple-200 hover:bg-purple-100'}
+        `}>
+          <div className="flex items-center space-x-3 mb-2">
+            <Zap className="w-5 h-5 text-purple-500" />
+            <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              Lead Scoring
+            </span>
+          </div>
+          <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+            Score all leads with AI
+          </p>
+        </button>
+
+        <button className={`
+          p-4 rounded-lg text-left transition-all duration-200 hover:scale-105
+          ${isDark ? 'bg-green-500/10 border border-green-500/20 hover:bg-green-500/20' : 'bg-green-50 border border-green-200 hover:bg-green-100'}
+        `}>
+          <div className="flex items-center space-x-3 mb-2">
+            <BarChart3 className="w-5 h-5 text-green-500" />
+            <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              Opportunity Analysis
+            </span>
+          </div>
+          <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+            Find high-value opportunities
+          </p>
+        </button>
+      </div>
+
+      {/* Settings Panel */}
+      <div className={`p-4 rounded-lg ${isDark ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-200'}`}>
+        <h4 className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-3`}>
+          AI Automation Settings
+        </h4>
+        
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              Auto-score new leads
+            </span>
+            <div className={`w-10 h-5 rounded-full transition-colors ${isDark ? 'bg-blue-500' : 'bg-blue-600'} relative`}>
+              <div className="w-4 h-4 bg-white rounded-full absolute top-0.5 right-0.5 transition-transform"></div>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              Daily AI insights
+            </span>
+            <div className={`w-10 h-5 rounded-full transition-colors ${isDark ? 'bg-blue-500' : 'bg-blue-600'} relative`}>
+              <div className="w-4 h-4 bg-white rounded-full absolute top-0.5 right-0.5 transition-transform"></div>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              Smart follow-up reminders
+            </span>
+            <div className={`w-10 h-5 rounded-full transition-colors ${isDark ? 'bg-gray-600' : 'bg-gray-300'} relative`}>
+              <div className="w-4 h-4 bg-white rounded-full absolute top-0.5 left-0.5 transition-transform"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
