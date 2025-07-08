@@ -55,6 +55,16 @@ const Navbar = () => {
 
   const counters = getCounters();
 
+  // Tasks dropdown tools (defined early to use in navigation)
+  const taskTools = [
+    { name: 'Task Management', tool: 'task-management', icon: CheckSquare },
+    { name: 'Task Automation', tool: 'task-automation', icon: Bot },
+    { name: 'Project Tracker', tool: 'project-tracker', icon: Layers },
+    { name: 'Time Tracking', tool: 'time-tracking', icon: Clock },
+    { name: 'Workflow Builder', tool: 'workflow-builder', icon: Repeat },
+    { name: 'Deadline Manager', tool: 'deadline-manager', icon: AlertTriangle }
+  ];
+
   const toggleDropdown = (dropdown: string) => {
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
   };
@@ -158,7 +168,7 @@ const Navbar = () => {
       label: 'Tasks',
       icon: CheckSquare,
       action: () => handleNavigation('/tasks', 'tasks'),
-      badge: counters.pendingTasks,
+      badge: taskTools.length,
       color: 'from-orange-500 to-red-500'
     },
     {
@@ -251,15 +261,7 @@ const Navbar = () => {
     { name: 'Forms', tool: 'forms', icon: FileText }
   ];
 
-  // Tasks dropdown tools  
-  const taskTools = [
-    { name: 'Task Management', tool: 'task-management', icon: CheckSquare },
-    { name: 'Task Automation', tool: 'task-automation', icon: Bot },
-    { name: 'Project Tracker', tool: 'project-tracker', icon: Layers },
-    { name: 'Time Tracking', tool: 'time-tracking', icon: Clock },
-    { name: 'Workflow Builder', tool: 'workflow-builder', icon: Repeat },
-    { name: 'Deadline Manager', tool: 'deadline-manager', icon: AlertTriangle }
-  ];
+
 
   // Connected apps
   const connectedApps = [
@@ -453,6 +455,24 @@ const Navbar = () => {
                             className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
                           >
                             <tool.icon size={16} className="text-green-500" />
+                            <span className="text-sm font-medium">{tool.name}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Tasks Dropdown */}
+                  {menu.id === 'tasks' && activeDropdown === 'tasks' && (
+                    <div className={`absolute top-14 right-0 w-64 ${isDark ? 'bg-gray-900/95' : 'bg-white/95'} backdrop-blur-2xl border ${isDark ? 'border-white/10' : 'border-gray-200'} rounded-2xl shadow-2xl z-50 overflow-hidden animate-fade-in`}>
+                      <div className="p-3">
+                        {taskTools.map((tool, index) => (
+                          <button
+                            key={index}
+                            onClick={() => handleAIToolClick(tool.tool)}
+                            className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
+                          >
+                            <tool.icon size={16} className="text-orange-500" />
                             <span className="text-sm font-medium">{tool.name}</span>
                           </button>
                         ))}

@@ -83,12 +83,15 @@ const Appointments: React.FC = () => {
   useEffect(() => {
     // Set initial selected date to today
     if (selectedSlot) {
-      setFormData({
-        ...formData,
-        date: selectedSlot,
-        endDate: new Date(selectedSlot.getTime() + 30 * 60000)
-      });
-      setShowAppointmentForm(true);
+      const slotDate = new Date(selectedSlot);
+      if (!isNaN(slotDate.getTime())) {
+        setFormData({
+          ...formData,
+          date: slotDate,
+          endDate: new Date(slotDate.getTime() + 30 * 60000)
+        });
+        setShowAppointmentForm(true);
+      }
     }
   }, [selectedSlot]);
   
