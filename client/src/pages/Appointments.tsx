@@ -21,28 +21,42 @@ import {
   Copy,
   Link
 } from 'lucide-react';
-import { useAppointmentStore, Appointment, AppointmentType, AppointmentStatus } from '../store/appointmentStore';
-import Select from 'react-select';
+import { useAppointmentStore } from '../store/appointmentStore';
+
+// Define types locally since they're not exported from store
+interface Appointment {
+  id: string;
+  title: string;
+  description?: string;
+  startTime: string;
+  endTime: string;
+  attendees: string[];
+  contactId?: string;
+  dealId?: string;
+  type: 'meeting' | 'call' | 'demo' | 'other';
+  status: 'scheduled' | 'completed' | 'cancelled';
+  createdAt: string;
+  updatedAt: string;
+}
+
+type AppointmentType = 'meeting' | 'call' | 'demo' | 'other';
+type AppointmentStatus = 'scheduled' | 'completed' | 'cancelled';
 
 const Appointments: React.FC = () => {
   const { 
     appointments, 
     fetchAppointments, 
     createAppointment, 
-    updateAppointment,
-    deleteAppointment,
-    selectAppointment,
-    selectedAppointment,
-    selectedSlot,
-    selectTimeSlot,
-    isTimeSlotAvailable,
-    getAppointmentsForDate
+    updateAppointmentApi, 
+    deleteAppointmentApi
   } = useAppointmentStore();
   
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [showAppointmentForm, setShowAppointmentForm] = useState(false);
   const [appointmentDetail, setAppointmentDetail] = useState<Appointment | null>(null);
   const [showAppointmentDetail, setShowAppointmentDetail] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -86,7 +100,28 @@ const Appointments: React.FC = () => {
   }, [selectedAppointment, appointments]);
   
   // Calculate appointments for the selected date
-  const appointmentsForSelectedDate = getAppointmentsForDate(selectedDate);
+  const appointmentsForSelectedDate = Object.values(appointments).filter(apt => {
+    if (!apt.startTime) return false;
+    const aptDate = new Date(apt.startTime);
+    return aptDate.toDateString() === selectedDate.toDateString();
+  });
+  
+  // Helper function to check if time slot is available
+  const isTimeSlotAvailable = (slotTime: Date, duration: number): boolean => {
+    const slotEnd = new Date(slotTime.getTime() + duration * 60000);
+    
+    return !appointmentsForSelectedDate.some(appointment => {
+      const appointmentStart = new Date(appointment.startTime);
+      const appointmentEnd = new Date(appointment.endTime);
+      
+      // Check if there's any overlap
+      return (
+        (slotTime >= appointmentStart && slotTime < appointmentEnd) ||
+        (slotEnd > appointmentStart && slotEnd <= appointmentEnd) ||
+        (slotTime <= appointmentStart && slotEnd >= appointmentEnd)
+      );
+    });
+  };
   
   // Available time slots for the day
   const timeSlots = [

@@ -78,6 +78,18 @@ const Navbar = () => {
     else if (toolName === 'voice-profiles') navigate('/voice-profiles');
     else if (toolName === 'business-analysis') navigate('/business-analysis');
     else if (toolName === 'forms') navigate('/forms');
+    else if (toolName === 'sales-analytics') navigate('/sales-analytics');
+    else if (toolName === 'deal-pipeline') navigate('/pipeline');
+    else if (toolName === 'quote-builder') navigate('/quote-builder');
+    else if (toolName === 'commission-tracker') navigate('/commission-tracker');
+    else if (toolName === 'follow-up-reminders') navigate('/follow-up-reminders');
+    else if (toolName === 'territory-management') navigate('/territory-management');
+    else if (toolName === 'task-management') navigate('/tasks');
+    else if (toolName === 'task-automation') navigate('/task-automation');
+    else if (toolName === 'project-tracker') navigate('/project-tracker');
+    else if (toolName === 'time-tracking') navigate('/time-tracking');
+    else if (toolName === 'workflow-builder') navigate('/workflow-builder');
+    else if (toolName === 'deadline-manager') navigate('/deadline-manager');
     else {
       // For other AI tools, open in AI tools page
       openAITool(toolName);
@@ -148,6 +160,14 @@ const Navbar = () => {
       action: () => handleNavigation('/tasks', 'tasks'),
       badge: counters.pendingTasks,
       color: 'from-orange-500 to-red-500'
+    },
+    {
+      id: 'appointments',
+      label: 'Calendar',
+      icon: Calendar,
+      action: () => handleNavigation('/appointments', 'appointments'),
+      badge: counters.todayAppointments,
+      color: 'from-cyan-500 to-blue-500'
     }
   ];
 
@@ -205,7 +225,13 @@ const Navbar = () => {
     { name: 'Circle Prospecting', tool: 'circle-prospecting', icon: Target },
     { name: 'Appointments', tool: 'appointments', icon: Calendar },
     { name: 'Phone System', tool: 'phone-system', icon: Phone },
-    { name: 'Invoicing', tool: 'invoicing', icon: Receipt }
+    { name: 'Invoicing', tool: 'invoicing', icon: Receipt },
+    { name: 'Sales Analytics', tool: 'sales-analytics', icon: TrendingUp },
+    { name: 'Deal Pipeline', tool: 'deal-pipeline', icon: Briefcase },
+    { name: 'Quote Builder', tool: 'quote-builder', icon: FileText },
+    { name: 'Commission Tracker', tool: 'commission-tracker', icon: PieChart },
+    { name: 'Follow-up Reminders', tool: 'follow-up-reminders', icon: Bell },
+    { name: 'Territory Management', tool: 'territory-management', icon: Globe }
   ];
 
   // Communication dropdown tools
@@ -225,6 +251,16 @@ const Navbar = () => {
     { name: 'Forms', tool: 'forms', icon: FileText }
   ];
 
+  // Tasks dropdown tools  
+  const taskTools = [
+    { name: 'Task Management', tool: 'task-management', icon: CheckSquare },
+    { name: 'Task Automation', tool: 'task-automation', icon: Bot },
+    { name: 'Project Tracker', tool: 'project-tracker', icon: Layers },
+    { name: 'Time Tracking', tool: 'time-tracking', icon: Clock },
+    { name: 'Workflow Builder', tool: 'workflow-builder', icon: Repeat },
+    { name: 'Deadline Manager', tool: 'deadline-manager', icon: AlertTriangle }
+  ];
+
   // Connected apps
   const connectedApps = [
     { name: 'FunnelCraft AI', url: 'https://funnelcraft-ai.videoremix.io/', icon: Megaphone, isExternal: true },
@@ -241,6 +277,13 @@ const Navbar = () => {
       icon: DollarSign,
       badge: salesTools.length,
       color: 'from-green-500 to-teal-500'
+    },
+    {
+      id: 'tasks',
+      label: 'Tasks',
+      icon: CheckSquare,
+      badge: taskTools.length,
+      color: 'from-orange-500 to-red-500'
     },
     {
       id: 'communication',
