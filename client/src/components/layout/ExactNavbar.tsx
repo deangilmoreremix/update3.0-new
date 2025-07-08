@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ChevronDown, User, Bell, Search, Settings, LogOut, BarChart3, Users, Target, MessageSquare, Video, FileText, Zap, TrendingUp, Calendar, Phone, Receipt, BookOpen, Mic, Sun, Moon, Brain, Mail, Grid3X3, Briefcase, Building2, Megaphone, Activity, CheckSquare, Home, Sparkles, PresentationChart, UserPlus, ClipboardList, Lightbulb, PieChart, Clock, Shield, Globe, Database, Headphones, Camera, Layers, Repeat, Palette, HelpCircle, Plus, DollarSign, HeartHandshake, Volume2, Image, Bot, Eye, Code, MessageCircle, AlertTriangle, LineChart, Edit3, ExternalLink, Menu, X } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigation } from '../../contexts/NavigationContext';
@@ -13,6 +14,8 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
   const { navigateToFeature, openAITool } = useNavigation();
+  const navigate = useNavigate();
+  const location = useLocation();
   
   // Get data for dynamic counters
   const { deals } = useDealStore();
@@ -56,18 +59,43 @@ const Navbar = () => {
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
   };
 
-  const handleNavigation = (feature: string, tabName: string) => {
-    navigateToFeature(feature);
+  const handleNavigation = (route: string, tabName: string) => {
+    navigate(route);
     setActiveTab(tabName);
     setActiveDropdown(null);
     setIsMobileMenuOpen(false);
   };
 
   const handleAIToolClick = (toolName: string) => {
-    openAITool(toolName);
+    if (toolName === 'sales-tools') navigate('/sales-tools');
+    else if (toolName === 'lead-automation') navigate('/lead-automation');
+    else if (toolName === 'appointments') navigate('/appointments');
+    else if (toolName === 'phone-system') navigate('/phone-system');
+    else if (toolName === 'invoicing') navigate('/invoicing');
+    else if (toolName === 'video-email') navigate('/video-email');
+    else if (toolName === 'text-messages') navigate('/text-messages');
+    else if (toolName === 'content-library') navigate('/content-library');
+    else if (toolName === 'voice-profiles') navigate('/voice-profiles');
+    else if (toolName === 'business-analysis') navigate('/business-analysis');
+    else if (toolName === 'forms') navigate('/forms');
+    else {
+      // For other AI tools, open in AI tools page
+      openAITool(toolName);
+    }
     setActiveDropdown(null);
     setIsMobileMenuOpen(false);
   };
+  
+  // Update active tab based on current route
+  useEffect(() => {
+    const path = location.pathname;
+    if (path === '/' || path === '/dashboard') setActiveTab('dashboard');
+    else if (path === '/contacts') setActiveTab('contacts');
+    else if (path === '/pipeline') setActiveTab('pipeline');
+    else if (path === '/tasks') setActiveTab('tasks');
+    else if (path === '/ai-tools') setActiveTab('ai-tools');
+    else setActiveTab('');
+  }, [location.pathname]);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -79,13 +107,13 @@ const Navbar = () => {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  // Main navigation tabs (removed dashboard since users are already on it)
+  // Main navigation tabs - updated to use actual page routes
   const mainTabs = [
     {
       id: 'dashboard',
       label: 'Dashboard',
       icon: Home,
-      action: () => handleNavigation('executive-overview-section', 'dashboard'),
+      action: () => handleNavigation('/', 'dashboard'),
       badge: null,
       color: 'from-blue-500 to-green-500'
     },
@@ -93,7 +121,7 @@ const Navbar = () => {
       id: 'contacts',
       label: 'Contacts',
       icon: Users,
-      action: () => handleNavigation('customer-lead-management', 'contacts'),
+      action: () => handleNavigation('/contacts', 'contacts'),
       badge: counters.hotContacts,
       color: 'from-purple-500 to-indigo-500'
     },
@@ -101,7 +129,7 @@ const Navbar = () => {
       id: 'pipeline',
       label: 'Pipeline',
       icon: Briefcase,
-      action: () => handleNavigation('sales-pipeline-deal-analytics', 'pipeline'),
+      action: () => handleNavigation('/pipeline', 'pipeline'),
       badge: counters.activeDeals,
       color: 'from-green-500 to-emerald-500'
     },
@@ -109,7 +137,7 @@ const Navbar = () => {
       id: 'ai-tools',
       label: 'AI Tools',
       icon: Brain,
-      action: () => handleNavigation('ai-smart-features-hub', 'ai-tools'),
+      action: () => handleNavigation('/ai-tools', 'ai-tools'),
       badge: null,
       color: 'from-pink-500 to-rose-500'
     },
@@ -117,7 +145,7 @@ const Navbar = () => {
       id: 'tasks',
       label: 'Tasks',
       icon: CheckSquare,
-      action: () => handleNavigation('activities-communications', 'tasks'),
+      action: () => handleNavigation('/tasks', 'tasks'),
       badge: counters.pendingTasks,
       color: 'from-orange-500 to-red-500'
     }
