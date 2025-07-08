@@ -1,167 +1,110 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Brain, Zap, Target, Search, Mail, BarChart3, Users, Lightbulb } from 'lucide-react';
-import AIModelSelector from '../AIModelSelector';
-import { SmartAIControls } from '../ai/SmartAIControls';
+import { Brain, Zap, Settings, BarChart3, Search } from 'lucide-react';
+import AIInsightsPanel from '../dashboard/AIInsightsPanel';
 
 const AISmartFeaturesHub: React.FC = () => {
   const { isDark } = useTheme();
-  const [selectedModel, setSelectedModel] = React.useState('gpt-4o');
+  const [activeTab, setActiveTab] = useState('insights');
 
-  const aiFeatures = [
-    {
-      id: 'lead-scoring',
-      title: 'AI Lead Scoring',
-      description: 'Automatically score and prioritize leads',
-      icon: Target,
-      color: 'from-blue-500 to-indigo-500',
-      usage: '89%',
-      status: 'active'
-    },
-    {
-      id: 'email-assistant',
-      title: 'Email Assistant',
-      description: 'Generate personalized emails with AI',
-      icon: Mail,
-      color: 'from-green-500 to-emerald-500',
-      usage: '76%',
-      status: 'active'
-    },
-    {
-      id: 'deal-intelligence',
-      title: 'Deal Intelligence',
-      description: 'AI-powered deal analysis and insights',
-      icon: BarChart3,
-      color: 'from-purple-500 to-pink-500',
-      usage: '82%',
-      status: 'active'
-    },
-    {
-      id: 'smart-search',
-      title: 'Smart Search',
-      description: 'Semantic search across all your data',
-      icon: Search,
-      color: 'from-orange-500 to-red-500',
-      usage: '67%',
-      status: 'active'
-    }
+  // Tab configuration
+  const tabs = [
+    { id: 'insights', label: 'AI Insights', icon: Brain },
+    { id: 'controls', label: 'AI Controls', icon: Settings },
+    { id: 'performance', label: 'AI Performance', icon: BarChart3 },
+    { id: 'tools', label: 'AI Tools', icon: Zap }
   ];
 
-  const getUsageColor = (usage: string) => {
-    const percent = parseInt(usage);
-    if (percent >= 80) return 'text-green-500';
-    if (percent >= 60) return 'text-yellow-500';
-    return 'text-red-500';
-  };
-
   return (
-    <div className={`mb-8 p-6 rounded-2xl backdrop-blur-sm ${isDark ? 'bg-white/5 border-white/10' : 'bg-white/90 border-gray-200'} border shadow-lg`}>
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-3">
-          <div className="p-2 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl">
-            <Brain className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h2 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>AI Smart Features Hub</h2>
-            <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} mt-1`}>Intelligent automation and insights</p>
-          </div>
+    <div className="mb-10">
+      <div className="flex items-center mb-6">
+        <div className="p-2 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl mr-3">
+          <Brain className="h-6 w-6 text-white" />
         </div>
-        <div className="flex items-center space-x-2">
-          <Zap className={`w-5 h-5 ${isDark ? 'text-yellow-400' : 'text-yellow-500'}`} />
-          <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>AI Powered</span>
+        <div>
+          <h2 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>AI Smart Features Hub</h2>
+          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+            AI-powered insights and productivity tools
+          </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* AI Model Selection */}
-        <div className="lg:col-span-1">
-          <div className="mb-4">
-            <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>
-              AI Model Selection
-            </h3>
-            <AIModelSelector
-              selectedModel={selectedModel}
-              onModelChange={setSelectedModel}
-            />
-          </div>
+      {/* Tab Navigation */}
+      <div className="flex border-b border-gray-200 dark:border-gray-700 mb-6">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center space-x-2 px-4 py-2 ${
+                isActive 
+                  ? (isDark ? 'border-b-2 border-purple-500 text-purple-400' : 'border-b-2 border-purple-600 text-purple-600')
+                  : (isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700')
+              }`}
+            >
+              <Icon size={16} />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
 
-          {/* AI Performance Metrics */}
-          <div className={`p-4 rounded-lg ${isDark ? 'bg-white/5' : 'bg-gray-50'}`}>
-            <div className="flex items-center space-x-2 mb-3">
-              <Lightbulb className={`w-5 h-5 ${isDark ? 'text-yellow-400' : 'text-yellow-500'}`} />
-              <h4 className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                AI Performance
-              </h4>
-            </div>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Accuracy</span>
-                <span className={`text-sm font-medium ${isDark ? 'text-green-400' : 'text-green-600'}`}>94.2%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Response Time</span>
-                <span className={`text-sm font-medium ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>1.8s</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Cost Savings</span>
-                <span className={`text-sm font-medium ${isDark ? 'text-purple-400' : 'text-purple-600'}`}>67%</span>
-              </div>
+      {/* Tab Content */}
+      <div className="mb-6">
+        {activeTab === 'insights' && <AIInsightsPanel />}
+        
+        {activeTab === 'controls' && (
+          <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl p-6`}>
+            <div className={`text-center py-8 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              <Settings className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>AI Controls panel coming soon...</p>
             </div>
           </div>
-        </div>
-
-        {/* AI Features Grid */}
-        <div className="lg:col-span-2">
-          <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>
-            Active AI Features
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {aiFeatures.map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <div
-                  key={feature.id}
-                  className={`p-4 rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer ${
-                    isDark ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-gray-200 hover:bg-gray-50'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <div className={`p-2 rounded-lg bg-gradient-to-r ${feature.color}`}>
-                      <Icon className="w-5 h-5 text-white" />
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <div className={`w-2 h-2 rounded-full ${
-                        feature.status === 'active' ? 'bg-green-400' : 'bg-gray-400'
-                      } animate-pulse`}></div>
-                      <span className={`text-xs ${getUsageColor(feature.usage)}`}>
-                        {feature.usage} active
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <h4 className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
-                    {feature.title}
-                  </h4>
-                  <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} mb-3`}>
-                    {feature.description}
-                  </p>
-                  
-                  <div className={`w-full rounded-full h-1.5 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
-                    <div 
-                      className={`h-1.5 rounded-full bg-gradient-to-r ${feature.color}`}
-                      style={{ width: feature.usage }}
-                    ></div>
-                  </div>
+        )}
+        
+        {activeTab === 'performance' && (
+          <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl p-6`}>
+            <div className={`text-center py-8 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>AI Performance metrics coming soon...</p>
+            </div>
+          </div>
+        )}
+        
+        {activeTab === 'tools' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl overflow-hidden`}>
+              <div className={`p-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'} flex justify-between items-center`}>
+                <h3 className={`font-semibold flex items-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <Zap size={18} className="text-purple-600 mr-2" />
+                  Live Deal Analysis
+                </h3>
+              </div>
+              <div className="p-4">
+                <div className={`text-center py-8 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                  <p>Live Deal Analysis tool coming soon...</p>
                 </div>
-              );
-            })}
+              </div>
+            </div>
+            
+            <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl overflow-hidden`}>
+              <div className={`p-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'} flex justify-between items-center`}>
+                <h3 className={`font-semibold flex items-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <Search size={18} className="text-blue-600 mr-2" />
+                  Smart Search
+                </h3>
+              </div>
+              <div className="p-4">
+                <div className={`text-center py-8 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                  <p>Smart Search tool coming soon...</p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Smart AI Controls */}
-      <div className="mt-6">
-        <SmartAIControls />
+        )}
       </div>
     </div>
   );
