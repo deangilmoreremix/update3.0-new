@@ -345,13 +345,13 @@ export const AIToolsProvider: React.FC<AIToolsProviderProps> = ({ children }) =>
         };
       case 'smart-search-realtime':
         return {
-          title: 'Smart Search with Typeahead',
+          title: 'Smart Search with Live Results',
           icon: <Search size={24} />,
           component: <SmartSearchRealtime />
         };
       case 'auto-form-completer':
         return {
-          title: 'AI Form Auto-completion',
+          title: 'AI-Powered Form Auto-completion',
           icon: <CheckCircle size={24} />,
           component: <AutoFormCompleter />
         };
