@@ -19,6 +19,8 @@ import { VideoCallProvider } from './contexts/VideoCallContext';
 import { ComponentRegistryProvider } from './contexts/ComponentRegistry';
 import { UnifiedDragDropProvider } from './contexts/UnifiedDragDropContext';
 import { ContactsModal } from './components/modals/ContactsModal';
+import { TenantProvider } from './components/TenantProvider';
+import { RoleProvider } from './components/RoleBasedAccess';
 
 // Import existing pages
 import Contacts from './pages/Contacts';
@@ -56,6 +58,7 @@ import ImageGenerator from './pages/ImageGenerator';
 import AIModelDemo from './pages/AIModelDemo';
 import FeatureAccessDemo from './pages/FeatureAccessDemo';
 import { SSOConfiguration } from './pages/SSOConfiguration';
+import WhiteLabelCustomization from './pages/WhiteLabelCustomization';
 
 import './components/styles/design-system.css';
 
@@ -71,111 +74,125 @@ function App() {
               <DashboardLayoutProvider>
                 <UnifiedDragDropProvider>
                   <EnhancedHelpProvider>
-                <Router>
-                  <div className="min-h-screen h-full w-full flex flex-col transition-all duration-300 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-gradient-to-br from-gray-50 via-white to-gray-100">
-                    <Routes>
-                      {/* Landing Page - no navbar */}
-                      <Route path="/" element={<SimpleLandingPage />} />
-                      
-                      {/* Authentication Routes - no navbar */}
-                      <Route path="/login" element={<SignIn />} />
-                      <Route path="/sign-in" element={<SignIn />} />
-                      <Route path="/signup" element={<SignUp />} />
-                      <Route path="/sign-up" element={<SignUp />} />
-                      <Route path="/super-admin-signup" element={<SuperAdminSignup />} />
-                      
-                      {/* Routes with navbar */}
-                      <Route path="/super-admin-dashboard" element={
-                        <>
-                          <ExactNavbar />
-                          <div className="flex-1 w-full overflow-y-auto pt-24">
-                            <SuperAdminDashboard />
+                    <TenantProvider>
+                      <RoleProvider>
+                        <Router>
+                          <div className="min-h-screen h-full w-full flex flex-col transition-all duration-300 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+                            <Routes>
+                              {/* Landing Page - no navbar */}
+                              <Route path="/" element={<SimpleLandingPage />} />
+                              
+                              {/* Authentication Routes - no navbar */}
+                              <Route path="/login" element={<SignIn />} />
+                              <Route path="/sign-in" element={<SignIn />} />
+                              <Route path="/signup" element={<SignUp />} />
+                              <Route path="/sign-up" element={<SignUp />} />
+                              <Route path="/super-admin-signup" element={<SuperAdminSignup />} />
+                              
+                              {/* Routes with navbar */}
+                              <Route path="/super-admin-dashboard" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <SuperAdminDashboard />
+                                  </div>
+                                </>
+                              } />
+                              
+                              <Route path="/dashboard" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <Dashboard />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* Core CRM Pages */}
+                              <Route path="/contacts" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <Contacts />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/pipeline" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <Pipeline />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/tasks" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <Tasks />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/analytics" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <AnalyticsDashboard />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* Feature Access Demo */}
+                              <Route path="/feature-access-demo" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <FeatureAccessDemo />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* SSO Configuration */}
+                              <Route path="/sso-config" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <SSOConfiguration />
+                                  </div>
+                                </>
+                              } />
+
+                              {/* White Label Customization */}
+                              <Route path="/white-label" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <WhiteLabelCustomization />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* Other routes would follow the same pattern */}
+                              {/* For brevity, I'll add a catch-all that redirects to dashboard */}
+                              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                            </Routes>
+                            
+                            <VideoCallOverlay />
+                            <VideoCallPreviewWidget />
+                            
+                            {/* ContactsModal rendered at the root level */}
+                            <ContactsModal
+                              isOpen={isContactsModalOpen}
+                              onClose={() => setIsContactsModalOpen(false)}
+                            />
                           </div>
-                        </>
-                      } />
-                      
-                      <Route path="/dashboard" element={
-                        <>
-                          <ExactNavbar />
-                          <div className="flex-1 w-full overflow-y-auto pt-24">
-                            <Dashboard />
-                          </div>
-                        </>
-                      } />
-                      
-                      {/* Core CRM Pages */}
-                      <Route path="/contacts" element={
-                        <>
-                          <ExactNavbar />
-                          <div className="flex-1 w-full overflow-y-auto pt-24">
-                            <Contacts />
-                          </div>
-                        </>
-                      } />
-                      <Route path="/pipeline" element={
-                        <>
-                          <ExactNavbar />
-                          <div className="flex-1 w-full overflow-y-auto pt-24">
-                            <Pipeline />
-                          </div>
-                        </>
-                      } />
-                      <Route path="/tasks" element={
-                        <>
-                          <ExactNavbar />
-                          <div className="flex-1 w-full overflow-y-auto pt-24">
-                            <Tasks />
-                          </div>
-                        </>
-                      } />
-                      <Route path="/analytics" element={
-                        <>
-                          <ExactNavbar />
-                          <div className="flex-1 w-full overflow-y-auto pt-24">
-                            <AnalyticsDashboard />
-                          </div>
-                        </>
-                      } />
-                      
-                      {/* Feature Access Demo */}
-                      <Route path="/feature-access-demo" element={
-                        <>
-                          <ExactNavbar />
-                          <div className="flex-1 w-full overflow-y-auto pt-24">
-                            <FeatureAccessDemo />
-                          </div>
-                        </>
-                      } />
-                      
-                      {/* SSO Configuration */}
-                      <Route path="/sso-config" element={
-                        <>
-                          <ExactNavbar />
-                          <div className="flex-1 w-full overflow-y-auto pt-24">
-                            <SSOConfiguration />
-                          </div>
-                        </>
-                      } />
-                      
-                      {/* Other routes would follow the same pattern */}
-                      {/* For brevity, I'll add a catch-all that redirects to dashboard */}
-                      <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                    </Routes>
-                    
-                    <VideoCallOverlay />
-                    <VideoCallPreviewWidget />
-                    
-                    {/* ContactsModal rendered at the root level */}
-                    <ContactsModal
-                      isOpen={isContactsModalOpen}
-                      onClose={() => setIsContactsModalOpen(false)}
-                    />
-                  </div>
-                </Router>
-              </EnhancedHelpProvider>
-            </UnifiedDragDropProvider>
-            </DashboardLayoutProvider>
-          </ComponentRegistryProvider>
+                        </Router>
+                      </RoleProvider>
+                    </TenantProvider>
+                  </EnhancedHelpProvider>
+                </UnifiedDragDropProvider>
+              </DashboardLayoutProvider>
+            </ComponentRegistryProvider>
           </NavigationProvider>
         </AIToolsProvider>
       </VideoCallProvider>
