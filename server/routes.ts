@@ -90,6 +90,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get('/api/auth/user-role', authenticateToken, async (req: any, res: Response) => {
+    try {
+      // Return user with role information for RoleBasedAccess component
+      const user = {
+        id: req.user.id,
+        email: req.user.email,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName,
+        role: req.user.role || 'end_user',
+        tenantId: req.user.tenantId || 'default',
+        permissions: req.user.permissions || [],
+        lastActive: new Date().toISOString(),
+        status: req.user.accountStatus || 'active'
+      };
+      
+      res.json({ success: true, user });
+    } catch (error) {
+      console.error('Get user role error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
   app.patch('/api/auth/user', authenticateToken, async (req: any, res: Response) => {
     try {
       const user = await authService.updateUser(req.user.id, req.body);
@@ -326,57 +348,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // User role endpoint for email/password auth
-  app.get("/api/auth/user-role", authenticateToken, async (req: any, res: Response) => {
+  // Tenant info endpoint - provide basic default tenant info
+  app.get("/api/tenant/info", async (req: Request, res: Response) => {
     try {
-      const user = await authService.getUserById(req.user.userId);
-      
-      if (!user) {
-        return res.status(404).json({ 
-          isAuthenticated: false,
-          role: null,
-          user: null 
-        });
-      }
-
-      res.json({
-        isAuthenticated: true,
-        role: user.role || 'user',
-        user: {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          fullName: `${user.firstName} ${user.lastName}`,
-          role: user.role || 'user',
-          subscriptionPlan: user.subscriptionPlan || 'professional',
-          subscriptionStatus: user.subscriptionStatus || 'active',
-          profileImageUrl: user.profileImageUrl
-        }
-      });
-    } catch (error) {
-      console.error("Error fetching user role:", error);
-      res.status(500).json({ message: "Failed to fetch user role" });
-    }
-  });
-
-  // Tenant info endpoint
-  app.get("/api/tenant/info", requireTenant, async (req: TenantRequest, res: Response) => {
-    try {
-      const tenantInfo = {
-        name: req.tenantContext?.tenantName || "Smart CRM",
-        logo: req.tenantContext?.tenantLogo || "/logo.png",
-        domain: req.tenantContext?.tenantDomain || "smartcrm.com",
-        features: req.tenantContext?.features || [],
-        plan: req.tenantContext?.plan || "professional"
+      const tenant = {
+        id: 'default',
+        name: 'Smart CRM',
+        subdomain: 'smartcrm',
+        branding: {
+          primaryColor: '#3B82F6',
+          secondaryColor: '#1E40AF',
+          companyName: 'Smart CRM'
+        },
+        features: {
+          aiTools: true,
+          advancedAnalytics: true,
+          customIntegrations: true,
+          userLimit: 100,
+          storageLimit: 1000
+        },
+        plan: 'pro' as const,
+        status: 'active' as const
       };
       
-      res.json(tenantInfo);
+      res.json({ tenant });
     } catch (error) {
       console.error("Error fetching tenant info:", error);
       res.status(500).json({ message: "Failed to fetch tenant info" });
     }
   });
+
+
 
   // Contact routes
   app.get("/api/contacts", async (req: Request, res: Response) => {
