@@ -86,12 +86,28 @@ export class AuthService {
         };
       }
 
-      // Check for super admin code if required
-      if (userType === 'super_admin' && adminCode !== 'SUPER_ADMIN_2024') {
-        return {
-          success: false,
-          error: 'Invalid super admin code'
-        };
+      // Check for super admin code and limit to 3 specific emails
+      if (userType === 'super_admin') {
+        if (adminCode !== 'SUPER_ADMIN_2024') {
+          return {
+            success: false,
+            error: 'Invalid super admin code'
+          };
+        }
+        
+        // Only allow 3 specific emails to be super admin
+        const allowedSuperAdminEmails = [
+          'admin@test.com',
+          'admin2@test.com', 
+          'admin3@test.com'
+        ];
+        
+        if (!allowedSuperAdminEmails.includes(email)) {
+          return {
+            success: false,
+            error: 'Super admin access is restricted to authorized users only'
+          };
+        }
       }
 
       // Check if user already exists
