@@ -3,8 +3,12 @@
 
 import ExactNavbar from './layout/ExactNavbar';
 
-const Navbar = () => {
-  return <ExactNavbar />;
+interface NavbarProps {
+  onOpenPipelineModal?: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = (props) => {
+  return <ExactNavbar {...props} />;
 };
 
 export default Navbar;
