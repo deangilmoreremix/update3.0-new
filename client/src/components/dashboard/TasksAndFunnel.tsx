@@ -30,6 +30,12 @@ const TasksAndFunnel: React.FC = () => {
     { day: 19, tasks: 4, assignees: [2, 3] },
   ];
 
+  // Map for quick lookup of task data by day
+  const tasksByDay = taskScheduleData.reduce((acc, task) => {
+    acc[task.day] = task;
+    return acc;
+  }, {} as Record<number, typeof taskScheduleData[0]>);
+
   // Mock funnel data
   const funnelData = [
     { stage: 'Prospecting', value: '$125,000', color: 'bg-blue-500' },
@@ -74,15 +80,37 @@ const TasksAndFunnel: React.FC = () => {
             ))}
           </div>
           <div className="grid grid-cols-7 gap-1 text-center text-sm">
-            {calendarDays.map((day) => (
-              <div key={day} className={`p-2 rounded-lg cursor-pointer transition-colors ${
-                day === selectedDay 
-                  ? (isDark ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-600')
-                  : (isDark ? 'text-gray-400 hover:bg-white/10' : 'text-gray-600 hover:bg-gray-100')
-              }`}>
-                {day}
-              </div>
-            ))}
+            {calendarDays.map((day) => {
+              const dayTasks = tasksByDay[day];
+              return (
+                <div key={day} className={`p-2 rounded-lg cursor-pointer transition-colors relative ${
+                  day === selectedDay 
+                    ? (isDark ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-600')
+                    : (isDark ? 'text-gray-400 hover:bg-white/10' : 'text-gray-600 hover:bg-gray-100')
+                }`} onClick={() => setSelectedDay(day)}>
+                  <div className="mb-1">{day}</div>
+                  {dayTasks && dayTasks.assignees.length > 0 && (
+                    <div className="flex justify-center -space-x-1">
+                      {dayTasks.assignees.slice(0, 2).map((assigneeId, index) => (
+                        <Avatar
+                          key={assigneeId}
+                          src={getAvatarByIndex(assigneeId, 'executives')}
+                          alt={`Assignee ${assigneeId}`}
+                          size="xs"
+                          fallback={getInitials(`User ${assigneeId}`)}
+                          className="ring-1 ring-white w-3 h-3 text-xs"
+                        />
+                      ))}
+                      {dayTasks.assignees.length > 2 && (
+                        <div className="w-3 h-3 rounded-full bg-gray-400 flex items-center justify-center text-xs font-semibold text-white ring-1 ring-white">
+                          +{dayTasks.assignees.length - 2}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
