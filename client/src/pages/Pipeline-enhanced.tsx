@@ -72,45 +72,7 @@ const Pipeline: React.FC = () => {
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [analyzingDealId, setAnalyzingDealId] = useState<string | null>(null);
 
-  // Initialize pipeline columns with professional colors
-  const [columns, setColumns] = useState<Record<string, PipelineColumn>>({
-    discovery: {
-      id: 'discovery',
-      title: 'Discovery',
-      dealIds: [],
-      color: '#3B82F6'
-    },
-    qualification: {
-      id: 'qualification',
-      title: 'Qualification',
-      dealIds: [],
-      color: '#F59E0B'
-    },
-    proposal: {
-      id: 'proposal',
-      title: 'Proposal',
-      dealIds: [],
-      color: '#8B5CF6'
-    },
-    negotiation: {
-      id: 'negotiation',
-      title: 'Negotiation',
-      dealIds: [],
-      color: '#F97316'
-    },
-    'closed-won': {
-      id: 'closed-won',
-      title: 'Closed Won',
-      dealIds: [],
-      color: '#10B981'
-    },
-    'closed-lost': {
-      id: 'closed-lost',
-      title: 'Closed Lost',
-      dealIds: [],
-      color: '#EF4444'
-    }
-  });
+  // Remove the old columns state as we're using currentColumns now
 
   const columnOrder = ['discovery', 'qualification', 'proposal', 'negotiation', 'closed-won', 'closed-lost'];
 
@@ -121,25 +83,55 @@ const Pipeline: React.FC = () => {
     }
   }, [dealStore.fetchDeals]);
 
-  // Update columns when deals change
-  useEffect(() => {
-    if (deals.length > 0) {
-      const newColumns = { ...columns };
-      
-      // Reset all column deal IDs
-      Object.keys(newColumns).forEach(columnId => {
-        newColumns[columnId].dealIds = [];
-      });
-      
-      // Add deals to their respective columns
-      deals.forEach(deal => {
-        if (newColumns[deal.stage]) {
-          newColumns[deal.stage].dealIds.push(deal.id);
-        }
-      });
-      
-      setColumns(newColumns);
-    }
+  // Calculate columns dynamically without useEffect
+  const currentColumns = useMemo(() => {
+    const baseColumns = {
+      discovery: {
+        id: 'discovery',
+        title: 'Discovery',
+        dealIds: [],
+        color: '#3B82F6'
+      },
+      qualification: {
+        id: 'qualification',
+        title: 'Qualification',
+        dealIds: [],
+        color: '#F59E0B'
+      },
+      proposal: {
+        id: 'proposal',
+        title: 'Proposal',
+        dealIds: [],
+        color: '#8B5CF6'
+      },
+      negotiation: {
+        id: 'negotiation',
+        title: 'Negotiation',
+        dealIds: [],
+        color: '#F97316'
+      },
+      'closed-won': {
+        id: 'closed-won',
+        title: 'Closed Won',
+        dealIds: [],
+        color: '#10B981'
+      },
+      'closed-lost': {
+        id: 'closed-lost',
+        title: 'Closed Lost',
+        dealIds: [],
+        color: '#EF4444'
+      }
+    };
+
+    // Add deals to their respective columns
+    deals.forEach(deal => {
+      if (baseColumns[deal.stage]) {
+        baseColumns[deal.stage].dealIds.push(deal.id);
+      }
+    });
+
+    return baseColumns;
   }, [deals]);
 
   // Filter deals based on search and filters
@@ -517,7 +509,7 @@ const Pipeline: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               {columnOrder.map(stage => (
                 <div key={stage} className="text-center">
-                  <div className="text-lg font-bold" style={{ color: columns[stage].color }}>
+                  <div className="text-lg font-bold" style={{ color: currentColumns[stage].color }}>
                     ${pipelineStats.stageValues[stage]?.toLocaleString() || 0}
                   </div>
                   <div className="text-sm text-gray-500 dark:text-gray-400 capitalize">
@@ -534,7 +526,7 @@ const Pipeline: React.FC = () => {
           <DragDropContext onDragEnd={onDragEnd}>
             <div className="flex space-x-6 overflow-x-auto pb-4">
               {columnOrder.map(columnId => {
-                const column = columns[columnId];
+                const column = currentColumns[columnId];
                 const columnDeals = getDealsForColumn(columnId);
                 
                 return (
