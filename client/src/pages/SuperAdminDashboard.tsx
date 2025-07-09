@@ -738,7 +738,9 @@ const SuperAdminDashboard: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayFeatures.map((feature) => (
+              {displayFeatures.filter(feature => 
+                filterRole === 'all' || feature.category === filterRole
+              ).map((feature) => (
                 <GlassCard key={feature.id} className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center space-x-3">
