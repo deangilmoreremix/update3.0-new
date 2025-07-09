@@ -435,7 +435,7 @@ const Contacts: React.FC = () => {
       Position: contact.position,
       Status: contact.status,
       Score: contact.score,
-      LastContact: contact.lastContact ? contact.lastContact.toLocaleDateString() : '',
+      LastContact: contact.lastContact ? (contact.lastContact instanceof Date ? contact.lastContact.toLocaleDateString() : new Date(contact.lastContact).toLocaleDateString()) : '',
       Industry: contact.industry,
       Location: contact.location,
       Notes: contact.notes
