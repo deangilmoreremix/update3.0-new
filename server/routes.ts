@@ -3476,284 +3476,94 @@ Next Actions:
 
   app.get('/api/admin/features', async (req, res) => {
     try {
-      // Only include features that are actually available in the navigation
+      // Features grouped by navigation categories
       const features = [
         // Core Navigation Features
         {
-          id: 'dashboard',
-          name: 'Dashboard',
-          description: 'Main dashboard with KPIs and metrics',
+          id: 'core_features',
+          name: 'Core Features',
+          description: 'Essential CRM functionality (Dashboard, Contacts, Pipeline, Tasks, Analytics)',
           category: 'core',
           isEnabled: true,
           requiredPlan: 'free',
-        },
-        {
-          id: 'contacts',
-          name: 'Contacts',
-          description: 'Contact management and CRM features',
-          category: 'core',
-          isEnabled: true,
-          requiredPlan: 'free',
-        },
-        {
-          id: 'pipeline',
-          name: 'Pipeline',
-          description: 'Sales pipeline and deal tracking',
-          category: 'core',
-          isEnabled: true,
-          requiredPlan: 'basic',
-        },
-        {
-          id: 'tasks',
-          name: 'Tasks',
-          description: 'Task management and tracking',
-          category: 'core',
-          isEnabled: true,
-          requiredPlan: 'free',
-        },
-        {
-          id: 'analytics',
-          name: 'Analytics',
-          description: 'Business analytics and reporting',
-          category: 'analytics',
-          isEnabled: true,
-          requiredPlan: 'professional',
+          toolCount: 5,
         },
         
-        // Sales Tools
+        // Sales Tools Group
         {
-          id: 'lead_automation',
-          name: 'Lead Automation',
-          description: 'Automated lead management and nurturing',
-          category: 'sales',
-          isEnabled: true,
-          requiredPlan: 'professional',
-        },
-        {
-          id: 'appointments',
-          name: 'Appointments',
-          description: 'Calendar and appointment scheduling',
+          id: 'sales_tools',
+          name: 'Sales Tools',
+          description: 'Lead Automation, Appointments, Invoicing, Quote Builder, Commission Tracker, Territory Management, Sales Analytics',
           category: 'sales',
           isEnabled: true,
           requiredPlan: 'basic',
-        },
-        {
-          id: 'phone_system',
-          name: 'Phone System',
-          description: 'VoIP calling and call management',
-          category: 'communication',
-          isEnabled: true,
-          requiredPlan: 'professional',
-        },
-        {
-          id: 'invoicing',
-          name: 'Invoicing',
-          description: 'Invoice generation and management',
-          category: 'sales',
-          isEnabled: true,
-          requiredPlan: 'basic',
-        },
-        {
-          id: 'sales_analytics',
-          name: 'Sales Analytics',
-          description: 'Sales performance and forecasting',
-          category: 'analytics',
-          isEnabled: true,
-          requiredPlan: 'professional',
-        },
-        {
-          id: 'quote_builder',
-          name: 'Quote Builder',
-          description: 'Professional quote generation',
-          category: 'sales',
-          isEnabled: true,
-          requiredPlan: 'basic',
-        },
-        {
-          id: 'commission_tracker',
-          name: 'Commission Tracker',
-          description: 'Track sales commissions and payouts',
-          category: 'sales',
-          isEnabled: true,
-          requiredPlan: 'professional',
-        },
-        {
-          id: 'territory_management',
-          name: 'Territory Management',
-          description: 'Manage sales territories and assignments',
-          category: 'sales',
-          isEnabled: true,
-          requiredPlan: 'professional',
+          toolCount: 7,
         },
         
-        // Communication Tools
+        // Communication Tools Group
         {
-          id: 'communication_hub',
-          name: 'Communication Hub',
-          description: 'Central communication management',
+          id: 'communication_tools',
+          name: 'Communication Tools',
+          description: 'Email Composer, Video Email, Text Messages, Campaigns, Phone System, Communication Hub',
           category: 'communication',
           isEnabled: true,
           requiredPlan: 'basic',
-        },
-        {
-          id: 'email_composer',
-          name: 'Email Composer',
-          description: 'Email composition and templates',
-          category: 'communication',
-          isEnabled: true,
-          requiredPlan: 'basic',
-        },
-        {
-          id: 'video_email',
-          name: 'Video Email',
-          description: 'Personalized video messaging',
-          category: 'communication',
-          isEnabled: true,
-          requiredPlan: 'professional',
-        },
-        {
-          id: 'text_messages',
-          name: 'Text Messages',
-          description: 'SMS messaging and campaigns',
-          category: 'communication',
-          isEnabled: true,
-          requiredPlan: 'basic',
-        },
-        {
-          id: 'campaigns',
-          name: 'Campaigns',
-          description: 'Email marketing campaigns',
-          category: 'communication',
-          isEnabled: true,
-          requiredPlan: 'basic',
+          toolCount: 6,
         },
         
-        // AI Tools
+        // AI Tools Group (29+ tools)
         {
           id: 'ai_tools',
           name: 'AI Tools',
-          description: 'AI-powered business tools and analysis',
+          description: 'Complete AI suite including Email Analysis, Business Analyzer, Image Generator, Meeting Summary, Smart Search, and 25+ more AI tools',
           category: 'ai',
           isEnabled: true,
           requiredPlan: 'professional',
-        },
-        {
-          id: 'business_analyzer',
-          name: 'Business Analyzer',
-          description: 'AI business intelligence and analysis',
-          category: 'ai',
-          isEnabled: true,
-          requiredPlan: 'professional',
-        },
-        {
-          id: 'image_generator',
-          name: 'Image Generator',
-          description: 'AI-powered image generation',
-          category: 'ai',
-          isEnabled: true,
-          requiredPlan: 'professional',
-        },
-        {
-          id: 'ai_model_demo',
-          name: 'AI Model Demo',
-          description: 'Demonstration of AI model capabilities',
-          category: 'ai',
-          isEnabled: true,
-          requiredPlan: 'professional',
+          toolCount: 29,
         },
         
-        // Task Management
+        // Task Management Group
         {
-          id: 'task_management',
+          id: 'task_features',
           name: 'Task Management',
-          description: 'Advanced task organization and tracking',
+          description: 'Task Management, Task Automation, Project Tracker, Time Tracking, Workflow Builder, Deadline Manager',
           category: 'productivity',
           isEnabled: true,
           requiredPlan: 'basic',
-        },
-        {
-          id: 'task_automation',
-          name: 'Task Automation',
-          description: 'Automated task workflows',
-          category: 'productivity',
-          isEnabled: true,
-          requiredPlan: 'professional',
-        },
-        {
-          id: 'project_tracker',
-          name: 'Project Tracker',
-          description: 'Project management and tracking',
-          category: 'productivity',
-          isEnabled: true,
-          requiredPlan: 'professional',
-        },
-        {
-          id: 'time_tracking',
-          name: 'Time Tracking',
-          description: 'Track time spent on tasks and projects',
-          category: 'productivity',
-          isEnabled: true,
-          requiredPlan: 'basic',
-        },
-        {
-          id: 'workflow_builder',
-          name: 'Workflow Builder',
-          description: 'Create custom business workflows',
-          category: 'productivity',
-          isEnabled: true,
-          requiredPlan: 'professional',
-        },
-        {
-          id: 'deadline_manager',
-          name: 'Deadline Manager',
-          description: 'Manage project deadlines and milestones',
-          category: 'productivity',
-          isEnabled: true,
-          requiredPlan: 'basic',
+          toolCount: 6,
         },
         
-        // Content & Documents
+        // Content & Documents Group
         {
-          id: 'document_center',
-          name: 'Document Center',
-          description: 'Document management and storage',
+          id: 'content_features',
+          name: 'Content & Documents',
+          description: 'Document Center, Content Library, Voice Profiles, Forms & Surveys',
           category: 'content',
           isEnabled: true,
           requiredPlan: 'basic',
-        },
-        {
-          id: 'content_library',
-          name: 'Content Library',
-          description: 'Marketing content and asset management',
-          category: 'content',
-          isEnabled: true,
-          requiredPlan: 'basic',
-        },
-        {
-          id: 'voice_profiles',
-          name: 'Voice Profiles',
-          description: 'Voice recording and profile management',
-          category: 'content',
-          isEnabled: true,
-          requiredPlan: 'professional',
-        },
-        {
-          id: 'forms_surveys',
-          name: 'Forms & Surveys',
-          description: 'Create forms and surveys for data collection',
-          category: 'content',
-          isEnabled: true,
-          requiredPlan: 'basic',
+          toolCount: 4,
         },
         
-        // Integration & Admin
+        // Apps & Integration Group
         {
-          id: 'super_admin_dashboard',
-          name: 'Super Admin Dashboard',
-          description: 'Platform administration and management',
+          id: 'integration_features',
+          name: 'Apps & Integration',
+          description: 'Third-party integrations, API access, webhooks, custom integrations',
+          category: 'integration',
+          isEnabled: false,
+          requiredPlan: 'enterprise',
+          toolCount: 3,
+        },
+        
+        // Admin Features
+        {
+          id: 'admin_features',
+          name: 'Admin Features',
+          description: 'Super Admin Dashboard, User Management, Feature Control, Platform Settings',
           category: 'admin',
           isEnabled: true,
           requiredPlan: 'enterprise',
+          toolCount: 1,
         }
       ];
 
@@ -3792,6 +3602,51 @@ Next Actions:
       res.status(500).json({ message: 'Failed to bulk toggle features' });
     }
   });
+
+  // User upgrade management
+  app.post('/api/user/upgrade', async (req, res) => {
+    try {
+      const { userId, newPlan } = req.body;
+      console.log(`Upgrading user ${userId} to ${newPlan} plan`);
+      
+      // In a real implementation, you would:
+      // 1. Process payment
+      // 2. Update user's plan in database
+      // 3. Enable appropriate features
+      // 4. Send confirmation email
+      
+      res.json({ 
+        message: `Successfully upgraded to ${newPlan} plan`,
+        success: true,
+        newPlan,
+        featuresUnlocked: getPlanFeatures(newPlan)
+      });
+    } catch (error) {
+      console.error('Error upgrading user:', error);
+      res.status(500).json({ message: 'Failed to upgrade user' });
+    }
+  });
+
+  app.get('/api/user/plan-features/:plan', async (req, res) => {
+    try {
+      const { plan } = req.params;
+      const features = getPlanFeatures(plan);
+      res.json({ plan, features });
+    } catch (error) {
+      console.error('Error fetching plan features:', error);
+      res.status(500).json({ message: 'Failed to fetch plan features' });
+    }
+  });
+
+  function getPlanFeatures(plan: string) {
+    const planFeatures = {
+      free: ['core_features'],
+      basic: ['core_features', 'sales_tools', 'communication_tools', 'task_features', 'content_features'],
+      professional: ['core_features', 'sales_tools', 'communication_tools', 'ai_tools', 'task_features', 'content_features'],
+      enterprise: ['core_features', 'sales_tools', 'communication_tools', 'ai_tools', 'task_features', 'content_features', 'integration_features', 'admin_features']
+    };
+    return planFeatures[plan as keyof typeof planFeatures] || [];
+  }
 
   app.put('/api/admin/users/:userId/role', async (req, res) => {
     try {

@@ -85,55 +85,28 @@ const SuperAdminDashboard: React.FC = () => {
 
   const getFeatureIcon = (featureId: string, category: string) => {
     const featureIconMap: { [key: string]: React.ComponentType<any> } = {
-      // Core Features
-      'contacts': Users,
-      'deals': DollarSign,
-      'tasks': CheckSquare,
-      'calendar': Calendar,
-      'dashboard': BarChart3,
-      
-      // AI Features
-      'email_composer': Mail,
-      'email_analysis': BarChart3,
-      'meeting_summary': MessageSquare,
-      'smart_search': Search,
-      'business_analyzer': TrendingUp,
-      'proposal_generator': FileText,
-      'call_script': Phone,
-      'subject_optimizer': Zap,
-      'competitor_analysis': Shield,
-      'customer_persona': Target,
-      'objection_handler': MessageSquare,
-      'market_analysis': Globe,
-      'content_creator': FileText,
-      'document_analyzer': FileText,
-      'voice_analysis': Mic,
-      'image_generator': Image,
-      'vision_analyzer': Eye,
-      'meeting_agenda': Calendar,
-      
-      // Communication Features
-      'phone_system': Phone,
-      'sms_messaging': MessageSquare,
-      'video_email': Video,
-      'email_campaigns': Mail,
-      'chat_widget': MessageSquare,
-      
-      // Analytics Features
-      'advanced_analytics': BarChart3,
-      'sales_forecasting': TrendingUp,
-      'performance_tracking': BarChart3,
-      'conversion_analytics': TrendingUp,
-      
-      // Integration Features
-      'api_access': Settings,
-      'white_label': Settings,
-      'webhook_support': Zap,
-      'crm_integrations': Database,
-      'calendar_sync': Calendar,
+      // Feature Groups
+      'core_features': Database,
+      'sales_tools': DollarSign,
+      'communication_tools': MessageSquare,
+      'ai_tools': Brain,
+      'task_features': CheckSquare,
+      'content_features': FileText,
+      'integration_features': Settings,
+      'admin_features': Crown,
     };
     
     return featureIconMap[featureId] || getCategoryIcon(category);
+  };
+
+  const getPlanBadgeColor = (plan: string) => {
+    switch (plan) {
+      case 'free': return 'bg-green-100 text-green-800';
+      case 'basic': return 'bg-blue-100 text-blue-800';
+      case 'professional': return 'bg-purple-100 text-purple-800';
+      case 'enterprise': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
   };
 
   const loadDashboardData = async () => {
@@ -720,8 +693,8 @@ const SuperAdminDashboard: React.FC = () => {
             {/* Category Filter */}
             <div className="flex items-center space-x-4">
               <span className="text-sm font-medium text-gray-700">Filter by Category:</span>
-              <div className="flex space-x-2">
-                {['all', 'core', 'ai', 'communication', 'analytics', 'integration'].map(category => (
+              <div className="flex flex-wrap gap-2">
+                {['all', 'core', 'sales', 'communication', 'ai', 'productivity', 'content', 'analytics', 'integration', 'admin'].map(category => (
                   <button
                     key={category}
                     onClick={() => setFilterRole(category)}
@@ -749,13 +722,28 @@ const SuperAdminDashboard: React.FC = () => {
                         feature.category === 'ai' ? 'bg-purple-100 text-purple-600' :
                         feature.category === 'communication' ? 'bg-green-100 text-green-600' :
                         feature.category === 'analytics' ? 'bg-orange-100 text-orange-600' :
+                        feature.category === 'sales' ? 'bg-emerald-100 text-emerald-600' :
+                        feature.category === 'productivity' ? 'bg-yellow-100 text-yellow-600' :
+                        feature.category === 'content' ? 'bg-indigo-100 text-indigo-600' :
+                        feature.category === 'integration' ? 'bg-pink-100 text-pink-600' :
+                        feature.category === 'admin' ? 'bg-red-100 text-red-600' :
                         'bg-gray-100 text-gray-600'
                       }`}>
                         <feature.icon className="w-5 h-5" />
                       </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900">{feature.name}</h3>
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2 mb-1">
+                          <h3 className="font-medium text-gray-900">{feature.name}</h3>
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getPlanBadgeColor(feature.requiredPlan)}`}>
+                            {feature.requiredPlan}
+                          </span>
+                        </div>
                         <p className="text-sm text-gray-600">{feature.description}</p>
+                        {feature.toolCount && (
+                          <div className="flex items-center space-x-1 mt-2">
+                            <span className="text-xs text-gray-500">{feature.toolCount} tools included</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                     <button
@@ -773,22 +761,26 @@ const SuperAdminDashboard: React.FC = () => {
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Required Plan:</span>
-                      <span className="font-medium capitalize">{feature.requiredPlan}</span>
-                    </div>
-                    {feature.usageLimit && (
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600">Usage Limit:</span>
-                        <span className="font-medium">{feature.usageLimit}/month</span>
-                      </div>
-                    )}
-                    <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">Status:</span>
-                      <span className={`font-medium ${
+                      <span className={`font-medium flex items-center space-x-1 ${
                         feature.isEnabled ? 'text-green-600' : 'text-red-600'
                       }`}>
-                        {feature.isEnabled ? 'Enabled' : 'Disabled'}
+                        {feature.isEnabled ? (
+                          <>
+                            <CheckCircle className="w-3 h-3" />
+                            <span>Enabled</span>
+                          </>
+                        ) : (
+                          <>
+                            <XCircle className="w-3 h-3" />
+                            <span>Disabled</span>
+                          </>
+                        )}
                       </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Category:</span>
+                      <span className="font-medium capitalize">{feature.category}</span>
                     </div>
                   </div>
                 </GlassCard>
