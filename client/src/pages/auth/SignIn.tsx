@@ -110,6 +110,32 @@ export const SignIn: React.FC = () => {
           </div>
         )}
 
+        {/* SSO Authentication Options */}
+        <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-6 mb-4">
+          <h3 className="text-sm font-medium text-gray-900 mb-4 text-center">Single Sign-On</h3>
+          <div className="space-y-3">
+            <a
+              href="/api/login"
+              className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm"
+            >
+              <Shield className="w-5 h-5 mr-2" />
+              Continue with Replit SSO
+            </a>
+            <div className="text-xs text-gray-500 text-center">
+              Supports Google, GitHub, Apple, X, and more • Works across all your apps
+            </div>
+          </div>
+          
+          <div className="relative mt-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or continue with email</span>
+            </div>
+          </div>
+        </div>
+
         {/* Demo Instructions Card */}
         <div className="bg-amber-50/80 backdrop-blur-sm border border-amber-200/50 rounded-2xl p-6 mb-4">
           <div className="flex items-start">

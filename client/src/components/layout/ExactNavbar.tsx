@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ChevronDown, User, Bell, Search, Settings, LogOut, BarChart3, Users, Target, MessageSquare, Video, FileText, Zap, TrendingUp, Calendar, Phone, Receipt, BookOpen, Mic, Sun, Moon, Brain, Mail, Grid3X3, Briefcase, Building2, Megaphone, Activity, CheckSquare, Home, Sparkles, PresentationChart, UserPlus, ClipboardList, Lightbulb, PieChart, Clock, Shield, Globe, Database, Headphones, Camera, Layers, Repeat, Palette, HelpCircle, Plus, DollarSign, HeartHandshake, Volume2, Image, Bot, Eye, Code, MessageCircle, AlertTriangle, LineChart, Edit3, ExternalLink, Menu, X } from 'lucide-react';
+import { ChevronDown, User, Bell, Search, Settings, LogOut, BarChart3, Users, Target, MessageSquare, Video, FileText, Zap, TrendingUp, Calendar, Phone, Receipt, BookOpen, Mic, Sun, Moon, Brain, Mail, Grid3X3, Briefcase, Building2, Megaphone, Activity, CheckSquare, Home, Sparkles, PresentationChart, UserPlus, ClipboardList, Lightbulb, PieChart, Clock, Shield, Globe, Database, Headphones, Camera, Layers, Repeat, Palette, HelpCircle, Plus, DollarSign, HeartHandshake, Volume2, Image, Bot, Eye, Code, MessageCircle, AlertTriangle, LineChart, Edit3, ExternalLink, Menu, X, Key } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigation } from '../../contexts/NavigationContext';
 import { useDealStore } from '../../store/dealStore';
@@ -726,6 +726,14 @@ const Navbar = () => {
                         >
                           <Shield size={16} />
                           <span className="text-sm font-medium">Feature Access Demo</span>
+                        </button>
+                        
+                        <button
+                          onClick={() => handleNavigation('/sso-config', 'sso-config')}
+                          className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/10 text-white hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
+                        >
+                          <Key size={16} />
+                          <span className="text-sm font-medium">SSO Configuration</span>
                         </button>
                         
                         <hr className={`my-2 ${isDark ? 'border-white/20' : 'border-gray-200'}`} />

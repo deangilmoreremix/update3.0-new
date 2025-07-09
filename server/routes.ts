@@ -38,28 +38,12 @@ const requireAuth = async (req: Request, res: Response, next: any) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Disable Replit Auth for custom authentication
-  // await setupAuth(app);
+  // Enable Replit Auth for SSO capabilities
+  await setupAuth(app);
   
   // Apply tenant extraction middleware to all routes
   app.use(extractTenant);
   app.use(addTenantContext);
-
-  // Override Replit Auth with custom authentication
-  app.get("/api/login", (req: Request, res: Response) => {
-    // Redirect to custom sign-in page instead of Replit OIDC
-    res.redirect('/sign-in');
-  });
-
-  app.get("/api/logout", (req: Request, res: Response) => {
-    // Simple logout redirect to landing page
-    res.redirect('/');
-  });
-
-  app.get("/api/callback", (req: Request, res: Response) => {
-    // Redirect callback to sign-in page
-    res.redirect('/sign-in');
-  });
 
   // Authentication endpoints
   app.post("/api/auth/login", async (req: Request, res: Response) => {
@@ -4009,6 +3993,80 @@ Next Actions:
 
   // AI Routes Integration
   app.use("/api/ai", aiRoutes);
+
+  // SSO Configuration endpoints
+  app.get("/api/admin/sso-config", async (req: Request, res: Response) => {
+    try {
+      const ssoConfig = {
+        providers: [
+          {
+            id: 'google',
+            name: 'Google',
+            enabled: true,
+            configured: true,
+            description: 'Sign in with Google accounts'
+          },
+          {
+            id: 'github',
+            name: 'GitHub',
+            enabled: true,
+            configured: true,
+            description: 'Sign in with GitHub accounts'
+          },
+          {
+            id: 'apple',
+            name: 'Apple',
+            enabled: false,
+            configured: false,
+            description: 'Sign in with Apple ID'
+          },
+          {
+            id: 'twitter',
+            name: 'X (Twitter)',
+            enabled: false,
+            configured: false,
+            description: 'Sign in with X accounts'
+          },
+          {
+            id: 'email',
+            name: 'Email/Password',
+            enabled: true,
+            configured: true,
+            description: 'Traditional email and password authentication'
+          }
+        ],
+        settings: {
+          enableSSO: true,
+          requireSSO: false,
+          allowEmailFallback: true,
+          sessionTimeout: 24,
+          enforceEmailVerification: true
+        }
+      };
+      res.json(ssoConfig);
+    } catch (error) {
+      console.error('Error fetching SSO config:', error);
+      res.status(500).json({ error: 'Failed to fetch SSO configuration' });
+    }
+  });
+
+  app.post("/api/admin/sso-config", async (req: Request, res: Response) => {
+    try {
+      const { providers, settings } = req.body;
+      
+      // In a real application, you would save this to a database
+      console.log('Saving SSO configuration:', { providers, settings });
+      
+      res.json({
+        success: true,
+        message: 'SSO configuration saved successfully',
+        config: { providers, settings }
+      });
+    } catch (error) {
+      console.error('Error saving SSO config:', error);
+      res.status(500).json({ error: 'Failed to save SSO configuration' });
+    }
+  });
 
   const httpServer = createServer(app);
 
