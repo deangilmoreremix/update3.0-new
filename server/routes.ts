@@ -48,38 +48,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication endpoints
   app.post("/api/auth/login", async (req: Request, res: Response) => {
     try {
-      const { email } = req.body;
+      const { email, password } = req.body;
       
-      if (!email) {
-        return res.status(400).json({ error: "Email is required" });
+      if (!email || !password) {
+        return res.status(400).json({ error: "Email and password are required" });
       }
 
-      // Find user by email
-      let user = await storage.getUserByEmail(email);
+      // Create demo user based on email type
+      const isAdmin = email.includes('admin');
+      const userId = isAdmin ? 'super-admin-123' : 'demo-user-123';
       
-      if (!user) {
-        // Create new user if they don't exist
-        user = await storage.createUser({
-          email,
-          fullName: email.split('@')[0], // Use email prefix as default name
-          accountStatus: 'active'
-        });
-      }
+      const user = {
+        id: userId,
+        email: email,
+        fullName: isAdmin ? 'Super Admin' : 'Demo User',
+        accountStatus: 'active',
+        isAdmin: isAdmin,
+        role: isAdmin ? 'super_admin' : 'user',
+        subscriptionPlan: isAdmin ? 'enterprise' : 'professional',
+        subscriptionStatus: 'active',
+        paymentStatus: 'paid'
+      };
 
       res.json({
         success: true,
-        user: {
-          id: user.id,
-          email: user.email,
-          fullName: user.fullName,
-          accountStatus: user.accountStatus,
-          isAdmin: user.isAdmin
-        },
+        user: user,
         message: "Login successful"
       });
     } catch (error) {
       console.error('Login error:', error);
       res.status(500).json({ error: "Login failed" });
+    }
+  });
+
+  app.post("/api/auth/register", async (req: Request, res: Response) => {
+    try {
+      const { email, password, fullName, userType, adminCode } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ error: "Email and password are required" });
+      }
+
+      // Check super admin code if userType is super_admin
+      if (userType === 'super_admin' && adminCode !== 'SUPER_ADMIN_2024') {
+        return res.status(400).json({ error: "Invalid super admin code" });
+      }
+
+      // Create demo user based on email type or userType
+      const isAdmin = email.includes('admin') || userType === 'super_admin';
+      const userId = isAdmin ? 'super-admin-123' : 'demo-user-' + Date.now();
+      
+      const user = {
+        id: userId,
+        email: email,
+        fullName: fullName || email.split('@')[0],
+        accountStatus: 'active',
+        isAdmin: isAdmin,
+        role: isAdmin ? 'super_admin' : 'user',
+        subscriptionPlan: isAdmin ? 'enterprise' : 'professional',
+        subscriptionStatus: 'active',
+        paymentStatus: 'paid'
+      };
+
+      res.json({
+        success: true,
+        user: user,
+        message: "Registration successful"
+      });
+    } catch (error) {
+      console.error('Registration error:', error);
+      res.status(500).json({ error: "Registration failed" });
     }
   });
 

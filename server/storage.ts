@@ -80,12 +80,12 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   // User methods
   async getUser(id: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+    const result = await db.select().from(users).where(eq(users.id, id));
     return result[0];
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+    const result = await db.select().from(users).where(eq(users.email, email));
     return result[0];
   }
 
@@ -127,7 +127,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getContact(id: string): Promise<Contact | undefined> {
-    const result = await db.select().from(contacts).where(eq(contacts.id, id)).limit(1);
+    const result = await db.select().from(contacts).where(eq(contacts.id, id));
     return result[0];
   }
 
