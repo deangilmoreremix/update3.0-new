@@ -186,8 +186,8 @@ const Navbar = () => {
   const mainTabs = [
     {
       id: 'dashboard',
-      label: 'Dashboard',
-      icon: Home,
+      label: '',
+      icon: () => null,
       action: () => handleNavigation('/dashboard', 'dashboard'),
       badge: null,
       color: 'from-blue-500 to-green-500'
