@@ -51,9 +51,13 @@ export const SignIn: React.FC = () => {
         // Store user data and redirect
         localStorage.setItem('user', JSON.stringify(data.user));
         
-        // Redirect to intended page or dashboard
-        const returnTo = searchParams.get('returnTo') || '/dashboard';
-        navigate(returnTo);
+        // Redirect based on user role
+        if (data.user.role === 'super_admin' || data.user.isAdmin) {
+          navigate('/super-admin-dashboard');
+        } else {
+          const returnTo = searchParams.get('returnTo') || '/dashboard';
+          navigate(returnTo);
+        }
       } else {
         setError(data.message || 'Login failed');
       }

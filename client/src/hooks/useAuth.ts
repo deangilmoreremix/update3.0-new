@@ -15,24 +15,16 @@ export function useAuth() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // For demo purposes, simulate a super admin user
     const loadUser = async () => {
       try {
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Set demo super admin user
-        setUser({
-          id: 'demo-user-123',
-          email: 'demo@smartcrm.com',
-          firstName: 'Demo',
-          lastName: 'User',
-          role: 'super_admin',
-          subscriptionPlan: 'enterprise',
-          isActive: true
-        });
+        // Check localStorage for user data
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const userData = JSON.parse(storedUser);
+          setUser(userData);
+        }
       } catch (error) {
-        console.error('Error loading user:', error);
+        console.error('Error loading user from localStorage:', error);
       } finally {
         setIsLoading(false);
       }

@@ -8,6 +8,7 @@ import { Users, UserPlus } from 'lucide-react';
 import NewLeadsSection from '../dashboard/NewLeadsSection';
 import CustomerProfile from '../dashboard/CustomerProfile';
 import DraggableComponent from '../DraggableComponent';
+import SalesToolsLauncher from '../sales/SalesToolsLauncher';
 
 const CustomerLeadManagement: React.FC = () => {
   const { isDark } = useTheme();
@@ -78,14 +79,20 @@ const CustomerLeadManagement: React.FC = () => {
           </div>
         </div>
         
-        <button 
-          onClick={() => openTool('contact-manager')}
-          className={`flex items-center space-x-2 px-4 py-2 ${
-          isDark ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-        } rounded-lg transition-colors`}>
-          <UserPlus size={16} />
-          <span>Add Contact</span>
-        </button>
+        <div className="flex items-center space-x-3">
+          <SalesToolsLauncher
+            variant="dropdown"
+            className="flex items-center space-x-2"
+          />
+          <button 
+            onClick={() => openTool('contact-manager')}
+            className={`flex items-center space-x-2 px-4 py-2 ${
+            isDark ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+          } rounded-lg transition-colors`}>
+            <UserPlus size={16} />
+            <span>Add Contact</span>
+          </button>
+        </div>
       </div>
 
       <DragDropContext onDragEnd={handleDragEnd}>

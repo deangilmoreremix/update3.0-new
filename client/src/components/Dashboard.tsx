@@ -10,6 +10,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useDashboardLayout } from '../contexts/DashboardLayoutContext';
 import DraggableSection from './DraggableSection';
 import DashboardLayoutControls from './DashboardLayoutControls';
+import SalesToolsLauncher from './sales/SalesToolsLauncher';
 
 // Import section components
 import ExecutiveOverviewSection from './sections/ExecutiveOverviewSection';
@@ -139,6 +140,9 @@ const Dashboard: React.FC = () => {
           </Droppable>
         </DragDropContext>
       )}
+      
+      {/* Sales Tools Floating Action Button */}
+      <SalesToolsLauncher variant="fab" />
     </main>
   );
 };
