@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useTaskStore } from '../../store/taskStore';
 import { useDealStore } from '../../store/dealStore';
-import { CheckSquare, Clock, AlertCircle, TrendingUp } from 'lucide-react';
+import { useContactStore } from '../../store/contactStore';
+import { Calendar, ChevronLeft, ChevronRight, MoreHorizontal, Users, Info, Settings, Filter, TrendingUp } from 'lucide-react';
 import Avatar from '../ui/Avatar';
 import { getAvatarByIndex, getInitials } from '../../services/avatarCollection';
 
@@ -10,174 +11,210 @@ const TasksAndFunnel: React.FC = () => {
   const { isDark } = useTheme();
   const { tasks } = useTaskStore();
   const { deals } = useDealStore();
+  const { contacts } = useContactStore();
+  const [selectedDay, setSelectedDay] = useState(15);
 
-  // Convert tasks object to array and get recent tasks
   const taskArray = Object.values(tasks);
-  const recentTasks = taskArray.slice(0, 6);
-
-  // Convert deals object to array and calculate funnel stages
   const dealArray = Object.values(deals);
-  const funnelStages = [
-    { name: 'Discovery', count: dealArray.filter(d => d.stage === 'discovery').length, color: 'blue' },
-    { name: 'Qualification', count: dealArray.filter(d => d.stage === 'qualification').length, color: 'green' },
-    { name: 'Proposal', count: dealArray.filter(d => d.stage === 'proposal').length, color: 'yellow' },
-    { name: 'Negotiation', count: dealArray.filter(d => d.stage === 'negotiation').length, color: 'orange' },
-    { name: 'Closed Won', count: dealArray.filter(d => d.stage === 'closed-won').length, color: 'green' },
+
+  // Mock calendar data
+  const calendarDays = Array.from({ length: 31 }, (_, i) => i + 1);
+  const dayHeaders = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+  // Mock task schedule data
+  const taskScheduleData = [
+    { day: 15, tasks: 5, assignees: [1, 2, 3] },
+    { day: 16, tasks: 3, assignees: [1, 2] },
+    { day: 17, tasks: 7, assignees: [1, 2, 3, 4] },
+    { day: 18, tasks: 2, assignees: [1] },
+    { day: 19, tasks: 4, assignees: [2, 3] },
   ];
 
-  const getTaskIcon = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return CheckSquare;
-      case 'in-progress':
-        return Clock;
-      default:
-        return AlertCircle;
-    }
-  };
+  // Mock funnel data
+  const funnelData = [
+    { stage: 'Prospecting', value: '$125,000', color: 'bg-blue-500' },
+    { stage: 'Qualification', value: '$98,000', color: 'bg-green-500' },
+    { stage: 'Proposal', value: '$65,000', color: 'bg-yellow-500' },
+    { stage: 'Negotiation', value: '$45,000', color: 'bg-orange-500' },
+  ];
 
-  const getTaskStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return isDark ? 'text-green-400' : 'text-green-600';
-      case 'in-progress':
-        return isDark ? 'text-blue-400' : 'text-blue-600';
-      default:
-        return isDark ? 'text-yellow-400' : 'text-yellow-600';
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high':
-        return isDark ? 'bg-red-500/20 text-red-400' : 'bg-red-100 text-red-600';
-      case 'medium':
-        return isDark ? 'bg-yellow-500/20 text-yellow-400' : 'bg-yellow-100 text-yellow-600';
-      default:
-        return isDark ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-600';
-    }
-  };
-
-  const getStageColor = (color: string) => {
-    const colorMap = {
-      blue: isDark ? 'bg-blue-500/20' : 'bg-blue-100',
-      green: isDark ? 'bg-green-500/20' : 'bg-green-100',
-      yellow: isDark ? 'bg-yellow-500/20' : 'bg-yellow-100',
-      orange: isDark ? 'bg-orange-500/20' : 'bg-orange-100',
-    };
-    return colorMap[color as keyof typeof colorMap] || colorMap.blue;
-  };
+  // Mock team assignments
+  const teamAssignments = [
+    { contact: contacts[Object.keys(contacts)[0]], taskCount: 3 },
+    { contact: contacts[Object.keys(contacts)[1]], taskCount: 5 },
+    { contact: contacts[Object.keys(contacts)[2]], taskCount: 2 },
+  ];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Tasks Section */}
-      <div className={`p-6 rounded-xl border ${
-        isDark 
-          ? 'border-white/10 bg-white/5 backdrop-blur-sm' 
-          : 'border-gray-200 bg-white/50 backdrop-blur-sm'
-      }`}>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      {/* Tasks Schedule */}
+      <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6`}>
         <div className="flex items-center justify-between mb-6">
-          <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            Recent Tasks
-          </h2>
-          <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            {taskArray.length} total
-          </span>
+          <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Tasks Schedule</h3>
+          <div className="flex space-x-2">
+            <button className={`p-2 ${isDark ? 'text-gray-400 hover:bg-white/10' : 'text-gray-600 hover:bg-gray-100'} rounded-lg transition-colors`}>
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button className={`p-2 ${isDark ? 'text-gray-400 hover:bg-white/10' : 'text-gray-600 hover:bg-gray-100'} rounded-lg transition-colors`}>
+              <Settings className="w-4 h-4" />
+            </button>
+            <button className={`p-2 ${isDark ? 'text-gray-400 hover:bg-white/10' : 'text-gray-600 hover:bg-gray-100'} rounded-lg transition-colors`}>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
-        
-        <div className="space-y-3">
-          {recentTasks.map((task) => {
-            const TaskIcon = getTaskIcon(task.status);
-            return (
-              <div key={task.id} className={`p-3 rounded-lg border ${
-                isDark ? 'border-white/10 bg-white/5' : 'border-gray-100 bg-white/50'
-              }`}>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start space-x-3">
-                    <Avatar
-                      src={getAvatarByIndex(parseInt(task.id) || 0, 'executives')}
-                      alt={`Task ${task.id}`}
-                      size="sm"
-                      fallback={getInitials(task.title || 'Task')}
-                      status={task.status === 'completed' ? 'online' : task.status === 'in-progress' ? 'busy' : 'away'}
-                    />
-                    <TaskIcon className={`h-5 w-5 mt-0.5 ${getTaskStatusColor(task.status)}`} />
-                    <div className="flex-1">
-                      <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                        {task.title}
-                      </p>
-                      {task.description && (
-                        <p className={`text-sm mt-1 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                          {task.description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <span className={`text-xs px-2 py-1 rounded-full ${getPriorityColor(task.priority)}`}>
-                    {task.priority}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        
-        <button className={`w-full mt-4 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
-          isDark 
-            ? 'bg-white/10 text-white hover:bg-white/20' 
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-        }`}>
-          View All Tasks
-        </button>
-      </div>
 
-      {/* Sales Funnel Section */}
-      <div className={`p-6 rounded-xl border ${
-        isDark 
-          ? 'border-white/10 bg-white/5 backdrop-blur-sm' 
-          : 'border-gray-200 bg-white/50 backdrop-blur-sm'
-      }`}>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            Sales Funnel
-          </h2>
-          <TrendingUp className={`h-5 w-5 ${isDark ? 'text-green-400' : 'text-green-600'}`} />
-        </div>
-        
-        <div className="space-y-4">
-          {funnelStages.map((stage, index) => (
-            <div key={stage.name} className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className={`w-3 h-3 rounded-full ${getStageColor(stage.color)}`} />
-                <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  {stage.name}
-                </span>
+        <div className="mb-4">
+          <h4 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>October</h4>
+          <div className="grid grid-cols-7 gap-1 text-center text-sm mb-2">
+            {dayHeaders.map((day, index) => (
+              <div key={index} className={`font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                {day}
               </div>
+            ))}
+          </div>
+          <div className="grid grid-cols-7 gap-1 text-center text-sm">
+            {calendarDays.map((day) => (
+              <div key={day} className={`p-2 rounded-lg cursor-pointer transition-colors ${
+                day === selectedDay 
+                  ? (isDark ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-600')
+                  : (isDark ? 'text-gray-400 hover:bg-white/10' : 'text-gray-600 hover:bg-gray-100')
+              }`}>
+                {day}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          {taskScheduleData.map((task) => (
+            <div key={task.day} className={`flex items-center justify-between ${isDark ? 'bg-white/5 hover:bg-white/10' : 'bg-gray-50 hover:bg-gray-100'} p-3 rounded-lg transition-colors`}>
               <div className="flex items-center space-x-3">
-                <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                  {stage.count} deals
-                </span>
-                <div className={`w-20 h-2 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
-                  <div 
-                    className={`h-full rounded-full ${getStageColor(stage.color)}`}
-                    style={{ width: `${Math.max(10, (stage.count / Math.max(...funnelStages.map(s => s.count))) * 100)}%` }}
-                  />
+                <div className={`font-medium ${isDark ? 'text-white' : 'text-gray-700'}`}>{task.day}</div>
+                <div className="flex -space-x-2">
+                  {task.assignees.slice(0, 3).map((assigneeId, index) => (
+                    <Avatar
+                      key={assigneeId}
+                      src={getAvatarByIndex(assigneeId, 'executives')}
+                      alt={`Assignee ${assigneeId}`}
+                      size="xs"
+                      fallback={getInitials(`User ${assigneeId}`)}
+                      className="ring-2 ring-white"
+                    />
+                  ))}
+                  {task.assignees.length > 3 && (
+                    <div className="w-6 h-6 rounded-full bg-gray-400 flex items-center justify-center text-xs font-semibold text-white ring-2 ring-white">
+                      +{task.assignees.length - 3}
+                    </div>
+                  )}
                 </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{task.tasks} tasks</span>
+                <button className={`p-1 ${isDark ? 'text-gray-400 hover:text-gray-200 hover:bg-white/10' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-200'} rounded transition-colors`}>
+                  <MoreHorizontal className="w-4 h-4" />
+                </button>
               </div>
             </div>
           ))}
         </div>
 
-        <div className={`mt-6 p-4 rounded-lg ${
-          isDark ? 'bg-gradient-to-r from-blue-500/10 to-purple-500/10' : 'bg-gradient-to-r from-blue-50 to-purple-50'
-        }`}>
+        {/* Selected Day Details */}
+        <div className={`mt-4 p-4 ${isDark ? 'bg-blue-500/10 border-blue-500/20' : 'bg-blue-50 border-blue-200'} rounded-lg border`}>
+          <div className="flex items-center justify-between mb-2">
+            <h5 className={`font-semibold ${isDark ? 'text-blue-300' : 'text-blue-800'}`}>October {selectedDay}</h5>
+            <button className={`p-1 ${isDark ? 'text-blue-400 hover:bg-blue-500/20' : 'text-blue-600 hover:bg-blue-100'} rounded`}>
+              <Info className="w-4 h-4" />
+            </button>
+          </div>
+          <p className={`text-sm ${isDark ? 'text-blue-300' : 'text-blue-700'}`}>
+            5 tasks scheduled for today including follow-up calls and proposal reviews
+          </p>
+          <div className="mt-2 flex items-center space-x-2">
+            <div className="flex -space-x-2">
+              {[1, 2, 3].map((assigneeId) => (
+                <Avatar
+                  key={assigneeId}
+                  src={getAvatarByIndex(assigneeId, 'executives')}
+                  alt={`Assignee ${assigneeId}`}
+                  size="xs"
+                  fallback={getInitials(`User ${assigneeId}`)}
+                  className="ring-2 ring-white"
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stage Funnel */}
+      <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6`}>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Stage Funnel</h3>
+          <div className="flex space-x-2">
+            <button className={`p-2 ${isDark ? 'text-gray-400 hover:bg-white/10' : 'text-gray-600 hover:bg-gray-100'} rounded-lg transition-colors`}>
+              <Filter className="w-4 h-4" />
+            </button>
+            <button className={`p-2 ${isDark ? 'text-gray-400 hover:bg-white/10' : 'text-gray-600 hover:bg-gray-100'} rounded-lg transition-colors`}>
+              <TrendingUp className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {funnelData.map((stage, index) => (
+            <div key={stage.stage} className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>{stage.stage}</span>
+                <span className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>{stage.value}</span>
+              </div>
+              <div className={`w-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} rounded-full h-2`}>
+                <div 
+                  className={`${stage.color} ${isDark ? 'opacity-80' : 'opacity-100'} h-2 rounded-full transition-all duration-300`} 
+                  style={{ width: `${(4 - index) * 25}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className={`mt-6 p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
           <div className="flex items-center justify-between">
-            <span className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              Total Pipeline Value
-            </span>
-            <span className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              ${dealArray.reduce((sum, deal) => sum + deal.value, 0).toLocaleString()}
-            </span>
+            <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Weighted</span>
+            <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Total</span>
+          </div>
+        </div>
+
+        {/* Team Overview */}
+        <div className={`mt-4 p-4 ${isDark ? 'bg-blue-500/10 border-blue-500/20' : 'bg-blue-50 border-blue-100'} rounded-lg border`}>
+          <div className="flex items-center justify-between mb-3">
+            <h4 className={`font-semibold ${isDark ? 'text-blue-300' : 'text-blue-900'} flex items-center`}>
+              <Users className="w-4 h-4 mr-2" />
+              Team Assignments
+            </h4>
+            <button className={`p-1 rounded ${isDark ? 'hover:bg-blue-500/20 text-blue-300' : 'hover:bg-blue-100 text-blue-700'}`}>
+              <MoreHorizontal className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="space-y-3">
+            {teamAssignments.map((assignment, index) => (
+              <div key={index} className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Avatar
+                    src={assignment.contact?.avatarSrc || getAvatarByIndex(index, 'executives')}
+                    alt={assignment.contact?.name || `Team Member ${index + 1}`}
+                    size="sm"
+                    fallback={getInitials(assignment.contact?.name || `Team Member ${index + 1}`)}
+                  />
+                  <span className={`text-sm font-medium ${isDark ? 'text-blue-100' : 'text-blue-800'}`}>
+                    {assignment.contact?.name || `Team Member ${index + 1}`}
+                  </span>
+                </div>
+                <span className={`text-xs ${isDark ? 'text-blue-300 bg-blue-500/30' : 'text-blue-700 bg-blue-100'} px-2 py-1 rounded`}>
+                  {assignment.taskCount} days
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
