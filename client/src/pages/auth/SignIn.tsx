@@ -37,6 +37,7 @@ export const SignIn: React.FC = () => {
     setError('');
 
     try {
+      console.log('Attempting login with:', formData);
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -45,7 +46,9 @@ export const SignIn: React.FC = () => {
         body: JSON.stringify(formData),
       });
 
+      console.log('Response status:', response.status);
       const data = await response.json();
+      console.log('Response data:', data);
 
       if (response.ok) {
         // Store user data and redirect
@@ -59,7 +62,8 @@ export const SignIn: React.FC = () => {
           navigate(returnTo);
         }
       } else {
-        setError(data.message || 'Login failed');
+        // Handle both message and error fields
+        setError(data.message || data.error || 'Login failed');
       }
     } catch (error) {
       setError('Network error. Please try again.');
@@ -118,9 +122,27 @@ export const SignIn: React.FC = () => {
               <h3 className="text-sm font-medium text-amber-800">Demo Access</h3>
               <div className="mt-2 text-sm text-amber-700">
                 <p className="mb-2">Try the platform without registration:</p>
-                <div className="space-y-1">
-                  <p><strong>Regular User:</strong> demo@example.com + any password</p>
-                  <p><strong>Super Admin:</strong> admin@company.com + any password</p>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p><strong>Regular User:</strong> demo@example.com + password123</p>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ email: 'demo@example.com', password: 'password123' })}
+                      className="text-xs px-2 py-1 bg-amber-100 text-amber-800 rounded hover:bg-amber-200 transition-colors"
+                    >
+                      Use
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p><strong>Super Admin:</strong> admin@company.com + password123</p>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ email: 'admin@company.com', password: 'password123' })}
+                      className="text-xs px-2 py-1 bg-amber-100 text-amber-800 rounded hover:bg-amber-200 transition-colors"
+                    >
+                      Use
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

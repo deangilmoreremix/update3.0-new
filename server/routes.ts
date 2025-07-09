@@ -51,7 +51,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { email, password } = req.body;
       
       if (!email || !password) {
-        return res.status(400).json({ error: "Email and password are required" });
+        return res.status(400).json({ 
+          success: false,
+          message: "Email and password are required",
+          error: "Email and password are required" 
+        });
       }
 
       // Create demo user based on email type
@@ -77,7 +81,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error('Login error:', error);
-      res.status(500).json({ error: "Login failed" });
+      res.status(500).json({ 
+        success: false,
+        message: "Login failed",
+        error: "Login failed" 
+      });
     }
   });
 
