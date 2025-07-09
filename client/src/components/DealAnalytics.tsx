@@ -20,11 +20,23 @@ interface DealAnalyticsProps {
 }
 
 const DealAnalytics: React.FC<DealAnalyticsProps> = ({ deals }) => {
-  const dealArray = Object.values(deals);
+  // Add null safety check
+  if (!deals || typeof deals !== 'object') {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Deal Analytics</h2>
+        <p className="text-gray-500">No deal data available</p>
+      </div>
+    );
+  }
+
+  const dealArray = Object.values(deals || {}).filter(deal => deal && typeof deal === 'object');
 
   // Calculate stage distribution
   const stageDistribution = dealArray.reduce((acc, deal) => {
-    acc[deal.stage] = (acc[deal.stage] || 0) + 1;
+    if (deal && deal.stage) {
+      acc[deal.stage] = (acc[deal.stage] || 0) + 1;
+    }
     return acc;
   }, {} as Record<string, number>);
 
@@ -36,7 +48,9 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({ deals }) => {
 
   // Calculate value by stage
   const valueByStage = dealArray.reduce((acc, deal) => {
-    acc[deal.stage] = (acc[deal.stage] || 0) + deal.value;
+    if (deal && deal.stage && typeof deal.value === 'number') {
+      acc[deal.stage] = (acc[deal.stage] || 0) + deal.value;
+    }
     return acc;
   }, {} as Record<string, number>);
 
@@ -47,7 +61,9 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({ deals }) => {
 
   // Calculate priority distribution
   const priorityDistribution = dealArray.reduce((acc, deal) => {
-    acc[deal.priority] = (acc[deal.priority] || 0) + 1;
+    if (deal && deal.priority) {
+      acc[deal.priority] = (acc[deal.priority] || 0) + 1;
+    }
     return acc;
   }, {} as Record<string, number>);
 
@@ -67,16 +83,25 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({ deals }) => {
   ];
 
   // Calculate analytics metrics
-  const totalValue = dealArray.reduce((sum, deal) => sum + deal.value, 0);
+  const totalValue = dealArray.reduce((sum, deal) => {
+    if (deal && typeof deal.value === 'number') {
+      return sum + deal.value;
+    }
+    return sum;
+  }, 0);
   const avgDealValue = dealArray.length > 0 ? totalValue / dealArray.length : 0;
-  const highPriorityDeals = dealArray.filter(deal => deal.priority === 'high').length;
+  const highPriorityDeals = dealArray.filter(deal => deal && deal.priority === 'high').length;
   const closingSoon = dealArray.filter(deal => {
-    if (!deal.expectedCloseDate) return false;
-    const closeDate = new Date(deal.expectedCloseDate);
-    const today = new Date();
-    const diffTime = closeDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays <= 30 && diffDays >= 0;
+    if (!deal || !deal.expectedCloseDate) return false;
+    try {
+      const closeDate = new Date(deal.expectedCloseDate);
+      const today = new Date();
+      const diffTime = closeDate.getTime() - today.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays <= 30 && diffDays >= 0;
+    } catch (error) {
+      return false;
+    }
   }).length;
 
   const COLORS = ['#3B82F6', '#F59E0B', '#8B5CF6', '#F97316', '#10B981', '#EF4444'];
