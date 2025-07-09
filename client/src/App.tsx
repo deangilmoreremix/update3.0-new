@@ -9,7 +9,6 @@ import { SignUp } from './pages/auth/SignUp';
 import SuperAdminSignup from './pages/SuperAdminSignup';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import VideoCallOverlay from './components/VideoCallOverlay';
-import VideoCallPreviewWidget from './components/VideoCallPreviewWidget';
 import { AIToolsProvider } from './components/AIToolsProvider';
 import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -427,7 +426,6 @@ function App() {
                             </Routes>
                             
                             <VideoCallOverlay />
-                            <VideoCallPreviewWidget />
                             
                             {/* ContactsModal rendered at the root level */}
                             <ContactsModal

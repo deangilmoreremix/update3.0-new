@@ -174,6 +174,15 @@ Any updates must maintain the exact visual design and component structure provid
 
 ## Recent Changes
 
+### July 9, 2025 - Video Widget Persistence Issue Resolved
+- **Video Widget Persistence Issue Fixed**: Successfully resolved the issue where VideoCallPreviewWidget was appearing on the landing page
+  - **Root Cause**: VideoCallPreviewWidget was being globally rendered at line 430 in App.tsx, causing it to appear on every page
+  - **Solution**: Removed global VideoCallPreviewWidget rendering from App.tsx and removed unused import
+  - **Result**: Video widget now only appears when explicitly triggered in CommunicationHub components
+  - **Widget Behavior**: Includes 30-second auto-close timer and manual close button (✕) to prevent persistence
+  - **Trigger Locations**: Video widget only shows when clicking "Video Call" in CommunicationHub contact sidebar or "Start Video Call" in main CommunicationHub channels tab
+  - **Status**: Video widget is now truly non-persistent and only displays when needed for video call functionality
+
 ### July 9, 2025 - Complete Netlify Page Routing Integration
 - **Netlify Contacts Page Routing Complete**: Successfully implemented routing to existing Netlify page instead of rebuilding components
   - Created NetlifyContacts.tsx component with iframe embedding for https://taupe-sprinkles-83c9ee.netlify.app
