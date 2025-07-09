@@ -3477,6 +3477,7 @@ Next Actions:
   app.get('/api/admin/features', async (req, res) => {
     try {
       const features = [
+        // Core CRM Features
         {
           id: 'contacts',
           name: 'Contact Management',
@@ -3494,14 +3495,31 @@ Next Actions:
           requiredPlan: 'basic',
         },
         {
-          id: 'ai_tools',
-          name: 'AI Tools',
-          description: 'AI-powered business analysis and insights',
-          category: 'ai',
+          id: 'tasks',
+          name: 'Task Management',
+          description: 'Task creation and tracking system',
+          category: 'core',
           isEnabled: true,
-          requiredPlan: 'professional',
-          usageLimit: 100,
+          requiredPlan: 'free',
         },
+        {
+          id: 'calendar',
+          name: 'Calendar & Appointments',
+          description: 'Calendar integration and appointment scheduling',
+          category: 'core',
+          isEnabled: true,
+          requiredPlan: 'basic',
+        },
+        {
+          id: 'dashboard',
+          name: 'Dashboard & Analytics',
+          description: 'Main dashboard with KPIs and metrics',
+          category: 'core',
+          isEnabled: true,
+          requiredPlan: 'free',
+        },
+        
+        // AI Tools - Core
         {
           id: 'email_composer',
           name: 'AI Email Composer',
@@ -3512,6 +3530,24 @@ Next Actions:
           usageLimit: 50,
         },
         {
+          id: 'email_analysis',
+          name: 'Email Analysis',
+          description: 'Extract insights and sentiment from emails',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'basic',
+          usageLimit: 100,
+        },
+        {
+          id: 'meeting_summary',
+          name: 'Meeting Summary',
+          description: 'Transform meeting transcripts into summaries',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'professional',
+          usageLimit: 30,
+        },
+        {
           id: 'smart_search',
           name: 'Smart Search',
           description: 'AI-powered semantic search across data',
@@ -3520,6 +3556,134 @@ Next Actions:
           requiredPlan: 'professional',
           usageLimit: 200,
         },
+        {
+          id: 'business_analyzer',
+          name: 'Business Analyzer',
+          description: 'Comprehensive business intelligence analysis',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'professional',
+          usageLimit: 50,
+        },
+        {
+          id: 'proposal_generator',
+          name: 'Proposal Generator',
+          description: 'Create professional sales proposals',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'professional',
+          usageLimit: 25,
+        },
+        {
+          id: 'call_script',
+          name: 'Call Script Generator',
+          description: 'Generate personalized call scripts',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'basic',
+          usageLimit: 75,
+        },
+        {
+          id: 'subject_optimizer',
+          name: 'Subject Line Optimizer',
+          description: 'Optimize email subject lines for better open rates',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'basic',
+          usageLimit: 100,
+        },
+        {
+          id: 'competitor_analysis',
+          name: 'Competitor Analysis',
+          description: 'Analyze competitors and market positioning',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'professional',
+          usageLimit: 20,
+        },
+        {
+          id: 'customer_persona',
+          name: 'Customer Persona',
+          description: 'Generate detailed customer personas',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'professional',
+          usageLimit: 40,
+        },
+        {
+          id: 'objection_handler',
+          name: 'Objection Handler',
+          description: 'AI-powered sales objection responses',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'professional',
+          usageLimit: 60,
+        },
+        {
+          id: 'market_analysis',
+          name: 'Market Analysis',
+          description: 'Comprehensive market research and trends',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'professional',
+          usageLimit: 30,
+        },
+        {
+          id: 'content_creator',
+          name: 'Content Creator',
+          description: 'Generate marketing content and copy',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'basic',
+          usageLimit: 80,
+        },
+        {
+          id: 'document_analyzer',
+          name: 'Document Analyzer',
+          description: 'AI-powered document analysis and extraction',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'professional',
+          usageLimit: 50,
+        },
+        {
+          id: 'voice_analysis',
+          name: 'Voice Analysis',
+          description: 'Real-time call analysis and insights',
+          category: 'ai',
+          isEnabled: false,
+          requiredPlan: 'enterprise',
+          usageLimit: 100,
+        },
+        {
+          id: 'image_generator',
+          name: 'Image Generator',
+          description: 'AI-powered image generation for marketing',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'professional',
+          usageLimit: 20,
+        },
+        {
+          id: 'vision_analyzer',
+          name: 'Vision Analyzer',
+          description: 'Analyze and extract insights from images',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'professional',
+          usageLimit: 30,
+        },
+        {
+          id: 'meeting_agenda',
+          name: 'Meeting Agenda',
+          description: 'Generate structured meeting agendas',
+          category: 'ai',
+          isEnabled: true,
+          requiredPlan: 'basic',
+          usageLimit: 50,
+        },
+        
+        // Communication Features
         {
           id: 'phone_system',
           name: 'Phone System',
@@ -3538,6 +3702,34 @@ Next Actions:
           usageLimit: 1000,
         },
         {
+          id: 'video_email',
+          name: 'Video Email',
+          description: 'Personalized video messaging',
+          category: 'communication',
+          isEnabled: true,
+          requiredPlan: 'professional',
+          usageLimit: 50,
+        },
+        {
+          id: 'email_campaigns',
+          name: 'Email Campaigns',
+          description: 'Bulk email marketing campaigns',
+          category: 'communication',
+          isEnabled: true,
+          requiredPlan: 'basic',
+          usageLimit: 500,
+        },
+        {
+          id: 'chat_widget',
+          name: 'Chat Widget',
+          description: 'Website chat integration',
+          category: 'communication',
+          isEnabled: false,
+          requiredPlan: 'professional',
+        },
+        
+        // Analytics Features
+        {
           id: 'advanced_analytics',
           name: 'Advanced Analytics',
           description: 'Business intelligence and reporting',
@@ -3545,6 +3737,32 @@ Next Actions:
           isEnabled: true,
           requiredPlan: 'professional',
         },
+        {
+          id: 'sales_forecasting',
+          name: 'Sales Forecasting',
+          description: 'AI-powered sales predictions',
+          category: 'analytics',
+          isEnabled: true,
+          requiredPlan: 'professional',
+        },
+        {
+          id: 'performance_tracking',
+          name: 'Performance Tracking',
+          description: 'Team and individual performance metrics',
+          category: 'analytics',
+          isEnabled: true,
+          requiredPlan: 'basic',
+        },
+        {
+          id: 'conversion_analytics',
+          name: 'Conversion Analytics',
+          description: 'Track conversion rates and pipeline metrics',
+          category: 'analytics',
+          isEnabled: true,
+          requiredPlan: 'professional',
+        },
+        
+        // Integration Features
         {
           id: 'api_access',
           name: 'API Access',
@@ -3560,6 +3778,30 @@ Next Actions:
           category: 'integration',
           isEnabled: false,
           requiredPlan: 'enterprise',
+        },
+        {
+          id: 'webhook_support',
+          name: 'Webhook Support',
+          description: 'Real-time event notifications',
+          category: 'integration',
+          isEnabled: false,
+          requiredPlan: 'enterprise',
+        },
+        {
+          id: 'crm_integrations',
+          name: 'CRM Integrations',
+          description: 'Connect with external CRM systems',
+          category: 'integration',
+          isEnabled: false,
+          requiredPlan: 'professional',
+        },
+        {
+          id: 'calendar_sync',
+          name: 'Calendar Sync',
+          description: 'Sync with Google/Outlook calendars',
+          category: 'integration',
+          isEnabled: true,
+          requiredPlan: 'basic',
         }
       ];
 
@@ -3578,6 +3820,24 @@ Next Actions:
     } catch (error) {
       console.error('Error toggling feature:', error);
       res.status(500).json({ message: 'Failed to toggle feature' });
+    }
+  });
+
+  app.post('/api/admin/features/bulk-toggle', async (req, res) => {
+    try {
+      const { action, category } = req.body; // action: 'enable' | 'disable', category: optional filter
+      console.log(`Bulk ${action} features${category ? ` in category: ${category}` : ''}`);
+      
+      // In a real implementation, you would update the database
+      // For now, we'll just return success
+      const message = category 
+        ? `All ${category} features ${action}d successfully`
+        : `All features ${action}d successfully`;
+      
+      res.json({ message, success: true });
+    } catch (error) {
+      console.error('Error bulk toggling features:', error);
+      res.status(500).json({ message: 'Failed to bulk toggle features' });
     }
   });
 

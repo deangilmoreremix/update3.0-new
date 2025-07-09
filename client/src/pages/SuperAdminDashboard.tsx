@@ -11,7 +11,10 @@ import {
   Toggle, CheckCircle, XCircle, AlertTriangle, Plus,
   Search, Filter, Download, Upload, Mail, Eye, EyeOff,
   Zap, Target, Brain, Phone, MessageSquare, Calendar,
-  FileText, TrendingUp, DollarSign, Globe, Lock
+  FileText, TrendingUp, DollarSign, Globe, Lock, Power,
+  PowerOff, ToggleLeft, ToggleRight, Image, Video, Mic,
+  Headphones, Play, Pause, RefreshCw, CheckSquare,
+  Square, Filter as FilterIcon, ArrowUpDown, MoreHorizontal
 } from 'lucide-react';
 
 interface User {
@@ -62,7 +65,7 @@ const SuperAdminDashboard: React.FC = () => {
     }
   }, [user]);
 
-  // Map category to icon
+  // Map category to icon and get specific feature icons
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'core':
@@ -80,6 +83,59 @@ const SuperAdminDashboard: React.FC = () => {
     }
   };
 
+  const getFeatureIcon = (featureId: string, category: string) => {
+    const featureIconMap: { [key: string]: React.ComponentType<any> } = {
+      // Core Features
+      'contacts': Users,
+      'deals': DollarSign,
+      'tasks': CheckSquare,
+      'calendar': Calendar,
+      'dashboard': BarChart3,
+      
+      // AI Features
+      'email_composer': Mail,
+      'email_analysis': BarChart3,
+      'meeting_summary': MessageSquare,
+      'smart_search': Search,
+      'business_analyzer': TrendingUp,
+      'proposal_generator': FileText,
+      'call_script': Phone,
+      'subject_optimizer': Zap,
+      'competitor_analysis': Shield,
+      'customer_persona': Target,
+      'objection_handler': MessageSquare,
+      'market_analysis': Globe,
+      'content_creator': FileText,
+      'document_analyzer': FileText,
+      'voice_analysis': Mic,
+      'image_generator': Image,
+      'vision_analyzer': Eye,
+      'meeting_agenda': Calendar,
+      
+      // Communication Features
+      'phone_system': Phone,
+      'sms_messaging': MessageSquare,
+      'video_email': Video,
+      'email_campaigns': Mail,
+      'chat_widget': MessageSquare,
+      
+      // Analytics Features
+      'advanced_analytics': BarChart3,
+      'sales_forecasting': TrendingUp,
+      'performance_tracking': BarChart3,
+      'conversion_analytics': TrendingUp,
+      
+      // Integration Features
+      'api_access': Settings,
+      'white_label': Settings,
+      'webhook_support': Zap,
+      'crm_integrations': Database,
+      'calendar_sync': Calendar,
+    };
+    
+    return featureIconMap[featureId] || getCategoryIcon(category);
+  };
+
   const loadDashboardData = async () => {
     try {
       // Load users
@@ -90,10 +146,10 @@ const SuperAdminDashboard: React.FC = () => {
       // Load features
       const featuresResponse = await fetch('/api/admin/features');
       const featuresData = await featuresResponse.json();
-      // Add icon property to features
+      // Add icon property to features using specific feature icons
       const featuresWithIcons = featuresData.map((feature: any) => ({
         ...feature,
-        icon: getCategoryIcon(feature.category)
+        icon: getFeatureIcon(feature.id, feature.category)
       }));
       setFeatures(featuresWithIcons);
 
@@ -101,6 +157,31 @@ const SuperAdminDashboard: React.FC = () => {
     } catch (error) {
       console.error('Error loading dashboard data:', error);
       setLoading(false);
+    }
+  };
+
+  // Bulk toggle functionality
+  const handleBulkToggle = async (action: 'enable' | 'disable', category?: string) => {
+    try {
+      const response = await fetch('/api/admin/features/bulk-toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, category })
+      });
+      
+      if (response.ok) {
+        // Update local state
+        setFeatures(prev => prev.map(feature => 
+          (!category || feature.category === category) 
+            ? { ...feature, isEnabled: action === 'enable' }
+            : feature
+        ));
+        
+        // Show success message (you could add toast notification here)
+        console.log(`${action} ${category ? `${category} features` : 'all features'} successfully`);
+      }
+    } catch (error) {
+      console.error('Error bulk toggling features:', error);
     }
   };
 
@@ -550,10 +631,110 @@ const SuperAdminDashboard: React.FC = () => {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-gray-900">Feature Management</h2>
-              <ModernButton variant="outline" className="flex items-center space-x-2">
-                <Download className="w-4 h-4" />
-                <span>Export Config</span>
-              </ModernButton>
+              <div className="flex items-center space-x-3">
+                <ModernButton variant="outline" className="flex items-center space-x-2">
+                  <Download className="w-4 h-4" />
+                  <span>Export Config</span>
+                </ModernButton>
+              </div>
+            </div>
+
+            {/* Bulk Actions */}
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-medium text-gray-900">Bulk Actions</h3>
+                <div className="text-sm text-gray-600">
+                  {features.length} total features • {features.filter(f => f.isEnabled).length} enabled
+                </div>
+              </div>
+              
+              <div className="flex flex-wrap gap-2">
+                {/* Global Actions */}
+                <ModernButton 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => handleBulkToggle('enable')}
+                  className="flex items-center space-x-2"
+                >
+                  <Power className="w-4 h-4 text-green-600" />
+                  <span>Enable All</span>
+                </ModernButton>
+                
+                <ModernButton 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => handleBulkToggle('disable')}
+                  className="flex items-center space-x-2"
+                >
+                  <PowerOff className="w-4 h-4 text-red-600" />
+                  <span>Disable All</span>
+                </ModernButton>
+                
+                {/* Category Actions */}
+                <div className="border-l pl-2 ml-2">
+                  <ModernButton 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleBulkToggle('enable', 'ai')}
+                    className="flex items-center space-x-2"
+                  >
+                    <Brain className="w-4 h-4 text-purple-600" />
+                    <span>Enable AI Tools</span>
+                  </ModernButton>
+                  
+                  <ModernButton 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleBulkToggle('disable', 'ai')}
+                    className="flex items-center space-x-2 ml-2"
+                  >
+                    <Brain className="w-4 h-4 text-gray-400" />
+                    <span>Disable AI Tools</span>
+                  </ModernButton>
+                </div>
+                
+                <div className="border-l pl-2 ml-2">
+                  <ModernButton 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleBulkToggle('enable', 'communication')}
+                    className="flex items-center space-x-2"
+                  >
+                    <MessageSquare className="w-4 h-4 text-green-600" />
+                    <span>Enable Communication</span>
+                  </ModernButton>
+                  
+                  <ModernButton 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleBulkToggle('disable', 'communication')}
+                    className="flex items-center space-x-2 ml-2"
+                  >
+                    <MessageSquare className="w-4 h-4 text-gray-400" />
+                    <span>Disable Communication</span>
+                  </ModernButton>
+                </div>
+              </div>
+            </div>
+
+            {/* Category Filter */}
+            <div className="flex items-center space-x-4">
+              <span className="text-sm font-medium text-gray-700">Filter by Category:</span>
+              <div className="flex space-x-2">
+                {['all', 'core', 'ai', 'communication', 'analytics', 'integration'].map(category => (
+                  <button
+                    key={category}
+                    onClick={() => setFilterRole(category)}
+                    className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                      filterRole === category
+                        ? 'bg-blue-100 text-blue-700 border border-blue-300'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {category === 'all' ? 'All' : category.charAt(0).toUpperCase() + category.slice(1)}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
