@@ -23,6 +23,8 @@ interface DashboardLayoutContextType {
   getSectionConfig: (id: string) => SectionConfig | undefined;
   reorderSections: (startIndex: number, endIndex: number) => void;
   resetToDefault: () => void;
+  isDragModeEnabled: boolean;
+  setDragModeEnabled: (enabled: boolean) => void;
 }
 
 const DashboardLayoutContext = createContext<DashboardLayoutContextType | undefined>(undefined);
@@ -208,6 +210,7 @@ export const DashboardLayoutProvider: React.FC<{ children: React.ReactNode }> = 
   
   const [isDragging, setIsDragging] = useState(false);
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  const [isDragModeEnabled, setDragModeEnabled] = useState(false);
 
   // Save to localStorage whenever order changes
   useEffect(() => {
@@ -262,7 +265,9 @@ export const DashboardLayoutProvider: React.FC<{ children: React.ReactNode }> = 
       setDraggedItem,
       getSectionConfig,
       reorderSections,
-      resetToDefault
+      resetToDefault,
+      isDragModeEnabled,
+      setDragModeEnabled
     }}>
       {children}
     </DashboardLayoutContext.Provider>

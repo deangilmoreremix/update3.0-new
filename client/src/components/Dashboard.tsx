@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
   const { appointments } = useAppointmentStore();
   const { openTool } = useAITools();
   const { isDark } = useTheme();
-  const { sectionOrder, reorderSections } = useDashboardLayout();
+  const { sectionOrder, reorderSections, isDragModeEnabled } = useDashboardLayout();
   
   const gemini = useGemini();
   
@@ -50,6 +50,8 @@ const Dashboard: React.FC = () => {
   
   // Handle drag end
   const handleDragEnd = (result: DropResult) => {
+    console.log('Drag ended:', result);
+    
     if (!result.destination) {
       return;
     }
@@ -93,15 +95,27 @@ const Dashboard: React.FC = () => {
     <main className="w-full h-full overflow-y-auto max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
       {/* Dashboard Layout Controls */}
       <DashboardLayoutControls />
+      
+      {/* Drag Mode Indicator */}
+      {isDragModeEnabled && (
+        <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg text-center">
+          <p className={`text-sm ${isDark ? 'text-blue-300' : 'text-blue-700'}`}>
+            🔄 <strong>Drag Mode Active:</strong> Drag sections by their handles to reorder your dashboard
+          </p>
+        </div>
+      )}
 
       {/* Draggable Sections */}
-      <DragDropContext onDragEnd={handleDragEnd}>
+      <DragDropContext 
+        onDragEnd={handleDragEnd}
+        onDragStart={() => console.log('Drag started!')}
+      >
         <Droppable droppableId="dashboard-sections">
           {(provided) => (
             <div 
               ref={provided.innerRef}
               {...provided.droppableProps}
-              className="space-y-8 pb-20"
+              className={`space-y-8 pb-20 ${isDragModeEnabled ? 'pl-12' : ''}`}
             >
               {sectionOrder.map((sectionId, index) => (
                 <DraggableSection

@@ -18,12 +18,13 @@ const DashboardLayoutControls: React.FC = () => {
     sectionOrder, 
     setSectionOrder, 
     resetToDefault, 
-    getSectionConfig 
+    getSectionConfig,
+    isDragModeEnabled,
+    setDragModeEnabled
   } = useDashboardLayout();
   
   const { isDark } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
 
   const handleSectionToggle = (sectionId: string, enabled: boolean) => {
     if (enabled) {
@@ -94,7 +95,7 @@ const DashboardLayoutControls: React.FC = () => {
             {/* Quick Actions */}
             <div className="space-y-3 mb-4">
               <button
-                onClick={() => setShowPreview(!showPreview)}
+                onClick={() => setDragModeEnabled(!isDragModeEnabled)}
                 className={`w-full flex items-center justify-between p-3 rounded-lg ${
                   isDark 
                     ? 'bg-blue-500/20 hover:bg-blue-500/30 text-blue-400' 
@@ -106,11 +107,11 @@ const DashboardLayoutControls: React.FC = () => {
                   <span className="text-sm font-medium">Drag & Drop Mode</span>
                 </div>
                 <div className={`w-5 h-5 rounded border-2 ${
-                  showPreview 
+                  isDragModeEnabled 
                     ? 'bg-blue-500 border-blue-500' 
                     : `border-gray-400 ${isDark ? 'dark:border-gray-600' : ''}`
                 } flex items-center justify-center`}>
-                  {showPreview && <Check size={12} className="text-white" />}
+                  {isDragModeEnabled && <Check size={12} className="text-white" />}
                 </div>
               </button>
 
@@ -177,7 +178,7 @@ const DashboardLayoutControls: React.FC = () => {
             </div>
 
             {/* Section Order Preview */}
-            {showPreview && (
+            {isDragModeEnabled && (
               <div className="border-t border-gray-200 dark:border-white/10 pt-4 mt-4">
                 <h4 className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'} mb-3`}>
                   Current Order
