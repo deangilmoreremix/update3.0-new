@@ -244,7 +244,7 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
                 loading={upgrading}
                 className="flex items-center space-x-2"
               >
-                <span>Upgrade to {plans[selectedPlan as keyof typeof plans].name}</span>
+                <span>Upgrade to {plans[selectedPlan as keyof typeof plans]?.name || selectedPlan}</span>
                 <ArrowRight className="w-4 h-4" />
               </ModernButton>
             </div>
