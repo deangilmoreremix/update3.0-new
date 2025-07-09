@@ -383,11 +383,31 @@ const Contacts: React.FC = () => {
     }),
     columnHelper.accessor('lastContact', {
       header: 'Last Contact',
-      cell: (info) => (
-        <span className="text-sm text-gray-500">
-          {info.getValue()?.toLocaleDateString() || 'N/A'}
-        </span>
-      )
+      cell: (info) => {
+        const lastContact = info.getValue();
+        let displayDate = 'N/A';
+        
+        if (lastContact) {
+          if (typeof lastContact === 'string') {
+            // If it's a string, try to parse it as a date
+            const dateObj = new Date(lastContact);
+            if (!isNaN(dateObj.getTime())) {
+              displayDate = dateObj.toLocaleDateString();
+            } else {
+              // If it's not a valid date string, display as is
+              displayDate = lastContact;
+            }
+          } else if (lastContact instanceof Date) {
+            displayDate = lastContact.toLocaleDateString();
+          }
+        }
+        
+        return (
+          <span className="text-sm text-gray-500">
+            {displayDate}
+          </span>
+        );
+      }
     }),
     columnHelper.accessor('industry', {
       header: 'Industry',
@@ -427,19 +447,36 @@ const Contacts: React.FC = () => {
 
   // Set up export data for CSV
   const exportData = useMemo(() => 
-    contacts.map(contact => ({
-      Name: contact.name,
-      Email: contact.email,
-      Phone: contact.phone,
-      Company: contact.company,
-      Position: contact.position,
-      Status: contact.status,
-      Score: contact.score,
-      LastContact: contact.lastContact ? contact.lastContact.toLocaleDateString() : '',
-      Industry: contact.industry,
-      Location: contact.location,
-      Notes: contact.notes
-    })),
+    contacts.map(contact => {
+      // Handle lastContact formatting safely
+      let lastContactFormatted = '';
+      if (contact.lastContact) {
+        if (typeof contact.lastContact === 'string') {
+          const dateObj = new Date(contact.lastContact);
+          if (!isNaN(dateObj.getTime())) {
+            lastContactFormatted = dateObj.toLocaleDateString();
+          } else {
+            lastContactFormatted = contact.lastContact;
+          }
+        } else if (contact.lastContact instanceof Date) {
+          lastContactFormatted = contact.lastContact.toLocaleDateString();
+        }
+      }
+      
+      return {
+        Name: contact.name,
+        Email: contact.email,
+        Phone: contact.phone,
+        Company: contact.company,
+        Position: contact.position,
+        Status: contact.status,
+        Score: contact.score,
+        LastContact: lastContactFormatted,
+        Industry: contact.industry,
+        Location: contact.location,
+        Notes: contact.notes
+      };
+    }),
   [contacts]);
 
   const csvHeaders = [
