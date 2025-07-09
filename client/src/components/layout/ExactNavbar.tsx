@@ -191,7 +191,7 @@ const Navbar = () => {
       label: 'Contacts',
       icon: Users,
       action: () => handleNavigation('/contacts', 'contacts'),
-      badge: counters.hotContacts,
+      badge: 1,
       color: 'from-purple-500 to-indigo-500'
     },
     {
@@ -215,7 +215,7 @@ const Navbar = () => {
       label: 'Calendar',
       icon: Calendar,
       action: () => handleNavigation('/appointments', 'appointments'),
-      badge: counters.todayAppointments,
+      badge: 1,
       color: 'from-cyan-500 to-blue-500'
     }
   ];
