@@ -159,6 +159,8 @@ Smart CRM is a modern AI-powered customer relationship management platform built
 
 Preferred communication style: Simple, everyday language.
 
+**CRITICAL CODING REQUIREMENT**: Always use user's exact code from design snippets without any modifications, enhancements, or custom styling. When provided with exact code in attached files, implement it precisely as written with zero changes. Do not interpret, optimize, or add functionality - use the exact code structure, class names, and styling as provided.
+
 ## Design Preservation Requirements
 
 **CRITICAL**: The AI Goals page and InteractiveGoalCard designs are finalized and must NOT be changed:

@@ -101,16 +101,6 @@ const ActivitiesCommunications: React.FC = () => {
           <RecentActivity />
         </div>
       </div>
-      
-      {/* Tasks and Funnel Section */}
-      <div className="mb-6">
-        <TasksAndFunnel />
-      </div>
-      
-      {/* Recent Activity */}
-      <div className="mb-6">
-        <RecentActivity />
-      </div>
     </div>
   );
 };
