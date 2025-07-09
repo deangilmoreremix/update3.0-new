@@ -66,6 +66,9 @@ export class AuthService {
 
   // Remove password from user object for response
   private sanitizeUser(user: User): Omit<User, 'password'> {
+    if (!user) {
+      throw new Error('User is required for sanitization');
+    }
     const { password, ...sanitizedUser } = user;
     return sanitizedUser;
   }
@@ -92,13 +95,12 @@ export class AuthService {
       }
 
       // Check if user already exists
-      const existingUser = await db
+      const existingUserResult = await db
         .select()
         .from(users)
-        .where(eq(users.email, email))
-        .limit(1);
+        .where(eq(users.email, email));
 
-      if (existingUser.length > 0) {
+      if (existingUserResult.length > 0) {
         return {
           success: false,
           error: 'User already exists with this email'
@@ -160,6 +162,7 @@ export class AuthService {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
       const { email, password } = credentials;
+      console.log('Login attempt for:', email);
 
       // Validation
       if (!email || !password) {
@@ -170,21 +173,27 @@ export class AuthService {
       }
 
       // Find user by email
-      const [user] = await db
+      const userResult = await db
         .select()
         .from(users)
-        .where(eq(users.email, email))
-        .limit(1);
+        .where(eq(users.email, email));
+      
+      console.log('User query result:', userResult.length);
+      const user = userResult[0];
 
       if (!user) {
+        console.log('No user found with email:', email);
         return {
           success: false,
           error: 'Invalid email or password'
         };
       }
 
+      console.log('Found user:', user.id, 'with role:', user.role);
+
       // Check account status
       if (user.accountStatus !== 'active') {
+        console.log('Account inactive for user:', email);
         return {
           success: false,
           error: 'Account is suspended or inactive'
@@ -193,14 +202,19 @@ export class AuthService {
 
       // Verify password
       if (!user.password) {
+        console.log('No password set for user:', email);
         return {
           success: false,
           error: 'Password authentication not available for this account'
         };
       }
 
+      console.log('Verifying password...');
       const isPasswordValid = await this.verifyPassword(password, user.password);
+      console.log('Password valid:', isPasswordValid);
+      
       if (!isPasswordValid) {
+        console.log('Invalid password for user:', email);
         return {
           success: false,
           error: 'Invalid email or password'
@@ -239,12 +253,12 @@ export class AuthService {
   // Get user by ID
   async getUserById(userId: string): Promise<Omit<User, 'password'> | null> {
     try {
-      const [user] = await db
+      const userResult = await db
         .select()
         .from(users)
-        .where(eq(users.id, userId))
-        .limit(1);
-
+        .where(eq(users.id, userId));
+      
+      const user = userResult[0];
       return user ? this.sanitizeUser(user) : null;
     } catch (error) {
       console.error('Get user error:', error);
@@ -255,12 +269,12 @@ export class AuthService {
   // Get user by email
   async getUserByEmail(email: string): Promise<Omit<User, 'password'> | null> {
     try {
-      const [user] = await db
+      const userResult = await db
         .select()
         .from(users)
-        .where(eq(users.email, email))
-        .limit(1);
-
+        .where(eq(users.email, email));
+      
+      const user = userResult[0];
       return user ? this.sanitizeUser(user) : null;
     } catch (error) {
       console.error('Get user by email error:', error);
@@ -296,11 +310,12 @@ export class AuthService {
   async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<AuthResponse> {
     try {
       // Get user with current password
-      const [user] = await db
+      const userResult = await db
         .select()
         .from(users)
-        .where(eq(users.id, userId))
-        .limit(1);
+        .where(eq(users.id, userId));
+      
+      const user = userResult[0];
 
       if (!user || !user.password) {
         return {

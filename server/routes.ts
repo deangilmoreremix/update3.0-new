@@ -53,6 +53,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/login", async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
+      console.log('Login route called with email:', email);
       
       if (!email || !password) {
         return res.status(400).json({ 
@@ -64,6 +65,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Use real database authentication
       const result = await authService.login({ email, password });
+      console.log('Auth service result:', result.success);
       
       if (result.success) {
         res.json({
