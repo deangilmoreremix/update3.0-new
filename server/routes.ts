@@ -3546,13 +3546,24 @@ Next Actions:
         
         // Apps & Integration Group
         {
-          id: 'integration_features',
+          id: 'apps_integration',
           name: 'Apps & Integration',
-          description: 'Third-party integrations, API access, webhooks, custom integrations',
+          description: 'Third-party app integrations, API access, webhooks, CRM connections, calendar sync, Zapier integration',
           category: 'integration',
           isEnabled: false,
+          requiredPlan: 'professional',
+          toolCount: 8,
+        },
+        
+        // White Label Features
+        {
+          id: 'white_label',
+          name: 'White Label Access',
+          description: 'Custom branding, domain configuration, reseller portal, multi-tenant management, white-label deployment',
+          category: 'whitelabel',
+          isEnabled: false,
           requiredPlan: 'enterprise',
-          toolCount: 3,
+          toolCount: 5,
         },
         
         // Admin Features

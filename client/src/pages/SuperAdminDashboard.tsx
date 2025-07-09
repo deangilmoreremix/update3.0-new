@@ -694,7 +694,7 @@ const SuperAdminDashboard: React.FC = () => {
             <div className="flex items-center space-x-4">
               <span className="text-sm font-medium text-gray-700">Filter by Category:</span>
               <div className="flex flex-wrap gap-2">
-                {['all', 'core', 'sales', 'communication', 'ai', 'productivity', 'content', 'analytics', 'integration', 'admin'].map(category => (
+                {['all', 'core', 'sales', 'communication', 'ai', 'productivity', 'content', 'analytics', 'integration', 'whitelabel', 'admin'].map(category => (
                   <button
                     key={category}
                     onClick={() => setFilterRole(category)}
@@ -726,6 +726,7 @@ const SuperAdminDashboard: React.FC = () => {
                         feature.category === 'productivity' ? 'bg-yellow-100 text-yellow-600' :
                         feature.category === 'content' ? 'bg-indigo-100 text-indigo-600' :
                         feature.category === 'integration' ? 'bg-pink-100 text-pink-600' :
+                        feature.category === 'whitelabel' ? 'bg-cyan-100 text-cyan-600' :
                         feature.category === 'admin' ? 'bg-red-100 text-red-600' :
                         'bg-gray-100 text-gray-600'
                       }`}>

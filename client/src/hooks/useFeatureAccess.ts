@@ -38,9 +38,10 @@ export const useFeatureAccess = () => {
       // Professional plan features
       'ai_tools': 'professional',
       'analytics': 'professional',
+      'apps_integration': 'professional',
       
       // Enterprise features
-      'integration_features': 'enterprise',
+      'white_label': 'enterprise',
       'admin_features': 'enterprise',
     };
 

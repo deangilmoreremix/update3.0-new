@@ -200,6 +200,24 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
                   <li>• Communication hub and tracking</li>
                 </>
               )}
+              {featureName === 'Apps & Integration' && (
+                <>
+                  <li>• 8+ third-party app integrations</li>
+                  <li>• API access and webhook configuration</li>
+                  <li>• CRM connections and data sync</li>
+                  <li>• Calendar integration and automation</li>
+                  <li>• Zapier and custom integrations</li>
+                </>
+              )}
+              {featureName === 'White Label Access' && (
+                <>
+                  <li>• Custom branding and domain configuration</li>
+                  <li>• Reseller portal and multi-tenant management</li>
+                  <li>• White-label deployment capabilities</li>
+                  <li>• Custom logo and color scheme</li>
+                  <li>• Client management and billing tools</li>
+                </>
+              )}
             </ul>
           </div>
 
