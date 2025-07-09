@@ -389,6 +389,209 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // White Label Branding Configuration Routes
+  app.get("/api/white-label/tenants/:tenantId/branding", async (req: Request, res: Response) => {
+    try {
+      const { tenantId } = req.params;
+      
+      // Mock branding configuration for demo
+      const brandingConfig = {
+        primaryColor: '#3B82F6',
+        secondaryColor: '#1E40AF',
+        accentColor: '#10B981',
+        backgroundColor: '#FFFFFF',
+        textColor: '#1F2937',
+        companyName: 'Demo Company',
+        tagline: 'Your trusted CRM solution',
+        domains: [
+          {
+            id: '1',
+            domain: 'demo.example.com',
+            type: 'primary',
+            isActive: true,
+            sslStatus: 'active'
+          },
+          {
+            id: '2',
+            domain: 'sales.example.com',
+            type: 'sales',
+            isActive: true,
+            sslStatus: 'active',
+            customSettings: {
+              analyticsId: 'UA-123456-1',
+              conversionTracking: 'GTM-ABC123'
+            }
+          }
+        ],
+        salesPages: [
+          {
+            id: '1',
+            name: 'Main Sales Page',
+            template: 'modern',
+            domain: 'sales.example.com',
+            headline: 'Transform Your Business Today',
+            subheadline: 'Discover the power of our AI-driven CRM',
+            ctaText: 'Get Started Now',
+            ctaColor: '#10B981',
+            features: ['AI-powered insights', 'Multi-domain support', 'Custom branding'],
+            testimonials: [],
+            pricing: [],
+            isActive: true
+          }
+        ],
+        loginPageConfig: {
+          backgroundImage: null,
+          welcomeMessage: 'Welcome to your CRM',
+          supportEmail: 'support@demo.com'
+        },
+        emailConfig: {
+          fromName: 'Demo Company',
+          replyToEmail: 'noreply@demo.com',
+          emailSignature: 'Best regards,\nDemo Company Team'
+        },
+        features: {
+          showPoweredBy: true,
+          customFavicon: false,
+          customEmailTemplates: false,
+          advancedBranding: false,
+          whiteLabel: false,
+          multiDomain: true,
+          salesPageBuilder: true
+        }
+      };
+      
+      res.json(brandingConfig);
+    } catch (error) {
+      console.error("Error fetching branding config:", error);
+      res.status(500).json({ error: "Failed to fetch branding configuration" });
+    }
+  });
+
+  app.put("/api/white-label/tenants/:tenantId/branding", async (req: Request, res: Response) => {
+    try {
+      const { tenantId } = req.params;
+      const brandingConfig = req.body;
+      
+      // In a real implementation, you would save this to database
+      console.log(`Updating branding config for tenant ${tenantId}:`, brandingConfig);
+      
+      res.json({ success: true, message: "Branding configuration updated successfully" });
+    } catch (error) {
+      console.error("Error updating branding config:", error);
+      res.status(500).json({ error: "Failed to update branding configuration" });
+    }
+  });
+
+  // Domain Management Routes
+  app.post("/api/white-label/tenants/:tenantId/domains", async (req: Request, res: Response) => {
+    try {
+      const { tenantId } = req.params;
+      const domainData = req.body;
+      
+      // Mock domain creation
+      const newDomain = {
+        id: Date.now().toString(),
+        ...domainData,
+        sslStatus: 'pending',
+        isActive: false
+      };
+      
+      console.log(`Creating domain for tenant ${tenantId}:`, newDomain);
+      res.json(newDomain);
+    } catch (error) {
+      console.error("Error creating domain:", error);
+      res.status(500).json({ error: "Failed to create domain" });
+    }
+  });
+
+  app.put("/api/white-label/tenants/:tenantId/domains/:domainId", async (req: Request, res: Response) => {
+    try {
+      const { tenantId, domainId } = req.params;
+      const updates = req.body;
+      
+      console.log(`Updating domain ${domainId} for tenant ${tenantId}:`, updates);
+      res.json({ success: true, message: "Domain updated successfully" });
+    } catch (error) {
+      console.error("Error updating domain:", error);
+      res.status(500).json({ error: "Failed to update domain" });
+    }
+  });
+
+  app.delete("/api/white-label/tenants/:tenantId/domains/:domainId", async (req: Request, res: Response) => {
+    try {
+      const { tenantId, domainId } = req.params;
+      
+      console.log(`Deleting domain ${domainId} for tenant ${tenantId}`);
+      res.json({ success: true, message: "Domain deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting domain:", error);
+      res.status(500).json({ error: "Failed to delete domain" });
+    }
+  });
+
+  // Sales Page Management Routes
+  app.post("/api/white-label/tenants/:tenantId/sales-pages", async (req: Request, res: Response) => {
+    try {
+      const { tenantId } = req.params;
+      const salesPageData = req.body;
+      
+      // Mock sales page creation
+      const newSalesPage = {
+        id: Date.now().toString(),
+        ...salesPageData,
+        isActive: false
+      };
+      
+      console.log(`Creating sales page for tenant ${tenantId}:`, newSalesPage);
+      res.json(newSalesPage);
+    } catch (error) {
+      console.error("Error creating sales page:", error);
+      res.status(500).json({ error: "Failed to create sales page" });
+    }
+  });
+
+  app.put("/api/white-label/tenants/:tenantId/sales-pages/:pageId", async (req: Request, res: Response) => {
+    try {
+      const { tenantId, pageId } = req.params;
+      const updates = req.body;
+      
+      console.log(`Updating sales page ${pageId} for tenant ${tenantId}:`, updates);
+      res.json({ success: true, message: "Sales page updated successfully" });
+    } catch (error) {
+      console.error("Error updating sales page:", error);
+      res.status(500).json({ error: "Failed to update sales page" });
+    }
+  });
+
+  app.delete("/api/white-label/tenants/:tenantId/sales-pages/:pageId", async (req: Request, res: Response) => {
+    try {
+      const { tenantId, pageId } = req.params;
+      
+      console.log(`Deleting sales page ${pageId} for tenant ${tenantId}`);
+      res.json({ success: true, message: "Sales page deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting sales page:", error);
+      res.status(500).json({ error: "Failed to delete sales page" });
+    }
+  });
+
+  // File Upload Route for White Label Assets
+  app.post("/api/white-label/upload", async (req: Request, res: Response) => {
+    try {
+      // Mock file upload - in production, this would handle actual file uploads
+      const mockUrl = `https://demo-assets.example.com/uploads/${Date.now()}.jpg`;
+      
+      res.json({ 
+        success: true, 
+        url: mockUrl,
+        message: "File uploaded successfully" 
+      });
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      res.status(500).json({ error: "Failed to upload file" });
+    }
+  });
+
   // Phase 2: Partner Management Routes
   app.post("/api/partners/onboard", async (req: Request, res: Response) => {
     try {

@@ -1,7 +1,36 @@
 import { useState, useEffect } from 'react';
-import { Palette, Upload, Eye, Save, RotateCcw, Sparkles, Globe, Code, Monitor, Mail } from 'lucide-react';
+import { Palette, Upload, Eye, Save, RotateCcw, Sparkles, Globe, Code, Monitor, Mail, Plus, Trash2, ExternalLink, Settings, ShoppingCart, Edit } from 'lucide-react';
 import { useTenant } from '../components/TenantProvider';
 import { ConditionalRender } from '../components/RoleBasedAccess';
+
+interface DomainConfig {
+  id: string;
+  domain: string;
+  type: 'primary' | 'sales' | 'support' | 'custom';
+  isActive: boolean;
+  sslStatus: 'pending' | 'active' | 'failed';
+  salesPageTemplate?: string;
+  customSettings?: {
+    redirectUrl?: string;
+    analyticsId?: string;
+    conversionTracking?: string;
+  };
+}
+
+interface SalesPageConfig {
+  id: string;
+  name: string;
+  template: string;
+  domain: string;
+  headline: string;
+  subheadline: string;
+  ctaText: string;
+  ctaColor: string;
+  features: string[];
+  testimonials: any[];
+  pricing: any[];
+  isActive: boolean;
+}
 
 interface BrandingConfig {
   logo?: string;
@@ -13,7 +42,8 @@ interface BrandingConfig {
   textColor: string;
   companyName: string;
   tagline?: string;
-  customDomain?: string;
+  domains: DomainConfig[];
+  salesPages: SalesPageConfig[];
   customCSS?: string;
   footerText?: string;
   loginPageConfig: {
@@ -33,6 +63,8 @@ interface BrandingConfig {
     customEmailTemplates: boolean;
     advancedBranding: boolean;
     whiteLabel: boolean;
+    multiDomain: boolean;
+    salesPageBuilder: boolean;
   };
 }
 
@@ -44,6 +76,16 @@ export default function WhiteLabelCustomization() {
     backgroundColor: '#FFFFFF',
     textColor: '#1F2937',
     companyName: '',
+    domains: [
+      {
+        id: '1',
+        domain: 'yourcrm.com',
+        type: 'primary',
+        isActive: true,
+        sslStatus: 'active'
+      }
+    ],
+    salesPages: [],
     loginPageConfig: {},
     emailConfig: {},
     features: {
@@ -52,6 +94,8 @@ export default function WhiteLabelCustomization() {
       customEmailTemplates: false,
       advancedBranding: false,
       whiteLabel: false,
+      multiDomain: false,
+      salesPageBuilder: false,
     },
   });
 
@@ -116,6 +160,16 @@ export default function WhiteLabelCustomization() {
         backgroundColor: '#FFFFFF',
         textColor: '#1F2937',
         companyName: '',
+        domains: [
+          {
+            id: '1',
+            domain: 'yourcrm.com',
+            type: 'primary',
+            isActive: true,
+            sslStatus: 'active'
+          }
+        ],
+        salesPages: [],
         loginPageConfig: {},
         emailConfig: {},
         features: {
@@ -124,6 +178,8 @@ export default function WhiteLabelCustomization() {
           customEmailTemplates: false,
           advancedBranding: false,
           whiteLabel: false,
+          multiDomain: false,
+          salesPageBuilder: false,
         },
       });
     }
@@ -187,6 +243,73 @@ export default function WhiteLabelCustomization() {
     });
   };
 
+  const addDomain = () => {
+    const newDomain: DomainConfig = {
+      id: Date.now().toString(),
+      domain: '',
+      type: 'custom',
+      isActive: false,
+      sslStatus: 'pending'
+    };
+    setConfig({
+      ...config,
+      domains: [...config.domains, newDomain]
+    });
+  };
+
+  const updateDomain = (domainId: string, updates: Partial<DomainConfig>) => {
+    setConfig({
+      ...config,
+      domains: config.domains.map(domain => 
+        domain.id === domainId ? { ...domain, ...updates } : domain
+      )
+    });
+  };
+
+  const removeDomain = (domainId: string) => {
+    setConfig({
+      ...config,
+      domains: config.domains.filter(domain => domain.id !== domainId)
+    });
+  };
+
+  const addSalesPage = () => {
+    const newSalesPage: SalesPageConfig = {
+      id: Date.now().toString(),
+      name: 'New Sales Page',
+      template: 'modern',
+      domain: config.domains[0]?.domain || '',
+      headline: 'Transform Your Business Today',
+      subheadline: 'Discover the power of our solution',
+      ctaText: 'Get Started Now',
+      ctaColor: config.primaryColor,
+      features: [],
+      testimonials: [],
+      pricing: [],
+      isActive: false
+    };
+    setConfig({
+      ...config,
+      salesPages: [...config.salesPages, newSalesPage]
+    });
+  };
+
+  const updateSalesPage = (pageId: string, updates: Partial<SalesPageConfig>) => {
+    setConfig({
+      ...config,
+      salesPages: config.salesPages.map(page => 
+        page.id === pageId ? { ...page, ...updates } : page
+      )
+    });
+  };
+
+  const removeSalesPage = (pageId: string) => {
+    setConfig({
+      ...config,
+      salesPages: config.salesPages.filter(page => page.id !== pageId)
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -247,6 +370,7 @@ export default function WhiteLabelCustomization() {
                   { id: 'basic', label: 'Basic Branding', icon: Palette },
                   { id: 'advanced', label: 'Advanced', icon: Sparkles },
                   { id: 'domain', label: 'Domain & URLs', icon: Globe },
+                  { id: 'sales', label: 'Sales Pages', icon: ShoppingCart },
                   { id: 'code', label: 'Custom Code', icon: Code },
                 ].map((tab) => (
                   <button
@@ -556,6 +680,8 @@ export default function WhiteLabelCustomization() {
                       { key: 'customEmailTemplates', label: 'Custom email templates', description: 'Branded email communications' },
                       { key: 'advancedBranding', label: 'Advanced branding options', description: 'CSS customization and more' },
                       { key: 'whiteLabel', label: 'Complete white-label mode', description: 'Remove all platform branding' },
+                      { key: 'multiDomain', label: 'Multi-domain support', description: 'Use multiple custom domains' },
+                      { key: 'salesPageBuilder', label: 'Sales page builder', description: 'Create custom sales pages' },
                     ].map((feature) => (
                       <div key={feature.key} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                         <div>
@@ -589,25 +715,330 @@ export default function WhiteLabelCustomization() {
 
             {/* Domain Tab */}
             {activeTab === 'domain' && (
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                  Domain Configuration
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Custom Domain
-                    </label>
-                    <input
-                      type="text"
-                      value={config.customDomain || ''}
-                      onChange={(e) => setConfig({ ...config, customDomain: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      placeholder="crm.yourcompany.com"
-                    />
-                    <p className="text-sm text-gray-500 mt-1">
-                      Point your domain's DNS to our servers to use a custom domain
-                    </p>
+              <div className="space-y-6">
+                {/* Domain Management */}
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      Domain Management
+                    </h3>
+                    <button
+                      onClick={addDomain}
+                      className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Add Domain
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {config.domains.map((domain) => (
+                      <div key={domain.id} className="border border-gray-200 rounded-lg p-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Domain Name
+                            </label>
+                            <input
+                              type="text"
+                              value={domain.domain}
+                              onChange={(e) => updateDomain(domain.id, { domain: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                              placeholder="example.com"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Type
+                            </label>
+                            <select
+                              value={domain.type}
+                              onChange={(e) => updateDomain(domain.id, { type: e.target.value as any })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            >
+                              <option value="primary">Primary</option>
+                              <option value="sales">Sales Page</option>
+                              <option value="support">Support</option>
+                              <option value="custom">Custom</option>
+                            </select>
+                          </div>
+                          <div className="flex items-end gap-2">
+                            <div className="flex-1">
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                SSL Status
+                              </label>
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                domain.sslStatus === 'active' ? 'bg-green-100 text-green-800' :
+                                domain.sslStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                'bg-red-100 text-red-800'
+                              }`}>
+                                {domain.sslStatus}
+                              </span>
+                            </div>
+                            {domain.type !== 'primary' && (
+                              <button
+                                onClick={() => removeDomain(domain.id)}
+                                className="p-2 text-red-500 hover:text-red-700"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {domain.type === 'sales' && (
+                          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                            <h4 className="font-medium text-gray-900 mb-2">Sales Page Settings</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                  Analytics ID
+                                </label>
+                                <input
+                                  type="text"
+                                  value={domain.customSettings?.analyticsId || ''}
+                                  onChange={(e) => updateDomain(domain.id, {
+                                    customSettings: { ...domain.customSettings, analyticsId: e.target.value }
+                                  })}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                  placeholder="UA-XXXXXX-X"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                  Conversion Tracking
+                                </label>
+                                <input
+                                  type="text"
+                                  value={domain.customSettings?.conversionTracking || ''}
+                                  onChange={(e) => updateDomain(domain.id, {
+                                    customSettings: { ...domain.customSettings, conversionTracking: e.target.value }
+                                  })}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                  placeholder="GTM-XXXXXX"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* DNS Configuration Guide */}
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg">
+                  <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
+                    DNS Configuration Guide
+                  </h4>
+                  <p className="text-blue-700 dark:text-blue-300 text-sm mb-3">
+                    To use custom domains, configure your DNS records as follows:
+                  </p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <code className="bg-blue-100 dark:bg-blue-800 px-2 py-1 rounded">CNAME</code>
+                      <span className="text-blue-700 dark:text-blue-300">Point your domain to: crm.yourplatform.com</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <code className="bg-blue-100 dark:bg-blue-800 px-2 py-1 rounded">A Record</code>
+                      <span className="text-blue-700 dark:text-blue-300">IP: 192.168.1.100</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Sales Pages Tab */}
+            {activeTab === 'sales' && (
+              <div className="space-y-6">
+                {/* Sales Page Management */}
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      Sales Page Templates
+                    </h3>
+                    <button
+                      onClick={addSalesPage}
+                      className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Create Sales Page
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {config.salesPages.map((page) => (
+                      <div key={page.id} className="border border-gray-200 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="font-medium text-gray-900">{page.name}</h4>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => updateSalesPage(page.id, { isActive: !page.isActive })}
+                              className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                page.isActive 
+                                  ? 'bg-green-100 text-green-800' 
+                                  : 'bg-gray-100 text-gray-800'
+                              }`}
+                            >
+                              {page.isActive ? 'Active' : 'Inactive'}
+                            </button>
+                            <button
+                              onClick={() => removeSalesPage(page.id)}
+                              className="p-1 text-red-500 hover:text-red-700"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Page Name
+                            </label>
+                            <input
+                              type="text"
+                              value={page.name}
+                              onChange={(e) => updateSalesPage(page.id, { name: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Template
+                            </label>
+                            <select
+                              value={page.template}
+                              onChange={(e) => updateSalesPage(page.id, { template: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            >
+                              <option value="modern">Modern</option>
+                              <option value="classic">Classic</option>
+                              <option value="minimal">Minimal</option>
+                              <option value="premium">Premium</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Domain
+                            </label>
+                            <select
+                              value={page.domain}
+                              onChange={(e) => updateSalesPage(page.id, { domain: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            >
+                              {config.domains.map((domain) => (
+                                <option key={domain.id} value={domain.domain}>
+                                  {domain.domain}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Status
+                            </label>
+                            <div className="flex items-center gap-2">
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                page.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                              }`}>
+                                {page.isActive ? 'Published' : 'Draft'}
+                              </span>
+                              <button className="p-1 text-blue-500 hover:text-blue-700">
+                                <ExternalLink className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="mt-4 space-y-3">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Headline
+                            </label>
+                            <input
+                              type="text"
+                              value={page.headline}
+                              onChange={(e) => updateSalesPage(page.id, { headline: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Subheadline
+                            </label>
+                            <input
+                              type="text"
+                              value={page.subheadline}
+                              onChange={(e) => updateSalesPage(page.id, { subheadline: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            />
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                CTA Text
+                              </label>
+                              <input
+                                type="text"
+                                value={page.ctaText}
+                                onChange={(e) => updateSalesPage(page.id, { ctaText: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                CTA Color
+                              </label>
+                              <input
+                                type="color"
+                                value={page.ctaColor}
+                                onChange={(e) => updateSalesPage(page.id, { ctaColor: e.target.value })}
+                                className="w-full h-10 px-1 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    
+                    {config.salesPages.length === 0 && (
+                      <div className="text-center py-12">
+                        <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">No Sales Pages Yet</h3>
+                        <p className="text-gray-500 mb-4">Create your first sales page to get started</p>
+                        <button
+                          onClick={addSalesPage}
+                          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto"
+                        >
+                          <Plus className="h-4 w-4" />
+                          Create Sales Page
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Template Library */}
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                  <h4 className="font-medium text-gray-900 dark:text-white mb-4">
+                    Available Templates
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {[
+                      { name: 'Modern', description: 'Clean, contemporary design', preview: '/templates/modern.jpg' },
+                      { name: 'Classic', description: 'Traditional business layout', preview: '/templates/classic.jpg' },
+                      { name: 'Minimal', description: 'Simple, focused design', preview: '/templates/minimal.jpg' },
+                      { name: 'Premium', description: 'High-end, professional', preview: '/templates/premium.jpg' }
+                    ].map((template) => (
+                      <div key={template.name} className="border border-gray-200 rounded-lg p-3 hover:border-purple-500 transition-colors">
+                        <div className="aspect-video bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
+                          <span className="text-gray-500 text-sm">{template.name} Preview</span>
+                        </div>
+                        <h5 className="font-medium text-gray-900 mb-1">{template.name}</h5>
+                        <p className="text-sm text-gray-500">{template.description}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
