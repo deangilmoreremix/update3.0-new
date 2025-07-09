@@ -62,6 +62,24 @@ const SuperAdminDashboard: React.FC = () => {
     }
   }, [user]);
 
+  // Map category to icon
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'core':
+        return Database;
+      case 'ai':
+        return Brain;
+      case 'communication':
+        return MessageSquare;
+      case 'analytics':
+        return TrendingUp;
+      case 'integration':
+        return Settings;
+      default:
+        return Settings;
+    }
+  };
+
   const loadDashboardData = async () => {
     try {
       // Load users
@@ -72,7 +90,12 @@ const SuperAdminDashboard: React.FC = () => {
       // Load features
       const featuresResponse = await fetch('/api/admin/features');
       const featuresData = await featuresResponse.json();
-      setFeatures(featuresData);
+      // Add icon property to features
+      const featuresWithIcons = featuresData.map((feature: any) => ({
+        ...feature,
+        icon: getCategoryIcon(feature.category)
+      }));
+      setFeatures(featuresWithIcons);
 
       setLoading(false);
     } catch (error) {
