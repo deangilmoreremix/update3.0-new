@@ -111,20 +111,21 @@ const SuperAdminDashboard: React.FC = () => {
 
   const loadDashboardData = async () => {
     try {
-      // Load users
-      const usersResponse = await fetch('/api/admin/users');
-      const usersData = await usersResponse.json();
-      setUsers(usersData);
+      // Load users from the real API endpoint
+      const token = localStorage.getItem('authToken');
+      const usersResponse = await fetch('/api/users', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (usersResponse.ok) {
+        const usersData = await usersResponse.json();
+        setUsers(usersData.users || []);
+      }
 
-      // Load features
-      const featuresResponse = await fetch('/api/admin/features');
-      const featuresData = await featuresResponse.json();
-      // Add icon property to features using specific feature icons
-      const featuresWithIcons = featuresData.map((feature: any) => ({
-        ...feature,
-        icon: getFeatureIcon(feature.id, feature.category)
-      }));
-      setFeatures(featuresWithIcons);
+      // Load features (use default features for now)
+      setFeatures(defaultFeatures);
 
       setLoading(false);
     } catch (error) {
@@ -181,9 +182,13 @@ const SuperAdminDashboard: React.FC = () => {
 
   const updateUserRole = async (userId: string, newRole: string) => {
     try {
-      const response = await fetch(`/api/admin/users/${userId}/role`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+      const token = localStorage.getItem('authToken');
+      const response = await fetch(`/api/users/${userId}`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ role: newRole })
       });
       
@@ -201,10 +206,16 @@ const SuperAdminDashboard: React.FC = () => {
 
   const updateUserStatus = async (userId: string, isActive: boolean) => {
     try {
-      const response = await fetch(`/api/admin/users/${userId}/status`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isActive })
+      const token = localStorage.getItem('authToken');
+      const response = await fetch(`/api/users/${userId}`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ 
+          accountStatus: isActive ? 'active' : 'suspended' 
+        })
       });
       
       if (response.ok) {
@@ -216,6 +227,41 @@ const SuperAdminDashboard: React.FC = () => {
       }
     } catch (error) {
       console.error('Error updating user status:', error);
+    }
+  };
+
+  const createUser = async (userData: {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
+    userType: 'user' | 'admin' | 'super_admin';
+  }) => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(userData)
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          // Refresh the user list
+          loadDashboardData();
+          return { success: true };
+        }
+        return { success: false, error: data.error };
+      }
+      return { success: false, error: 'Failed to create user' };
+    } catch (error) {
+      console.error('Error creating user:', error);
+      return { success: false, error: 'Network error' };
     }
   };
 

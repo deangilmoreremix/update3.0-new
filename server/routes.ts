@@ -19,6 +19,11 @@ import partnersRouter from "./routes/partners";
 import featurePackagesRouter from "./routes/feature-packages";
 import aiRoutes from "./routes/ai";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { authService } from "./services/authService";
+import { authenticateToken } from "./middleware/authMiddleware";
+import { db } from "./db";
+import { users } from "@shared/schema";
+import { eq } from "drizzle-orm";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Enable Replit Auth for SSO capabilities
@@ -28,7 +33,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use(extractTenant);
   app.use(addTenantContext);
 
-  // Auth routes from Replit Auth setup
+  // Standard authentication routes for email/password auth
+  app.post('/api/auth/register', async (req: Request, res: Response) => {
+    try {
+      const result = await authService.register(req.body);
+      if (result.success) {
+        res.json(result);
+      } else {
+        res.status(400).json(result);
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  app.post('/api/auth/login', async (req: Request, res: Response) => {
+    try {
+      const result = await authService.login(req.body);
+      if (result.success) {
+        res.json(result);
+      } else {
+        res.status(401).json(result);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  app.get('/api/auth/me', authenticateToken, async (req: any, res: Response) => {
+    try {
+      const user = await authService.getUserById(req.user.userId);
+      if (user) {
+        res.json({ success: true, user });
+      } else {
+        res.status(404).json({ success: false, error: 'User not found' });
+      }
+    } catch (error) {
+      console.error('Get current user error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  app.patch('/api/auth/user', authenticateToken, async (req: any, res: Response) => {
+    try {
+      const user = await authService.updateUser(req.user.userId, req.body);
+      if (user) {
+        res.json({ success: true, user });
+      } else {
+        res.status(404).json({ success: false, error: 'User not found' });
+      }
+    } catch (error) {
+      console.error('Update user error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  app.post('/api/auth/change-password', authenticateToken, async (req: any, res: Response) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      const result = await authService.changePassword(req.user.userId, currentPassword, newPassword);
+      if (result.success) {
+        res.json(result);
+      } else {
+        res.status(400).json(result);
+      }
+    } catch (error) {
+      console.error('Change password error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  // Auth routes from Replit Auth setup (fallback)
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
@@ -37,6 +114,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // User management routes for admins
+  app.get('/api/users', authenticateToken, async (req: any, res: Response) => {
+    try {
+      // Check if user is admin
+      if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
+        return res.status(403).json({ success: false, error: 'Access denied' });
+      }
+
+      const usersResult = await db.select({
+        id: users.id,
+        email: users.email,
+        fullName: users.fullName,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        role: users.role,
+        isAdmin: users.isAdmin,
+        accountStatus: users.accountStatus,
+        subscriptionPlan: users.subscriptionPlan,
+        subscriptionStatus: users.subscriptionStatus,
+        createdAt: users.createdAt,
+        lastLoginAt: users.lastLoginAt
+      }).from(users);
+
+      res.json({ success: true, users: usersResult });
+    } catch (error) {
+      console.error('Get users error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  app.post('/api/users', authenticateToken, async (req: any, res: Response) => {
+    try {
+      // Check if user is admin
+      if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
+        return res.status(403).json({ success: false, error: 'Access denied' });
+      }
+
+      const result = await authService.register(req.body);
+      if (result.success) {
+        res.json(result);
+      } else {
+        res.status(400).json(result);
+      }
+    } catch (error) {
+      console.error('Create user error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  app.patch('/api/users/:id', authenticateToken, async (req: any, res: Response) => {
+    try {
+      // Check if user is admin
+      if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
+        return res.status(403).json({ success: false, error: 'Access denied' });
+      }
+
+      const userId = req.params.id;
+      const user = await authService.updateUser(userId, req.body);
+      if (user) {
+        res.json({ success: true, user });
+      } else {
+        res.status(404).json({ success: false, error: 'User not found' });
+      }
+    } catch (error) {
+      console.error('Update user error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  app.delete('/api/users/:id', authenticateToken, async (req: any, res: Response) => {
+    try {
+      // Check if user is super admin only
+      if (req.user.role !== 'super_admin') {
+        return res.status(403).json({ success: false, error: 'Access denied' });
+      }
+
+      const userId = req.params.id;
+      
+      // Don't allow deletion of self
+      if (userId === req.user.userId) {
+        return res.status(400).json({ success: false, error: 'Cannot delete your own account' });
+      }
+
+      await db.update(users)
+        .set({ accountStatus: 'suspended' })
+        .where(eq(users.id, userId));
+
+      res.json({ success: true, message: 'User account suspended' });
+    } catch (error) {
+      console.error('Delete user error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
     }
   });
 
