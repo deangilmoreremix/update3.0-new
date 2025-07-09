@@ -82,12 +82,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/auth/me', authenticateToken, async (req: any, res: Response) => {
     try {
-      const user = await authService.getUserById(req.user.userId);
-      if (user) {
-        res.json({ success: true, user });
-      } else {
-        res.status(404).json({ success: false, error: 'User not found' });
-      }
+      // The middleware already fetches the user, so we can return it directly
+      res.json({ success: true, user: req.user });
     } catch (error) {
       console.error('Get current user error:', error);
       res.status(500).json({ success: false, error: 'Internal server error' });
@@ -96,7 +92,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch('/api/auth/user', authenticateToken, async (req: any, res: Response) => {
     try {
-      const user = await authService.updateUser(req.user.userId, req.body);
+      const user = await authService.updateUser(req.user.id, req.body);
       if (user) {
         res.json({ success: true, user });
       } else {
@@ -111,11 +107,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/auth/change-password', authenticateToken, async (req: any, res: Response) => {
     try {
       const { currentPassword, newPassword } = req.body;
-      const result = await authService.changePassword(req.user.userId, currentPassword, newPassword);
+      const result = await authService.changePassword(req.user.id, currentPassword, newPassword);
       if (result.success) {
         // Send password change confirmation email
         try {
-          const user = await authService.getUserById(req.user.userId);
+          const user = await authService.getUserById(req.user.id);
           if (user) {
             await emailCampaignService.sendPasswordChangeConfirmation(
               user.email,

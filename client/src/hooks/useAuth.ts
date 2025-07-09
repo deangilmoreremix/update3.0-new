@@ -33,8 +33,14 @@ export function useAuth() {
         });
 
         if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
+          const responseData = await response.json();
+          if (responseData.success && responseData.user) {
+            setUser(responseData.user);
+          } else {
+            // Invalid response structure
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+          }
         } else {
           // Token is invalid, remove it
           localStorage.removeItem('token');
