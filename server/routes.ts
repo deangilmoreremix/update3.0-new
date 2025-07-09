@@ -18,7 +18,7 @@ import { partnerService } from "./services/partnerService";
 import partnersRouter from "./routes/partners";
 import featurePackagesRouter from "./routes/feature-packages";
 import aiRoutes from "./routes/ai";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+// Removed Replit Auth - using email/password only
 import { authService } from "./services/authService";
 import { authenticateToken } from "./middleware/authMiddleware";
 import { emailCampaignService } from "./services/emailCampaignService";
@@ -28,9 +28,6 @@ import { users } from "@shared/schema";
 import { eq } from "drizzle-orm";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Enable Replit Auth for SSO capabilities
-  await setupAuth(app);
-  
   // Apply tenant extraction middleware to all routes
   app.use(extractTenant);
   app.use(addTenantContext);
@@ -140,17 +137,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Auth routes from Replit Auth setup (fallback)
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
+  // Removed Replit Auth fallback endpoint
 
   // User management routes for admins
   app.get('/api/users', authenticateToken, async (req: any, res: Response) => {
@@ -343,31 +330,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // User role endpoint for compatibility
-  app.get("/api/auth/user-role", async (req: Request, res: Response) => {
+  // User role endpoint for email/password auth
+  app.get("/api/auth/user-role", authenticateToken, async (req: any, res: Response) => {
     try {
-      // For unauthenticated users, return not authenticated
-      if (!req.isAuthenticated()) {
-        return res.json({ 
-          isAuthenticated: false,
-          role: null,
-          user: null 
-        });
-      }
-
-      const userId = req.user?.claims?.sub;
-      if (!userId) {
-        return res.json({ 
-          isAuthenticated: false,
-          role: null,
-          user: null 
-        });
-      }
-
-      const user = await storage.getUser(userId);
+      const user = await authService.getUserById(req.user.userId);
       
       if (!user) {
-        return res.json({ 
+        return res.status(404).json({ 
           isAuthenticated: false,
           role: null,
           user: null 
@@ -384,8 +353,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           lastName: user.lastName,
           fullName: `${user.firstName} ${user.lastName}`,
           role: user.role || 'user',
-          subscriptionPlan: 'professional',
-          subscriptionStatus: 'active',
+          subscriptionPlan: user.subscriptionPlan || 'professional',
+          subscriptionStatus: user.subscriptionStatus || 'active',
           profileImageUrl: user.profileImageUrl
         }
       });

@@ -9,6 +9,7 @@ import { SignIn } from './pages/auth/SignIn';
 import { SignUp } from './pages/auth/SignUp';
 import SuperAdminSignup from './pages/SuperAdminSignup';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
+import EmailCampaignManager from './pages/EmailCampaignManager';
 import VideoCallOverlay from './components/VideoCallOverlay';
 import { AIToolsProvider } from './components/AIToolsProvider';
 import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
@@ -100,6 +101,15 @@ function App() {
                                   <ExactNavbar />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <SuperAdminDashboard />
+                                  </div>
+                                </>
+                              } />
+                              
+                              <Route path="/email-campaigns" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <EmailCampaignManager />
                                   </div>
                                 </>
                               } />

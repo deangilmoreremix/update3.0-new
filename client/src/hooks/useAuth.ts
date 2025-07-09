@@ -17,14 +17,34 @@ export function useAuth() {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        // Check localStorage for user data
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          const userData = JSON.parse(storedUser);
+        // Check for JWT token in localStorage
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setIsLoading(false);
+          return;
+        }
+
+        // Fetch user data using the token
+        const response = await fetch('/api/auth/me', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
           setUser(userData);
+        } else {
+          // Token is invalid, remove it
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
         }
       } catch (error) {
-        console.error('Error loading user from localStorage:', error);
+        console.error('Error loading user:', error);
+        // Remove invalid token
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
       } finally {
         setIsLoading(false);
       }
@@ -33,10 +53,18 @@ export function useAuth() {
     loadUser();
   }, []);
 
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    window.location.href = '/';
+  };
+
   return {
     user,
     isLoading,
     isLoaded: !isLoading,
-    isAuthenticated: !!user
+    isAuthenticated: !!user,
+    logout
   };
 }

@@ -52,20 +52,40 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     try {
       setIsLoading(true);
       
+      // Check for JWT token
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setIsLoading(false);
+        return;
+      }
+
       // Get current user with role information
+      const headers: Record<string, string> = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
+      
+      if (tenant) {
+        headers['X-Tenant-ID'] = tenant.id;
+      }
+
       const response = await fetch('/api/auth/user-role', {
-        headers: tenant ? { 'X-Tenant-ID': tenant.id } : {},
+        headers
       });
       
       if (response.ok) {
         const userData = await response.json();
         setUser(userData.user);
       } else {
-        // Silently handle non-200 responses during development
+        // Token is invalid, remove it
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
         console.debug('User role not available:', response.status);
       }
     } catch (error) {
-      // Only log significant errors, not network failures during development
+      // Remove invalid token
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
       console.debug('User role fetch skipped:', error instanceof Error ? error.message : 'Unknown error');
     } finally {
       setIsLoading(false);
@@ -73,18 +93,17 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
   };
 
   const hasPermission = (permission: string): boolean => {
-    // Authentication removed - allow all permissions
-    return true;
+    if (!user) return false;
+    return user.permissions.includes(permission) || user.role === 'super_admin';
   };
 
   const hasRole = (role: string): boolean => {
-    // Authentication removed - allow all roles
-    return true;
+    if (!user) return false;
+    return user.role === role;
   };
 
   const canAccess = (resource: string): boolean => {
-    // Authentication removed - allow all resources
-    return true;
+    if (!user) return false;
     
     // Super admin can access everything
     if (user.role === 'super_admin') return true;
