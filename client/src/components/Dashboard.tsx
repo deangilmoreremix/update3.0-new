@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { useDealStore } from '../store/dealStore';
 import { useContactStore } from '../store/contactStore';
 import { useGemini } from '../services/geminiService';
@@ -18,19 +19,7 @@ import CustomerLeadManagement from './sections/CustomerLeadManagement';
 import ActivitiesCommunications from './sections/ActivitiesCommunications';
 import IntegrationsSystem from './sections/IntegrationsSystem';
 
-// Keep legacy components for backward compatibility
-import MetricsCards from './dashboard/MetricsCards';
-import InteractionHistory from './dashboard/InteractionHistory';
-import TasksAndFunnel from './dashboard/TasksAndFunnel';
-import CustomerProfile from './dashboard/CustomerProfile';
-import RecentActivity from './dashboard/RecentActivity';
-import DashboardHeader from './dashboard/DashboardHeader';
-import ChartsSection from './dashboard/ChartsSection';
-import ConnectedApps from './dashboard/ConnectedApps';
-import AIInsightsPanel from './dashboard/AIInsightsPanel';
-import NewLeadsSection from './dashboard/NewLeadsSection';
-import KPICards from './dashboard/KPICards';
-import QuickActions from './dashboard/QuickActions';
+
 
 const Dashboard: React.FC = () => {
   const { 
@@ -47,7 +36,7 @@ const Dashboard: React.FC = () => {
   const { appointments } = useAppointmentStore();
   const { openTool } = useAITools();
   const { isDark } = useTheme();
-  const { sectionOrder } = useDashboardLayout();
+  const { sectionOrder, reorderSections } = useDashboardLayout();
   
   const gemini = useGemini();
   
@@ -58,6 +47,19 @@ const Dashboard: React.FC = () => {
     const contactsList = Object.values(contacts);
     console.log('Dashboard mounted with', dealsList.length, 'deals and', contactsList.length, 'contacts');
   }, [deals, contacts]);
+  
+  // Handle drag end
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) {
+      return;
+    }
+    
+    if (result.destination.index === result.source.index) {
+      return;
+    }
+    
+    reorderSections(result.source.index, result.destination.index);
+  };
   
   // Render section content based on section ID
   const renderSectionContent = (sectionId: string) => {
@@ -80,42 +82,7 @@ const Dashboard: React.FC = () => {
       case 'integrations-system':
         return <IntegrationsSystem />;
 
-      // Legacy sections (kept for backward compatibility)
-      case 'metrics-cards-section':
-        return <MetricsCards />;
 
-      case 'kpi-cards-section':
-        return <KPICards />;
-
-      case 'quick-actions-section':
-        return <QuickActions />;
-        
-      case 'ai-insights-section':
-        return <AIInsightsPanel />;
-
-      case 'interaction-history-section':
-        return <InteractionHistory />;
-
-      case 'customer-profile-section':
-        return <CustomerProfile />;
-
-      case 'recent-activity-section':
-        return <RecentActivity />;
-
-      case 'tasks-and-funnel-section':
-        return <TasksAndFunnel />;
-
-      case 'charts-section':
-        return <ChartsSection />;
-
-      case 'analytics-section':
-        return <ChartsSection />;
-
-      case 'apps-section':
-        return <ConnectedApps />;
-
-      case 'new-leads-section':
-        return <NewLeadsSection />;
 
       default:
         return null;
@@ -128,19 +95,30 @@ const Dashboard: React.FC = () => {
       <DashboardLayoutControls />
 
       {/* Draggable Sections */}
-      <div className="space-y-8 pb-20">
-        {sectionOrder.map((sectionId, index) => (
-          <DraggableSection
-            key={sectionId}
-            sectionId={sectionId}
-            index={index}
-          >
-            <div id={sectionId}>
-              {renderSectionContent(sectionId)}
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="dashboard-sections">
+          {(provided) => (
+            <div 
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className="space-y-8 pb-20"
+            >
+              {sectionOrder.map((sectionId, index) => (
+                <DraggableSection
+                  key={sectionId}
+                  sectionId={sectionId}
+                  index={index}
+                >
+                  <div id={sectionId}>
+                    {renderSectionContent(sectionId)}
+                  </div>
+                </DraggableSection>
+              ))}
+              {provided.placeholder}
             </div>
-          </DraggableSection>
-        ))}
-      </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </main>
   );
 };

@@ -12,6 +12,10 @@ export interface SectionConfig {
 interface DashboardLayoutContextType {
   sectionOrder: string[];
   setSectionOrder: (order: string[]) => void;
+  sectionVisibility: Record<string, boolean>;
+  setSectionVisibility: (visibility: Record<string, boolean>) => void;
+  toggleSectionVisibility: (sectionId: string) => void;
+  sectionConfigs: Record<string, SectionConfig>;
   isDragging: boolean;
   setIsDragging: (dragging: boolean) => void;
   draggedItem: string | null;
@@ -31,25 +35,14 @@ export const useDashboardLayout = () => {
   return context;
 };
 
-// Default section order
+// Default section order - simplified to avoid duplicates
 const defaultSectionOrder = [
   'executive-overview-section',
-  'kpi-cards-section',
-  'quick-actions-section',
   'ai-smart-features-hub',
   'sales-pipeline-deal-analytics',
   'customer-lead-management',
   'activities-communications',
-  'ai-insights-section',
-  'metrics-cards-section',
-  'interaction-history-section',
-  'customer-profile-section',
-  'recent-activity-section',
-  'tasks-and-funnel-section',
-  'integrations-system',
-  'charts-section',
-  'analytics-section',
-  'apps-section'
+  'integrations-system'
 ];
 
 // Section configurations
@@ -199,6 +192,20 @@ export const DashboardLayoutProvider: React.FC<{ children: React.ReactNode }> = 
     return saved ? JSON.parse(saved) : defaultSectionOrder;
   });
   
+  const [sectionVisibility, setSectionVisibility] = useState<Record<string, boolean>>(() => {
+    // Load visibility from localStorage
+    const saved = localStorage.getItem('dashboard-section-visibility');
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    // Default all sections to visible
+    const defaultVisibility: Record<string, boolean> = {};
+    defaultSectionOrder.forEach(id => {
+      defaultVisibility[id] = true;
+    });
+    return defaultVisibility;
+  });
+  
   const [isDragging, setIsDragging] = useState(false);
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
 
@@ -207,8 +214,20 @@ export const DashboardLayoutProvider: React.FC<{ children: React.ReactNode }> = 
     localStorage.setItem('dashboard-section-order', JSON.stringify(sectionOrder));
   }, [sectionOrder]);
 
+  // Save visibility to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('dashboard-section-visibility', JSON.stringify(sectionVisibility));
+  }, [sectionVisibility]);
+
   const getSectionConfig = (id: string): SectionConfig | undefined => {
     return sectionConfigs[id];
+  };
+
+  const toggleSectionVisibility = (sectionId: string) => {
+    setSectionVisibility(prev => ({
+      ...prev,
+      [sectionId]: !prev[sectionId]
+    }));
   };
 
   const reorderSections = (startIndex: number, endIndex: number) => {
@@ -220,13 +239,23 @@ export const DashboardLayoutProvider: React.FC<{ children: React.ReactNode }> = 
 
   const resetToDefault = () => {
     setSectionOrder([...defaultSectionOrder]);
+    const defaultVisibility: Record<string, boolean> = {};
+    defaultSectionOrder.forEach(id => {
+      defaultVisibility[id] = true;
+    });
+    setSectionVisibility(defaultVisibility);
     localStorage.removeItem('dashboard-section-order');
+    localStorage.removeItem('dashboard-section-visibility');
   };
 
   return (
     <DashboardLayoutContext.Provider value={{
       sectionOrder,
       setSectionOrder,
+      sectionVisibility,
+      setSectionVisibility,
+      toggleSectionVisibility,
+      sectionConfigs,
       isDragging,
       setIsDragging,
       draggedItem,
