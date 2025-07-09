@@ -545,10 +545,10 @@ const Contacts: React.FC = () => {
   const totalPages = Math.ceil(filteredContacts.length / itemsPerPage);
 
   return (
-    <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-white rounded-2xl w-full max-w-7xl h-[90vh] overflow-hidden flex flex-col animate-slide-in shadow-2xl">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-fade-in">
+      <div className="bg-white/95 backdrop-blur-xl rounded-2xl w-full max-w-7xl h-[90vh] overflow-hidden flex flex-col animate-slide-in shadow-2xl border border-white/30">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+        <div className="flex items-center justify-between p-6 border-b border-white/30 bg-gradient-to-r from-blue-50/80 to-purple-50/80 backdrop-blur-sm">
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-white">
               <Users className="w-6 h-6" />
@@ -594,12 +594,18 @@ const Contacts: React.FC = () => {
               <Plus size={18} className="mr-1" />
               Add Contact
             </button>
+            <button 
+              onClick={() => window.history.back()}
+              className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+            >
+              <X size={20} className="text-gray-600" />
+            </button>
           </div>
         </div>
 
         {/* Bulk Actions Bar */}
         {showBulkActions && (
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-blue-500 p-4 mx-6 rounded-lg flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-50/60 to-purple-50/60 backdrop-blur-sm border-l-4 border-blue-500/80 p-4 mx-6 rounded-lg flex justify-between items-center border border-white/20">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <CheckCheck className="w-5 h-5 text-blue-600" />
@@ -638,7 +644,7 @@ const Contacts: React.FC = () => {
         )}
 
         {/* Search and Filters */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-6 border-b border-white/20 bg-white/20 backdrop-blur-sm">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="relative flex-grow max-w-md">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -649,7 +655,7 @@ const Contacts: React.FC = () => {
                 placeholder="Search contacts..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="pl-10 pr-4 py-2 w-full border border-white/30 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none bg-white/50 backdrop-blur-sm"
               />
             </div>
             
