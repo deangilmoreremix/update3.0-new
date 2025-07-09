@@ -76,7 +76,9 @@ function App() {
                       
                       {/* Authentication Routes - no navbar */}
                       <Route path="/login" element={<SignIn />} />
+                      <Route path="/sign-in" element={<SignIn />} />
                       <Route path="/signup" element={<SignUp />} />
+                      <Route path="/sign-up" element={<SignUp />} />
                       <Route path="/super-admin-signup" element={<SuperAdminSignup />} />
                       
                       {/* Routes with navbar */}

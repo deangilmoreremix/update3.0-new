@@ -38,12 +38,28 @@ const requireAuth = async (req: Request, res: Response, next: any) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Setup Replit Auth middleware
-  await setupAuth(app);
+  // Disable Replit Auth for custom authentication
+  // await setupAuth(app);
   
   // Apply tenant extraction middleware to all routes
   app.use(extractTenant);
   app.use(addTenantContext);
+
+  // Override Replit Auth with custom authentication
+  app.get("/api/login", (req: Request, res: Response) => {
+    // Redirect to custom sign-in page instead of Replit OIDC
+    res.redirect('/sign-in');
+  });
+
+  app.get("/api/logout", (req: Request, res: Response) => {
+    // Simple logout redirect to landing page
+    res.redirect('/');
+  });
+
+  app.get("/api/callback", (req: Request, res: Response) => {
+    // Redirect callback to sign-in page
+    res.redirect('/sign-in');
+  });
 
   // Authentication endpoints
   app.post("/api/auth/login", async (req: Request, res: Response) => {
