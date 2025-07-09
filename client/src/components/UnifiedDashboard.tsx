@@ -93,6 +93,11 @@ const Section: React.FC<SectionProps> = ({ sectionId, title, icon, children }) =
             <h2 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
               {title}
             </h2>
+            {isDragModeEnabled && (
+              <p className={`text-sm mt-1 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                Drag components here from other sections
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -103,17 +108,23 @@ const Section: React.FC<SectionProps> = ({ sectionId, title, icon, children }) =
             ref={provided.innerRef}
             {...provided.droppableProps}
             className={`
-              min-h-[100px] rounded-lg p-4 transition-colors
+              min-h-[300px] rounded-lg p-6 transition-all duration-200
               ${snapshot.isDraggingOver 
-                ? (isDark ? 'bg-blue-500/10 border-2 border-dashed border-blue-500' : 'bg-blue-50 border-2 border-dashed border-blue-300')
-                : (isDark ? 'bg-transparent' : 'bg-transparent')
+                ? (isDark ? 'bg-blue-500/10 border-2 border-dashed border-blue-500 scale-[1.02]' : 'bg-blue-50 border-2 border-dashed border-blue-300 scale-[1.02]')
+                : (isDark ? 'bg-gray-800/50 border border-gray-700' : 'bg-gray-50 border border-gray-200')
               }
             `}
           >
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="flex flex-wrap gap-6">
               {components.map((component, index) => {
                 const config = getComponent(component.componentId);
                 if (!config) return null;
+                
+                // Determine component width based on type
+                const isWideComponent = component.componentId === 'new-leads' || 
+                                       component.componentId === 'tasks-funnel' ||
+                                       component.componentId === 'charts-section' ||
+                                       component.componentId === 'smart-ai-controls';
                 
                 return (
                   <Draggable
@@ -128,24 +139,31 @@ const Section: React.FC<SectionProps> = ({ sectionId, title, icon, children }) =
                         {...provided.draggableProps}
                         className={`
                           relative transition-all
-                          ${snapshot.isDragging ? 'opacity-50 rotate-2' : ''}
-                          ${component.componentId === 'new-leads' || component.componentId === 'tasks-funnel' ? 'lg:col-span-2' : ''}
+                          ${snapshot.isDragging ? 'opacity-90 scale-105 z-50' : ''}
+                          ${isWideComponent ? 'w-full' : 'w-full lg:w-[calc(50%-12px)]'}
                         `}
+                        style={{
+                          ...provided.draggableProps.style,
+                          minHeight: '200px'
+                        }}
                       >
                         {isDragModeEnabled && (
                           <div
                             {...provided.dragHandleProps}
                             className={`
-                              absolute -left-10 top-4 p-2 rounded-lg cursor-move
+                              absolute left-2 top-2 p-2 rounded-lg cursor-move
                               ${isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}
-                              transition-colors z-10
+                              transition-colors z-20 shadow-lg
                             `}
                           >
-                            <GripVertical className="w-4 h-4" />
+                            <GripVertical className="w-5 h-5" />
                           </div>
                         )}
                         
-                        <div className={`${isDragModeEnabled ? 'border-2 border-dashed border-gray-400 rounded-lg p-2' : ''}`}>
+                        <div className={`
+                          ${isDragModeEnabled ? 'border-2 border-dashed border-blue-400 rounded-lg p-4' : ''}
+                          h-full
+                        `}>
                           {renderComponent(component.componentId)}
                         </div>
                       </div>
