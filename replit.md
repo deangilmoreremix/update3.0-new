@@ -174,6 +174,14 @@ Any updates must maintain the exact visual design and component structure provid
 
 ## Recent Changes
 
+### July 9, 2025 - Camera Permission Issue Resolution
+- **Camera Permissions Fixed**: Resolved camera permission popup appearing on landing page by moving DevicePermissionChecker to sales components only
+  - Removed DevicePermissionChecker from global App.tsx to prevent landing page interruption
+  - Added DevicePermissionChecker to SalesVideoRecorder component where camera access is actually needed
+  - Integrated DevicePermissionChecker into SalesToolsLauncher for proper permission handling when sales tools are accessed
+  - Camera and microphone permissions now only request when users actively use video recording features
+  - Improved user experience with context-appropriate permission requests
+
 ### July 9, 2025 - Complete Calendar Avatar Implementation with Task Assignees
 - **Calendar Avatars Fully Implemented**: Successfully added missing calendar avatars to TasksAndFunnel component showing task assignees on specific dates
   - Calendar days (15-19) now display small avatars (w-3 h-3) for users with tasks assigned

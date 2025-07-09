@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Target, Camera, Phone, Mail, Video, Settings, X, Zap } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { SalesToolsPanel } from './SalesToolsPanel';
+import DevicePermissionChecker from '../DevicePermissionChecker';
 
 interface SalesToolsLauncherProps {
   contactId?: string;
@@ -212,10 +213,12 @@ export const SalesToolsLauncher: React.FC<SalesToolsLauncherProps> = ({
 
       {/* Full Sales Tools Panel Modal */}
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className={`w-full max-w-6xl h-full max-h-[90vh] rounded-xl shadow-2xl overflow-hidden ${
-            isDark ? 'bg-gray-900' : 'bg-white'
-          }`}>
+        <>
+          <DevicePermissionChecker />
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div className={`w-full max-w-6xl h-full max-h-[90vh] rounded-xl shadow-2xl overflow-hidden ${
+              isDark ? 'bg-gray-900' : 'bg-white'
+            }`}>
             {/* Modal Header */}
             <div className={`px-6 py-4 border-b flex items-center justify-between ${
               isDark ? 'border-gray-700' : 'border-gray-200'
@@ -262,8 +265,9 @@ export const SalesToolsLauncher: React.FC<SalesToolsLauncherProps> = ({
                 contactPhone={contactPhone}
               />
             </div>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );

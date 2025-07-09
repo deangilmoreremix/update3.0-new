@@ -9,7 +9,6 @@ import SuperAdminSignup from './pages/SuperAdminSignup';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import VideoCallOverlay from './components/VideoCallOverlay';
 import VideoCallPreviewWidget from './components/VideoCallPreviewWidget';
-import DevicePermissionChecker from './components/DevicePermissionChecker';
 import { AIToolsProvider } from './components/AIToolsProvider';
 import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -71,7 +70,6 @@ function App() {
                   <EnhancedHelpProvider>
                 <Router>
                   <div className="min-h-screen h-full w-full flex flex-col transition-all duration-300 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-gradient-to-br from-gray-50 via-white to-gray-100">
-                    <DevicePermissionChecker />
                     <Routes>
                       {/* Landing Page - no navbar */}
                       <Route path="/" element={<LandingPage />} />

@@ -24,6 +24,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
+import DevicePermissionChecker from '../DevicePermissionChecker';
 
 interface SalesVideoRecorderProps {
   contactId?: string;
@@ -358,10 +359,12 @@ export const SalesVideoRecorder: React.FC<SalesVideoRecorderProps> = ({
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className={`w-full max-w-4xl rounded-xl shadow-2xl ${
-        isDark ? 'bg-gray-900' : 'bg-white'
-      }`}>
+    <>
+      <DevicePermissionChecker />
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className={`w-full max-w-4xl rounded-xl shadow-2xl ${
+          isDark ? 'bg-gray-900' : 'bg-white'
+        }`}>
         {/* Header */}
         <div className={`px-6 py-4 border-b flex items-center justify-between ${
           isDark ? 'border-gray-700' : 'border-gray-200'
@@ -706,7 +709,8 @@ export const SalesVideoRecorder: React.FC<SalesVideoRecorderProps> = ({
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 };
 
