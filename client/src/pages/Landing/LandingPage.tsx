@@ -52,22 +52,7 @@ import ParticleBackground from '../../components/Landing/ParticleBackground';
 const LandingPage = () => {
   const navigate = useNavigate();
 
-  // Check for authenticated user in localStorage and redirect if found
-  useEffect(() => {
-    const checkAuth = () => {
-      try {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          console.log('✅ Authenticated user detected, redirecting to dashboard');
-          navigate('/dashboard');
-        }
-      } catch (error) {
-        console.error('Error checking authentication:', error);
-      }
-    };
-    
-    checkAuth();
-  }, [navigate]);
+  // Authentication check removed - direct access to all pages allowed
 
   // Function to handle page initialization only once
   useEffect(() => {

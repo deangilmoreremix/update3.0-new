@@ -73,17 +73,18 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
   };
 
   const hasPermission = (permission: string): boolean => {
-    if (!user) return false;
-    return user.permissions.includes(permission) || user.role === 'super_admin';
+    // Authentication removed - allow all permissions
+    return true;
   };
 
   const hasRole = (role: string): boolean => {
-    if (!user) return false;
-    return user.role === role;
+    // Authentication removed - allow all roles
+    return true;
   };
 
   const canAccess = (resource: string): boolean => {
-    if (!user) return false;
+    // Authentication removed - allow all resources
+    return true;
     
     // Super admin can access everything
     if (user.role === 'super_admin') return true;
@@ -158,24 +159,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }
 
-  if (!user) {
-    return fallback;
-  }
+  // Authentication removed - allow all access
+  // No user checks, role checks, or permission checks needed
 
-  // Check role-based access
-  if (requiredRole && !hasRole(requiredRole)) {
-    return fallback;
-  }
-
-  // Check permission-based access
-  if (requiredPermission && !hasPermission(requiredPermission)) {
-    return fallback;
-  }
-
-  // Check resource-based access
-  if (resource && !canAccess(resource)) {
-    return fallback;
-  }
+  // Resource-based access check removed - allow all resources
 
   return <>{children}</>;
 };
