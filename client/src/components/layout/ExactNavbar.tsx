@@ -8,7 +8,11 @@ import { useContactStore } from '../../store/contactStore';
 import { useTaskStore } from '../../store/taskStore';
 import { useAppointmentStore } from '../../store/appointmentStore';
 
-const Navbar = () => {
+interface NavbarProps {
+  onOpenPipelineModal?: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ onOpenPipelineModal }) => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -90,7 +94,10 @@ const Navbar = () => {
     else if (toolName === 'business-analysis') navigate('/business-analysis');
     else if (toolName === 'forms') navigate('/forms');
     else if (toolName === 'sales-analytics') navigate('/sales-analytics');
-    else if (toolName === 'deal-pipeline') navigate('/pipeline');
+    else if (toolName === 'deal-pipeline') {
+      onOpenPipelineModal?.();
+      setActiveDropdown(null);
+    }
     else if (toolName === 'quote-builder') navigate('/quote-builder');
     else if (toolName === 'commission-tracker') navigate('/commission-tracker');
     else if (toolName === 'follow-up-reminders') navigate('/follow-up-reminders');
@@ -204,7 +211,12 @@ const Navbar = () => {
       id: 'pipeline',
       label: 'Pipeline',
       icon: Briefcase,
-      action: () => handleNavigation('/pipeline', 'pipeline'),
+      action: () => {
+        onOpenPipelineModal?.();
+        setActiveTab('pipeline');
+        setActiveDropdown(null);
+        setIsMobileMenuOpen(false);
+      },
       badge: counters.activeDeals,
       color: 'from-green-500 to-emerald-500'
     },

@@ -20,6 +20,7 @@ import { VideoCallProvider } from './contexts/VideoCallContext';
 import { ComponentRegistryProvider } from './contexts/ComponentRegistry';
 import { UnifiedDragDropProvider } from './contexts/UnifiedDragDropContext';
 import { ContactsModal } from './components/modals/ContactsModal';
+import PipelineModal from './components/modals/PipelineModal';
 import { TenantProvider } from './components/TenantProvider';
 import { RoleProvider } from './components/RoleBasedAccess';
 
@@ -70,6 +71,7 @@ import './components/styles/design-system.css';
 
 function App() {
   const [isContactsModalOpen, setIsContactsModalOpen] = useState(false);
+  const [isPipelineModalOpen, setIsPipelineModalOpen] = useState(false);
 
   return (
     <ThemeProvider>
@@ -98,7 +100,7 @@ function App() {
                               {/* Routes with navbar */}
                               <Route path="/super-admin-dashboard" element={
                                 <>
-                                  <ExactNavbar />
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <SuperAdminDashboard />
                                   </div>
@@ -107,7 +109,7 @@ function App() {
                               
                               <Route path="/email-campaigns" element={
                                 <>
-                                  <ExactNavbar />
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <EmailCampaignManager />
                                   </div>
@@ -116,7 +118,7 @@ function App() {
                               
                               <Route path="/dashboard" element={
                                 <>
-                                  <ExactNavbar />
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <NetlifyStyleDashboard />
                                   </div>
@@ -126,23 +128,16 @@ function App() {
                               {/* Core CRM Pages */}
                               <Route path="/contacts" element={
                                 <>
-                                  <ExactNavbar />
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <NetlifyContacts />
                                   </div>
                                 </>
                               } />
-                              <Route path="/pipeline" element={
-                                <>
-                                  <ExactNavbar />
-                                  <div className="flex-1 w-full overflow-y-auto pt-24">
-                                    <EnhancedPipeline />
-                                  </div>
-                                </>
-                              } />
+
                               <Route path="/tasks" element={
                                 <>
-                                  <ExactNavbar />
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <Tasks />
                                   </div>
@@ -150,7 +145,7 @@ function App() {
                               } />
                               <Route path="/analytics" element={
                                 <>
-                                  <ExactNavbar />
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <AnalyticsDashboard />
                                   </div>
@@ -160,7 +155,7 @@ function App() {
                               {/* Feature Access Demo */}
                               <Route path="/feature-access-demo" element={
                                 <>
-                                  <ExactNavbar />
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <FeatureAccessDemo />
                                   </div>
@@ -170,7 +165,7 @@ function App() {
                               {/* SSO Configuration */}
                               <Route path="/sso-config" element={
                                 <>
-                                  <ExactNavbar />
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <SSOConfiguration />
                                   </div>
@@ -180,7 +175,7 @@ function App() {
                               {/* White Label Customization */}
                               <Route path="/white-label" element={
                                 <>
-                                  <ExactNavbar />
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <WhiteLabelCustomization />
                                   </div>
@@ -191,7 +186,7 @@ function App() {
                               {/* Sales Tools Routes */}
                               <Route path="/sales-tools" element={
                                 <>
-                                  <ExactNavbar />
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <SalesTools />
                                   </div>
@@ -199,7 +194,7 @@ function App() {
                               } />
                               <Route path="/lead-automation" element={
                                 <>
-                                  <ExactNavbar />
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <LeadAutomation />
                                   </div>
@@ -207,7 +202,7 @@ function App() {
                               } />
                               <Route path="/circle-prospecting" element={
                                 <>
-                                  <ExactNavbar />
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <CircleProspecting />
                                   </div>
@@ -215,7 +210,7 @@ function App() {
                               } />
                               <Route path="/appointments" element={
                                 <>
-                                  <ExactNavbar />
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <Appointments />
                                   </div>
@@ -223,7 +218,7 @@ function App() {
                               } />
                               <Route path="/phone-system" element={
                                 <>
-                                  <ExactNavbar />
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <PhoneSystem />
                                   </div>
@@ -231,7 +226,7 @@ function App() {
                               } />
                               <Route path="/invoicing" element={
                                 <>
-                                  <ExactNavbar />
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <Invoicing />
                                   </div>
@@ -442,6 +437,12 @@ function App() {
                             <ContactsModal
                               isOpen={isContactsModalOpen}
                               onClose={() => setIsContactsModalOpen(false)}
+                            />
+                            
+                            {/* PipelineModal rendered at the root level */}
+                            <PipelineModal
+                              isOpen={isPipelineModalOpen}
+                              onClose={() => setIsPipelineModalOpen(false)}
                             />
                           </div>
                         </Router>
