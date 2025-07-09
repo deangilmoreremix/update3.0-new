@@ -250,7 +250,8 @@ const Navbar = () => {
     { name: 'Voice Profiles', tool: 'voice-profiles', icon: Mic },
     { name: 'Business Analysis', tool: 'business-analysis', icon: BarChart3 },
     { name: 'Image Generator', tool: 'image-generator', icon: Camera },
-    { name: 'Forms', tool: 'forms', icon: FileText }
+    { name: 'Forms', tool: 'forms', icon: FileText },
+    { name: 'AI Model Demo', tool: 'ai-model-demo', icon: Brain }
   ];
 
 

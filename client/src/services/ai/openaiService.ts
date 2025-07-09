@@ -279,10 +279,24 @@ Best regards,
     return insights.slice(0, 3 + Math.floor(Math.random() * 2));
   };
 
+  const generateResponse = async (prompt: string): Promise<string> => {
+    // Simulate OpenAI API response generation
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    return `OpenAI GPT Response: ${prompt.slice(0, 100)}...
+    
+This is a simulated response from OpenAI GPT. In a real implementation, this would connect to OpenAI's API using the API key to generate intelligent responses based on the prompt.
+
+The response would be contextually relevant and personalized based on the customer profile and task requirements.`;
+  };
+
   return {
     analyzeContact,
     generatePersonalizedEmail,
     enrichContactData,
-    generateBusinessInsights
+    generateBusinessInsights,
+    generateResponse
   };
 };
+
+export const openaiService = useOpenAI();

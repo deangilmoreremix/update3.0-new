@@ -46,6 +46,7 @@ import TerritoryManagement from './pages/TerritoryManagement';
 import EmailComposer from './pages/EmailComposer';
 import Campaigns from './pages/Campaigns';
 import ImageGenerator from './pages/ImageGenerator';
+import AIModelDemo from './pages/AIModelDemo';
 
 import './components/styles/design-system.css';
 
@@ -109,6 +110,7 @@ function App() {
                         <Route path="/business-analysis" element={<BusinessAnalyzer />} />
                         <Route path="/forms" element={<FormsAndSurveys />} />
                         <Route path="/ai-tools" element={<AITools />} />
+                        <Route path="/ai-model-demo" element={<AIModelDemo />} />
                         <Route path="/image-generator" element={<ImageGenerator />} />
                         
                         {/* Redirect unknown routes to dashboard */}

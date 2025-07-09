@@ -188,6 +188,17 @@ P.S. This is a short exploratory conversation - no sales pitch, just industry in
     ];
     return avatars[Math.floor(Math.random() * avatars.length)];
   }
+  async generateResponse(prompt: string): Promise<string> {
+    // Simulate Gemini API response generation
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    return `Gemini AI Response: ${prompt.slice(0, 100)}...
+    
+This is a simulated response from Gemini AI. In a real implementation, this would connect to Google's Gemini API using the API key to generate intelligent responses based on the prompt.
+
+The response would be contextually relevant and personalized based on the customer profile and task requirements.`;
+  }
 }
 
 export const geminiAIService = new GeminiAIService();
+export const geminiService = new GeminiAIService();

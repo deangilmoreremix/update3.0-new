@@ -1,8 +1,13 @@
 import { Contact, Deal } from '../types';
+import { intelligentModelSelector, AITask, CustomerProfile } from './ai/intelligentModelSelector';
 
 // Interface for API options
 interface ApiOptions {
   apiKey?: string;
+  customerProfile?: CustomerProfile;
+  taskType?: 'content-generation' | 'analysis' | 'conversation' | 'code' | 'research' | 'reasoning' | 'creative' | 'structured-data';
+  complexity?: 'low' | 'medium' | 'high';
+  urgency?: 'low' | 'medium' | 'high';
 }
 
 // Generic API request helper for Express endpoints
@@ -29,24 +34,77 @@ const apiRequest = async (endpoint: string, data: any) => {
   }
 };
 
-// Edge function service object
+// Edge function service object with intelligent model selection
 export const edgeFunctionService = {
-  callAIFunction: async (endpoint: string, data: any) => {
-    return apiRequest(endpoint, data);
+  // Enhanced AI function call with intelligent model selection
+  callAIFunction: async (endpoint: string, data: any, options?: ApiOptions) => {
+    // Create AI task for intelligent model selection
+    const aiTask: AITask = {
+      type: options?.taskType || 'content-generation',
+      complexity: options?.complexity || 'medium',
+      urgency: options?.urgency || 'medium',
+      context: endpoint,
+      customerProfile: options?.customerProfile,
+      requiresRealTime: ['email-composer', 'text-generator', 'call-script'].includes(endpoint),
+      needsStructuredOutput: ['deal-analyzer', 'contact-scorer', 'market-analysis'].includes(endpoint)
+    };
+
+    const startTime = Date.now();
+    
+    try {
+      // Use intelligent model selector to determine the best approach
+      const result = await intelligentModelSelector.executeTask(aiTask, JSON.stringify(data));
+      const processingTime = Date.now() - startTime;
+      
+      console.log(`AI Task completed in ${processingTime}ms using intelligent model selection`);
+      
+      return result;
+    } catch (error) {
+      console.error(`Error in intelligent AI function call for ${endpoint}:`, error);
+      
+      // Fallback to original API request
+      return await apiRequest(endpoint, data);
+    }
   },
   
-  callEdgeFunction: async (endpoint: string, data: any) => {
+  // Enhanced edge function call with customer profile support
+  callEdgeFunction: async (endpoint: string, data: any, options?: ApiOptions) => {
+    // Add customer profile context to data if provided
+    const enhancedData = {
+      ...data,
+      customerProfile: options?.customerProfile,
+      taskMetadata: {
+        taskType: options?.taskType || 'content-generation',
+        complexity: options?.complexity || 'medium',
+        urgency: options?.urgency || 'medium'
+      }
+    };
+    
+    return apiRequest(endpoint, enhancedData);
+  },
+  
+  // Original API request method for backward compatibility
+  callBasicFunction: async (endpoint: string, data: any) => {
     return apiRequest(endpoint, data);
   }
 };
 
-// Email generation
-const generateEmailContent = async (contactName: string, purpose: string): Promise<string> => {
+// Email generation with intelligent model selection
+const generateEmailContent = async (
+  contactName: string, 
+  purpose: string, 
+  customerProfile?: CustomerProfile
+): Promise<string> => {
   try {
-    return await apiRequest('generate-content', {
+    return await edgeFunctionService.callAIFunction('generate-content', {
       contentType: 'email',
       purpose,
       data: { contactName }
+    }, {
+      customerProfile,
+      taskType: 'content-generation',
+      complexity: 'medium',
+      urgency: 'medium'
     });
   } catch (error) {
     console.error('Error generating email content:', error);
@@ -54,13 +112,22 @@ const generateEmailContent = async (contactName: string, purpose: string): Promi
   }
 };
 
-// Text message generation
-const generateTextMessage = async (contactName: string, purpose: string): Promise<string> => {
+// Text message generation with intelligent model selection
+const generateTextMessage = async (
+  contactName: string, 
+  purpose: string, 
+  customerProfile?: CustomerProfile
+): Promise<string> => {
   try {
-    return await apiRequest('generate-content', {
+    return await edgeFunctionService.callAIFunction('generate-content', {
       contentType: 'text',
       purpose,
       data: { contactName }
+    }, {
+      customerProfile,
+      taskType: 'content-generation',
+      complexity: 'low',
+      urgency: 'high'
     });
   } catch (error) {
     console.error('Error generating text message:', error);
@@ -68,20 +135,26 @@ const generateTextMessage = async (contactName: string, purpose: string): Promis
   }
 };
 
-// Call script generation
+// Call script generation with intelligent model selection
 export const generateCallScript = async (
   contact: Partial<Contact>, 
   callPurpose: string, 
-  previousInteractions: string[]
+  previousInteractions: string[],
+  customerProfile?: CustomerProfile
 ): Promise<string> => {
   try {
-    return await apiRequest('generate-content', {
+    return await edgeFunctionService.callAIFunction('generate-content', {
       contentType: 'call',
       purpose: callPurpose,
       data: { 
         contact,
         previousInteractions
       }
+    }, {
+      customerProfile,
+      taskType: 'content-generation',
+      complexity: 'high',
+      urgency: 'medium'
     });
   } catch (error) {
     console.error('Error generating call script:', error);
@@ -89,7 +162,7 @@ export const generateCallScript = async (
   }
 };
 
-// Market trend analysis
+// Market trend analysis with intelligent model selection
 export const analyzeMarketTrends = async (
   industry: string, 
   targetMarket: string, 
@@ -97,7 +170,7 @@ export const analyzeMarketTrends = async (
   options?: ApiOptions
 ): Promise<string> => {
   try {
-    return await apiRequest('generate-content', {
+    return await edgeFunctionService.callAIFunction('generate-content', {
       contentType: 'marketTrend',
       purpose: 'Market Analysis',
       data: { 
