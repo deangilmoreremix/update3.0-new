@@ -111,11 +111,12 @@ const Navbar = () => {
   // Update active tab based on current route
   useEffect(() => {
     const path = location.pathname;
-    if (path === '/' || path === '/dashboard') setActiveTab('dashboard');
+    if (path === '/dashboard') setActiveTab('dashboard');
     else if (path === '/contacts') setActiveTab('contacts');
     else if (path === '/pipeline') setActiveTab('pipeline');
     else if (path === '/tasks') setActiveTab('tasks');
     else if (path === '/ai-tools') setActiveTab('ai-tools');
+    else if (path === '/appointments') setActiveTab('appointments');
     else setActiveTab('');
   }, [location.pathname]);
 
@@ -182,7 +183,7 @@ const Navbar = () => {
       id: 'dashboard',
       label: 'Dashboard',
       icon: Home,
-      action: () => handleNavigation('/', 'dashboard'),
+      action: () => handleNavigation('/dashboard', 'dashboard'),
       badge: null,
       color: 'from-blue-500 to-green-500'
     },
@@ -715,6 +716,14 @@ const Navbar = () => {
                       </div>
                       
                       <div className="space-y-1">
+                        <button
+                          onClick={() => handleNavigation('/', 'home')}
+                          className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/10 text-white hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
+                        >
+                          <Home size={16} />
+                          <span className="text-sm font-medium">Home Page</span>
+                        </button>
+                        
                         <button className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/10 text-white hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}>
                           <Settings size={16} />
                           <span className="text-sm font-medium">Settings</span>
@@ -738,7 +747,26 @@ const Navbar = () => {
                         
                         <hr className={`my-2 ${isDark ? 'border-white/20' : 'border-gray-200'}`} />
                         
-                        <button className="w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 text-red-400 hover:bg-red-500/10">
+                        <button
+                          onClick={() => handleNavigation('/login', 'sign-in')}
+                          className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/10 text-white hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
+                        >
+                          <User size={16} />
+                          <span className="text-sm font-medium">Sign In Page</span>
+                        </button>
+                        
+                        <button
+                          onClick={() => handleNavigation('/signup', 'sign-up')}
+                          className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/10 text-white hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
+                        >
+                          <UserPlus size={16} />
+                          <span className="text-sm font-medium">Sign Up Page</span>
+                        </button>
+                        
+                        <button
+                          onClick={() => handleNavigation('/login', 'sign-out')}
+                          className="w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 text-red-400 hover:bg-red-500/10"
+                        >
                           <LogOut size={16} />
                           <span className="text-sm font-medium">Sign Out</span>
                         </button>
