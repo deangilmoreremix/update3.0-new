@@ -1,3 +1,16 @@
+You're looking for the code and design details for the "Activities and Communications" section, including its sub-components like Interaction History, Tasks Schedule, Upcoming Deals, and Stage Funnel. These features are implemented across several React components using Tailwind CSS for styling.
+
+Here's a breakdown of the code and design for each:
+
+src/components/sections/ActivitiesCommunications.tsx
+This component acts as the main container for all activities and communications related features.
+
+Design:
+
+Header: Features a prominent icon (CheckSquare) with a gradient background (from-orange-500 to-red-500) and a title/subtitle for the section.
+Layout: Uses a grid grid-cols-1 lg:grid-cols-3 gap-6 to arrange its sub-sections, with the main tasks section taking two columns on large screens (lg:col-span-2) and appointments/communications taking one column (lg:col-span-1).
+Card Styling: Sub-components are wrapped in div elements that apply a consistent glassmorphism-like style (bg-white/5 border-white/10 for dark mode, bg-white border-gray-200 for light mode, with backdrop-blur-xl border rounded-2xl).
+
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { CheckSquare, Calendar, MessageSquare } from 'lucide-react';
@@ -5,7 +18,7 @@ import TasksSection from '../TasksSection';
 import AppointmentWidget from '../AppointmentWidget';
 import InteractionHistory from '../dashboard/InteractionHistory';
 import TasksAndFunnel from '../dashboard/TasksAndFunnel';
-import { RecentActivity } from '../dashboard/RecentActivity';
+import RecentActivity from '../dashboard/RecentActivity';
 
 const ActivitiesCommunications: React.FC = () => {
   const { isDark } = useTheme();
@@ -71,45 +84,4 @@ const ActivitiesCommunications: React.FC = () => {
                         <MessageSquare size={14} />
                       </div>
                       <div>
-                        <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Email Follow-up</p>
-                        <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Microsoft deal</p>
-                      </div>
-                    </div>
-                    <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Today</span>
-                  </div>
-                </div>
-                
-                <div className={`p-3 rounded-lg ${isDark ? 'bg-white/5 hover:bg-white/10' : 'bg-gray-50 hover:bg-gray-100'} transition-colors cursor-pointer`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className={`p-2 rounded-lg ${isDark ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-600'}`}>
-                        <Calendar size={14} />
-                      </div>
-                      <div>
-                        <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Meeting Notes</p>
-                        <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Ford collaboration</p>
-                      </div>
-                    </div>
-                    <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Yesterday</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Tasks and Funnel Section */}
-      <div className="mb-6">
-        <TasksAndFunnel />
-      </div>
-      
-      {/* Recent Activity */}
-      <div className="mb-6">
-        <RecentActivity />
-      </div>
-    </div>
-  );
-};
-
-export default ActivitiesCommunications;
+                        <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Email F...
