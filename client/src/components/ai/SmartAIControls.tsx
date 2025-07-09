@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
-import { Play, Pause, Settings, BarChart3, Users, Zap, RefreshCw } from 'lucide-react';
+import { Play, Pause, Settings, BarChart3, Users, Zap, RefreshCw, Mail, Target } from 'lucide-react';
 
 export const SmartAIControls: React.FC = () => {
   const { isDark } = useTheme();
@@ -111,10 +111,40 @@ export const SmartAIControls: React.FC = () => {
 
         <button className={`
           p-4 rounded-lg text-left transition-all duration-200 hover:scale-105
+          ${isDark ? 'bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20' : 'bg-blue-50 border border-blue-200 hover:bg-blue-100'}
+        `}>
+          <div className="flex items-center space-x-3 mb-2">
+            <BarChart3 className="w-5 h-5 text-blue-500" />
+            <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              Deal Prediction
+            </span>
+          </div>
+          <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+            Predict deal closures
+          </p>
+        </button>
+
+        <button className={`
+          p-4 rounded-lg text-left transition-all duration-200 hover:scale-105
           ${isDark ? 'bg-green-500/10 border border-green-500/20 hover:bg-green-500/20' : 'bg-green-50 border border-green-200 hover:bg-green-100'}
         `}>
           <div className="flex items-center space-x-3 mb-2">
-            <BarChart3 className="w-5 h-5 text-green-500" />
+            <Mail className="w-5 h-5 text-green-500" />
+            <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              Email Personalization
+            </span>
+          </div>
+          <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+            Generate personalized emails
+          </p>
+        </button>
+
+        <button className={`
+          p-4 rounded-lg text-left transition-all duration-200 hover:scale-105
+          ${isDark ? 'bg-orange-500/10 border border-orange-500/20 hover:bg-orange-500/20' : 'bg-orange-50 border border-orange-200 hover:bg-orange-100'}
+        `}>
+          <div className="flex items-center space-x-3 mb-2">
+            <Target className="w-5 h-5 text-orange-500" />
             <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
               Opportunity Analysis
             </span>
