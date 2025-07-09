@@ -18,6 +18,7 @@ import SalesPipelineDealAnalytics from './sections/SalesPipelineDealAnalytics';
 import CustomerLeadManagement from './sections/CustomerLeadManagement';
 import ActivitiesCommunications from './sections/ActivitiesCommunications';
 import IntegrationsSystem from './sections/IntegrationsSystem';
+import UnifiedDashboard from './UnifiedDashboard';
 
 
 
@@ -100,39 +101,44 @@ const Dashboard: React.FC = () => {
       {isDragModeEnabled && (
         <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg text-center">
           <p className={`text-sm ${isDark ? 'text-blue-300' : 'text-blue-700'}`}>
-            🔄 <strong>Drag Mode Active:</strong> Drag sections by their handles to reorder your dashboard
+            🔄 <strong>Drag Mode Active:</strong> You can now drag individual components between sections
           </p>
         </div>
       )}
 
-      {/* Draggable Sections */}
-      <DragDropContext 
-        onDragEnd={handleDragEnd}
-        onDragStart={() => console.log('Drag started!')}
-      >
-        <Droppable droppableId="dashboard-sections">
-          {(provided) => (
-            <div 
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              className={`space-y-8 pb-20 ${isDragModeEnabled ? 'pl-12' : ''}`}
-            >
-              {sectionOrder.map((sectionId, index) => (
-                <DraggableSection
-                  key={sectionId}
-                  sectionId={sectionId}
-                  index={index}
-                >
-                  <div id={sectionId}>
-                    {renderSectionContent(sectionId)}
-                  </div>
-                </DraggableSection>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+      {/* Render UnifiedDashboard in drag mode for cross-section dragging */}
+      {isDragModeEnabled ? (
+        <UnifiedDashboard />
+      ) : (
+        /* Normal Dashboard Sections (no cross-section dragging) */
+        <DragDropContext 
+          onDragEnd={handleDragEnd}
+          onDragStart={() => console.log('Drag started!')}
+        >
+          <Droppable droppableId="dashboard-sections">
+            {(provided) => (
+              <div 
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className={`space-y-8 pb-20`}
+              >
+                {sectionOrder.map((sectionId, index) => (
+                  <DraggableSection
+                    key={sectionId}
+                    sectionId={sectionId}
+                    index={index}
+                  >
+                    <div id={sectionId}>
+                      {renderSectionContent(sectionId)}
+                    </div>
+                  </DraggableSection>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      )}
     </main>
   );
 };
