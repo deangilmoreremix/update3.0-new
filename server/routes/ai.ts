@@ -619,4 +619,216 @@ router.post('/realtime-analysis', async (req, res) => {
   }
 });
 
+// Contact enrichment endpoint
+router.post('/contact-enrichment', async (req, res) => {
+  try {
+    const { data } = req.body;
+    const { email, firstName, lastName, company, linkedinUrl, enrichmentType } = data;
+
+    if (!email && !firstName && !linkedinUrl) {
+      return res.status(400).json({ error: 'Email, name, or LinkedIn URL is required for enrichment' });
+    }
+
+    let prompt = '';
+    let contactInfo = {};
+
+    if (enrichmentType === 'email' && email) {
+      prompt = `You are a contact research expert. Based on the email address "${email}", provide detailed professional information about this person. 
+
+Please provide a JSON response with the following structure:
+{
+  "firstName": "person's first name",
+  "lastName": "person's last name", 
+  "name": "full name",
+  "company": "current company",
+  "title": "job title",
+  "industry": "industry sector",
+  "location": "city, state/country",
+  "socialProfiles": {
+    "linkedin": "linkedin profile url",
+    "twitter": "twitter handle",
+    "website": "personal website"
+  },
+  "bio": "brief professional background",
+  "confidence": 85,
+  "notes": "additional insights about this person"
+}
+
+Be specific and professional. If you cannot find certain information, use null for those fields.`;
+    } else if (enrichmentType === 'name' && firstName) {
+      prompt = `You are a contact research expert. Based on the name "${firstName} ${lastName || ''}" ${company ? `at company "${company}"` : ''}, provide detailed professional information about this person.
+
+Please provide a JSON response with the following structure:
+{
+  "firstName": "${firstName}",
+  "lastName": "${lastName || ''}",
+  "name": "${firstName} ${lastName || ''}",
+  "company": "current company",
+  "title": "job title",
+  "industry": "industry sector",
+  "location": "city, state/country",
+  "socialProfiles": {
+    "linkedin": "linkedin profile url",
+    "twitter": "twitter handle",
+    "website": "personal website"
+  },
+  "bio": "brief professional background",
+  "confidence": 75,
+  "notes": "additional insights about this person"
+}
+
+Be specific and professional. If you cannot find certain information, use null for those fields.`;
+    } else if (enrichmentType === 'linkedin' && linkedinUrl) {
+      prompt = `You are a contact research expert. Based on the LinkedIn profile "${linkedinUrl}", provide detailed professional information about this person.
+
+Please provide a JSON response with the following structure:
+{
+  "firstName": "person's first name",
+  "lastName": "person's last name",
+  "name": "full name",
+  "company": "current company",
+  "title": "job title",
+  "industry": "industry sector",
+  "location": "city, state/country",
+  "socialProfiles": {
+    "linkedin": "${linkedinUrl}",
+    "twitter": "twitter handle",
+    "website": "personal website"
+  },
+  "bio": "brief professional background",
+  "confidence": 90,
+  "notes": "additional insights about this person"
+}
+
+Be specific and professional. If you cannot find certain information, use null for those fields.`;
+    } else {
+      // Full enrichment with available data
+      prompt = `You are a contact research expert. Based on the available information:
+${email ? `Email: ${email}` : ''}
+${firstName ? `Name: ${firstName} ${lastName || ''}` : ''}
+${company ? `Company: ${company}` : ''}
+${linkedinUrl ? `LinkedIn: ${linkedinUrl}` : ''}
+
+Please provide enhanced professional information about this person in JSON format:
+{
+  "firstName": "person's first name",
+  "lastName": "person's last name",
+  "name": "full name",
+  "company": "current company",
+  "title": "job title",
+  "industry": "industry sector",
+  "location": "city, state/country",
+  "socialProfiles": {
+    "linkedin": "linkedin profile url",
+    "twitter": "twitter handle",
+    "website": "personal website"
+  },
+  "bio": "brief professional background",
+  "confidence": 80,
+  "notes": "additional insights about this person"
+}
+
+Be specific and professional. If you cannot find certain information, use null for those fields.`;
+    }
+
+    if (genAI) {
+      // Use Gemini AI for contact enrichment
+      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+      
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+      
+      try {
+        // Extract JSON from response
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const enrichedData = JSON.parse(jsonMatch[0]);
+          res.json(enrichedData);
+        } else {
+          throw new Error('No valid JSON found in response');
+        }
+      } catch (parseError) {
+        console.error('JSON parsing error:', parseError);
+        // Fallback to structured response
+        res.json({
+          firstName: firstName || 'Unknown',
+          lastName: lastName || '',
+          name: firstName ? `${firstName} ${lastName || ''}` : 'Unknown',
+          company: company || 'Unknown Company',
+          title: 'Professional',
+          industry: null,
+          location: null,
+          socialProfiles: linkedinUrl ? { linkedin: linkedinUrl } : null,
+          bio: null,
+          confidence: 60,
+          notes: 'Enriched via AI research'
+        });
+      }
+    } else if (openai) {
+      // Use OpenAI for contact enrichment
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a professional contact research expert. Always respond with valid JSON format only, no additional text.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        max_tokens: 800,
+        temperature: 0.7
+      });
+
+      const content = response.choices[0]?.message?.content || '{}';
+      
+      try {
+        const enrichedData = JSON.parse(content);
+        res.json(enrichedData);
+      } catch (parseError) {
+        console.error('JSON parsing error:', parseError);
+        // Fallback to structured response
+        res.json({
+          firstName: firstName || 'Unknown',
+          lastName: lastName || '',
+          name: firstName ? `${firstName} ${lastName || ''}` : 'Unknown',
+          company: company || 'Unknown Company',
+          title: 'Professional',
+          industry: null,
+          location: null,
+          socialProfiles: linkedinUrl ? { linkedin: linkedinUrl } : null,
+          bio: null,
+          confidence: 60,
+          notes: 'Enriched via AI research'
+        });
+      }
+    } else {
+      // No API keys available - return basic structure
+      res.json({
+        firstName: firstName || 'Unknown',
+        lastName: lastName || '',
+        name: firstName ? `${firstName} ${lastName || ''}` : 'Unknown',
+        email: email || null,
+        company: company || 'Unknown Company',
+        title: 'Professional',
+        industry: null,
+        location: null,
+        socialProfiles: linkedinUrl ? { linkedin: linkedinUrl } : null,
+        bio: null,
+        confidence: 10,
+        notes: 'API enrichment unavailable. Using estimated data. To enable AI features, please set up API keys for OpenAI or Gemini.'
+      });
+    }
+  } catch (error) {
+    console.error('Contact enrichment error:', error);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      message: 'Failed to enrich contact data'
+    });
+  }
+});
+
 export default router;
