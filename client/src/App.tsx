@@ -53,6 +53,7 @@ import EmailComposer from './pages/EmailComposer';
 import Campaigns from './pages/Campaigns';
 import ImageGenerator from './pages/ImageGenerator';
 import AIModelDemo from './pages/AIModelDemo';
+import FeatureAccessDemo from './pages/FeatureAccessDemo';
 
 import './components/styles/design-system.css';
 
@@ -130,6 +131,16 @@ function App() {
                           <ExactNavbar />
                           <div className="flex-1 w-full overflow-y-auto pt-24">
                             <AnalyticsDashboard />
+                          </div>
+                        </>
+                      } />
+                      
+                      {/* Feature Access Demo */}
+                      <Route path="/feature-access-demo" element={
+                        <>
+                          <ExactNavbar />
+                          <div className="flex-1 w-full overflow-y-auto pt-24">
+                            <FeatureAccessDemo />
                           </div>
                         </>
                       } />
