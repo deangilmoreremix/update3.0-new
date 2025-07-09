@@ -5,7 +5,7 @@ import TasksSection from '../TasksSection';
 import AppointmentWidget from '../AppointmentWidget';
 import InteractionHistory from '../dashboard/InteractionHistory';
 import TasksAndFunnel from '../dashboard/TasksAndFunnel';
-import { RecentActivity } from '../dashboard/RecentActivity';
+import RecentActivity from '../dashboard/RecentActivity';
 
 const ActivitiesCommunications: React.FC = () => {
   const { isDark } = useTheme();
@@ -25,35 +25,40 @@ const ActivitiesCommunications: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Tasks Section - takes 2 columns */}
         <div className="lg:col-span-2">
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6 mb-6`}>
             <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-6 flex items-center`}>
-              <CheckSquare className="w-5 h-5 mr-2" />
+              <CheckSquare className="h-5 w-5 mr-2 text-orange-500" />
               Tasks & Activities
             </h3>
             <TasksSection />
           </div>
           
+          {/* Interaction History */}
           <div className="mb-6">
             <InteractionHistory />
           </div>
         </div>
         
+        {/* Right Side - Appointments and Activity */}
         <div className="space-y-6 lg:col-span-1">
+          {/* Appointments Widget */}
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl overflow-hidden`}>
             <div className={`p-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'} flex justify-between items-center`}>
               <h3 className={`font-semibold flex items-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                <Calendar className="w-5 h-5 mr-2" />
+                <Calendar className="h-5 w-5 mr-2 text-blue-500" />
                 Upcoming Appointments
               </h3>
             </div>
             <AppointmentWidget />
           </div>
           
+          {/* Quick Tasks Widget */}
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl overflow-hidden`}>
             <div className={`p-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'} flex justify-between items-center`}>
               <h3 className={`font-semibold flex items-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                <MessageSquare className="w-5 h-5 mr-2" />
+                <MessageSquare className="h-5 w-5 mr-2 text-purple-500" />
                 Communications
               </h3>
             </div>
@@ -92,14 +97,16 @@ const ActivitiesCommunications: React.FC = () => {
             </div>
           </div>
         </div>
-        
-        <div className="mb-6">
-          <TasksAndFunnel />
-        </div>
-        
-        <div className="mb-6">
-          <RecentActivity />
-        </div>
+      </div>
+      
+      {/* Tasks and Funnel Section */}
+      <div className="mb-6">
+        <TasksAndFunnel />
+      </div>
+      
+      {/* Recent Activity */}
+      <div className="mb-6">
+        <RecentActivity />
       </div>
     </div>
   );
