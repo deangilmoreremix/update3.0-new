@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
+import { useAITools } from '../AIToolsProvider';
 import { Play, Pause, Settings, BarChart3, Users, Zap, RefreshCw, Mail, Target } from 'lucide-react';
 
 export const SmartAIControls: React.FC = () => {
   const { isDark } = useTheme();
   const { contacts } = useContactStore();
+  const { openTool } = useAITools();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
 
@@ -94,7 +96,9 @@ export const SmartAIControls: React.FC = () => {
 
       {/* Quick Actions Grid */}
       <div className="grid grid-cols-2 gap-4">
-        <button className={`
+        <button 
+          onClick={() => openTool('lead-scorer')}
+          className={`
           p-4 rounded-lg text-left transition-all duration-200 hover:scale-105
           ${isDark ? 'bg-purple-500/10 border border-purple-500/20 hover:bg-purple-500/20' : 'bg-purple-50 border border-purple-200 hover:bg-purple-100'}
         `}>
@@ -109,7 +113,9 @@ export const SmartAIControls: React.FC = () => {
           </p>
         </button>
 
-        <button className={`
+        <button 
+          onClick={() => openTool('sales-forecast')}
+          className={`
           p-4 rounded-lg text-left transition-all duration-200 hover:scale-105
           ${isDark ? 'bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20' : 'bg-blue-50 border border-blue-200 hover:bg-blue-100'}
         `}>
@@ -124,7 +130,9 @@ export const SmartAIControls: React.FC = () => {
           </p>
         </button>
 
-        <button className={`
+        <button 
+          onClick={() => openTool('email-composer')}
+          className={`
           p-4 rounded-lg text-left transition-all duration-200 hover:scale-105
           ${isDark ? 'bg-green-500/10 border border-green-500/20 hover:bg-green-500/20' : 'bg-green-50 border border-green-200 hover:bg-green-100'}
         `}>
@@ -139,7 +147,9 @@ export const SmartAIControls: React.FC = () => {
           </p>
         </button>
 
-        <button className={`
+        <button 
+          onClick={() => openTool('opportunity-finder')}
+          className={`
           p-4 rounded-lg text-left transition-all duration-200 hover:scale-105
           ${isDark ? 'bg-orange-500/10 border border-orange-500/20 hover:bg-orange-500/20' : 'bg-orange-50 border border-orange-200 hover:bg-orange-100'}
         `}>
