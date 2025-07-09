@@ -129,50 +129,6 @@ const Navbar = () => {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  // Main navigation tabs - updated to use actual page routes
-  const mainTabs = [
-    {
-      id: 'dashboard',
-      label: 'Dashboard',
-      icon: Home,
-      action: () => handleNavigation('/', 'dashboard'),
-      badge: null,
-      color: 'from-blue-500 to-green-500'
-    },
-    {
-      id: 'contacts',
-      label: 'Contacts',
-      icon: Users,
-      action: () => handleNavigation('/contacts', 'contacts'),
-      badge: counters.hotContacts,
-      color: 'from-purple-500 to-indigo-500'
-    },
-    {
-      id: 'pipeline',
-      label: 'Pipeline',
-      icon: Briefcase,
-      action: () => handleNavigation('/pipeline', 'pipeline'),
-      badge: counters.activeDeals,
-      color: 'from-green-500 to-emerald-500'
-    },
-    {
-      id: 'ai-tools',
-      label: 'AI Tools',
-      icon: Brain,
-      action: () => handleNavigation('/ai-tools', 'ai-tools'),
-      badge: null,
-      color: 'from-pink-500 to-rose-500'
-    },
-    {
-      id: 'appointments',
-      label: 'Calendar',
-      icon: Calendar,
-      action: () => handleNavigation('/appointments', 'appointments'),
-      badge: counters.todayAppointments,
-      color: 'from-cyan-500 to-blue-500'
-    }
-  ];
-
   // Complete AI Tools list - 29+ tools organized by category
   const aiTools = [
     // Core AI Tools (8 tools)
@@ -220,6 +176,50 @@ const Navbar = () => {
     { name: 'Reasoning Social', tool: 'reasoning-social', icon: Users, category: 'Reasoning Generators' }
   ];
 
+  // Main navigation tabs - updated to use actual page routes
+  const mainTabs = [
+    {
+      id: 'dashboard',
+      label: 'Dashboard',
+      icon: Home,
+      action: () => handleNavigation('/', 'dashboard'),
+      badge: null,
+      color: 'from-blue-500 to-green-500'
+    },
+    {
+      id: 'contacts',
+      label: 'Contacts',
+      icon: Users,
+      action: () => handleNavigation('/contacts', 'contacts'),
+      badge: counters.hotContacts,
+      color: 'from-purple-500 to-indigo-500'
+    },
+    {
+      id: 'pipeline',
+      label: 'Pipeline',
+      icon: Briefcase,
+      action: () => handleNavigation('/pipeline', 'pipeline'),
+      badge: counters.activeDeals,
+      color: 'from-green-500 to-emerald-500'
+    },
+    {
+      id: 'ai-tools',
+      label: 'AI Tools',
+      icon: Brain,
+      action: () => handleNavigation('/ai-tools', 'ai-tools'),
+      badge: aiTools.length,
+      color: 'from-pink-500 to-rose-500'
+    },
+    {
+      id: 'appointments',
+      label: 'Calendar',
+      icon: Calendar,
+      action: () => handleNavigation('/appointments', 'appointments'),
+      badge: counters.todayAppointments,
+      color: 'from-cyan-500 to-blue-500'
+    }
+  ];
+
   // Sales dropdown tools
   const salesTools = [
     { name: 'Sales Tools', tool: 'sales-tools', icon: DollarSign },
@@ -263,42 +263,55 @@ const Navbar = () => {
     { name: 'White-Label Customization', url: '/white-label', icon: Palette, isExternal: false }
   ];
 
-  // Dropdown menu configurations with color and badge counts
+  // Dropdown menu configurations with enhanced color and badge counts
   const dropdownMenus = [
     {
       id: 'sales',
       label: 'Sales',
       icon: DollarSign,
       badge: salesTools.length,
-      color: 'from-green-500 to-teal-500'
+      color: 'from-green-500 to-teal-500',
+      badgeColor: 'bg-green-500'
     },
     {
       id: 'tasks',
       label: 'Tasks',
       icon: CheckSquare,
       badge: taskTools.length,
-      color: 'from-orange-500 to-red-500'
+      color: 'from-orange-500 to-red-500',
+      badgeColor: 'bg-orange-500'
     },
     {
       id: 'communication',
       label: 'Comm',
       icon: MessageSquare,
       badge: communicationTools.length,
-      color: 'from-blue-500 to-sky-500'
+      color: 'from-blue-500 to-sky-500',
+      badgeColor: 'bg-blue-500'
     },
     {
       id: 'content',
       label: 'Content',
       icon: Edit3,
       badge: contentTools.length,
-      color: 'from-amber-500 to-orange-500'
+      color: 'from-amber-500 to-orange-500',
+      badgeColor: 'bg-amber-500'
     },
     {
       id: 'apps',
       label: 'Apps',
       icon: Grid3X3,
       badge: connectedApps.length,
-      color: 'from-purple-500 to-violet-500'
+      color: 'from-purple-500 to-violet-500',
+      badgeColor: 'bg-purple-500'
+    },
+    {
+      id: 'ai-categories',
+      label: 'AI',
+      icon: Brain,
+      badge: 31,
+      color: 'from-pink-500 to-rose-500',
+      badgeColor: 'bg-pink-500'
     }
   ];
 
@@ -383,9 +396,9 @@ const Navbar = () => {
                         tab.badge, 
                         tab.id === 'pipeline' ? 'bg-green-500' :
                         tab.id === 'contacts' ? 'bg-purple-500' :
-                        tab.id === 'ai-goals' ? 'bg-orange-500' :
-                        tab.id === 'tasks' ? 'bg-indigo-500' :
-                        'bg-gray-500'
+                        tab.id === 'ai-tools' ? 'bg-pink-500' :
+                        tab.id === 'appointments' ? 'bg-cyan-500' :
+                        'bg-blue-500'
                       )}
 
                       {/* Active Tab Glow Effect */}
@@ -428,7 +441,7 @@ const Navbar = () => {
                     />
                     
                     {/* Badge */}
-                    {renderBadge(menu.badge, `bg-gradient-to-r ${menu.color}`)}
+                    {renderBadge(menu.badge, menu.badgeColor)}
 
                     {/* Active Dropdown Glow Effect */}
                     {activeDropdown === menu.id && (
@@ -504,6 +517,99 @@ const Navbar = () => {
                             <span className="text-sm font-medium">{tool.name}</span>
                           </button>
                         ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* AI Categories Dropdown */}
+                  {menu.id === 'ai-categories' && activeDropdown === 'ai-categories' && (
+                    <div className={`absolute top-14 right-0 w-72 ${isDark ? 'bg-gray-900/95' : 'bg-white/95'} backdrop-blur-2xl border ${isDark ? 'border-white/10' : 'border-gray-200'} rounded-2xl shadow-2xl z-50 overflow-hidden animate-fade-in`}>
+                      <div className="p-3">
+                        <div className="mb-3">
+                          <h3 className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>
+                            AI Tool Categories
+                          </h3>
+                        </div>
+                        
+                        {/* Core AI Tools */}
+                        <div className="mb-3">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className={`text-xs font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                              Core AI Tools
+                            </span>
+                            <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
+                              {aiTools.filter(tool => tool.category === 'Core AI Tools').length}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-1">
+                            {aiTools.filter(tool => tool.category === 'Core AI Tools').slice(0, 4).map((tool, index) => (
+                              <button
+                                key={index}
+                                onClick={() => handleAIToolClick(tool.tool)}
+                                className={`text-left flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
+                              >
+                                <tool.icon size={12} className="text-blue-500" />
+                                <span className="text-xs">{tool.name}</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Communication Tools */}
+                        <div className="mb-3">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className={`text-xs font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                              Communication
+                            </span>
+                            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                              {aiTools.filter(tool => tool.category === 'Communication').length}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-1">
+                            {aiTools.filter(tool => tool.category === 'Communication').map((tool, index) => (
+                              <button
+                                key={index}
+                                onClick={() => handleAIToolClick(tool.tool)}
+                                className={`text-left flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
+                              >
+                                <tool.icon size={12} className="text-green-500" />
+                                <span className="text-xs">{tool.name}</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Real-time Features */}
+                        <div className="mb-3">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className={`text-xs font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                              Real-time Features
+                            </span>
+                            <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded-full">
+                              {aiTools.filter(tool => tool.category === 'Real-time Features').length}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-1">
+                            {aiTools.filter(tool => tool.category === 'Real-time Features').slice(0, 4).map((tool, index) => (
+                              <button
+                                key={index}
+                                onClick={() => handleAIToolClick(tool.tool)}
+                                className={`text-left flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
+                              >
+                                <tool.icon size={12} className="text-purple-500" />
+                                <span className="text-xs">{tool.name}</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* View All AI Tools Button */}
+                        <button
+                          onClick={() => handleNavigation('/ai-tools', 'ai-tools')}
+                          className={`w-full mt-3 py-2 px-4 rounded-lg border-2 border-dashed transition-all duration-200 ${isDark ? 'border-gray-600 hover:border-gray-500 text-gray-300 hover:text-white' : 'border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-900'}`}
+                        >
+                          <span className="text-sm font-medium">View All {aiTools.length} AI Tools</span>
+                        </button>
                       </div>
                     </div>
                   )}
@@ -636,13 +742,61 @@ const Navbar = () => {
                 <button
                   key={tab.id}
                   onClick={tab.action}
-                  className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
+                  className={`w-full relative text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${
+                    activeTab === tab.id 
+                      ? `bg-gradient-to-r ${tab.color} text-white shadow-lg` 
+                      : `${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`
+                  }`}
                 >
                   <tab.icon size={18} />
                   <span className="font-medium">{tab.label}</span>
-                  {tab.badge && renderBadge(tab.badge, 'bg-blue-500')}
+                  
+                  {/* Mobile Badge */}
+                  {tab.badge && (
+                    <div className="ml-auto">
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        activeTab === tab.id 
+                          ? 'bg-white/20 text-white' 
+                          : `${isDark ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'}`
+                      }`}>
+                        {tab.badge}
+                      </span>
+                    </div>
+                  )}
                 </button>
               ))}
+              
+              {/* Mobile Quick Access Section */}
+              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <h3 className={`text-xs font-semibold ${isDark ? 'text-gray-400' : 'text-gray-500'} mb-3 uppercase tracking-wider`}>
+                  Quick Access
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {dropdownMenus.map((menu) => (
+                    <button
+                      key={menu.id}
+                      onClick={() => {
+                        if (menu.id === 'ai-categories') {
+                          handleNavigation('/ai-tools', 'ai-tools');
+                        } else {
+                          toggleDropdown(menu.id);
+                        }
+                      }}
+                      className={`relative flex items-center space-x-2 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
+                    >
+                      <menu.icon size={16} />
+                      <span className="text-sm font-medium">{menu.label}</span>
+                      
+                      {/* Mobile Menu Badge */}
+                      {menu.badge && (
+                        <div className={`absolute -top-1 -right-1 ${menu.badgeColor} text-white text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 shadow-lg`}>
+                          {menu.badge}
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
               
               <hr className={`${isDark ? 'border-white/20' : 'border-gray-200'}`} />
               
