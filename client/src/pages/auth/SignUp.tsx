@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, User, Phone, Building, Shield, Crown, Brain, Sparkles } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, User, Phone, Building, Shield, Crown, Brain, Sparkles, CheckCircle, ArrowRight, Users } from 'lucide-react';
 
 interface SignUpFormData {
   firstName: string;
@@ -128,19 +128,14 @@ export const SignUp: React.FC = () => {
     }
   };
 
-  const handleReplitAuth = () => {
-    // For demo purposes, show alert instead of Replit Auth popup
-    alert('Replit Auth integration available. For now, please complete the signup form below.');
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        {/* Header */}
-        <div className="text-center">
+        {/* Header with Dashboard Style */}
+        <div className="text-center mb-8">
           <Link to="/" className="inline-block">
-            <div className="flex items-center justify-center mb-4">
-              <div className="p-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl mr-3">
+            <div className="flex items-center justify-center mb-6">
+              <div className="p-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl mr-3 shadow-lg">
                 <Brain className="w-8 h-8 text-white" />
               </div>
               <h1 className="text-3xl font-bold">
@@ -151,19 +146,19 @@ export const SignUp: React.FC = () => {
               </h1>
             </div>
           </Link>
-          <h2 className="mt-6 text-2xl font-bold text-gray-900">
-            Create your account
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Create Your Account
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="text-gray-600">
             Join thousands of businesses using AI-powered CRM
           </p>
         </div>
 
-        {/* Sign Up Form with Glassmorphism */}
+        {/* Main Sign Up Card with Dashboard Glassmorphism */}
         <div className="bg-white/70 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-xl p-8">
-          {/* User Type Selection */}
+          {/* Account Type Selection */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-3">
               Account Type
             </label>
             <div className="grid grid-cols-2 gap-4">
@@ -176,9 +171,9 @@ export const SignUp: React.FC = () => {
                     : 'border-gray-200 hover:border-gray-300 bg-white/30 backdrop-blur-sm'
                 }`}
               >
-                <User className="mx-auto mb-2" size={24} />
-                <div className="font-medium">Regular User</div>
-                <div className="text-xs text-gray-500">Standard CRM access</div>
+                <Users className="w-6 h-6 mx-auto mb-2" />
+                <h3 className="font-medium">Regular User</h3>
+                <p className="text-xs text-gray-600">Access core CRM features</p>
               </button>
               <button
                 type="button"
@@ -189,83 +184,105 @@ export const SignUp: React.FC = () => {
                     : 'border-gray-200 hover:border-gray-300 bg-white/30 backdrop-blur-sm'
                 }`}
               >
-                <Crown className="mx-auto mb-2" size={24} />
-                <div className="font-medium">Super Admin</div>
-                <div className="text-xs text-gray-500">Platform management</div>
+                <Crown className="w-6 h-6 mx-auto mb-2" />
+                <h3 className="font-medium">Super Admin</h3>
+                <p className="text-xs text-gray-600">Full platform access</p>
               </button>
             </div>
           </div>
 
-          {/* Replit Auth Button (Disabled in Demo) */}
-          <button
-            onClick={handleReplitAuth}
-            className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-gray-100/50 backdrop-blur-sm text-sm font-medium text-gray-500 cursor-not-allowed mb-6"
-            disabled
-          >
-            <Shield className="w-5 h-5 mr-2 text-gray-400" />
-            Continue with Replit (Demo Mode)
-          </button>
+          {/* SSO Section */}
+          <div className="mb-6">
+            <a
+              href="/api/login"
+              className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-lg"
+            >
+              <Shield className="w-5 h-5 mr-2" />
+              Sign up with Replit SSO
+            </a>
+            <p className="text-xs text-gray-500 text-center mt-2">
+              Fastest way to get started with existing accounts
+            </p>
+          </div>
 
+          {/* Divider */}
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white/70 text-gray-500">Or create account with email</span>
+              <span className="px-4 bg-white/70 text-gray-500">Or create with email</span>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Sign Up Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-50/80 backdrop-blur-sm border border-red-200 rounded-xl p-4">
-                <p className="text-sm text-red-800">{error}</p>
+              <div className="bg-red-50/80 backdrop-blur-sm border border-red-200/50 rounded-xl p-4">
+                <div className="flex items-center">
+                  <div className="p-2 bg-red-100 rounded-lg mr-3">
+                    <Shield className="w-4 h-4 text-red-600" />
+                  </div>
+                  <p className="text-sm text-red-800">{error}</p>
+                </div>
               </div>
             )}
 
             {success && (
-              <div className="bg-green-50/80 backdrop-blur-sm border border-green-200 rounded-xl p-4">
-                <p className="text-sm text-green-800">{success}</p>
+              <div className="bg-green-50/80 backdrop-blur-sm border border-green-200/50 rounded-xl p-4">
+                <div className="flex items-center">
+                  <div className="p-2 bg-green-100 rounded-lg mr-3">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                  </div>
+                  <p className="text-sm text-green-800">{success}</p>
+                </div>
               </div>
             )}
 
             {/* Name Fields */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                  First Name *
+                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+                  First Name
                 </label>
-                <input
-                  id="firstName"
-                  name="firstName"
-                  type="text"
-                  required
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
-                  placeholder="John"
-                />
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                  <input
+                    id="firstName"
+                    name="firstName"
+                    type="text"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200"
+                    placeholder="John"
+                    required
+                  />
+                </div>
               </div>
               <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                  Last Name *
+                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+                  Last Name
                 </label>
-                <input
-                  id="lastName"
-                  name="lastName"
-                  type="text"
-                  required
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
-                  placeholder="Doe"
-                />
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                  <input
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200"
+                    placeholder="Doe"
+                    required
+                  />
+                </div>
               </div>
             </div>
 
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email Address *
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
@@ -273,12 +290,11 @@ export const SignUp: React.FC = () => {
                   id="email"
                   name="email"
                   type="email"
-                  autoComplete="email"
-                  required
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="pl-10 w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200"
                   placeholder="john@company.com"
+                  required
                 />
               </div>
             </div>
@@ -286,8 +302,8 @@ export const SignUp: React.FC = () => {
             {/* Password Fields */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                  Password *
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
@@ -295,25 +311,24 @@ export const SignUp: React.FC = () => {
                     id="password"
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    autoComplete="new-password"
-                    required
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="pl-10 pr-10 w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200"
                     placeholder="••••••••"
+                    required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="absolute right-3 top-3 h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors"
                   >
-                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    {showPassword ? <EyeOff /> : <Eye />}
                   </button>
                 </div>
               </div>
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                  Confirm Password *
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                  Confirm Password
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
@@ -321,19 +336,18 @@ export const SignUp: React.FC = () => {
                     id="confirmPassword"
                     name="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
-                    autoComplete="new-password"
-                    required
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    className="pl-10 pr-10 w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200"
                     placeholder="••••••••"
+                    required
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="absolute right-3 top-3 h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors"
                   >
-                    {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    {showConfirmPassword ? <EyeOff /> : <Eye />}
                   </button>
                 </div>
               </div>
@@ -342,8 +356,8 @@ export const SignUp: React.FC = () => {
             {/* Optional Fields */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="organizationName" className="block text-sm font-medium text-gray-700 mb-1">
-                  Organization
+                <label htmlFor="organizationName" className="block text-sm font-medium text-gray-700 mb-2">
+                  Organization (Optional)
                 </label>
                 <div className="relative">
                   <Building className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
@@ -353,14 +367,14 @@ export const SignUp: React.FC = () => {
                     type="text"
                     value={formData.organizationName}
                     onChange={handleInputChange}
-                    className="pl-10 w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
-                    placeholder="Company Inc."
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200"
+                    placeholder="Your Company"
                   />
                 </div>
               </div>
               <div>
-                <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                  Phone Number
+                <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone (Optional)
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
@@ -370,7 +384,7 @@ export const SignUp: React.FC = () => {
                     type="tel"
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
-                    className="pl-10 w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200"
                     placeholder="+1 (555) 123-4567"
                   />
                 </div>
@@ -379,45 +393,45 @@ export const SignUp: React.FC = () => {
 
             {/* Super Admin Code */}
             {formData.userType === 'super_admin' && (
-              <div>
-                <label htmlFor="adminCode" className="block text-sm font-medium text-gray-700 mb-1">
-                  Super Admin Code *
+              <div className="bg-purple-50/80 backdrop-blur-sm border border-purple-200/50 rounded-xl p-4">
+                <label htmlFor="adminCode" className="block text-sm font-medium text-purple-700 mb-2">
+                  Super Admin Code
                 </label>
                 <div className="relative">
                   <Crown className="absolute left-3 top-3 h-5 w-5 text-purple-400" />
                   <input
                     id="adminCode"
                     name="adminCode"
-                    type="password"
-                    required
+                    type="text"
                     value={formData.adminCode}
                     onChange={handleInputChange}
-                    className="pl-10 w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
+                    className="w-full pl-10 pr-4 py-3 border border-purple-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200"
                     placeholder="Enter super admin code"
+                    required
                   />
                 </div>
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="text-xs text-purple-600 mt-2">
                   Contact your system administrator for the super admin code
                 </p>
               </div>
             )}
 
-            {/* Terms and Privacy */}
+            {/* Terms and Conditions */}
             <div className="flex items-center">
               <input
                 id="terms"
                 name="terms"
                 type="checkbox"
-                required
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                required
               />
-              <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
+              <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
                 I agree to the{' '}
-                <Link to="/terms" className="text-blue-600 hover:text-blue-500">
+                <Link to="/terms" className="text-blue-600 hover:text-blue-500 font-medium">
                   Terms of Service
                 </Link>{' '}
                 and{' '}
-                <Link to="/privacy" className="text-blue-600 hover:text-blue-500">
+                <Link to="/privacy" className="text-blue-600 hover:text-blue-500 font-medium">
                   Privacy Policy
                 </Link>
               </label>
@@ -427,29 +441,14 @@ export const SignUp: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full flex items-center justify-center px-4 py-3 font-medium rounded-xl focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-[1.02] hover:shadow-lg ${
-                formData.userType === 'super_admin'
-                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 focus:ring-purple-500'
-                  : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 focus:ring-blue-500'
-              }`}
+              className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
               ) : (
-                <>
-                  {formData.userType === 'super_admin' ? (
-                    <>
-                      <Crown className="mr-2 h-4 w-4" />
-                      Create Super Admin Account
-                    </>
-                  ) : (
-                    <>
-                      <User className="mr-2 h-4 w-4" />
-                      Create Account
-                    </>
-                  )}
-                </>
+                <ArrowRight className="w-5 h-5 mr-2" />
               )}
+              {isLoading ? 'Creating Account...' : 'Create Account'}
             </button>
           </form>
 
@@ -457,13 +456,43 @@ export const SignUp: React.FC = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <Link
-                to="/signin"
-                className="font-medium text-blue-600 hover:text-blue-500"
-              >
-                Sign in here
+              <Link to="/signin" className="font-medium text-blue-600 hover:text-blue-500">
+                Sign in
               </Link>
             </p>
+          </div>
+        </div>
+
+        {/* Features Preview */}
+        <div className="bg-white/50 backdrop-blur-xl border border-gray-200/50 rounded-2xl p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
+            What you'll get with SmartCRM
+          </h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Brain className="w-4 h-4 text-blue-600" />
+              </div>
+              <span className="text-sm text-gray-700">AI-Powered Insights</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <Users className="w-4 h-4 text-green-600" />
+              </div>
+              <span className="text-sm text-gray-700">Contact Management</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <Shield className="w-4 h-4 text-purple-600" />
+              </div>
+              <span className="text-sm text-gray-700">Enterprise Security</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-amber-100 rounded-lg">
+                <Sparkles className="w-4 h-4 text-amber-600" />
+              </div>
+              <span className="text-sm text-gray-700">Smart Automation</span>
+            </div>
           </div>
         </div>
       </div>
