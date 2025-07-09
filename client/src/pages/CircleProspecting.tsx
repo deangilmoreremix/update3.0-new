@@ -1,113 +1,154 @@
 import React, { useState } from 'react';
-import { Target, Users, Phone, Mail, MapPin, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
+import { Target, TrendingUp, Users, Phone, Mail, Calendar, CheckCircle, Clock, AlertCircle, Star, ArrowRight, Filter, Search, Plus, BarChart3, DollarSign, Eye, MessageCircle, Settings, User, MapPin, Building, Briefcase, Link2, UserPlus, PhoneCall, Send, Edit, Trash2, Download, Upload, RefreshCw, Zap, Activity, Award, ChevronRight, ChevronDown, Flag, Globe, Heart, Home, Info, Lock, Minus, MoreHorizontal, Move, Navigation, Package, Percent, PlayCircle, PlusCircle, Power, Save, Share2, ShoppingBag, ShoppingCart, Smartphone, Sunrise, Sunset, Tablet, ThumbsUp, ToggleLeft, ToggleRight, Tv, Umbrella, Video, Volume2, VolumeX, Watch, Wifi, WifiOff, Wind, Zap as ZapIcon, ArrowUpRight, ArrowDownRight, Bot } from 'lucide-react';
 
-const CircleProspecting = () => {
-  const { isDark } = useTheme();
+const CircleProspecting: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
-  const prospectingStrategies = [
+  const prospectingData = {
+    totalProspects: 145,
+    convertedProspects: 32,
+    activeProspects: 78,
+    avgResponseTime: '2.4 hours',
+    conversionRate: 22.1,
+    monthlyTarget: 200,
+    weeklyGoal: 50,
+    completed: 28
+  };
+
+  const metrics = [
+    { label: 'Total Prospects', value: '145', change: '+12%', positive: true },
+    { label: 'Conversion Rate', value: '22.1%', change: '+5.2%', positive: true },
+    { label: 'Active Prospects', value: '78', change: '+8', positive: true },
+    { label: 'Response Time', value: '2.4h', change: '-15%', positive: true }
+  ];
+
+  const strategies = [
     {
-      name: 'Warm Introductions',
-      description: 'Leverage existing network for referrals',
-      icon: <Users className="h-6 w-6" />,
-      effectiveness: 85,
-      color: 'bg-green-500'
-    },
-    {
-      name: 'Cold Calling',
-      description: 'Direct outreach to prospects',
-      icon: <Phone className="h-6 w-6" />,
-      effectiveness: 45,
-      color: 'bg-blue-500'
-    },
-    {
-      name: 'Email Campaigns',
-      description: 'Automated email sequences',
+      name: 'Cold Email Outreach',
+      description: 'Personalized email campaigns to prospects',
       icon: <Mail className="h-6 w-6" />,
-      effectiveness: 65,
-      color: 'bg-purple-500'
+      category: 'Email Marketing',
+      color: 'bg-blue-500',
+      effectiveness: 85,
+      responseRate: 12.5,
+      costPerLead: 45,
+      status: 'active'
     },
     {
-      name: 'Social Selling',
-      description: 'LinkedIn and social media outreach',
-      icon: <TrendingUp className="h-6 w-6" />,
-      effectiveness: 70,
-      color: 'bg-orange-500'
+      name: 'LinkedIn Prospecting',
+      description: 'Direct outreach through LinkedIn connections',
+      icon: <Users className="h-6 w-6" />,
+      category: 'Social Media',
+      color: 'bg-green-500',
+      effectiveness: 78,
+      responseRate: 18.2,
+      costPerLead: 38,
+      status: 'active'
+    },
+    {
+      name: 'Phone Prospecting',
+      description: 'Direct phone calls to qualified leads',
+      icon: <Phone className="h-6 w-6" />,
+      category: 'Phone Sales',
+      color: 'bg-orange-500',
+      effectiveness: 65,
+      responseRate: 25.8,
+      costPerLead: 67,
+      status: 'paused'
+    },
+    {
+      name: 'Content Marketing',
+      description: 'Inbound prospects through valuable content',
+      icon: <Target className="h-6 w-6" />,
+      category: 'Content Strategy',
+      color: 'bg-purple-500',
+      effectiveness: 92,
+      responseRate: 8.3,
+      costPerLead: 23,
+      status: 'active'
+    },
+    {
+      name: 'Referral Program',
+      description: 'Leverage existing customers for new leads',
+      icon: <Star className="h-6 w-6" />,
+      category: 'Referrals',
+      color: 'bg-yellow-500',
+      effectiveness: 94,
+      responseRate: 35.7,
+      costPerLead: 12,
+      status: 'active'
+    },
+    {
+      name: 'Event Marketing',
+      description: 'Trade shows and networking events',
+      icon: <Calendar className="h-6 w-6" />,
+      category: 'Events',
+      color: 'bg-indigo-500',
+      effectiveness: 71,
+      responseRate: 22.4,
+      costPerLead: 89,
+      status: 'active'
     }
   ];
 
-  const prospectingMetrics = [
-    { label: 'Prospects Identified', value: '1,247', change: '+18%', positive: true },
-    { label: 'Contacts Made', value: '324', change: '+25%', positive: true },
-    { label: 'Qualified Leads', value: '87', change: '+12%', positive: true },
-    { label: 'Conversion Rate', value: '26.8%', change: '+4.2%', positive: true }
-  ];
-
   const recentProspects = [
-    { name: 'TechCorp Solutions', contact: 'Sarah Johnson', status: 'Qualified', priority: 'High' },
-    { name: 'Global Industries', contact: 'Mike Chen', status: 'Contacted', priority: 'Medium' },
-    { name: 'StartupXYZ', contact: 'Alex Rodriguez', status: 'Researching', priority: 'High' },
-    { name: 'Enterprise Co', contact: 'Lisa Wang', status: 'Qualified', priority: 'Low' }
+    { action: 'New prospect added', contact: 'Sarah Johnson - TechCorp', amount: '$45,000', time: '2 hours ago' },
+    { action: 'Follow-up scheduled', contact: 'Michael Chen - DataFlow', amount: '$67,000', time: '4 hours ago' },
+    { action: 'Demo completed', contact: 'Emily Rodriguez - GrowthHub', amount: '$123,000', time: '1 day ago' },
+    { action: 'Proposal sent', contact: 'David Kim - Innovation Labs', amount: '$34,000', time: '2 days ago' },
+    { action: 'Meeting scheduled', contact: 'Lisa Wang - StartupXYZ', amount: '$89,000', time: '3 days ago' }
   ];
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="mb-8">
-          <h1 className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            Circle Prospecting
-          </h1>
-          <p className={`mt-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            Systematic approach to identifying and engaging potential customers
-          </p>
-        </div>
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Circle Prospecting</h1>
+        <p className="text-gray-600 mt-2">Advanced prospecting analytics and management system</p>
+      </div>
 
-        <div className="flex space-x-4 mb-6">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              activeTab === 'overview' 
-                ? 'bg-blue-600 text-white' 
-                : `${isDark ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-white text-gray-700 hover:bg-gray-50'}`
-            }`}
-          >
-            Overview
-          </button>
-          <button
-            onClick={() => setActiveTab('strategies')}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              activeTab === 'strategies' 
-                ? 'bg-blue-600 text-white' 
-                : `${isDark ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-white text-gray-700 hover:bg-gray-50'}`
-            }`}
-          >
-            Strategies
-          </button>
-          <button
-            onClick={() => setActiveTab('prospects')}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              activeTab === 'prospects' 
-                ? 'bg-blue-600 text-white' 
-                : `${isDark ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-white text-gray-700 hover:bg-gray-50'}`
-            }`}
-          >
-            Prospects
-          </button>
-        </div>
+      <div className="flex space-x-4 mb-6">
+        <button
+          onClick={() => setActiveTab('overview')}
+          className={`px-4 py-2 rounded-lg transition-colors ${
+            activeTab === 'overview' 
+              ? 'bg-blue-600 text-white' 
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          Overview
+        </button>
+        <button
+          onClick={() => setActiveTab('strategies')}
+          className={`px-4 py-2 rounded-lg transition-colors ${
+            activeTab === 'strategies' 
+              ? 'bg-blue-600 text-white' 
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          Strategies
+        </button>
+        <button
+          onClick={() => setActiveTab('prospects')}
+          className={`px-4 py-2 rounded-lg transition-colors ${
+            activeTab === 'prospects' 
+              ? 'bg-blue-600 text-white' 
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          Prospects
+        </button>
+      </div>
 
-        {activeTab === 'overview' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {prospectingMetrics.map((metric, index) => (
-              <div key={index} className={`${isDark ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-sm p-6 border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+      {activeTab === 'overview' && (
+        <div className="space-y-6">
+          {/* Metrics Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {metrics.map((metric, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {metric.label}
-                    </p>
-                    <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      {metric.value}
-                    </p>
+                    <p className="text-sm text-gray-600">{metric.label}</p>
+                    <p className="text-2xl font-bold text-gray-900">{metric.value}</p>
                   </div>
                   <div className={`text-sm font-medium ${metric.positive ? 'text-green-600' : 'text-red-600'}`}>
                     {metric.change}
@@ -116,91 +157,152 @@ const CircleProspecting = () => {
               </div>
             ))}
           </div>
-        )}
 
-        {activeTab === 'strategies' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {prospectingStrategies.map((strategy, index) => (
-              <div key={index} className={`${isDark ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-sm p-6 border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-                <div className="flex items-center mb-4">
-                  <div className={`p-3 ${strategy.color} rounded-xl`}>
-                    {strategy.icon}
-                  </div>
-                  <div className="ml-4">
-                    <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      {strategy.name}
-                    </h3>
-                    <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {strategy.description}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                      Effectiveness
-                    </span>
-                    <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      {strategy.effectiveness}%
-                    </span>
-                  </div>
-                  <div className={`w-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} rounded-full h-2`}>
-                    <div 
-                      className={`h-2 rounded-full ${strategy.color.replace('bg-', 'bg-')}`}
-                      style={{ width: `${strategy.effectiveness}%` }}
-                    ></div>
-                  </div>
-                </div>
+          {/* Monthly Progress */}
+          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Monthly Progress</h3>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Monthly Target</span>
+                <span className="font-semibold text-gray-900">{prospectingData.completed} / {prospectingData.monthlyTarget}</span>
               </div>
-            ))}
-          </div>
-        )}
-
-        {activeTab === 'prospects' && (
-          <div className={`${isDark ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-sm border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-            <div className="p-6">
-              <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>
-                Recent Prospects
-              </h3>
-              <div className="space-y-4">
-                {recentProspects.map((prospect, index) => (
-                  <div key={index} className={`flex items-center justify-between p-4 ${isDark ? 'bg-gray-700' : 'bg-gray-50'} rounded-lg`}>
-                    <div className="flex items-center space-x-4">
-                      <div className={`p-2 ${isDark ? 'bg-gray-600' : 'bg-white'} rounded-lg`}>
-                        <Target className={`h-5 w-5 ${isDark ? 'text-gray-300' : 'text-gray-600'}`} />
-                      </div>
-                      <div>
-                        <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                          {prospect.name}
-                        </h4>
-                        <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                          {prospect.contact}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        prospect.status === 'Qualified' ? 'bg-green-100 text-green-800' :
-                        prospect.status === 'Contacted' ? 'bg-blue-100 text-blue-800' :
-                        'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {prospect.status}
-                      </span>
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        prospect.priority === 'High' ? 'bg-red-100 text-red-800' :
-                        prospect.priority === 'Medium' ? 'bg-orange-100 text-orange-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {prospect.priority}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-green-500 h-2 rounded-full" 
+                  style={{ width: `${(prospectingData.completed / prospectingData.monthlyTarget) * 100}%` }}
+                ></div>
+              </div>
+              <div className="text-sm text-gray-500">
+                {Math.round((prospectingData.completed / prospectingData.monthlyTarget) * 100)}% of monthly target
               </div>
             </div>
           </div>
-        )}
-      </div>
+
+          {/* Recent Prospecting Activity */}
+          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Prospecting Activity</h3>
+            <div className="space-y-4">
+              {recentProspects.map((activity, index) => (
+                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <div>
+                      <p className="font-medium text-gray-900">{activity.action}</p>
+                      <p className="text-sm text-gray-600">{activity.contact}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-medium text-gray-900">{activity.amount}</p>
+                    <p className="text-sm text-gray-500">{activity.time}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'strategies' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {strategies.map((strategy, index) => (
+            <div key={index} className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-md transition-all duration-200 cursor-pointer">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className={`p-2 rounded-lg ${strategy.color} text-white`}>
+                  {strategy.icon}
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">{strategy.name}</h3>
+                  <p className="text-sm text-gray-600">{strategy.category}</p>
+                </div>
+              </div>
+              <p className="text-gray-700 mb-4">{strategy.description}</p>
+              
+              <div className="space-y-3 mb-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Effectiveness</span>
+                  <span className="text-sm font-medium text-gray-900">{strategy.effectiveness}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-green-500 h-2 rounded-full" 
+                    style={{ width: `${strategy.effectiveness}%` }}
+                  ></div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 pt-2">
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">Response Rate</p>
+                    <p className="text-lg font-semibold text-gray-900">{strategy.responseRate}%</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">Cost per Lead</p>
+                    <p className="text-lg font-semibold text-gray-900">${strategy.costPerLead}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  strategy.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                }`}>
+                  {strategy.status}
+                </div>
+                <button className="bg-gray-100 text-gray-700 px-3 py-1 rounded-md hover:bg-gray-200 transition-colors text-sm">
+                  Manage
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {activeTab === 'prospects' && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Prospect Pipeline</h3>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Cold Prospects</span>
+                <span className="font-semibold text-gray-600">45</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Contacted</span>
+                <span className="font-semibold text-blue-600">32</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Interested</span>
+                <span className="font-semibold text-orange-600">23</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Qualified</span>
+                <span className="font-semibold text-green-600">12</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Top Performing Sources</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Referrals</span>
+                <span className="font-semibold text-green-600">35.7%</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Phone Calls</span>
+                <span className="font-semibold text-blue-600">25.8%</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Events</span>
+                <span className="font-semibold text-orange-600">22.4%</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">LinkedIn</span>
+                <span className="font-semibold text-purple-600">18.2%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
