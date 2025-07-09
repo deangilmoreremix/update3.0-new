@@ -3,7 +3,14 @@ import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea
 import AIEnhancedDealCard from '../components/pipeline/AIEnhancedDealCard';
 import DealAnalytics from '../components/DealAnalytics';
 import PipelineStats from '../components/PipelineStats';
+import { AchievementPanel } from '../components/gamification/AchievementPanel';
+import { ContactsModal } from '../components/contacts/ContactsModal';
+import { APIStatusIndicator } from '../components/ui/APIStatusIndicator';
+import { FloatingActionPanel } from '../components/ui/FloatingActionPanel';
 import AdvancedFilter from '../components/pipeline/AdvancedFilter';
+import AddDealModal from '../components/deals/AddDealModal';
+import DealDetail from '../components/DealDetail';
+import { Deal, PipelineColumn } from '../types';
 import { 
   Search, 
   Filter, 
@@ -18,7 +25,7 @@ import {
   EyeOff
 } from 'lucide-react';
 
-interface Deal {
+interface MockDeal extends Deal {
   id: string;
   title: string;
   company: string;
@@ -42,13 +49,7 @@ interface Deal {
   };
 }
 
-interface PipelineColumn {
-  id: string;
-  title: string;
-  dealIds: string[];
-}
-
-const mockDeals: Record<string, Deal> = {
+const mockDeals: Record<string, MockDeal> = {
   'deal-1': {
     id: 'deal-1',
     title: 'Enterprise CRM Integration',
@@ -60,6 +61,8 @@ const mockDeals: Record<string, Deal> = {
     priority: 'high',
     expectedCloseDate: '2024-02-15',
     isFavorite: true,
+    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=TechCorp&backgroundColor=3b82f6&textColor=ffffff',
+    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John',
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-10'),
     lastEnrichment: {
@@ -78,6 +81,8 @@ const mockDeals: Record<string, Deal> = {
     probability: 60,
     priority: 'medium',
     expectedCloseDate: '2024-02-20',
+    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=StartupXYZ&backgroundColor=8b5cf6&textColor=ffffff',
+    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
     createdAt: new Date('2024-01-05'),
     updatedAt: new Date('2024-01-12')
   },
@@ -92,6 +97,8 @@ const mockDeals: Record<string, Deal> = {
     priority: 'high',
     expectedCloseDate: '2024-02-10',
     isFavorite: true,
+    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=DataTech&backgroundColor=f59e0b&textColor=ffffff',
+    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike',
     createdAt: new Date('2024-01-03'),
     updatedAt: new Date('2024-01-15')
   },
@@ -105,6 +112,8 @@ const mockDeals: Record<string, Deal> = {
     probability: 35,
     priority: 'medium',
     expectedCloseDate: '2024-02-25',
+    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=CloudFirst&backgroundColor=10b981&textColor=ffffff',
+    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa',
     createdAt: new Date('2024-01-07'),
     updatedAt: new Date('2024-01-14')
   },
@@ -118,6 +127,8 @@ const mockDeals: Record<string, Deal> = {
     probability: 100,
     priority: 'high',
     expectedCloseDate: '2024-01-30',
+    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=Future&backgroundColor=ef4444&textColor=ffffff',
+    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
     createdAt: new Date('2023-12-15'),
     updatedAt: new Date('2024-01-30')
   },
@@ -131,6 +142,8 @@ const mockDeals: Record<string, Deal> = {
     probability: 0,
     priority: 'low',
     expectedCloseDate: '2024-01-20',
+    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AppTech&backgroundColor=6366f1&textColor=ffffff',
+    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma',
     createdAt: new Date('2023-12-20'),
     updatedAt: new Date('2024-01-20')
   },
@@ -144,6 +157,8 @@ const mockDeals: Record<string, Deal> = {
     probability: 65,
     priority: 'medium',
     expectedCloseDate: '2024-02-28',
+    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=SecureNet&backgroundColor=06b6d4&textColor=ffffff',
+    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Robert',
     createdAt: new Date('2024-01-08'),
     updatedAt: new Date('2024-01-16')
   },
@@ -157,6 +172,8 @@ const mockDeals: Record<string, Deal> = {
     probability: 70,
     priority: 'high',
     expectedCloseDate: '2024-02-18',
+    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=ShopGlobal&backgroundColor=ec4899&textColor=ffffff',
+    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jennifer',
     createdAt: new Date('2024-01-06'),
     updatedAt: new Date('2024-01-13')
   }
@@ -197,7 +214,7 @@ const mockColumns: Record<string, PipelineColumn> = {
 
 const columnOrder = ['discovery', 'qualification', 'proposal', 'negotiation', 'closed-won', 'closed-lost'];
 
-const calculateStageValues = (deals: Record<string, Deal>, columns: Record<string, PipelineColumn>) => {
+const calculateStageValues = (deals: Record<string, MockDeal>, columns: Record<string, PipelineColumn>) => {
   const values: Record<string, number> = {};
   
   Object.keys(columns).forEach(columnId => {
@@ -211,7 +228,7 @@ const calculateStageValues = (deals: Record<string, Deal>, columns: Record<strin
 };
 
 const Pipeline: React.FC = () => {
-  const [deals, setDeals] = useState<Record<string, Deal>>(mockDeals);
+  const [deals, setDeals] = useState<Record<string, MockDeal>>(mockDeals);
   const [columns, setColumns] = useState<Record<string, PipelineColumn>>(mockColumns);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState<any[]>([]);
@@ -337,7 +354,7 @@ const Pipeline: React.FC = () => {
       // Update deal stage
       const updatedDeal = {
         ...deals[draggableId],
-        stage: destination.droppableId as Deal['stage'],
+        stage: destination.droppableId,
         updatedAt: new Date(),
       };
 
@@ -366,9 +383,9 @@ const Pipeline: React.FC = () => {
     setActiveFilters([]);
   };
 
-  const handleAddDeal = (dealData: Omit<Deal, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const handleAddDeal = (dealData: Omit<MockDeal, 'id' | 'createdAt' | 'updatedAt'>) => {
     const newDealId = `deal-${Date.now()}`;
-    const newDeal: Deal = {
+    const newDeal: MockDeal = {
       ...dealData,
       id: newDealId,
       createdAt: new Date(),
@@ -391,7 +408,7 @@ const Pipeline: React.FC = () => {
     }));
   };
 
-  const handleAnalyzeDeal = async (deal: Deal) => {
+  const handleAnalyzeDeal = async (deal: MockDeal) => {
     setAnalyzingDealId(deal.id);
     try {
       // Simulate AI analysis
@@ -423,7 +440,7 @@ const Pipeline: React.FC = () => {
     }
   };
 
-  const handleEnrichDeal = async (deal: Deal) => {
+  const handleEnrichDeal = async (deal: MockDeal) => {
     setEnrichingDealId(deal.id);
     try {
       // Simulate AI enrichment
@@ -435,7 +452,7 @@ const Pipeline: React.FC = () => {
         probability: Math.min(deal.probability + 20, 95),
         lastEnrichment: {
           confidence: 85,
-          aiProvider: 'OpenAI GPT-4o',
+          aiProvider: 'AI Research',
           timestamp: new Date()
         }
       };
@@ -454,7 +471,7 @@ const Pipeline: React.FC = () => {
     }
   };
 
-  const handleToggleFavorite = async (deal: Deal) => {
+  const handleToggleFavorite = async (deal: MockDeal) => {
     const updatedDeal = {
       ...deal,
       isFavorite: !deal.isFavorite
@@ -466,7 +483,7 @@ const Pipeline: React.FC = () => {
     }));
   };
 
-  const handleFindNewImage = async (deal: Deal) => {
+  const handleFindNewImage = async (deal: MockDeal) => {
     try {
       // Simulate finding a new image
       await new Promise(resolve => setTimeout(resolve, 800));
@@ -556,6 +573,19 @@ const Pipeline: React.FC = () => {
               <span>Analytics</span>
             </button>
 
+            {/* Achievements Toggle */}
+            <button
+              onClick={() => setShowAchievements(!showAchievements)}
+              className={`flex items-center space-x-2 px-4 py-2 border rounded-lg transition-colors ${
+                showAchievements 
+                  ? 'bg-purple-600 text-white border-purple-600' 
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              <Zap className="w-4 h-4" />
+              <span>Team</span>
+            </button>
+
             {/* Add Deal Button */}
             <button
               onClick={() => setShowAddDealModal(true)}
@@ -610,25 +640,32 @@ const Pipeline: React.FC = () => {
           </div>
         )}
 
+        {/* Team Achievements */}
+        {showAchievements && (
+          <div className="mb-8">
+            <AchievementPanel />
+          </div>
+        )}
+
         {/* Pipeline View */}
         {viewMode === 'kanban' ? (
           <DragDropContext onDragEnd={onDragEnd}>
             <div className="flex space-x-6 overflow-x-auto pb-6">
               {columnOrder.map((columnId) => {
                 const column = filteredColumns[columnId];
-                const columnDeals = column.dealIds.map((dealId) => filteredDeals[dealId]);
+                const columnDeals = column.dealIds.map((dealId) => filteredDeals[dealId]).filter(Boolean);
                 const columnValue = columnDeals.reduce((sum, deal) => sum + deal.value, 0);
 
                 return (
                   <div key={column.id} className="flex-shrink-0 w-80">
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-semibold text-gray-900">{column.title}</h3>
+                        <h3 className="font-semibold text-gray-900 dark:text-white">{column.title}</h3>
                         <div className="text-right">
-                          <span className="text-2xl font-bold text-gray-900">
+                          <span className="text-2xl font-bold text-gray-900 dark:text-white">
                             {columnDeals.length}
                           </span>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
                             ${(columnValue / 1000).toFixed(0)}k
                           </p>
                         </div>
@@ -640,7 +677,7 @@ const Pipeline: React.FC = () => {
                             {...provided.droppableProps}
                             ref={provided.innerRef}
                             className={`space-y-4 min-h-[200px] transition-colors ${
-                              snapshot.isDraggingOver ? 'bg-blue-50 rounded-lg' : ''
+                              snapshot.isDraggingOver ? 'bg-blue-50 dark:bg-blue-900/20 rounded-lg' : ''
                             }`}
                           >
                             {column.dealIds.map((dealId, index) => {
@@ -665,6 +702,7 @@ const Pipeline: React.FC = () => {
                                         onAnalyze={handleAnalyzeDeal}
                                         onAIEnrich={handleEnrichDeal}
                                         isAnalyzing={analyzingDealId === deal.id}
+                                        isEnriching={enrichingDealId === deal.id}
                                         onToggleFavorite={handleToggleFavorite}
                                         onFindNewImage={handleFindNewImage}
                                       />
@@ -685,62 +723,71 @@ const Pipeline: React.FC = () => {
           </DragDropContext>
         ) : (
           // List View
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Deal
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Company
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Value
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Stage
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Probability
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Due Date
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {Object.values(filteredDeals).map((deal) => (
-                    <tr key={deal.id} className="hover:bg-gray-50">
+                    <tr key={deal.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{deal.title}</div>
-                        <div className="text-sm text-gray-500">{deal.contact}</div>
+                        <div className="flex items-center">
+                          <img
+                            className="h-8 w-8 rounded-full"
+                            src={deal.companyAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${deal.company}&backgroundColor=3b82f6&textColor=ffffff`}
+                            alt={deal.company}
+                          />
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">{deal.title}</div>
+                            <div className="text-sm text-gray-500 dark:text-gray-400">{deal.contact}</div>
+                          </div>
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{deal.company}</div>
+                        <div className="text-sm text-gray-900 dark:text-white">{deal.company}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">${deal.value.toLocaleString()}</div>
+                        <div className="text-sm text-gray-900 dark:text-white">${deal.value.toLocaleString()}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                           {deal.stage}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{deal.probability}%</div>
+                        <div className="text-sm text-gray-900 dark:text-white">{deal.probability}%</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                         {deal.expectedCloseDate}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
                           onClick={() => handleDealClick(deal.id)}
-                          className="text-blue-600 hover:text-blue-900"
+                          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                         >
                           View
                         </button>
@@ -752,6 +799,36 @@ const Pipeline: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Modals */}
+        {showContactsModal && (
+          <ContactsModal
+            isOpen={showContactsModal}
+            onClose={() => setShowContactsModal(false)}
+          />
+        )}
+
+        {showAddDealModal && (
+          <AddDealModal
+            isOpen={showAddDealModal}
+            onClose={() => setShowAddDealModal(false)}
+            onAddDeal={handleAddDeal}
+          />
+        )}
+
+        {selectedDealId && (
+          <DealDetail
+            dealId={selectedDealId}
+            isOpen={!!selectedDealId}
+            onClose={() => setSelectedDealId(null)}
+          />
+        )}
+
+        {/* Floating Action Panel */}
+        <FloatingActionPanel />
+
+        {/* API Status Indicator */}
+        <APIStatusIndicator />
       </div>
     </div>
   );
