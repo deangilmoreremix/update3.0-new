@@ -199,10 +199,11 @@ export const sessions = pgTable("sessions", {
 
 // ============= CORE APPLICATION TABLES =============
 
-// Users table for Replit Auth integration
+// Users table for email authentication with Replit Auth fallback
 export const users = pgTable("users", {
-  id: text("id").primaryKey().notNull(), // Replit user ID (string)
-  email: text("email").unique(),
+  id: uuid("id").primaryKey().defaultRandom(),
+  email: text("email").unique().notNull(),
+  password: text("password"), // Hashed password for email auth
   firstName: text("first_name"),
   lastName: text("last_name"),
   profileImageUrl: text("profile_image_url"),
@@ -214,6 +215,11 @@ export const users = pgTable("users", {
   preferences: jsonb("preferences").default({}),
   socialLinks: jsonb("social_links").default({}),
   accountStatus: text("account_status").default("active"),
+  emailVerified: boolean("email_verified").default(false),
+  // Authentication providers
+  authProvider: text("auth_provider").default("email"), // email, replit, google, github
+  replitUserId: text("replit_user_id"), // For Replit Auth integration
+  googleId: text("google_id"), // For Google OAuth
   // Subscription and payment fields
   subscriptionStatus: text("subscription_status").default("free"), // free, paid, trial, cancelled
   subscriptionPlan: text("subscription_plan").default("basic"), // free, basic, professional, enterprise
@@ -225,12 +231,19 @@ export const users = pgTable("users", {
   roleId: uuid("role_id").references(() => userRoles.id),
   permissions: jsonb("permissions").default([]),
   isAdmin: boolean("is_admin").default(false),
+  role: text("role").default("user"), // user, admin, super_admin
+  // Security fields
+  lastLoginAt: timestamp("last_login_at"),
+  loginAttempts: integer("login_attempts").default(0),
+  lockedUntil: timestamp("locked_until"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 }, (table) => [
   index("idx_users_tenant").on(table.tenantId),
   index("idx_users_email_tenant").on(table.email, table.tenantId),
   index("idx_users_subscription").on(table.subscriptionStatus),
+  index("idx_users_replit").on(table.replitUserId),
+  index("idx_users_google").on(table.googleId),
 ]);
 
 // Contacts table

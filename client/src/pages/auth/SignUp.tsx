@@ -83,31 +83,43 @@ export const SignUp: React.FC = () => {
     setError('');
 
     try {
-      const endpoint = formData.userType === 'super_admin' 
-        ? '/api/admin/super-admin-signup' 
-        : '/api/auth/signup';
-
-      const response = await fetch(endpoint, {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          fullName: `${formData.firstName} ${formData.lastName}`,
+          userType: formData.userType === 'super_admin' ? 'super_admin' : 'user',
+          adminCode: formData.adminCode
+        }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setSuccess(formData.userType === 'super_admin' 
-          ? 'Super admin account created successfully! You can now sign in.'
-          : 'Account created successfully! Please check your email to verify your account.'
-        );
+        // Store user data and JWT token
+        localStorage.setItem('user', JSON.stringify(data.user));
+        if (data.token) {
+          localStorage.setItem('auth_token', data.token);
+        }
         
+        setSuccess('Account created successfully! Redirecting to dashboard...');
+        
+        // Redirect based on user role
         setTimeout(() => {
-          navigate('/signin');
-        }, 2000);
+          if (data.user.role === 'super_admin' || data.user.isAdmin) {
+            navigate('/super-admin-dashboard');
+          } else {
+            navigate('/dashboard');
+          }
+        }, 1500);
       } else {
-        setError(data.message || 'Failed to create account');
+        setError(data.message || data.error || 'Failed to create account');
       }
     } catch (error) {
       setError('Network error. Please try again.');

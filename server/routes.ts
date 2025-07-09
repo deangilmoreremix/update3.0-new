@@ -22,23 +22,8 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import passport from "passport";
 import session from "express-session";
 import { setupGoogleAuth } from "./auth/googleAuth";
-
-// Simplified authentication middleware for demo mode
-const requireAuth = async (req: Request, res: Response, next: any) => {
-  // Demo mode: Create mock user without database dependency
-  const mockUser = {
-    id: 'demo-user-' + Date.now(),
-    email: 'demo@smartcrm.io',
-    firstName: 'Demo',
-    lastName: 'User',
-    tenantId: '630ed3be-0533-43ff-a569-2051df9c4d20'
-  };
-
-  req.userId = mockUser.id;
-  req.user = mockUser;
-  console.log('Demo authentication successful for:', mockUser.email);
-  next();
-};
+import { authService } from "./services/authService";
+import { authenticateToken, optionalAuth, requireAdmin, requireSuperAdmin } from "./middleware/authMiddleware";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Enable Replit Auth for SSO capabilities
@@ -77,27 +62,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Create demo user based on email type
-      const isAdmin = email.includes('admin');
-      const userId = isAdmin ? 'super-admin-123' : 'demo-user-123';
+      // Use real database authentication
+      const result = await authService.login({ email, password });
       
-      const user = {
-        id: userId,
-        email: email,
-        fullName: isAdmin ? 'Super Admin' : 'Demo User',
-        accountStatus: 'active',
-        isAdmin: isAdmin,
-        role: isAdmin ? 'super_admin' : 'user',
-        subscriptionPlan: isAdmin ? 'enterprise' : 'professional',
-        subscriptionStatus: 'active',
-        paymentStatus: 'paid'
-      };
-
-      res.json({
-        success: true,
-        user: user,
-        message: "Login successful"
-      });
+      if (result.success) {
+        res.json({
+          success: true,
+          user: result.user,
+          token: result.token,
+          message: result.message
+        });
+      } else {
+        res.status(401).json({
+          success: false,
+          message: result.error,
+          error: result.error
+        });
+      }
     } catch (error) {
       console.error('Login error:', error);
       res.status(500).json({ 
@@ -110,41 +91,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/auth/register", async (req: Request, res: Response) => {
     try {
-      const { email, password, fullName, userType, adminCode } = req.body;
+      const { email, password, fullName, firstName, lastName, userType, adminCode } = req.body;
       
       if (!email || !password) {
-        return res.status(400).json({ error: "Email and password are required" });
+        return res.status(400).json({ 
+          success: false,
+          error: "Email and password are required",
+          message: "Email and password are required"
+        });
       }
 
-      // Check super admin code if userType is super_admin
-      if (userType === 'super_admin' && adminCode !== 'SUPER_ADMIN_2024') {
-        return res.status(400).json({ error: "Invalid super admin code" });
-      }
-
-      // Create demo user based on email type or userType
-      const isAdmin = email.includes('admin') || userType === 'super_admin';
-      const userId = isAdmin ? 'super-admin-123' : 'demo-user-' + Date.now();
-      
-      const user = {
-        id: userId,
-        email: email,
-        fullName: fullName || email.split('@')[0],
-        accountStatus: 'active',
-        isAdmin: isAdmin,
-        role: isAdmin ? 'super_admin' : 'user',
-        subscriptionPlan: isAdmin ? 'enterprise' : 'professional',
-        subscriptionStatus: 'active',
-        paymentStatus: 'paid'
-      };
-
-      res.json({
-        success: true,
-        user: user,
-        message: "Registration successful"
+      // Use real database authentication
+      const result = await authService.register({ 
+        email, 
+        password, 
+        fullName, 
+        firstName, 
+        lastName, 
+        userType, 
+        adminCode 
       });
+      
+      if (result.success) {
+        res.json({
+          success: true,
+          user: result.user,
+          token: result.token,
+          message: result.message
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          error: result.error,
+          message: result.error
+        });
+      }
     } catch (error) {
       console.error('Registration error:', error);
-      res.status(500).json({ error: "Registration failed" });
+      res.status(500).json({ 
+        success: false,
+        error: "Registration failed",
+        message: "Registration failed"
+      });
     }
   });
 
@@ -184,60 +172,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   }
 
-  // Enhanced user endpoint with comprehensive profile data
-  app.get('/api/auth/user', async (req: any, res) => {
+  // Enhanced user endpoint with JWT authentication
+  app.get('/api/auth/user', authenticateToken, async (req: any, res) => {
     try {
-      // Check if user is authenticated via passport (Google OAuth)
-      if (req.user) {
-        return res.json(req.user);
-      }
-      
-      // Return enhanced demo user data for development
-      const demoUser = {
-        id: 'demo-user-123',
-        email: 'demo@smartcrm.com',
-        firstName: 'Demo',
-        lastName: 'User',
-        fullName: 'Demo User',
-        jobTitle: 'Sales Manager',
-        company: 'Smart CRM Inc.',
-        phone: '+1 (555) 123-4567',
-        timezone: 'America/New_York',
-        profileImageUrl: 'https://images.pexels.com/photos/3785079/pexels-photo-3785079.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1',
-        preferences: {
-          emailNotifications: true,
-          smsNotifications: false,
-          darkMode: false,
-          language: 'en',
-          dateFormat: 'MM/DD/YYYY',
-          timeFormat: '12h',
-          workingHours: {
-            start: '09:00',
-            end: '17:00',
-            timezone: 'America/New_York'
-          }
-        },
-        socialLinks: {
-          linkedin: 'https://linkedin.com/in/demo-user',
-          twitter: 'https://twitter.com/demo_user',
-          website: 'https://demouser.com'
-        },
-        accountStatus: 'active',
-        subscriptionPlan: 'professional',
-        subscriptionStatus: 'active',
-        paymentStatus: 'paid',
-        isAdmin: true,
-        role: 'super_admin',
-        createdAt: '2024-01-15T10:30:00Z',
-        updatedAt: new Date().toISOString(),
-        lastLogin: new Date().toISOString(),
-        loginCount: 142,
-        twoFactorEnabled: false
-      };
-      res.json(demoUser);
+      // Return authenticated user data
+      res.json({
+        success: true,
+        user: req.user
+      });
     } catch (error) {
       console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
+      res.status(500).json({ 
+        success: false,
+        error: "Failed to fetch user" 
+      });
+    }
+  });
+
+  // Update user profile
+  app.patch('/api/auth/user', authenticateToken, async (req: Request, res: Response) => {
+    try {
+      const { firstName, lastName, fullName, phone, jobTitle, company, timezone, preferences, socialLinks } = req.body;
+      
+      const updatedUser = await authService.updateUser(req.userId!, {
+        firstName,
+        lastName,
+        fullName,
+        phone,
+        jobTitle,
+        company,
+        timezone,
+        preferences,
+        socialLinks
+      });
+
+      if (updatedUser) {
+        res.json({
+          success: true,
+          user: updatedUser,
+          message: 'Profile updated successfully'
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          error: 'User not found'
+        });
+      }
+    } catch (error) {
+      console.error('Update user error:', error);
+      res.status(500).json({ 
+        success: false,
+        error: 'Failed to update user' 
+      });
+    }
+  });
+
+  // Change password
+  app.post('/api/auth/change-password', authenticateToken, async (req: Request, res: Response) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({
+          success: false,
+          error: 'Current password and new password are required'
+        });
+      }
+
+      const result = await authService.changePassword(req.userId!, currentPassword, newPassword);
+      
+      if (result.success) {
+        res.json({
+          success: true,
+          message: result.message
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          error: result.error
+        });
+      }
+    } catch (error) {
+      console.error('Change password error:', error);
+      res.status(500).json({ 
+        success: false,
+        error: 'Failed to change password' 
+      });
     }
   });
 
@@ -317,7 +337,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/auth/user-legacy", requireAuth, async (req: Request, res: Response) => {
+  app.get("/api/auth/user-legacy", authenticateToken, async (req: Request, res: Response) => {
     try {
       const userId = req.userId;
       const user = await storage.getUser(userId);
@@ -1446,7 +1466,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Business Analysis routes
-  app.get("/api/business-analysis", requireAuth, async (req: Request, res: Response) => {
+  app.get("/api/business-analysis", authenticateToken, async (req: Request, res: Response) => {
     try {
       const analyses = await storage.getBusinessAnalyses(req.userId!);
       res.json(analyses);
@@ -1456,7 +1476,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/business-analysis", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/business-analysis", authenticateToken, async (req: Request, res: Response) => {
     try {
       const analysisData = insertBusinessAnalysisSchema.parse({
         ...req.body,
@@ -1481,7 +1501,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Content Items routes
-  app.get("/api/content-items", requireAuth, async (req: Request, res: Response) => {
+  app.get("/api/content-items", authenticateToken, async (req: Request, res: Response) => {
     try {
       const items = await storage.getContentItems(req.userId!);
       res.json(items);
@@ -1491,7 +1511,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/content-items", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/content-items", authenticateToken, async (req: Request, res: Response) => {
     try {
       const itemData = insertContentItemSchema.parse({
         ...req.body,
@@ -1516,7 +1536,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Voice Profiles routes
-  app.get("/api/voice-profiles", requireAuth, async (req: Request, res: Response) => {
+  app.get("/api/voice-profiles", authenticateToken, async (req: Request, res: Response) => {
     try {
       const profiles = await storage.getVoiceProfiles(req.userId!);
       res.json(profiles);
@@ -1526,7 +1546,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/voice-profiles", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/voice-profiles", authenticateToken, async (req: Request, res: Response) => {
     try {
       const profileData = insertVoiceProfileSchema.parse({
         ...req.body,
@@ -1562,7 +1582,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // AI Content Generation route with OpenAI and Gemini support
-  app.post("/api/ai/generate-content", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/generate-content", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { contentType, purpose, data, apiKey, preferredModel = 'gemini' } = req.body;
       
@@ -1705,7 +1725,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Email Analysis Endpoint
-  app.post("/api/ai/email-analyzer", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/email-analyzer", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { emailContent } = req.body;
       const openaiApiKey = process.env.OPENAI_API_KEY;
@@ -1751,7 +1771,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Meeting Summary Endpoint
-  app.post("/api/ai/meeting-summarizer", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/meeting-summarizer", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { transcript } = req.body;
       const openaiApiKey = process.env.OPENAI_API_KEY;
@@ -1792,7 +1812,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Sales Insights Endpoint
-  app.post("/api/ai/sales-insights", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/sales-insights", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { contacts, deals } = req.body;
       const openaiApiKey = process.env.OPENAI_API_KEY;
@@ -1835,7 +1855,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Business Analyzer Endpoint
-  app.post("/api/ai/business-analyzer", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/business-analyzer", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { contacts, deals, tasks } = req.body;
       const openaiApiKey = process.env.OPENAI_API_KEY;
@@ -1910,7 +1930,7 @@ Format as actionable insights with priorities.`;
   });
 
   // Real-time Analysis Endpoint
-  app.post("/api/ai/realtime-analysis", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/realtime-analysis", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { analysisType, content } = req.body;
       const openaiApiKey = process.env.OPENAI_API_KEY;
@@ -1970,7 +1990,7 @@ Format as actionable insights with priorities.`;
   // Using OpenAI GPT-4o-mini, Gemini 1.5 Flash, and Gemma models
 
   // 1. Call Script Generator (OpenAI)
-  app.post("/api/ai/call-script", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/call-script", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { contactInfo, callPurpose, industry } = req.body;
       const openaiApiKey = process.env.OPENAI_API_KEY;
@@ -2020,7 +2040,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 2. Objection Handler (Gemini)
-  app.post("/api/ai/objection-handler", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/objection-handler", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { objection, context, productInfo } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -2064,7 +2084,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 3. Customer Persona Generator (Gemini)
-  app.post("/api/ai/customer-persona", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/customer-persona", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { customerData, industry, behaviorData } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -2108,7 +2128,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 4. Voice Tone Optimizer (Gemini)
-  app.post("/api/ai/voice-tone-optimizer", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/voice-tone-optimizer", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { content, targetTone, audience } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -2152,7 +2172,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 5. Email Response Generator (Gemini)
-  app.post("/api/ai/email-response", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/email-response", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { originalEmail, responseType, context } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -2196,7 +2216,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 6. Real-time Email Composer (OpenAI)
-  app.post("/api/ai/realtime-email-composer", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/realtime-email-composer", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { recipientInfo, emailType, keyPoints, tone } = req.body;
       const openaiApiKey = process.env.OPENAI_API_KEY;
@@ -2251,7 +2271,7 @@ Format as actionable insights with priorities.`;
   // 8. Voice Analysis Real-time - Removed duplicate (using Gemini version below)
 
   // 9. Form Validation AI (OpenAI)
-  app.post("/api/ai/form-validation", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/form-validation", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { formData, validationRules, context } = req.body;
       const openaiApiKey = process.env.OPENAI_API_KEY;
@@ -2301,7 +2321,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 10. Auto Form Completer (OpenAI)
-  app.post("/api/ai/auto-form-completer", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/auto-form-completer", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { partialData, formSchema, userContext } = req.body;
       const openaiApiKey = process.env.OPENAI_API_KEY;
@@ -2351,7 +2371,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 11. Sales Forecast Generator (OpenAI)
-  app.post("/api/ai/sales-forecast", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/sales-forecast", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { historicalData, timeframe, factors } = req.body;
       const openaiApiKey = process.env.OPENAI_API_KEY;
@@ -2402,7 +2422,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 12. Content Creator (Gemini)
-  app.post("/api/ai/content-creator", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/content-creator", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { contentType, topic, audience, tone, length } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -2451,7 +2471,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 13. Business Intelligence (Gemini)
-  app.post("/api/ai/business-intelligence", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/business-intelligence", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { businessData, analysisType, metrics } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -2503,7 +2523,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 14. Lead Scoring (OpenAI)
-  app.post("/api/ai/lead-scoring", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/lead-scoring", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { leadData, scoringCriteria, companyProfile } = req.body;
       const openaiApiKey = process.env.OPENAI_API_KEY;
@@ -2554,7 +2574,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 15. Document Analyzer (Gemini)
-  app.post("/api/ai/document-analyzer", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/document-analyzer", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { documentText, analysisType, context } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -2606,7 +2626,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 16. Smart Search (Gemini)
-  app.post("/api/ai/smart-search", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/smart-search", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { query, context, filters } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -2657,7 +2677,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 17. Competitive Analysis (Gemini)
-  app.post("/api/ai/competitive-analysis", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/competitive-analysis", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { competitors, yourCompany, industry, analysisType } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -2710,7 +2730,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 18. Smart Recommendations (Gemini)
-  app.post("/api/ai/smart-recommendations", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/smart-recommendations", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { userProfile, dataContext, recommendationType, preferences } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -2763,7 +2783,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 19. Subject Line Optimizer (Gemini)
-  app.post("/api/ai/subject-line-optimizer", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/subject-line-optimizer", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { emailContent, audience, goals, tone } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -2816,7 +2836,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 20. Proposal Generator (Gemini)
-  app.post("/api/ai/proposal-generator", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/proposal-generator", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { clientInfo, projectDetails, pricing, timeline, requirements } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -2870,7 +2890,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 21. Meeting Agenda (Gemini)
-  app.post("/api/ai/meeting-agenda", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/meeting-agenda", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { meetingTitle, objective, duration, attendees, preparationNotes } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -2924,7 +2944,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 22. Voice Analysis (Gemini)
-  app.post("/api/ai/voice-analysis", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/voice-analysis", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { audioTranscript, analysisType, context } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -2976,7 +2996,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 23. Form Validation (Gemini)
-  app.post("/api/ai/form-validation", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/form-validation", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { formData, validationRules, context } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -3028,7 +3048,7 @@ Format as actionable insights with priorities.`;
   });
 
   // 24. Auto Form Completer (Gemini)
-  app.post("/api/ai/auto-form-completer", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/ai/auto-form-completer", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { partialFormData, formType, context } = req.body;
       const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -3080,7 +3100,7 @@ Format as actionable insights with priorities.`;
   });
 
   // MCP (Model Context Protocol) Function Calling Endpoint
-  app.post("/api/mcp/call", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/mcp/call", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { functionName, parameters, model = 'gemini', temperature = 0.1 } = req.body;
       
@@ -3206,7 +3226,7 @@ Format as actionable insights with priorities.`;
   }
 
   // Agent Execution Endpoint
-  app.post("/api/agents/execute", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/agents/execute", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { goalId, agentName, action, toolsNeeded, agentType, input, agentConfig } = req.body;
       
@@ -3314,7 +3334,7 @@ Next Actions:
   });
 
   // Composio Integration Endpoints
-  app.post("/api/composio/linkedin/message", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/composio/linkedin/message", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { recipientId, message, entityId = 'default' } = req.body;
       
@@ -3377,7 +3397,7 @@ Next Actions:
     }
   });
 
-  app.post("/api/composio/whatsapp/message", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/composio/whatsapp/message", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { phoneNumber, message, templateName, entityId = 'default' } = req.body;
       
@@ -3443,7 +3463,7 @@ Next Actions:
   });
 
   // Composio Gmail Integration
-  app.post("/api/composio/gmail/send", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/composio/gmail/send", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { to, subject, body, entityId = 'default' } = req.body;
       
@@ -3492,7 +3512,7 @@ Next Actions:
   });
 
   // Get Composio Connected Tools
-  app.get("/api/composio/tools/:entityId", requireAuth, async (req: Request, res: Response) => {
+  app.get("/api/composio/tools/:entityId", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { entityId } = req.params;
       
@@ -3557,7 +3577,7 @@ Next Actions:
   });
 
   // Communication endpoints
-  app.post("/api/communication/send-sms", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/communication/send-sms", authenticateToken, async (req: Request, res: Response) => {
     try {
       const { contactId, content, phone } = req.body;
       

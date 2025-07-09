@@ -51,8 +51,11 @@ export const SignIn: React.FC = () => {
       console.log('Response data:', data);
 
       if (response.ok) {
-        // Store user data and redirect
+        // Store user data and JWT token
         localStorage.setItem('user', JSON.stringify(data.user));
+        if (data.token) {
+          localStorage.setItem('auth_token', data.token);
+        }
         
         // Redirect based on user role
         if (data.user.role === 'super_admin' || data.user.isAdmin) {
