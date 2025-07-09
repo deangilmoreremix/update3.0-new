@@ -121,8 +121,22 @@ const FeatureAccessDemo: React.FC = () => {
             return (
               <GlassCard key={feature.id} className="p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-center space-x-3 mb-4">
-                  <div className={`p-2 rounded-lg bg-${feature.color}-100`}>
-                    <Icon className={`w-6 h-6 text-${feature.color}-600`} />
+                  <div className={`p-2 rounded-lg ${
+                    feature.color === 'purple' ? 'bg-purple-100' :
+                    feature.color === 'pink' ? 'bg-pink-100' :
+                    feature.color === 'cyan' ? 'bg-cyan-100' :
+                    feature.color === 'emerald' ? 'bg-emerald-100' :
+                    feature.color === 'green' ? 'bg-green-100' :
+                    'bg-orange-100'
+                  }`}>
+                    <Icon className={`w-6 h-6 ${
+                      feature.color === 'purple' ? 'text-purple-600' :
+                      feature.color === 'pink' ? 'text-pink-600' :
+                      feature.color === 'cyan' ? 'text-cyan-600' :
+                      feature.color === 'emerald' ? 'text-emerald-600' :
+                      feature.color === 'green' ? 'text-green-600' :
+                      'text-orange-600'
+                    }`} />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900">{feature.name}</h3>

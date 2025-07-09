@@ -720,6 +720,14 @@ const Navbar = () => {
                           <span className="text-sm font-medium">Settings</span>
                         </button>
                         
+                        <button
+                          onClick={() => handleNavigation('/feature-access-demo', 'feature-demo')}
+                          className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/10 text-white hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
+                        >
+                          <Shield size={16} />
+                          <span className="text-sm font-medium">Feature Access Demo</span>
+                        </button>
+                        
                         <hr className={`my-2 ${isDark ? 'border-white/20' : 'border-gray-200'}`} />
                         
                         <button className="w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 text-red-400 hover:bg-red-500/10">
