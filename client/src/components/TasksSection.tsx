@@ -47,83 +47,104 @@ const TasksSection: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between mb-4">
-        <span className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-          {taskArray.length} total tasks
+    <div className="mb-8">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Your Days Tasks</h2>
+          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{taskArray.length} active tasks</p>
+        </div>
+        <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+          {taskArray.filter(task => task.priority === 'high').length} high priority
         </span>
-        <button className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-          isDark ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-        }`}>
-          <Plus className="w-4 h-4" />
-          <span>Add Task</span>
-        </button>
       </div>
       
-      <div className="space-y-3">
-        {recentTasks.map((task) => {
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {recentTasks.map((task, index) => {
           const TaskIcon = getTaskIcon(task.status);
+          const getCardClass = (isHighlighted?: boolean) => {
+            return isHighlighted 
+              ? isDark ? 'border-green-500/50 bg-green-500/10' : 'border-green-200 bg-green-50'
+              : isDark ? 'border-white/10 bg-white/5' : 'border-gray-200 bg-white';
+          };
+
+          const getIconColor = (type: string) => {
+            switch (type) {
+              case 'call':
+                return isDark ? 'text-blue-400' : 'text-blue-600';
+              case 'email':
+                return isDark ? 'text-green-400' : 'text-green-600';
+              case 'meeting':
+                return isDark ? 'text-purple-400' : 'text-purple-600';
+              default:
+                return isDark ? 'text-orange-400' : 'text-orange-600';
+            }
+          };
+
           return (
-            <div key={task.id} className={`p-4 rounded-lg border transition-all duration-200 hover:scale-[1.01] ${
-              isDark ? 'border-white/10 bg-white/5 hover:bg-white/10' : 'border-gray-200 bg-white/50 hover:bg-gray-50'
-            }`}>
-              <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-3">
+            <div key={task.id} className={`backdrop-blur-xl border rounded-2xl p-6 hover:${isDark ? 'bg-gray-800/70' : 'bg-gray-50'} transition-all duration-300 group ${getCardClass(false)}`}>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center space-x-3">
                   <Avatar
-                    src={getAvatarByIndex(parseInt(task.id) || 0, 'executives')}
-                    alt={`Task ${task.id}`}
+                    src={getAvatarByIndex(index, 'executives')}
+                    alt={`Team Member ${index + 1}`}
                     size="sm"
-                    fallback={getInitials(task.title || 'Task')}
+                    fallback={getInitials(`Team Member ${index + 1}`)}
                     status={task.status === 'completed' ? 'online' : task.status === 'in-progress' ? 'busy' : 'away'}
                   />
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <TaskIcon className={`w-4 h-4 ${getTaskStatusColor(task.status)}`} />
-                      <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                        {task.title}
-                      </h4>
-                    </div>
-                    <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {task.description}
+                  <div>
+                    <h3 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                      Team Member {index + 1}
+                    </h3>
+                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                      Sales Representative
                     </p>
-                    <div className="flex items-center space-x-3 mt-2">
-                      <span className={`text-xs px-2 py-1 rounded-full ${getPriorityColor(task.priority)}`}>
-                        {task.priority}
-                      </span>
-                      <span className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-                        Due: {new Date(task.dueDate).toLocaleDateString()}
-                      </span>
-                    </div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <span className={`text-xs px-2 py-1 rounded-full ${
-                    task.status === 'completed' 
-                      ? 'bg-green-500/20 text-green-400' 
-                      : task.status === 'in-progress'
-                      ? 'bg-blue-500/20 text-blue-400'
-                      : 'bg-yellow-500/20 text-yellow-400'
-                  }`}>
-                    {task.status.replace('-', ' ')}
-                  </span>
+                <button className={`${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-400 hover:text-gray-600'} transition-colors opacity-0 group-hover:opacity-100`}>
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className={`p-2 rounded-lg ${isDark ? 'bg-white/10' : 'bg-gray-100'} ${getIconColor(task.type || 'other')}`}>
+                    <TaskIcon className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className={`font-medium ${isDark ? 'text-white group-hover:text-green-400' : 'text-gray-900 group-hover:text-green-600'} transition-colors`}>
+                      {task.title}
+                    </h4>
+                    <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{task.description}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span className={`px-3 py-1 rounded-full text-xs ${isDark ? 'bg-white/10' : 'bg-gray-100'} ${getIconColor(task.type || 'other')}`}>
+                      {task.status}
+                    </span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      task.priority === 'high' ? (isDark ? 'bg-red-500/20 text-red-400' : 'bg-red-100 text-red-800') :
+                      task.priority === 'medium' ? (isDark ? 'bg-yellow-500/20 text-yellow-400' : 'bg-yellow-100 text-yellow-800') :
+                      (isDark ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-800')
+                    }`}>
+                      {task.priority}
+                    </span>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button className={`p-2 ${isDark ? 'bg-white/10 hover:bg-green-400/20' : 'bg-gray-100 hover:bg-green-100'} rounded-lg transition-colors`}>
+                      <CheckSquare className="w-4 h-4" />
+                    </button>
+                    <button className={`p-2 ${isDark ? 'bg-white/10 hover:bg-green-400/20' : 'bg-gray-100 hover:bg-green-100'} rounded-lg transition-colors`}>
+                      <Clock className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           );
         })}
       </div>
-      
-      {recentTasks.length === 0 && (
-        <div className="text-center py-8">
-          <CheckSquare className={`w-12 h-12 mx-auto mb-4 ${isDark ? 'text-gray-600' : 'text-gray-300'}`} />
-          <h3 className={`text-lg font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            No tasks found
-          </h3>
-          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'} mt-2`}>
-            Create a new task to get started
-          </p>
-        </div>
-      )}
     </div>
   );
 };

@@ -25,40 +25,35 @@ const ActivitiesCommunications: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Tasks Section - takes 2 columns */}
         <div className="lg:col-span-2">
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6 mb-6`}>
             <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-6 flex items-center`}>
-              <CheckSquare className="h-5 w-5 mr-2 text-orange-500" />
+              <CheckSquare className="w-5 h-5 mr-2" />
               Tasks & Activities
             </h3>
             <TasksSection />
           </div>
           
-          {/* Interaction History */}
           <div className="mb-6">
             <InteractionHistory />
           </div>
         </div>
         
-        {/* Right Side - Appointments and Activity */}
         <div className="space-y-6 lg:col-span-1">
-          {/* Appointments Widget */}
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl overflow-hidden`}>
             <div className={`p-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'} flex justify-between items-center`}>
               <h3 className={`font-semibold flex items-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                <Calendar className="h-5 w-5 mr-2 text-blue-500" />
+                <Calendar className="w-5 h-5 mr-2" />
                 Upcoming Appointments
               </h3>
             </div>
-            <AppointmentWidget limit={5} />
+            <AppointmentWidget />
           </div>
           
-          {/* Quick Tasks Widget */}
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl overflow-hidden`}>
             <div className={`p-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'} flex justify-between items-center`}>
               <h3 className={`font-semibold flex items-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                <MessageSquare className="h-5 w-5 mr-2 text-purple-500" />
+                <MessageSquare className="w-5 h-5 mr-2" />
                 Communications
               </h3>
             </div>
@@ -68,7 +63,7 @@ const ActivitiesCommunications: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className={`p-2 rounded-lg ${isDark ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-600'}`}>
-                        <MessageSquare size={14} />
+                        <MessageSquare className="w-4 h-4" />
                       </div>
                       <div>
                         <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Email Follow-up</p>
@@ -83,7 +78,7 @@ const ActivitiesCommunications: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className={`p-2 rounded-lg ${isDark ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-600'}`}>
-                        <Calendar size={14} />
+                        <Calendar className="w-4 h-4" />
                       </div>
                       <div>
                         <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Meeting Notes</p>
@@ -96,6 +91,14 @@ const ActivitiesCommunications: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+        
+        <div className="mb-6">
+          <TasksAndFunnel />
+        </div>
+        
+        <div className="mb-6">
+          <RecentActivity />
         </div>
       </div>
       

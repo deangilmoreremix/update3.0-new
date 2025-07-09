@@ -91,67 +91,66 @@ const InteractionHistory: React.FC = () => {
   };
 
   return (
-    <div className={`p-6 rounded-xl border ${
-      isDark 
-        ? 'border-white/10 bg-white/5 backdrop-blur-sm' 
-        : 'border-gray-200 bg-white/50 backdrop-blur-sm'
-    }`}>
+    <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6 mb-6`}>
       <div className="flex items-center justify-between mb-6">
-        <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-          Recent Interactions
-        </h2>
-        <div className="flex items-center text-sm text-gray-500">
-          <Clock size={16} className="mr-1" />
-          Last 7 days
+        <h2 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Interaction History</h2>
+        <div className="flex items-center space-x-2">
+          <button className={`p-2 ${isDark ? 'text-gray-400 hover:bg-white/10' : 'text-gray-600 hover:bg-gray-100'} rounded-lg transition-colors`}>
+            <Clock className="w-4 h-4" />
+          </button>
+          <button className={`p-2 ${isDark ? 'text-gray-400 hover:bg-white/10' : 'text-gray-600 hover:bg-gray-100'} rounded-lg transition-colors`}>
+            <Phone className="w-4 h-4" />
+          </button>
         </div>
       </div>
       
-      <div className="space-y-4">
-        {interactions.map((interaction, index) => (
-          <div key={interaction.id} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-white/10 transition-colors">
-            <Avatar
-              src={getAvatarByIndex(index)}
-              alt={interaction.contact}
-              size="md"
-              fallback={getInitials(interaction.contact)}
-              status={interaction.status === 'completed' ? 'online' : interaction.status === 'scheduled' ? 'away' : 'busy'}
-            />
-            <div className={`p-2 rounded-lg ${getIconColor(interaction.color)}`}>
-              <interaction.icon size={16} />
-            </div>
-            
-            <div className="flex-1 min-w-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {interactions.map((interaction, index) => {
+          const IconComponent = interaction.icon;
+          const bgColor = interaction.color === 'green' ? 'bg-gradient-to-br from-green-500 to-emerald-600' :
+                         interaction.color === 'blue' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' :
+                         interaction.color === 'purple' ? 'bg-gradient-to-br from-purple-500 to-violet-600' :
+                         interaction.color === 'orange' ? 'bg-gradient-to-br from-orange-500 to-red-600' :
+                         interaction.color === 'indigo' ? 'bg-gradient-to-br from-indigo-500 to-purple-600' :
+                         'bg-gradient-to-br from-gray-500 to-gray-600';
+          
+          return (
+            <div key={interaction.id} className={`${bgColor} text-white rounded-2xl p-5 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl`}>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm font-medium opacity-90">{interaction.time}</span>
+                <button className="p-1.5 rounded-lg transition-colors hover:bg-white/20">
+                  <IconComponent className="w-4 h-4" />
+                </button>
+              </div>
+              
+              <div className="mb-6">
+                <h3 className="font-semibold text-sm mb-3 leading-tight">{interaction.type}</h3>
+                <p className="text-2xl font-bold">{interaction.contact}</p>
+              </div>
+              
               <div className="flex items-center justify-between">
-                <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  {interaction.contact}
-                </p>
-                <span className={`text-xs ${getStatusColor(interaction.status)} capitalize`}>
-                  {interaction.status}
-                </span>
-              </div>
-              <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                {interaction.company}
-              </p>
-              <div className="flex items-center justify-between mt-1">
-                <span className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                  {interaction.time}
-                </span>
-                <span className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                  {interaction.duration}
-                </span>
+                <div className="flex -space-x-2">
+                  <div className="relative">
+                    <Avatar
+                      src={getAvatarByIndex(index, 'business')}
+                      alt={interaction.contact}
+                      size="sm"
+                      fallback={getInitials(interaction.contact)}
+                      className="border-3 border-white object-cover shadow-lg ring-2 ring-white/50"
+                    />
+                  </div>
+                  {index > 0 && (
+                    <div className="w-8 h-8 rounded-full border-3 border-white bg-gray-400 flex items-center justify-center shadow-lg ring-2 ring-white/50">
+                      <span className="text-xs font-semibold text-white">+{index}</span>
+                    </div>
+                  )}
+                </div>
+                <IconComponent className="w-5 h-5 opacity-75" />
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-      
-      <button className={`w-full mt-4 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
-        isDark 
-          ? 'bg-white/10 text-white hover:bg-white/20' 
-          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-      }`}>
-        View All Interactions
-      </button>
     </div>
   );
 };

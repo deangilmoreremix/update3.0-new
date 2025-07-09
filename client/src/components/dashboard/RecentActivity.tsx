@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useContactStore } from '../../store/contactStore';
 import { useDealStore } from '../../store/dealStore';
+import { useTheme } from '../../contexts/ThemeContext';
 
 interface ActivityItem {
   id: string;
@@ -152,77 +153,79 @@ export const RecentActivity: React.FC = () => {
     }
   };
 
+  const { isDark } = useTheme();
+  
   return (
-    <GlassCard className="h-full">
-      <div className="p-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      {/* Upcoming Deals */}
+      <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6`}>
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
-          <button className="text-sm text-blue-600 hover:text-blue-700 flex items-center space-x-1">
-            <span>View all</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+          <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Upcoming Deals</h3>
+          <TrendingUp className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-400'}`} />
         </div>
-
+        
         <div className="space-y-4">
-          {activities.slice(0, 6).map((activity) => {
-            const contact = activity.contactId ? contacts[activity.contactId] : null;
-            const ActivityIcon = getActivityIcon(activity.type);
-            const StatusIcon = getStatusIcon(activity.status || 'pending');
-
+          {Object.values(deals).slice(0, 3).map((deal, index) => {
+            const contact = contacts[deal.contactId];
             return (
-              <div key={activity.id} className="flex items-start space-x-3 py-2">
-                {/* Activity Icon */}
-                <div className={`flex-shrink-0 w-8 h-8 rounded-full ${getActivityColor(activity.type)} flex items-center justify-center`}>
-                  <ActivityIcon className="w-4 h-4 text-white" />
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      {activity.title}
+              <div key={deal.id} className={`flex items-center justify-between p-4 ${isDark ? 'bg-white/5 hover:bg-white/10' : 'bg-gray-50/80 hover:bg-gray-100/80'} rounded-xl transition-colors`}>
+                <div className="flex items-center space-x-3">
+                  <Avatar
+                    src={getAvatarByIndex(index, 'business')}
+                    alt={contact?.name || 'Contact'}
+                    size="sm"
+                    fallback={getInitials(contact?.name || 'Contact')}
+                  />
+                  <div>
+                    <h4 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'} text-sm`}>{deal.title}</h4>
+                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                      {contact?.name || 'Unknown Contact'}
                     </p>
-                    <div className="flex items-center space-x-2">
-                      <StatusIcon className={`w-3 h-3 ${
-                        activity.status === 'completed' ? 'text-green-500' : 'text-gray-400'
-                      }`} />
-                      <span className="text-xs text-gray-500 whitespace-nowrap">
-                        {formatTimestamp(activity.timestamp)}
-                      </span>
-                    </div>
                   </div>
-                  
-                  <p className="text-sm text-gray-600 truncate mt-1">
-                    {activity.description}
-                  </p>
-
-                  {/* Contact Avatar and Info */}
-                  {contact && (
-                    <div className="flex items-center space-x-2 mt-2">
-                      <Avatar
-                        src={contact.avatarSrc || contact.avatar || getAvatarByIndex(parseInt(contact.id) || 0)}
-                        alt={contact.name}
-                        size="sm"
-                        fallback={getInitials(contact.name)}
-                        status="online"
-                      />
-                      <span className="text-xs text-gray-500">{contact.name}</span>
-                    </div>
-                  )}
+                </div>
+                <div className="text-right">
+                  <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'} text-sm`}>${deal.value.toLocaleString()}</p>
+                  <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>High • Due soon</p>
                 </div>
               </div>
             );
           })}
         </div>
-
-        {activities.length === 0 && (
-          <div className="text-center py-8">
-            <Clock className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-500">No recent activity</p>
-          </div>
-        )}
       </div>
-    </GlassCard>
+
+      {/* Recent Activity Feed */}
+      <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6`}>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Recent Activity</h3>
+          <div className="flex items-center space-x-2">
+            <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>24 completed</span>
+            <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>•</span>
+            <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>8 pending</span>
+          </div>
+        </div>
+        
+        <div className="space-y-4">
+          {activities.slice(0, 6).map((activity, index) => {
+            const contact = activity.contactId ? contacts[activity.contactId] : null;
+            const ActivityIcon = getActivityIcon(activity.type);
+            const activityColor = getActivityColor(activity.type);
+
+            return (
+              <div key={activity.id} className={`flex items-start space-x-3 p-3 ${isDark ? 'hover:bg-white/5' : 'hover:bg-gray-50/80'} rounded-lg transition-colors`}>
+                <div className={`p-2 rounded-lg ${activityColor} ${isDark ? 'bg-opacity-10' : 'bg-opacity-10'}`}>
+                  <ActivityIcon className="w-4 h-4" />
+                </div>
+                <div className="flex-1">
+                  <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} text-sm`}>{activity.title}</h4>
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{activity.description}</p>
+                  <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-500'} mt-1`}>{formatTimestamp(activity.timestamp)}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 };
 
