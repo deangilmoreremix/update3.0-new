@@ -24,7 +24,8 @@ import { RoleProvider } from './components/RoleBasedAccess';
 
 // Import existing pages
 import Contacts from './pages/Contacts';
-import EnhancedContacts from './pages/EnhancedContacts';
+import NetlifyContacts from './pages/NetlifyContacts';
+
 import { EnhancedPipeline } from './components/EnhancedPipeline';
 import Tasks from './pages/Tasks';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
@@ -117,7 +118,7 @@ function App() {
                                 <>
                                   <ExactNavbar />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
-                                    <EnhancedContacts />
+                                    <NetlifyContacts />
                                   </div>
                                 </>
                               } />
