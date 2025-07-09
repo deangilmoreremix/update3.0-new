@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { GlassCard } from '../ui/GlassCard';
 import { ModernButton } from '../ui/ModernButton';
 import { Contact } from '../../types';
+import VideoCallPreviewWidget from '../VideoCallPreviewWidget';
+import { useVideoCall } from '../../contexts/VideoCallContext';
 import { 
   Mail, 
   Phone, 
@@ -114,6 +116,8 @@ export const CommunicationHub: React.FC<CommunicationHubProps> = ({ contact }) =
   const [isComposing, setIsComposing] = useState(false);
   const [composeType, setComposeType] = useState<'email' | 'sms' | 'call'>('email');
   const [communications] = useState<CommunicationRecord[]>(sampleCommunications);
+  const [showVideoWidget, setShowVideoWidget] = useState(false);
+  const { initiateCall } = useVideoCall();
 
   const communicationTypes = [
     { value: 'all', label: 'All Communications' },
@@ -136,6 +140,23 @@ export const CommunicationHub: React.FC<CommunicationHubProps> = ({ contact }) =
     if (diffDays === 0) return `Today at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
     if (diffDays === 1) return `Yesterday at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
     return `${date.toLocaleDateString()} at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+  };
+
+  const handleVideoCall = () => {
+    const participant = {
+      id: contact.id,
+      name: contact.name,
+      email: contact.email,
+      avatar: contact.avatarSrc
+    };
+    
+    initiateCall(participant);
+    setShowVideoWidget(true);
+    
+    // Auto-hide after 30 seconds to prevent persistence
+    setTimeout(() => {
+      setShowVideoWidget(false);
+    }, 30000);
   };
 
   return (
@@ -265,7 +286,11 @@ export const CommunicationHub: React.FC<CommunicationHubProps> = ({ contact }) =
                 <MessageSquare className="w-4 h-4" />
                 <span>Send SMS</span>
               </ModernButton>
-              <ModernButton variant="outline" className="w-full flex items-center justify-center space-x-2">
+              <ModernButton 
+                variant="outline" 
+                className="w-full flex items-center justify-center space-x-2"
+                onClick={handleVideoCall}
+              >
                 <Video className="w-4 h-4" />
                 <span>Video Call</span>
               </ModernButton>
@@ -294,6 +319,28 @@ export const CommunicationHub: React.FC<CommunicationHubProps> = ({ contact }) =
               </button>
             </div>
           </GlassCard>
+
+          {/* Video Call Widget - Temporary */}
+          {showVideoWidget && (
+            <GlassCard className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-lg font-semibold text-gray-900">Video Call</h4>
+                <button 
+                  onClick={() => setShowVideoWidget(false)}
+                  className="text-gray-400 hover:text-red-600 transition-colors"
+                  title="Close video call"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="relative">
+                <VideoCallPreviewWidget />
+              </div>
+              <div className="mt-4 text-xs text-gray-500 text-center">
+                Video call will close automatically in 30 seconds
+              </div>
+            </GlassCard>
+          )}
 
           {/* Communication Preferences */}
           <GlassCard className="p-6">

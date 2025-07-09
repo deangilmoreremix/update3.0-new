@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { MessageSquare, Video, Mail, Phone, Send, Users, Calendar, Megaphone, Clock, CheckCircle } from 'lucide-react';
+import VideoCallPreviewWidget from '../components/VideoCallPreviewWidget';
+import { useVideoCall } from '../contexts/VideoCallContext';
 
 const CommunicationHub: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [newMessage, setNewMessage] = useState('');
+  const [showVideoWidget, setShowVideoWidget] = useState(false);
+  const { initiateCall } = useVideoCall();
 
   const communicationChannels = [
     {
@@ -106,6 +110,24 @@ const CommunicationHub: React.FC = () => {
       // Handle message sending logic here
       setNewMessage('');
     }
+  };
+
+  const handleVideoCall = () => {
+    // Create a generic participant for the video call
+    const participant = {
+      id: 'video-call-' + Date.now(),
+      name: 'Video Call',
+      email: 'video@example.com',
+      avatar: '/api/placeholder/40/40'
+    };
+    
+    initiateCall(participant);
+    setShowVideoWidget(true);
+    
+    // Auto-hide after 30 seconds to prevent persistence
+    setTimeout(() => {
+      setShowVideoWidget(false);
+    }, 30000);
   };
 
   return (
@@ -232,11 +254,38 @@ const CommunicationHub: React.FC = () => {
                 </div>
               </div>
               <p className="text-gray-700 mb-4">{channel.description}</p>
-              <button className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-200 transition-colors">
-                Open Channel
+              <button 
+                onClick={channel.name === 'Video Calls' ? handleVideoCall : () => {}}
+                className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-200 transition-colors"
+              >
+                {channel.name === 'Video Calls' ? 'Start Video Call' : 'Open Channel'}
               </button>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Video Call Widget - Temporary */}
+      {showVideoWidget && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <div className="bg-white rounded-lg shadow-lg p-4 w-80">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-semibold text-gray-900">Video Call</h4>
+              <button 
+                onClick={() => setShowVideoWidget(false)}
+                className="text-gray-400 hover:text-red-600 transition-colors"
+                title="Close video call"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="relative">
+              <VideoCallPreviewWidget />
+            </div>
+            <div className="mt-4 text-xs text-gray-500 text-center">
+              Video call will close automatically in 30 seconds
+            </div>
+          </div>
         </div>
       )}
 
