@@ -72,13 +72,40 @@ const QuickAIButton: React.FC<QuickAIButtonProps> = ({
 
     setIsLoading(true);
     try {
-      // Handle AI tool execution
-      console.log(`Executing ${toolName} for ${entityType} ${entityId}`);
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      // Handle AI Goals navigation
+      if (toolName === 'ai-goals') {
+        // Navigate to AI Goals page with entity context
+        sessionStorage.setItem('aiGoalsContext', JSON.stringify({
+          entityType,
+          entityId,
+          entityData,
+          suggestedCategories: getSuggestedCategories(entityType)
+        }));
+        
+        // Navigate to AI Goals page
+        window.location.href = '/ai-goals';
+      } else {
+        // Handle other AI tool execution
+        console.log(`Executing ${toolName} for ${entityType} ${entityId}`);
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      }
     } catch (error) {
       console.error(`Failed to execute ${toolName}:`, error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const getSuggestedCategories = (type: string) => {
+    switch (type) {
+      case 'contact':
+        return ['Sales', 'Marketing', 'Relationship'];
+      case 'deal':
+        return ['Sales', 'Analytics', 'Automation'];
+      case 'company':
+        return ['Analytics', 'Research', 'Business Intelligence'];
+      default:
+        return [];
     }
   };
 
