@@ -5,7 +5,7 @@ import { AIEnhancedDealCard } from './deals/AIEnhancedDealCard';
 import { Filter, Search, Plus, BarChart3, TrendingUp, Target, DollarSign, Calendar, Users, Star, Heart, Briefcase, Building, Phone, Mail, Globe, Zap, MoreHorizontal, ArrowUpDown, SlidersHorizontal, Eye, EyeOff, RefreshCw, Bot, Sparkles, Layers, Activity, TrendingDown, AlertCircle, CheckCircle, Clock, UserPlus, FileText, PieChart, Settings, Download, Upload, FilterX, Grid3X3, List, BarChart, LineChart, Target as TargetIcon } from 'lucide-react';
 import { ModernButton } from './ui/ModernButton';
 import { usePersonalization } from '../contexts/PersonalizationContext';
-import { useContactStore } from '../stores/contactStore';
+import { useContactStore } from '../store/contactStore';
 
 // Enhanced mock data with Bolt-style comprehensive deal structure
 const mockDeals: Deal[] = [
