@@ -3,7 +3,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useTaskStore } from '../store/taskStore';
 import { CheckSquare, Clock, AlertCircle, Plus } from 'lucide-react';
 import Avatar from './ui/Avatar';
-import { getAvatarByIndex, getInitials } from '../utils/avatars';
+import { getAvatarByIndex, getInitials } from '../services/avatarCollection';
 
 const TasksSection: React.FC = () => {
   const { isDark } = useTheme();
