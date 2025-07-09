@@ -63,7 +63,7 @@ function App() {
                   <div className="min-h-screen h-full w-full flex flex-col transition-all duration-300 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-gradient-to-br from-gray-50 via-white to-gray-100">
                     <DevicePermissionChecker />
                     <ExactNavbar />
-                    <div className="flex-1 w-full overflow-y-auto">
+                    <div className="flex-1 w-full overflow-y-auto pt-24">
                       <Routes>
                         {/* Main Dashboard */}
                         <Route path="/" element={<Dashboard />} />
