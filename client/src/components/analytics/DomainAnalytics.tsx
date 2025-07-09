@@ -103,12 +103,12 @@ export default function DomainAnalytics({ domainId, domainName }: DomainAnalytic
 
   if (loading) {
     return (
-      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg">
         <div className="animate-pulse space-y-4">
-          <div className="h-6 bg-white/20 rounded w-1/3"></div>
+          <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-1/3"></div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-20 bg-white/20 rounded"></div>
+              <div key={i} className="h-20 bg-gray-300 dark:bg-gray-600 rounded"></div>
             ))}
           </div>
         </div>
@@ -118,8 +118,8 @@ export default function DomainAnalytics({ domainId, domainName }: DomainAnalytic
 
   if (!analyticsData) {
     return (
-      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-        <p className="text-white/70">No analytics data available</p>
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg">
+        <p className="text-gray-600 dark:text-gray-400">No analytics data available</p>
       </div>
     );
   }
@@ -127,13 +127,13 @@ export default function DomainAnalytics({ domainId, domainName }: DomainAnalytic
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-white">Analytics for {domainName}</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Analytics for {domainName}</h2>
           <select 
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
-            className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white"
+            className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-gray-900 dark:text-white"
           >
             <option value="7d">Last 7 days</option>
             <option value="30d">Last 30 days</option>
@@ -143,60 +143,60 @@ export default function DomainAnalytics({ domainId, domainName }: DomainAnalytic
 
         {/* Overview KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white/10 rounded-lg p-4 border border-white/20">
+          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/70 text-sm">Visitors</p>
-                <p className="text-2xl font-bold text-white">{analyticsData.visitors.toLocaleString()}</p>
+                <p className="text-blue-600 dark:text-blue-400 text-sm">Visitors</p>
+                <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">{analyticsData.visitors.toLocaleString()}</p>
               </div>
-              <Users className="w-8 h-8 text-blue-400" />
+              <Users className="w-8 h-8 text-blue-500" />
             </div>
           </div>
 
-          <div className="bg-white/10 rounded-lg p-4 border border-white/20">
+          <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/70 text-sm">Page Views</p>
-                <p className="text-2xl font-bold text-white">{analyticsData.pageViews.toLocaleString()}</p>
+                <p className="text-green-600 dark:text-green-400 text-sm">Page Views</p>
+                <p className="text-2xl font-bold text-green-900 dark:text-green-100">{analyticsData.pageViews.toLocaleString()}</p>
               </div>
-              <Eye className="w-8 h-8 text-green-400" />
+              <Eye className="w-8 h-8 text-green-500" />
             </div>
           </div>
 
-          <div className="bg-white/10 rounded-lg p-4 border border-white/20">
+          <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/70 text-sm">Conversions</p>
-                <p className="text-2xl font-bold text-white">{analyticsData.conversions}</p>
-                <p className="text-sm text-green-400">{conversionRate}% rate</p>
+                <p className="text-purple-600 dark:text-purple-400 text-sm">Conversions</p>
+                <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{analyticsData.conversions}</p>
+                <p className="text-sm text-green-600 dark:text-green-400">{conversionRate}% rate</p>
               </div>
-              <MousePointer className="w-8 h-8 text-purple-400" />
+              <MousePointer className="w-8 h-8 text-purple-500" />
             </div>
           </div>
 
-          <div className="bg-white/10 rounded-lg p-4 border border-white/20">
+          <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4 border border-orange-200 dark:border-orange-800">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/70 text-sm">Avg. Session</p>
-                <p className="text-2xl font-bold text-white">{formatDuration(analyticsData.avgSessionDuration)}</p>
+                <p className="text-orange-600 dark:text-orange-400 text-sm">Avg. Session</p>
+                <p className="text-2xl font-bold text-orange-900 dark:text-orange-100">{formatDuration(analyticsData.avgSessionDuration)}</p>
               </div>
-              <Clock className="w-8 h-8 text-orange-400" />
+              <Clock className="w-8 h-8 text-orange-500" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Traffic Trends */}
-      <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg">
         <div 
           className="flex items-center justify-between p-6 cursor-pointer"
           onClick={() => toggleSection('traffic')}
         >
-          <h3 className="text-lg font-semibold text-white">Traffic Trends</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Traffic Trends</h3>
           {expandedSections.includes('traffic') ? (
-            <ChevronUp className="w-5 h-5 text-white/70" />
+            <ChevronUp className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           ) : (
-            <ChevronDown className="w-5 h-5 text-white/70" />
+            <ChevronDown className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           )}
         </div>
         
@@ -205,14 +205,15 @@ export default function DomainAnalytics({ domainId, domainName }: DomainAnalytic
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={analyticsData.dailyStats}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="date" stroke="rgba(255,255,255,0.7)" />
-                  <YAxis stroke="rgba(255,255,255,0.7)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(156,163,175,0.3)" />
+                  <XAxis dataKey="date" stroke="rgba(107,114,128,0.8)" />
+                  <YAxis stroke="rgba(107,114,128,0.8)" />
                   <Tooltip 
                     contentStyle={{ 
-                      backgroundColor: 'rgba(0,0,0,0.8)', 
-                      border: '1px solid rgba(255,255,255,0.2)',
-                      borderRadius: '8px'
+                      backgroundColor: 'white', 
+                      border: '1px solid rgba(229,231,235,1)',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                     }}
                   />
                   <Line type="monotone" dataKey="visitors" stroke="#3B82F6" strokeWidth={2} />
@@ -227,8 +228,8 @@ export default function DomainAnalytics({ domainId, domainName }: DomainAnalytic
       {/* Traffic Sources & Top Pages */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Traffic Sources */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-          <h3 className="text-lg font-semibold text-white mb-4">Traffic Sources</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Traffic Sources</h3>
           <div className="space-y-3">
             {analyticsData.trafficSources.map((source, index) => (
               <div key={source.source} className="flex items-center justify-between">
@@ -237,11 +238,11 @@ export default function DomainAnalytics({ domainId, domainName }: DomainAnalytic
                     className="w-3 h-3 rounded-full"
                     style={{ backgroundColor: COLORS[index % COLORS.length] }}
                   ></div>
-                  <span className="text-white">{source.source}</span>
+                  <span className="text-gray-900 dark:text-white">{source.source}</span>
                 </div>
                 <div className="text-right">
-                  <p className="text-white font-medium">{source.visitors}</p>
-                  <p className="text-white/70 text-sm">{source.percentage}%</p>
+                  <p className="text-gray-900 dark:text-white font-medium">{source.visitors}</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">{source.percentage}%</p>
                 </div>
               </div>
             ))}
@@ -249,20 +250,20 @@ export default function DomainAnalytics({ domainId, domainName }: DomainAnalytic
         </div>
 
         {/* Top Pages */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-          <h3 className="text-lg font-semibold text-white mb-4">Top Pages</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Pages</h3>
           <div className="space-y-3">
             {analyticsData.topPages.map((page, index) => (
               <div key={page.page} className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
-                    <span className="text-xs text-blue-400 font-medium">{index + 1}</span>
+                  <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900/50 rounded flex items-center justify-center">
+                    <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">{index + 1}</span>
                   </div>
-                  <span className="text-white">{page.page}</span>
+                  <span className="text-gray-900 dark:text-white">{page.page}</span>
                 </div>
                 <div className="text-right">
-                  <p className="text-white font-medium">{page.views} views</p>
-                  <p className="text-green-400 text-sm">{page.conversions} conversions</p>
+                  <p className="text-gray-900 dark:text-white font-medium">{page.views} views</p>
+                  <p className="text-green-600 dark:text-green-400 text-sm">{page.conversions} conversions</p>
                 </div>
               </div>
             ))}
@@ -272,40 +273,40 @@ export default function DomainAnalytics({ domainId, domainName }: DomainAnalytic
 
       {/* Browser & Device Stats */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-          <h3 className="text-lg font-semibold text-white mb-4">Browser Distribution</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Browser Distribution</h3>
           <div className="space-y-3">
             {analyticsData.browserStats.map((browser, index) => (
               <div key={browser.browser} className="flex items-center justify-between">
-                <span className="text-white">{browser.browser}</span>
+                <span className="text-gray-900 dark:text-white">{browser.browser}</span>
                 <div className="flex items-center space-x-2">
-                  <div className="w-20 h-2 bg-white/20 rounded-full overflow-hidden">
+                  <div className="w-20 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-blue-500 rounded-full"
                       style={{ width: `${browser.percentage}%` }}
                     ></div>
                   </div>
-                  <span className="text-white/70 text-sm">{browser.percentage}%</span>
+                  <span className="text-gray-500 dark:text-gray-400 text-sm">{browser.percentage}%</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-          <h3 className="text-lg font-semibold text-white mb-4">Device Distribution</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Device Distribution</h3>
           <div className="space-y-3">
             {analyticsData.deviceStats.map((device, index) => (
               <div key={device.device} className="flex items-center justify-between">
-                <span className="text-white">{device.device}</span>
+                <span className="text-gray-900 dark:text-white">{device.device}</span>
                 <div className="flex items-center space-x-2">
-                  <div className="w-20 h-2 bg-white/20 rounded-full overflow-hidden">
+                  <div className="w-20 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-green-500 rounded-full"
                       style={{ width: `${device.percentage}%` }}
                     ></div>
                   </div>
-                  <span className="text-white/70 text-sm">{device.percentage}%</span>
+                  <span className="text-gray-500 dark:text-gray-400 text-sm">{device.percentage}%</span>
                 </div>
               </div>
             ))}
