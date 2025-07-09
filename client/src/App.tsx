@@ -24,7 +24,7 @@ import { RoleProvider } from './components/RoleBasedAccess';
 
 // Import existing pages
 import Contacts from './pages/Contacts';
-import Pipeline from './pages/Pipeline-enhanced';
+import { EnhancedPipeline } from './components/EnhancedPipeline';
 import Tasks from './pages/Tasks';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import CommunicationHub from './pages/CommunicationHub';
@@ -124,7 +124,7 @@ function App() {
                                 <>
                                   <ExactNavbar />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
-                                    <Pipeline />
+                                    <EnhancedPipeline />
                                   </div>
                                 </>
                               } />

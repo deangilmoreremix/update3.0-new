@@ -42,32 +42,58 @@ export interface Contact {
 export interface Deal {
   id: string;
   title: string;
+  company: string;
+  contact: string;
+  contactId?: string;
   value: number;
-  stage: 'initial' | 'negotiation' | 'proposal' | 'closed-won' | 'closed-lost' | 'qualification';
-  contactId: string;
-  probability?: number;
+  stage: 'qualification' | 'proposal' | 'negotiation' | 'closed-won' | 'closed-lost';
+  probability: number;
+  priority: 'high' | 'medium' | 'low';
+  dueDate?: Date;
   notes?: string;
   createdAt: Date;
   updatedAt: Date;
-  expectedCloseDate?: Date;
-  lostReason?: string;
-  products?: string[];
-  competitors?: string[];
-  decisionMakers?: string[];
-  lastActivityDate?: Date;
-  assignedTo?: string;
-  currency?: string;
-  discountAmount?: number;
-  discountPercentage?: number;
-  priority?: 'low' | 'medium' | 'high';
-  nextSteps?: string[];
-  aiInsights?: {
-    riskFactors?: string[];
-    opportunities?: string[];
-    competitiveThreats?: string[];
-    winStrategy?: string;
+  contactAvatar?: string;
+  companyAvatar?: string;
+  lastActivity?: string;
+  tags?: string[];
+  
+  // AI and enhanced features
+  isFavorite?: boolean;
+  customFields?: Record<string, string | number | boolean>;
+  socialProfiles?: {
+    linkedin?: string;
+    twitter?: string;
+    facebook?: string;
+    website?: string;
   };
-  daysInStage?: number;
+  lastEnrichment?: {
+    confidence: number;
+    aiProvider?: string;
+    timestamp?: Date;
+  };
+  links?: Array<{
+    title: string;
+    url: string;
+    type?: string;
+    createdAt?: string;
+  }>;
+  attachments?: Array<{
+    id: string;
+    name: string;
+    size: number;
+    type: string;
+    uploadedAt: string;
+  }>;
+  nextFollowUp?: string;
+  aiScore?: number;
+}
+
+export interface PipelineColumn {
+  id: string;
+  title: string;
+  dealIds: string[];
+  color: string;
 }
 
 export interface Task {
