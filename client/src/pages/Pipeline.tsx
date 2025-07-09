@@ -25,210 +25,280 @@ import {
   EyeOff
 } from 'lucide-react';
 
-interface MockDeal extends Deal {
-  id: string;
-  title: string;
-  company: string;
-  contact: string;
-  value: number;
-  stage: string;
-  probability: number;
-  priority: 'high' | 'medium' | 'low';
-  notes?: string;
-  dueDate?: string;
-  expectedCloseDate?: string;
-  contactAvatar?: string;
-  companyAvatar?: string;
-  isFavorite?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-  lastEnrichment?: {
-    confidence: number;
-    aiProvider: string;
-    timestamp: Date;
-  };
-}
-
-const mockDeals: Record<string, MockDeal> = {
+// Mock data based on repository structure
+const mockDeals: Record<string, Deal> = {
   'deal-1': {
     id: 'deal-1',
-    title: 'Enterprise CRM Integration',
-    company: 'TechCorp Inc.',
-    contact: 'John Smith',
-    value: 75000,
+    title: 'Enterprise Software License',
+    company: 'TechCorp Solutions',
+    contact: 'Sarah Johnson',
+    value: 125000,
     stage: 'qualification',
-    probability: 75,
+    probability: 85,
     priority: 'high',
+    dueDate: new Date('2024-02-15'),
     expectedCloseDate: '2024-02-15',
-    isFavorite: true,
+    contactAvatar: 'https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1',
     companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=TechCorp&backgroundColor=3b82f6&textColor=ffffff',
-    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John',
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-10'),
+    isFavorite: true,
+    tags: ['enterprise', 'software'],
+    socialProfiles: {
+      linkedin: 'https://linkedin.com/company/techcorp-solutions',
+      website: 'https://techcorp.com'
+    },
+    customFields: {
+      "Deal Source": "Direct",
+      "Account Manager": "Alex Rivera"
+    },
+    lastActivity: 'Sent proposal document',
     lastEnrichment: {
       confidence: 85,
-      aiProvider: 'OpenAI GPT-4',
+      aiProvider: 'OpenAI GPT-4o',
       timestamp: new Date()
-    }
+    },
+    createdAt: '2024-01-01',
+    updatedAt: '2024-01-10'
   },
   'deal-2': {
     id: 'deal-2',
-    title: 'SaaS Platform Migration',
+    title: 'Cloud Migration Project',
     company: 'StartupXYZ',
-    contact: 'Sarah Johnson',
-    value: 45000,
+    contact: 'Mike Chen',
+    value: 75000,
     stage: 'proposal',
-    probability: 60,
+    probability: 65,
     priority: 'medium',
+    dueDate: new Date('2024-02-20'),
     expectedCloseDate: '2024-02-20',
+    contactAvatar: 'https://images.pexels.com/photos/1674752/pexels-photo-1674752.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1',
     companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=StartupXYZ&backgroundColor=8b5cf6&textColor=ffffff',
-    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
-    createdAt: new Date('2024-01-05'),
-    updatedAt: new Date('2024-01-12')
+    tags: ['cloud', 'migration'],
+    socialProfiles: {
+      linkedin: 'https://linkedin.com/company/startupxyz',
+      website: 'https://startupxyz.com'
+    },
+    customFields: {
+      "Deal Source": "Referral",
+      "Account Manager": "Sam Wilson"
+    },
+    lastActivity: 'Demo completed',
+    createdAt: '2024-01-05',
+    updatedAt: '2024-01-12'
   },
   'deal-3': {
     id: 'deal-3',
-    title: 'AI-Powered Analytics Suite',
-    company: 'DataTech Solutions',
-    contact: 'Mike Wilson',
-    value: 120000,
+    title: 'AI Analytics Platform',
+    company: 'DataFlow Inc',
+    contact: 'Emily Rodriguez',
+    value: 95000,
     stage: 'negotiation',
-    probability: 85,
+    probability: 78,
     priority: 'high',
+    dueDate: new Date('2024-02-10'),
     expectedCloseDate: '2024-02-10',
+    contactAvatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1',
+    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=DataFlow&backgroundColor=f59e0b&textColor=ffffff',
     isFavorite: true,
-    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=DataTech&backgroundColor=f59e0b&textColor=ffffff',
-    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike',
-    createdAt: new Date('2024-01-03'),
-    updatedAt: new Date('2024-01-15')
+    tags: ['ai', 'analytics'],
+    socialProfiles: {
+      linkedin: 'https://linkedin.com/company/dataflow-inc',
+      website: 'https://dataflow.com'
+    },
+    customFields: {
+      "Deal Source": "Marketing",
+      "Account Manager": "Lisa Park"
+    },
+    lastActivity: 'Contract review in progress',
+    lastEnrichment: {
+      confidence: 78,
+      aiProvider: 'Gemini Pro',
+      timestamp: new Date()
+    },
+    createdAt: '2024-01-03',
+    updatedAt: '2024-01-15'
   },
   'deal-4': {
     id: 'deal-4',
-    title: 'Cloud Infrastructure Setup',
-    company: 'CloudFirst Corp',
-    contact: 'Lisa Chen',
-    value: 65000,
+    title: 'Digital Transformation',
+    company: 'RetailCorp',
+    contact: 'David Kim',
+    value: 45000,
     stage: 'discovery',
-    probability: 35,
+    probability: 40,
     priority: 'medium',
+    dueDate: new Date('2024-02-25'),
     expectedCloseDate: '2024-02-25',
-    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=CloudFirst&backgroundColor=10b981&textColor=ffffff',
-    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa',
-    createdAt: new Date('2024-01-07'),
-    updatedAt: new Date('2024-01-14')
+    contactAvatar: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1',
+    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=RetailCorp&backgroundColor=10b981&textColor=ffffff',
+    tags: ['retail', 'transformation'],
+    socialProfiles: {
+      linkedin: 'https://linkedin.com/company/retailcorp',
+      website: 'https://retailcorp.com'
+    },
+    customFields: {
+      "Deal Source": "Cold Outreach",
+      "Account Manager": "Chris Taylor"
+    },
+    lastActivity: 'Initial meeting scheduled',
+    createdAt: '2024-01-07',
+    updatedAt: '2024-01-14'
   },
   'deal-5': {
     id: 'deal-5',
-    title: 'Digital Transformation Consulting',
-    company: 'Future Enterprises',
-    contact: 'David Brown',
-    value: 90000,
+    title: 'Security Compliance Suite',
+    company: 'FinanceFirst',
+    contact: 'Jennifer Lopez',
+    value: 180000,
     stage: 'closed-won',
     probability: 100,
     priority: 'high',
+    dueDate: new Date('2024-01-30'),
     expectedCloseDate: '2024-01-30',
-    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=Future&backgroundColor=ef4444&textColor=ffffff',
-    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
-    createdAt: new Date('2023-12-15'),
-    updatedAt: new Date('2024-01-30')
+    contactAvatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1',
+    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=FinanceFirst&backgroundColor=059669&textColor=ffffff',
+    isFavorite: true,
+    tags: ['finance', 'security'],
+    socialProfiles: {
+      linkedin: 'https://linkedin.com/company/financefirst',
+      website: 'https://financefirst.com'
+    },
+    customFields: {
+      "Deal Source": "Partner",
+      "Account Manager": "Alex Rivera"
+    },
+    lastActivity: 'Contract signed',
+    createdAt: '2023-12-15',
+    updatedAt: '2024-01-30'
   },
   'deal-6': {
     id: 'deal-6',
     title: 'Mobile App Development',
-    company: 'AppTech Inc',
-    contact: 'Emma Davis',
+    company: 'AppInnovate',
+    contact: 'Robert Wilson',
     value: 35000,
     stage: 'closed-lost',
     probability: 0,
     priority: 'low',
+    dueDate: new Date('2024-01-20'),
     expectedCloseDate: '2024-01-20',
-    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AppTech&backgroundColor=6366f1&textColor=ffffff',
-    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma',
-    createdAt: new Date('2023-12-20'),
-    updatedAt: new Date('2024-01-20')
+    contactAvatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1',
+    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AppInnovate&backgroundColor=ef4444&textColor=ffffff',
+    tags: ['mobile', 'development'],
+    socialProfiles: {
+      linkedin: 'https://linkedin.com/company/appinnovate',
+      website: 'https://appinnovate.com'
+    },
+    customFields: {
+      "Deal Source": "Web Form",
+      "Account Manager": "Sam Wilson"
+    },
+    lastActivity: 'Lost to competitor',
+    createdAt: '2023-12-20',
+    updatedAt: '2024-01-20'
   },
   'deal-7': {
     id: 'deal-7',
-    title: 'Cybersecurity Assessment',
-    company: 'SecureNet Solutions',
-    contact: 'Robert Taylor',
-    value: 55000,
+    title: 'E-commerce Platform',
+    company: 'ShopSmart',
+    contact: 'Maria Garcia',
+    value: 65000,
     stage: 'qualification',
-    probability: 65,
+    probability: 55,
     priority: 'medium',
-    expectedCloseDate: '2024-02-28',
-    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=SecureNet&backgroundColor=06b6d4&textColor=ffffff',
-    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Robert',
-    createdAt: new Date('2024-01-08'),
-    updatedAt: new Date('2024-01-16')
+    dueDate: new Date('2024-03-01'),
+    expectedCloseDate: '2024-03-01',
+    contactAvatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1',
+    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=ShopSmart&backgroundColor=7c3aed&textColor=ffffff',
+    tags: ['ecommerce', 'platform'],
+    socialProfiles: {
+      linkedin: 'https://linkedin.com/company/shopsmart',
+      website: 'https://shopsmart.com'
+    },
+    customFields: {
+      "Deal Source": "Event",
+      "Account Manager": "Lisa Park"
+    },
+    lastActivity: 'Requirements gathering',
+    createdAt: '2024-01-10',
+    updatedAt: '2024-01-18'
   },
   'deal-8': {
     id: 'deal-8',
-    title: 'E-commerce Platform Upgrade',
-    company: 'ShopGlobal Ltd',
-    contact: 'Jennifer White',
-    value: 80000,
+    title: 'CRM Implementation',
+    company: 'GrowthTech',
+    contact: 'James Thompson',
+    value: 85000,
     stage: 'proposal',
     probability: 70,
     priority: 'high',
-    expectedCloseDate: '2024-02-18',
-    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=ShopGlobal&backgroundColor=ec4899&textColor=ffffff',
-    contactAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jennifer',
-    createdAt: new Date('2024-01-06'),
-    updatedAt: new Date('2024-01-13')
+    dueDate: new Date('2024-02-28'),
+    expectedCloseDate: '2024-02-28',
+    contactAvatar: 'https://images.pexels.com/photos/1040880/pexels-photo-1040880.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1',
+    companyAvatar: 'https://api.dicebear.com/7.x/initials/svg?seed=GrowthTech&backgroundColor=dc2626&textColor=ffffff',
+    isFavorite: true,
+    tags: ['crm', 'implementation'],
+    socialProfiles: {
+      linkedin: 'https://linkedin.com/company/growthtech',
+      website: 'https://growthtech.com'
+    },
+    customFields: {
+      "Deal Source": "Inbound",
+      "Account Manager": "Chris Taylor"
+    },
+    lastActivity: 'Proposal sent',
+    lastEnrichment: {
+      confidence: 70,
+      aiProvider: 'Hybrid AI (GPT-4o + Gemini)',
+      timestamp: new Date()
+    },
+    createdAt: '2024-01-08',
+    updatedAt: '2024-01-16'
   }
 };
 
 const mockColumns: Record<string, PipelineColumn> = {
-  'discovery': {
+  discovery: {
     id: 'discovery',
     title: 'Discovery',
-    dealIds: ['deal-4']
+    dealIds: ['deal-4'],
+    color: '#3B82F6'
   },
-  'qualification': {
+  qualification: {
     id: 'qualification',
     title: 'Qualification',
-    dealIds: ['deal-1', 'deal-7']
+    dealIds: ['deal-1', 'deal-7'],
+    color: '#F59E0B'
   },
-  'proposal': {
+  proposal: {
     id: 'proposal',
     title: 'Proposal',
-    dealIds: ['deal-2', 'deal-8']
+    dealIds: ['deal-2', 'deal-8'],
+    color: '#8B5CF6'
   },
-  'negotiation': {
+  negotiation: {
     id: 'negotiation',
     title: 'Negotiation',
-    dealIds: ['deal-3']
+    dealIds: ['deal-3'],
+    color: '#F97316'
   },
   'closed-won': {
     id: 'closed-won',
     title: 'Closed Won',
-    dealIds: ['deal-5']
+    dealIds: ['deal-5'],
+    color: '#10B981'
   },
   'closed-lost': {
     id: 'closed-lost',
     title: 'Closed Lost',
-    dealIds: ['deal-6']
+    dealIds: ['deal-6'],
+    color: '#EF4444'
   }
 };
 
 const columnOrder = ['discovery', 'qualification', 'proposal', 'negotiation', 'closed-won', 'closed-lost'];
 
-const calculateStageValues = (deals: Record<string, MockDeal>, columns: Record<string, PipelineColumn>) => {
-  const values: Record<string, number> = {};
-  
-  Object.keys(columns).forEach(columnId => {
-    values[columnId] = columns[columnId].dealIds.reduce((sum, dealId) => {
-      const deal = deals[dealId];
-      return deal ? sum + deal.value : sum;
-    }, 0);
-  });
-  
-  return values;
-};
-
 const Pipeline: React.FC = () => {
-  const [deals, setDeals] = useState<Record<string, MockDeal>>(mockDeals);
+  const [deals, setDeals] = useState<Record<string, Deal>>(mockDeals);
   const [columns, setColumns] = useState<Record<string, PipelineColumn>>(mockColumns);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState<any[]>([]);
@@ -355,7 +425,7 @@ const Pipeline: React.FC = () => {
       const updatedDeal = {
         ...deals[draggableId],
         stage: destination.droppableId,
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
       };
 
       setDeals({
@@ -371,59 +441,24 @@ const Pipeline: React.FC = () => {
     }
   };
 
-  const handleDealClick = (dealId: string) => {
-    setSelectedDealId(dealId);
-  };
-
-  const handleApplyFilters = (filters: any[]) => {
-    setActiveFilters(filters);
-  };
-
-  const handleClearFilters = () => {
-    setActiveFilters([]);
-  };
-
-  const handleAddDeal = (dealData: Omit<MockDeal, 'id' | 'createdAt' | 'updatedAt'>) => {
-    const newDealId = `deal-${Date.now()}`;
-    const newDeal: MockDeal = {
-      ...dealData,
-      id: newDealId,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-
-    // Add to deals
-    setDeals(prev => ({
-      ...prev,
-      [newDealId]: newDeal
-    }));
-
-    // Add to appropriate column
-    setColumns(prev => ({
-      ...prev,
-      [newDeal.stage]: {
-        ...prev[newDeal.stage],
-        dealIds: [...prev[newDeal.stage].dealIds, newDealId]
-      }
-    }));
-  };
-
-  const handleAnalyzeDeal = async (deal: MockDeal) => {
+  // AI Analysis Functions
+  const handleAnalyzeDeal = async (deal: Deal): Promise<boolean> => {
     setAnalyzingDealId(deal.id);
     try {
       // Simulate AI analysis
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
       // Update deal with enhanced probability
-      const newProbability = Math.min(deal.probability + 15, 95);
+      const enhancedProbability = Math.min(deal.probability + 10, 95);
       const updatedDeal = {
         ...deal,
-        probability: newProbability,
+        probability: enhancedProbability,
         lastEnrichment: {
-          confidence: newProbability,
+          confidence: enhancedProbability,
           aiProvider: 'Hybrid AI (GPT-4o + Gemini)',
           timestamp: new Date()
-        }
+        },
+        updatedAt: new Date().toISOString()
       };
       
       setDeals(prev => ({
@@ -433,28 +468,33 @@ const Pipeline: React.FC = () => {
       
       return true;
     } catch (error) {
-      console.error('AI analysis failed:', error);
+      console.error('Failed to analyze deal:', error);
       return false;
     } finally {
       setAnalyzingDealId(null);
     }
   };
 
-  const handleEnrichDeal = async (deal: MockDeal) => {
+  const handleAIEnrichDeal = async (deal: Deal): Promise<boolean> => {
     setEnrichingDealId(deal.id);
     try {
       // Simulate AI enrichment
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Update the deal with enhanced data
+      // Update deal with enriched data
       const updatedDeal = {
         ...deal,
-        probability: Math.min(deal.probability + 20, 95),
+        customFields: {
+          ...deal.customFields,
+          "AI Insights": "High conversion potential",
+          "Next Best Action": "Schedule follow-up meeting"
+        },
         lastEnrichment: {
-          confidence: 85,
-          aiProvider: 'AI Research',
+          confidence: Math.min(deal.probability + 5, 90),
+          aiProvider: 'OpenAI GPT-4o',
           timestamp: new Date()
-        }
+        },
+        updatedAt: new Date().toISOString()
       };
       
       setDeals(prev => ({
@@ -464,17 +504,18 @@ const Pipeline: React.FC = () => {
       
       return true;
     } catch (error) {
-      console.error('AI enrichment failed:', error);
+      console.error('Failed to enrich deal:', error);
       return false;
     } finally {
       setEnrichingDealId(null);
     }
   };
 
-  const handleToggleFavorite = async (deal: MockDeal) => {
+  const handleToggleFavorite = async (deal: Deal): Promise<void> => {
     const updatedDeal = {
       ...deal,
-      isFavorite: !deal.isFavorite
+      isFavorite: !deal.isFavorite,
+      updatedAt: new Date().toISOString()
     };
     
     setDeals(prev => ({
@@ -483,113 +524,73 @@ const Pipeline: React.FC = () => {
     }));
   };
 
-  const handleFindNewImage = async (deal: MockDeal) => {
-    try {
-      // Simulate finding a new image
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // For demo, just use a different seed for the avatar
-      const newSeed = Date.now().toString();
-      const newAvatar = `https://api.dicebear.com/7.x/initials/svg?seed=${newSeed}&backgroundColor=3b82f6,8b5cf6,f59e0b,10b981,ef4444&textColor=ffffff`;
-      
-      const updatedDeal = {
-        ...deal,
-        companyAvatar: newAvatar
-      };
-      
-      setDeals(prev => ({
-        ...prev,
-        [deal.id]: updatedDeal
-      }));
-    } catch (error) {
-      console.error('Failed to find new image:', error);
-    }
+  const handleFindNewImage = async (deal: Deal): Promise<void> => {
+    // Simulate image search
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    const newAvatars = [
+      'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1',
+      'https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1',
+      'https://images.pexels.com/photos/1674752/pexels-photo-1674752.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1'
+    ];
+    
+    const randomAvatar = newAvatars[Math.floor(Math.random() * newAvatars.length)];
+    
+    const updatedDeal = {
+      ...deal,
+      companyAvatar: randomAvatar,
+      updatedAt: new Date().toISOString()
+    };
+    
+    setDeals(prev => ({
+      ...prev,
+      [deal.id]: updatedDeal
+    }));
   };
 
-  const stageValues = calculateStageValues(filteredDeals, filteredColumns);
+  // Calculate pipeline statistics
+  const pipelineStats = useMemo(() => {
+    const dealsArray = Object.values(filteredDeals);
+    const totalValue = dealsArray.reduce((sum, deal) => sum + deal.value, 0);
+    const totalDeals = dealsArray.length;
+    const averageDealSize = totalDeals > 0 ? totalValue / totalDeals : 0;
+    const avgProbability = totalDeals > 0 ? dealsArray.reduce((sum, deal) => sum + deal.probability, 0) / totalDeals : 0;
+    
+    const stageValues = columnOrder.reduce((acc, stage) => {
+      acc[stage] = dealsArray.filter(deal => deal.stage === stage).reduce((sum, deal) => sum + deal.value, 0);
+      return acc;
+    }, {} as Record<string, number>);
+
+    return {
+      totalValue,
+      totalDeals,
+      averageDealSize,
+      conversionRate: avgProbability,
+      stageValues
+    };
+  }, [filteredDeals]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-full mx-auto p-4 sm:p-6 lg:p-8">
-        {/* Header Controls */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 space-y-4 lg:space-y-0">
-          <div className="flex items-center space-x-4">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Sales Pipeline</h1>
-            
-            {/* View Toggle */}
-            <div className="flex rounded-lg border border-gray-300 overflow-hidden">
-              <button
-                onClick={() => setViewMode('kanban')}
-                className={`p-2 text-sm font-medium transition-colors ${
-                  viewMode === 'kanban' 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-white text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                <Grid3X3 className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`p-2 text-sm font-medium border-l border-gray-300 transition-colors ${
-                  viewMode === 'list' 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-white text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                <List className="w-4 h-4" />
-              </button>
-            </div>
+    <div className="h-screen flex flex-col bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900 dark:to-indigo-900">
+      {/* Header */}
+      <div className="flex-none p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Sales Pipeline</h1>
+            <p className="text-gray-600 dark:text-gray-300">Manage your deals through the sales process</p>
           </div>
-
-          <div className="flex items-center space-x-3">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search deals..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            {/* Advanced Filters */}
-            <AdvancedFilter
-              onApplyFilters={handleApplyFilters}
-              onClearFilters={handleClearFilters}
-            />
-
-            {/* Analytics Toggle */}
+          <div className="flex items-center space-x-4">
+            <APIStatusIndicator />
             <button
               onClick={() => setShowAnalytics(!showAnalytics)}
-              className={`flex items-center space-x-2 px-4 py-2 border rounded-lg transition-colors ${
-                showAnalytics 
-                  ? 'bg-blue-600 text-white border-blue-600' 
-                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-              }`}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
             >
-              {showAnalytics ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              <span>Analytics</span>
+              <BarChart3 className="w-4 h-4" />
+              <span>{showAnalytics ? 'Hide' : 'Show'} Analytics</span>
             </button>
-
-            {/* Achievements Toggle */}
-            <button
-              onClick={() => setShowAchievements(!showAchievements)}
-              className={`flex items-center space-x-2 px-4 py-2 border rounded-lg transition-colors ${
-                showAchievements 
-                  ? 'bg-purple-600 text-white border-purple-600' 
-                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-              }`}
-            >
-              <Zap className="w-4 h-4" />
-              <span>Team</span>
-            </button>
-
-            {/* Add Deal Button */}
             <button
               onClick={() => setShowAddDealModal(true)}
-              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
             >
               <Plus className="w-4 h-4" />
               <span>Add Deal</span>
@@ -597,88 +598,101 @@ const Pipeline: React.FC = () => {
           </div>
         </div>
 
-        {/* Active Filters Display */}
-        {activeFilters.length > 0 && (
-          <div className="mb-6 flex items-center space-x-2">
-            <span className="text-sm text-gray-600">Active filters:</span>
-            {activeFilters.map((filter, index) => (
-              <span
-                key={index}
-                className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
-              >
-                {filter.field} {filter.operator} {filter.value}
-                <button
-                  onClick={() => {
-                    const newFilters = activeFilters.filter((_, i) => i !== index);
-                    setActiveFilters(newFilters);
-                  }}
-                  className="ml-2 text-blue-600 hover:text-blue-800"
-                >
-                  ×
-                </button>
-              </span>
-            ))}
-            <button
-              onClick={handleClearFilters}
-              className="text-sm text-gray-500 hover:text-gray-700"
-            >
-              Clear all
-            </button>
-          </div>
-        )}
-
         {/* Pipeline Stats */}
-        <PipelineStats
-          totalValue={Object.values(filteredDeals).reduce((sum, deal) => sum + deal.value, 0)}
-          totalDeals={Object.keys(filteredDeals).length}
+        <PipelineStats 
+          totalValue={pipelineStats.totalValue}
+          totalDeals={pipelineStats.totalDeals}
+          averageDealSize={pipelineStats.averageDealSize}
+          conversionRate={pipelineStats.conversionRate}
+          stageValues={pipelineStats.stageValues}
         />
 
-        {/* Analytics Dashboard */}
-        {showAnalytics && (
-          <div className="mb-8">
-            <DealAnalytics deals={filteredDeals} />
+        {/* Search and Filters */}
+        <div className="flex items-center space-x-4 mt-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Search deals..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
           </div>
-        )}
-
-        {/* Team Achievements */}
-        {showAchievements && (
-          <div className="mb-8">
-            <AchievementPanel />
+          <AdvancedFilter
+            onFiltersChange={setActiveFilters}
+            activeFilters={activeFilters}
+          />
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setViewMode('kanban')}
+              className={`p-2 rounded-lg transition-colors ${
+                viewMode === 'kanban'
+                  ? 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300'
+                  : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+              }`}
+            >
+              <Grid3X3 className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded-lg transition-colors ${
+                viewMode === 'list'
+                  ? 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300'
+                  : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+              }`}
+            >
+              <List className="w-4 h-4" />
+            </button>
           </div>
-        )}
+        </div>
+      </div>
 
-        {/* Pipeline View */}
+      {/* Analytics Panel */}
+      {showAnalytics && (
+        <div className="flex-none p-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
+          <DealAnalytics deals={Object.values(filteredDeals)} />
+        </div>
+      )}
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-hidden">
         {viewMode === 'kanban' ? (
           <DragDropContext onDragEnd={onDragEnd}>
-            <div className="flex space-x-6 overflow-x-auto pb-6">
-              {columnOrder.map((columnId) => {
-                const column = filteredColumns[columnId];
-                const columnDeals = column.dealIds.map((dealId) => filteredDeals[dealId]).filter(Boolean);
-                const columnValue = columnDeals.reduce((sum, deal) => sum + deal.value, 0);
+            <div className="h-full overflow-x-auto overflow-y-hidden">
+              <div className="flex space-x-6 p-6 h-full min-w-max">
+                {columnOrder.map(columnId => {
+                  const column = filteredColumns[columnId];
+                  if (!column) return null;
 
-                return (
-                  <div key={column.id} className="flex-shrink-0 w-80">
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+                  return (
+                    <div key={column.id} className="flex flex-col w-80">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-semibold text-gray-900 dark:text-white">{column.title}</h3>
-                        <div className="text-right">
-                          <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                            {columnDeals.length}
+                        <div className="flex items-center space-x-2">
+                          <div
+                            className="w-3 h-3 rounded-full"
+                            style={{ backgroundColor: column.color }}
+                          />
+                          <h3 className="font-semibold text-gray-900 dark:text-white">
+                            {column.title}
+                          </h3>
+                          <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full">
+                            {column.dealIds.length}
                           </span>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            ${(columnValue / 1000).toFixed(0)}k
-                          </p>
                         </div>
                       </div>
-                      
+
                       <Droppable droppableId={column.id}>
                         {(provided, snapshot) => (
                           <div
-                            {...provided.droppableProps}
                             ref={provided.innerRef}
-                            className={`space-y-4 min-h-[200px] transition-colors ${
-                              snapshot.isDraggingOver ? 'bg-blue-50 dark:bg-blue-900/20 rounded-lg' : ''
+                            {...provided.droppableProps}
+                            className={`flex-1 space-y-3 p-2 rounded-lg transition-colors ${
+                              snapshot.isDraggingOver
+                                ? 'bg-blue-50 dark:bg-blue-900/20'
+                                : 'bg-gray-50/50 dark:bg-gray-800/50'
                             }`}
+                            style={{ minHeight: '200px' }}
                           >
                             {column.dealIds.map((dealId, index) => {
                               const deal = filteredDeals[dealId];
@@ -691,18 +705,18 @@ const Pipeline: React.FC = () => {
                                       ref={provided.innerRef}
                                       {...provided.draggableProps}
                                       {...provided.dragHandleProps}
-                                      className={`transition-all duration-200 ${
-                                        snapshot.isDragging ? 'rotate-2 scale-105' : ''
+                                      className={`${
+                                        snapshot.isDragging
+                                          ? 'rotate-3 shadow-xl'
+                                          : ''
                                       }`}
                                     >
                                       <AIEnhancedDealCard
                                         deal={deal}
-                                        onClick={() => handleDealClick(deal.id)}
-                                        showAnalyzeButton={true}
+                                        onClick={() => setSelectedDealId(deal.id)}
                                         onAnalyze={handleAnalyzeDeal}
-                                        onAIEnrich={handleEnrichDeal}
+                                        onAIEnrich={handleAIEnrichDeal}
                                         isAnalyzing={analyzingDealId === deal.id}
-                                        isEnriching={enrichingDealId === deal.id}
                                         onToggleFavorite={handleToggleFavorite}
                                         onFindNewImage={handleFindNewImage}
                                       />
@@ -716,15 +730,14 @@ const Pipeline: React.FC = () => {
                         )}
                       </Droppable>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </DragDropContext>
         ) : (
-          // List View
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div className="overflow-x-auto">
+          <div className="p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
@@ -744,9 +757,6 @@ const Pipeline: React.FC = () => {
                       Probability
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Due Date
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -758,35 +768,39 @@ const Pipeline: React.FC = () => {
                         <div className="flex items-center">
                           <img
                             className="h-8 w-8 rounded-full"
-                            src={deal.companyAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${deal.company}&backgroundColor=3b82f6&textColor=ffffff`}
+                            src={deal.companyAvatar}
                             alt={deal.company}
                           />
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900 dark:text-white">{deal.title}</div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400">{deal.contact}</div>
+                          <div className="ml-3">
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">
+                              {deal.title}
+                            </div>
+                            <div className="text-sm text-gray-500 dark:text-gray-300">
+                              {deal.contact}
+                            </div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 dark:text-white">{deal.company}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 dark:text-white">${deal.value.toLocaleString()}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                          {deal.stage}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 dark:text-white">{deal.probability}%</div>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        {deal.company}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                        {deal.expectedCloseDate}
+                        ${deal.value.toLocaleString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className="inline-flex px-2 py-1 text-xs font-semibold rounded-full text-white"
+                          style={{ backgroundColor: filteredColumns[deal.stage]?.color }}
+                        >
+                          {filteredColumns[deal.stage]?.title}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        {deal.probability}%
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
-                          onClick={() => handleDealClick(deal.id)}
+                          onClick={() => setSelectedDealId(deal.id)}
                           className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                         >
                           View
@@ -799,37 +813,43 @@ const Pipeline: React.FC = () => {
             </div>
           </div>
         )}
-
-        {/* Modals */}
-        {showContactsModal && (
-          <ContactsModal
-            isOpen={showContactsModal}
-            onClose={() => setShowContactsModal(false)}
-          />
-        )}
-
-        {showAddDealModal && (
-          <AddDealModal
-            isOpen={showAddDealModal}
-            onClose={() => setShowAddDealModal(false)}
-            onAddDeal={handleAddDeal}
-          />
-        )}
-
-        {selectedDealId && (
-          <DealDetail
-            dealId={selectedDealId}
-            isOpen={!!selectedDealId}
-            onClose={() => setSelectedDealId(null)}
-          />
-        )}
-
-        {/* Floating Action Panel */}
-        <FloatingActionPanel />
-
-        {/* API Status Indicator */}
-        <APIStatusIndicator />
       </div>
+
+      {/* Floating Action Panel */}
+      <FloatingActionPanel
+        onAddDeal={() => setShowAddDealModal(true)}
+        onShowContacts={() => setShowContactsModal(true)}
+        onShowAchievements={() => setShowAchievements(true)}
+      />
+
+      {/* Modals */}
+      {showContactsModal && (
+        <ContactsModal
+          isOpen={showContactsModal}
+          onClose={() => setShowContactsModal(false)}
+        />
+      )}
+
+      {showAddDealModal && (
+        <AddDealModal
+          isOpen={showAddDealModal}
+          onClose={() => setShowAddDealModal(false)}
+        />
+      )}
+
+      {showAchievements && (
+        <AchievementPanel
+          isOpen={showAchievements}
+          onClose={() => setShowAchievements(false)}
+        />
+      )}
+
+      {selectedDealId && (
+        <DealDetail
+          dealId={selectedDealId}
+          onClose={() => setSelectedDealId(null)}
+        />
+      )}
     </div>
   );
 };
