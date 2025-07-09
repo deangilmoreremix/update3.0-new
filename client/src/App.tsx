@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import ExactNavbar from './components/layout/ExactNavbar';
 import Dashboard from './components/Dashboard';
 import LandingPage from './pages/Landing/LandingPage';
+import SimpleLandingPage from './pages/Landing/SimpleLandingPage';
 import { SignIn } from './pages/auth/SignIn';
 import { SignUp } from './pages/auth/SignUp';
 import SuperAdminSignup from './pages/SuperAdminSignup';
@@ -74,7 +75,7 @@ function App() {
                   <div className="min-h-screen h-full w-full flex flex-col transition-all duration-300 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-gradient-to-br from-gray-50 via-white to-gray-100">
                     <Routes>
                       {/* Landing Page - no navbar */}
-                      <Route path="/" element={<LandingPage />} />
+                      <Route path="/" element={<SimpleLandingPage />} />
                       
                       {/* Authentication Routes - no navbar */}
                       <Route path="/login" element={<SignIn />} />

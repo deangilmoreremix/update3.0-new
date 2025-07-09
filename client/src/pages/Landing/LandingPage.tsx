@@ -50,16 +50,24 @@ import InteractiveFeaturesGrid from '../../components/Landing/InteractiveFeature
 import ParticleBackground from '../../components/Landing/ParticleBackground';
 
 const LandingPage = () => {
-  const { user, isLoaded } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect authenticated users to dashboard
+  // Check for authenticated user in localStorage and redirect if found
   useEffect(() => {
-    if (isLoaded && user) {
-      console.log('✅ Authenticated user detected, redirecting to dashboard');
-      navigate('/dashboard');
-    }
-  }, [isLoaded, user, navigate]);
+    const checkAuth = () => {
+      try {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          console.log('✅ Authenticated user detected, redirecting to dashboard');
+          navigate('/dashboard');
+        }
+      } catch (error) {
+        console.error('Error checking authentication:', error);
+      }
+    };
+    
+    checkAuth();
+  }, [navigate]);
 
   // Function to handle page initialization only once
   useEffect(() => {
