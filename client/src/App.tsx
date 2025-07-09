@@ -31,6 +31,7 @@ import CommunicationHub from './pages/CommunicationHub';
 import DocumentCenter from './pages/DocumentCenter';
 import SalesTools from './pages/SalesTools';
 import LeadAutomation from './pages/LeadAutomation';
+import CircleProspecting from './pages/CircleProspecting';
 import Appointments from './pages/Appointments';
 import PhoneSystem from './pages/PhoneSystem';
 import Invoicing from './pages/Invoicing';
@@ -173,6 +174,232 @@ function App() {
                               } />
                               
                               {/* Other routes would follow the same pattern */}
+                              {/* Sales Tools Routes */}
+                              <Route path="/sales-tools" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <SalesTools />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/lead-automation" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <LeadAutomation />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/circle-prospecting" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <CircleProspecting />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/appointments" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <Appointments />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/phone-system" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <PhoneSystem />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/invoicing" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <Invoicing />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/video-email" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <VideoEmail />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/text-messages" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <TextMessages />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/sales-analytics" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <SalesAnalytics />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/quote-builder" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <QuoteBuilder />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/commission-tracker" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <CommissionTracker />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/follow-up-reminders" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <FollowUpReminders />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/territory-management" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <TerritoryManagement />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/task-management" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <TaskManagement />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/task-automation" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <TaskAutomation />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/project-tracker" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <ProjectTracker />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/time-tracking" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <TimeTracking />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/workflow-builder" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <WorkflowBuilder />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/deadline-manager" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <DeadlineManager />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/email-composer" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <EmailComposer />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/campaigns" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <Campaigns />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/content-library" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <ContentLibrary />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/voice-profiles" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <VoiceProfiles />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/business-analysis" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <BusinessAnalyzer />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/forms" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <FormsAndSurveys />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/image-generator" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <ImageGenerator />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/ai-model-demo" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <AIModelDemo />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/ai-tools" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <AITools />
+                                  </div>
+                                </>
+                              } />
+                              
                               {/* For brevity, I'll add a catch-all that redirects to dashboard */}
                               <Route path="*" element={<Navigate to="/dashboard" replace />} />
                             </Routes>

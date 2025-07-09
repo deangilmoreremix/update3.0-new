@@ -79,6 +79,7 @@ const Navbar = () => {
   const handleAIToolClick = (toolName: string) => {
     if (toolName === 'sales-tools') navigate('/sales-tools');
     else if (toolName === 'lead-automation') navigate('/lead-automation');
+    else if (toolName === 'circle-prospecting') navigate('/circle-prospecting');
     else if (toolName === 'appointments') navigate('/appointments');
     else if (toolName === 'phone-system') navigate('/phone-system');
     else if (toolName === 'invoicing') navigate('/invoicing');
@@ -100,6 +101,10 @@ const Navbar = () => {
     else if (toolName === 'time-tracking') navigate('/time-tracking');
     else if (toolName === 'workflow-builder') navigate('/workflow-builder');
     else if (toolName === 'deadline-manager') navigate('/deadline-manager');
+    else if (toolName === 'email-composer') navigate('/email-composer');
+    else if (toolName === 'campaigns') navigate('/campaigns');
+    else if (toolName === 'image-generator') navigate('/image-generator');
+    else if (toolName === 'ai-model-demo') navigate('/ai-model-demo');
     else {
       // For other AI tools, open in AI tools page
       openAITool(toolName);
