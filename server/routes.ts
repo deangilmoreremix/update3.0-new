@@ -19,6 +19,9 @@ import partnersRouter from "./routes/partners";
 import featurePackagesRouter from "./routes/feature-packages";
 import aiRoutes from "./routes/ai";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import passport from "passport";
+import session from "express-session";
+import { setupGoogleAuth } from "./auth/googleAuth";
 
 // Simplified authentication middleware for demo mode
 const requireAuth = async (req: Request, res: Response, next: any) => {
@@ -40,6 +43,22 @@ const requireAuth = async (req: Request, res: Response, next: any) => {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Enable Replit Auth for SSO capabilities
   await setupAuth(app);
+  
+  // Setup session middleware for passport
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+  }));
+  
+  // Initialize passport and Google OAuth
+  app.use(passport.initialize());
+  app.use(passport.session());
+  setupGoogleAuth();
   
   // Apply tenant extraction middleware to all routes
   app.use(extractTenant);
@@ -141,9 +160,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Google OAuth routes (only if configured)
+  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    app.get('/auth/google',
+      passport.authenticate('google', { scope: ['profile', 'email'] })
+    );
+
+    app.get('/auth/google/callback',
+      passport.authenticate('google', { failureRedirect: '/login' }),
+      (req, res) => {
+        // Successful authentication, redirect to dashboard
+        res.redirect('/dashboard');
+      }
+    );
+  } else {
+    // Fallback routes when Google OAuth is not configured
+    app.get('/auth/google', (req, res) => {
+      res.redirect('/login?error=google_not_configured');
+    });
+    
+    app.get('/auth/google/callback', (req, res) => {
+      res.redirect('/login?error=google_not_configured');
+    });
+  }
+
   // User endpoint (simplified for development)
   app.get('/api/auth/user', async (req: any, res) => {
     try {
+      // Check if user is authenticated via passport (Google OAuth)
+      if (req.user) {
+        return res.json(req.user);
+      }
+      
       // Return demo user data without database dependency
       res.json({
         id: 'demo-user-123',
