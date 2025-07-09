@@ -184,7 +184,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   }
 
-  // User endpoint (simplified for development)
+  // Enhanced user endpoint with comprehensive profile data
   app.get('/api/auth/user', async (req: any, res) => {
     try {
       // Check if user is authenticated via passport (Google OAuth)
@@ -192,21 +192,108 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.json(req.user);
       }
       
-      // Return demo user data without database dependency
-      res.json({
+      // Return enhanced demo user data for development
+      const demoUser = {
         id: 'demo-user-123',
         email: 'demo@smartcrm.com',
         firstName: 'Demo',
         lastName: 'User',
+        fullName: 'Demo User',
+        jobTitle: 'Sales Manager',
+        company: 'Smart CRM Inc.',
+        phone: '+1 (555) 123-4567',
+        timezone: 'America/New_York',
+        profileImageUrl: 'https://images.pexels.com/photos/3785079/pexels-photo-3785079.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1',
+        preferences: {
+          emailNotifications: true,
+          smsNotifications: false,
+          darkMode: false,
+          language: 'en',
+          dateFormat: 'MM/DD/YYYY',
+          timeFormat: '12h',
+          workingHours: {
+            start: '09:00',
+            end: '17:00',
+            timezone: 'America/New_York'
+          }
+        },
+        socialLinks: {
+          linkedin: 'https://linkedin.com/in/demo-user',
+          twitter: 'https://twitter.com/demo_user',
+          website: 'https://demouser.com'
+        },
+        accountStatus: 'active',
         subscriptionPlan: 'professional',
         subscriptionStatus: 'active',
         paymentStatus: 'paid',
         isAdmin: true,
-        role: 'super_admin'
-      });
+        role: 'super_admin',
+        createdAt: '2024-01-15T10:30:00Z',
+        updatedAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString(),
+        loginCount: 142,
+        twoFactorEnabled: false
+      };
+      res.json(demoUser);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Update user profile endpoint
+  app.patch('/api/auth/user', async (req: any, res) => {
+    try {
+      const updates = req.body;
+      
+      // In a real implementation, you would update the user in the database
+      // For demo purposes, we'll just return the updated user data
+      const updatedUser = {
+        id: 'demo-user-123',
+        email: 'demo@smartcrm.com',
+        firstName: updates.firstName || 'Demo',
+        lastName: updates.lastName || 'User',
+        fullName: `${updates.firstName || 'Demo'} ${updates.lastName || 'User'}`,
+        jobTitle: updates.jobTitle || 'Sales Manager',
+        company: updates.company || 'Smart CRM Inc.',
+        phone: updates.phone || '+1 (555) 123-4567',
+        timezone: updates.timezone || 'America/New_York',
+        profileImageUrl: updates.profileImageUrl || 'https://images.pexels.com/photos/3785079/pexels-photo-3785079.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1',
+        preferences: {
+          emailNotifications: updates.preferences?.emailNotifications ?? true,
+          smsNotifications: updates.preferences?.smsNotifications ?? false,
+          darkMode: updates.preferences?.darkMode ?? false,
+          language: updates.preferences?.language || 'en',
+          dateFormat: updates.preferences?.dateFormat || 'MM/DD/YYYY',
+          timeFormat: updates.preferences?.timeFormat || '12h',
+          workingHours: {
+            start: updates.preferences?.workingHours?.start || '09:00',
+            end: updates.preferences?.workingHours?.end || '17:00',
+            timezone: updates.preferences?.workingHours?.timezone || 'America/New_York'
+          }
+        },
+        socialLinks: {
+          linkedin: updates.socialLinks?.linkedin || '',
+          twitter: updates.socialLinks?.twitter || '',
+          website: updates.socialLinks?.website || ''
+        },
+        accountStatus: 'active',
+        subscriptionPlan: 'professional',
+        subscriptionStatus: 'active',
+        paymentStatus: 'paid',
+        isAdmin: true,
+        role: 'super_admin',
+        createdAt: '2024-01-15T10:30:00Z',
+        updatedAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString(),
+        loginCount: 142,
+        twoFactorEnabled: updates.twoFactorEnabled ?? false
+      };
+
+      res.json(updatedUser);
+    } catch (error) {
+      console.error('Error updating user:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
   });
 
