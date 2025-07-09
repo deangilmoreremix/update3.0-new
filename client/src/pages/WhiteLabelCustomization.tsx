@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Palette, Upload, Eye, Save, RotateCcw, Sparkles, Globe, Code, Monitor, Mail, Plus, Trash2, ExternalLink, Settings, ShoppingCart, Edit, Shield, TestTube, Activity, TrendingUp, Users, BarChart3 } from 'lucide-react';
+import { Palette, Upload, Eye, Save, RotateCcw, Sparkles, Globe, Code, Monitor, Mail, Plus, Trash2, ExternalLink, Settings, ShoppingCart, Edit, Shield, TestTube, Activity, TrendingUp, Users, BarChart3, Calendar, Search } from 'lucide-react';
 import { useTenant } from '../components/TenantProvider';
 import { ConditionalRender } from '../components/RoleBasedAccess';
 import DomainAnalytics from '../components/analytics/DomainAnalytics';
@@ -326,38 +326,91 @@ export default function WhiteLabelCustomization() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-800 shadow-sm border-b">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
+      {/* Modern Dashboard Header */}
+      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl shadow-lg border-b border-white/20 dark:border-gray-700/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex justify-between items-center py-8">
             <div className="flex items-center">
-              <Palette className="h-8 w-8 text-purple-600 mr-3" />
+              <div className="p-3 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 mr-4">
+                <Palette className="h-8 w-8 text-white" />
+              </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
                   White-Label Customization
                 </h1>
-                <p className="text-gray-600 dark:text-gray-300">
-                  Customize your brand identity and user experience
+                <p className="text-lg text-gray-600 dark:text-gray-300 mt-1">
+                  Transform your brand identity with advanced customization tools
                 </p>
               </div>
             </div>
             <div className="flex gap-3">
               <button
                 onClick={resetToDefaults}
-                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                className="px-6 py-3 text-gray-600 dark:text-gray-300 bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-white/90 dark:hover:bg-gray-700/90 flex items-center gap-2 transition-all duration-200"
               >
-                <RotateCcw className="h-4 w-4" />
+                <RotateCcw className="h-5 w-5" />
                 Reset
               </button>
               <button
                 onClick={saveBrandingConfig}
                 disabled={isSaving}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl"
               >
-                <Save className="h-4 w-4" />
+                <Save className="h-5 w-5" />
                 {isSaving ? 'Saving...' : 'Save Changes'}
               </button>
+            </div>
+          </div>
+          
+          {/* Enhanced KPI Summary */}
+          <div className="pb-8">
+            <div className="p-6 rounded-xl border border-white/20 dark:border-gray-700/50 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm">
+              <div className="flex flex-wrap items-center justify-between gap-6">
+                <div className="flex items-center">
+                  <div className="p-3 rounded-lg bg-blue-500/20 dark:bg-blue-500/30 mr-4">
+                    <Settings className="h-6 w-6 text-blue-500" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Active Features</div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {Object.values(config.features).filter(f => f).length}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center">
+                  <div className="p-3 rounded-lg bg-purple-500/20 dark:bg-purple-500/30 mr-4">
+                    <Shield className="h-6 w-6 text-purple-500" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">SSL Status</div>
+                    <div className="text-2xl font-bold text-green-600 dark:text-green-400">Secure</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center">
+                  <div className="p-3 rounded-lg bg-green-500/20 dark:bg-green-500/30 mr-4">
+                    <Globe className="h-6 w-6 text-green-500" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Domains</div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {config.domains.length}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center">
+                  <div className="p-3 rounded-lg bg-pink-500/20 dark:bg-pink-500/30 mr-4">
+                    <BarChart3 className="h-6 w-6 text-pink-500" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Performance</div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">98.5%</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -367,9 +420,9 @@ export default function WhiteLabelCustomization() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Configuration Panel */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Navigation Tabs */}
-            <div className="border-b border-gray-200 dark:border-gray-700">
-              <nav className="-mb-px flex space-x-8">
+            {/* Modern Navigation Tabs */}
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-xl border border-white/20 dark:border-gray-700/50 shadow-lg p-2">
+              <nav className="flex flex-wrap gap-2">
                 {[
                   { id: 'basic', label: 'Basic Branding', icon: Palette },
                   { id: 'advanced', label: 'Advanced', icon: Sparkles },
@@ -384,10 +437,10 @@ export default function WhiteLabelCustomization() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${
+                    className={`px-4 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-200 ${
                       activeTab === tab.id
-                        ? 'border-purple-500 text-purple-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg transform scale-105'
+                        : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700/50'
                     }`}
                   >
                     <tab.icon className="h-4 w-4" />
@@ -401,8 +454,9 @@ export default function WhiteLabelCustomization() {
             {activeTab === 'basic' && (
               <div className="space-y-6">
                 {/* Company Information */}
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-6 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <Settings className="h-5 w-5 text-purple-500" />
                     Company Information
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -434,8 +488,9 @@ export default function WhiteLabelCustomization() {
                 </div>
 
                 {/* Logo Upload */}
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-6 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <Upload className="h-5 w-5 text-blue-500" />
                     Logo & Assets
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -493,8 +548,9 @@ export default function WhiteLabelCustomization() {
                 </div>
 
                 {/* Color Scheme */}
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-6 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <Palette className="h-5 w-5 text-pink-500" />
                     Color Scheme
                   </h3>
                   
@@ -589,8 +645,9 @@ export default function WhiteLabelCustomization() {
             {activeTab === 'advanced' && (
               <div className="space-y-6">
                 {/* Login Page Customization */}
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-6 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <Shield className="h-5 w-5 text-blue-500" />
                     Login Page Customization
                   </h3>
                   <div className="space-y-4">
@@ -638,8 +695,9 @@ export default function WhiteLabelCustomization() {
                 </div>
 
                 {/* Email Configuration */}
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-6 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <Mail className="h-5 w-5 text-green-500" />
                     Email Branding
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -677,8 +735,9 @@ export default function WhiteLabelCustomization() {
                 </div>
 
                 {/* Feature Toggles */}
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-6 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 text-purple-500" />
                     White-Label Features
                   </h3>
                   <div className="space-y-4">
@@ -725,9 +784,10 @@ export default function WhiteLabelCustomization() {
             {activeTab === 'domain' && (
               <div className="space-y-6">
                 {/* Domain Management */}
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-6 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                      <Globe className="h-5 w-5 text-blue-500" />
                       Domain Management
                     </h3>
                     <button
@@ -1125,9 +1185,10 @@ export default function WhiteLabelCustomization() {
           {/* Preview Panel */}
           <div className="space-y-6">
             {/* Preview Controls */}
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-4 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                  <Eye className="h-5 w-5 text-purple-500" />
                   Live Preview
                 </h3>
                 <div className="flex gap-2">
@@ -1227,8 +1288,11 @@ export default function WhiteLabelCustomization() {
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Quick Actions</h4>
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-4 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                <Settings className="h-4 w-4 text-purple-500" />
+                Quick Actions
+              </h4>
               <div className="space-y-2">
                 <button
                   onClick={saveBrandingConfig}
