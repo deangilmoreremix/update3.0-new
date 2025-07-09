@@ -1,78 +1,85 @@
 import React, { useState } from 'react';
-import { Filter, X, Plus, Check } from 'lucide-react';
+import { Filter, X, Plus, ChevronDown } from 'lucide-react';
 
-interface FilterCondition {
+interface FilterRule {
   field: string;
   operator: string;
   value: any;
 }
 
 interface AdvancedFilterProps {
-  onApplyFilters: (filters: FilterCondition[]) => void;
+  onApplyFilters: (filters: FilterRule[]) => void;
   onClearFilters: () => void;
 }
 
 const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApplyFilters, onClearFilters }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [filters, setFilters] = useState<FilterCondition[]>([]);
-  const [newFilter, setNewFilter] = useState<FilterCondition>({
-    field: 'value',
-    operator: 'gt',
-    value: ''
-  });
+  const [filters, setFilters] = useState<FilterRule[]>([]);
 
-  const fields = [
+  const fieldOptions = [
     { value: 'value', label: 'Deal Value' },
     { value: 'probability', label: 'Probability' },
     { value: 'stage', label: 'Stage' },
     { value: 'priority', label: 'Priority' }
   ];
 
-  const operators = {
+  const operatorOptions = {
     value: [
-      { value: 'gt', label: '>' },
-      { value: 'lt', label: '<' },
-      { value: 'eq', label: '=' },
-      { value: 'gte', label: '>=' },
-      { value: 'lte', label: '<=' }
+      { value: 'gt', label: 'Greater than' },
+      { value: 'lt', label: 'Less than' },
+      { value: 'eq', label: 'Equal to' },
+      { value: 'gte', label: 'Greater than or equal' },
+      { value: 'lte', label: 'Less than or equal' }
     ],
     probability: [
-      { value: 'gt', label: '>' },
-      { value: 'lt', label: '<' },
-      { value: 'eq', label: '=' },
-      { value: 'gte', label: '>=' },
-      { value: 'lte', label: '<=' }
+      { value: 'gt', label: 'Greater than' },
+      { value: 'lt', label: 'Less than' },
+      { value: 'eq', label: 'Equal to' },
+      { value: 'gte', label: 'Greater than or equal' },
+      { value: 'lte', label: 'Less than or equal' }
     ],
     stage: [
-      { value: 'equals', label: 'equals' },
-      { value: 'not_equals', label: 'not equals' }
+      { value: 'equals', label: 'Equals' },
+      { value: 'not_equals', label: 'Not equals' }
     ],
     priority: [
-      { value: 'equals', label: 'equals' },
-      { value: 'not_equals', label: 'not equals' }
+      { value: 'equals', label: 'Equals' },
+      { value: 'not_equals', label: 'Not equals' }
     ]
   };
 
-  const stageOptions = ['discovery', 'qualification', 'proposal', 'negotiation', 'closed-won', 'closed-lost'];
-  const priorityOptions = ['high', 'medium', 'low'];
+  const stageOptions = [
+    { value: 'discovery', label: 'Discovery' },
+    { value: 'qualification', label: 'Qualification' },
+    { value: 'proposal', label: 'Proposal' },
+    { value: 'negotiation', label: 'Negotiation' },
+    { value: 'closed-won', label: 'Closed Won' },
+    { value: 'closed-lost', label: 'Closed Lost' }
+  ];
+
+  const priorityOptions = [
+    { value: 'high', label: 'High' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'low', label: 'Low' }
+  ];
 
   const addFilter = () => {
-    if (newFilter.value !== '') {
-      setFilters([...filters, newFilter]);
-      setNewFilter({
-        field: 'value',
-        operator: 'gt',
-        value: ''
-      });
-    }
+    setFilters([...filters, { field: 'value', operator: 'gt', value: '' }]);
   };
 
   const removeFilter = (index: number) => {
     setFilters(filters.filter((_, i) => i !== index));
   };
 
+  const updateFilter = (index: number, updates: Partial<FilterRule>) => {
+    const newFilters = [...filters];
+    newFilters[index] = { ...newFilters[index], ...updates };
+    setFilters(newFilters);
+  };
+
   const applyFilters = () => {
-    onApplyFilters(filters);
+    const validFilters = filters.filter(f => f.value !== '' && f.value !== null);
+    onApplyFilters(validFilters);
     setIsOpen(false);
   };
 
@@ -82,36 +89,32 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApplyFilters, onClear
     setIsOpen(false);
   };
 
-  const renderValueInput = () => {
-    if (newFilter.field === 'stage') {
+  const renderValueInput = (filter: FilterRule, index: number) => {
+    if (filter.field === 'stage') {
       return (
         <select
-          value={newFilter.value}
-          onChange={(e) => setNewFilter({ ...newFilter, value: e.target.value })}
-          className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          value={filter.value}
+          onChange={(e) => updateFilter(index, { value: e.target.value })}
+          className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Select stage</option>
-          {stageOptions.map(stage => (
-            <option key={stage} value={stage}>
-              {stage.charAt(0).toUpperCase() + stage.slice(1)}
-            </option>
+          {stageOptions.map(option => (
+            <option key={option.value} value={option.value}>{option.label}</option>
           ))}
         </select>
       );
     }
 
-    if (newFilter.field === 'priority') {
+    if (filter.field === 'priority') {
       return (
         <select
-          value={newFilter.value}
-          onChange={(e) => setNewFilter({ ...newFilter, value: e.target.value })}
-          className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          value={filter.value}
+          onChange={(e) => updateFilter(index, { value: e.target.value })}
+          className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Select priority</option>
-          {priorityOptions.map(priority => (
-            <option key={priority} value={priority}>
-              {priority.charAt(0).toUpperCase() + priority.slice(1)}
-            </option>
+          {priorityOptions.map(option => (
+            <option key={option.value} value={option.value}>{option.label}</option>
           ))}
         </select>
       );
@@ -120,10 +123,10 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApplyFilters, onClear
     return (
       <input
         type="number"
-        value={newFilter.value}
-        onChange={(e) => setNewFilter({ ...newFilter, value: e.target.value })}
-        className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        placeholder="Enter value"
+        value={filter.value}
+        onChange={(e) => updateFilter(index, { value: parseFloat(e.target.value) || '' })}
+        placeholder={filter.field === 'value' ? 'Enter amount' : 'Enter percentage'}
+        className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
     );
   };
@@ -133,121 +136,94 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApplyFilters, onClear
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`flex items-center space-x-2 px-4 py-2 border rounded-lg transition-colors ${
-          filters.length > 0 
+          filters.length > 0 || isOpen
             ? 'bg-blue-600 text-white border-blue-600' 
-            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+            : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
         }`}
       >
         <Filter className="w-4 h-4" />
         <span>Filters</span>
         {filters.length > 0 && (
-          <span className="bg-blue-800 text-white rounded-full px-2 py-1 text-xs">
+          <span className="bg-white bg-opacity-20 text-xs px-2 py-0.5 rounded-full">
             {filters.length}
           </span>
         )}
+        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+        <div className="absolute top-full left-0 mt-2 w-96 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
           <div className="p-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-gray-900">Advanced Filters</h3>
+              <h3 className="font-medium text-gray-900 dark:text-white">Advanced Filters</h3>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Active Filters */}
-            {filters.length > 0 && (
-              <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Active Filters</h4>
-                <div className="space-y-2">
-                  {filters.map((filter, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between bg-blue-50 p-2 rounded-md"
-                    >
-                      <span className="text-sm text-blue-800">
-                        {fields.find(f => f.value === filter.field)?.label} {filter.operator} {filter.value}
-                      </span>
-                      <button
-                        onClick={() => removeFilter(index)}
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <div className="space-y-3">
+              {filters.map((filter, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <select
+                    value={filter.field}
+                    onChange={(e) => updateFilter(index, { 
+                      field: e.target.value, 
+                      operator: operatorOptions[e.target.value as keyof typeof operatorOptions][0].value,
+                      value: ''
+                    })}
+                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {fieldOptions.map(option => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
 
-            {/* Add New Filter */}
-            <div className="mb-4">
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Add Filter</h4>
-              <div className="grid grid-cols-3 gap-2 mb-2">
-                <select
-                  value={newFilter.field}
-                  onChange={(e) => setNewFilter({ ...newFilter, field: e.target.value, operator: operators[e.target.value as keyof typeof operators][0].value })}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {fields.map(field => (
-                    <option key={field.value} value={field.value}>
-                      {field.label}
-                    </option>
-                  ))}
-                </select>
-                
-                <select
-                  value={newFilter.operator}
-                  onChange={(e) => setNewFilter({ ...newFilter, operator: e.target.value })}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {operators[newFilter.field as keyof typeof operators].map(op => (
-                    <option key={op.value} value={op.value}>
-                      {op.label}
-                    </option>
-                  ))}
-                </select>
-                
-                {renderValueInput()}
-              </div>
-              
+                  <select
+                    value={filter.operator}
+                    onChange={(e) => updateFilter(index, { operator: e.target.value })}
+                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {operatorOptions[filter.field as keyof typeof operatorOptions]?.map(option => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+
+                  {renderValueInput(filter, index)}
+
+                  <button
+                    onClick={() => removeFilter(index)}
+                    className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+
               <button
                 onClick={addFilter}
-                className="flex items-center space-x-1 px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                className="flex items-center space-x-2 px-3 py-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors w-full"
               >
                 <Plus className="w-4 h-4" />
-                <span>Add Filter</span>
+                <span>Add filter</span>
               </button>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+            <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <button
                 onClick={clearFilters}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm"
+                className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
               >
-                Clear All
+                Clear all
               </button>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={applyFilters}
-                  className="flex items-center space-x-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
-                >
-                  <Check className="w-4 h-4" />
-                  <span>Apply</span>
-                </button>
-              </div>
+              <button
+                onClick={applyFilters}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Apply filters
+              </button>
             </div>
           </div>
         </div>

@@ -1,9 +1,18 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import AIEnhancedDealCard from '../components/pipeline/AIEnhancedDealCard';
-import DealAnalytics from '../components/DealAnalytics';
-import PipelineStats from '../components/PipelineStats';
-import AdvancedFilter from '../components/pipeline/AdvancedFilter';
+import AIEnhancedDealCard from './AIEnhancedDealCard';
+import DealAnalytics from './DealAnalytics';
+import PipelineStats from './PipelineStats';
+import { useAIResearch } from '../services/aiResearchService';
+import { AchievementPanel } from './gamification/AchievementPanel';
+import { ContactsModal } from './contacts/ContactsModal';
+import { APIStatusIndicator } from './ui/APIStatusIndicator';
+import { FloatingActionPanel } from './ui/FloatingActionPanel';
+import { AdvancedFilter } from './ui/AdvancedFilter';
+import AddDealModal from './deals/AddDealModal';
+import DealDetail from './DealDetail';
+import { mockDeals, mockColumns, columnOrder, calculateStageValues } from '../data/mockDeals';
+import { Deal, PipelineColumn } from '../types';
 import { 
   Search, 
   Filter, 
@@ -18,198 +27,6 @@ import {
   EyeOff
 } from 'lucide-react';
 
-interface Deal {
-  id: string;
-  title: string;
-  company: string;
-  contact: string;
-  value: number;
-  stage: string;
-  probability: number;
-  priority: 'high' | 'medium' | 'low';
-  notes?: string;
-  dueDate?: string;
-  expectedCloseDate?: string;
-  contactAvatar?: string;
-  companyAvatar?: string;
-  isFavorite?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-  lastEnrichment?: {
-    confidence: number;
-    aiProvider: string;
-    timestamp: Date;
-  };
-}
-
-interface PipelineColumn {
-  id: string;
-  title: string;
-  dealIds: string[];
-}
-
-const mockDeals: Record<string, Deal> = {
-  'deal-1': {
-    id: 'deal-1',
-    title: 'Enterprise CRM Integration',
-    company: 'TechCorp Inc.',
-    contact: 'John Smith',
-    value: 75000,
-    stage: 'qualification',
-    probability: 75,
-    priority: 'high',
-    expectedCloseDate: '2024-02-15',
-    isFavorite: true,
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-10'),
-    lastEnrichment: {
-      confidence: 85,
-      aiProvider: 'OpenAI GPT-4',
-      timestamp: new Date()
-    }
-  },
-  'deal-2': {
-    id: 'deal-2',
-    title: 'SaaS Platform Migration',
-    company: 'StartupXYZ',
-    contact: 'Sarah Johnson',
-    value: 45000,
-    stage: 'proposal',
-    probability: 60,
-    priority: 'medium',
-    expectedCloseDate: '2024-02-20',
-    createdAt: new Date('2024-01-05'),
-    updatedAt: new Date('2024-01-12')
-  },
-  'deal-3': {
-    id: 'deal-3',
-    title: 'AI-Powered Analytics Suite',
-    company: 'DataTech Solutions',
-    contact: 'Mike Wilson',
-    value: 120000,
-    stage: 'negotiation',
-    probability: 85,
-    priority: 'high',
-    expectedCloseDate: '2024-02-10',
-    isFavorite: true,
-    createdAt: new Date('2024-01-03'),
-    updatedAt: new Date('2024-01-15')
-  },
-  'deal-4': {
-    id: 'deal-4',
-    title: 'Cloud Infrastructure Setup',
-    company: 'CloudFirst Corp',
-    contact: 'Lisa Chen',
-    value: 65000,
-    stage: 'discovery',
-    probability: 35,
-    priority: 'medium',
-    expectedCloseDate: '2024-02-25',
-    createdAt: new Date('2024-01-07'),
-    updatedAt: new Date('2024-01-14')
-  },
-  'deal-5': {
-    id: 'deal-5',
-    title: 'Digital Transformation Consulting',
-    company: 'Future Enterprises',
-    contact: 'David Brown',
-    value: 90000,
-    stage: 'closed-won',
-    probability: 100,
-    priority: 'high',
-    expectedCloseDate: '2024-01-30',
-    createdAt: new Date('2023-12-15'),
-    updatedAt: new Date('2024-01-30')
-  },
-  'deal-6': {
-    id: 'deal-6',
-    title: 'Mobile App Development',
-    company: 'AppTech Inc',
-    contact: 'Emma Davis',
-    value: 35000,
-    stage: 'closed-lost',
-    probability: 0,
-    priority: 'low',
-    expectedCloseDate: '2024-01-20',
-    createdAt: new Date('2023-12-20'),
-    updatedAt: new Date('2024-01-20')
-  },
-  'deal-7': {
-    id: 'deal-7',
-    title: 'Cybersecurity Assessment',
-    company: 'SecureNet Solutions',
-    contact: 'Robert Taylor',
-    value: 55000,
-    stage: 'qualification',
-    probability: 65,
-    priority: 'medium',
-    expectedCloseDate: '2024-02-28',
-    createdAt: new Date('2024-01-08'),
-    updatedAt: new Date('2024-01-16')
-  },
-  'deal-8': {
-    id: 'deal-8',
-    title: 'E-commerce Platform Upgrade',
-    company: 'ShopGlobal Ltd',
-    contact: 'Jennifer White',
-    value: 80000,
-    stage: 'proposal',
-    probability: 70,
-    priority: 'high',
-    expectedCloseDate: '2024-02-18',
-    createdAt: new Date('2024-01-06'),
-    updatedAt: new Date('2024-01-13')
-  }
-};
-
-const mockColumns: Record<string, PipelineColumn> = {
-  'discovery': {
-    id: 'discovery',
-    title: 'Discovery',
-    dealIds: ['deal-4']
-  },
-  'qualification': {
-    id: 'qualification',
-    title: 'Qualification',
-    dealIds: ['deal-1', 'deal-7']
-  },
-  'proposal': {
-    id: 'proposal',
-    title: 'Proposal',
-    dealIds: ['deal-2', 'deal-8']
-  },
-  'negotiation': {
-    id: 'negotiation',
-    title: 'Negotiation',
-    dealIds: ['deal-3']
-  },
-  'closed-won': {
-    id: 'closed-won',
-    title: 'Closed Won',
-    dealIds: ['deal-5']
-  },
-  'closed-lost': {
-    id: 'closed-lost',
-    title: 'Closed Lost',
-    dealIds: ['deal-6']
-  }
-};
-
-const columnOrder = ['discovery', 'qualification', 'proposal', 'negotiation', 'closed-won', 'closed-lost'];
-
-const calculateStageValues = (deals: Record<string, Deal>, columns: Record<string, PipelineColumn>) => {
-  const values: Record<string, number> = {};
-  
-  Object.keys(columns).forEach(columnId => {
-    values[columnId] = columns[columnId].dealIds.reduce((sum, dealId) => {
-      const deal = deals[dealId];
-      return deal ? sum + deal.value : sum;
-    }, 0);
-  });
-  
-  return values;
-};
-
 const Pipeline: React.FC = () => {
   const [deals, setDeals] = useState<Record<string, Deal>>(mockDeals);
   const [columns, setColumns] = useState<Record<string, PipelineColumn>>(mockColumns);
@@ -223,6 +40,7 @@ const Pipeline: React.FC = () => {
   const [showAchievements, setShowAchievements] = useState(false);
   const [analyzingDealId, setAnalyzingDealId] = useState<string | null>(null);
   const [enrichingDealId, setEnrichingDealId] = useState<string | null>(null);
+  const aiResearch = useAIResearch();
 
   // Filter deals based on search and filters
   const filteredDeals = useMemo(() => {
@@ -426,8 +244,8 @@ const Pipeline: React.FC = () => {
   const handleEnrichDeal = async (deal: Deal) => {
     setEnrichingDealId(deal.id);
     try {
-      // Simulate AI enrichment
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Use the AI Research service to get company information
+      const companyData = await aiResearch.researchCompany(deal.company);
       
       // Update the deal with enhanced data
       const updatedDeal = {
@@ -435,7 +253,7 @@ const Pipeline: React.FC = () => {
         probability: Math.min(deal.probability + 20, 95),
         lastEnrichment: {
           confidence: 85,
-          aiProvider: 'OpenAI GPT-4o',
+          aiProvider: companyData.aiProvider || 'AI Research',
           timestamp: new Date()
         }
       };
@@ -556,6 +374,19 @@ const Pipeline: React.FC = () => {
               <span>Analytics</span>
             </button>
 
+            {/* Achievements Toggle */}
+            <button
+              onClick={() => setShowAchievements(!showAchievements)}
+              className={`flex items-center space-x-2 px-4 py-2 border rounded-lg transition-colors ${
+                showAchievements 
+                  ? 'bg-purple-600 text-white border-purple-600' 
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              <Zap className="w-4 h-4" />
+              <span>Team</span>
+            </button>
+
             {/* Add Deal Button */}
             <button
               onClick={() => setShowAddDealModal(true)}
@@ -607,6 +438,13 @@ const Pipeline: React.FC = () => {
         {showAnalytics && (
           <div className="mb-8">
             <DealAnalytics deals={filteredDeals} />
+          </div>
+        )}
+
+        {/* Team Achievements */}
+        {showAchievements && (
+          <div className="mb-8">
+            <AchievementPanel />
           </div>
         )}
 
@@ -665,6 +503,8 @@ const Pipeline: React.FC = () => {
                                         onAnalyze={handleAnalyzeDeal}
                                         onAIEnrich={handleEnrichDeal}
                                         isAnalyzing={analyzingDealId === deal.id}
+                                        onAIEnrich={handleEnrichDeal}
+                                        isEnriching={enrichingDealId === deal.id}
                                         onToggleFavorite={handleToggleFavorite}
                                         onFindNewImage={handleFindNewImage}
                                       />
@@ -708,42 +548,52 @@ const Pipeline: React.FC = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Due Date
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {Object.values(filteredDeals).map((deal) => (
-                    <tr key={deal.id} className="hover:bg-gray-50">
+                    <tr
+                      key={deal.id}
+                      onClick={() => handleDealClick(deal.id)}
+                      className="hover:bg-gray-50 cursor-pointer"
+                    >
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{deal.title}</div>
-                        <div className="text-sm text-gray-500">{deal.contact}</div>
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10">
+                            <img
+                              className="h-10 w-10 rounded-full"
+                              src={deal.contactAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${deal.contact}`}
+                              alt=""
+                            />
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">{deal.title}</div>
+                            <div className="text-sm text-gray-500">{deal.contact}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {deal.company}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ${deal.value.toLocaleString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{deal.company}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">${deal.value.toLocaleString()}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          deal.stage === 'qualification' ? 'bg-blue-100 text-blue-800' :
+                          deal.stage === 'proposal' ? 'bg-indigo-100 text-indigo-800' :
+                          deal.stage === 'negotiation' ? 'bg-purple-100 text-purple-800' :
+                          deal.stage === 'closed-won' ? 'bg-green-100 text-green-800' :
+                          'bg-red-100 text-red-800'
+                        }`}>
                           {deal.stage}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{deal.probability}%</div>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {deal.probability}%
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {deal.expectedCloseDate}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button
-                          onClick={() => handleDealClick(deal.id)}
-                          className="text-blue-600 hover:text-blue-900"
-                        >
-                          View
-                        </button>
+                        {deal.dueDate?.toLocaleDateString() || '-'}
                       </td>
                     </tr>
                   ))}
@@ -752,7 +602,38 @@ const Pipeline: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Floating Action Panel */}
+        <FloatingActionPanel
+          onNewDeal={() => setShowAddDealModal(true)}
+          onAIAnalysis={() => setShowAnalytics(!showAnalytics)}
+          onViewContacts={() => setShowContactsModal(true)}
+          onViewAnalytics={() => setShowAnalytics(!showAnalytics)}
+          onSettings={() => console.log('Settings')}
+        />
+
+        {/* Modals */}
+        <ContactsModal
+          isOpen={showContactsModal}
+          onClose={() => setShowContactsModal(false)}
+        />
+
+        <AddDealModal
+          isOpen={showAddDealModal}
+          onClose={() => setShowAddDealModal(false)}
+          onSave={handleAddDeal}
+        />
+
+        {selectedDealId && (
+          <DealDetail
+            dealId={selectedDealId}
+            onClose={() => setSelectedDealId(null)}
+          />
+        )}
       </div>
+      
+      {/* AI Status Indicator */}
+      <APIStatusIndicator />
     </div>
   );
 };
