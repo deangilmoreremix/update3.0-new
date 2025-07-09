@@ -24,7 +24,7 @@ import { RoleProvider } from './components/RoleBasedAccess';
 
 // Import existing pages
 import Contacts from './pages/Contacts';
-import Pipeline from './pages/Pipeline';
+import Pipeline from './pages/Pipeline-enhanced';
 import Tasks from './pages/Tasks';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import CommunicationHub from './pages/CommunicationHub';

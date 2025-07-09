@@ -272,10 +272,34 @@ export const useDealStore = create<DealState>((set, get) => {
         if (!response.ok) {
           throw new Error('Failed to fetch deals');
         }
-        const dealsArray = await response.json();
+        const apiDeals = await response.json();
         
-        const deals = dealsArray.reduce((acc: Record<string, Deal>, deal: Deal) => {
-          acc[deal.id] = deal;
+        // Transform API data to match Deal interface
+        const deals = apiDeals.reduce((acc: Record<string, Deal>, apiDeal: any) => {
+          acc[apiDeal.id] = {
+            id: apiDeal.id,
+            title: apiDeal.title,
+            company: apiDeal.company,
+            value: typeof apiDeal.value === 'string' ? parseFloat(apiDeal.value) : apiDeal.value,
+            stage: apiDeal.stage,
+            probability: typeof apiDeal.probability === 'string' ? parseFloat(apiDeal.probability) : apiDeal.probability,
+            closeDate: apiDeal.expectedCloseDate || apiDeal.closeDate || '',
+            contactId: apiDeal.contactId,
+            createdAt: apiDeal.createdAt,
+            updatedAt: apiDeal.updatedAt,
+            contact: apiDeal.contact,
+            priority: apiDeal.priority,
+            notes: apiDeal.notes,
+            dueDate: apiDeal.dueDate,
+            tags: apiDeal.tags || [],
+            lastActivity: apiDeal.lastActivityDate,
+            isFavorite: apiDeal.isFavorite || false,
+            contactAvatar: apiDeal.contactAvatar,
+            companyAvatar: apiDeal.companyAvatar,
+            customFields: apiDeal.customFields || {},
+            socialProfiles: apiDeal.socialProfiles || {},
+            lastEnrichment: apiDeal.lastEnrichment
+          };
           return acc;
         }, {});
         

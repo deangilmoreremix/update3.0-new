@@ -35,42 +35,42 @@ export interface IStorage {
   upsertUser(user: UpsertUser): Promise<User>;
 
   // Contact methods
-  getContacts(userId: string): Promise<Contact[]>;
+  getContacts(userId?: string): Promise<Contact[]>;
   getContact(id: string): Promise<Contact | undefined>;
   createContact(contact: InsertContact): Promise<Contact>;
   updateContact(id: string, contact: Partial<InsertContact>): Promise<Contact>;
   deleteContact(id: string): Promise<void>;
 
   // Deal methods
-  getDeals(userId: string): Promise<Deal[]>;
+  getDeals(userId?: string): Promise<Deal[]>;
   getDeal(id: string): Promise<Deal | undefined>;
   createDeal(deal: InsertDeal): Promise<Deal>;
   updateDeal(id: string, deal: Partial<InsertDeal>): Promise<Deal>;
   deleteDeal(id: string): Promise<void>;
 
   // Task methods
-  getTasks(userId: string): Promise<Task[]>;
+  getTasks(userId?: string): Promise<Task[]>;
   getTask(id: string): Promise<Task | undefined>;
   createTask(task: InsertTask): Promise<Task>;
   updateTask(id: string, task: Partial<InsertTask>): Promise<Task>;
   deleteTask(id: string): Promise<void>;
 
   // Business Analysis methods
-  getBusinessAnalyses(userId: string): Promise<BusinessAnalysis[]>;
+  getBusinessAnalyses(userId?: string): Promise<BusinessAnalysis[]>;
   getBusinessAnalysis(id: string): Promise<BusinessAnalysis | undefined>;
   createBusinessAnalysis(analysis: InsertBusinessAnalysis): Promise<BusinessAnalysis>;
   updateBusinessAnalysis(id: string, analysis: Partial<InsertBusinessAnalysis>): Promise<BusinessAnalysis>;
   deleteBusinessAnalysis(id: string): Promise<void>;
 
   // Content Item methods
-  getContentItems(userId: string): Promise<ContentItem[]>;
+  getContentItems(userId?: string): Promise<ContentItem[]>;
   getContentItem(id: string): Promise<ContentItem | undefined>;
   createContentItem(item: InsertContentItem): Promise<ContentItem>;
   updateContentItem(id: string, item: Partial<InsertContentItem>): Promise<ContentItem>;
   deleteContentItem(id: string): Promise<void>;
 
   // Voice Profile methods
-  getVoiceProfiles(userId: string): Promise<VoiceProfile[]>;
+  getVoiceProfiles(userId?: string): Promise<VoiceProfile[]>;
   getVoiceProfile(id: string): Promise<VoiceProfile | undefined>;
   createVoiceProfile(profile: InsertVoiceProfile): Promise<VoiceProfile>;
   updateVoiceProfile(id: string, profile: Partial<InsertVoiceProfile>): Promise<VoiceProfile>;
@@ -122,7 +122,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Contact methods
-  async getContacts(userId: string): Promise<Contact[]> {
+  async getContacts(userId?: string): Promise<Contact[]> {
+    if (!userId) {
+      // Return all contacts if no userId provided
+      return await db.select().from(contacts);
+    }
     return await db.select().from(contacts).where(eq(contacts.userId, userId));
   }
 
@@ -146,7 +150,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Deal methods
-  async getDeals(userId: string): Promise<Deal[]> {
+  async getDeals(userId?: string): Promise<Deal[]> {
+    if (!userId) {
+      // Return all deals if no userId provided
+      return await db.select().from(deals);
+    }
     return await db.select().from(deals).where(eq(deals.userId, userId));
   }
 
@@ -170,7 +178,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Task methods
-  async getTasks(userId: string): Promise<Task[]> {
+  async getTasks(userId?: string): Promise<Task[]> {
+    if (!userId) {
+      return await db.select().from(tasks);
+    }
     return await db.select().from(tasks).where(eq(tasks.userId, userId));
   }
 
@@ -194,7 +205,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Business Analysis methods
-  async getBusinessAnalyses(userId: string): Promise<BusinessAnalysis[]> {
+  async getBusinessAnalyses(userId?: string): Promise<BusinessAnalysis[]> {
+    if (!userId) {
+      return await db.select().from(businessAnalysis);
+    }
     return await db.select().from(businessAnalysis).where(eq(businessAnalysis.userId, userId));
   }
 
@@ -218,7 +232,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Content Item methods
-  async getContentItems(userId: string): Promise<ContentItem[]> {
+  async getContentItems(userId?: string): Promise<ContentItem[]> {
+    if (!userId) {
+      return await db.select().from(contentItems);
+    }
     return await db.select().from(contentItems).where(eq(contentItems.userId, userId));
   }
 
@@ -242,7 +259,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Voice Profile methods
-  async getVoiceProfiles(userId: string): Promise<VoiceProfile[]> {
+  async getVoiceProfiles(userId?: string): Promise<VoiceProfile[]> {
+    if (!userId) {
+      return await db.select().from(voiceProfiles);
+    }
     return await db.select().from(voiceProfiles).where(eq(voiceProfiles.userId, userId));
   }
 
