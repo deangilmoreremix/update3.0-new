@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
 import { Users, Star, TrendingUp } from 'lucide-react';
 import Avatar from '../ui/Avatar';
 import { getInitials } from '../../services/avatarCollection';
+import { ContactDetailView } from '../modals/ContactDetailView';
 
 const NewLeadsSection: React.FC = () => {
   const { isDark } = useTheme();
   const { contacts } = useContactStore();
+  const [selectedContact, setSelectedContact] = useState<any>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   // Get hot leads (contacts with high interest level)
   const hotLeads = Object.values(contacts)
@@ -40,6 +43,10 @@ const NewLeadsSection: React.FC = () => {
           {hotLeads.map((contact) => (
             <div 
               key={contact.id}
+              onClick={() => {
+                setSelectedContact(contact);
+                setIsDetailOpen(true);
+              }}
               className={`p-4 rounded-xl border transition-all duration-200 hover:scale-105 cursor-pointer ${
                 isDark 
                   ? 'bg-white/5 border-white/10 hover:bg-white/10' 
@@ -87,6 +94,18 @@ const NewLeadsSection: React.FC = () => {
           <p>No hot leads at the moment</p>
           <p className="text-sm mt-1">New high-priority leads will appear here</p>
         </div>
+      )}
+      
+      {/* Contact Detail Modal */}
+      {selectedContact && (
+        <ContactDetailView
+          contact={selectedContact}
+          isOpen={isDetailOpen}
+          onClose={() => {
+            setIsDetailOpen(false);
+            setSelectedContact(null);
+          }}
+        />
       )}
     </div>
   );

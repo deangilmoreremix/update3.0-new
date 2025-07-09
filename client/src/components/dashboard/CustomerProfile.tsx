@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
 import { Star, MapPin, Phone, Mail, Calendar, TrendingUp } from 'lucide-react';
 import Avatar from '../ui/Avatar';
 import { getAvatarByIndex, getInitials } from '../../services/avatarCollection';
+import { ContactDetailView } from '../modals/ContactDetailView';
 
 const CustomerProfile: React.FC = () => {
   const { isDark } = useTheme();
   const { contacts } = useContactStore();
+  const [selectedContact, setSelectedContact] = useState<any>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   // Convert contacts object to array and get top contacts
   const contactArray = Object.values(contacts);
@@ -57,7 +60,13 @@ const CustomerProfile: React.FC = () => {
       
       <div className="space-y-4">
         {topContacts.map((contact) => (
-          <div key={contact.id} className={`p-4 rounded-lg border ${
+          <div 
+            key={contact.id} 
+            onClick={() => {
+              setSelectedContact(contact);
+              setIsDetailOpen(true);
+            }}
+            className={`p-4 rounded-lg border cursor-pointer ${
             isDark ? 'border-white/10 bg-white/5' : 'border-gray-100 bg-white/50'
           } hover:scale-[1.02] transition-all duration-200`}>
             <div className="flex items-start space-x-4">
@@ -153,6 +162,18 @@ const CustomerProfile: React.FC = () => {
       }`}>
         View All Contacts
       </button>
+      
+      {/* Contact Detail Modal */}
+      {selectedContact && (
+        <ContactDetailView
+          contact={selectedContact}
+          isOpen={isDetailOpen}
+          onClose={() => {
+            setIsDetailOpen(false);
+            setSelectedContact(null);
+          }}
+        />
+      )}
     </div>
   );
 };
