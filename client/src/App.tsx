@@ -60,6 +60,8 @@ import AIModelDemo from './pages/AIModelDemo';
 import FeatureAccessDemo from './pages/FeatureAccessDemo';
 import { SSOConfiguration } from './pages/SSOConfiguration';
 import WhiteLabelCustomization from './pages/WhiteLabelCustomization';
+import AIGoalsPage from './pages/AIGoals/AIGoalsPage';
+import AIGoalsPageEnhanced from './pages/AIGoals/AIGoalsPageEnhanced';
 
 import './components/styles/design-system.css';
 
@@ -396,6 +398,24 @@ function App() {
                                   <ExactNavbar />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <AITools />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* AI Goals Routes */}
+                              <Route path="/ai-goals" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <AIGoalsPageEnhanced />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/ai-goals-basic" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <AIGoalsPage />
                                   </div>
                                 </>
                               } />

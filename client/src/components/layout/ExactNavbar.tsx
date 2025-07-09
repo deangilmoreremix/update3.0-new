@@ -209,6 +209,14 @@ const Navbar = () => {
       color: 'from-green-500 to-emerald-500'
     },
     {
+      id: 'ai-goals',
+      label: 'AI Goals',
+      icon: Target,
+      action: () => handleNavigation('/ai-goals', 'ai-goals'),
+      badge: 58,
+      color: 'from-purple-500 to-pink-500'
+    },
+    {
       id: 'ai-tools',
       label: 'AI Tools',
       icon: Brain,
