@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Palette, Upload, Eye, Save, RotateCcw, Sparkles, Globe, Code, Monitor, Mail, Plus, Trash2, ExternalLink, Settings, ShoppingCart, Edit } from 'lucide-react';
+import { Palette, Upload, Eye, Save, RotateCcw, Sparkles, Globe, Code, Monitor, Mail, Plus, Trash2, ExternalLink, Settings, ShoppingCart, Edit, Shield, TestTube, Activity, TrendingUp, Users, BarChart3 } from 'lucide-react';
 import { useTenant } from '../components/TenantProvider';
 import { ConditionalRender } from '../components/RoleBasedAccess';
+import DomainAnalytics from '../components/analytics/DomainAnalytics';
+import AutoSSL from '../components/security/AutoSSL';
+import DomainHealthMonitor from '../components/monitoring/DomainHealthMonitor';
+import ABTestingManager from '../components/testing/ABTestingManager';
 
 interface DomainConfig {
   id: string;
@@ -371,6 +375,10 @@ export default function WhiteLabelCustomization() {
                   { id: 'advanced', label: 'Advanced', icon: Sparkles },
                   { id: 'domain', label: 'Domain & URLs', icon: Globe },
                   { id: 'sales', label: 'Sales Pages', icon: ShoppingCart },
+                  { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+                  { id: 'ssl', label: 'SSL Security', icon: Shield },
+                  { id: 'monitoring', label: 'Monitoring', icon: Activity },
+                  { id: 'testing', label: 'A/B Testing', icon: TestTube },
                   { id: 'code', label: 'Custom Code', icon: Code },
                 ].map((tab) => (
                   <button
@@ -1041,6 +1049,50 @@ export default function WhiteLabelCustomization() {
                     ))}
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Analytics Tab */}
+            {activeTab === 'analytics' && (
+              <div className="space-y-6">
+                <DomainAnalytics 
+                  domainId={config.domains[0]?.id || '1'} 
+                  domainName={config.domains[0]?.domain || 'demo.com'} 
+                />
+              </div>
+            )}
+
+            {/* SSL Security Tab */}
+            {activeTab === 'ssl' && (
+              <div className="space-y-6">
+                <AutoSSL 
+                  tenantId={tenant?.id || 'demo'} 
+                  domains={config.domains} 
+                  onSSLUpdate={(domainId, sslStatus) => {
+                    updateDomain(domainId, { sslStatus: sslStatus as any });
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Monitoring Tab */}
+            {activeTab === 'monitoring' && (
+              <div className="space-y-6">
+                <DomainHealthMonitor 
+                  tenantId={tenant?.id || 'demo'} 
+                  domains={config.domains} 
+                />
+              </div>
+            )}
+
+            {/* A/B Testing Tab */}
+            {activeTab === 'testing' && (
+              <div className="space-y-6">
+                <ABTestingManager 
+                  tenantId={tenant?.id || 'demo'} 
+                  domains={config.domains} 
+                  salesPages={config.salesPages} 
+                />
               </div>
             )}
 
