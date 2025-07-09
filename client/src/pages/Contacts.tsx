@@ -14,8 +14,7 @@ import {
   ArrowUp,
   ArrowDown,
   CheckCheck,
-  Zap,
-  Users
+  Zap
 } from 'lucide-react';
 import { useOpenAI } from '../services/openaiService';
 import { useForm } from 'react-hook-form';
@@ -384,31 +383,11 @@ const Contacts: React.FC = () => {
     }),
     columnHelper.accessor('lastContact', {
       header: 'Last Contact',
-      cell: (info) => {
-        const lastContact = info.getValue();
-        let displayDate = 'N/A';
-        
-        if (lastContact) {
-          if (typeof lastContact === 'string') {
-            // If it's a string, try to parse it as a date
-            const dateObj = new Date(lastContact);
-            if (!isNaN(dateObj.getTime())) {
-              displayDate = dateObj.toLocaleDateString();
-            } else {
-              // If it's not a valid date string, display as is
-              displayDate = lastContact;
-            }
-          } else if (lastContact instanceof Date) {
-            displayDate = lastContact.toLocaleDateString();
-          }
-        }
-        
-        return (
-          <span className="text-sm text-gray-500">
-            {displayDate}
-          </span>
-        );
-      }
+      cell: (info) => (
+        <span className="text-sm text-gray-500">
+          {info.getValue()?.toLocaleDateString() || 'N/A'}
+        </span>
+      )
     }),
     columnHelper.accessor('industry', {
       header: 'Industry',
@@ -448,36 +427,19 @@ const Contacts: React.FC = () => {
 
   // Set up export data for CSV
   const exportData = useMemo(() => 
-    contacts.map(contact => {
-      // Handle lastContact formatting safely
-      let lastContactFormatted = '';
-      if (contact.lastContact) {
-        if (typeof contact.lastContact === 'string') {
-          const dateObj = new Date(contact.lastContact);
-          if (!isNaN(dateObj.getTime())) {
-            lastContactFormatted = dateObj.toLocaleDateString();
-          } else {
-            lastContactFormatted = contact.lastContact;
-          }
-        } else if (contact.lastContact instanceof Date) {
-          lastContactFormatted = contact.lastContact.toLocaleDateString();
-        }
-      }
-      
-      return {
-        Name: contact.name,
-        Email: contact.email,
-        Phone: contact.phone,
-        Company: contact.company,
-        Position: contact.position,
-        Status: contact.status,
-        Score: contact.score,
-        LastContact: lastContactFormatted,
-        Industry: contact.industry,
-        Location: contact.location,
-        Notes: contact.notes
-      };
-    }),
+    contacts.map(contact => ({
+      Name: contact.name,
+      Email: contact.email,
+      Phone: contact.phone,
+      Company: contact.company,
+      Position: contact.position,
+      Status: contact.status,
+      Score: contact.score,
+      LastContact: contact.lastContact ? contact.lastContact.toLocaleDateString() : '',
+      Industry: contact.industry,
+      Location: contact.location,
+      Notes: contact.notes
+    })),
   [contacts]);
 
   const csvHeaders = [
@@ -545,106 +507,84 @@ const Contacts: React.FC = () => {
   const totalPages = Math.ceil(filteredContacts.length / itemsPerPage);
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-white/95 backdrop-blur-xl rounded-2xl w-full max-w-7xl h-[90vh] overflow-hidden flex flex-col animate-slide-in shadow-2xl border border-white/30">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-white/30 bg-gradient-to-r from-blue-50/80 to-purple-50/80 backdrop-blur-sm">
-          <div className="flex items-center space-x-4">
-            <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-white">
-              <Users className="w-6 h-6" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 flex items-center">
-                Contacts Management
-              </h2>
-              <p className="text-gray-600">
-                {filteredContacts.length} contacts
-                {selectedContacts.length > 0 && ` • ${selectedContacts.length} selected`}
-              </p>
-            </div>
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <header className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Contacts</h1>
+          <p className="text-gray-600 mt-1">Manage your contacts with AI-powered insights</p>
+        </div>
+        <div className="mt-4 sm:mt-0 flex flex-wrap gap-2">
+          <button 
+            onClick={handleAnalyzeAllContacts}
+            disabled={isAnalyzing}
+            className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md transition-colors disabled:bg-purple-300"
+          >
+            <Brain size={18} className="mr-1" />
+            {isAnalyzing ? 'Analyzing...' : 'AI Lead Scoring'}
+          </button>
+          <button 
+            onClick={() => setShowExportModal(true)}
+            className="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition-colors"
+          >
+            <Download size={18} className="mr-1" />
+            Export
+          </button>
+          <button 
+            onClick={() => setShowImportModal(true)}
+            className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md transition-colors"
+          >
+            <Upload size={18} className="mr-1" />
+            Import
+          </button>
+          <button 
+            onClick={() => setShowAddContactModal(true)}
+            className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors"
+          >
+            <Plus size={18} className="mr-1" />
+            Add Contact
+          </button>
+        </div>
+      </header>
+
+      {/* Bulk Actions Bar */}
+      {showBulkActions && (
+        <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-6 flex justify-between items-center">
+          <div className="flex items-center">
+            <span className="text-blue-700 font-medium">{selectedContacts.length} contacts selected</span>
+            <button 
+              onClick={handleSelectAll}
+              className="ml-4 text-sm text-blue-600 hover:text-blue-800"
+            >
+              {selectedContacts.length === filteredContacts.length ? 'Deselect All' : 'Select All'}
+            </button>
           </div>
           
-          <div className="flex items-center space-x-3">
-            <button 
-              onClick={handleAnalyzeAllContacts}
-              disabled={isAnalyzing}
-              className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md transition-colors disabled:bg-purple-300"
+          <div className="flex space-x-2">
+            <button
+              onClick={handleAnalyzeSelectedContacts}
+              className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700"
             >
-              <Brain size={18} className="mr-1" />
-              {isAnalyzing ? 'Analyzing...' : 'AI Lead Scoring'}
+              <Zap size={16} className="mr-1" />
+              Analyze Selected
+            </button>
+            <button className="inline-flex items-center px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-sm rounded-md hover:bg-gray-50">
+              Add to Sequence
+            </button>
+            <button className="inline-flex items-center px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-sm rounded-md hover:bg-gray-50">
+              Export Selected
             </button>
             <button 
-              onClick={() => setShowExportModal(true)}
-              className="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition-colors"
+              onClick={() => setSelectedContacts([])}
+              className="inline-flex items-center px-2 py-1.5 text-gray-500 hover:text-gray-700"
             >
-              <Download size={18} className="mr-1" />
-              Export
-            </button>
-            <button 
-              onClick={() => setShowImportModal(true)}
-              className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md transition-colors"
-            >
-              <Upload size={18} className="mr-1" />
-              Import
-            </button>
-            <button 
-              onClick={() => setShowAddContactModal(true)}
-              className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors"
-            >
-              <Plus size={18} className="mr-1" />
-              Add Contact
-            </button>
-            <button 
-              onClick={() => window.history.back()}
-              className="p-2 hover:bg-gray-100 rounded-md transition-colors"
-            >
-              <X size={20} className="text-gray-600" />
+              <X size={16} />
             </button>
           </div>
         </div>
+      )}
 
-        {/* Bulk Actions Bar */}
-        {showBulkActions && (
-          <div className="bg-gradient-to-r from-blue-50/60 to-purple-50/60 backdrop-blur-sm border-l-4 border-blue-500/80 p-4 mx-6 rounded-lg flex justify-between items-center border border-white/20">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <CheckCheck className="w-5 h-5 text-blue-600" />
-                <span className="text-blue-700 font-medium">{selectedContacts.length} contacts selected</span>
-              </div>
-              <button 
-                onClick={handleSelectAll}
-                className="text-sm text-blue-600 hover:text-blue-800 underline"
-              >
-                {selectedContacts.length === filteredContacts.length ? 'Deselect All' : 'Select All'}
-              </button>
-            </div>
-            
-            <div className="flex space-x-2">
-              <button
-                onClick={handleAnalyzeSelectedContacts}
-                className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors"
-              >
-                <Zap size={16} className="mr-1" />
-                Analyze Selected
-              </button>
-              <button className="inline-flex items-center px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-sm rounded-md hover:bg-gray-50 transition-colors">
-                Add to Sequence
-              </button>
-              <button className="inline-flex items-center px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-sm rounded-md hover:bg-gray-50 transition-colors">
-                Export Selected
-              </button>
-              <button 
-                onClick={() => setSelectedContacts([])}
-                className="inline-flex items-center px-2 py-1.5 text-gray-500 hover:text-gray-700 transition-colors"
-              >
-                <X size={16} />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Search and Filters */}
-        <div className="p-6 border-b border-white/20 bg-white/20 backdrop-blur-sm">
+      <div className="bg-white rounded-lg shadow-sm mb-6">
+        <div className="p-4 border-b border-gray-200">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="relative flex-grow max-w-md">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -655,7 +595,7 @@ const Contacts: React.FC = () => {
                 placeholder="Search contacts..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full border border-white/30 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none bg-white/50 backdrop-blur-sm"
+                className="pl-10 pr-4 py-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
             </div>
             
