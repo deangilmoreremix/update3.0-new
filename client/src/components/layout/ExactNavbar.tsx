@@ -637,7 +637,7 @@ const Navbar = () => {
                           ) : (
                             <button
                               key={index}
-                              onClick={() => handleNavigation(app.url.slice(1), 'white-label')}
+                              onClick={() => handleNavigation(app.url, 'white-label')}
                               className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
                             >
                               <app.icon size={16} className="text-purple-500" />
