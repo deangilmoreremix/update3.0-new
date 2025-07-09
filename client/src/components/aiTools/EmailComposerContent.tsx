@@ -3,29 +3,6 @@ import { edgeFunctionService } from '../../services/edgeFunctionService';
 import AIToolContent from '../shared/AIToolContent';
 import { Mail, User, Building, RefreshCw, Copy, FileText, Send } from 'lucide-react';
 import Select from 'react-select';
-const logEmailToLead = async ({
-  leadId,
-  summary,
-  content,
-}: {
-  leadId: string;
-  summary: string;
-  content: string;
-}) => {
-  const { error } = await supabase.from('lead_communications').insert([
-    {
-      lead_id: leadId,
-      type: 'email',
-      summary,
-      content,
-    },
-  ]);
-
-  if (error) {
-    console.error('Error logging email:', error);
-    throw error;
-  }
-};
 
 const EmailComposerContent: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -40,8 +17,6 @@ const EmailComposerContent: React.FC = () => {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-
-  const openai = useOpenAI();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -65,13 +40,15 @@ const EmailComposerContent: React.FC = () => {
         company: formData.recipientCompany
       };
       
-      const emailDraft = await openai.generateEmailDraft(
-        formData.recipientName,
-        formData.emailPurpose,
-        formData.additionalContext
-      );
+      const emailDraft = await edgeFunctionService.callAIFunction('/api/ai/email-composer', {
+        recipientName: formData.recipientName,
+        recipientPosition: formData.recipientPosition,
+        recipientCompany: formData.recipientCompany,
+        emailPurpose: formData.emailPurpose,
+        additionalContext: formData.additionalContext
+      });
       
-      setResult(emailDraft);
+      setResult(emailDraft.result);
       setCopied(false);
     } catch (err) {
       console.error('Error generating email:', err);
