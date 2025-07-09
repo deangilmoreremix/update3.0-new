@@ -21,6 +21,8 @@ import aiRoutes from "./routes/ai";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { authService } from "./services/authService";
 import { authenticateToken } from "./middleware/authMiddleware";
+import { emailCampaignService } from "./services/emailCampaignService";
+import { emailScheduler } from "./services/emailScheduler";
 import { db } from "./db";
 import { users } from "@shared/schema";
 import { eq } from "drizzle-orm";
@@ -38,6 +40,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const result = await authService.register(req.body);
       if (result.success) {
+        // Send welcome email after successful registration
+        try {
+          await emailCampaignService.sendWelcomeEmail(
+            req.body.email,
+            req.body.firstName || 'User',
+            `${req.protocol}://${req.get('host')}/dashboard`
+          );
+          
+          // Schedule onboarding sequence
+          await emailScheduler.scheduleOnboardingSequence(
+            result.user.id,
+            req.body.email,
+            req.body.firstName || 'User'
+          );
+        } catch (emailError) {
+          console.error('Welcome email error:', emailError);
+          // Don't fail registration if email fails
+        }
+        
         res.json(result);
       } else {
         res.status(400).json(result);
@@ -95,6 +116,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { currentPassword, newPassword } = req.body;
       const result = await authService.changePassword(req.user.userId, currentPassword, newPassword);
       if (result.success) {
+        // Send password change confirmation email
+        try {
+          const user = await authService.getUserById(req.user.userId);
+          if (user) {
+            await emailCampaignService.sendPasswordChangeConfirmation(
+              user.email,
+              user.firstName || 'User'
+            );
+          }
+        } catch (emailError) {
+          console.error('Password change confirmation email error:', emailError);
+          // Don't fail password change if email fails
+        }
+        
         res.json(result);
       } else {
         res.status(400).json(result);
@@ -207,6 +242,103 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ success: true, message: 'User account suspended' });
     } catch (error) {
       console.error('Delete user error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  // Email Campaign Routes
+  app.get('/api/email-campaigns', authenticateToken, async (req: any, res: Response) => {
+    try {
+      const campaigns = emailCampaignService.getCampaigns();
+      res.json({ success: true, campaigns });
+    } catch (error) {
+      console.error('Get campaigns error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  app.post('/api/email-campaigns', authenticateToken, async (req: any, res: Response) => {
+    try {
+      const { name, description, templateId, triggerType, scheduledAt } = req.body;
+      const result = await emailCampaignService.createCampaign(
+        name,
+        description,
+        templateId,
+        triggerType,
+        scheduledAt ? new Date(scheduledAt) : undefined
+      );
+      
+      if (result.success) {
+        res.json(result);
+      } else {
+        res.status(400).json(result);
+      }
+    } catch (error) {
+      console.error('Create campaign error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  app.get('/api/email-templates', authenticateToken, async (req: any, res: Response) => {
+    try {
+      const category = req.query.category as string;
+      const templates = category 
+        ? emailCampaignService.getTemplatesByCategory(category)
+        : Array.from(emailCampaignService.getTemplatesByCategory('password')).concat(
+            Array.from(emailCampaignService.getTemplatesByCategory('onboarding'))
+          );
+      res.json({ success: true, templates });
+    } catch (error) {
+      console.error('Get templates error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  app.post('/api/email-campaigns/send', authenticateToken, async (req: any, res: Response) => {
+    try {
+      const { recipients, templateId, campaignId } = req.body;
+      const result = await emailCampaignService.sendBatchEmails(recipients, templateId, campaignId);
+      
+      if (result.success) {
+        res.json(result);
+      } else {
+        res.status(400).json(result);
+      }
+    } catch (error) {
+      console.error('Send batch emails error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  app.post('/api/auth/password-reset', async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body;
+      
+      // Generate reset token (in production, store this in database)
+      const resetToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      
+      // Get user info
+      const [user] = await db.select().from(users).where(eq(users.email, email));
+      
+      if (!user) {
+        // Don't reveal if user exists or not for security
+        return res.json({ success: true, message: 'If an account exists, password reset email has been sent' });
+      }
+      
+      // Send password reset email
+      const result = await emailCampaignService.sendPasswordResetEmail(
+        email,
+        user.firstName || 'User',
+        resetToken
+      );
+      
+      if (result.success) {
+        res.json({ success: true, message: 'Password reset email sent successfully' });
+      } else {
+        res.status(500).json({ success: false, error: 'Failed to send password reset email' });
+      }
+    } catch (error) {
+      console.error('Password reset error:', error);
       res.status(500).json({ success: false, error: 'Internal server error' });
     }
   });
