@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useDashboardLayout } from '../../contexts/DashboardLayoutContext';
 import { CheckSquare, Calendar, MessageSquare } from 'lucide-react';
 import AppointmentWidget from '../AppointmentWidget';
 import InteractionHistory from '../dashboard/InteractionHistory';
 import TasksAndFunnel from '../dashboard/TasksAndFunnel';
-import RecentActivity from '../dashboard/RecentActivity';
+import DraggableComponent from '../DraggableComponent';
 
 const ActivitiesCommunications: React.FC = () => {
   const { isDark } = useTheme();
@@ -98,15 +100,6 @@ const ActivitiesCommunications: React.FC = () => {
         </div>
       </div>
       
-      {/* Tasks and Funnel Section */}
-      <div className="mb-6">
-        <TasksAndFunnel />
-      </div>
-      
-      {/* Recent Activity */}
-      <div className="mb-6">
-        <RecentActivity />
-      </div>
     </div>
   );
 };
