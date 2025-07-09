@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, User, Phone, Building, Shield, Crown } from 'lucide-react';
-import { DemoInstructions } from '../../components/DemoInstructions';
+import { Mail, Lock, Eye, EyeOff, User, Phone, Building, Shield, Crown, Brain, Sparkles } from 'lucide-react';
 
 interface SignUpFormData {
   firstName: string;
@@ -123,31 +122,33 @@ export const SignUp: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
           <Link to="/" className="inline-block">
-            <h1 className="text-3xl font-bold">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-                Smart
-              </span>
-              <span className="text-gray-900">CRM</span>
-            </h1>
+            <div className="flex items-center justify-center mb-4">
+              <div className="p-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl mr-3">
+                <Brain className="w-8 h-8 text-white" />
+              </div>
+              <h1 className="text-3xl font-bold">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+                  Smart
+                </span>
+                <span className="text-gray-900">CRM</span>
+              </h1>
+            </div>
           </Link>
           <h2 className="mt-6 text-2xl font-bold text-gray-900">
             Create your account
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Join thousands of businesses using Smart CRM
+            Join thousands of businesses using AI-powered CRM
           </p>
         </div>
 
-        {/* Demo Instructions */}
-        <DemoInstructions />
-
-        {/* Sign Up Form */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        {/* Sign Up Form with Glassmorphism */}
+        <div className="bg-white/70 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-xl p-8">
           {/* User Type Selection */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -157,10 +158,10 @@ export const SignUp: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setFormData(prev => ({ ...prev, userType: 'regular' }))}
-                className={`p-4 border-2 rounded-lg text-center transition-all ${
+                className={`p-4 border-2 rounded-xl text-center transition-all duration-300 ${
                   formData.userType === 'regular'
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-blue-500 bg-blue-50/80 text-blue-700 backdrop-blur-sm'
+                    : 'border-gray-200 hover:border-gray-300 bg-white/30 backdrop-blur-sm'
                 }`}
               >
                 <User className="mx-auto mb-2" size={24} />
@@ -170,10 +171,10 @@ export const SignUp: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setFormData(prev => ({ ...prev, userType: 'super_admin' }))}
-                className={`p-4 border-2 rounded-lg text-center transition-all ${
+                className={`p-4 border-2 rounded-xl text-center transition-all duration-300 ${
                   formData.userType === 'super_admin'
-                    ? 'border-purple-500 bg-purple-50 text-purple-700'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-purple-500 bg-purple-50/80 text-purple-700 backdrop-blur-sm'
+                    : 'border-gray-200 hover:border-gray-300 bg-white/30 backdrop-blur-sm'
                 }`}
               >
                 <Crown className="mx-auto mb-2" size={24} />
@@ -186,7 +187,7 @@ export const SignUp: React.FC = () => {
           {/* Replit Auth Button (Disabled in Demo) */}
           <button
             onClick={handleReplitAuth}
-            className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-gray-100 text-sm font-medium text-gray-500 cursor-not-allowed mb-6"
+            className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-gray-100/50 backdrop-blur-sm text-sm font-medium text-gray-500 cursor-not-allowed mb-6"
             disabled
           >
             <Shield className="w-5 h-5 mr-2 text-gray-400" />
@@ -198,19 +199,19 @@ export const SignUp: React.FC = () => {
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or create account with email</span>
+              <span className="px-2 bg-white/70 text-gray-500">Or create account with email</span>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="bg-red-50/80 backdrop-blur-sm border border-red-200 rounded-xl p-4">
                 <p className="text-sm text-red-800">{error}</p>
               </div>
             )}
 
             {success && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="bg-green-50/80 backdrop-blur-sm border border-green-200 rounded-xl p-4">
                 <p className="text-sm text-green-800">{success}</p>
               </div>
             )}
@@ -228,7 +229,7 @@ export const SignUp: React.FC = () => {
                   required
                   value={formData.firstName}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
                   placeholder="John"
                 />
               </div>
@@ -243,7 +244,7 @@ export const SignUp: React.FC = () => {
                   required
                   value={formData.lastName}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
                   placeholder="Doe"
                 />
               </div>
@@ -264,7 +265,7 @@ export const SignUp: React.FC = () => {
                   required
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="pl-10 w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
                   placeholder="john@company.com"
                 />
               </div>
@@ -286,13 +287,13 @@ export const SignUp: React.FC = () => {
                     required
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="pl-10 pr-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="pl-10 pr-10 w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
@@ -312,13 +313,13 @@ export const SignUp: React.FC = () => {
                     required
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    className="pl-10 pr-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="pl-10 pr-10 w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
                   >
                     {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
@@ -340,7 +341,7 @@ export const SignUp: React.FC = () => {
                     type="text"
                     value={formData.organizationName}
                     onChange={handleInputChange}
-                    className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="pl-10 w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
                     placeholder="Company Inc."
                   />
                 </div>
@@ -357,7 +358,7 @@ export const SignUp: React.FC = () => {
                     type="tel"
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
-                    className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="pl-10 w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
                     placeholder="+1 (555) 123-4567"
                   />
                 </div>
@@ -379,7 +380,7 @@ export const SignUp: React.FC = () => {
                     required
                     value={formData.adminCode}
                     onChange={handleInputChange}
-                    className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="pl-10 w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
                     placeholder="Enter super admin code"
                   />
                 </div>
@@ -414,7 +415,7 @@ export const SignUp: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full flex items-center justify-center px-4 py-3 font-medium rounded-lg focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+              className={`w-full flex items-center justify-center px-4 py-3 font-medium rounded-xl focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-[1.02] hover:shadow-lg ${
                 formData.userType === 'super_admin'
                   ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 focus:ring-purple-500'
                   : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 focus:ring-blue-500'

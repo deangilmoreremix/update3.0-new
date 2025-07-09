@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Shield } from 'lucide-react';
-import { DemoInstructions } from '../../components/DemoInstructions';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Shield, Brain, Sparkles, Zap } from 'lucide-react';
 
 interface SignInFormData {
   email: string;
@@ -71,42 +70,65 @@ export const SignIn: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
           <Link to="/" className="inline-block">
-            <h1 className="text-3xl font-bold">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-                Smart
-              </span>
-              <span className="text-gray-900">CRM</span>
-            </h1>
+            <div className="flex items-center justify-center mb-4">
+              <div className="p-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl mr-3">
+                <Brain className="w-8 h-8 text-white" />
+              </div>
+              <h1 className="text-3xl font-bold">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+                  Smart
+                </span>
+                <span className="text-gray-900">CRM</span>
+              </h1>
+            </div>
           </Link>
           <h2 className="mt-6 text-2xl font-bold text-gray-900">
             Welcome back
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Sign in to your account to continue
+            Sign in to your AI-powered CRM dashboard
           </p>
         </div>
 
         {/* Redirect Message */}
         {redirectMessage && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="bg-yellow-50/80 backdrop-blur-sm border border-yellow-200 rounded-xl p-4">
             <p className="text-sm text-yellow-800">{redirectMessage}</p>
           </div>
         )}
 
-        {/* Demo Instructions */}
-        <DemoInstructions />
+        {/* Demo Instructions Card */}
+        <div className="bg-amber-50/80 backdrop-blur-sm border border-amber-200/50 rounded-2xl p-6 mb-4">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <div className="p-2 bg-amber-100 rounded-lg">
+                <Sparkles className="w-5 h-5 text-amber-600" />
+              </div>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-amber-800">Demo Access</h3>
+              <div className="mt-2 text-sm text-amber-700">
+                <p className="mb-2">Try the platform without registration:</p>
+                <div className="space-y-1">
+                  <p><strong>Regular User:</strong> demo@example.com + any password</p>
+                  <p><strong>Super Admin:</strong> admin@company.com + any password</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        {/* Sign In Form */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        {/* Sign In Form with Glassmorphism */}
+        <div className="bg-white/70 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-xl p-8">
           {/* Replit Auth Button (Disabled in Demo) */}
           <button
             onClick={handleReplitAuth}
-            className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-gray-100 text-sm font-medium text-gray-500 cursor-not-allowed mb-6"
+            className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-gray-100/50 backdrop-blur-sm text-sm font-medium text-gray-500 cursor-not-allowed mb-6"
             disabled
           >
             <Shield className="w-5 h-5 mr-2 text-gray-400" />
@@ -118,13 +140,13 @@ export const SignIn: React.FC = () => {
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or continue with email</span>
+              <span className="px-2 bg-white/70 text-gray-500">Or continue with email</span>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="bg-red-50/80 backdrop-blur-sm border border-red-200 rounded-xl p-4">
                 <p className="text-sm text-red-800">{error}</p>
               </div>
             )}
@@ -144,7 +166,7 @@ export const SignIn: React.FC = () => {
                   required
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="pl-10 w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
                   placeholder="Enter your email"
                 />
               </div>
@@ -165,13 +187,13 @@ export const SignIn: React.FC = () => {
                   required
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="pl-10 pr-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="pl-10 pr-10 w-full px-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 backdrop-blur-sm transition-all duration-300"
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
@@ -203,7 +225,7 @@ export const SignIn: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl hover:from-blue-700 hover:to-indigo-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
             >
               {isLoading ? (
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
