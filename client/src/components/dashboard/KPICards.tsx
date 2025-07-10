@@ -139,7 +139,7 @@ export const KPICards: React.FC = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 w-full">
       {kpiData.map((kpi, index) => {
         const colorClasses = getColorClasses(kpi.color);
         const TrendIcon = kpi.trend === 'up' ? ArrowUpRight : ArrowDownRight;
@@ -148,7 +148,7 @@ export const KPICards: React.FC = () => {
         return (
           <div
             key={index}
-            className={`p-6 rounded-2xl backdrop-blur-sm ${
+            className={`p-4 lg:p-6 rounded-2xl backdrop-blur-sm ${
               isDark 
                 ? 'bg-white/5 border-white/10 hover:bg-white/10' 
                 : 'bg-white/90 border-gray-200 hover:bg-white'

@@ -193,8 +193,8 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenPipelineModal }) => {
   const mainTabs = [
     {
       id: 'dashboard',
-      label: '',
-      icon: () => null,
+      label: 'Dashboard',
+      icon: Home,
       action: () => handleNavigation('/dashboard', 'dashboard'),
       badge: null,
       color: 'from-blue-500 to-green-500'

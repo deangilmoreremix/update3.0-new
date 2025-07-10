@@ -65,7 +65,7 @@ const CustomerLeadManagement: React.FC = () => {
   };
 
   return (
-    <div className="mb-10">
+    <div className="w-full">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
           <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl mr-3">
@@ -101,7 +101,7 @@ const CustomerLeadManagement: React.FC = () => {
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
-              className={`grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 ${isDragModeEnabled ? 'pl-12' : ''}`}
+              className={`grid grid-cols-1 lg:grid-cols-3 gap-4 w-full ${isDragModeEnabled ? 'pl-12' : ''}`}
             >
               {componentOrder.map((componentId, index) => 
                 renderComponent(componentId, index)

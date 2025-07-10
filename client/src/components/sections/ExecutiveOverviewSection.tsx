@@ -73,14 +73,14 @@ const ExecutiveOverviewSection: React.FC = () => {
   };
 
   return (
-    <div className="mb-10">
+    <div className="w-full">
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId="executive-overview-components">
           {(provided) => (
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
-              className={isDragModeEnabled ? 'pl-12' : ''}
+              className={`w-full ${isDragModeEnabled ? 'pl-12' : ''}`}
             >
               {componentOrder.map((componentId, index) => 
                 renderComponent(componentId, index)
