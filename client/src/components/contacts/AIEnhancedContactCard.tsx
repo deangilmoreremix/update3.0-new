@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AvatarWithStatus } from '../ui/AvatarWithStatus';
 import { CustomizableAIToolbar } from '../ui/CustomizableAIToolbar';
 import { Contact } from '../../types/contact';
+import ContactAgentButtons from './ContactAgentButtons';
 import { 
   Edit, 
   MoreHorizontal, 
@@ -309,6 +310,20 @@ export const AIEnhancedContactCard: React.FC<AIEnhancedContactCardProps> = ({
               size="sm"
               showCustomizeButton={false}
             />
+          </div>
+        )}
+
+        {/* AI Agents Section */}
+        {contact.aiScore && (
+          <div className="mb-4">
+            <ContactAgentButtons contact={contact} />
+          </div>
+        )}
+
+        {/* AI Agents Section */}
+        {contact.aiScore && (
+          <div className="mb-4">
+            <ContactAgentButtons contact={contact} />
           </div>
         )}
 

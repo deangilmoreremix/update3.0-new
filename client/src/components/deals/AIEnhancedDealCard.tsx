@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Deal } from '../../types';
+import DealAgentButtons from './DealAgentButtons';
 import { 
   Building2, 
   Calendar, 
@@ -255,6 +256,11 @@ export const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
               <span className="text-sm font-medium">Enrich</span>
             </button>
           )}
+        </div>
+
+        {/* AI Agents Section */}
+        <div className="mt-3">
+          <DealAgentButtons deal={deal} />
         </div>
 
         {/* Social Profiles */}
