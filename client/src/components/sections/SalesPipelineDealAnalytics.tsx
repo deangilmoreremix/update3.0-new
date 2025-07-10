@@ -1,8 +1,10 @@
 import React from 'react';
-import { BarChart3 } from 'lucide-react';
+import { useTheme } from '../../contexts/ThemeContext';
+import { BarChart3, TrendingUp } from 'lucide-react';
 import ChartsSection from '../dashboard/ChartsSection';
 
 const SalesPipelineDealAnalytics: React.FC = () => {
+  const { isDark } = useTheme();
 
   return (
     <div className="mb-10">
@@ -11,36 +13,88 @@ const SalesPipelineDealAnalytics: React.FC = () => {
           <BarChart3 className="h-6 w-6 text-white" />
         </div>
         <div>
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Sales Pipeline & Analytics</h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Comprehensive pipeline management and performance metrics
+          <h2 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Sales Pipeline & Analytics</h2>
+          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+            Comprehensive deal performance and pipeline insights
           </p>
         </div>
       </div>
 
+      {/* Deal Analytics */}
+      <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6 mb-6`}>
+        <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-6`}>Deal Analytics</h3>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
+            <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Total Pipeline Value</h4>
+            <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>$2.4M</p>
+            <p className="text-sm text-green-600">+12% from last month</p>
+          </div>
+          <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
+            <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Active Deals</h4>
+            <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>47</p>
+            <p className="text-sm text-blue-600">+5 new this week</p>
+          </div>
+          <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
+            <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Avg Deal Size</h4>
+            <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>$51K</p>
+            <p className="text-sm text-purple-600">+8% increase</p>
+          </div>
+          <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
+            <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Win Rate</h4>
+            <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>68%</p>
+            <p className="text-sm text-green-600">+2.1% improvement</p>
+          </div>
+        </div>
+      </div>
+
       {/* Charts Section */}
-      <div className="mb-8">
+      <div className="mb-6">
         <ChartsSection />
       </div>
-      
-      {/* Pipeline Performance Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white/5 dark:bg-white/5 border-white/10 dark:border-white/10 backdrop-blur-xl border rounded-2xl p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Conversion Rate</h3>
-          <div className="text-3xl font-bold text-green-600 dark:text-green-400">24.5%</div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">+2.3% from last month</p>
+
+      {/* Conversion Metrics */}
+      <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6 mb-6`}>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Sales Conversion Metrics</h3>
+          <TrendingUp className={`h-5 w-5 ${isDark ? 'text-green-400' : 'text-green-600'}`} />
         </div>
         
-        <div className="bg-white/5 dark:bg-white/5 border-white/10 dark:border-white/10 backdrop-blur-xl border rounded-2xl p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Avg. Deal Size</h3>
-          <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">$12,450</div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">+15.2% from last month</p>
-        </div>
-        
-        <div className="bg-white/5 dark:bg-white/5 border-white/10 dark:border-white/10 backdrop-blur-xl border rounded-2xl p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Sales Cycle</h3>
-          <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">32 days</div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">-3 days from last month</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg border ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
+            <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Lead to Opportunity</p>
+            <div className="flex items-center justify-between mt-2">
+              <p className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>32%</p>
+              <div className={`text-xs px-2 py-1 rounded-full ${
+                isDark ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-800'
+              }`}>
+                +4.5%
+              </div>
+            </div>
+          </div>
+          
+          <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg border ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
+            <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Opportunity to Proposal</p>
+            <div className="flex items-center justify-between mt-2">
+              <p className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>68%</p>
+              <div className={`text-xs px-2 py-1 rounded-full ${
+                isDark ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-800'
+              }`}>
+                +2.1%
+              </div>
+            </div>
+          </div>
+          
+          <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg border ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
+            <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Proposal to Close</p>
+            <div className="flex items-center justify-between mt-2">
+              <p className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>45%</p>
+              <div className={`text-xs px-2 py-1 rounded-full ${
+                isDark ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-800'
+              }`}>
+                +1.8%
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,8 +1,10 @@
 import React from 'react';
-import { Grid3X3, Settings, Zap } from 'lucide-react';
+import { useTheme } from '../../contexts/ThemeContext';
+import { Grid3X3, Settings, Shield } from 'lucide-react';
 import ConnectedApps from '../dashboard/ConnectedApps';
 
 const IntegrationsSystem: React.FC = () => {
+  const { isDark } = useTheme();
 
   return (
     <div className="mb-10">
@@ -11,71 +13,100 @@ const IntegrationsSystem: React.FC = () => {
           <Grid3X3 className="h-6 w-6 text-white" />
         </div>
         <div>
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Integrations & System</h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <h2 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Integrations & System</h2>
+          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
             Connected apps and system settings
           </p>
         </div>
       </div>
 
-      {/* System Status Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white/5 dark:bg-white/5 border-white/10 dark:border-white/10 backdrop-blur-xl border rounded-2xl p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">API Status</h3>
-              <div className="text-sm text-green-600 dark:text-green-400">All systems operational</div>
+      {/* Connected Apps */}
+      <div className="mb-6">
+        <ConnectedApps />
+      </div>
+
+      {/* System Status */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6`}>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>System Status</h3>
+            <Settings className={`h-5 w-5 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
+          </div>
+          
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Database</span>
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Healthy</span>
             </div>
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+            <div className="flex items-center justify-between">
+              <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>API Services</span>
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Online</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Backup Status</span>
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Up to date</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Security</span>
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Secure</span>
+            </div>
           </div>
         </div>
-        
-        <div className="bg-white/5 dark:bg-white/5 border-white/10 dark:border-white/10 backdrop-blur-xl border rounded-2xl p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Data Sync</h3>
-              <div className="text-sm text-blue-600 dark:text-blue-400">Last sync: 5 min ago</div>
-            </div>
-            <Zap className="h-5 w-5 text-blue-600" />
+
+        <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6`}>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Security & Compliance</h3>
+            <Shield className={`h-5 w-5 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
           </div>
-        </div>
-        
-        <div className="bg-white/5 dark:bg-white/5 border-white/10 dark:border-white/10 backdrop-blur-xl border rounded-2xl p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Configuration</h3>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Ready for setup</div>
+          
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>SSL Certificate</span>
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Valid</span>
             </div>
-            <Settings className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <div className="flex items-center justify-between">
+              <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>2FA Enabled</span>
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Active</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>GDPR Compliance</span>
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Compliant</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Data Encryption</span>
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Enabled</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Connected Apps */}
-      <div className="mb-8">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Connected Applications</h3>
-        <ConnectedApps />
-      </div>
-      
-      {/* Environment Variables & Configuration */}
-      <div className="bg-white/5 dark:bg-white/5 border-white/10 dark:border-white/10 backdrop-blur-xl border rounded-2xl p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Environment Configuration</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-            <div className="text-sm font-medium text-gray-700 dark:text-gray-300">OpenAI API</div>
-            <div className="text-xs text-green-600 dark:text-green-400">✓ Connected</div>
+      {/* API Configuration */}
+      <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6 mt-6`}>
+        <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>API Configuration</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
+            <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>OpenAI API</h4>
+            <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Connected and operational</p>
+            <div className="mt-2">
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Active</span>
+            </div>
           </div>
-          <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-            <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Gemini API</div>
-            <div className="text-xs text-green-600 dark:text-green-400">✓ Connected</div>
+          
+          <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
+            <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Gemini API</h4>
+            <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Connected and operational</p>
+            <div className="mt-2">
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Active</span>
+            </div>
           </div>
-          <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-            <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Database</div>
-            <div className="text-xs text-green-600 dark:text-green-400">✓ Connected</div>
-          </div>
-          <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-            <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Email Service</div>
-            <div className="text-xs text-yellow-600 dark:text-yellow-400">⚠ Configuration needed</div>
+          
+          <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
+            <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Email Service</h4>
+            <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>SendGrid integration</p>
+            <div className="mt-2">
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Active</span>
+            </div>
           </div>
         </div>
       </div>
