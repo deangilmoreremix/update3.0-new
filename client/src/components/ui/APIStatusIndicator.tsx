@@ -1,138 +1,155 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, AlertCircle, Settings, Wifi, WifiOff, Brain, Sparkles, Zap, Bot } from 'lucide-react';
+import { CheckCircle, AlertCircle, XCircle, Loader2, Brain, Zap, Settings } from 'lucide-react';
+import { validateAPIConfig, isAIConfigured } from '../../config/apiConfig';
 
 export const APIStatusIndicator: React.FC = () => {
-  const [status, setStatus] = useState<{ configured: string[]; missing: string[] }>({ configured: [], missing: [] });
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [apiStatus, setApiStatus] = useState<{
+    configured: string[];
+    missing: string[];
+    isLoading: boolean;
+  }>({
+    configured: [],
+    missing: [],
+    isLoading: true
+  });
 
   useEffect(() => {
-    // Mock API status validation
-    const mockStatus = {
-      configured: ['Gemini AI', 'OpenAI'], 
-      missing: ['Anthropic Claude']
+    const checkAPIStatus = () => {
+      const { configured, missing } = validateAPIConfig();
+      setApiStatus({
+        configured,
+        missing,
+        isLoading: false
+      });
     };
-    setStatus(mockStatus);
+
+    checkAPIStatus();
+    
+    // Check API status every 30 seconds
+    const interval = setInterval(checkAPIStatus, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
-  const allConfigured = status.missing.length === 0;
-  const someConfigured = status.configured.length > 0;
+  const getStatusIcon = () => {
+    if (apiStatus.isLoading) {
+      return <Loader2 className="w-4 h-4 animate-spin text-blue-500" />;
+    }
+    
+    if (apiStatus.missing.length === 0) {
+      return <CheckCircle className="w-4 h-4 text-green-500" />;
+    }
+    
+    if (apiStatus.configured.length > 0) {
+      return <AlertCircle className="w-4 h-4 text-yellow-500" />;
+    }
+    
+    return <XCircle className="w-4 h-4 text-red-500" />;
+  };
+
+  const getStatusColor = () => {
+    if (apiStatus.isLoading) return 'border-blue-200 bg-blue-50';
+    if (apiStatus.missing.length === 0) return 'border-green-200 bg-green-50';
+    if (apiStatus.configured.length > 0) return 'border-yellow-200 bg-yellow-50';
+    return 'border-red-200 bg-red-50';
+  };
+
+  const getStatusText = () => {
+    if (apiStatus.isLoading) return 'Checking API status...';
+    if (apiStatus.missing.length === 0) return 'All AI services configured';
+    if (apiStatus.configured.length > 0) {
+      return `${apiStatus.configured.length} of ${apiStatus.configured.length + apiStatus.missing.length} services configured`;
+    }
+    return 'No AI services configured';
+  };
+
+  const getRouteInfo = () => {
+    if (!isAIConfigured()) {
+      return (
+        <div className="mt-2 text-xs text-gray-600">
+          <div className="flex items-center space-x-1 mb-1">
+            <Settings className="w-3 h-3" />
+            <span>Add API keys to enable AI features</span>
+          </div>
+          <div className="text-gray-500">
+            Go to Settings → API Configuration
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="mt-2 text-xs text-gray-600">
+        <div className="flex items-center space-x-1 mb-1">
+          <Brain className="w-3 h-3" />
+          <span>AI features available:</span>
+        </div>
+        <div className="grid grid-cols-2 gap-1 text-gray-500">
+          <div>• Content Generation</div>
+          <div>• Smart Analysis</div>
+          <div>• Contact Enrichment</div>
+          <div>• Deal Intelligence</div>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <div className="fixed bottom-4 left-4 z-50">
-      <div className="relative">
-        {/* Status Button */}
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className={`
-            flex items-center space-x-2 px-3 py-2 rounded-lg shadow-lg backdrop-blur-sm transition-all duration-200
-            ${allConfigured 
-              ? 'bg-green-100 text-green-700 border border-green-200' 
-              : someConfigured 
-              ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
-              : 'bg-red-100 text-red-700 border border-red-200'
-            }
-          `}
-        >
-          {allConfigured ? (
-            <Brain className="w-4 h-4" />
-          ) : someConfigured ? (
-            <AlertCircle className="w-4 h-4" />
-          ) : (
-            <WifiOff className="w-4 h-4" />
-          )}
-          <span className="text-sm font-medium">
-            Intelligent AI
-          </span>
-        </button>
-
-        {/* Expanded Status Panel */}
-        {isExpanded && (
-          <div className="absolute bottom-full left-0 mb-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 p-4 max-h-96 overflow-y-auto">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-gray-900 flex items-center">
-                <Bot className="w-4 h-4 mr-2" />
-                Intelligent AI System
-              </h3>
-              <button
-                onClick={() => setIsExpanded(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <XCircle className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* AI Intelligence Info */}
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 mb-4 border border-blue-200">
-              <h4 className="text-sm font-semibold text-blue-900 mb-2 flex items-center">
-                <Brain className="w-4 h-4 mr-1" />
-                🤖 Smart AI Routing
-              </h4>
-              <p className="text-xs text-blue-800 mb-2">
-                System automatically chooses the best AI model for each task:
-              </p>
-              <div className="grid grid-cols-1 gap-1 text-xs">
-                <div className="flex items-center space-x-2">
-                  <Brain className="w-3 h-3 text-blue-600" />
-                  <span><strong>Company Research:</strong> Gemini Pro</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Zap className="w-3 h-3 text-green-600" />
-                  <span><strong>Email Generation:</strong> OpenAI GPT-4o</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Sparkles className="w-3 h-3 text-purple-600" />
-                  <span><strong>Deal Analysis:</strong> Gemma 27B</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Model Categories */}
-            <div className="space-y-4">
-              {/* Gemini & Gemma Models */}
-              <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                  <Brain className="w-4 h-4 mr-1" />
-                  Google AI Models
-                </h4>
-                <div className="space-y-2 ml-5">
-                  {status.configured.includes('Gemini AI') ? (
-                    <div className="text-sm text-green-600 mb-2">
-                      <CheckCircle className="w-3 h-3 inline mr-1" />
-                      <span className="font-medium">✅ Active & Auto-Routing</span>
-                    </div>
-                  ) : (
-                    <div className="text-sm text-red-600 mb-2">
-                      <XCircle className="w-3 h-3 inline mr-1" />
-                      <span className="font-medium">❌ Not Configured</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* OpenAI Models */}
-              <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                  <Zap className="w-4 h-4 mr-1" />
-                  OpenAI Models
-                </h4>
-                <div className="space-y-2 ml-5">
-                  {status.configured.includes('OpenAI') ? (
-                    <div className="text-sm text-green-600 mb-2">
-                      <CheckCircle className="w-3 h-3 inline mr-1" />
-                      <span className="font-medium">✅ Active & Auto-Routing</span>
-                    </div>
-                  ) : (
-                    <div className="text-sm text-red-600 mb-2">
-                      <XCircle className="w-3 h-3 inline mr-1" />
-                      <span className="font-medium">❌ Not Configured</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+    <div className={`rounded-lg border p-3 transition-all duration-200 ${getStatusColor()}`}>
+      <div className="flex items-center space-x-2">
+        {getStatusIcon()}
+        <div className="flex-1">
+          <div className="text-sm font-medium text-gray-900">
+            AI Services Status
           </div>
-        )}
+          <div className="text-xs text-gray-600">
+            {getStatusText()}
+          </div>
+        </div>
+        <Zap className="w-4 h-4 text-gray-400" />
       </div>
+
+      {/* Configured Services */}
+      {apiStatus.configured.length > 0 && (
+        <div className="mt-2">
+          <div className="text-xs font-medium text-gray-700 mb-1">
+            Configured:
+          </div>
+          <div className="flex flex-wrap gap-1">
+            {apiStatus.configured.map((service) => (
+              <span
+                key={service}
+                className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-green-100 text-green-800"
+              >
+                <CheckCircle className="w-3 h-3 mr-1" />
+                {service}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Missing Services */}
+      {apiStatus.missing.length > 0 && (
+        <div className="mt-2">
+          <div className="text-xs font-medium text-gray-700 mb-1">
+            Missing:
+          </div>
+          <div className="flex flex-wrap gap-1">
+            {apiStatus.missing.map((service) => (
+              <span
+                key={service}
+                className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-red-100 text-red-800"
+              >
+                <XCircle className="w-3 h-3 mr-1" />
+                {service}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {getRouteInfo()}
     </div>
   );
 };

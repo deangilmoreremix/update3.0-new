@@ -1,18 +1,40 @@
 import React, { useState } from 'react';
 import { Deal } from '../../types';
-import DealAgentButtons from './DealAgentButtons';
+import { AvatarWithStatus } from '../ui/AvatarWithStatus';
+import { CustomizableAIToolbar } from '../ui/CustomizableAIToolbar';
 import { 
-  Building2, 
-  Calendar, 
   DollarSign, 
-  Star, 
-  StarOff, 
-  TrendingUp, 
-  Zap, 
-  Target,
+  Edit, 
+  MoreHorizontal, 
+  Mail, 
+  Phone, 
+  User, 
+  BarChart, 
+  ThumbsUp, 
+  ThumbsDown,
   ExternalLink,
-  Users,
-  Activity
+  Star,
+  UserPlus,
+  Crown,
+  Target,
+  Zap,
+  Brain,
+  Loader2,
+  Sparkles,
+  Heart,
+  Camera,
+  Wand2,
+  Database,
+  Globe,
+  Plus,
+  Search,
+  ArrowRight,
+  Activity,
+  Calendar,
+  CheckCircle,
+  AlertCircle,
+  TrendingUp,
+  Clock
 } from 'lucide-react';
 
 interface AIEnhancedDealCardProps {
@@ -28,6 +50,27 @@ interface AIEnhancedDealCardProps {
   onFindNewImage?: (deal: Deal) => Promise<void>;
 }
 
+const stageColors: { [key: string]: string } = {
+  'Qualification': 'bg-blue-500',
+  'Proposal': 'bg-yellow-500',
+  'Negotiation': 'bg-orange-500',
+  'Closed Won': 'bg-green-500',
+  'Closed Lost': 'bg-red-500'
+};
+
+const priorityColors: { [key: string]: string } = {
+  'High': 'bg-red-500',
+  'Medium': 'bg-yellow-500',
+  'Low': 'bg-blue-500'
+};
+
+const getScoreColor = (score: number) => {
+  if (score >= 80) return 'bg-green-500';
+  if (score >= 60) return 'bg-blue-500';
+  if (score >= 40) return 'bg-yellow-500';
+  return 'bg-red-500';
+};
+
 export const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
   deal,
   isSelected = false,
@@ -40,269 +83,316 @@ export const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
   onToggleFavorite,
   onFindNewImage
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [imageError, setImageError] = useState(false);
+  const [localAnalyzing, setLocalAnalyzing] = useState(false);
+  const [localEnriching, setLocalEnriching] = useState(false);
+  const [isFinding, setIsFinding] = useState(false);
+  
+  // Track last enrichment (mock data if not provided)
+  const [lastEnrichment, setLastEnrichment] = useState<any>(
+    deal.aiScore ? { confidence: deal.aiScore } : null
+  );
 
-  const formatCurrency = (amount: number) => {
+  const handleCardClick = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('button') || (e.target as HTMLElement).closest('input') || (e.target as HTMLElement).closest('a')) {
+      return;
+    }
+    onClick();
+  };
+
+  const handleAnalyzeClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!onAnalyze || isAnalyzing || localAnalyzing) return;
+    
+    setLocalAnalyzing(true);
+    try {
+      await onAnalyze(deal);
+      setLastEnrichment({ 
+        confidence: Math.max(deal.aiScore || 0, 75),
+        aiProvider: 'Hybrid AI (GPT-4o + Gemini)',
+        timestamp: new Date()
+      });
+    } catch (error) {
+      console.error('Analysis failed:', error);
+    } finally {
+      setLocalAnalyzing(false);
+    }
+  };
+  
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!onToggleFavorite) return;
+    
+    try {
+      await onToggleFavorite(deal);
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error);
+    }
+  };
+  
+  const handleFindImageClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!onFindNewImage || isFinding) return;
+    
+    setIsFinding(true);
+    try {
+      await onFindNewImage(deal);
+    } catch (error) {
+      console.error('Failed to find new image:', error);
+    } finally {
+      setIsFinding(false);
+    }
+  };
+
+  const handleAIEnrichClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!onAIEnrich || localEnriching) return;
+    
+    setLocalEnriching(true);
+    try {
+      await onAIEnrich(deal);
+      setLastEnrichment({ 
+        confidence: Math.min((deal.aiScore || 0) + 10, 95),
+        aiProvider: 'OpenAI GPT-4o',
+        timestamp: new Date()
+      });
+    } catch (error) {
+      console.error('Enrichment failed:', error);
+    } finally {
+      setLocalEnriching(false);
+    }
+  };
+
+  const analyzing = isAnalyzing || localAnalyzing;
+
+  const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(amount);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'text-red-600 bg-red-50';
-      case 'medium': return 'text-yellow-600 bg-yellow-50';
-      case 'low': return 'text-green-600 bg-green-50';
-      default: return 'text-gray-600 bg-gray-50';
-    }
-  };
-
-  const getStageColor = (stage: string) => {
-    switch (stage) {
-      case 'discovery': return 'bg-blue-500';
-      case 'qualification': return 'bg-yellow-500';
-      case 'proposal': return 'bg-purple-500';
-      case 'negotiation': return 'bg-orange-500';
-      case 'closed-won': return 'bg-green-500';
-      case 'closed-lost': return 'bg-red-500';
-      default: return 'bg-gray-500';
-    }
-  };
-
-  const handleAnalyze = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onAnalyze) {
-      await onAnalyze(deal);
-    }
-  };
-
-  const handleAIEnrich = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onAIEnrich) {
-      await onAIEnrich(deal);
-    }
-  };
-
-  const handleToggleFavorite = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onToggleFavorite) {
-      await onToggleFavorite(deal);
-    }
-  };
-
-  const handleFindNewImage = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onFindNewImage) {
-      await onFindNewImage(deal);
-    }
+    }).format(value);
   };
 
   return (
     <div
-      className={`
-        relative bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700
-        hover:shadow-md transition-all duration-200 cursor-pointer
-        ${isSelected ? 'ring-2 ring-blue-500 border-blue-500' : ''}
-        ${isHovered ? 'transform scale-[1.02]' : ''}
-      `}
-      onClick={onClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleCardClick}
+      className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group relative border border-gray-200 hover:border-gray-300 overflow-hidden"
     >
-      {/* Header with Priority and Stage */}
-      <div className="flex items-center justify-between p-4 pb-2">
-        <div className="flex items-center space-x-2">
-          <div className={`w-2 h-2 rounded-full ${getStageColor(deal.stage)}`} />
-          <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(deal.priority)}`}>
-            {deal.priority}
-          </span>
+      {/* Selection Checkbox */}
+      {onSelect && (
+        <div className="absolute top-4 left-4 z-10">
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={(e) => {
+              e.stopPropagation();
+              onSelect();
+            }}
+            className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 bg-white border-gray-300"
+          />
         </div>
-        
-        <div className="flex items-center space-x-1">
-          {deal.probability && (
-            <div className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-400">
-              <TrendingUp className="w-3 h-3" />
-              <span>{deal.probability}%</span>
-            </div>
-          )}
-          
-          <button
-            onClick={handleToggleFavorite}
-            className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+      )}
+
+      {/* Header Actions */}
+      <div className="absolute top-4 right-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+        {/* AI Analysis Button */}
+        {showAnalyzeButton && onAnalyze && (
+          <button 
+            onClick={handleAnalyzeClick}
+            disabled={analyzing}
+            className={`p-2 rounded-lg transition-all duration-200 relative ${
+              deal.aiScore 
+                ? 'bg-purple-100 text-purple-600 hover:bg-purple-200' 
+                : 'bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 shadow-lg'
+            }`}
+            title={deal.aiScore ? 'Re-analyze with AI' : 'Analyze with AI'}
           >
-            {deal.isFavorite ? (
-              <Star className="w-4 h-4 text-yellow-500 fill-current" />
+            {analyzing ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <StarOff className="w-4 h-4 text-gray-400 hover:text-yellow-500" />
+              <Brain className="w-4 h-4" />
+            )}
+            {!deal.aiScore && !analyzing && (
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
             )}
           </button>
-        </div>
+        )}
+        
+        {/* AI Enrich Button */}
+        {onAIEnrich && (
+          <button 
+            onClick={handleAIEnrichClick}
+            disabled={localEnriching}
+            className="p-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:from-green-600 hover:to-blue-600 transition-colors shadow-lg"
+            title="AI Enrich Deal"
+          >
+            {localEnriching ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Sparkles className="w-4 h-4" />
+            )}
+          </button>
+        )}
+        
+        {/* Favorite Button */}
+        {onToggleFavorite && (
+          <button
+            onClick={handleFavoriteClick}
+            className={`p-2 rounded-lg transition-colors ${
+              deal.isFavorite 
+                ? 'text-red-500 hover:bg-red-50' 
+                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+            }`}
+            title={deal.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            <Heart className={`w-4 h-4 ${deal.isFavorite ? 'fill-current' : ''}`} />
+          </button>
+        )}
+        
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            // Handle edit action
+          }}
+          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            // Handle more actions
+          }}
+          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <MoreHorizontal className="w-4 h-4" />
+        </button>
       </div>
 
-      {/* Main Content */}
-      <div className="px-4 pb-4">
-        {/* Title */}
-        <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-2 line-clamp-2">
-          {deal.title}
-        </h3>
+      <div className="p-6">
+        {/* Company Logo and AI Score Section */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="text-center flex-1">
+            <div className="relative inline-block mb-3">
+              {/* Company Avatar */}
+              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                {deal.company.charAt(0)}
+              </div>
+              
+              {/* Analysis Loading Indicator */}
+              {analyzing && (
+                <div className="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center">
+                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
+              
+              {/* Favorite Badge */}
+              {deal.isFavorite && (
+                <div className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg ring-2 ring-white">
+                  <Heart className="w-2.5 h-2.5" />
+                </div>
+              )}
+              
+              {/* AI Enhancement Indicator */}
+              {lastEnrichment && (
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-4 w-4 rounded-full bg-purple-500 text-white flex items-center justify-center shadow-lg ring-2 ring-white">
+                  <Sparkles className="w-2 h-2" />
+                </div>
+              )}
+              
+              {/* AI Image Search Button */}
+              {onFindNewImage && (
+                <button 
+                  onClick={handleFindImageClick}
+                  disabled={isFinding}
+                  className="absolute -bottom-1 -right-1 p-1.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full hover:from-purple-700 hover:to-blue-700 transition-colors shadow-lg relative"
+                >
+                  {isFinding ? (
+                    <div className="animate-spin w-3 h-3 border border-white border-t-transparent rounded-full" />
+                  ) : (
+                    <Camera className="w-3 h-3" />
+                  )}
+                </button>
+              )}
+            </div>
+            <h3 className="text-gray-900 font-semibold text-lg mb-1 group-hover:text-blue-600 transition-colors">{deal.title}</h3>
+            <p className="text-gray-600 text-sm">{deal.company}</p>
+            <p className="text-gray-500 text-xs">{deal.contact}</p>
+          </div>
 
-        {/* Company and Contact Info */}
-        <div className="flex items-center space-x-3 mb-3">
-          <div className="flex items-center space-x-2">
-            {deal.companyAvatar && !imageError ? (
-              <img
-                src={deal.companyAvatar}
-                alt={deal.company}
-                className="w-8 h-8 rounded-full object-cover"
-                onError={() => setImageError(true)}
-              />
-            ) : (
-              <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                <Building2 className="w-4 h-4 text-gray-500" />
+          {/* AI Score */}
+          {deal.aiScore && (
+            <div className="text-center">
+              <div className={`w-12 h-12 rounded-full text-white flex items-center justify-center text-sm font-bold ${getScoreColor(deal.aiScore)}`}>
+                {deal.aiScore}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">AI Score</p>
+            </div>
+          )}
+        </div>
+
+        {/* Deal Info & Stats */}
+        <div className="space-y-3">
+          {/* Value and Stage */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <DollarSign className="w-4 h-4 text-green-600 mr-1" />
+              <span className="text-lg font-bold text-gray-900">{formatCurrency(deal.value)}</span>
+            </div>
+            <span className={`px-2 py-1 rounded-full text-xs font-medium text-white ${stageColors[deal.stage] || 'bg-gray-500'}`}>
+              {deal.stage}
+            </span>
+          </div>
+
+          {/* Priority and Probability */}
+          <div className="flex items-center justify-between">
+            <span className={`px-2 py-1 rounded-full text-xs font-medium text-white ${priorityColors[deal.priority] || 'bg-gray-500'}`}>
+              {deal.priority} Priority
+            </span>
+            {deal.probability && (
+              <div className="flex items-center">
+                <TrendingUp className="w-4 h-4 text-blue-600 mr-1" />
+                <span className="text-sm text-gray-600">{deal.probability}%</span>
               </div>
             )}
-            
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                {deal.company}
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                {deal.contact}
-              </p>
+          </div>
+
+          {/* Due Date */}
+          {deal.dueDate && (
+            <div className="flex items-center">
+              <Calendar className="w-4 h-4 text-gray-500 mr-2" />
+              <span className="text-sm text-gray-600">Due: {new Date(deal.dueDate).toLocaleDateString()}</span>
             </div>
-          </div>
-        </div>
-
-        {/* Value and Due Date */}
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center space-x-1">
-            <DollarSign className="w-4 h-4 text-green-600" />
-            <span className="font-semibold text-green-600">
-              {formatCurrency(deal.value)}
-            </span>
-          </div>
-          
-          <div className="flex items-center space-x-1 text-sm text-gray-500 dark:text-gray-400">
-            <Calendar className="w-4 h-4" />
-            <span>{formatDate(deal.expectedCloseDate)}</span>
-          </div>
-        </div>
-
-        {/* Tags */}
-        {deal.tags && deal.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-3">
-            {deal.tags.slice(0, 3).map((tag, index) => (
-              <span
-                key={index}
-                className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full"
-              >
-                {tag}
-              </span>
-            ))}
-            {deal.tags.length > 3 && (
-              <span className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full">
-                +{deal.tags.length - 3}
-              </span>
-            )}
-          </div>
-        )}
-
-        {/* AI Enrichment Info */}
-        {deal.lastEnrichment && (
-          <div className="mb-3 p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-            <div className="flex items-center space-x-2 text-xs text-purple-700 dark:text-purple-300">
-              <Zap className="w-3 h-3" />
-              <span>AI Enriched - {deal.lastEnrichment.confidence}% confidence</span>
-            </div>
-            <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">
-              {deal.lastEnrichment.aiProvider}
-            </p>
-          </div>
-        )}
-
-        {/* Action Buttons */}
-        <div className="flex items-center space-x-2 mt-4">
-          {showAnalyzeButton && onAnalyze && (
-            <button
-              onClick={handleAnalyze}
-              disabled={isAnalyzing}
-              className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors disabled:opacity-50"
-            >
-              <Target className="w-4 h-4" />
-              <span className="text-sm font-medium">
-                {isAnalyzing ? 'Analyzing...' : 'Analyze'}
-              </span>
-            </button>
           )}
-          
-          {onAIEnrich && (
-            <button
-              onClick={handleAIEnrich}
-              className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
-            >
-              <Zap className="w-4 h-4" />
-              <span className="text-sm font-medium">Enrich</span>
-            </button>
-          )}
-        </div>
 
-        {/* AI Agents Section */}
-        <div className="mt-3">
-          <DealAgentButtons deal={deal} />
-        </div>
-
-        {/* Social Profiles */}
-        {deal.socialProfiles && (
-          <div className="flex items-center space-x-2 mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-            {deal.socialProfiles.linkedin && (
-              <a
-                href={deal.socialProfiles.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="p-1 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
-              >
-                <ExternalLink className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              </a>
-            )}
-            {deal.socialProfiles.website && (
-              <a
-                href={deal.socialProfiles.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="p-1 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-              >
-                <ExternalLink className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-              </a>
+          {/* Contact Actions */}
+          <div className="flex items-center space-x-2">
+            {deal.contact && (
+              <>
+                <button className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors">
+                  <Mail className="w-4 h-4" />
+                </button>
+                <button className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors">
+                  <Phone className="w-4 h-4" />
+                </button>
+              </>
             )}
           </div>
-        )}
 
-        {/* Last Activity */}
-        {deal.lastActivity && (
-          <div className="flex items-center space-x-2 mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-            <Activity className="w-4 h-4 text-gray-500" />
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              {deal.lastActivity}
-            </span>
+          {/* AI Toolbar */}
+          <div className="pt-3 border-t border-gray-100">
+            <CustomizableAIToolbar
+              entityType="deal"
+              entityId={deal.id}
+              entityData={deal}
+              location="deal-card"
+              layout="row"
+              size="sm"
+              showCustomizeButton={false}
+            />
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
 };
-
-export default AIEnhancedDealCard;

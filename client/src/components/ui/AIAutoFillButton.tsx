@@ -9,18 +9,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
-
-interface ContactEnrichmentData {
-  name?: string;
-  email?: string;
-  company?: string;
-  title?: string;
-  phone?: string;
-  linkedinUrl?: string;
-  website?: string;
-  industry?: string;
-  confidence?: number;
-}
+import { aiEnrichmentService, ContactEnrichmentData } from '../../services/aiEnrichmentService';
 
 interface AIAutoFillButtonProps {
   formData: any;
@@ -72,18 +61,8 @@ export const AIAutoFillButton: React.FC<AIAutoFillButtonProps> = ({
         throw new Error('Please provide at least a name or email to auto-fill');
       }
 
-      // Simulate AI enrichment service
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock enriched data based on what we have
-      const enrichedData: ContactEnrichmentData = {
-        ...searchData,
-        confidence: 85,
-        title: searchData.name?.includes('John') ? 'Senior Developer' : 'Marketing Manager',
-        industry: 'Technology',
-        phone: '+1-555-0123',
-        website: 'https://company.com'
-      };
+      // Use the AI enrichment service
+      const enrichedData = await aiEnrichmentService.enrichContact(searchData);
 
       if (enrichedData && enrichedData.confidence && enrichedData.confidence > 0) {
         onAutoFill(enrichedData);
@@ -172,3 +151,5 @@ export const AIAutoFillButton: React.FC<AIAutoFillButtonProps> = ({
     </button>
   );
 };
+
+export default AIAutoFillButton;

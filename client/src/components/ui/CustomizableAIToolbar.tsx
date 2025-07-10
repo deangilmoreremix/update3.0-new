@@ -1,449 +1,247 @@
 import React, { useState } from 'react';
-import {
+import { 
+  BarChart3, 
+  Mail, 
+  TrendingUp, 
+  AlertTriangle, 
+  Navigation, 
+  FileText, 
+  Send, 
+  Calendar, 
+  DollarSign, 
+  Heart, 
+  UserPlus, 
+  Search, 
+  BarChart, 
+  Zap, 
+  Clock, 
+  GitBranch, 
+  PenTool, 
+  Video, 
+  FileSearch, 
+  Package, 
+  Settings, 
+  Plus,
   Brain,
-  Sparkles,
-  Mail,
+  Target,
   Phone,
   MessageSquare,
-  FileText,
-  BarChart3,
-  Search,
-  Target,
-  Zap,
-  Settings,
-  Plus,
-  ChevronDown,
-  ChevronRight,
-  User,
-  Building,
-  DollarSign,
-  Calendar,
+  Wand2,
+  Database,
   Globe,
+  ArrowRight,
+  Activity,
+  CheckCircle,
+  AlertCircle,
+  Sparkles,
   Linkedin,
   Twitter,
   Facebook,
-  Instagram,
-  Youtube,
-  TrendingUp,
-  Clock,
-  Star,
-  Eye,
-  Edit,
-  Share,
-  Download,
-  Copy,
-  ExternalLink,
-  Briefcase,
-  Users,
-  Database,
-  Shield,
-  Layers,
-  Mic,
-  Video,
-  Camera,
-  Headphones,
-  Activity,
-  AlertCircle,
-  CheckCircle,
-  Info,
-  HelpCircle,
-  ArrowRight,
-  Filter,
-  SortAsc,
-  Refresh,
-  Bookmark,
-  Tag,
-  Hash,
-  AtSign,
-  Link,
-  Folder,
-  Archive,
-  Trash,
-  MoreHorizontal
+  Instagram
 } from 'lucide-react';
 
-interface CustomizableAIToolbarProps {
+interface QuickAIButtonProps {
+  icon: React.ComponentType<any>;
+  label: string;
+  toolName: string;
+  entityType: string;
   entityId: string;
-  entityType: 'contact' | 'deal' | 'company' | 'task';
-  entity?: any;
-  size?: 'sm' | 'md' | 'lg';
-  variant?: 'compact' | 'expanded' | 'grid';
-  showLabels?: boolean;
-  maxVisible?: number;
-  onToolClick?: (toolId: string, entity: any) => void;
+  entityData: any;
+  size?: 'sm' | 'md';
+  variant?: 'primary' | 'secondary';
+  className?: string;
+  onClick?: () => void;
 }
 
-interface AITool {
-  id: string;
-  name: string;
-  icon: React.ComponentType<{ className?: string }>;
-  color: string;
-  bgColor: string;
-  category: 'analysis' | 'communication' | 'automation' | 'research' | 'content';
-  description?: string;
-  isQuickAction?: boolean;
-  entityTypes: string[];
+interface CustomizableAIToolbarProps {
+  entityType: string;
+  entityId: string;
+  entityData: any;
+  location: string;
+  layout: 'grid' | 'row';
+  size: 'sm' | 'md';
+  showCustomizeButton?: boolean;
 }
 
-const aiTools: AITool[] = [
-  // Analysis Tools
-  {
-    id: 'ai-analysis',
-    name: 'AI Goals',
-    icon: Brain,
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-100 hover:bg-purple-200',
-    category: 'analysis',
-    description: 'AI-powered goal execution',
-    isQuickAction: true,
-    entityTypes: ['contact', 'deal', 'company', 'task']
-  },
-  {
-    id: 'sentiment-analysis',
-    name: 'Sentiment',
-    icon: TrendingUp,
-    color: 'text-green-600',
-    bgColor: 'bg-green-100 hover:bg-green-200',
-    category: 'analysis',
-    description: 'Analyze sentiment and mood',
-    entityTypes: ['contact', 'deal', 'task']
-  },
-  {
-    id: 'risk-assessment',
-    name: 'Risk Score',
-    icon: Shield,
-    color: 'text-red-600',
-    bgColor: 'bg-red-100 hover:bg-red-200',
-    category: 'analysis',
-    description: 'Calculate risk factors',
-    entityTypes: ['contact', 'deal', 'company']
-  },
+const iconMap: Record<string, React.ComponentType<any>> = {
+  BarChart3,
+  Mail,
+  TrendingUp,
+  AlertTriangle,
+  Navigation,
+  FileText,
+  Send,
+  Calendar,
+  DollarSign,
+  Heart,
+  UserPlus,
+  Search,
+  BarChart,
+  Zap,
+  Clock,
+  GitBranch,
+  PenTool,
+  Video,
+  FileSearch,
+  Package,
+  Settings,
+  Plus,
+  Brain,
+  Target,
+  Phone,
+  MessageSquare,
+  Wand2,
+  Database,
+  Globe,
+  ArrowRight,
+  Activity,
+  CheckCircle,
+  AlertCircle,
+  Sparkles
+};
 
-  // Communication Tools
-  {
-    id: 'email-composer',
-    name: 'Smart Email',
-    icon: Mail,
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-100 hover:bg-blue-200',
-    category: 'communication',
-    description: 'AI-generated emails',
-    isQuickAction: true,
-    entityTypes: ['contact', 'deal', 'company']
-  },
-  {
-    id: 'call-script',
-    name: 'Call Script',
-    icon: Phone,
-    color: 'text-green-600',
-    bgColor: 'bg-green-100 hover:bg-green-200',
-    category: 'communication',
-    description: 'Generate call scripts',
-    entityTypes: ['contact', 'deal']
-  },
-  {
-    id: 'social-message',
-    name: 'Social Reach',
-    icon: MessageSquare,
-    color: 'text-indigo-600',
-    bgColor: 'bg-indigo-100 hover:bg-indigo-200',
-    category: 'communication',
-    description: 'Social media outreach',
-    entityTypes: ['contact', 'company']
-  },
+const toolMapping: Record<string, string> = {
+  'leadScoring': 'business-analyzer',
+  'emailPersonalization': 'email-composer', 
+  'contactEnrichment': 'smart-search',
+  'dealRiskAssessment': 'business-analyzer',
+  'nextBestAction': 'business-analyzer',
+  'proposalGeneration': 'proposal-generator',
+  'businessIntelligence': 'smart-search',
+  'companyHealthScoring': 'business-analyzer',
+  'opportunityIdentification': 'business-analyzer'
+};
 
-  // Research Tools
-  {
-    id: 'company-research',
-    name: 'Research',
-    icon: Search,
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-100 hover:bg-purple-200',
-    category: 'research',
-    description: 'Deep company research',
-    isQuickAction: true,
-    entityTypes: ['contact', 'deal', 'company']
-  },
-  {
-    id: 'competitor-analysis',
-    name: 'Competitors',
-    icon: BarChart3,
-    color: 'text-orange-600',
-    bgColor: 'bg-orange-100 hover:bg-orange-200',
-    category: 'research',
-    description: 'Competitive analysis',
-    entityTypes: ['company', 'deal']
-  },
-  {
-    id: 'news-monitoring',
-    name: 'News Watch',
-    icon: Globe,
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-100 hover:bg-blue-200',
-    category: 'research',
-    description: 'Monitor news and updates',
-    entityTypes: ['contact', 'company']
-  },
-
-  // Content Tools
-  {
-    id: 'proposal-generator',
-    name: 'Proposal',
-    icon: FileText,
-    color: 'text-green-600',
-    bgColor: 'bg-green-100 hover:bg-green-200',
-    category: 'content',
-    description: 'Generate proposals',
-    entityTypes: ['deal', 'company']
-  },
-  {
-    id: 'pitch-deck',
-    name: 'Pitch Deck',
-    icon: Layers,
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-100 hover:bg-purple-200',
-    category: 'content',
-    description: 'Create pitch presentations',
-    entityTypes: ['deal', 'company']
-  },
-
-  // Automation Tools
-  {
-    id: 'follow-up-sequence',
-    name: 'Follow-up',
-    icon: Clock,
-    color: 'text-yellow-600',
-    bgColor: 'bg-yellow-100 hover:bg-yellow-200',
-    category: 'automation',
-    description: 'Automated follow-ups',
-    entityTypes: ['contact', 'deal']
-  },
-  {
-    id: 'task-automation',
-    name: 'Auto Tasks',
-    icon: Zap,
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-100 hover:bg-purple-200',
-    category: 'automation',
-    description: 'Automate routine tasks',
-    entityTypes: ['contact', 'deal', 'task']
-  }
+const defaultQuickActions = [
+  { icon: 'BarChart3', label: 'Lead Score', toolName: 'leadScoring', variant: 'primary' },
+  { icon: 'Mail', label: 'Email AI', toolName: 'emailPersonalization', variant: 'secondary' },
+  { icon: 'Search', label: 'Enrich', toolName: 'contactEnrichment', variant: 'secondary' },
+  { icon: 'TrendingUp', label: 'Insights', toolName: 'businessIntelligence', variant: 'secondary' }
 ];
 
-export const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
-  entityId,
+const QuickAIButton: React.FC<QuickAIButtonProps> = ({
+  icon: IconComponent,
+  label,
+  toolName,
   entityType,
-  entity,
-  size = 'md',
-  variant = 'compact',
-  showLabels = true,
-  maxVisible = 6,
-  onToolClick
+  entityId,
+  entityData,
+  size = 'sm',
+  variant = 'secondary',
+  className = '',
+  onClick
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [showAllCategories, setShowAllCategories] = useState(false);
-
-  // Filter tools based on entity type
-  const availableTools = aiTools.filter(tool => 
-    tool.entityTypes.includes(entityType)
-  );
-
-  // Get quick action tools
-  const quickTools = availableTools.filter(tool => tool.isQuickAction);
-  const otherTools = availableTools.filter(tool => !tool.isQuickAction);
-
-  // Tools to show based on variant and maxVisible
-  const visibleTools = variant === 'expanded' 
-    ? availableTools 
-    : quickTools.slice(0, maxVisible);
-  
-  const hiddenTools = variant === 'expanded' 
-    ? [] 
-    : availableTools.slice(maxVisible);
-
-  const handleToolClick = (tool: AITool) => {
-    console.log(`AI Tool clicked: ${tool.name} for ${entityType} ${entityId}`);
-    
-    // Handle AI Goals navigation
-    if (tool.id === 'ai-analysis' && entity) {
-      // Store context for AI Goals page
-      sessionStorage.setItem('aiGoalsContext', JSON.stringify({
-        entityType,
-        entityId,
-        entityData: entity,
-        suggestedCategories: getCategoriesForEntity(entityType)
-      }));
-      
-      // Navigate to AI Goals page
-      window.location.href = '/ai-goals';
-      return;
-    }
-    
-    if (onToolClick) {
-      onToolClick(tool.id, entity);
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      // Handle AI tool execution
+      console.log(`Executing ${toolName} for ${entityType} ${entityId}`, entityData);
     }
   };
 
-  const getCategoriesForEntity = (type: string): string[] => {
-    switch (type) {
-      case 'contact':
-        return ['Contact Research', 'Email Outreach', 'Lead Scoring'];
-      case 'deal':
-        return ['Deal Analysis', 'Proposal Generation', 'Revenue Forecasting'];
-      case 'company':
-        return ['Company Research', 'Competitive Analysis', 'Market Intelligence'];
-      case 'task':
-        return ['Task Automation', 'Priority Scoring', 'Workflow Optimization'];
-      default:
-        return ['AI Analysis', 'Smart Automation', 'Intelligence Gathering'];
-    }
-  };
-
-  // Size classes
-  const sizeClasses = {
-    sm: {
-      button: 'p-1.5',
-      icon: 'w-3 h-3',
-      text: 'text-xs',
-      grid: 'grid-cols-4 gap-1'
-    },
-    md: {
-      button: 'p-2',
-      icon: 'w-4 h-4',
-      text: 'text-sm',
-      grid: 'grid-cols-3 gap-2'
-    },
-    lg: {
-      button: 'p-3',
-      icon: 'w-5 h-5',
-      text: 'text-base',
-      grid: 'grid-cols-2 gap-3'
-    }
-  };
-
-  if (variant === 'grid') {
-    return (
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-medium text-gray-900 flex items-center">
-            <Sparkles className="w-4 h-4 mr-2 text-purple-500" />
-            AI Tools
-          </h3>
-          <button
-            onClick={() => setShowAllCategories(!showAllCategories)}
-            className="text-sm text-gray-500 hover:text-gray-700 flex items-center"
-          >
-            {showAllCategories ? 'Show Less' : 'Show All'}
-            <ChevronDown className={`w-3 h-3 ml-1 transition-transform ${showAllCategories ? 'rotate-180' : ''}`} />
-          </button>
-        </div>
-
-        <div className={`grid ${sizeClasses[size].grid}`}>
-          {(showAllCategories ? availableTools : visibleTools).map((tool) => {
-            const IconComponent = tool.icon;
-            return (
-              <button
-                key={tool.id}
-                onClick={() => handleToolClick(tool)}
-                className={`
-                  ${sizeClasses[size].button} ${tool.bgColor} 
-                  rounded-lg transition-all duration-200 
-                  flex flex-col items-center justify-center
-                  hover:scale-105 active:scale-95
-                  border border-transparent hover:border-gray-300
-                `}
-                title={tool.description}
-              >
-                <IconComponent className={`${sizeClasses[size].icon} ${tool.color} mb-1`} />
-                {showLabels && (
-                  <span className={`${sizeClasses[size].text} ${tool.color} font-medium text-center`}>
-                    {tool.name}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
+  const sizeClasses = size === 'sm' ? 'p-2 text-xs' : 'p-3 text-sm';
+  const variantClasses = variant === 'primary' 
+    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700' 
+    : 'bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 hover:from-gray-100 hover:to-gray-200';
 
   return (
-    <div className="flex items-center space-x-1">
-      {/* Visible Tools */}
-      {visibleTools.map((tool) => {
-        const IconComponent = tool.icon;
-        return (
-          <button
-            key={tool.id}
-            onClick={() => handleToolClick(tool)}
-            className={`
-              ${sizeClasses[size].button} ${tool.bgColor} 
-              rounded-lg transition-all duration-200 
-              flex items-center space-x-1
-              hover:scale-105 active:scale-95
-            `}
-            title={tool.description}
-          >
-            <IconComponent className={`${sizeClasses[size].icon} ${tool.color}`} />
-            {showLabels && size !== 'sm' && (
-              <span className={`${sizeClasses[size].text} ${tool.color} font-medium whitespace-nowrap`}>
-                {tool.name}
-              </span>
-            )}
-          </button>
-        );
-      })}
+    <button
+      onClick={handleClick}
+      className={`
+        ${sizeClasses} 
+        ${variantClasses}
+        rounded-lg transition-all duration-200 shadow-sm border border-gray-200
+        flex items-center space-x-1 font-medium
+        ${className}
+      `}
+      title={`${label} for ${entityType}`}
+    >
+      <IconComponent className="w-3 h-3" />
+      <span>{label}</span>
+    </button>
+  );
+};
 
-      {/* More Tools Button */}
-      {hiddenTools.length > 0 && (
-        <div className="relative">
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className={`
-              ${sizeClasses[size].button} 
-              bg-gray-100 hover:bg-gray-200 
-              rounded-lg transition-all duration-200 
-              flex items-center space-x-1
-            `}
-            title="More AI Tools"
-          >
-            <MoreHorizontal className={`${sizeClasses[size].icon} text-gray-600`} />
-            {showLabels && size !== 'sm' && (
-              <span className={`${sizeClasses[size].text} text-gray-600 font-medium`}>
-                +{hiddenTools.length}
-              </span>
-            )}
-          </button>
+export const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
+  entityType,
+  entityId,
+  entityData,
+  location,
+  layout,
+  size,
+  showCustomizeButton = true
+}) => {
+  const [isCustomizing, setIsCustomizing] = useState(false);
 
-          {/* Expanded Menu */}
-          {isExpanded && (
-            <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-20 min-w-48">
-              {hiddenTools.map((tool) => {
-                const IconComponent = tool.icon;
-                return (
-                  <button
-                    key={tool.id}
-                    onClick={() => {
-                      handleToolClick(tool);
-                      setIsExpanded(false);
-                    }}
-                    className="w-full flex items-center space-x-3 px-4 py-2 hover:bg-gray-50 transition-colors text-left"
-                  >
-                    <div className={`p-1.5 ${tool.bgColor} rounded`}>
-                      <IconComponent className={`w-3 h-3 ${tool.color}`} />
-                    </div>
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">{tool.name}</div>
-                      {tool.description && (
-                        <div className="text-xs text-gray-500">{tool.description}</div>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+  const layoutClasses = layout === 'grid' 
+    ? 'grid grid-cols-2 gap-2' 
+    : 'flex flex-wrap gap-2';
+
+  return (
+    <div className="space-y-2">
+      <div className={layoutClasses}>
+        {defaultQuickActions.map((action, index) => {
+          const IconComponent = iconMap[action.icon];
+          if (!IconComponent) return null;
+
+          return (
+            <QuickAIButton
+              key={index}
+              icon={IconComponent}
+              label={action.label}
+              toolName={action.toolName}
+              entityType={entityType}
+              entityId={entityId}
+              entityData={entityData}
+              size={size}
+              variant={action.variant as 'primary' | 'secondary'}
+            />
+          );
+        })}
+      </div>
+
+      {showCustomizeButton && (
+        <button
+          onClick={() => setIsCustomizing(!isCustomizing)}
+          className="text-xs text-gray-500 hover:text-gray-700 flex items-center space-x-1"
+        >
+          <Settings className="w-3 h-3" />
+          <span>Customize AI Tools</span>
+        </button>
+      )}
+
+      {isCustomizing && (
+        <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <h4 className="text-sm font-medium text-gray-900 mb-2">AI Tool Configuration</h4>
+          <p className="text-xs text-gray-600 mb-3">
+            Choose which AI tools appear for {entityType} cards
+          </p>
+          
+          <div className="space-y-2">
+            {defaultQuickActions.map((action, index) => (
+              <label key={index} className="flex items-center space-x-2">
+                <input 
+                  type="checkbox" 
+                  defaultChecked 
+                  className="h-3 w-3 text-blue-600 rounded focus:ring-blue-500"
+                />
+                <span className="text-xs text-gray-700">{action.label}</span>
+              </label>
+            ))}
+          </div>
+
+          <div className="mt-3 flex space-x-2">
+            <button className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">
+              Save
+            </button>
+            <button 
+              onClick={() => setIsCustomizing(false)}
+              className="px-3 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
     </div>

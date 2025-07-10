@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AvatarWithStatus } from '../ui/AvatarWithStatus';
+import { CustomizableAIToolbar } from '../ui/CustomizableAIToolbar';
 import { Contact } from '../../types/contact';
 import { 
   Edit, 
@@ -26,6 +27,10 @@ import {
   Globe,
   Plus,
   Search,
+  Linkedin,
+  Twitter,
+  Facebook,
+  Instagram,
   ArrowRight,
   Activity,
   Calendar,
@@ -83,6 +88,16 @@ const getScoreColor = (score: number) => {
   if (score >= 40) return 'bg-yellow-500';
   return 'bg-red-500';
 };
+
+// Social platform definitions
+const socialPlatforms = [
+  { icon: Linkedin, color: 'bg-blue-500', name: 'LinkedIn', key: 'linkedin' },
+  { icon: Globe, color: 'bg-purple-600', name: 'Website', key: 'website' },
+  { icon: Twitter, color: 'bg-blue-400', name: 'Twitter', key: 'twitter' },
+  { icon: Facebook, color: 'bg-blue-700', name: 'Facebook', key: 'facebook' },
+  { icon: Instagram, color: 'bg-pink-500', name: 'Instagram', key: 'instagram' },
+  { icon: MessageSquare, color: 'bg-green-500', name: 'WhatsApp', key: 'whatsapp' },
+];
 
 export const AIEnhancedContactCard: React.FC<AIEnhancedContactCardProps> = ({
   contact,
@@ -183,242 +198,247 @@ export const AIEnhancedContactCard: React.FC<AIEnhancedContactCardProps> = ({
   // Get social profiles 
   const socialProfiles = contact.socialProfiles || {};
 
+  // Custom fields (mock data if not provided)
+  const customFields = contact.customFields || {
+    "Acquisition Channel": contact.sources?.[0] || "Direct",
+    "Engagement Level": "Medium"
+  };
+
   return (
-    <div 
-      className={`
-        relative group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 
-        shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden
-        ${isSelected ? 'ring-2 ring-blue-500 ring-opacity-50 border-blue-300' : ''}
-        hover:border-blue-300 dark:hover:border-blue-600 hover:-translate-y-1
-      `}
+    <div
       onClick={handleCardClick}
+      className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group relative border border-gray-200 hover:border-gray-300 overflow-hidden"
     >
-      {/* Selection checkbox */}
-      <div className="absolute top-3 left-3 z-10">
+      {/* Selection Checkbox */}
+      <div className="absolute top-4 left-4 z-10">
         <input
           type="checkbox"
           checked={isSelected}
-          onChange={onSelect}
-          onClick={(e) => e.stopPropagation()}
-          className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500"
+          onChange={(e) => {
+            e.stopPropagation();
+            onSelect();
+          }}
+          className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 bg-white border-gray-300"
         />
       </div>
 
-      {/* Favorite Star */}
-      {contact.isFavorite && (
-        <div className="absolute top-3 right-3 z-10">
-          <div className="p-1 bg-yellow-100 rounded-full">
-            <Star className="w-4 h-4 text-yellow-500 fill-current" />
-          </div>
-        </div>
-      )}
+      {/* Header Actions */}
+      <div className="absolute top-4 right-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+        {/* AI Analysis Button */}
+        {onAnalyze && (
+          <button 
+            onClick={handleAnalyzeClick}
+            disabled={analyzing}
+            className={`p-2 rounded-lg transition-all duration-200 relative ${
+              contact.aiScore 
+                ? 'bg-purple-100 text-purple-600 hover:bg-purple-200' 
+                : 'bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 shadow-lg'
+            }`}
+            title={contact.aiScore ? 'Re-analyze with AI' : 'Analyze with AI'}
+          >
+            {analyzing ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Brain className="w-4 h-4" />
+            )}
+            {!contact.aiScore && !analyzing && (
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+            )}
+          </button>
+        )}
+        
+        {/* Favorite Button */}
+        {onToggleFavorite && (
+          <button
+            onClick={handleFavoriteClick}
+            className={`p-2 rounded-lg transition-colors ${
+              contact.isFavorite 
+                ? 'text-red-500 hover:bg-red-50' 
+                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+            }`}
+            title={contact.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            <Heart className={`w-4 h-4 ${contact.isFavorite ? 'fill-current' : ''}`} />
+          </button>
+        )}
 
-      {/* Team Member Crown */}
-      {contact.isTeamMember && (
-        <div className="absolute top-3 right-12 z-10">
-          <div className="p-1 bg-purple-100 rounded-full">
-            <Crown className="w-4 h-4 text-purple-600" />
-          </div>
-        </div>
-      )}
+        {showTeamAction && onAddToTeam && (
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              onAddToTeam();
+            }}
+            className="p-2 text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
+            title="Add to team"
+          >
+            <UserPlus className="w-4 h-4" />
+          </button>
+        )}
+        
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            // Handle edit action
+          }}
+          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            // Handle more actions
+          }}
+          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <MoreHorizontal className="w-4 h-4" />
+        </button>
+      </div>
 
-      {/* Main Content */}
       <div className="p-6">
-        {/* Header with Avatar and Basic Info */}
-        <div className="flex items-center space-x-4 mb-4">
-          <div className="relative">
-            <AvatarWithStatus
-              src={contact.avatarSrc || contact.avatar}
-              alt={contact.name}
-              size="lg"
-              status={contact.status as any}
-              className="border-2 border-white shadow-sm"
-            />
-            
-            {/* Find new image button */}
-            <button
-              onClick={handleFindImageClick}
-              disabled={isFinding}
-              className="absolute -bottom-1 -right-1 p-1 bg-blue-600 text-white rounded-full shadow-sm hover:bg-blue-700 transition-colors"
-              title="Find new profile image"
-            >
-              {isFinding ? (
-                <Loader2 className="w-3 h-3 animate-spin" />
-              ) : (
-                <Camera className="w-3 h-3" />
-              )}
-            </button>
-          </div>
-
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center space-x-2 mb-1">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
-                {contact.name}
-              </h3>
+        {/* Avatar and AI Score Section */}
+        <div className="flex items-start justify-between mb-4 mt-4">
+          <div className="text-center flex-1">
+            <div className="relative inline-block mb-3">
+              <AvatarWithStatus
+                src={contact.avatarSrc}
+                alt={contact.name}
+                size="lg"
+                status={contact.status}
+              />
               
-              {/* AI Score Badge */}
-              {contact.aiScore && (
-                <span className={`px-2 py-1 text-xs font-medium text-white rounded-full ${getScoreColor(contact.aiScore)}`}>
-                  {contact.aiScore}% AI
-                </span>
+              {/* Analysis Loading Indicator */}
+              {analyzing && (
+                <div className="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center">
+                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
+              
+              {/* Favorite Badge */}
+              {contact.isFavorite && (
+                <div className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg ring-2 ring-white">
+                  <Heart className="w-2.5 h-2.5" />
+                </div>
+              )}
+              
+              {/* AI Enhancement Indicator */}
+              {lastEnrichment && (
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-4 w-4 rounded-full bg-purple-500 text-white flex items-center justify-center shadow-lg ring-2 ring-white">
+                  <Sparkles className="w-2 h-2" />
+                </div>
+              )}
+              
+              {/* AI Image Search Button */}
+              {onFindNewImage && (
+                <button 
+                  onClick={handleFindImageClick}
+                  disabled={isFinding}
+                  className="absolute -bottom-1 -right-1 p-1.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full hover:from-purple-700 hover:to-blue-700 transition-colors shadow-lg relative"
+                >
+                  {isFinding ? (
+                    <div className="animate-spin w-3 h-3 border border-white border-t-transparent rounded-full" />
+                  ) : (
+                    <Camera className="w-3 h-3" />
+                  )}
+                </button>
               )}
             </div>
-            
-            <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
-              {contact.title} {contact.title && contact.company && '•'} {contact.company}
-            </p>
-            
-            {contact.industry && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-1">
-                {contact.industry}
-              </p>
-            )}
+            <h3 className="text-gray-900 font-semibold text-lg mb-1 group-hover:text-blue-600 transition-colors">{contact.name}</h3>
+            <p className="text-gray-600 text-sm">{contact.title}</p>
+            <p className="text-gray-500 text-xs">{contact.company}</p>
           </div>
-        </div>
 
-        {/* Interest Level and Sources */}
-        <div className="flex items-center justify-between mb-4">
-          {contact.interestLevel && (
-            <div className="flex items-center space-x-2">
-              <div className={`w-3 h-3 rounded-full ${interestColors[contact.interestLevel]}`} />
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                {interestLabels[contact.interestLevel]}
-              </span>
+          {/* AI Score */}
+          {contact.aiScore && (
+            <div className="text-center">
+              <div className={`w-12 h-12 rounded-full text-white flex items-center justify-center text-sm font-bold ${getScoreColor(contact.aiScore)}`}>
+                {contact.aiScore}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">AI Score</p>
             </div>
           )}
-          
+        </div>
+
+        {/* Contact Info & Stats */}
+        <div className="space-y-3">
+          {/* Interest Level */}
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">Interest:</span>
+            <span className={`px-2 py-1 rounded-full text-xs font-medium text-white ${interestColors[contact.interestLevel]}`}>
+              {interestLabels[contact.interestLevel]}
+            </span>
+          </div>
+
+          {/* Contact Actions */}
+          <div className="flex items-center space-x-2">
+            {contact.email && (
+              <a href={`mailto:${contact.email}`} className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors">
+                <Mail className="w-4 h-4" />
+              </a>
+            )}
+            {contact.phone && (
+              <a href={`tel:${contact.phone}`} className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors">
+                <Phone className="w-4 h-4" />
+              </a>
+            )}
+          </div>
+
           {/* Sources */}
           {contact.sources && contact.sources.length > 0 && (
-            <div className="flex items-center space-x-1">
-              {contact.sources.slice(0, 2).map((source, index) => (
+            <div className="flex flex-wrap gap-2">
+              {contact.sources.slice(0, 3).map((source, index) => (
                 <span
                   key={index}
-                  className={`px-2 py-1 text-xs text-white rounded-full ${sourceColors[source] || 'bg-gray-500'}`}
+                  className={`px-2 py-1 rounded-full text-xs font-medium text-white ${sourceColors[source] || 'bg-gray-500'}`}
                 >
                   {source}
                 </span>
               ))}
-              {contact.sources.length > 2 && (
-                <span className="text-xs text-gray-500">+{contact.sources.length - 2}</span>
+              {contact.sources.length > 3 && (
+                <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-600">
+                  +{contact.sources.length - 3}
+                </span>
               )}
             </div>
           )}
-        </div>
 
-        {/* Contact Information */}
-        <div className="space-y-2 mb-4">
-          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-            <Mail className="w-4 h-4 mr-2" />
-            <span className="truncate">{contact.email}</span>
-          </div>
-          
-          {contact.phone && (
-            <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-              <Phone className="w-4 h-4 mr-2" />
-              <span>{contact.phone}</span>
+          {/* Social Profiles */}
+          {socialProfiles && Object.keys(socialProfiles).length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {socialPlatforms.map((platform) => {
+                const url = socialProfiles[platform.key];
+                if (!url) return null;
+                
+                const IconComponent = platform.icon;
+                return (
+                  <a
+                    key={platform.key}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`p-1.5 rounded-lg text-white hover:opacity-80 transition-opacity ${platform.color}`}
+                    title={`View ${platform.name} profile`}
+                  >
+                    <IconComponent className="w-3 h-3" />
+                  </a>
+                );
+              })}
             </div>
           )}
-        </div>
 
-        {/* Tags */}
-        {contact.tags && contact.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-4">
-            {contact.tags.slice(0, 3).map((tag, index) => (
-              <span
-                key={index}
-                className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full"
-              >
-                {tag}
-              </span>
-            ))}
-            {contact.tags.length > 3 && (
-              <span className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-500 rounded-full">
-                +{contact.tags.length - 3}
-              </span>
-            )}
-          </div>
-        )}
-
-        {/* AI Actions Bar */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex items-center space-x-2">
-            {/* AI Analyze Button */}
-            <button
-              onClick={handleAnalyzeClick}
-              disabled={analyzing}
-              className="flex items-center space-x-1 px-3 py-1.5 text-xs bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-200 disabled:opacity-70"
-            >
-              {analyzing ? (
-                <Loader2 className="w-3 h-3 animate-spin" />
-              ) : (
-                <Brain className="w-3 h-3" />
-              )}
-              <span>{analyzing ? 'Analyzing...' : 'AI Analyze'}</span>
-            </button>
-
-            {/* AI Enrich Button */}
-            <button
-              onClick={handleAIEnrichClick}
-              disabled={localEnriching}
-              className="flex items-center space-x-1 px-3 py-1.5 text-xs bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg hover:from-green-700 hover:to-teal-700 transition-all duration-200 disabled:opacity-70"
-            >
-              {localEnriching ? (
-                <Loader2 className="w-3 h-3 animate-spin" />
-              ) : (
-                <Wand2 className="w-3 h-3" />
-              )}
-              <span>{localEnriching ? 'Enriching...' : 'AI Enrich'}</span>
-            </button>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex items-center space-x-1">
-            {/* Favorite Toggle */}
-            <button
-              onClick={handleFavoriteClick}
-              className="p-2 text-gray-400 hover:text-yellow-500 transition-colors"
-              title={contact.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-            >
-              <Heart className={`w-4 h-4 ${contact.isFavorite ? 'text-yellow-500 fill-current' : ''}`} />
-            </button>
-
-            {/* Team Action */}
-            {showTeamAction && onAddToTeam && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onAddToTeam();
-                }}
-                className="p-2 text-gray-400 hover:text-purple-600 transition-colors"
-                title="Add to team"
-              >
-                <UserPlus className="w-4 h-4" />
-              </button>
-            )}
-
-            {/* More Options */}
-            <button
-              onClick={(e) => e.stopPropagation()}
-              className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <MoreHorizontal className="w-4 h-4" />
-            </button>
+          {/* AI Toolbar */}
+          <div className="pt-3 border-t border-gray-100">
+            <CustomizableAIToolbar
+              entityType="contact"
+              entityId={contact.id}
+              entityData={contact}
+              location="contact-card"
+              layout="row"
+              size="sm"
+              showCustomizeButton={false}
+            />
           </div>
         </div>
-
-        {/* Last Enrichment Info */}
-        {lastEnrichment && (
-          <div className="mt-3 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-blue-700 dark:text-blue-300">
-                Last enriched: {lastEnrichment.confidence}% confidence
-              </span>
-              <span className="text-blue-600 dark:text-blue-400">
-                {lastEnrichment.aiProvider || 'AI Enhanced'}
-              </span>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
