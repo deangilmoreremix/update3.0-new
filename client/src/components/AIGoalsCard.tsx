@@ -70,20 +70,14 @@ const AIGoalsCard: React.FC = () => {
   };
 
   return (
-    <div className={`p-6 rounded-2xl backdrop-blur-sm ${
-      isDark ? 'bg-white/5 border-white/10' : 'bg-white/90 border-gray-200'
-    } border shadow-lg`}>
+    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+        <h3 className="text-lg font-semibold text-white">
           AI Goals Progress
         </h3>
         <button
           onClick={() => navigate('/ai-goals')}
-          className={`text-sm px-3 py-1 rounded-lg transition-colors ${
-            isDark 
-              ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30' 
-              : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-          }`}
+          className="text-sm px-3 py-1 rounded-lg transition-colors bg-blue-500/20 text-blue-400 hover:bg-blue-500/30"
         >
           View All
         </button>

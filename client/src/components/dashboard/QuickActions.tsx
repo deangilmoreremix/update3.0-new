@@ -75,33 +75,20 @@ const QuickActions: React.FC = () => {
   };
 
   return (
-    <div className={`p-6 rounded-xl border ${
-      isDark 
-        ? 'border-white/10 bg-white/5 backdrop-blur-sm' 
-        : 'border-gray-200 bg-white/50 backdrop-blur-sm'
-    }`}>
-      <div className="flex items-center space-x-3 mb-4">
-        <Avatar
-          src={getAvatarByIndex(0, 'tech')}
-          alt="AI Assistant"
-          size="sm"
-          fallback="AI"
-          status="online"
-        />
-        <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-          Quick Actions
-        </h2>
-      </div>
+    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+      <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
       
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {quickActions.map((action, index) => (
           <button
             key={index}
             onClick={action.onClick}
-            className={`p-4 rounded-lg transition-all duration-200 hover:scale-105 ${getColorClasses(action.color)}`}
+            className="flex flex-col items-center justify-center p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-200"
           >
-            <action.icon className="h-6 w-6 mx-auto mb-2" />
-            <span className="text-xs font-medium">{action.title}</span>
+            <action.icon className="w-6 h-6 mb-2 text-gray-400" />
+            <span className="text-xs font-medium text-center text-gray-300">
+              {action.title}
+            </span>
           </button>
         ))}
       </div>
