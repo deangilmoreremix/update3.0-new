@@ -493,7 +493,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: 'Demonstrate new AI features',
           startTime: '2025-01-15T14:00:00Z',
           endTime: '2025-01-15T15:00:00Z',
-          attendees: ['sarah.johnson@techcorp.com', 'sales@company.com'],
+          attendees: [
+            {
+              id: 'att1',
+              name: 'Sarah Johnson',
+              email: 'sarah.johnson@techcorp.com',
+              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
+              role: 'CTO'
+            },
+            {
+              id: 'att2',
+              name: 'Sales Rep',
+              email: 'sales@company.com',
+              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sales',
+              role: 'Sales Representative'
+            }
+          ],
           contactId: '1',
           dealId: '1',
           type: 'demo',
@@ -508,7 +523,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: 'Understand requirements and pain points',
           startTime: '2025-01-16T10:00:00Z',
           endTime: '2025-01-16T11:00:00Z',
-          attendees: ['mchen@innovate.ai', 'sales@company.com'],
+          attendees: [
+            {
+              id: 'att3',
+              name: 'Mike Chen',
+              email: 'mchen@innovate.ai',
+              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike',
+              role: 'AI Engineer'
+            },
+            {
+              id: 'att4',
+              name: 'Account Manager',
+              email: 'sales@company.com',
+              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Account',
+              role: 'Account Manager'
+            }
+          ],
           contactId: '2',
           dealId: '2',
           type: 'call',
@@ -523,7 +553,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: 'Final contract terms discussion',
           startTime: '2025-01-17T16:00:00Z',
           endTime: '2025-01-17T17:00:00Z',
-          attendees: ['e.rodriguez@fintech.com', 'legal@company.com'],
+          attendees: [
+            {
+              id: 'att5',
+              name: 'Elena Rodriguez',
+              email: 'e.rodriguez@fintech.com',
+              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Elena',
+              role: 'Legal Counsel'
+            },
+            {
+              id: 'att6',
+              name: 'Legal Team',
+              email: 'legal@company.com',
+              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Legal',
+              role: 'Legal Advisor'
+            }
+          ],
           contactId: '3',
           dealId: '3',
           type: 'meeting',
@@ -538,7 +583,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: 'Deep dive into technical specifications',
           startTime: '2025-01-18T13:00:00Z',
           endTime: '2025-01-18T14:30:00Z',
-          attendees: ['david.kim@healthcare.com', 'tech@company.com'],
+          attendees: [
+            {
+              id: 'att7',
+              name: 'David Kim',
+              email: 'david.kim@healthcare.com',
+              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
+              role: 'Technical Director'
+            },
+            {
+              id: 'att8',
+              name: 'Tech Lead',
+              email: 'tech@company.com',
+              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Tech',
+              role: 'Technical Lead'
+            }
+          ],
           contactId: '4',
           dealId: '4',
           type: 'call',
@@ -553,7 +613,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: 'Plan the implementation timeline',
           startTime: '2025-01-19T11:00:00Z',
           endTime: '2025-01-19T12:00:00Z',
-          attendees: ['j.williams@ecommerce.com', 'implementation@company.com'],
+          attendees: [
+            {
+              id: 'att9',
+              name: 'Jennifer Williams',
+              email: 'j.williams@ecommerce.com',
+              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jennifer',
+              role: 'Project Manager'
+            },
+            {
+              id: 'att10',
+              name: 'Implementation Team',
+              email: 'implementation@company.com',
+              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Implementation',
+              role: 'Implementation Specialist'
+            }
+          ],
           contactId: '5',
           dealId: '5',
           type: 'meeting',
@@ -581,7 +656,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description: 'Sample appointment description',
         startTime: '2025-01-15T14:00:00Z',
         endTime: '2025-01-15T15:00:00Z',
-        attendees: ['sample@example.com'],
+        attendees: [
+          {
+            id: 'sample1',
+            name: 'Sample User',
+            email: 'sample@example.com',
+            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sample',
+            role: 'Attendee'
+          }
+        ],
         contactId: '1',
         dealId: '1',
         type: 'meeting',
