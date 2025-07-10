@@ -1,14 +1,9 @@
 import React from 'react';
-import { useTheme } from '../../contexts/ThemeContext';
-import { CheckSquare, Calendar, MessageSquare } from 'lucide-react';
-import TasksSection from '../TasksSection';
-import AppointmentWidget from '../AppointmentWidget';
-import InteractionHistory from '../dashboard/InteractionHistory';
+import { CheckSquare, MessageSquare, Calendar } from 'lucide-react';
 import TasksAndFunnel from '../dashboard/TasksAndFunnel';
 import RecentActivity from '../dashboard/RecentActivity';
 
 const ActivitiesCommunications: React.FC = () => {
-  const { isDark } = useTheme();
 
   return (
     <div className="mb-10">
@@ -17,96 +12,70 @@ const ActivitiesCommunications: React.FC = () => {
           <CheckSquare className="h-6 w-6 text-white" />
         </div>
         <div>
-          <h2 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Activities & Communications</h2>
-          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            Manage your tasks, appointments, and communications
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Activities & Communications</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Task management and communication tracking
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Tasks Section - takes 2 columns */}
+      {/* 3-column layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left: Tasks Section (2 columns) */}
         <div className="lg:col-span-2">
-          <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6 mb-6`}>
-            <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-6 flex items-center`}>
-              <CheckSquare className="h-5 w-5 mr-2 text-orange-500" />
-              Tasks & Activities
-            </h3>
-            <TasksSection />
-          </div>
-          
-          {/* Interaction History */}
-          <div className="mb-6">
-            <InteractionHistory />
+          <div className="bg-white/5 dark:bg-white/5 border-white/10 dark:border-white/10 backdrop-blur-xl border rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Tasks & Calendar</h3>
+              <div className="flex space-x-2">
+                <button className="text-xs px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:hover:bg-blue-500/30">
+                  Add Task
+                </button>
+                <button className="text-xs px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 dark:bg-green-500/20 dark:text-green-400 dark:hover:bg-green-500/30">
+                  Schedule
+                </button>
+              </div>
+            </div>
+            <TasksAndFunnel />
           </div>
         </div>
         
-        {/* Right Side - Appointments and Activity */}
-        <div className="space-y-6 lg:col-span-1">
+        {/* Right: Communications & Appointments (1 column) */}
+        <div className="lg:col-span-1 space-y-6">
           {/* Appointments Widget */}
-          <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl overflow-hidden`}>
-            <div className={`p-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'} flex justify-between items-center`}>
-              <h3 className={`font-semibold flex items-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                <Calendar className="h-5 w-5 mr-2 text-blue-500" />
+          <div className="bg-white/5 dark:bg-white/5 border-white/10 dark:border-white/10 backdrop-blur-xl border rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                <Calendar size={18} className="text-blue-600 mr-2" />
                 Upcoming Appointments
               </h3>
             </div>
-            <AppointmentWidget />
-          </div>
-          
-          {/* Quick Tasks Widget */}
-          <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl overflow-hidden`}>
-            <div className={`p-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'} flex justify-between items-center`}>
-              <h3 className={`font-semibold flex items-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                <MessageSquare className="h-5 w-5 mr-2 text-purple-500" />
-                Communications
-              </h3>
-            </div>
-            <div className="p-4">
-              <div className="space-y-3">
-                <div className={`p-3 rounded-lg ${isDark ? 'bg-white/5 hover:bg-white/10' : 'bg-gray-50 hover:bg-gray-100'} transition-colors cursor-pointer`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className={`p-2 rounded-lg ${isDark ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-600'}`}>
-                        <MessageSquare className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Email Follow-up</p>
-                        <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Microsoft deal</p>
-                      </div>
-                    </div>
-                    <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Today</span>
-                  </div>
-                </div>
-                
-                <div className={`p-3 rounded-lg ${isDark ? 'bg-white/5 hover:bg-white/10' : 'bg-gray-50 hover:bg-gray-100'} transition-colors cursor-pointer`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className={`p-2 rounded-lg ${isDark ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-600'}`}>
-                        <Calendar className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Meeting Notes</p>
-                        <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Ford collaboration</p>
-                      </div>
-                    </div>
-                    <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Yesterday</span>
-                  </div>
-                </div>
+            <div className="space-y-3">
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <div className="font-medium text-blue-900 dark:text-blue-100">Sales Demo</div>
+                <div className="text-sm text-blue-700 dark:text-blue-300">Today, 2:00 PM</div>
+              </div>
+              <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <div className="font-medium text-green-900 dark:text-green-100">Client Meeting</div>
+                <div className="text-sm text-green-700 dark:text-green-300">Tomorrow, 10:00 AM</div>
+              </div>
+              <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                <div className="font-medium text-purple-900 dark:text-purple-100">Team Standup</div>
+                <div className="text-sm text-purple-700 dark:text-purple-300">Friday, 9:00 AM</div>
               </div>
             </div>
           </div>
+          
+          {/* Communications Panel */}
+          <div className="bg-white/5 dark:bg-white/5 border-white/10 dark:border-white/10 backdrop-blur-xl border rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                <MessageSquare size={18} className="text-orange-600 mr-2" />
+                Recent Communications
+              </h3>
+            </div>
+            <RecentActivity />
+          </div>
         </div>
-      </div>
-      
-      {/* Tasks and Funnel Section */}
-      <div className="mb-6">
-        <TasksAndFunnel />
-      </div>
-      
-      {/* Recent Activity */}
-      <div className="mb-6">
-        <RecentActivity />
       </div>
     </div>
   );

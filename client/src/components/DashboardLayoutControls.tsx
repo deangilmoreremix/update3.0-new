@@ -1,219 +1,195 @@
 import React, { useState } from 'react';
 import { useDashboardLayout } from '../contexts/DashboardLayoutContext';
-import { useTheme } from '../contexts/ThemeContext';
 import { 
   Settings, 
-  RotateCcw, 
-  Move3D, 
+  Grid3X3, 
   Eye, 
   EyeOff, 
+  RotateCcw, 
   ChevronDown,
-  Check,
-  X,
-  Palette
+  ChevronUp,
+  Lightbulb,
+  Info
 } from 'lucide-react';
 
 const DashboardLayoutControls: React.FC = () => {
   const { 
     sectionOrder, 
     setSectionOrder, 
-    resetToDefault, 
+    isDragging, 
+    setIsDragging,
     getSectionConfig,
-    isDragModeEnabled,
-    setDragModeEnabled
+    resetToDefault 
   } = useDashboardLayout();
   
-  const { isDark } = useTheme();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showTips, setShowTips] = useState(false);
 
-  const handleSectionToggle = (sectionId: string, enabled: boolean) => {
-    if (enabled) {
-      // Add section back to the order if not present
-      if (!sectionOrder.includes(sectionId)) {
-        setSectionOrder([...sectionOrder, sectionId]);
-      }
-    } else {
-      // Remove section from order
-      setSectionOrder(sectionOrder.filter(id => id !== sectionId));
-    }
-  };
-
-  const allSections = [
+  // Get all available sections (including hidden ones)
+  const allSectionIds = [
     'executive-overview-section',
     'ai-smart-features-hub',
     'sales-pipeline-deal-analytics',
     'customer-lead-management',
     'activities-communications',
-    'integrations-system'
+    'integrations-system',
+    'kpi-cards-section',
+    'quick-actions-section',
+    'ai-insights-section',
+    'metrics-cards-section',
+    'pipeline-section',
+    'contacts-section',
+    'interaction-history-section',
+    'customer-profile-section',
+    'recent-activity-section',
+    'tasks-and-funnel-section',
+    'charts-section',
+    'analytics-section',
+    'apps-section'
   ];
+
+  const hiddenSections = allSectionIds.filter(id => !sectionOrder.includes(id));
+
+  const toggleSection = (sectionId: string) => {
+    if (sectionOrder.includes(sectionId)) {
+      // Remove section
+      setSectionOrder(sectionOrder.filter(id => id !== sectionId));
+    } else {
+      // Add section
+      setSectionOrder([...sectionOrder, sectionId]);
+    }
+  };
+
+  const toggleDragMode = () => {
+    setIsDragging(!isDragging);
+  };
+
+  const handleReset = () => {
+    resetToDefault();
+    setIsExpanded(false);
+  };
 
   return (
     <div className="fixed top-20 right-4 z-50">
+      {/* Main control button */}
       <div className="relative">
-        {/* Control Button */}
         <button
-          onClick={() => setIsOpen(!isOpen)}
-          className={`p-3 rounded-xl ${
-            isDark 
-              ? 'bg-gray-800/90 hover:bg-gray-700/90 border-white/10' 
-              : 'bg-white/90 hover:bg-gray-50/90 border-gray-200'
-          } backdrop-blur-xl border shadow-lg transition-all duration-200 ${
-            isOpen ? 'scale-105' : ''
-          }`}
-          title="Dashboard Layout Settings"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="flex items-center space-x-2 bg-white/10 dark:bg-gray-800/50 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 rounded-xl px-4 py-2 shadow-lg hover:shadow-xl transition-all duration-200 text-gray-900 dark:text-white"
         >
-          <Settings size={20} className={`${isDark ? 'text-white' : 'text-gray-700'} transition-transform duration-200 ${
-            isOpen ? 'rotate-90' : ''
-          }`} />
+          <Settings size={18} />
+          <span className="text-sm font-medium">Dashboard</span>
+          {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
 
-        {/* Controls Panel */}
-        {isOpen && (
-          <div className={`absolute top-16 right-0 w-80 ${
-            isDark 
-              ? 'bg-gray-800/95 border-white/10' 
-              : 'bg-white/95 border-gray-200'
-          } backdrop-blur-xl border rounded-xl shadow-xl p-4 transition-all duration-200 transform ${
-            isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
-          }`}>
+        {/* Expanded controls panel */}
+        {isExpanded && (
+          <div className="absolute top-12 right-0 w-80 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 rounded-xl shadow-2xl p-4 space-y-4">
             {/* Header */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-2">
-                <Palette size={18} className={isDark ? 'text-purple-400' : 'text-purple-600'} />
-                <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  Layout Settings
-                </h3>
-              </div>
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-gray-900 dark:text-white">Dashboard Layout</h3>
               <button
-                onClick={() => setIsOpen(false)}
-                className={`p-1 rounded-md ${isDark ? 'hover:bg-white/10' : 'hover:bg-gray-100'} transition-colors`}
+                onClick={() => setShowTips(!showTips)}
+                className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                <X size={16} className={isDark ? 'text-gray-400' : 'text-gray-500'} />
+                <Info size={16} className="text-gray-500 dark:text-gray-400" />
               </button>
             </div>
 
-            {/* Quick Actions */}
-            <div className="space-y-3 mb-4">
-              <button
-                onClick={() => setDragModeEnabled(!isDragModeEnabled)}
-                className={`w-full flex items-center justify-between p-3 rounded-lg ${
-                  isDark 
-                    ? 'bg-blue-500/20 hover:bg-blue-500/30 text-blue-400' 
-                    : 'bg-blue-50 hover:bg-blue-100 text-blue-700'
-                } transition-colors`}
-              >
+            {/* Tips panel */}
+            {showTips && (
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-sm">
+                <div className="flex items-start space-x-2">
+                  <Lightbulb size={16} className="text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                  <div className="text-blue-800 dark:text-blue-200">
+                    <p className="font-medium mb-1">Dashboard Tips:</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• Enable drag mode to reorder sections</li>
+                      <li>• Use visibility toggles to show/hide sections</li>
+                      <li>• Changes are saved automatically</li>
+                      <li>• Reset to restore default layout</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Controls */}
+            <div className="space-y-3">
+              {/* Drag & Drop Mode */}
+              <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <Move3D size={16} />
-                  <span className="text-sm font-medium">Drag & Drop Mode</span>
+                  <Grid3X3 size={16} className="text-gray-600 dark:text-gray-400" />
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">Drag & Drop Mode</span>
                 </div>
-                <div className={`w-5 h-5 rounded border-2 ${
-                  isDragModeEnabled 
-                    ? 'bg-blue-500 border-blue-500' 
-                    : `border-gray-400 ${isDark ? 'dark:border-gray-600' : ''}`
-                } flex items-center justify-center`}>
-                  {isDragModeEnabled && <Check size={12} className="text-white" />}
-                </div>
-              </button>
-
-              <button
-                onClick={resetToDefault}
-                className={`w-full flex items-center justify-center space-x-2 p-3 rounded-lg ${
-                  isDark 
-                    ? 'bg-orange-500/20 hover:bg-orange-500/30 text-orange-400' 
-                    : 'bg-orange-50 hover:bg-orange-100 text-orange-700'
-                } transition-colors`}
-              >
-                <RotateCcw size={16} />
-                <span className="text-sm font-medium">Reset Layout</span>
-              </button>
-            </div>
-
-            {/* Section Visibility Controls */}
-            <div className="border-t border-gray-200 dark:border-white/10 pt-4">
-              <h4 className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'} mb-3`}>
-                Section Visibility
-              </h4>
-              
-              <div className="space-y-2 max-h-60 overflow-y-auto">
-                {allSections.map((sectionId) => {
-                  const config = getSectionConfig(sectionId);
-                  const isEnabled = sectionOrder.includes(sectionId);
-                  
-                  if (!config) return null;
-                  
-                  return (
-                    <div
-                      key={sectionId}
-                      className={`flex items-center justify-between p-2 rounded-lg ${
-                        isDark ? 'hover:bg-white/5' : 'hover:bg-gray-50'
-                      } transition-colors`}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${config.color}`}></div>
-                        <div>
-                          <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                            {config.title}
-                          </p>
-                          <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                            {config.description}
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <button
-                        onClick={() => handleSectionToggle(sectionId, !isEnabled)}
-                        className={`p-1 rounded-md transition-colors ${
-                          isEnabled 
-                            ? `${isDark ? 'text-green-400 hover:bg-green-400/20' : 'text-green-600 hover:bg-green-100'}` 
-                            : `${isDark ? 'text-gray-400 hover:bg-gray-700' : 'text-gray-400 hover:bg-gray-100'}`
-                        }`}
-                        title={isEnabled ? 'Hide Section' : 'Show Section'}
-                      >
-                        {isEnabled ? <Eye size={16} /> : <EyeOff size={16} />}
-                      </button>
-                    </div>
-                  );
-                })}
+                <button
+                  onClick={toggleDragMode}
+                  className={`w-10 h-6 rounded-full transition-colors ${
+                    isDragging 
+                      ? 'bg-blue-600' 
+                      : 'bg-gray-300 dark:bg-gray-600'
+                  }`}
+                >
+                  <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                    isDragging ? 'translate-x-5' : 'translate-x-1'
+                  }`} />
+                </button>
               </div>
-            </div>
 
-            {/* Section Order Preview */}
-            {isDragModeEnabled && (
-              <div className="border-t border-gray-200 dark:border-white/10 pt-4 mt-4">
-                <h4 className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'} mb-3`}>
-                  Current Order
-                </h4>
-                <div className="space-y-1">
-                  {sectionOrder.map((sectionId, index) => {
+              {/* Section Visibility */}
+              <div>
+                <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Section Visibility</h4>
+                <div className="max-h-40 overflow-y-auto space-y-2">
+                  {/* Visible sections */}
+                  {sectionOrder.map((sectionId) => {
                     const config = getSectionConfig(sectionId);
                     if (!config) return null;
                     
                     return (
-                      <div
-                        key={sectionId}
-                        className={`flex items-center space-x-3 p-2 rounded-md ${
-                          isDark ? 'bg-white/5' : 'bg-gray-50'
-                        }`}
-                      >
-                        <span className={`text-xs font-mono ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                          {index + 1}
-                        </span>
-                        <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${config.color}`}></div>
-                        <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <div key={sectionId} className="flex items-center justify-between">
+                        <span className="text-sm text-gray-700 dark:text-gray-300 truncate">
                           {config.title}
                         </span>
+                        <button
+                          onClick={() => toggleSection(sectionId)}
+                          className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          <Eye size={14} className="text-green-600 dark:text-green-400" />
+                        </button>
+                      </div>
+                    );
+                  })}
+                  
+                  {/* Hidden sections */}
+                  {hiddenSections.map((sectionId) => {
+                    const config = getSectionConfig(sectionId);
+                    if (!config) return null;
+                    
+                    return (
+                      <div key={sectionId} className="flex items-center justify-between opacity-60">
+                        <span className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                          {config.title}
+                        </span>
+                        <button
+                          onClick={() => toggleSection(sectionId)}
+                          className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          <EyeOff size={14} className="text-gray-400 dark:text-gray-500" />
+                        </button>
                       </div>
                     );
                   })}
                 </div>
               </div>
-            )}
 
-            {/* Tips */}
-            <div className={`mt-4 p-3 rounded-lg ${isDark ? 'bg-blue-500/10 border-blue-500/20' : 'bg-blue-50 border-blue-200'} border`}>
-              <p className={`text-xs ${isDark ? 'text-blue-300' : 'text-blue-700'}`}>
-                💡 <strong>Tip:</strong> Hover over any section and drag the handle (⋮⋮) to reorder. Changes are saved automatically.
-              </p>
+              {/* Reset Button */}
+              <button
+                onClick={handleReset}
+                className="w-full flex items-center justify-center space-x-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg px-3 py-2 transition-colors"
+              >
+                <RotateCcw size={16} className="text-gray-600 dark:text-gray-400" />
+                <span className="text-sm font-medium text-gray-900 dark:text-white">Reset Layout</span>
+              </button>
             </div>
           </div>
         )}

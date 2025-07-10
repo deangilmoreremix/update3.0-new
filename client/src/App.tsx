@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import ExactNavbar from './components/layout/ExactNavbar';
 import Dashboard from './components/Dashboard';
 import NetlifyStyleDashboard from './components/NetlifyStyleDashboard';
+import ModularDashboard from './components/ModularDashboard';
 import LandingPage from './pages/Landing/LandingPage';
 import SimpleLandingPage from './pages/Landing/SimpleLandingPage';
 import { SignIn } from './pages/auth/SignIn';
@@ -117,6 +118,15 @@ function App() {
                               } />
                               
                               <Route path="/dashboard" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-hidden">
+                                    <ModularDashboard />
+                                  </div>
+                                </>
+                              } />
+                              
+                              <Route path="/dashboard-legacy" element={
                                 <>
                                   <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
