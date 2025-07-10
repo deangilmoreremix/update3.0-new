@@ -1,4 +1,5 @@
 import { realGeminiService } from './realGeminiService';
+import { realOpenAIService } from './realOpenAIService';
 
 interface Contact {
   id: string;
@@ -20,7 +21,7 @@ interface ContactAnalysisResult {
   insights: string[];
   recommendations: string[];
   confidence: number;
-  modelUsed: 'gemini' | 'gemma';
+  modelUsed: 'openai' | 'gemma';
 }
 
 interface BulkAnalysisResult {
@@ -38,25 +39,25 @@ interface BulkAnalysisResult {
 }
 
 class SmartAIService {
-  private preferredModel: 'gemini' | 'openai' | 'auto' = 'auto';
+  private preferredModel: 'openai' | 'gemma' | 'auto' = 'auto';
 
-  setPreferredModel(model: 'gemini' | 'openai' | 'auto') {
+  setPreferredModel(model: 'openai' | 'gemma' | 'auto') {
     this.preferredModel = model;
   }
 
-  private selectModel(taskType: 'single' | 'bulk' | 'enrichment' = 'single'): 'gemini' | 'openai' {
-    if (this.preferredModel === 'gemini') return 'gemini';
+  private selectModel(taskType: 'single' | 'bulk' | 'enrichment' = 'single'): 'openai' | 'gemma' {
     if (this.preferredModel === 'openai') return 'openai';
+    if (this.preferredModel === 'gemma') return 'gemma';
     
-    // Auto-selection logic
+    // Auto-selection logic based on task performance
     switch (taskType) {
       case 'bulk':
-        return 'gemini'; // Gemini is faster for bulk operations
+        return 'gemma'; // Gemma is faster for bulk operations
       case 'enrichment':
-        return 'openai'; // OpenAI is better for structured data
+        return 'openai'; // OpenAI is better for structured data and enrichment
       case 'single':
       default:
-        return Math.random() > 0.5 ? 'gemini' : 'openai'; // Random selection for load balancing
+        return 'openai'; // OpenAI for detailed single contact analysis
     }
   }
 
@@ -66,7 +67,7 @@ class SmartAIService {
     try {
       let result;
       
-      if (selectedModel === 'gemini') {
+      if (selectedModel === 'gemma') {
         result = await realGeminiService.analyzeContact(contact);
       } else {
         result = await realOpenAIService.analyzeContact(contact);
@@ -81,12 +82,12 @@ class SmartAIService {
       console.error(`${selectedModel} analysis failed, trying fallback:`, error);
       
       // Fallback to other model
-      const fallbackModel = selectedModel === 'gemini' ? 'openai' : 'gemini';
+      const fallbackModel = selectedModel === 'gemma' ? 'openai' : 'gemma';
       
       try {
         let fallbackResult;
         
-        if (fallbackModel === 'gemini') {
+        if (fallbackModel === 'gemma') {
           fallbackResult = await realGeminiService.analyzeContact(contact);
         } else {
           fallbackResult = await realOpenAIService.analyzeContact(contact);
@@ -116,7 +117,7 @@ class SmartAIService {
       try {
         let analysis;
         
-        if (selectedModel === 'gemini') {
+        if (selectedModel === 'gemma') {
           analysis = await realGeminiService.analyzeContact(contact);
         } else {
           analysis = await realOpenAIService.analyzeContact(contact);
@@ -173,7 +174,7 @@ class SmartAIService {
     const selectedModel = this.selectModel('enrichment');
     
     try {
-      if (selectedModel === 'gemini') {
+      if (selectedModel === 'gemma') {
         return await realGeminiService.enrichContact(contact);
       } else {
         return await realOpenAIService.enrichContact(contact);
@@ -183,10 +184,10 @@ class SmartAIService {
       console.error(`${selectedModel} enrichment failed, trying fallback:`, error);
       
       // Fallback to other model
-      const fallbackModel = selectedModel === 'gemini' ? 'openai' : 'gemini';
+      const fallbackModel = selectedModel === 'gemma' ? 'openai' : 'gemma';
       
       try {
-        if (fallbackModel === 'gemini') {
+        if (fallbackModel === 'gemma') {
           return await realGeminiService.enrichContact(contact);
         } else {
           return await realOpenAIService.enrichContact(contact);
@@ -200,7 +201,7 @@ class SmartAIService {
   }
 
   // Health check method
-  async checkAIHealth(): Promise<{ gemini: boolean; openai: boolean }> {
+  async checkAIHealth(): Promise<{ gemma: boolean; openai: boolean }> {
     const testContact = {
       id: 'test',
       name: 'Test User',
@@ -209,13 +210,13 @@ class SmartAIService {
       title: 'Test Title'
     };
 
-    const results = { gemini: false, openai: false };
+    const results = { gemma: false, openai: false };
 
     try {
       await realGeminiService.analyzeContact(testContact);
-      results.gemini = true;
+      results.gemma = true;
     } catch (error) {
-      console.error('Gemini health check failed:', error);
+      console.error('Gemma health check failed:', error);
     }
 
     try {

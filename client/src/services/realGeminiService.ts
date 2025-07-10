@@ -46,10 +46,8 @@ class RealGeminiService {
         return { model: this.geminiModel, name: 'gemini-2.5-flash' };
       case 'analysis':
       default:
-        // Alternate between models for load balancing
-        return Math.random() > 0.5 
-          ? { model: this.geminiModel, name: 'gemini-2.5-flash' }
-          : { model: this.gemmaModel, name: 'gemma-2-9b-it' };
+        // Use Gemma for general analysis (this service represents Gemma)
+        return { model: this.gemmaModel, name: 'gemma-2-9b-it' };
     }
   }
 
