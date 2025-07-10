@@ -191,33 +191,28 @@ const Dashboard: React.FC = React.memo(() => {
           <UnifiedDashboard />
         ) : (
           /* Normal Dashboard Sections (no cross-section dragging) */
-          <DragDropContext 
-            onDragEnd={handleDragEnd}
-            onDragStart={() => console.log('Drag started!')}
-          >
-            <Droppable droppableId="dashboard-sections">
-              {(provided) => (
-                <div 
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className={`space-y-6 pb-20`}
-                >
-                  {sectionOrder.map((sectionId, index) => (
-                    <DraggableSection
-                      key={sectionId}
-                      sectionId={sectionId}
-                      index={index}
-                    >
-                      <div id={sectionId} className="w-full">
-                        {renderSectionContent(sectionId)}
-                      </div>
-                    </DraggableSection>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+          <Droppable droppableId="dashboard-sections">
+            {(provided) => (
+              <div 
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className={`space-y-6 pb-20`}
+              >
+                {sectionOrder.map((sectionId, index) => (
+                  <DraggableSection
+                    key={sectionId}
+                    sectionId={sectionId}
+                    index={index}
+                  >
+                    <div id={sectionId} className="w-full">
+                      {renderSectionContent(sectionId)}
+                    </div>
+                  </DraggableSection>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
         )}
         
         {/* Sales Tools Floating Action Button */}

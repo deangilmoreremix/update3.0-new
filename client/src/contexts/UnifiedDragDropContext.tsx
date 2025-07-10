@@ -109,6 +109,13 @@ export const UnifiedDragDropProvider: React.FC<UnifiedDragDropProviderProps> = (
     const destDroppableId = result.destination.droppableId;
     const componentId = result.draggableId;
     
+    // Handle section-level drag operations (for dashboard sections)
+    if (sourceDroppableId === 'dashboard-sections' && destDroppableId === 'dashboard-sections') {
+      // This is handled by the dashboard's own reorderSections function
+      return;
+    }
+    
+    // Handle component-level drag operations (between sections)
     moveComponent(
       componentId,
       sourceDroppableId,
