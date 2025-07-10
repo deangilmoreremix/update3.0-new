@@ -12,6 +12,11 @@ import DraggableSection from './DraggableSection';
 import DashboardLayoutControls from './DashboardLayoutControls';
 import SalesToolsLauncher from './sales/SalesToolsLauncher';
 
+// Enhanced components from Bolt.new project
+import { VideoCallPreviewWidget } from './VideoCallPreviewWidget';
+import { AIModelUsageStats } from './AIModelUsageStats';
+import { SmartAIControls } from './ai/SmartAIControls';
+
 // Import section components
 import ExecutiveOverviewSection from './sections/ExecutiveOverviewSection';
 import AISmartFeaturesHub from './sections/AISmartFeaturesHub';

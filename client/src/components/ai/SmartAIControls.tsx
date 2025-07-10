@@ -1,205 +1,413 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { 
+  Zap, 
+  Play, 
+  Pause, 
+  RotateCcw, 
+  Settings, 
+  BarChart3,
+  Users,
+  Target,
+  CheckCircle,
+  AlertCircle,
+  Clock
+} from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
-import { useAITools } from '../AIToolsProvider';
-import { Play, Pause, Settings, BarChart3, Users, Zap, RefreshCw, Mail, Target } from 'lucide-react';
+import { useSmartAI } from '../../hooks/useSmartAI';
+import { ModernButton } from '../ui/ModernButton';
+
+interface BulkAnalysisSettings {
+  batchSize: number;
+  maxConcurrent: number;
+  urgency: 'low' | 'medium' | 'high';
+  analysisType: 'contact_scoring' | 'categorization' | 'lead_qualification';
+  costLimit: number;
+}
 
 export const SmartAIControls: React.FC = () => {
   const { isDark } = useTheme();
   const { contacts } = useContactStore();
-  const { openTool } = useAITools();
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisProgress, setAnalysisProgress] = useState(0);
+  const { 
+    analyzing, 
+    results, 
+    errors, 
+    bulkAnalyzeContacts, 
+    clearResults,
+    getPerformanceMetrics 
+  } = useSmartAI();
 
-  const handleBulkAnalysis = async () => {
-    setIsAnalyzing(true);
-    setAnalysisProgress(0);
-    
-    // Simulate analysis progress
-    for (let i = 0; i <= 100; i += 10) {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      setAnalysisProgress(i);
+  const [isRunning, setIsRunning] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [settings, setSettings] = useState<BulkAnalysisSettings>({
+    batchSize: 10,
+    maxConcurrent: 3,
+    urgency: 'medium',
+    analysisType: 'contact_scoring',
+    costLimit: 1.0
+  });
+  const [showSettings, setShowSettings] = useState(false);
+  const [metrics, setMetrics] = useState<any>(null);
+
+  useEffect(() => {
+    loadMetrics();
+  }, []);
+
+  const loadMetrics = async () => {
+    try {
+      const performanceData = await getPerformanceMetrics();
+      setMetrics(performanceData);
+    } catch (error) {
+      console.error('Failed to load metrics:', error);
     }
-    
-    setIsAnalyzing(false);
-    setAnalysisProgress(0);
   };
 
-  const contactCount = Object.keys(contacts).length;
+  const startBulkAnalysis = async () => {
+    if (contacts.length === 0) return;
+
+    setIsRunning(true);
+    setProgress(0);
+
+    try {
+      const contactsData = contacts.map(contact => ({
+        contactId: contact.id,
+        contact
+      }));
+
+      const request = {
+        contacts: contactsData,
+        analysisType: settings.analysisType,
+        urgency: settings.urgency,
+        costLimit: settings.costLimit
+      };
+
+      // Simulate progress updates
+      const progressInterval = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return prev;
+          }
+          return prev + Math.random() * 10;
+        });
+      }, 500);
+
+      await bulkAnalyzeContacts(request);
+      
+      clearInterval(progressInterval);
+      setProgress(100);
+      setIsRunning(false);
+      
+      // Reload metrics after analysis
+      await loadMetrics();
+    } catch (error) {
+      console.error('Bulk analysis failed:', error);
+      setIsRunning(false);
+      setProgress(0);
+    }
+  };
+
+  const pauseAnalysis = () => {
+    setIsPaused(!isPaused);
+  };
+
+  const resetAnalysis = () => {
+    setIsRunning(false);
+    setIsPaused(false);
+    setProgress(0);
+    clearResults();
+  };
+
+  const getProcessedCount = () => {
+    return Object.keys(results).length;
+  };
+
+  const getErrorCount = () => {
+    return Object.keys(errors).length;
+  };
+
+  const getSuccessRate = () => {
+    const total = getProcessedCount() + getErrorCount();
+    return total > 0 ? (getProcessedCount() / total) * 100 : 0;
+  };
 
   return (
-    <div className="space-y-6">
+    <div className={`
+      p-6 rounded-lg border backdrop-blur-sm
+      ${isDark 
+        ? 'bg-gray-900/50 border-gray-700' 
+        : 'bg-white/50 border-gray-200'
+      }
+    `}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            Smart AI Controls
-          </h3>
-          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            Bulk AI operations and intelligent automation
-          </p>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <Settings className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
-        </div>
-      </div>
-
-      {/* Bulk Analysis Section */}
-      <div className={`p-4 rounded-lg ${isDark ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-200'}`}>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            <Users className={`w-5 h-5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
-            <div>
-              <h4 className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                Bulk Contact Analysis
-              </h4>
-              <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                Analyze {contactCount} contacts with AI
-              </p>
-            </div>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-3">
+          <div className={`
+            p-2 rounded-lg
+            ${isDark ? 'bg-blue-500/20' : 'bg-blue-100'}
+          `}>
+            <Zap className={`w-5 h-5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
           </div>
-          
-          <button
-            onClick={handleBulkAnalysis}
-            disabled={isAnalyzing}
-            className={`
-              flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200
-              ${isAnalyzing
-                ? (isDark ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-gray-300 text-gray-500 cursor-not-allowed')
-                : (isDark ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30' : 'bg-blue-100 text-blue-700 hover:bg-blue-200')
-              }
-            `}
-          >
-            {isAnalyzing ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
-            <span className="text-sm">
-              {isAnalyzing ? 'Analyzing...' : 'Start Analysis'}
-            </span>
-          </button>
-        </div>
-
-        {/* Progress Bar */}
-        {isAnalyzing && (
-          <div className="mb-4">
-            <div className={`w-full bg-gray-200 rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
-              <div 
-                className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${analysisProgress}%` }}
-              ></div>
-            </div>
-            <p className={`text-xs mt-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              Processing contact {Math.floor((analysisProgress / 100) * contactCount)} of {contactCount}
+          <div>
+            <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              Smart AI Controls
+            </h3>
+            <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+              Bulk AI analysis with intelligent optimization
             </p>
           </div>
-        )}
+        </div>
+        
+        <ModernButton
+          variant="ghost"
+          size="sm"
+          icon={Settings}
+          onClick={() => setShowSettings(!showSettings)}
+          className="shrink-0"
+        />
       </div>
 
-      {/* Quick Actions Grid */}
-      <div className="grid grid-cols-2 gap-4">
-        <button 
-          onClick={() => openTool('lead-scorer')}
-          className={`
-          p-4 rounded-lg text-left transition-all duration-200 hover:scale-105
-          ${isDark ? 'bg-purple-500/10 border border-purple-500/20 hover:bg-purple-500/20' : 'bg-purple-50 border border-purple-200 hover:bg-purple-100'}
-        `}>
-          <div className="flex items-center space-x-3 mb-2">
-            <Zap className="w-5 h-5 text-purple-500" />
-            <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              Lead Scoring
-            </span>
+      {/* Quick Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className={`p-4 rounded-lg border ${isDark ? 'bg-gray-800/50 border-gray-600' : 'bg-gray-50 border-gray-200'}`}>
+          <div className="flex items-center space-x-2 mb-2">
+            <Users className={`w-4 h-4 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
+            <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Total Contacts</span>
           </div>
-          <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            Score all leads with AI
+          <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            {contacts.length}
           </p>
-        </button>
+        </div>
 
-        <button 
-          onClick={() => openTool('sales-forecast')}
-          className={`
-          p-4 rounded-lg text-left transition-all duration-200 hover:scale-105
-          ${isDark ? 'bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20' : 'bg-blue-50 border border-blue-200 hover:bg-blue-100'}
-        `}>
-          <div className="flex items-center space-x-3 mb-2">
-            <BarChart3 className="w-5 h-5 text-blue-500" />
-            <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              Deal Prediction
-            </span>
+        <div className={`p-4 rounded-lg border ${isDark ? 'bg-gray-800/50 border-gray-600' : 'bg-gray-50 border-gray-200'}`}>
+          <div className="flex items-center space-x-2 mb-2">
+            <CheckCircle className={`w-4 h-4 ${isDark ? 'text-green-400' : 'text-green-600'}`} />
+            <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Processed</span>
           </div>
-          <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            Predict deal closures
+          <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            {getProcessedCount()}
           </p>
-        </button>
+        </div>
 
-        <button 
-          onClick={() => openTool('email-composer')}
-          className={`
-          p-4 rounded-lg text-left transition-all duration-200 hover:scale-105
-          ${isDark ? 'bg-green-500/10 border border-green-500/20 hover:bg-green-500/20' : 'bg-green-50 border border-green-200 hover:bg-green-100'}
-        `}>
-          <div className="flex items-center space-x-3 mb-2">
-            <Mail className="w-5 h-5 text-green-500" />
-            <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              Email Personalization
-            </span>
+        <div className={`p-4 rounded-lg border ${isDark ? 'bg-gray-800/50 border-gray-600' : 'bg-gray-50 border-gray-200'}`}>
+          <div className="flex items-center space-x-2 mb-2">
+            <AlertCircle className={`w-4 h-4 ${isDark ? 'text-red-400' : 'text-red-600'}`} />
+            <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Errors</span>
           </div>
-          <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            Generate personalized emails
+          <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            {getErrorCount()}
           </p>
-        </button>
+        </div>
 
-        <button 
-          onClick={() => openTool('opportunity-finder')}
-          className={`
-          p-4 rounded-lg text-left transition-all duration-200 hover:scale-105
-          ${isDark ? 'bg-orange-500/10 border border-orange-500/20 hover:bg-orange-500/20' : 'bg-orange-50 border border-orange-200 hover:bg-orange-100'}
-        `}>
-          <div className="flex items-center space-x-3 mb-2">
-            <Target className="w-5 h-5 text-orange-500" />
-            <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              Opportunity Analysis
+        <div className={`p-4 rounded-lg border ${isDark ? 'bg-gray-800/50 border-gray-600' : 'bg-gray-50 border-gray-200'}`}>
+          <div className="flex items-center space-x-2 mb-2">
+            <Target className={`w-4 h-4 ${isDark ? 'text-purple-400' : 'text-purple-600'}`} />
+            <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Success Rate</span>
+          </div>
+          <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            {getSuccessRate().toFixed(1)}%
+          </p>
+        </div>
+      </div>
+
+      {/* Progress Bar */}
+      {(isRunning || progress > 0) && (
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+              Analysis Progress
+            </span>
+            <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+              {progress.toFixed(0)}%
             </span>
           </div>
-          <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            Find high-value opportunities
-          </p>
-        </button>
+          <div className={`w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2`}>
+            <div
+              className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Controls */}
+      <div className="flex items-center space-x-3 mb-6">
+        <ModernButton
+          variant="primary"
+          icon={isRunning ? Pause : Play}
+          onClick={isRunning ? pauseAnalysis : startBulkAnalysis}
+          disabled={contacts.length === 0 || analyzing}
+          loading={analyzing}
+        >
+          {isRunning ? (isPaused ? 'Resume' : 'Pause') : 'Start Analysis'}
+        </ModernButton>
+
+        <ModernButton
+          variant="outline"
+          icon={RotateCcw}
+          onClick={resetAnalysis}
+          disabled={!isRunning && progress === 0}
+        >
+          Reset
+        </ModernButton>
+
+        <ModernButton
+          variant="ghost"
+          icon={BarChart3}
+          onClick={loadMetrics}
+        >
+          Refresh Stats
+        </ModernButton>
       </div>
 
       {/* Settings Panel */}
-      <div className={`p-4 rounded-lg ${isDark ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-200'}`}>
-        <h4 className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-3`}>
-          AI Automation Settings
-        </h4>
-        
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              Auto-score new leads
-            </span>
-            <div className={`w-10 h-5 rounded-full transition-colors ${isDark ? 'bg-blue-500' : 'bg-blue-600'} relative`}>
-              <div className="w-4 h-4 bg-white rounded-full absolute top-0.5 right-0.5 transition-transform"></div>
-            </div>
-          </div>
+      {showSettings && (
+        <div className={`
+          p-4 rounded-lg border mb-6
+          ${isDark 
+            ? 'bg-gray-800/50 border-gray-600' 
+            : 'bg-gray-50 border-gray-200'
+          }
+        `}>
+          <h4 className={`text-md font-medium mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            Analysis Settings
+          </h4>
           
-          <div className="flex items-center justify-between">
-            <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              Daily AI insights
-            </span>
-            <div className={`w-10 h-5 rounded-full transition-colors ${isDark ? 'bg-blue-500' : 'bg-blue-600'} relative`}>
-              <div className="w-4 h-4 bg-white rounded-full absolute top-0.5 right-0.5 transition-transform"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                Analysis Type
+              </label>
+              <select
+                value={settings.analysisType}
+                onChange={(e) => setSettings(prev => ({ 
+                  ...prev, 
+                  analysisType: e.target.value as any 
+                }))}
+                className={`
+                  w-full px-3 py-2 rounded-lg border
+                  ${isDark 
+                    ? 'bg-gray-700 border-gray-600 text-white' 
+                    : 'bg-white border-gray-300 text-gray-900'
+                  }
+                `}
+              >
+                <option value="contact_scoring">Contact Scoring</option>
+                <option value="categorization">Categorization</option>
+                <option value="lead_qualification">Lead Qualification</option>
+              </select>
             </div>
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              Smart follow-up reminders
-            </span>
-            <div className={`w-10 h-5 rounded-full transition-colors ${isDark ? 'bg-gray-600' : 'bg-gray-300'} relative`}>
-              <div className="w-4 h-4 bg-white rounded-full absolute top-0.5 left-0.5 transition-transform"></div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                Urgency
+              </label>
+              <select
+                value={settings.urgency}
+                onChange={(e) => setSettings(prev => ({ 
+                  ...prev, 
+                  urgency: e.target.value as any 
+                }))}
+                className={`
+                  w-full px-3 py-2 rounded-lg border
+                  ${isDark 
+                    ? 'bg-gray-700 border-gray-600 text-white' 
+                    : 'bg-white border-gray-300 text-gray-900'
+                  }
+                `}
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                Batch Size
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="50"
+                value={settings.batchSize}
+                onChange={(e) => setSettings(prev => ({ 
+                  ...prev, 
+                  batchSize: parseInt(e.target.value) || 10 
+                }))}
+                className={`
+                  w-full px-3 py-2 rounded-lg border
+                  ${isDark 
+                    ? 'bg-gray-700 border-gray-600 text-white' 
+                    : 'bg-white border-gray-300 text-gray-900'
+                  }
+                `}
+              />
+            </div>
+
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                Cost Limit ($)
+              </label>
+              <input
+                type="number"
+                min="0.1"
+                max="10"
+                step="0.1"
+                value={settings.costLimit}
+                onChange={(e) => setSettings(prev => ({ 
+                  ...prev, 
+                  costLimit: parseFloat(e.target.value) || 1.0 
+                }))}
+                className={`
+                  w-full px-3 py-2 rounded-lg border
+                  ${isDark 
+                    ? 'bg-gray-700 border-gray-600 text-white' 
+                    : 'bg-white border-gray-300 text-gray-900'
+                  }
+                `}
+              />
             </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Performance Metrics */}
+      {metrics && (
+        <div className={`
+          p-4 rounded-lg border
+          ${isDark 
+            ? 'bg-gray-800/50 border-gray-600' 
+            : 'bg-gray-50 border-gray-200'
+          }
+        `}>
+          <h4 className={`text-md font-medium mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            Performance Overview
+          </h4>
+          
+          <div className="grid grid-cols-3 gap-4 text-sm">
+            <div>
+              <span className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Total Tasks</span>
+              <p className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                {metrics.totalTasks}
+              </p>
+            </div>
+            <div>
+              <span className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Success Rate</span>
+              <p className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                {metrics.overallSuccessRate.toFixed(1)}%
+              </p>
+            </div>
+            <div>
+              <span className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Avg Response</span>
+              <p className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                {metrics.avgResponseTime.toFixed(1)}s
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,174 +1,261 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { BarChart3, Activity, Zap, DollarSign, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-import { Brain, Zap, BarChart3, Clock, DollarSign, TrendingUp } from 'lucide-react';
+import { aiOrchestratorService } from '../services/aiOrchestratorService';
 
-const AIModelUsageStats: React.FC = () => {
+interface ModelPerformance {
+  model: string;
+  callCount: number;
+  successCount: number;
+  avgResponseTime: number;
+  avgCost: number;
+  successRate: number;
+}
+
+export const AIModelUsageStats: React.FC = () => {
   const { isDark } = useTheme();
+  const [stats, setStats] = useState<ModelPerformance[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedTimeframe, setSelectedTimeframe] = useState<'1h' | '24h' | '7d' | '30d'>('24h');
 
-  const models = [
-    {
-      name: 'GPT-4o',
-      provider: 'OpenAI',
-      usage: 1250,
-      cost: 8.75,
-      avgResponseTime: 2.3,
-      successRate: 98.5,
-      color: 'text-green-500'
-    },
-    {
-      name: 'Gemini Pro',
-      provider: 'Google AI',
-      usage: 890,
-      cost: 4.20,
-      avgResponseTime: 1.8,
-      successRate: 97.2,
-      color: 'text-blue-500'
-    },
-    {
-      name: 'Claude 3',
-      provider: 'Anthropic',
-      usage: 640,
-      cost: 6.10,
-      avgResponseTime: 2.1,
-      successRate: 99.1,
-      color: 'text-purple-500'
+  useEffect(() => {
+    loadStats();
+  }, [selectedTimeframe]);
+
+  const loadStats = async () => {
+    setIsLoading(true);
+    try {
+      const rawStats = aiOrchestratorService.getPerformanceMetrics();
+      
+      const processedStats: ModelPerformance[] = Object.entries(rawStats).map(([model, data]) => ({
+        model,
+        callCount: data.callCount,
+        successCount: data.successCount,
+        avgResponseTime: data.avgResponseTime,
+        avgCost: data.avgCost,
+        successRate: data.callCount > 0 ? (data.successCount / data.callCount) * 100 : 0
+      })).filter(stat => stat.callCount > 0);
+
+      setStats(processedStats);
+    } catch (error) {
+      console.error('Failed to load AI model stats:', error);
+      setStats([]);
+    } finally {
+      setIsLoading(false);
     }
-  ];
+  };
 
-  const totalCost = models.reduce((sum, model) => sum + model.cost, 0);
-  const totalRequests = models.reduce((sum, model) => sum + model.usage, 0);
+  const getModelDisplayName = (model: string): string => {
+    const modelNames: Record<string, string> = {
+      'gemini-2.5-flash': 'Gemini 2.5 Flash',
+      'gemini-2.5-flash-8b': 'Gemini 2.5 Flash 8B',
+      'gpt-4o-mini': 'GPT-4o Mini',
+      'gpt-3.5-turbo': 'GPT-3.5 Turbo',
+      'gemma-2-2b-it': 'Gemma 2 2B',
+      'gemma-2-9b-it': 'Gemma 2 9B',
+      'gemma-2-27b-it': 'Gemma 2 27B'
+    };
+    return modelNames[model] || model;
+  };
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            AI Model Performance
-          </h3>
-          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            Usage statistics and performance metrics
-          </p>
-        </div>
-        
-        <div className="flex items-center space-x-4">
-          <div className="text-right">
-            <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Total Cost</p>
-            <p className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              ${totalCost.toFixed(2)}
-            </p>
-          </div>
-          <div className="text-right">
-            <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Total Requests</p>
-            <p className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              {totalRequests.toLocaleString()}
-            </p>
+  const getProviderColor = (model: string): string => {
+    if (model.includes('gpt')) return 'bg-green-500';
+    if (model.includes('gemini')) return 'bg-blue-500';
+    if (model.includes('gemma')) return 'bg-purple-500';
+    return 'bg-gray-500';
+  };
+
+  const getTotalStats = () => {
+    const totalCalls = stats.reduce((sum, stat) => sum + stat.callCount, 0);
+    const totalSuccess = stats.reduce((sum, stat) => sum + stat.successCount, 0);
+    const avgResponseTime = stats.length > 0 
+      ? stats.reduce((sum, stat) => sum + stat.avgResponseTime, 0) / stats.length 
+      : 0;
+    const totalCost = stats.reduce((sum, stat) => sum + (stat.avgCost * stat.callCount), 0);
+
+    return {
+      totalCalls,
+      successRate: totalCalls > 0 ? (totalSuccess / totalCalls) * 100 : 0,
+      avgResponseTime,
+      totalCost
+    };
+  };
+
+  const totalStats = getTotalStats();
+
+  if (isLoading) {
+    return (
+      <div className={`
+        p-6 rounded-lg border backdrop-blur-sm
+        ${isDark 
+          ? 'bg-gray-900/50 border-gray-700' 
+          : 'bg-white/50 border-gray-200'
+        }
+      `}>
+        <div className="animate-pulse">
+          <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded mb-4"></div>
+          <div className="space-y-3">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="h-16 bg-gray-300 dark:bg-gray-600 rounded"></div>
+            ))}
           </div>
         </div>
       </div>
+    );
+  }
 
-      {/* Model Performance Cards */}
-      <div className="space-y-4">
-        {models.map((model, index) => (
+  return (
+    <div className={`
+      p-6 rounded-lg border backdrop-blur-sm
+      ${isDark 
+        ? 'bg-gray-900/50 border-gray-700' 
+        : 'bg-white/50 border-gray-200'
+      }
+    `}>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-2">
+          <BarChart3 className={`w-5 h-5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
+          <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            AI Model Performance
+          </h3>
+        </div>
+        
+        <div className="flex space-x-1">
+          {(['1h', '24h', '7d', '30d'] as const).map((timeframe) => (
+            <button
+              key={timeframe}
+              onClick={() => setSelectedTimeframe(timeframe)}
+              className={`
+                px-3 py-1 text-sm rounded transition-colors
+                ${selectedTimeframe === timeframe
+                  ? 'bg-blue-500 text-white'
+                  : `hover:bg-gray-200 dark:hover:bg-gray-700 ${isDark ? 'text-gray-300' : 'text-gray-600'}`
+                }
+              `}
+            >
+              {timeframe}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Summary Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className={`p-4 rounded-lg border ${isDark ? 'bg-gray-800/50 border-gray-600' : 'bg-gray-50 border-gray-200'}`}>
+          <div className="flex items-center space-x-2">
+            <Activity className={`w-4 h-4 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
+            <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Total Calls</span>
+          </div>
+          <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            {totalStats.totalCalls.toLocaleString()}
+          </p>
+        </div>
+
+        <div className={`p-4 rounded-lg border ${isDark ? 'bg-gray-800/50 border-gray-600' : 'bg-gray-50 border-gray-200'}`}>
+          <div className="flex items-center space-x-2">
+            <CheckCircle className={`w-4 h-4 ${isDark ? 'text-green-400' : 'text-green-600'}`} />
+            <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Success Rate</span>
+          </div>
+          <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            {totalStats.successRate.toFixed(1)}%
+          </p>
+        </div>
+
+        <div className={`p-4 rounded-lg border ${isDark ? 'bg-gray-800/50 border-gray-600' : 'bg-gray-50 border-gray-200'}`}>
+          <div className="flex items-center space-x-2">
+            <Clock className={`w-4 h-4 ${isDark ? 'text-yellow-400' : 'text-yellow-600'}`} />
+            <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Avg Response</span>
+          </div>
+          <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            {totalStats.avgResponseTime.toFixed(1)}s
+          </p>
+        </div>
+
+        <div className={`p-4 rounded-lg border ${isDark ? 'bg-gray-800/50 border-gray-600' : 'bg-gray-50 border-gray-200'}`}>
+          <div className="flex items-center space-x-2">
+            <DollarSign className={`w-4 h-4 ${isDark ? 'text-purple-400' : 'text-purple-600'}`} />
+            <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Total Cost</span>
+          </div>
+          <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            ${totalStats.totalCost.toFixed(3)}
+          </p>
+        </div>
+      </div>
+
+      {/* Model Performance List */}
+      <div className="space-y-3">
+        {stats.map((stat) => (
           <div
-            key={index}
-            className={`p-4 rounded-lg ${isDark ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-200'} transition-all duration-200 hover:scale-[1.02]`}
+            key={stat.model}
+            className={`
+              p-4 rounded-lg border transition-all duration-200 hover:shadow-md
+              ${isDark 
+                ? 'bg-gray-800/30 border-gray-600 hover:bg-gray-800/50' 
+                : 'bg-white/50 border-gray-200 hover:bg-white/80'
+              }
+            `}
           >
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-3">
-                <div className={`p-2 rounded-lg ${isDark ? 'bg-white/10' : 'bg-gray-100'}`}>
-                  <Brain className={`w-5 h-5 ${model.color}`} />
-                </div>
-                <div>
-                  <h4 className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    {model.name}
-                  </h4>
-                  <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                    {model.provider}
-                  </p>
-                </div>
+                <div className={`w-3 h-3 rounded-full ${getProviderColor(stat.model)}`} />
+                <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  {getModelDisplayName(stat.model)}
+                </h4>
               </div>
-              
-              <div className={`px-3 py-1 rounded-full text-xs ${
-                model.successRate > 98 
-                  ? (isDark ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-700')
-                  : (isDark ? 'bg-yellow-500/20 text-yellow-400' : 'bg-yellow-100 text-yellow-700')
-              }`}>
-                {model.successRate}% success
+              <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                {stat.callCount} calls
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center">
-                <div className="flex items-center justify-center space-x-1 mb-1">
-                  <Zap className={`w-4 h-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
-                  <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Usage</span>
+            <div className="grid grid-cols-3 gap-4 text-sm">
+              <div>
+                <span className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Success Rate</span>
+                <div className="flex items-center space-x-2">
+                  <div className={`w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2`}>
+                    <div
+                      className={`h-2 rounded-full ${
+                        stat.successRate >= 95 ? 'bg-green-500' : 
+                        stat.successRate >= 85 ? 'bg-yellow-500' : 'bg-red-500'
+                      }`}
+                      style={{ width: `${Math.min(stat.successRate, 100)}%` }}
+                    />
+                  </div>
+                  <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    {stat.successRate.toFixed(1)}%
+                  </span>
                 </div>
-                <p className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  {model.usage.toLocaleString()}
-                </p>
               </div>
-              
-              <div className="text-center">
-                <div className="flex items-center justify-center space-x-1 mb-1">
-                  <Clock className={`w-4 h-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
-                  <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Avg Time</span>
-                </div>
-                <p className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  {model.avgResponseTime}s
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <div className="flex items-center justify-center space-x-1 mb-1">
-                  <DollarSign className={`w-4 h-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
-                  <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Cost</span>
-                </div>
-                <p className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  ${model.cost.toFixed(2)}
-                </p>
-              </div>
-            </div>
 
-            {/* Usage Bar */}
-            <div className="mt-4">
-              <div className={`w-full rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
-                <div 
-                  className={`h-2 rounded-full ${model.color.replace('text-', 'bg-')}`}
-                  style={{ width: `${(model.usage / Math.max(...models.map(m => m.usage))) * 100}%` }}
-                ></div>
+              <div>
+                <span className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Avg Response</span>
+                <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  {stat.avgResponseTime.toFixed(2)}s
+                </p>
+              </div>
+
+              <div>
+                <span className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Avg Cost</span>
+                <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  ${stat.avgCost.toFixed(4)}
+                </p>
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Summary Stats */}
-      <div className={`p-4 rounded-lg ${isDark ? 'bg-white/5 border border-white/10' : 'bg-gray-50 border border-gray-200'}`}>
-        <div className="flex items-center justify-between mb-3">
-          <h4 className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            This Month's Summary
-          </h4>
-          <TrendingUp className={`w-4 h-4 ${isDark ? 'text-green-400' : 'text-green-600'}`} />
+      {stats.length === 0 && (
+        <div className="text-center py-8">
+          <AlertCircle className={`w-12 h-12 mx-auto mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
+          <p className={`text-lg font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+            No AI model usage data available
+          </p>
+          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'} mt-2`}>
+            Start using AI features to see performance metrics
+          </p>
         </div>
-        
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Cost Savings vs Premium</p>
-            <p className={`text-lg font-semibold ${isDark ? 'text-green-400' : 'text-green-600'}`}>
-              $127.50
-            </p>
-          </div>
-          <div>
-            <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Avg Response Time</p>
-            <p className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              2.1s
-            </p>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
-
-export default AIModelUsageStats;
