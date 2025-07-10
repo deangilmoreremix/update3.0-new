@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import ExactNavbar from './components/layout/ExactNavbar';
 import Dashboard from './components/Dashboard';
-import NetlifyStyleDashboard from './components/NetlifyStyleDashboard';
 import LandingPage from './pages/Landing/LandingPage';
 import SimpleLandingPage from './pages/Landing/SimpleLandingPage';
 import { SignIn } from './pages/auth/SignIn';
@@ -120,7 +119,7 @@ function App() {
                                 <>
                                   <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
-                                    <NetlifyStyleDashboard />
+                                    <Dashboard />
                                   </div>
                                 </>
                               } />
