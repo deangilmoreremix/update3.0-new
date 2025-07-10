@@ -5,6 +5,7 @@ import { useDashboardLayout } from '../../contexts/DashboardLayoutContext';
 import DashboardHeader from '../dashboard/DashboardHeader';
 import KPICards from '../dashboard/KPICards';
 import QuickActions from '../dashboard/QuickActions';
+import AIGoalsCard from '../AIGoalsCard';
 import DraggableComponent from '../DraggableComponent';
 
 const ExecutiveOverviewSection: React.FC = () => {
@@ -15,7 +16,8 @@ const ExecutiveOverviewSection: React.FC = () => {
   const [componentOrder, setComponentOrder] = useState([
     'dashboard-header',
     'kpi-cards',
-    'quick-actions'
+    'quick-actions',
+    'ai-goals-card'
   ]);
 
   const handleDragEnd = (result: DropResult) => {
@@ -64,6 +66,19 @@ const ExecutiveOverviewSection: React.FC = () => {
           >
             <div className="mb-8">
               <QuickActions />
+            </div>
+          </DraggableComponent>
+        );
+      case 'ai-goals-card':
+        return (
+          <DraggableComponent
+            key={componentId}
+            componentId={componentId}
+            index={index}
+            title="AI Goals Progress"
+          >
+            <div className="mb-8">
+              <AIGoalsCard />
             </div>
           </DraggableComponent>
         );
