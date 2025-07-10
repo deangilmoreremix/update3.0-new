@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { CheckSquare, Calendar, MessageSquare } from 'lucide-react';
+import TasksSection from '../TasksSection';
 import AppointmentWidget from '../AppointmentWidget';
 import InteractionHistory from '../dashboard/InteractionHistory';
 import TasksAndFunnel from '../dashboard/TasksAndFunnel';
@@ -31,7 +32,7 @@ const ActivitiesCommunications: React.FC = () => {
               <CheckSquare className="h-5 w-5 mr-2 text-orange-500" />
               Tasks & Activities
             </h3>
-            <TasksAndFunnel />
+            <TasksSection />
           </div>
           
           {/* Interaction History */}
@@ -50,7 +51,7 @@ const ActivitiesCommunications: React.FC = () => {
                 Upcoming Appointments
               </h3>
             </div>
-            <AppointmentWidget limit={5} />
+            <AppointmentWidget />
           </div>
           
           {/* Quick Tasks Widget */}
@@ -67,7 +68,7 @@ const ActivitiesCommunications: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className={`p-2 rounded-lg ${isDark ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-600'}`}>
-                        <MessageSquare size={14} />
+                        <MessageSquare className="w-4 h-4" />
                       </div>
                       <div>
                         <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Email Follow-up</p>
@@ -82,7 +83,7 @@ const ActivitiesCommunications: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className={`p-2 rounded-lg ${isDark ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-600'}`}>
-                        <Calendar size={14} />
+                        <Calendar className="w-4 h-4" />
                       </div>
                       <div>
                         <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Meeting Notes</p>
@@ -96,6 +97,11 @@ const ActivitiesCommunications: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
+      
+      {/* Tasks and Funnel Section */}
+      <div className="mb-6">
+        <TasksAndFunnel />
       </div>
       
       {/* Recent Activity */}

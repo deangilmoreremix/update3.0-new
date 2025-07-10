@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Brain, Zap, Settings, BarChart3, Search } from 'lucide-react';
+import { Brain, Zap, Settings, BarChart3, Search, Video } from 'lucide-react';
 import AIInsightsPanel from '../dashboard/AIInsightsPanel';
 import { SmartAIControls } from '../ai/SmartAIControls';
 import AIModelUsageStats from '../AIModelUsageStats';
 import LiveDealAnalysis from '../aiTools/LiveDealAnalysis';
 import SmartSearchRealtime from '../aiTools/SmartSearchRealtime';
+import VideoCallSection from './VideoCallSection';
 
 const AISmartFeaturesHub: React.FC = () => {
   const { isDark } = useTheme();
-  const [activeTab, setActiveTab] = useState('insights');
+  const [activeTab, setActiveTab] = useState<'insights' | 'controls' | 'performance' | 'tools' | 'video'>('insights');
 
   // Tab configuration
   const tabs = [
     { id: 'insights', label: 'AI Insights', icon: Brain },
     { id: 'controls', label: 'AI Controls', icon: Settings },
     { id: 'performance', label: 'AI Performance', icon: BarChart3 },
-    { id: 'tools', label: 'AI Tools', icon: Zap }
+    { id: 'tools', label: 'AI Tools', icon: Zap },
+    { id: 'video', label: 'Video Calls', icon: Video }
   ];
 
   return (
@@ -96,6 +98,10 @@ const AISmartFeaturesHub: React.FC = () => {
               <SmartSearchRealtime />
             </div>
           </div>
+        )}
+        
+        {activeTab === 'video' && (
+          <VideoCallSection />
         )}
       </div>
     </div>

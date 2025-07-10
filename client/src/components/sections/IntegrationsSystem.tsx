@@ -2,7 +2,7 @@ import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { Grid3X3, Settings, Cpu } from 'lucide-react';
 import ConnectedApps from '../dashboard/ConnectedApps';
-import AIModelSelector from '../AIModelSelector';
+
 
 const IntegrationsSystem: React.FC = () => {
   const { isDark } = useTheme();
@@ -51,11 +51,9 @@ const IntegrationsSystem: React.FC = () => {
             <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} mb-4`}>
               Select the default model for general AI operations
             </p>
-            <AIModelSelector 
-              selectedModel="gemini-2.5-flash"
-              onModelChange={() => {}}
-              className="w-full"
-            />
+            <div className={`p-3 ${isDark ? 'bg-white/5' : 'bg-gray-100'} rounded-lg`}>
+              <span className={`text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>Gemini 2.5 Flash (Default)</span>
+            </div>
           </div>
           
           {/* API Settings */}

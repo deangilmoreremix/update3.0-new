@@ -18,24 +18,25 @@ export const useTheme = () => {
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isDark, setIsDark] = useState(() => {
-    // Check localStorage for saved theme preference
+    // Check localStorage first
     const saved = localStorage.getItem('theme');
-    if (saved) return saved === 'dark';
-    
-    // Default to system preference
+    if (saved) {
+      return saved === 'dark';
+    }
+    // Then check system preference
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   useEffect(() => {
-    // Apply theme to document
+    // Save to localStorage
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    
+    // Update document class
     if (isDark) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-    
-    // Save to localStorage
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
   }, [isDark]);
 
   const toggleTheme = () => {
@@ -46,14 +47,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setIsDark(theme === 'dark');
   };
 
-  const value: ThemeContextType = {
-    isDark,
-    toggleTheme,
-    setTheme
-  };
-
   return (
-    <ThemeContext.Provider value={value}>
+    <ThemeContext.Provider value={{
+      isDark,
+      toggleTheme,
+      setTheme
+    }}>
       {children}
     </ThemeContext.Provider>
   );
