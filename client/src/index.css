@@ -1,180 +1,9 @@
-/* Import Modern Design System */
-@import './styles/modern-theme.css';
-
-/* Enhanced Global Styles */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import './styles/design-system.css';
+/* Import navbar position styles */
+@import './styles/navbar-positions.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Essential full-screen setup */
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  overflow-x: hidden;
-}
-
-#root {
-  min-height: 100vh;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-/* Custom scrollbar for dark mode */
-.dark {
-  color-scheme: dark;
-}
-
-.dark::-webkit-scrollbar {
-  width: 6px;
-}
-
-.dark::-webkit-scrollbar-track {
-  background: rgba(55, 65, 81, 0.3);
-}
-
-.dark::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.5);
-  border-radius: 3px;
-}
-
-.dark::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.7);
-}
-
-/* Light mode scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(229, 231, 235, 0.3);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.5);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.7);
-}
-
-/* Smooth transitions for theme changes */
-* {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-}
-
-/* Glassmorphism utility classes */
-.glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.glass-dark {
-  background: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Enhanced shadow utilities */
-.shadow-3xl {
-  box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
-}
-
-.shadow-glow {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-}
-
-.shadow-glow-green {
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
-}
-
-.shadow-glow-purple {
-  box-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
-}
-
-/* Badge styles */
-.badge {
-  @apply inline-flex items-center justify-center px-2 py-1 text-xs font-medium rounded-full;
-}
-
-.badge-red {
-  @apply bg-red-500 text-white;
-}
-
-.badge-green {
-  @apply bg-green-500 text-white;
-}
-
-.badge-blue {
-  @apply bg-blue-500 text-white;
-}
-
-.badge-purple {
-  @apply bg-purple-500 text-white;
-}
-
-.badge-orange {
-  @apply bg-orange-500 text-white;
-}
-
-/* Pill navigation styles */
-.nav-pill {
-  @apply relative inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-300;
-}
-
-.nav-pill-active {
-  @apply bg-gradient-to-r text-white shadow-lg ring-2 ring-white/20;
-}
-
-.nav-pill-inactive {
-  @apply text-gray-600 hover:bg-gray-100 hover:text-gray-900;
-}
-
-.nav-pill-inactive-dark {
-  @apply text-gray-300 hover:bg-white/10 hover:text-white;
-}
-
-/* Modern button styles */
-.btn-modern {
-  @apply relative overflow-hidden transition-all duration-300 transform hover:scale-105;
-}
-
-.btn-modern::before {
-  @apply absolute inset-0 bg-gradient-to-r opacity-0 transition-opacity duration-300;
-  content: '';
-}
-
-.btn-modern:hover::before {
-  @apply opacity-10;
-}
-
-/* Notification badge pulse */
-.notification-badge {
-  animation: badge-bounce 2s infinite;
-}
-
-/* Smooth backdrop blur transitions */
-.backdrop-blur-transition {
-  transition: backdrop-filter 0.3s ease;
-}
-
-/* Custom focus styles */
-.focus-ring {
-  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
-}
-
-.focus-ring-dark {
-  @apply focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900;
-}
 
 /* Custom animations */
 @keyframes fadeIn {
@@ -185,26 +14,6 @@ html, body {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
   }
 }
 
@@ -219,14 +28,6 @@ html, body {
 
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out;
-}
-
-.animate-fade-in {
-  animation: fade-in 0.2s ease-out;
-}
-
-.animate-scale-in {
-  animation: scale-in 0.2s ease-out;
 }
 
 .animate-float {

@@ -1,222 +1,100 @@
-import React, { useState } from 'react';
-import { DollarSign, Target, TrendingUp, BarChart3, Users, Phone, FileText, Calendar, Bot, Zap } from 'lucide-react';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { 
+  CalendarDays,
+  Video,
+  MessageCircle,
+  Phone,
+  Receipt,
+  CheckSquare,
+  ArrowRight
+} from 'lucide-react';
 
 const SalesTools: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('overview');
-
-  const salesTools = [
+  const tools = [
     {
-      name: 'Lead Scoring',
-      description: 'AI-powered lead qualification and scoring system',
-      icon: <Target className="h-6 w-6" />,
-      category: 'Lead Management',
-      color: 'bg-blue-500'
+      title: "Appointments",
+      description: "Schedule and manage meetings with your contacts",
+      icon: <CalendarDays size={36} className="text-blue-600" />,
+      path: "/appointments",
+      color: "from-blue-500/10 to-blue-600/20"
     },
     {
-      name: 'Sales Forecasting',
-      description: 'Predict revenue and pipeline performance',
-      icon: <TrendingUp className="h-6 w-6" />,
-      category: 'Analytics',
-      color: 'bg-green-500'
+      title: "Video Email",
+      description: "Create and send personalized video messages to your contacts",
+      icon: <Video size={36} className="text-purple-600" />,
+      path: "/video-email",
+      color: "from-purple-500/10 to-purple-600/20"
     },
     {
-      name: 'Proposal Generator',
-      description: 'Create professional proposals automatically',
-      icon: <FileText className="h-6 w-6" />,
-      category: 'Documentation',
-      color: 'bg-purple-500'
+      title: "Text Messages",
+      description: "Send and receive SMS messages with leads and clients",
+      icon: <MessageCircle size={36} className="text-green-600" />,
+      path: "/text-messages",
+      color: "from-green-500/10 to-green-600/20"
     },
     {
-      name: 'Call Script Generator',
-      description: 'Generate effective sales call scripts',
-      icon: <Phone className="h-6 w-6" />,
-      category: 'Communication',
-      color: 'bg-indigo-500'
+      title: "Phone System",
+      description: "Make and receive calls directly from your CRM",
+      icon: <Phone size={36} className="text-indigo-600" />,
+      path: "/phone-system",
+      color: "from-indigo-500/10 to-indigo-600/20"
     },
     {
-      name: 'Deal Pipeline',
-      description: 'Visual pipeline management and tracking',
-      icon: <BarChart3 className="h-6 w-6" />,
-      category: 'Pipeline',
-      color: 'bg-orange-500'
-    },
-    {
-      name: 'Contact Management',
-      description: 'Advanced contact and relationship management',
-      icon: <Users className="h-6 w-6" />,
-      category: 'CRM',
-      color: 'bg-red-500'
-    },
-    {
-      name: 'Meeting Scheduler',
-      description: 'Automated meeting scheduling and reminders',
-      icon: <Calendar className="h-6 w-6" />,
-      category: 'Scheduling',
-      color: 'bg-yellow-500'
-    },
-    {
-      name: 'Sales AI Assistant',
-      description: 'AI-powered sales coaching and recommendations',
-      icon: <Bot className="h-6 w-6" />,
-      category: 'AI Tools',
-      color: 'bg-cyan-500'
+      title: "Invoicing",
+      description: "Create, send, and track invoices to your clients and customers",
+      icon: <Receipt size={36} className="text-amber-600" />,
+      path: "/invoicing",
+      color: "from-amber-500/10 to-amber-600/20"
     }
-  ];
-
-  const metrics = [
-    { label: 'Monthly Revenue', value: '$125,000', change: '+12%', positive: true },
-    { label: 'Active Deals', value: '47', change: '+8', positive: true },
-    { label: 'Conversion Rate', value: '24%', change: '+2.3%', positive: true },
-    { label: 'Average Deal Size', value: '$8,500', change: '+15%', positive: true }
-  ];
-
-  const recentActivities = [
-    { action: 'Deal closed', contact: 'Acme Corp', amount: '$25,000', time: '2 hours ago' },
-    { action: 'Meeting scheduled', contact: 'Tech Solutions', amount: '$45,000', time: '4 hours ago' },
-    { action: 'Proposal sent', contact: 'Global Industries', amount: '$120,000', time: '1 day ago' },
-    { action: 'Follow-up call', contact: 'StartupXYZ', amount: '$15,000', time: '2 days ago' }
   ];
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <div className="mb-8">
+      <header className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Sales Tools</h1>
-        <p className="text-gray-600 mt-2">Comprehensive sales management and automation tools</p>
+        <p className="text-gray-600 mt-1">Comprehensive tools to optimize your sales process</p>
+      </header>
+      
+      <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 p-8 rounded-xl shadow-sm mb-10 border border-blue-100">
+        <div className="flex flex-col md:flex-row items-center gap-6">
+          <div className="p-5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full text-white shadow-lg">
+            <CheckSquare size={48} />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Sales Productivity Suite</h2>
+            <p className="text-gray-700 text-lg">
+              Our integrated sales tools help you communicate more effectively, 
+              close more deals, and build stronger relationships with your customers.
+            </p>
+          </div>
+        </div>
       </div>
-
-      <div className="flex space-x-4 mb-6">
-        <button
-          onClick={() => setActiveTab('overview')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'overview' 
-              ? 'bg-blue-600 text-white' 
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-        >
-          Overview
-        </button>
-        <button
-          onClick={() => setActiveTab('tools')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'tools' 
-              ? 'bg-blue-600 text-white' 
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-        >
-          Sales Tools
-        </button>
-        <button
-          onClick={() => setActiveTab('analytics')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'analytics' 
-              ? 'bg-blue-600 text-white' 
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-        >
-          Analytics
-        </button>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {tools.map((tool, index) => (
+          <Link 
+            key={index} 
+            to={tool.path}
+            className="card-modern p-6 hover:shadow-md transition-all duration-300 group"
+          >
+            <div className="flex flex-col h-full">
+              <div className="mb-4 p-4 rounded-2xl bg-gradient-to-r transition-all duration-300 group-hover:scale-105 group-hover:shadow-sm" 
+                   style={{backgroundImage: `linear-gradient(to right, ${tool.color})`}}>
+                {tool.icon}
+              </div>
+              <h3 className="text-xl font-semibold mb-2">{tool.title}</h3>
+              <p className="text-gray-600 mb-4 flex-1">{tool.description}</p>
+              <div className="mt-auto">
+                <span className="inline-flex items-center text-blue-600 font-medium transition-all duration-300 group-hover:translate-x-1">
+                  Open tool 
+                  <ArrowRight className="w-4 h-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" />
+                </span>
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
-
-      {activeTab === 'overview' && (
-        <div className="space-y-6">
-          {/* Metrics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {metrics.map((metric, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">{metric.label}</p>
-                    <p className="text-2xl font-bold text-gray-900">{metric.value}</p>
-                  </div>
-                  <div className={`text-sm font-medium ${metric.positive ? 'text-green-600' : 'text-red-600'}`}>
-                    {metric.change}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Recent Activities */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Sales Activities</h3>
-            <div className="space-y-4">
-              {recentActivities.map((activity, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <div>
-                      <p className="font-medium text-gray-900">{activity.action}</p>
-                      <p className="text-sm text-gray-600">{activity.contact}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium text-gray-900">{activity.amount}</p>
-                    <p className="text-sm text-gray-500">{activity.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'tools' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {salesTools.map((tool, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-md transition-all duration-200 cursor-pointer">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className={`p-2 rounded-lg ${tool.color} text-white`}>
-                  {tool.icon}
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{tool.name}</h3>
-                  <p className="text-sm text-gray-600">{tool.category}</p>
-                </div>
-              </div>
-              <p className="text-gray-700 mb-4">{tool.description}</p>
-              <button className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-200 transition-colors">
-                Launch Tool
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {activeTab === 'analytics' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Sales Performance</h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">This Month</span>
-                <span className="font-semibold text-gray-900">$125,000</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-green-500 h-2 rounded-full" style={{ width: '75%' }}></div>
-              </div>
-              <div className="text-sm text-gray-500">75% of monthly target ($167,000)</div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Pipeline Health</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Qualified Leads</span>
-                <span className="font-semibold text-blue-600">23</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Active Proposals</span>
-                <span className="font-semibold text-orange-600">12</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Closing This Month</span>
-                <span className="font-semibold text-green-600">8</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

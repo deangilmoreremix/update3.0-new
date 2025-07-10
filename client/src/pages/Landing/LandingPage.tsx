@@ -50,9 +50,16 @@ import InteractiveFeaturesGrid from '../../components/Landing/InteractiveFeature
 import ParticleBackground from '../../components/Landing/ParticleBackground';
 
 const LandingPage = () => {
+  const { user, isLoaded } = useAuth();
   const navigate = useNavigate();
 
-  // Authentication check removed - direct access to all pages allowed
+  // Redirect authenticated users to dashboard
+  useEffect(() => {
+    if (isLoaded && user) {
+      console.log('✅ Authenticated user detected, redirecting to dashboard');
+      navigate('/dashboard');
+    }
+  }, [isLoaded, user, navigate]);
 
   // Function to handle page initialization only once
   useEffect(() => {
@@ -557,9 +564,9 @@ const LandingPage = () => {
               Join thousands of sales professionals already using Smart CRM to close more deals.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <a href="/api/login" className="px-8 py-4 bg-white text-blue-700 font-medium rounded-lg hover:shadow-lg transition duration-300 transform hover:scale-105">
+              <Link to="/dashboard" className="px-8 py-4 bg-white text-blue-700 font-medium rounded-lg hover:shadow-lg transition duration-300 transform hover:scale-105">
                 Start Your Free Trial
-              </a>
+              </Link>
               <Link to="/dashboard" className="px-8 py-4 bg-green-500 bg-opacity-90 hover:bg-opacity-100 text-white font-medium rounded-lg hover:shadow-lg transition duration-300 flex items-center">
                 <ExternalLink size={18} className="mr-1.5" />
                 Go to Dashboard

@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AvatarWithStatus } from '@/components/ui/AvatarWithStatus';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 
@@ -227,13 +227,15 @@ const SMSWhatsAppMessaging: React.FC = () => {
                     : 'hover:bg-gray-50'
                 }`}
               >
-                <AvatarWithStatus
-                  src={contact.avatar || ''}
-                  alt={contact.name}
-                  size="md"
-                  status={contact.isOnline ? 'online' : 'offline'}
-                  showStatus={true}
-                />
+                <div className="relative">
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={contact.avatar} />
+                    <AvatarFallback>{contact.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  {contact.isOnline && (
+                    <div className="absolute -bottom-0 -right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                  )}
+                </div>
                 
                 <div className="ml-3 flex-1 min-w-0">
                   <div className="flex justify-between items-center">
@@ -260,13 +262,10 @@ const SMSWhatsAppMessaging: React.FC = () => {
             {/* Chat Header */}
             <div className="p-4 border-b border-gray-200 bg-gray-50">
               <div className="flex items-center">
-                <AvatarWithStatus
-                  src={selectedContact.avatar || ''}
-                  alt={selectedContact.name}
-                  size="sm"
-                  status={selectedContact.isOnline ? 'online' : 'offline'}
-                  showStatus={true}
-                />
+                <Avatar className="w-8 h-8">
+                  <AvatarImage src={selectedContact.avatar} />
+                  <AvatarFallback>{selectedContact.name.charAt(0)}</AvatarFallback>
+                </Avatar>
                 <div className="ml-3">
                   <h3 className="font-medium">{selectedContact.name}</h3>
                   <p className="text-sm text-gray-500">{selectedContact.phone}</p>

@@ -130,14 +130,16 @@ interface AIToolsContextProps {
   currentTool: AIToolType | null;
 }
 
-const AIToolsContext = createContext<AIToolsContextProps>({
-  openTool: () => {},
-  closeTool: () => {},
-  isToolOpen: false,
-  currentTool: null
-});
+const AIToolsContext = createContext<AIToolsContextProps | null>(null);
 
-export const useAITools = () => useContext(AIToolsContext);
+export const useAITools = () => {
+  const context = useContext(AIToolsContext);
+  if (!context) {
+    console.error('AITools context not found - checking provider hierarchy');
+    throw new Error('useAITools must be used within an AIToolsProvider');
+  }
+  return context;
+};
 
 interface AIToolsProviderProps {
   children: ReactNode;
@@ -345,13 +347,13 @@ export const AIToolsProvider: React.FC<AIToolsProviderProps> = ({ children }) =>
         };
       case 'smart-search-realtime':
         return {
-          title: 'Smart Search with Typeahead',
+          title: 'Smart Search with Live Results',
           icon: <Search size={24} />,
           component: <SmartSearchRealtime />
         };
       case 'auto-form-completer':
         return {
-          title: 'AI Form Auto-completion',
+          title: 'AI-Powered Form Auto-completion',
           icon: <CheckCircle size={24} />,
           component: <AutoFormCompleter />
         };
@@ -401,15 +403,17 @@ export const AIToolsProvider: React.FC<AIToolsProviderProps> = ({ children }) =>
     <AIToolsContext.Provider value={{ openTool, closeTool, isToolOpen, currentTool }}>
       {children}
 
-      <AIToolModal 
-        isOpen={isToolOpen}
-        onClose={closeTool}
-        title={toolInfo.title}
-        icon={toolInfo.icon}
-        maxWidth="max-w-5xl"
-      >
-        {toolInfo.component}
-      </AIToolModal>
+      {isToolOpen && currentTool && (
+        <AIToolModal 
+          isOpen={isToolOpen}
+          onClose={closeTool}
+          title={toolInfo?.title || 'AI Tool'}
+          icon={toolInfo?.icon || <Brain size={24} />}
+          maxWidth="max-w-5xl"
+        >
+          {toolInfo?.component || <div>Tool not found</div>}
+        </AIToolModal>
+      )}
     </AIToolsContext.Provider>
   );
 };

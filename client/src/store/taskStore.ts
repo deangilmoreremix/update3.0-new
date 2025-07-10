@@ -1,189 +1,248 @@
 import { create } from 'zustand';
-
-interface Task {
-  id: string;
-  title: string;
-  description?: string;
-  priority: 'low' | 'medium' | 'high';
-  status: 'pending' | 'in-progress' | 'completed';
-  dueDate?: string;
-  contactId?: string;
-  dealId?: string;
-  assignedTo?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { Task } from '../types';
+import { v4 as uuidv4 } from 'uuid';
 
 interface TaskState {
   tasks: Record<string, Task>;
-  addTask: (task: Task) => void;
-  updateTask: (id: string, updates: Partial<Task>) => void;
-  deleteTask: (id: string) => void;
-  getTask: (id: string) => Task | undefined;
-  // API methods
+  isLoading: boolean;
+  error: string | null;
+  selectedTask: string | null;
+  
+  // Actions
   fetchTasks: () => Promise<void>;
-  createTask: (taskData: Partial<Task>) => Promise<Task>;
-  updateTaskApi: (id: string, updates: Partial<Task>) => Promise<Task>;
-  deleteTaskApi: (id: string) => Promise<void>;
+  createTask: (task: Partial<Task>) => Promise<void>;
+  updateTask: (id: string, task: Partial<Task>) => Promise<void>;
+  deleteTask: (id: string) => Promise<void>;
+  selectTask: (id: string | null) => void;
+  markTaskComplete: (id: string, completed: boolean) => Promise<void>;
 }
 
-// Mock task data for development
-const mockTasks: Task[] = [
-  {
-    id: '1',
-    title: 'Follow up with TechCorp',
-    description: 'Schedule demo of new features',
-    priority: 'high',
-    status: 'pending',
-    dueDate: '2024-01-25',
-    contactId: '1',
-    dealId: '1',
-    assignedTo: 'current_user',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '2',
-    title: 'Prepare proposal for Innovate AI',
-    description: 'Create custom proposal with pricing',
-    priority: 'medium',
-    status: 'in-progress',
-    dueDate: '2024-01-30',
-    contactId: '2',
-    dealId: '2',
-    assignedTo: 'current_user',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '3',
-    title: 'Send contract to Global Tech',
-    description: 'Final contract review and execution',
-    priority: 'high',
-    status: 'completed',
-    contactId: '3',
-    dealId: '3',
-    assignedTo: 'current_user',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  }
-];
-
 export const useTaskStore = create<TaskState>((set, get) => ({
-  tasks: mockTasks.reduce((acc, task) => {
-    acc[task.id] = task;
-    return acc;
-  }, {} as Record<string, Task>),
-
-  addTask: (task) =>
-    set((state) => ({
-      tasks: { ...state.tasks, [task.id]: task },
-    })),
-
-  updateTask: (id, updates) =>
-    set((state) => ({
-      tasks: {
-        ...state.tasks,
-        [id]: { ...state.tasks[id], ...updates, updatedAt: new Date().toISOString() },
+  tasks: {
+    'task-1': {
+      id: 'task-1',
+      title: 'Follow up with John Doe',
+      description: 'Send proposal follow-up email',
+      dueDate: new Date(Date.now() + 86400000), // tomorrow
+      completed: false,
+      priority: 'high',
+      relatedTo: {
+        type: 'contact',
+        id: '1'
       },
-    })),
-
-  deleteTask: (id) =>
-    set((state) => {
-      const newTasks = { ...state.tasks };
-      delete newTasks[id];
-      return { tasks: newTasks };
-    }),
-
-  getTask: (id) => get().tasks[id],
-
-  // API methods
+      category: 'follow-up',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    'task-2': {
+      id: 'task-2',
+      title: 'Prepare demo for Acme Inc',
+      description: 'Create custom demo showing enterprise features',
+      dueDate: new Date(Date.now() + 172800000), // 2 days
+      completed: false,
+      priority: 'medium',
+      relatedTo: {
+        type: 'deal',
+        id: 'deal-1'
+      },
+      category: 'meeting',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    'task-3': {
+      id: 'task-3',
+      title: 'Update sales forecast',
+      description: 'Review pipeline and update Q3 forecast',
+      dueDate: new Date(Date.now() + 259200000), // 3 days
+      completed: false,
+      priority: 'medium',
+      category: 'other',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    'task-4': {
+      id: 'task-4',
+      title: 'Call Sarah Williams',
+      description: 'Discuss renewal options',
+      dueDate: new Date(Date.now() - 86400000), // yesterday
+      completed: true,
+      completedAt: new Date(Date.now() - 43200000), // 12 hours ago
+      priority: 'high',
+      relatedTo: {
+        type: 'contact',
+        id: '4'
+      },
+      category: 'call',
+      createdAt: new Date(Date.now() - 172800000), // 2 days ago
+      updatedAt: new Date(Date.now() - 43200000)
+    },
+    'task-5': {
+      id: 'task-5',
+      title: 'Send contract to Globex Corp',
+      description: 'Finalize and send contract for signature',
+      dueDate: new Date(Date.now() + 86400000), // tomorrow
+      completed: false,
+      priority: 'high',
+      relatedTo: {
+        type: 'deal',
+        id: 'deal-2'
+      },
+      category: 'email',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+  },
+  isLoading: false,
+  error: null,
+  selectedTask: null,
+  
   fetchTasks: async () => {
+    set({ isLoading: true, error: null });
+    
     try {
-      const response = await fetch('/api/tasks');
-      if (!response.ok) {
-        throw new Error('Failed to fetch tasks');
-      }
-      const tasksArray = await response.json();
+      // In a real app, we would fetch tasks from the API here
+      // For now, we'll just simulate a delay and use the mock data
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      const tasks = tasksArray.reduce((acc: Record<string, Task>, task: Task) => {
-        acc[task.id] = task;
-        return acc;
-      }, {});
+      // In a real implementation, we would set the tasks from the API response
+      // set({ tasks: fetchedTasks });
       
-      set({ tasks });
-    } catch (error) {
-      console.error('Error fetching tasks:', error);
-      // Fallback to mock data if API fails
-      const fallbackTasks = mockTasks.reduce((acc, task) => {
-        acc[task.id] = task;
-        return acc;
-      }, {} as Record<string, Task>);
-      
-      set({ tasks: fallbackTasks });
+      set({ isLoading: false });
+    } catch (err) {
+      console.error('Error fetching tasks:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to fetch tasks' 
+      });
     }
   },
-
-  createTask: async (taskData) => {
+  
+  createTask: async (taskData: Partial<Task>) => {
+    set({ isLoading: true, error: null });
+    
     try {
-      const response = await fetch('/api/tasks', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(taskData),
+      // In a real app, we would create the task via API
+      // For now, we'll just simulate a delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const taskId = uuidv4();
+      const newTask: Task = {
+        id: taskId,
+        title: taskData.title || 'New Task',
+        description: taskData.description || '',
+        dueDate: taskData.dueDate,
+        completed: taskData.completed || false,
+        priority: taskData.priority || 'medium',
+        relatedTo: taskData.relatedTo,
+        category: taskData.category || 'other',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        assignedTo: taskData.assignedTo,
+        completedAt: taskData.completed ? new Date() : undefined,
+        reminderDate: taskData.reminderDate,
+        notes: taskData.notes,
+        tags: taskData.tags
+      };
+      
+      const { tasks } = get();
+      
+      set({ 
+        tasks: { ...tasks, [taskId]: newTask },
+        isLoading: false 
       });
       
-      if (!response.ok) {
-        throw new Error('Failed to create task');
-      }
-      
-      const newTask = await response.json();
-      get().addTask(newTask);
-      return newTask;
-    } catch (error) {
-      console.error('Error creating task:', error);
-      throw error;
+      return Promise.resolve();
+    } catch (err) {
+      console.error('Error creating task:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to create task' 
+      });
+      return Promise.reject(err);
     }
   },
-
-  updateTaskApi: async (id, updates) => {
+  
+  updateTask: async (id: string, taskData: Partial<Task>) => {
+    set({ isLoading: true, error: null });
+    
     try {
-      const response = await fetch(`/api/tasks/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updates),
+      // In a real app, we would update the task via API
+      // For now, we'll just simulate a delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const { tasks } = get();
+      const existingTask = tasks[id];
+      
+      if (!existingTask) {
+        throw new Error(`Task with id ${id} not found`);
+      }
+      
+      const updatedTask: Task = {
+        ...existingTask,
+        ...taskData,
+        updatedAt: new Date()
+      };
+      
+      if (taskData.completed === true && !existingTask.completed) {
+        updatedTask.completedAt = new Date();
+      }
+      
+      if (taskData.completed === false) {
+        updatedTask.completedAt = undefined;
+      }
+      
+      set({ 
+        tasks: { ...tasks, [id]: updatedTask },
+        isLoading: false 
       });
       
-      if (!response.ok) {
-        throw new Error('Failed to update task');
-      }
-      
-      const updatedTask = await response.json();
-      get().updateTask(id, updatedTask);
-      return updatedTask;
-    } catch (error) {
-      console.error('Error updating task:', error);
-      throw error;
+      return Promise.resolve();
+    } catch (err) {
+      console.error('Error updating task:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to update task' 
+      });
+      return Promise.reject(err);
     }
   },
-
-  deleteTaskApi: async (id) => {
+  
+  deleteTask: async (id: string) => {
+    set({ isLoading: true, error: null });
+    
     try {
-      const response = await fetch(`/api/tasks/${id}`, {
-        method: 'DELETE',
+      // In a real app, we would delete the task via API
+      // For now, we'll just simulate a delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const { tasks } = get();
+      const { [id]: deletedTask, ...remainingTasks } = tasks;
+      
+      set({ 
+        tasks: remainingTasks,
+        isLoading: false,
+        selectedTask: null 
       });
       
-      if (!response.ok) {
-        throw new Error('Failed to delete task');
-      }
-      
-      get().deleteTask(id);
-    } catch (error) {
-      console.error('Error deleting task:', error);
-      throw error;
+      return Promise.resolve();
+    } catch (err) {
+      console.error('Error deleting task:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to delete task' 
+      });
+      return Promise.reject(err);
     }
   },
+  
+  selectTask: (id) => {
+    set({ selectedTask: id });
+  },
+  
+  markTaskComplete: async (id: string, completed: boolean) => {
+    get().updateTask(id, { 
+      completed,
+      completedAt: completed ? new Date() : undefined 
+    });
+  }
 }));

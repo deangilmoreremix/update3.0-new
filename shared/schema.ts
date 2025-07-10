@@ -199,15 +199,12 @@ export const sessions = pgTable("sessions", {
 
 // ============= CORE APPLICATION TABLES =============
 
-// Users table for email authentication with Replit Auth fallback
+// Users table for basic authentication
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
-  email: text("email").unique().notNull(),
-  password: text("password"), // Hashed password for email auth
-  firstName: text("first_name"),
-  lastName: text("last_name"),
-  profileImageUrl: text("profile_image_url"),
+  email: text("email").notNull().unique(),
   fullName: text("full_name"),
+  avatarUrl: text("avatar_url"),
   jobTitle: text("job_title"),
   company: text("company"),
   phone: text("phone"),
@@ -215,35 +212,16 @@ export const users = pgTable("users", {
   preferences: jsonb("preferences").default({}),
   socialLinks: jsonb("social_links").default({}),
   accountStatus: text("account_status").default("active"),
-  emailVerified: boolean("email_verified").default(false),
-  // Authentication providers
-  authProvider: text("auth_provider").default("email"), // email, replit, google, github
-  replitUserId: text("replit_user_id"), // For Replit Auth integration
-  googleId: text("google_id"), // For Google OAuth
-  // Subscription and payment fields
-  subscriptionStatus: text("subscription_status").default("free"), // free, paid, trial, cancelled
-  subscriptionPlan: text("subscription_plan").default("basic"), // free, basic, professional, enterprise
-  subscriptionStartDate: timestamp("subscription_start_date"),
-  subscriptionEndDate: timestamp("subscription_end_date"),
-  paymentStatus: text("payment_status").default("none"), // none, active, failed, cancelled
   // Multi-tenant fields - nullable during migration
   tenantId: uuid("tenant_id").references(() => tenants.id),
   roleId: uuid("role_id").references(() => userRoles.id),
   permissions: jsonb("permissions").default([]),
   isAdmin: boolean("is_admin").default(false),
-  role: text("role").default("user"), // user, admin, super_admin
-  // Security fields
-  lastLoginAt: timestamp("last_login_at"),
-  loginAttempts: integer("login_attempts").default(0),
-  lockedUntil: timestamp("locked_until"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 }, (table) => [
   index("idx_users_tenant").on(table.tenantId),
   index("idx_users_email_tenant").on(table.email, table.tenantId),
-  index("idx_users_subscription").on(table.subscriptionStatus),
-  index("idx_users_replit").on(table.replitUserId),
-  index("idx_users_google").on(table.googleId),
 ]);
 
 // Contacts table
@@ -501,7 +479,6 @@ export type InsertFeatureUsage = z.infer<typeof insertFeatureUsageSchema>;
 // Core application types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
-export type UpsertUser = typeof users.$inferInsert;
 
 export type Contact = typeof contacts.$inferSelect;
 export type InsertContact = z.infer<typeof insertContactSchema>;

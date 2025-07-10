@@ -1,16 +1,34 @@
 import { create } from 'zustand';
+import { Deal } from '../types';
+import { 
+  fetchDealsFromSupabase, 
+  createDealInSupabase, 
+  updateDealInSupabase, 
+  deleteDealFromSupabase 
+} from '../services/dealService';
 
-interface Deal {
-  id: string;
-  title: string;
-  company: string;
-  value: number;
-  stage: string;
-  probability: number;
-  closeDate: string;
-  contactId?: string;
-  createdAt: string;
-  updatedAt: string;
+interface DealState {
+  deals: Record<string, Deal>;
+  columns: Record<string, Column>;
+  columnOrder: string[];
+  isLoading: boolean;
+  error: string | null;
+  selectedDeal: string | null;
+  aiInsight: string | null;
+  isAnalyzing: boolean;
+  
+  // Pipeline view statistics
+  stageValues: Record<string, number>;
+  totalPipelineValue: number;
+  
+  // Actions
+  fetchDeals: () => Promise<void>;
+  createDeal: (deal: Partial<Deal>) => Promise<void>;
+  updateDeal: (id: string, deal: Partial<Deal>) => Promise<void>;
+  deleteDeal: (id: string) => Promise<void>;
+  moveDealToStage: (dealId: string, sourceStage: string, destinationStage: string, destinationIndex: number) => void;
+  selectDeal: (dealId: string | null) => void;
+  generateAiInsight: (dealId: string) => Promise<void>;
 }
 
 interface Column {
@@ -19,368 +37,518 @@ interface Column {
   dealIds: string[];
 }
 
-interface DealState {
-  deals: Record<string, Deal>;
-  // Computed values
-  totalPipelineValue: number;
-  stageValues: Record<string, number>;
-  // Kanban board data
-  columns: Record<string, Column>;
-  columnOrder: string[];
-  // UI state
-  isLoading: boolean;
-  error: string | null;
-  selectedDeal: Deal | null;
-  aiInsight: string | null;
-  isAnalyzing: boolean;
-  // Actions
-  addDeal: (deal: Deal) => void;
-  updateDeal: (id: string, updates: Partial<Deal>) => void;
-  deleteDeal: (id: string) => void;
-  getDeal: (id: string) => Deal | undefined;
-  selectDeal: (deal: Deal | null) => void;
-  moveDealToStage: (dealId: string, newStage: string) => void;
-  generateAiInsight: (deal: Deal) => Promise<void>;
-  // API methods
-  fetchDeals: () => Promise<void>;
-  createDeal: (dealData: Partial<Deal>) => Promise<Deal>;
-  updateDealApi: (id: string, updates: Partial<Deal>) => Promise<Deal>;
-  deleteDealApi: (id: string) => Promise<void>;
-}
-
-// Mock deal data for development
-const mockDeals: Deal[] = [
-  {
-    id: '1',
-    title: 'Enterprise Software License',
-    company: 'TechCorp Solutions',
-    value: 150000,
-    stage: 'negotiation',
-    probability: 75,
-    closeDate: '2024-02-15',
-    contactId: '1',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+export const useDealStore = create<DealState>((set, get) => ({
+  deals: {
+    'deal-1': {
+      id: 'deal-1',
+      title: 'Enterprise License',
+      value: 75000,
+      stage: 'qualification',
+      company: 'Acme Inc',
+      contact: 'John Doe',
+      contactId: 'contact-1',
+      dueDate: new Date('2025-07-15'),
+      createdAt: new Date('2025-06-01'),
+      updatedAt: new Date('2025-06-01'),
+      probability: 10,
+      daysInStage: 5,
+      priority: 'high'
+    },
+    'deal-2': {
+      id: 'deal-2',
+      title: 'Software Renewal',
+      value: 45000,
+      stage: 'proposal',
+      company: 'Globex Corp',
+      contact: 'Jane Smith',
+      contactId: 'contact-2',
+      dueDate: new Date('2025-06-30'),
+      createdAt: new Date('2025-05-15'),
+      updatedAt: new Date('2025-06-01'),
+      probability: 50,
+      daysInStage: 3,
+      priority: 'medium'
+    },
+    'deal-3': {
+      id: 'deal-3',
+      title: 'Support Contract',
+      value: 25000,
+      stage: 'negotiation',
+      company: 'Initech',
+      contact: 'Robert Johnson',
+      contactId: 'contact-3',
+      dueDate: new Date('2025-07-10'),
+      createdAt: new Date('2025-05-20'),
+      updatedAt: new Date('2025-06-01'),
+      probability: 75,
+      daysInStage: 7,
+      priority: 'low'
+    },
+    'deal-4': {
+      id: 'deal-4',
+      title: 'Implementation Services',
+      value: 50000,
+      stage: 'negotiation',
+      company: 'Umbrella Corp',
+      contact: 'Sarah Williams',
+      contactId: 'contact-4',
+      dueDate: new Date('2025-06-25'),
+      createdAt: new Date('2025-05-25'),
+      updatedAt: new Date('2025-06-01'),
+      probability: 75,
+      daysInStage: 2,
+      priority: 'medium'
+    },
+    'deal-5': {
+      id: 'deal-5',
+      title: 'Cloud Migration',
+      value: 95000,
+      stage: 'qualification',
+      company: 'Wayne Enterprises',
+      contact: 'Bruce Wayne',
+      contactId: 'contact-5',
+      dueDate: new Date('2025-08-05'),
+      createdAt: new Date('2025-06-01'),
+      updatedAt: new Date('2025-06-01'),
+      probability: 10,
+      daysInStage: 1,
+      priority: 'high'
+    },
+    'deal-6': {
+      id: 'deal-6',
+      title: 'Annual Subscription',
+      value: 36000,
+      stage: 'closed-won',
+      company: 'Stark Industries',
+      contact: 'Tony Stark',
+      contactId: 'contact-6',
+      dueDate: new Date('2025-07-20'),
+      createdAt: new Date('2025-05-01'),
+      updatedAt: new Date('2025-06-01'),
+      probability: 100,
+      daysInStage: 0,
+      priority: 'medium'
+    },
   },
-  {
-    id: '2',
-    title: 'AI Platform Integration',
-    company: 'Innovate AI',
-    value: 85000,
-    stage: 'proposal',
-    probability: 60,
-    closeDate: '2024-03-01',
-    contactId: '2',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+  columns: {
+    'qualification': {
+      id: 'qualification',
+      title: 'Qualification',
+      dealIds: ['deal-1', 'deal-5']
+    },
+    'proposal': {
+      id: 'proposal',
+      title: 'Proposal',
+      dealIds: ['deal-2']
+    },
+    'negotiation': {
+      id: 'negotiation',
+      title: 'Negotiation',
+      dealIds: ['deal-3', 'deal-4']
+    },
+    'closed-won': {
+      id: 'closed-won',
+      title: 'Closed Won',
+      dealIds: ['deal-6']
+    },
+    'closed-lost': {
+      id: 'closed-lost',
+      title: 'Closed Lost',
+      dealIds: []
+    }
   },
-  {
-    id: '3',
-    title: 'Manufacturing Automation',
-    company: 'Global Tech Industries',
-    value: 200000,
-    stage: 'closed-won',
-    probability: 100,
-    closeDate: '2024-01-15',
-    contactId: '3',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+  columnOrder: ['qualification', 'proposal', 'negotiation', 'closed-won', 'closed-lost'],
+  isLoading: false,
+  error: null,
+  selectedDeal: null,
+  aiInsight: null,
+  isAnalyzing: false,
+  stageValues: {
+    'qualification': 170000,
+    'proposal': 45000,
+    'negotiation': 75000,
+    'closed-won': 36000,
+    'closed-lost': 0
   },
-  {
-    id: '4',
-    title: 'Startup Investment Platform',
-    company: 'Startup Ventures',
-    value: 120000,
-    stage: 'discovery',
-    probability: 25,
-    closeDate: '2024-04-01',
-    contactId: '4',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '5',
-    title: 'Enterprise CRM License',
-    company: 'Enterprise Software',
-    value: 95000,
-    stage: 'closed-won',
-    probability: 100,
-    closeDate: '2024-01-30',
-    contactId: '5',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '6',
-    title: 'Development Tools Package',
-    company: 'Tech Startup',
-    value: 45000,
-    stage: 'qualification',
-    probability: 40,
-    closeDate: '2024-03-15',
-    contactId: '6',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '3',
-    title: 'Manufacturing Optimization Suite',
-    company: 'Global Tech Industries',
-    value: 250000,
-    stage: 'Closed Won',
-    probability: 100,
-    closeDate: '2024-01-20',
-    contactId: '3',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  }
-];
-
-export const useDealStore = create<DealState>((set, get) => {
-  const computeValues = (deals: Record<string, Deal>) => {
-    const dealsList = Object.values(deals);
-    const totalPipelineValue = dealsList.reduce((sum, deal) => sum + deal.value, 0);
-    const stageValues = dealsList.reduce((acc, deal) => {
-      acc[deal.stage] = (acc[deal.stage] || 0) + deal.value;
-      return acc;
-    }, {} as Record<string, number>);
+  totalPipelineValue: 326000,
+  
+  fetchDeals: async () => {
+    set({ isLoading: true, error: null });
     
-    return { totalPipelineValue, stageValues };
-  };
-
-  const updateKanbanColumns = (deals: Record<string, Deal>) => {
-    const stages = ['discovery', 'qualification', 'proposal', 'negotiation', 'closed-won', 'closed-lost'];
-    const columns: Record<string, Column> = {};
-    const columnOrder: string[] = [];
-
-    stages.forEach(stage => {
-      const dealIds = Object.values(deals)
-        .filter(deal => deal.stage === stage)
-        .map(deal => deal.id);
+    try {
+      const { data, error } = await fetchDealsFromSupabase();
       
-      columns[stage] = {
-        id: stage,
-        title: stage.charAt(0).toUpperCase() + stage.slice(1).replace('-', ' '),
-        dealIds
+      if (error) throw new Error(error.message);
+      
+      if (!data) {
+        set({ isLoading: false });
+        return;
+      }
+      
+      // Transform the deals into the required format
+      const dealsRecord: Record<string, Deal> = {};
+      const columnsRecord: Record<string, Column> = {
+        'qualification': { id: 'qualification', title: 'Qualification', dealIds: [] },
+        'proposal': { id: 'proposal', title: 'Proposal', dealIds: [] },
+        'negotiation': { id: 'negotiation', title: 'Negotiation', dealIds: [] },
+        'closed-won': { id: 'closed-won', title: 'Closed Won', dealIds: [] },
+        'closed-lost': { id: 'closed-lost', title: 'Closed Lost', dealIds: [] }
       };
-      columnOrder.push(stage);
+      
+      data.forEach(deal => {
+        // Map the API response to our Deal type
+        dealsRecord[deal.id] = {
+          id: deal.id,
+          title: deal.title,
+          value: deal.value || deal.amount,
+          stage: deal.stage,
+          contactId: deal.contact_id || 'unknown',
+          company: deal.company,
+          contact: deal.contact,
+          dueDate: new Date(deal.dueDate),
+          createdAt: new Date(deal.created_at || Date.now()),
+          updatedAt: new Date(deal.updated_at || Date.now()),
+          probability: deal.probability,
+          priority: deal.priority,
+          daysInStage: deal.days_in_stage
+        };
+        
+        // Add deal ID to the appropriate column
+        if (columnsRecord[deal.stage]) {
+          columnsRecord[deal.stage].dealIds.push(deal.id);
+        } else {
+          // If the stage doesn't exist, default to qualification
+          columnsRecord['qualification'].dealIds.push(deal.id);
+        }
+      });
+      
+      // Calculate stage values and total pipeline value
+      const stageValues: Record<string, number> = {};
+      
+      Object.keys(columnsRecord).forEach(columnId => {
+        const column = columnsRecord[columnId];
+        const totalValue = column.dealIds.reduce((sum, dealId) => {
+          return sum + dealsRecord[dealId].value;
+        }, 0);
+        
+        stageValues[columnId] = totalValue;
+      });
+      
+      const totalPipelineValue = Object.values(stageValues).reduce((a, b) => a + b, 0);
+      
+      // Use the mock data for now instead of the API response
+      // In a real implementation, we would use the transformed data from the API
+      // set({ deals: dealsRecord, columns: columnsRecord, isLoading: false });
+      
+      // Recalculate stage values based on the current deals in the store
+      const currentDeals = get().deals;
+      const currentColumns = get().columns;
+      const currentStageValues = calculateStageValues(currentDeals, currentColumns);
+      
+      set({ 
+        isLoading: false,
+        stageValues: currentStageValues,
+        totalPipelineValue: Object.values(currentStageValues).reduce((a, b) => a + b, 0)
+      });
+    } catch (err) {
+      console.error('Error fetching deals:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to fetch deals' 
+      });
+    }
+  },
+  
+  createDeal: async (dealData: Partial<Deal>) => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      const { data, error } = await createDealInSupabase(dealData);
+      
+      if (error) throw new Error(error.message);
+      
+      if (!data) {
+        set({ isLoading: false });
+        return;
+      }
+      
+      // Update local state with the new deal
+      const { deals, columns } = get();
+      
+      // Create a new deal object
+      const newDeal: Deal = {
+        ...data,
+        id: data.id,
+        contactId: data.contactId || 'unknown',
+        createdAt: new Date(data.created_at || Date.now()),
+        updatedAt: new Date(data.updated_at || Date.now()),
+        stage: data.stage || 'qualification'
+      };
+      
+      // Update the deals record
+      const updatedDeals = {
+        ...deals,
+        [newDeal.id]: newDeal
+      };
+      
+      // Update the column dealIds array
+      const stage = newDeal.stage || 'qualification';
+      const updatedColumns = {
+        ...columns,
+        [stage]: {
+          ...columns[stage],
+          dealIds: [...columns[stage].dealIds, newDeal.id]
+        }
+      };
+      
+      // Recalculate stage values
+      const stageValues = calculateStageValues(updatedDeals, updatedColumns);
+      
+      set({ 
+        deals: updatedDeals, 
+        columns: updatedColumns,
+        isLoading: false,
+        stageValues,
+        totalPipelineValue: Object.values(stageValues).reduce((a, b) => a + b, 0)
+      });
+    } catch (err) {
+      console.error('Error creating deal:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to create deal' 
+      });
+    }
+  },
+  
+  updateDeal: async (id: string, dealData: Partial<Deal>) => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      const { data, error } = await updateDealInSupabase(id, dealData);
+      
+      if (error) throw new Error(error.message);
+      
+      if (!data) {
+        set({ isLoading: false });
+        return;
+      }
+      
+      // Update local state with the updated deal
+      const { deals } = get();
+      
+      const updatedDeal = {
+        ...deals[id],
+        ...data,
+        updatedAt: new Date(data.updated_at || Date.now())
+      };
+      
+      // Check if the stage has changed
+      if (data.stage && data.stage !== deals[id].stage) {
+        // Need to update columns
+        const oldStage = deals[id].stage;
+        const newStage = data.stage;
+        
+        get().moveDealToStage(id, oldStage, newStage, 0);
+      } else {
+        // Just update the deal
+        const updatedDeals = {
+          ...deals,
+          [id]: updatedDeal
+        };
+        
+        const stageValues = calculateStageValues(updatedDeals, get().columns);
+        
+        set({ 
+          deals: updatedDeals,
+          isLoading: false,
+          stageValues,
+          totalPipelineValue: Object.values(stageValues).reduce((a, b) => a + b, 0)
+        });
+      }
+    } catch (err) {
+      console.error('Error updating deal:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to update deal' 
+      });
+    }
+  },
+  
+  deleteDeal: async (id: string) => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      const { error } = await deleteDealFromSupabase(id);
+      
+      if (error) throw new Error(error.message);
+      
+      // Update local state
+      const { deals, columns } = get();
+      
+      const stage = deals[id].stage;
+      
+      // Remove the deal from the deals object
+      const { [id]: deletedDeal, ...remainingDeals } = deals;
+      
+      // Remove the deal ID from the column
+      const updatedColumns = {
+        ...columns,
+        [stage]: {
+          ...columns[stage],
+          dealIds: columns[stage].dealIds.filter(dealId => dealId !== id)
+        }
+      };
+      
+      // Recalculate stage values
+      const stageValues = calculateStageValues(remainingDeals, updatedColumns);
+      
+      set({ 
+        deals: remainingDeals, 
+        columns: updatedColumns,
+        isLoading: false,
+        stageValues,
+        totalPipelineValue: Object.values(stageValues).reduce((a, b) => a + b, 0),
+        selectedDeal: null
+      });
+    } catch (err) {
+      console.error('Error deleting deal:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to delete deal' 
+      });
+    }
+  },
+  
+  moveDealToStage: (dealId, sourceStage, destinationStage, destinationIndex) => {
+    const { deals, columns } = get();
+    
+    // No change if the stages are the same
+    if (sourceStage === destinationStage) return;
+    
+    // Start by removing the deal from the source column
+    const sourceColumn = columns[sourceStage];
+    const destinationColumn = columns[destinationStage];
+    
+    const newSourceDealIds = sourceColumn.dealIds.filter(id => id !== dealId);
+    
+    // Then add it to the destination column at the specified index
+    const newDestinationDealIds = [...destinationColumn.dealIds];
+    newDestinationDealIds.splice(destinationIndex, 0, dealId);
+    
+    // Update the columns
+    const updatedColumns = {
+      ...columns,
+      [sourceStage]: {
+        ...sourceColumn,
+        dealIds: newSourceDealIds
+      },
+      [destinationStage]: {
+        ...destinationColumn,
+        dealIds: newDestinationDealIds
+      }
+    };
+    
+    // Update the deal's stage
+    const updatedDeals = {
+      ...deals,
+      [dealId]: {
+        ...deals[dealId],
+        stage: destinationStage,
+        updatedAt: new Date()
+      }
+    };
+    
+    // Recalculate stage values
+    const stageValues = calculateStageValues(updatedDeals, updatedColumns);
+    
+    // Update state
+    set({ 
+      deals: updatedDeals,
+      columns: updatedColumns,
+      stageValues,
+      totalPipelineValue: Object.values(stageValues).reduce((a, b) => a + b, 0)
     });
+    
+    // Persist the change to the backend
+    updateDealInSupabase(dealId, { 
+      stage: destinationStage,
+      updated_at: new Date().toISOString()
+    });
+  },
+  
+  selectDeal: (dealId) => {
+    set({ 
+      selectedDeal: dealId,
+      aiInsight: null 
+    });
+  },
+  
+  generateAiInsight: async (dealId) => {
+    const { deals } = get();
+    const deal = deals[dealId];
+    
+    if (!deal) return;
+    
+    set({ isAnalyzing: true });
+    
+    try {
+      // In a real implementation, we would call the AI service
+      // For demo purposes, we'll simulate a response after a delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const randomProbability = Math.floor(Math.random() * (deal.stage === 'negotiation' ? 30 : 20) + 
+                                (deal.stage === 'negotiation' ? 60 : 
+                                 deal.stage === 'proposal' ? 40 : 
+                                 deal.stage === 'qualification' ? 15 : 5));
+                                 
+      const insights = `# Deal Analysis for ${deal.title}
 
-    return { columns, columnOrder };
-  };
+## Win Probability: ${randomProbability}%
 
-  const initialDeals = mockDeals.reduce((acc, deal) => {
-    acc[deal.id] = deal;
-    return acc;
-  }, {} as Record<string, Deal>);
+### Key Risk Factors:
+1. Competition from established vendors in this space
+2. Budget constraints indicated in previous discussions
+3. Decision timeline may be extended due to stakeholder alignment
 
-  const initialValues = computeValues(initialDeals);
-  const initialKanban = updateKanbanColumns(initialDeals);
+### Opportunities:
+1. Strong need for our specific features that solve their pain points
+2. Champion within the organization is supportive
+3. Potential for expanded deployment in other departments
 
-  return {
-    deals: initialDeals,
-    totalPipelineValue: initialValues.totalPipelineValue,
-    stageValues: initialValues.stageValues,
-    columns: initialKanban.columns,
-    columnOrder: initialKanban.columnOrder,
-    isLoading: false,
-    error: null,
-    selectedDeal: null,
-    aiInsight: null,
-    isAnalyzing: false,
+### Recommended Actions:
+1. Schedule a technical deep dive with their IT team
+2. Prepare ROI analysis demonstrating 18-month value
+3. Identify and engage additional stakeholders in the finance department
+4. Consider offering phased implementation to reduce initial investment
 
-    addDeal: (deal) =>
-      set((state) => {
-        const newDeals = { ...state.deals, [deal.id]: deal };
-        const computed = computeValues(newDeals);
-        const kanban = updateKanbanColumns(newDeals);
-        return {
-          deals: newDeals,
-          totalPipelineValue: computed.totalPipelineValue,
-          stageValues: computed.stageValues,
-          ...kanban,
-        };
-      }),
+This deal is currently in the ${deal.stage} stage and has been there for ${deal.daysInStage || 0} days. The average deal at this value point typically closes within 30 days from this stage.`;
+      
+      set({ 
+        aiInsight: insights,
+        isAnalyzing: false
+      });
+    } catch (error) {
+      console.error('Error generating AI insight:', error);
+      set({ 
+        isAnalyzing: false,
+        error: error instanceof Error ? error.message : 'Failed to generate AI insight'
+      });
+    }
+  }
+}));
 
-    updateDeal: (id, updates) =>
-      set((state) => {
-        const newDeals = {
-          ...state.deals,
-          [id]: { ...state.deals[id], ...updates, updatedAt: new Date().toISOString() },
-        };
-        const computed = computeValues(newDeals);
-        const kanban = updateKanbanColumns(newDeals);
-        return {
-          deals: newDeals,
-          totalPipelineValue: computed.totalPipelineValue,
-          stageValues: computed.stageValues,
-          ...kanban,
-        };
-      }),
-
-    deleteDeal: (id) =>
-      set((state) => {
-        const newDeals = { ...state.deals };
-        delete newDeals[id];
-        const computed = computeValues(newDeals);
-        const kanban = updateKanbanColumns(newDeals);
-        return {
-          deals: newDeals,
-          totalPipelineValue: computed.totalPipelineValue,
-          stageValues: computed.stageValues,
-          ...kanban,
-        };
-      }),
-
-    getDeal: (id) => get().deals[id],
-
-    selectDeal: (deal) => set({ selectedDeal: deal }),
-
-    moveDealToStage: (dealId, newStage) => {
-      const { updateDeal } = get();
-      updateDeal(dealId, { stage: newStage });
-    },
-
-    generateAiInsight: async (deal) => {
-      set({ isAnalyzing: true, aiInsight: null });
-      try {
-        // Mock AI insight generation
-        const insights = [
-          `Deal ${deal.title} has a ${deal.probability}% probability of closing. Consider focusing on addressing budget concerns.`,
-          `Based on deal size ($${deal.value.toLocaleString()}) and stage, this opportunity shows strong potential. Recommend scheduling technical demo.`,
-          `Deal timeline suggests urgency. Contact ${deal.company} within 48 hours to maintain momentum.`,
-          `High-value opportunity detected. Consider involving senior stakeholders for better closing rate.`
-        ];
-        
-        const randomInsight = insights[Math.floor(Math.random() * insights.length)];
-        
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        set({ aiInsight: randomInsight, isAnalyzing: false });
-      } catch (error) {
-        console.error('Error generating AI insight:', error);
-        set({ isAnalyzing: false, error: 'Failed to generate AI insight' });
-      }
-    },
-
-    // API methods
-    fetchDeals: async () => {
-      set({ isLoading: true, error: null });
-      try {
-        const response = await fetch('/api/deals');
-        if (!response.ok) {
-          throw new Error('Failed to fetch deals');
-        }
-        const apiDeals = await response.json();
-        
-        // Transform API data to match Deal interface
-        const deals = apiDeals.reduce((acc: Record<string, Deal>, apiDeal: any) => {
-          acc[apiDeal.id] = {
-            id: apiDeal.id,
-            title: apiDeal.title,
-            company: apiDeal.company,
-            value: typeof apiDeal.value === 'string' ? parseFloat(apiDeal.value) : apiDeal.value,
-            stage: apiDeal.stage,
-            probability: typeof apiDeal.probability === 'string' ? parseFloat(apiDeal.probability) : apiDeal.probability,
-            closeDate: apiDeal.expectedCloseDate || apiDeal.closeDate || '',
-            contactId: apiDeal.contactId,
-            createdAt: apiDeal.createdAt,
-            updatedAt: apiDeal.updatedAt,
-            contact: apiDeal.contact,
-            priority: apiDeal.priority,
-            notes: apiDeal.notes,
-            dueDate: apiDeal.dueDate,
-            tags: apiDeal.tags || [],
-            lastActivity: apiDeal.lastActivityDate,
-            isFavorite: apiDeal.isFavorite || false,
-            contactAvatar: apiDeal.contactAvatar,
-            companyAvatar: apiDeal.companyAvatar,
-            customFields: apiDeal.customFields || {},
-            socialProfiles: apiDeal.socialProfiles || {},
-            lastEnrichment: apiDeal.lastEnrichment
-          };
-          return acc;
-        }, {});
-        
-        const computed = computeValues(deals);
-        const kanban = updateKanbanColumns(deals);
-        set({ deals, ...computed, ...kanban, isLoading: false });
-      } catch (error) {
-        console.error('Error fetching deals:', error);
-        // Fallback to mock data if API fails
-        const fallbackDeals = mockDeals.reduce((acc, deal) => {
-          acc[deal.id] = deal;
-          return acc;
-        }, {} as Record<string, Deal>);
-        
-        const computed = computeValues(fallbackDeals);
-        const kanban = updateKanbanColumns(fallbackDeals);
-        set({ deals: fallbackDeals, ...computed, ...kanban, isLoading: false, error: 'Using fallback data' });
-      }
-    },
-
-    createDeal: async (dealData) => {
-      try {
-        const response = await fetch('/api/deals', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(dealData),
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to create deal');
-        }
-        
-        const newDeal = await response.json();
-        get().addDeal(newDeal);
-        return newDeal;
-      } catch (error) {
-        console.error('Error creating deal:', error);
-        throw error;
-      }
-    },
-
-    updateDealApi: async (id, updates) => {
-      try {
-        const response = await fetch(`/api/deals/${id}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updates),
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to update deal');
-        }
-        
-        const updatedDeal = await response.json();
-        get().updateDeal(id, updatedDeal);
-        return updatedDeal;
-      } catch (error) {
-        console.error('Error updating deal:', error);
-        throw error;
-      }
-    },
-
-    deleteDealApi: async (id) => {
-      try {
-        const response = await fetch(`/api/deals/${id}`, {
-          method: 'DELETE',
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to delete deal');
-        }
-        
-        get().deleteDeal(id);
-      } catch (error) {
-        console.error('Error deleting deal:', error);
-        throw error;
-      }
-    },
-  };
-});
+// Helper function to calculate stage values
+function calculateStageValues(deals: Record<string, Deal>, columns: Record<string, Column>) {
+  const stageValues: Record<string, number> = {};
+  
+  Object.keys(columns).forEach(columnId => {
+    const column = columns[columnId];
+    const totalValue = column.dealIds.reduce((sum, dealId) => {
+      return sum + (deals[dealId]?.value || 0);
+    }, 0);
+    
+    stageValues[columnId] = totalValue;
+  });
+  
+  return stageValues;
+}

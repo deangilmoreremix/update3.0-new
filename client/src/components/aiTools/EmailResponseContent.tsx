@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { edgeFunctionService } from '../../services/edgeFunctionService';
+import { useGemini } from '../../services/geminiService';
 import AIToolContent from '../shared/AIToolContent';
 import { Mail, Reply, User, Briefcase, RefreshCw, Copy, Check } from 'lucide-react';
 
@@ -16,6 +16,8 @@ const EmailResponseContent: React.FC = () => {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+
+  const gemini = useGemini();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -39,13 +41,13 @@ const EmailResponseContent: React.FC = () => {
         company: formData.contactCompany
       };
       
-      const response = await edgeFunctionService.callAIFunction('/api/ai/email-response', {
-        originalEmail: formData.originalEmail,
-        responseType: 'professional',
-        context: `Contact: ${contactInfo.name} (${contactInfo.position}) from ${contactInfo.company}. Deal Context: ${formData.dealContext}`
-      });
+      const emailResponse = await gemini.generateEmailResponse(
+        formData.originalEmail,
+        contactInfo,
+        formData.dealContext
+      );
       
-      setResult(response.result);
+      setResult(emailResponse);
       setCopied(false);
     } catch (err) {
       console.error('Error generating email response:', err);

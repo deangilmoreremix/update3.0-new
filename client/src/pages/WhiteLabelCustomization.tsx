@@ -1,40 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Palette, Upload, Eye, Save, RotateCcw, Sparkles, Globe, Code, Monitor, Mail, Plus, Trash2, ExternalLink, Settings, ShoppingCart, Edit, Shield, TestTube, Activity, TrendingUp, Users, BarChart3, Calendar, Search } from 'lucide-react';
+import { Palette, Upload, Eye, Save, RotateCcw, Sparkles, Globe, Code, Monitor, Mail } from 'lucide-react';
 import { useTenant } from '../components/TenantProvider';
 import { ConditionalRender } from '../components/RoleBasedAccess';
-import DomainAnalytics from '../components/analytics/DomainAnalytics';
-import AutoSSL from '../components/security/AutoSSL';
-import DomainHealthMonitor from '../components/monitoring/DomainHealthMonitor';
-import ABTestingManager from '../components/testing/ABTestingManager';
-
-interface DomainConfig {
-  id: string;
-  domain: string;
-  type: 'primary' | 'sales' | 'support' | 'custom';
-  isActive: boolean;
-  sslStatus: 'pending' | 'active' | 'failed';
-  salesPageTemplate?: string;
-  customSettings?: {
-    redirectUrl?: string;
-    analyticsId?: string;
-    conversionTracking?: string;
-  };
-}
-
-interface SalesPageConfig {
-  id: string;
-  name: string;
-  template: string;
-  domain: string;
-  headline: string;
-  subheadline: string;
-  ctaText: string;
-  ctaColor: string;
-  features: string[];
-  testimonials: any[];
-  pricing: any[];
-  isActive: boolean;
-}
 
 interface BrandingConfig {
   logo?: string;
@@ -46,8 +13,7 @@ interface BrandingConfig {
   textColor: string;
   companyName: string;
   tagline?: string;
-  domains: DomainConfig[];
-  salesPages: SalesPageConfig[];
+  customDomain?: string;
   customCSS?: string;
   footerText?: string;
   loginPageConfig: {
@@ -67,8 +33,6 @@ interface BrandingConfig {
     customEmailTemplates: boolean;
     advancedBranding: boolean;
     whiteLabel: boolean;
-    multiDomain: boolean;
-    salesPageBuilder: boolean;
   };
 }
 
@@ -80,16 +44,6 @@ export default function WhiteLabelCustomization() {
     backgroundColor: '#FFFFFF',
     textColor: '#1F2937',
     companyName: '',
-    domains: [
-      {
-        id: '1',
-        domain: 'yourcrm.com',
-        type: 'primary',
-        isActive: true,
-        sslStatus: 'active'
-      }
-    ],
-    salesPages: [],
     loginPageConfig: {},
     emailConfig: {},
     features: {
@@ -98,8 +52,6 @@ export default function WhiteLabelCustomization() {
       customEmailTemplates: false,
       advancedBranding: false,
       whiteLabel: false,
-      multiDomain: false,
-      salesPageBuilder: false,
     },
   });
 
@@ -164,16 +116,6 @@ export default function WhiteLabelCustomization() {
         backgroundColor: '#FFFFFF',
         textColor: '#1F2937',
         companyName: '',
-        domains: [
-          {
-            id: '1',
-            domain: 'yourcrm.com',
-            type: 'primary',
-            isActive: true,
-            sslStatus: 'active'
-          }
-        ],
-        salesPages: [],
         loginPageConfig: {},
         emailConfig: {},
         features: {
@@ -182,8 +124,6 @@ export default function WhiteLabelCustomization() {
           customEmailTemplates: false,
           advancedBranding: false,
           whiteLabel: false,
-          multiDomain: false,
-          salesPageBuilder: false,
         },
       });
     }
@@ -247,73 +187,6 @@ export default function WhiteLabelCustomization() {
     });
   };
 
-  const addDomain = () => {
-    const newDomain: DomainConfig = {
-      id: Date.now().toString(),
-      domain: '',
-      type: 'custom',
-      isActive: false,
-      sslStatus: 'pending'
-    };
-    setConfig({
-      ...config,
-      domains: [...config.domains, newDomain]
-    });
-  };
-
-  const updateDomain = (domainId: string, updates: Partial<DomainConfig>) => {
-    setConfig({
-      ...config,
-      domains: config.domains.map(domain => 
-        domain.id === domainId ? { ...domain, ...updates } : domain
-      )
-    });
-  };
-
-  const removeDomain = (domainId: string) => {
-    setConfig({
-      ...config,
-      domains: config.domains.filter(domain => domain.id !== domainId)
-    });
-  };
-
-  const addSalesPage = () => {
-    const newSalesPage: SalesPageConfig = {
-      id: Date.now().toString(),
-      name: 'New Sales Page',
-      template: 'modern',
-      domain: config.domains[0]?.domain || '',
-      headline: 'Transform Your Business Today',
-      subheadline: 'Discover the power of our solution',
-      ctaText: 'Get Started Now',
-      ctaColor: config.primaryColor,
-      features: [],
-      testimonials: [],
-      pricing: [],
-      isActive: false
-    };
-    setConfig({
-      ...config,
-      salesPages: [...config.salesPages, newSalesPage]
-    });
-  };
-
-  const updateSalesPage = (pageId: string, updates: Partial<SalesPageConfig>) => {
-    setConfig({
-      ...config,
-      salesPages: config.salesPages.map(page => 
-        page.id === pageId ? { ...page, ...updates } : page
-      )
-    });
-  };
-
-  const removeSalesPage = (pageId: string) => {
-    setConfig({
-      ...config,
-      salesPages: config.salesPages.filter(page => page.id !== pageId)
-    });
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -326,91 +199,38 @@ export default function WhiteLabelCustomization() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
-      {/* Modern Dashboard Header */}
-      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl shadow-lg border-b border-white/20 dark:border-gray-700/50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Header */}
+      <div className="bg-white dark:bg-gray-800 shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-8">
+          <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
-              <div className="p-3 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 mr-4">
-                <Palette className="h-8 w-8 text-white" />
-              </div>
+              <Palette className="h-8 w-8 text-purple-600 mr-3" />
               <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                   White-Label Customization
                 </h1>
-                <p className="text-lg text-gray-600 dark:text-gray-300 mt-1">
-                  Transform your brand identity with advanced customization tools
+                <p className="text-gray-600 dark:text-gray-300">
+                  Customize your brand identity and user experience
                 </p>
               </div>
             </div>
             <div className="flex gap-3">
               <button
                 onClick={resetToDefaults}
-                className="px-6 py-3 text-gray-600 dark:text-gray-300 bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-white/90 dark:hover:bg-gray-700/90 flex items-center gap-2 transition-all duration-200"
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2"
               >
-                <RotateCcw className="h-5 w-5" />
+                <RotateCcw className="h-4 w-4" />
                 Reset
               </button>
               <button
                 onClick={saveBrandingConfig}
                 disabled={isSaving}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
               >
-                <Save className="h-5 w-5" />
+                <Save className="h-4 w-4" />
                 {isSaving ? 'Saving...' : 'Save Changes'}
               </button>
-            </div>
-          </div>
-          
-          {/* Enhanced KPI Summary */}
-          <div className="pb-8">
-            <div className="p-6 rounded-xl border border-white/20 dark:border-gray-700/50 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm">
-              <div className="flex flex-wrap items-center justify-between gap-6">
-                <div className="flex items-center">
-                  <div className="p-3 rounded-lg bg-blue-500/20 dark:bg-blue-500/30 mr-4">
-                    <Settings className="h-6 w-6 text-blue-500" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Active Features</div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {Object.values(config.features).filter(f => f).length}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center">
-                  <div className="p-3 rounded-lg bg-purple-500/20 dark:bg-purple-500/30 mr-4">
-                    <Shield className="h-6 w-6 text-purple-500" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">SSL Status</div>
-                    <div className="text-2xl font-bold text-green-600 dark:text-green-400">Secure</div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center">
-                  <div className="p-3 rounded-lg bg-green-500/20 dark:bg-green-500/30 mr-4">
-                    <Globe className="h-6 w-6 text-green-500" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Domains</div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {config.domains.length}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center">
-                  <div className="p-3 rounded-lg bg-pink-500/20 dark:bg-pink-500/30 mr-4">
-                    <BarChart3 className="h-6 w-6 text-pink-500" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Performance</div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">98.5%</div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -420,27 +240,22 @@ export default function WhiteLabelCustomization() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Configuration Panel */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Modern Navigation Tabs */}
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-xl border border-white/20 dark:border-gray-700/50 shadow-lg p-2">
-              <nav className="flex flex-wrap gap-2">
+            {/* Navigation Tabs */}
+            <div className="border-b border-gray-200 dark:border-gray-700">
+              <nav className="-mb-px flex space-x-8">
                 {[
                   { id: 'basic', label: 'Basic Branding', icon: Palette },
                   { id: 'advanced', label: 'Advanced', icon: Sparkles },
                   { id: 'domain', label: 'Domain & URLs', icon: Globe },
-                  { id: 'sales', label: 'Sales Pages', icon: ShoppingCart },
-                  { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-                  { id: 'ssl', label: 'SSL Security', icon: Shield },
-                  { id: 'monitoring', label: 'Monitoring', icon: Activity },
-                  { id: 'testing', label: 'A/B Testing', icon: TestTube },
                   { id: 'code', label: 'Custom Code', icon: Code },
                 ].map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`px-4 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-200 ${
+                    className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${
                       activeTab === tab.id
-                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg transform scale-105'
-                        : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                        ? 'border-purple-500 text-purple-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   >
                     <tab.icon className="h-4 w-4" />
@@ -454,9 +269,8 @@ export default function WhiteLabelCustomization() {
             {activeTab === 'basic' && (
               <div className="space-y-6">
                 {/* Company Information */}
-                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-6 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                    <Settings className="h-5 w-5 text-purple-500" />
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                     Company Information
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -488,9 +302,8 @@ export default function WhiteLabelCustomization() {
                 </div>
 
                 {/* Logo Upload */}
-                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-6 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                    <Upload className="h-5 w-5 text-blue-500" />
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                     Logo & Assets
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -548,9 +361,8 @@ export default function WhiteLabelCustomization() {
                 </div>
 
                 {/* Color Scheme */}
-                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-6 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                    <Palette className="h-5 w-5 text-pink-500" />
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                     Color Scheme
                   </h3>
                   
@@ -645,9 +457,8 @@ export default function WhiteLabelCustomization() {
             {activeTab === 'advanced' && (
               <div className="space-y-6">
                 {/* Login Page Customization */}
-                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-6 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-blue-500" />
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                     Login Page Customization
                   </h3>
                   <div className="space-y-4">
@@ -695,9 +506,8 @@ export default function WhiteLabelCustomization() {
                 </div>
 
                 {/* Email Configuration */}
-                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-6 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                    <Mail className="h-5 w-5 text-green-500" />
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                     Email Branding
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -735,9 +545,8 @@ export default function WhiteLabelCustomization() {
                 </div>
 
                 {/* Feature Toggles */}
-                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-6 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                    <Sparkles className="h-5 w-5 text-purple-500" />
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                     White-Label Features
                   </h3>
                   <div className="space-y-4">
@@ -747,8 +556,6 @@ export default function WhiteLabelCustomization() {
                       { key: 'customEmailTemplates', label: 'Custom email templates', description: 'Branded email communications' },
                       { key: 'advancedBranding', label: 'Advanced branding options', description: 'CSS customization and more' },
                       { key: 'whiteLabel', label: 'Complete white-label mode', description: 'Remove all platform branding' },
-                      { key: 'multiDomain', label: 'Multi-domain support', description: 'Use multiple custom domains' },
-                      { key: 'salesPageBuilder', label: 'Sales page builder', description: 'Create custom sales pages' },
                     ].map((feature) => (
                       <div key={feature.key} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                         <div>
@@ -782,377 +589,27 @@ export default function WhiteLabelCustomization() {
 
             {/* Domain Tab */}
             {activeTab === 'domain' && (
-              <div className="space-y-6">
-                {/* Domain Management */}
-                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-6 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                      <Globe className="h-5 w-5 text-blue-500" />
-                      Domain Management
-                    </h3>
-                    <button
-                      onClick={addDomain}
-                      className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-                    >
-                      <Plus className="h-4 w-4" />
-                      Add Domain
-                    </button>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    {config.domains.map((domain) => (
-                      <div key={domain.id} className="border border-gray-200 rounded-lg p-4">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Domain Name
-                            </label>
-                            <input
-                              type="text"
-                              value={domain.domain}
-                              onChange={(e) => updateDomain(domain.id, { domain: e.target.value })}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                              placeholder="example.com"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Type
-                            </label>
-                            <select
-                              value={domain.type}
-                              onChange={(e) => updateDomain(domain.id, { type: e.target.value as any })}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                            >
-                              <option value="primary">Primary</option>
-                              <option value="sales">Sales Page</option>
-                              <option value="support">Support</option>
-                              <option value="custom">Custom</option>
-                            </select>
-                          </div>
-                          <div className="flex items-end gap-2">
-                            <div className="flex-1">
-                              <label className="block text-sm font-medium text-gray-700 mb-1">
-                                SSL Status
-                              </label>
-                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                domain.sslStatus === 'active' ? 'bg-green-100 text-green-800' :
-                                domain.sslStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                'bg-red-100 text-red-800'
-                              }`}>
-                                {domain.sslStatus}
-                              </span>
-                            </div>
-                            {domain.type !== 'primary' && (
-                              <button
-                                onClick={() => removeDomain(domain.id)}
-                                className="p-2 text-red-500 hover:text-red-700"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                        
-                        {domain.type === 'sales' && (
-                          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                            <h4 className="font-medium text-gray-900 mb-2">Sales Page Settings</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Analytics ID
-                                </label>
-                                <input
-                                  type="text"
-                                  value={domain.customSettings?.analyticsId || ''}
-                                  onChange={(e) => updateDomain(domain.id, {
-                                    customSettings: { ...domain.customSettings, analyticsId: e.target.value }
-                                  })}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                  placeholder="UA-XXXXXX-X"
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Conversion Tracking
-                                </label>
-                                <input
-                                  type="text"
-                                  value={domain.customSettings?.conversionTracking || ''}
-                                  onChange={(e) => updateDomain(domain.id, {
-                                    customSettings: { ...domain.customSettings, conversionTracking: e.target.value }
-                                  })}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                  placeholder="GTM-XXXXXX"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                  Domain Configuration
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Custom Domain
+                    </label>
+                    <input
+                      type="text"
+                      value={config.customDomain || ''}
+                      onChange={(e) => setConfig({ ...config, customDomain: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="crm.yourcompany.com"
+                    />
+                    <p className="text-sm text-gray-500 mt-1">
+                      Point your domain's DNS to our servers to use a custom domain
+                    </p>
                   </div>
                 </div>
-                
-                {/* DNS Configuration Guide */}
-                <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg">
-                  <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
-                    DNS Configuration Guide
-                  </h4>
-                  <p className="text-blue-700 dark:text-blue-300 text-sm mb-3">
-                    To use custom domains, configure your DNS records as follows:
-                  </p>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <code className="bg-blue-100 dark:bg-blue-800 px-2 py-1 rounded">CNAME</code>
-                      <span className="text-blue-700 dark:text-blue-300">Point your domain to: crm.yourplatform.com</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <code className="bg-blue-100 dark:bg-blue-800 px-2 py-1 rounded">A Record</code>
-                      <span className="text-blue-700 dark:text-blue-300">IP: 192.168.1.100</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Sales Pages Tab */}
-            {activeTab === 'sales' && (
-              <div className="space-y-6">
-                {/* Sales Page Management */}
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      Sales Page Templates
-                    </h3>
-                    <button
-                      onClick={addSalesPage}
-                      className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-                    >
-                      <Plus className="h-4 w-4" />
-                      Create Sales Page
-                    </button>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    {config.salesPages.map((page) => (
-                      <div key={page.id} className="border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-4">
-                          <h4 className="font-medium text-gray-900">{page.name}</h4>
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => updateSalesPage(page.id, { isActive: !page.isActive })}
-                              className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                page.isActive 
-                                  ? 'bg-green-100 text-green-800' 
-                                  : 'bg-gray-100 text-gray-800'
-                              }`}
-                            >
-                              {page.isActive ? 'Active' : 'Inactive'}
-                            </button>
-                            <button
-                              onClick={() => removeSalesPage(page.id)}
-                              className="p-1 text-red-500 hover:text-red-700"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Page Name
-                            </label>
-                            <input
-                              type="text"
-                              value={page.name}
-                              onChange={(e) => updateSalesPage(page.id, { name: e.target.value })}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Template
-                            </label>
-                            <select
-                              value={page.template}
-                              onChange={(e) => updateSalesPage(page.id, { template: e.target.value })}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                            >
-                              <option value="modern">Modern</option>
-                              <option value="classic">Classic</option>
-                              <option value="minimal">Minimal</option>
-                              <option value="premium">Premium</option>
-                            </select>
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Domain
-                            </label>
-                            <select
-                              value={page.domain}
-                              onChange={(e) => updateSalesPage(page.id, { domain: e.target.value })}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                            >
-                              {config.domains.map((domain) => (
-                                <option key={domain.id} value={domain.domain}>
-                                  {domain.domain}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Status
-                            </label>
-                            <div className="flex items-center gap-2">
-                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                page.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                              }`}>
-                                {page.isActive ? 'Published' : 'Draft'}
-                              </span>
-                              <button className="p-1 text-blue-500 hover:text-blue-700">
-                                <ExternalLink className="h-4 w-4" />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="mt-4 space-y-3">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Headline
-                            </label>
-                            <input
-                              type="text"
-                              value={page.headline}
-                              onChange={(e) => updateSalesPage(page.id, { headline: e.target.value })}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Subheadline
-                            </label>
-                            <input
-                              type="text"
-                              value={page.subheadline}
-                              onChange={(e) => updateSalesPage(page.id, { subheadline: e.target.value })}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                            />
-                          </div>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-1">
-                                CTA Text
-                              </label>
-                              <input
-                                type="text"
-                                value={page.ctaText}
-                                onChange={(e) => updateSalesPage(page.id, { ctaText: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-1">
-                                CTA Color
-                              </label>
-                              <input
-                                type="color"
-                                value={page.ctaColor}
-                                onChange={(e) => updateSalesPage(page.id, { ctaColor: e.target.value })}
-                                className="w-full h-10 px-1 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                    
-                    {config.salesPages.length === 0 && (
-                      <div className="text-center py-12">
-                        <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No Sales Pages Yet</h3>
-                        <p className="text-gray-500 mb-4">Create your first sales page to get started</p>
-                        <button
-                          onClick={addSalesPage}
-                          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto"
-                        >
-                          <Plus className="h-4 w-4" />
-                          Create Sales Page
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                
-                {/* Template Library */}
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                  <h4 className="font-medium text-gray-900 dark:text-white mb-4">
-                    Available Templates
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {[
-                      { name: 'Modern', description: 'Clean, contemporary design', preview: '/templates/modern.jpg' },
-                      { name: 'Classic', description: 'Traditional business layout', preview: '/templates/classic.jpg' },
-                      { name: 'Minimal', description: 'Simple, focused design', preview: '/templates/minimal.jpg' },
-                      { name: 'Premium', description: 'High-end, professional', preview: '/templates/premium.jpg' }
-                    ].map((template) => (
-                      <div key={template.name} className="border border-gray-200 rounded-lg p-3 hover:border-purple-500 transition-colors">
-                        <div className="aspect-video bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
-                          <span className="text-gray-500 text-sm">{template.name} Preview</span>
-                        </div>
-                        <h5 className="font-medium text-gray-900 mb-1">{template.name}</h5>
-                        <p className="text-sm text-gray-500">{template.description}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Analytics Tab */}
-            {activeTab === 'analytics' && (
-              <div className="space-y-6">
-                <DomainAnalytics 
-                  domainId={config.domains[0]?.id || '1'} 
-                  domainName={config.domains[0]?.domain || 'demo.com'} 
-                />
-              </div>
-            )}
-
-            {/* SSL Security Tab */}
-            {activeTab === 'ssl' && (
-              <div className="space-y-6">
-                <AutoSSL 
-                  tenantId={tenant?.id || 'demo'} 
-                  domains={config.domains} 
-                  onSSLUpdate={(domainId, sslStatus) => {
-                    updateDomain(domainId, { sslStatus: sslStatus as any });
-                  }}
-                />
-              </div>
-            )}
-
-            {/* Monitoring Tab */}
-            {activeTab === 'monitoring' && (
-              <div className="space-y-6">
-                <DomainHealthMonitor 
-                  tenantId={tenant?.id || 'demo'} 
-                  domains={config.domains} 
-                />
-              </div>
-            )}
-
-            {/* A/B Testing Tab */}
-            {activeTab === 'testing' && (
-              <div className="space-y-6">
-                <ABTestingManager 
-                  tenantId={tenant?.id || 'demo'} 
-                  domains={config.domains} 
-                  salesPages={config.salesPages} 
-                />
               </div>
             )}
 
@@ -1185,10 +642,9 @@ export default function WhiteLabelCustomization() {
           {/* Preview Panel */}
           <div className="space-y-6">
             {/* Preview Controls */}
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-4 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                  <Eye className="h-5 w-5 text-purple-500" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                   Live Preview
                 </h3>
                 <div className="flex gap-2">
@@ -1288,11 +744,8 @@ export default function WhiteLabelCustomization() {
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-4 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/50">
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                <Settings className="h-4 w-4 text-purple-500" />
-                Quick Actions
-              </h4>
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Quick Actions</h4>
               <div className="space-y-2">
                 <button
                   onClick={saveBrandingConfig}

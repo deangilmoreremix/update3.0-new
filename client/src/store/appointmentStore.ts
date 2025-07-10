@@ -1,343 +1,300 @@
 import { create } from 'zustand';
+import { v4 as uuidv4 } from 'uuid';
 
-interface Attendee {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
-  role?: string;
-}
+export type AppointmentType = 'in-person' | 'video' | 'phone';
+export type AppointmentStatus = 'scheduled' | 'completed' | 'canceled' | 'no-show';
 
-interface Appointment {
+export interface Appointment {
   id: string;
   title: string;
-  description?: string;
-  startTime: string;
-  endTime: string;
-  attendees: Attendee[];
   contactId?: string;
-  dealId?: string;
-  type: 'meeting' | 'call' | 'demo' | 'other';
-  status: 'scheduled' | 'completed' | 'cancelled';
-  priority?: 'low' | 'medium' | 'high';
+  contactName: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  date: Date;
+  endDate: Date;
+  duration: number; // in minutes
+  type: AppointmentType;
   location?: string;
-  agenda?: string[];
-  aiInsights?: {
-    urgency: number;
-    importance: number;
-    conflictRisk: number;
-    successProbability: number;
-    preparationSuggestions?: string[];
-    meetingNotes?: string;
-    actionItems?: string[];
-    sentiment?: { score: number; label: string };
-  };
-  createdAt: string;
-  updatedAt: string;
+  notes?: string;
+  status: AppointmentStatus;
+  reminders?: string[];
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
 }
 
 interface AppointmentState {
   appointments: Record<string, Appointment>;
-  addAppointment: (appointment: Appointment) => void;
-  updateAppointment: (id: string, updates: Partial<Appointment>) => void;
-  deleteAppointment: (id: string) => void;
-  getAppointment: (id: string) => Appointment | undefined;
-  // API methods
+  isLoading: boolean;
+  error: string | null;
+  selectedSlot: Date | null;
+  selectedAppointment: string | null;
+  
+  // Actions
   fetchAppointments: () => Promise<void>;
-  createAppointment: (appointmentData: Partial<Appointment>) => Promise<Appointment>;
-  updateAppointmentApi: (id: string, updates: Partial<Appointment>) => Promise<Appointment>;
-  deleteAppointmentApi: (id: string) => Promise<void>;
+  createAppointment: (appointment: Partial<Appointment>) => Promise<Appointment>;
+  updateAppointment: (id: string, appointment: Partial<Appointment>) => Promise<Appointment>;
+  deleteAppointment: (id: string) => Promise<void>;
+  selectAppointment: (id: string | null) => void;
+  selectTimeSlot: (date: Date | null) => void;
+  isTimeSlotAvailable: (date: Date, duration?: number) => boolean;
+  getAppointmentsForDate: (date: Date) => Appointment[];
+  getUpcomingAppointments: (limit?: number) => Appointment[];
 }
 
-// Enhanced mock appointment data with AI features
-const mockAppointments: Appointment[] = [
-  {
-    id: '1',
-    title: 'Product Demo - TechCorp',
-    description: 'Demonstrate new AI features and discuss implementation timeline',
-    startTime: '2025-01-15T14:00:00Z',
-    endTime: '2025-01-15T15:00:00Z',
-    attendees: [
-      {
-        id: 'att1',
-        name: 'Sarah Johnson',
-        email: 'sarah.johnson@techcorp.com',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
-        role: 'CTO'
-      },
-      {
-        id: 'att2',
-        name: 'Sales Rep',
-        email: 'sales@company.com',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sales',
-        role: 'Sales Representative'
-      }
-    ],
-    contactId: '1',
-    dealId: '1',
-    type: 'demo',
-    status: 'scheduled',
-    priority: 'high',
-    location: 'Zoom Meeting',
-    agenda: ['Product overview', 'Feature demonstration', 'Q&A session', 'Next steps discussion'],
-    aiInsights: {
-      urgency: 85,
-      importance: 90,
-      conflictRisk: 10,
-      successProbability: 88,
-      preparationSuggestions: [
-        'Review TechCorp\'s recent tech stack updates',
-        'Prepare case studies from similar enterprise clients',
-        'Demo environment ready with TechCorp-specific use cases'
-      ]
-    },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '2',
-    title: 'Discovery Call - Innovate AI',
-    description: 'Understand requirements and pain points for AI integration',
-    startTime: '2025-01-16T10:00:00Z',
-    endTime: '2025-01-16T11:00:00Z',
-    attendees: [
-      {
-        id: 'att3',
-        name: 'Michael Chen',
-        email: 'mchen@innovate.ai',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael',
-        role: 'VP of Engineering'
-      },
-      {
-        id: 'att4',
-        name: 'Account Manager',
-        email: 'am@company.com',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Manager',
-        role: 'Account Manager'
-      }
-    ],
-    contactId: '2',
-    dealId: '2',
-    type: 'call',
-    status: 'scheduled',
-    priority: 'medium',
-    location: 'Google Meet',
-    agenda: ['Company overview', 'Current challenges', 'Solution exploration', 'Timeline discussion'],
-    aiInsights: {
-      urgency: 70,
-      importance: 75,
-      conflictRisk: 15,
-      successProbability: 72,
-      preparationSuggestions: [
-        'Research Innovate AI\'s current tech challenges',
-        'Prepare questions about their AI infrastructure',
-        'Have competitor comparison ready'
-      ]
-    },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '3',
-    title: 'Contract Review - Global Tech',
-    description: 'Final contract terms discussion and signing',
-    startTime: '2025-01-14T16:00:00Z',
-    endTime: '2025-01-14T17:00:00Z',
-    attendees: [
-      {
-        id: 'att5',
-        name: 'Elena Rodriguez',
-        email: 'e.rodriguez@globaltech.com',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Elena',
-        role: 'Legal Counsel'
-      },
-      {
-        id: 'att6',
-        name: 'Legal Team',
-        email: 'legal@company.com',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Legal',
-        role: 'Legal Representative'
-      }
-    ],
-    contactId: '3',
-    dealId: '3',
-    type: 'meeting',
-    status: 'completed',
-    priority: 'high',
-    location: 'Conference Room A',
-    agenda: ['Contract review', 'Terms negotiation', 'Signing ceremony'],
-    aiInsights: {
-      urgency: 95,
-      importance: 95,
-      conflictRisk: 5,
-      successProbability: 95,
-      meetingNotes: 'Successful contract signing. All terms agreed upon.',
-      actionItems: ['Send signed contracts to both parties', 'Schedule kickoff meeting', 'Prepare onboarding materials'],
-      sentiment: { score: 0.9, label: 'positive' }
-    },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '4',
-    title: 'Technical Integration Meeting',
-    description: 'Discuss API integration and technical requirements',
-    startTime: '2025-01-17T09:00:00Z',
-    endTime: '2025-01-17T10:30:00Z',
-    attendees: [
-      {
-        id: 'att7',
-        name: 'Alex Kumar',
-        email: 'alex.kumar@startup.io',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex',
-        role: 'Lead Developer'
-      },
-      {
-        id: 'att8',
-        name: 'Tech Lead',
-        email: 'tech@company.com',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Tech',
-        role: 'Technical Lead'
-      }
-    ],
-    contactId: '4',
-    dealId: '4',
-    type: 'meeting',
-    status: 'scheduled',
-    priority: 'medium',
-    location: 'Microsoft Teams',
-    agenda: ['API documentation review', 'Integration timeline', 'Security requirements', 'Testing strategy'],
-    aiInsights: {
-      urgency: 60,
-      importance: 80,
-      conflictRisk: 20,
-      successProbability: 78,
-      preparationSuggestions: [
-        'Prepare API documentation and sandbox access',
-        'Review security compliance requirements',
-        'Have integration timeline templates ready'
-      ]
-    },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  }
-];
-
 export const useAppointmentStore = create<AppointmentState>((set, get) => ({
-  appointments: mockAppointments.reduce((acc, appointment) => {
-    acc[appointment.id] = appointment;
-    return acc;
-  }, {} as Record<string, Appointment>),
-
-  addAppointment: (appointment) =>
-    set((state) => ({
-      appointments: { ...state.appointments, [appointment.id]: appointment },
-    })),
-
-  updateAppointment: (id, updates) =>
-    set((state) => ({
-      appointments: {
-        ...state.appointments,
-        [id]: { ...state.appointments[id], ...updates, updatedAt: new Date().toISOString() },
-      },
-    })),
-
-  deleteAppointment: (id) =>
-    set((state) => {
-      const newAppointments = { ...state.appointments };
-      delete newAppointments[id];
-      return { appointments: newAppointments };
-    }),
-
-  getAppointment: (id) => get().appointments[id],
-
-  // API methods
+  appointments: {
+    'appt-1': {
+      id: 'appt-1',
+      title: 'Product Demo',
+      contactName: 'John Doe',
+      contactEmail: 'john.doe@example.com',
+      contactPhone: '(555) 123-4567',
+      date: new Date(new Date().setHours(10, 0, 0, 0)), // Today at 10:00 AM
+      endDate: new Date(new Date().setHours(10, 30, 0, 0)), // Today at 10:30 AM
+      duration: 30,
+      type: 'video',
+      notes: 'Focus on enterprise features',
+      status: 'scheduled',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userId: 'demo-user-123'
+    },
+    'appt-2': {
+      id: 'appt-2',
+      title: 'Initial Consultation',
+      contactName: 'Jane Smith',
+      contactEmail: 'jane.smith@example.com',
+      contactPhone: '(555) 987-6543',
+      date: new Date(new Date().setHours(14, 30, 0, 0)), // Today at 2:30 PM
+      endDate: new Date(new Date().setHours(15, 30, 0, 0)), // Today at 3:30 PM
+      duration: 60,
+      type: 'in-person',
+      location: '123 Business St, Suite 101',
+      notes: 'Discuss project requirements and timeline',
+      status: 'scheduled',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userId: 'demo-user-123'
+    },
+    'appt-3': {
+      id: 'appt-3',
+      title: 'Follow-up Call',
+      contactName: 'Robert Johnson',
+      contactEmail: 'robert@example.com',
+      contactPhone: '(555) 456-7890',
+      // Fix: avoid duplicate date property by setting both date and endDate correctly
+      date: new Date(new Date(new Date().setDate(new Date().getDate() + 1)).setHours(11, 0, 0, 0)), // Tomorrow at 11:00 AM
+      endDate: new Date(new Date(new Date().setDate(new Date().getDate() + 1)).setHours(11, 15, 0, 0)), // Tomorrow at 11:15 AM
+      duration: 15,
+      type: 'phone',
+      notes: 'Discuss proposal feedback',
+      status: 'scheduled',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userId: 'demo-user-123'
+    }
+  },
+  isLoading: false,
+  error: null,
+  selectedSlot: null,
+  selectedAppointment: null,
+  
   fetchAppointments: async () => {
+    set({ isLoading: true, error: null });
+    
     try {
-      const response = await fetch('/api/appointments');
-      if (!response.ok) {
-        throw new Error('Failed to fetch appointments');
-      }
-      const appointmentsArray = await response.json();
+      // In a real app, we would fetch appointments from an API
+      // For the demo, we'll just use our mock data
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      const appointments = appointmentsArray.reduce((acc: Record<string, Appointment>, appointment: Appointment) => {
-        acc[appointment.id] = appointment;
-        return acc;
-      }, {});
-      
-      set({ appointments });
-    } catch (error) {
-      console.error('Error fetching appointments:', error);
-      // Fallback to mock data if API fails
-      const fallbackAppointments = mockAppointments.reduce((acc, appointment) => {
-        acc[appointment.id] = appointment;
-        return acc;
-      }, {} as Record<string, Appointment>);
-      
-      set({ appointments: fallbackAppointments });
+      set({ isLoading: false });
+    } catch (err) {
+      console.error('Error fetching appointments:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to fetch appointments' 
+      });
     }
   },
-
-  createAppointment: async (appointmentData) => {
+  
+  createAppointment: async (appointmentData: Partial<Appointment>) => {
+    set({ isLoading: true, error: null });
+    
     try {
-      const response = await fetch('/api/appointments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(appointmentData),
+      // In a real app, we would send this to an API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const appointmentId = uuidv4();
+      const now = new Date();
+      
+      // Create end date by adding duration to start date
+      const endDate = new Date(appointmentData.date || now);
+      endDate.setMinutes(endDate.getMinutes() + (appointmentData.duration || 30));
+      
+      const newAppointment: Appointment = {
+        id: appointmentId,
+        title: appointmentData.title || 'New Appointment',
+        contactId: appointmentData.contactId,
+        contactName: appointmentData.contactName || 'No Contact',
+        contactEmail: appointmentData.contactEmail,
+        contactPhone: appointmentData.contactPhone,
+        date: appointmentData.date || now,
+        endDate: appointmentData.endDate || endDate,
+        duration: appointmentData.duration || 30,
+        type: appointmentData.type || 'video',
+        location: appointmentData.location,
+        notes: appointmentData.notes,
+        status: appointmentData.status || 'scheduled',
+        reminders: appointmentData.reminders,
+        createdAt: now,
+        updatedAt: now,
+        userId: 'demo-user-123'
+      };
+      
+      const { appointments } = get();
+      
+      set({ 
+        appointments: { ...appointments, [appointmentId]: newAppointment },
+        isLoading: false,
+        selectedSlot: null
       });
       
-      if (!response.ok) {
-        throw new Error('Failed to create appointment');
-      }
-      
-      const newAppointment = await response.json();
-      get().addAppointment(newAppointment);
       return newAppointment;
-    } catch (error) {
-      console.error('Error creating appointment:', error);
-      throw error;
+    } catch (err) {
+      console.error('Error creating appointment:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to create appointment' 
+      });
+      throw err;
     }
   },
-
-  updateAppointmentApi: async (id, updates) => {
+  
+  updateAppointment: async (id: string, appointmentData: Partial<Appointment>) => {
+    set({ isLoading: true, error: null });
+    
     try {
-      const response = await fetch(`/api/appointments/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updates),
-      });
+      // In a real app, we would send this to an API
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      if (!response.ok) {
-        throw new Error('Failed to update appointment');
+      const { appointments } = get();
+      const existingAppointment = appointments[id];
+      
+      if (!existingAppointment) {
+        throw new Error(`Appointment with id ${id} not found`);
       }
       
-      const updatedAppointment = await response.json();
-      get().updateAppointment(id, updatedAppointment);
+      // If duration changed, update the endDate
+      let endDate = appointmentData.endDate;
+      if (appointmentData.date && appointmentData.duration) {
+        endDate = new Date(appointmentData.date);
+        endDate.setMinutes(endDate.getMinutes() + appointmentData.duration);
+      } else if (appointmentData.date && !appointmentData.endDate) {
+        // If only date changed but not duration, recalculate endDate
+        endDate = new Date(appointmentData.date);
+        endDate.setMinutes(endDate.getMinutes() + (existingAppointment.duration || 30));
+      } else if (!appointmentData.date && appointmentData.duration) {
+        // If only duration changed but not date, recalculate endDate
+        endDate = new Date(existingAppointment.date);
+        endDate.setMinutes(endDate.getMinutes() + appointmentData.duration);
+      }
+      
+      const updatedAppointment: Appointment = {
+        ...existingAppointment,
+        ...appointmentData,
+        endDate: endDate || existingAppointment.endDate,
+        updatedAt: new Date()
+      };
+      
+      set({ 
+        appointments: { ...appointments, [id]: updatedAppointment },
+        isLoading: false 
+      });
+      
       return updatedAppointment;
-    } catch (error) {
-      console.error('Error updating appointment:', error);
-      throw error;
-    }
-  },
-
-  deleteAppointmentApi: async (id) => {
-    try {
-      const response = await fetch(`/api/appointments/${id}`, {
-        method: 'DELETE',
+    } catch (err) {
+      console.error('Error updating appointment:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to update appointment' 
       });
-      
-      if (!response.ok) {
-        throw new Error('Failed to delete appointment');
-      }
-      
-      get().deleteAppointment(id);
-    } catch (error) {
-      console.error('Error deleting appointment:', error);
-      throw error;
+      throw err;
     }
   },
+  
+  deleteAppointment: async (id: string) => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      // In a real app, we would send this to an API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const { appointments } = get();
+      const { [id]: deletedAppointment, ...remainingAppointments } = appointments;
+      
+      set({ 
+        appointments: remainingAppointments,
+        isLoading: false,
+        selectedAppointment: null
+      });
+    } catch (err) {
+      console.error('Error deleting appointment:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to delete appointment' 
+      });
+      throw err;
+    }
+  },
+  
+  selectAppointment: (id) => {
+    set({ selectedAppointment: id });
+  },
+  
+  selectTimeSlot: (date) => {
+    set({ selectedSlot: date });
+  },
+  
+  isTimeSlotAvailable: (date, duration = 30) => {
+    const { appointments } = get();
+    const startTime = date.getTime();
+    const endTime = new Date(date.getTime() + duration * 60000).getTime();
+    
+    return !Object.values(appointments).some(appointment => {
+      const apptStartTime = appointment.date.getTime();
+      const apptEndTime = appointment.endDate.getTime();
+      
+      // Check if there is any overlap
+      return (
+        (startTime >= apptStartTime && startTime < apptEndTime) || // New start time falls within existing appointment
+        (endTime > apptStartTime && endTime <= apptEndTime) || // New end time falls within existing appointment
+        (startTime <= apptStartTime && endTime >= apptEndTime) // New appointment completely contains existing appointment
+      );
+    });
+  },
+  
+  getAppointmentsForDate: (date) => {
+    const { appointments } = get();
+    
+    return Object.values(appointments).filter(appointment => {
+      const appointmentDate = new Date(appointment.date);
+      return (
+        date.getFullYear() === appointmentDate.getFullYear() &&
+        date.getMonth() === appointmentDate.getMonth() &&
+        date.getDate() === appointmentDate.getDate()
+      );
+    }).sort((a, b) => a.date.getTime() - b.date.getTime());
+  },
+  
+  getUpcomingAppointments: (limit = 5) => {
+    const { appointments } = get();
+    const now = new Date();
+    
+    return Object.values(appointments)
+      .filter(appointment => appointment.date >= now && appointment.status === 'scheduled')
+      .sort((a, b) => a.date.getTime() - b.date.getTime())
+      .slice(0, limit);
+  }
 }));

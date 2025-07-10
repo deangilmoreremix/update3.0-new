@@ -52,40 +52,20 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     try {
       setIsLoading(true);
       
-      // Check for JWT token
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setIsLoading(false);
-        return;
-      }
-
       // Get current user with role information
-      const headers: Record<string, string> = {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      };
-      
-      if (tenant) {
-        headers['X-Tenant-ID'] = tenant.id;
-      }
-
       const response = await fetch('/api/auth/user-role', {
-        headers
+        headers: tenant ? { 'X-Tenant-ID': tenant.id } : {},
       });
       
       if (response.ok) {
         const userData = await response.json();
         setUser(userData.user);
       } else {
-        // Token is invalid, remove it
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        // Silently handle non-200 responses during development
         console.debug('User role not available:', response.status);
       }
     } catch (error) {
-      // Remove invalid token
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      // Only log significant errors, not network failures during development
       console.debug('User role fetch skipped:', error instanceof Error ? error.message : 'Unknown error');
     } finally {
       setIsLoading(false);
@@ -178,10 +158,24 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }
 
-  // Authentication removed - allow all access
-  // No user checks, role checks, or permission checks needed
+  if (!user) {
+    return fallback;
+  }
 
-  // Resource-based access check removed - allow all resources
+  // Check role-based access
+  if (requiredRole && !hasRole(requiredRole)) {
+    return fallback;
+  }
+
+  // Check permission-based access
+  if (requiredPermission && !hasPermission(requiredPermission)) {
+    return fallback;
+  }
+
+  // Check resource-based access
+  if (resource && !canAccess(resource)) {
+    return fallback;
+  }
 
   return <>{children}</>;
 };

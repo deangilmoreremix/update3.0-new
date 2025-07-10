@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { edgeFunctionService } from '../../services/edgeFunctionService';
+import { useGemini } from '../../services/geminiService';
 import AIToolContent from '../shared/AIToolContent';
 import { Calendar, Users, FileText, RefreshCw, Copy, Check, Plus, Trash2, Clock } from 'lucide-react';
 
@@ -15,6 +15,8 @@ const MeetingAgendaContent: React.FC = () => {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+
+  const gemini = useGemini();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -65,15 +67,13 @@ const MeetingAgendaContent: React.FC = () => {
     setError(null);
     
     try {
-      const response = await edgeFunctionService.callAIFunction('/api/ai/meeting-agenda', {
-        meetingTitle: formData.meetingPurpose,
-        objective: formData.meetingPurpose,
-        duration: formData.meetingDuration,
-        attendees: validAttendees,
-        preparationNotes: formData.previousMeetingNotes || ''
-      });
+      const agenda = await gemini.generateMeetingAgenda(
+        formData.meetingPurpose,
+        validAttendees,
+        formData.previousMeetingNotes || undefined
+      );
       
-      setResult(response.result);
+      setResult(agenda);
       setCopied(false);
     } catch (err) {
       console.error('Error generating meeting agenda:', err);
