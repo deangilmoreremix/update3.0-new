@@ -7,6 +7,7 @@ import { useAppointmentStore } from '../store/appointmentStore';
 import { useAITools } from './AIToolsProvider';
 import { useTheme } from '../contexts/ThemeContext';
 import { useDashboardLayout } from '../contexts/DashboardLayoutContext';
+import DraggableSection from './DraggableSection';
 import DashboardLayoutControls from './DashboardLayoutControls';
 
 // Import section components
@@ -31,20 +32,19 @@ import NewLeadsSection from './dashboard/NewLeadsSection';
 import KPICards from './dashboard/KPICards';
 import QuickActions from './dashboard/QuickActions';
 
-
-
+// Memo Dashboard component to prevent unnecessary re-renders
 const Dashboard: React.FC = React.memo(() => {
   const { 
     deals, 
-    fetchDeals,
+    fetchDeals, 
     isLoading,
     stageValues,
     totalPipelineValue 
   } = useDealStore();
   
   const { 
-    contacts,
-    fetchContacts,
+    contacts, 
+    fetchContacts, 
     isLoading: contactsLoading 
   } = useContactStore();
   
@@ -91,7 +91,6 @@ const Dashboard: React.FC = React.memo(() => {
     return () => window.clearInterval(intervalId);
   }, []);
   
-
   // Render section content based on section ID
   const renderSectionContent = (sectionId: string) => {
     switch (sectionId) {
@@ -158,12 +157,18 @@ const Dashboard: React.FC = React.memo(() => {
       {/* Dashboard Layout Controls */}
       <DashboardLayoutControls />
 
-      {/* Dashboard Sections */}
+      {/* Draggable Sections */}
       <div className="space-y-8 pb-20">
         {sectionOrder.map((sectionId, index) => (
-          <div key={sectionId} id={sectionId}>
-            {renderSectionContent(sectionId)}
-          </div>
+          <DraggableSection
+            key={sectionId}
+            sectionId={sectionId}
+            index={index}
+          >
+            <div id={sectionId}>
+              {renderSectionContent(sectionId)}
+            </div>
+          </DraggableSection>
         ))}
       </div>
     </main>
