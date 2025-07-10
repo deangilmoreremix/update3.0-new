@@ -258,6 +258,120 @@ export class AICalendarService {
   }
 
   /**
+   * Generate meeting options based on scheduling intent
+   */
+  async generateMeetingOptions(
+    intent: SchedulingIntent,
+    existingAppointments: any[]
+  ): Promise<Array<{ time: Date; score: number; reasoning: string; conflicts: string[] }>> {
+    try {
+      // Mock implementation that generates smart time suggestions
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const suggestions = [];
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      
+      // Generate suggestions for next few days
+      for (let dayOffset = 1; dayOffset <= 7; dayOffset++) {
+        const targetDate = new Date(today);
+        targetDate.setDate(today.getDate() + dayOffset);
+        
+        // Skip weekends unless urgency is high
+        if (intent.urgency !== 'high' && (targetDate.getDay() === 0 || targetDate.getDay() === 6)) {
+          continue;
+        }
+        
+        // Generate time slots for this day
+        const timeSlots = await this.suggestOptimalTimes(
+          targetDate,
+          intent.duration,
+          intent.attendees,
+          existingAppointments
+        );
+        
+        // Add conflicts analysis
+        const slotsWithConflicts = timeSlots.map(slot => ({
+          ...slot,
+          conflicts: this.analyzeConflicts(slot.time, intent.duration, existingAppointments)
+        }));
+        
+        suggestions.push(...slotsWithConflicts);
+      }
+      
+      // Sort by score and return top suggestions
+      return suggestions
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 6);
+    } catch (error) {
+      console.error('Error generating meeting options:', error);
+      // Return fallback suggestions
+      return this.generateFallbackOptions(intent);
+    }
+  }
+
+  /**
+   * Analyze potential conflicts for a time slot
+   */
+  private analyzeConflicts(
+    startTime: Date,
+    duration: number,
+    existingAppointments: any[]
+  ): string[] {
+    const conflicts = [];
+    const endTime = new Date(startTime.getTime() + duration * 60000);
+    
+    for (const apt of existingAppointments) {
+      const aptStart = new Date(apt.startTime);
+      const aptEnd = new Date(apt.endTime);
+      
+      // Check for overlaps
+      if ((startTime >= aptStart && startTime < aptEnd) ||
+          (endTime > aptStart && endTime <= aptEnd) ||
+          (startTime <= aptStart && endTime >= aptEnd)) {
+        conflicts.push(`Conflicts with "${apt.title}" (${aptStart.toLocaleTimeString()} - ${aptEnd.toLocaleTimeString()})`);
+      }
+    }
+    
+    return conflicts;
+  }
+
+  /**
+   * Generate fallback options when AI processing fails
+   */
+  private generateFallbackOptions(intent: SchedulingIntent): Array<{ time: Date; score: number; reasoning: string; conflicts: string[] }> {
+    const fallbackOptions = [];
+    const today = new Date();
+    
+    // Generate basic time slots for tomorrow
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    
+    const timeSlots = [
+      { hour: 10, minute: 0, score: 85, reasoning: 'Mid-morning slot - high productivity' },
+      { hour: 14, minute: 0, score: 80, reasoning: 'Early afternoon - post-lunch clarity' },
+      { hour: 11, minute: 0, score: 75, reasoning: 'Late morning - consistent focus' },
+      { hour: 15, minute: 30, score: 70, reasoning: 'Mid-afternoon - good availability' },
+      { hour: 9, minute: 30, score: 65, reasoning: 'Early morning - fresh start' }
+    ];
+    
+    for (const slot of timeSlots) {
+      const timeOption = new Date(tomorrow);
+      timeOption.setHours(slot.hour, slot.minute, 0, 0);
+      
+      fallbackOptions.push({
+        time: timeOption,
+        score: slot.score,
+        reasoning: slot.reasoning,
+        conflicts: []
+      });
+    }
+    
+    return fallbackOptions;
+  }
+
+  /**
    * Analyze calendar for insights and recommendations
    */
   async analyzeCalendar(appointments: any[]): Promise<CalendarInsight> {
