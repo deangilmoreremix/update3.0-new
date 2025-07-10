@@ -2,11 +2,6 @@ import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { Brain, Zap, Settings, BarChart3, Search, Video } from 'lucide-react';
 import AIInsightsPanel from '../dashboard/AIInsightsPanel';
-import { SmartAIControls } from '../ai/SmartAIControls';
-import AIModelUsageStats from '../AIModelUsageStats';
-import LiveDealAnalysis from '../aiTools/LiveDealAnalysis';
-import SmartSearchRealtime from '../aiTools/SmartSearchRealtime';
-import VideoCallSection from './VideoCallSection';
 
 const AISmartFeaturesHub: React.FC = () => {
   const { isDark } = useTheme();
@@ -64,44 +59,43 @@ const AISmartFeaturesHub: React.FC = () => {
         
         {activeTab === 'controls' && (
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl p-6`}>
-            <SmartAIControls />
+            <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>AI Controls</h3>
+            <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>AI control settings will be displayed here.</p>
           </div>
         )}
         
         {activeTab === 'performance' && (
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl p-6`}>
-            <AIModelUsageStats />
+            <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>AI Performance</h3>
+            <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>AI performance metrics will be displayed here.</p>
           </div>
         )}
         
         {activeTab === 'tools' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl overflow-hidden`}>
-              <div className={`p-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'} flex justify-between items-center`}>
-                <h3 className={`font-semibold flex items-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  <Zap size={18} className="text-purple-600 mr-2" />
-                  Live Deal Analysis
-                </h3>
-              </div>
-              <div className="p-4">
-                <LiveDealAnalysis />
-              </div>
+            <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl p-6`}>
+              <h3 className={`font-semibold flex items-center mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                <Zap size={18} className="text-purple-600 mr-2" />
+                Live Deal Analysis
+              </h3>
+              <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>AI-powered deal analysis tools.</p>
             </div>
             
-            <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl overflow-hidden`}>
-              <div className={`p-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'} flex justify-between items-center`}>
-                <h3 className={`font-semibold flex items-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  <Search size={18} className="text-blue-600 mr-2" />
-                  Smart Search
-                </h3>
-              </div>
-              <SmartSearchRealtime />
+            <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl p-6`}>
+              <h3 className={`font-semibold flex items-center mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                <Search size={18} className="text-blue-600 mr-2" />
+                Smart Search
+              </h3>
+              <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Intelligent search across all data.</p>
             </div>
           </div>
         )}
         
         {activeTab === 'video' && (
-          <VideoCallSection />
+          <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl p-6`}>
+            <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Video Calls</h3>
+            <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Video call features and controls.</p>
+          </div>
         )}
       </div>
     </div>
