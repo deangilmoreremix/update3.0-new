@@ -134,8 +134,10 @@ export const GamificationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
   // Update team members whenever contacts change
   useEffect(() => {
-    // Ensure contacts is an array before filtering
-    const contactsArray = Array.isArray(contacts) ? contacts : [];
+    if (!contacts) return;
+    
+    // Convert Record<string, Contact> to Contact[]
+    const contactsArray = Object.values(contacts);
     const filteredTeamMembers = contactsArray.filter(contact => contact.isTeamMember);
     setTeamMembers(filteredTeamMembers);
     
@@ -145,7 +147,7 @@ export const GamificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         contactId: member.id,
         name: member.name,
         role: member.role || 'sales-rep',
-        avatarSrc: member.avatarSrc || member.avatar,
+        avatarSrc: member.avatarSrc,
         score: member.gamificationStats?.points || 0,
         recentAchievement: member.gamificationStats?.achievements?.length 
           ? member.gamificationStats.achievements[member.gamificationStats.achievements.length - 1] 
@@ -157,79 +159,113 @@ export const GamificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   }, [contacts]);
 
   const isTeamMember = (contactId: string): boolean => {
-    const contactsArray = Array.isArray(contacts) ? contacts : [];
-    return contactsArray.find(contact => contact.id === contactId)?.isTeamMember || false;
+    return contacts[contactId]?.isTeamMember || false;
   };
 
   const addTeamMember = async (contactId: string): Promise<void> => {
-    const contactsArray = Array.isArray(contacts) ? contacts : [];
-    const contact = contactsArray.find(c => c.id === contactId);
-    if (contact) {
-      await updateContact(contactId, { 
-        isTeamMember: true,
-        gamificationStats: contact.gamificationStats || {
-          points: 0,
-          achievements: [],
-          level: 1,
-          totalDeals: 0,
-          winRate: 0,
-          lastAchievement: undefined
-        }
-      });
-    }
+    const contact = contacts[contactId];
+    if (!contact) return;
+
+    await updateContact(contactId, {
+      isTeamMember: true,
+      gamificationStats: {
+        points: 0,
+        achievements: [],
+        level: 1,
+        totalDeals: 0,
+        winRate: 0,
+        ...contact.gamificationStats
+      }
+    });
   };
 
   const removeTeamMember = async (contactId: string): Promise<void> => {
-    await updateContact(contactId, { isTeamMember: false });
+    await updateContact(contactId, {
+      isTeamMember: false
+    });
   };
 
-  const updateTeamMemberStats = async (contactId: string, updates: Partial<Contact['gamificationStats']>): Promise<void> => {
-    const contactsArray = Array.isArray(contacts) ? contacts : [];
-    const contact = contactsArray.find(c => c.id === contactId);
-    if (contact && contact.gamificationStats) {
-      await updateContact(contactId, {
-        gamificationStats: {
-          ...contact.gamificationStats,
-          ...updates
-        }
-      });
-    }
+  const updateTeamMemberStats = async (
+    contactId: string, 
+    updates: Partial<Contact['gamificationStats']>
+  ): Promise<void> => {
+    const contact = contacts[contactId];
+    if (!contact || !contact.isTeamMember) return;
+
+    const currentStats = contact.gamificationStats || {
+      points: 0,
+      achievements: [],
+      level: 1,
+      totalDeals: 0,
+      winRate: 0
+    };
+
+    await updateContact(contactId, {
+      gamificationStats: {
+        ...currentStats,
+        ...updates
+      }
+    });
   };
 
   const awardAchievement = async (contactId: string, achievementId: string): Promise<void> => {
-    const contactsArray = Array.isArray(contacts) ? contacts : [];
-    const contact = contactsArray.find(c => c.id === contactId);
+    const contact = contacts[contactId];
     const achievement = achievements.find(a => a.id === achievementId);
     
-    if (contact && achievement && contact.gamificationStats) {
-      const currentAchievements = contact.gamificationStats.achievements || [];
-      if (!currentAchievements.includes(achievementId)) {
-        await updateTeamMemberStats(contactId, {
-          achievements: [...currentAchievements, achievementId],
-          points: (contact.gamificationStats.points || 0) + achievement.points,
-          lastAchievement: achievementId
-        });
-      }
-    }
+    if (!contact || !achievement || !contact.isTeamMember) return;
+
+    const currentStats = contact.gamificationStats || {
+      points: 0,
+      achievements: [],
+      level: 1,
+      totalDeals: 0,
+      winRate: 0
+    };
+
+    // Check if achievement already unlocked
+    if (currentStats.achievements.includes(achievementId)) return;
+
+    const newAchievements = [...currentStats.achievements, achievementId];
+    const newPoints = currentStats.points + achievement.points;
+
+    await updateTeamMemberStats(contactId, {
+      achievements: newAchievements,
+      points: newPoints
+    });
+
+    // Update achievement as unlocked
+    setAchievements(prev => 
+      prev.map(a => 
+        a.id === achievementId 
+          ? { ...a, unlocked: true, unlockedAt: new Date() }
+          : a
+      )
+    );
+  };
+
+  const value: GamificationContextType = {
+    achievements,
+    challenges,
+    leaderboard,
+    teamMembers,
+    isTeamMember,
+    addTeamMember,
+    removeTeamMember,
+    updateTeamMemberStats,
+    awardAchievement
   };
 
   return (
-    <GamificationContext.Provider 
-      value={{ 
-        achievements, 
-        challenges, 
-        leaderboard,
-        teamMembers,
-        isTeamMember,
-        addTeamMember,
-        removeTeamMember,
-        updateTeamMemberStats,
-        awardAchievement
-      }}
-    >
+    <GamificationContext.Provider value={value}>
       {children}
     </GamificationContext.Provider>
   );
 };
 
-export const useGamification = () => useContext(GamificationContext);
+export const useGamification = (): GamificationContextType => {
+  const context = useContext(GamificationContext);
+  if (!context) {
+    throw new Error('useGamification must be used within a GamificationProvider');
+  }
+  return context;
+};

@@ -89,12 +89,12 @@ const aiTools: AITool[] = [
   // Analysis Tools
   {
     id: 'ai-analysis',
-    name: 'AI Goals',
+    name: 'AI Analysis',
     icon: Brain,
     color: 'text-purple-600',
     bgColor: 'bg-purple-100 hover:bg-purple-200',
     category: 'analysis',
-    description: 'AI-powered goal execution',
+    description: 'Deep AI-powered analysis',
     isQuickAction: true,
     entityTypes: ['contact', 'deal', 'company', 'task']
   },
