@@ -1,149 +1,81 @@
-import React, { useState } from 'react';
-import { Users } from 'lucide-react';
-import { GlassCard } from './components/ui/GlassCard';
-import { MetricsCards } from './components/dashboard/MetricsCards';
-import { NewLeadsSection } from './components/dashboard/NewLeadsSection';
-import { InteractionHistory } from './components/dashboard/InteractionHistory';
-import { TasksAndFunnel } from './components/dashboard/TasksAndFunnel';
-import { CustomerProfile } from './components/dashboard/CustomerProfile';
-import { RecentActivity } from './components/dashboard/RecentActivity';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Dashboard from './components/Dashboard';
+const VideoCallOverlay = React.lazy(() => import('./components/VideoCallOverlay'));
+const VideoCallPreviewWidget = React.lazy(() => import('./components/VideoCallPreviewWidget'));
+import DevicePermissionChecker from './components/DevicePermissionChecker';
+import { AIToolsProvider } from './components/AIToolsProvider';
+import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { NavigationProvider } from './contexts/NavigationContext';
+import { DashboardLayoutProvider } from './contexts/DashboardLayoutContext';
+import { VideoCallProvider } from './contexts/VideoCallContext';
+import { ModalsProvider } from './components/ModalsProvider';
 import { ContactsModal } from './components/modals/ContactsModal';
-import { AIInsightsPanel } from './components/dashboard/AIInsightsPanel';
-import { ChartsSection } from './components/dashboard/ChartsSection';
-import { QuickActions } from './components/dashboard/QuickActions';
-import { KPICards } from './components/dashboard/KPICards';
-import { DashboardHeader } from './components/dashboard/DashboardHeader';
-import { ConnectedApps } from './components/dashboard/ConnectedApps';
-import './styles/design-system.css';
+import './components/styles/design-system.css';
 
 function App() {
+  // Prevent unnecessary re-renders with useState instead of using a boolean directly
   const [isContactsModalOpen, setIsContactsModalOpen] = useState(false);
-  const [currentView, setCurrentView] = useState('dashboard');
-
-  const renderCurrentView = () => {
-    switch (currentView) {
-      case 'dashboard':
-        return (
-          <>
-            <DashboardHeader />
-            
-            {/* AI Insights Panel */}
-            <AIInsightsPanel />
-            
-            {/* Enhanced KPI Cards */}
-            <KPICards />
-            
-            {/* Quick Actions */}
-            <QuickActions />
-            
-            {/* Charts Section */}
-            <ChartsSection />
-            
-            {/* Original Metrics */}
-            <MetricsCards />
-            
-            {/* New Leads Section */}
-            <NewLeadsSection />
-            
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-              <div className="xl:col-span-2">
-                <InteractionHistory />
-                <RecentActivity />
-                <TasksAndFunnel />
-              </div>
-              
-              <div className="xl:col-span-1">
-                <CustomerProfile />
-                <div className="mt-6">
-                  <ConnectedApps />
-                </div>
-              </div>
-            </div>
-          </>
-        );
-      case 'analytics':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h1 className="text-3xl font-bold text-gray-900">Advanced Analytics</h1>
-              <p className="text-gray-600">Comprehensive business intelligence dashboard</p>
-            </div>
-            <KPICards />
-            <ChartsSection />
-            <AIInsightsPanel />
-          </div>
-        );
-      case 'contacts':
-        return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h1 className="text-3xl font-bold text-gray-900">Contact Management</h1>
-              <p className="text-gray-600">Manage and analyze your contact relationships</p>
-            </div>
-            <NewLeadsSection />
-          </div>
-        );
-      default:
-        return renderCurrentView();
-    }
-  };
+  const [shouldRenderVideoComponents, setShouldRenderVideoComponents] = useState(false);
+  
+  // Delay loading video components to improve initial render performance
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShouldRenderVideoComponents(true);
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex space-x-6">
-          {/* Only Contact Icon */}
-          <div className="relative">
-            <div className="w-16 h-full flex flex-col py-6">
-              <GlassCard className="flex-1 p-4">
-                <div className="flex flex-col items-center space-y-6">
-                  {/* Logo */}
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">S</span>
-                  </div>
+    <ThemeProvider>
+      <VideoCallProvider>
+        <AIToolsProvider>
+          <NavigationProvider>
+            <DashboardLayoutProvider> 
+              <EnhancedHelpProvider>
+                <ModalsProvider>
+                  <div className="min-h-screen h-full w-full flex flex-col transition-all duration-300 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+                    <DevicePermissionChecker />
+                    <Routes>
+                      <Route path="*" element={
+                        <>
+                          <Navbar onOpenPipelineModal={() => {
+                            const modalsContext = document.getElementById('root')?.__MODALS_CONTEXT;
+                            if (modalsContext && modalsContext.openPipelineModal) {
+                              modalsContext.openPipelineModal();
+                            }
+                          }} />
+                          <div className="flex-1 w-full overflow-hidden">
+                            <Dashboard />
+                          </div>
+                        </>
+                      } />
+                    </Routes>
                   
-                  {/* Only Contact Icon */}
-                  <button
-                    onClick={() => setIsContactsModalOpen(true)}
-                    className="p-2 rounded-lg transition-all duration-200 text-gray-600 hover:bg-white/50 hover:text-gray-800 group relative"
-                  >
-                    <Users className="w-5 h-5" />
-                    <span className="absolute left-12 bg-gray-800 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
-                      Contacts
-                    </span>
-                  </button>
-                </div>
-              </GlassCard>
-            </div>
-          </div>
-          
-          {/* Main Content */}
-          <div className="flex-1">
-            {/* Dynamic Content Based on Current View */}
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                {currentView === 'dashboard' && 'Customer Information'}
-                {currentView === 'analytics' && 'Business Intelligence'}
-                {currentView === 'contacts' && 'Contact Management'}
-              </h1>
-              <p className="text-gray-600">
-                {currentView === 'dashboard' && 'Manage your customer relationships and track interactions'}
-                {currentView === 'analytics' && 'Advanced analytics and performance insights'}
-                {currentView === 'contacts' && 'Comprehensive contact management with AI insights'}
-              </p>
-            </div>
-            
-            {renderCurrentView()}
-          </div>
-        </div>
-      </div>
-
-      {/* Enhanced Contacts Modal */}
-      <ContactsModal 
-        isOpen={isContactsModalOpen} 
-        onClose={() => setIsContactsModalOpen(false)} 
-      />
-    </div>
+                  {/* Lazy load video components with suspense to prevent layout shifts */}
+                  {shouldRenderVideoComponents && (
+                    <React.Suspense fallback={null}>
+                      <VideoCallOverlay />
+                      <VideoCallPreviewWidget />
+                    </React.Suspense>
+                  )}
+                    
+                    {/* ContactsModal rendered at the root level */}
+                    <ContactsModal
+                      isOpen={isContactsModalOpen}
+                      onClose={() => setIsContactsModalOpen(false)}
+                    />
+                  </div>
+                </ModalsProvider>
+              </EnhancedHelpProvider>
+            </DashboardLayoutProvider>
+          </NavigationProvider>
+        </AIToolsProvider>
+      </VideoCallProvider>
+    </ThemeProvider>
   );
 }
 
