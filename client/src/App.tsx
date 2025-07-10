@@ -18,6 +18,7 @@ import { DashboardLayoutProvider } from './contexts/DashboardLayoutContext';
 import { VideoCallProvider } from './contexts/VideoCallContext';
 import { ComponentRegistryProvider } from './contexts/ComponentRegistry';
 import { UnifiedDragDropProvider } from './contexts/UnifiedDragDropContext';
+import { GamificationProvider } from './contexts/GamificationContext';
 import { ContactsModal } from './components/modals/ContactsModal';
 import PipelineModal from './components/modals/PipelineModal';
 import { TenantProvider } from './components/TenantProvider';
@@ -80,9 +81,10 @@ function App() {
             <ComponentRegistryProvider>
               <DashboardLayoutProvider>
                 <UnifiedDragDropProvider>
-                  <EnhancedHelpProvider>
-                    <TenantProvider>
-                      <RoleProvider>
+                  <GamificationProvider>
+                    <EnhancedHelpProvider>
+                      <TenantProvider>
+                        <RoleProvider>
                         <Router>
                           <div className="min-h-screen h-full w-full flex flex-col transition-all duration-300 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-gradient-to-br from-gray-50 via-white to-gray-100">
                             <Routes>
@@ -445,9 +447,10 @@ function App() {
                             />
                           </div>
                         </Router>
-                      </RoleProvider>
-                    </TenantProvider>
-                  </EnhancedHelpProvider>
+                        </RoleProvider>
+                      </TenantProvider>
+                    </EnhancedHelpProvider>
+                  </GamificationProvider>
                 </UnifiedDragDropProvider>
               </DashboardLayoutProvider>
             </ComponentRegistryProvider>

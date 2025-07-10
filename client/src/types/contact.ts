@@ -13,7 +13,7 @@ export interface Contact {
   avatar?: string;
   sources?: string[];
   source?: string;
-  interestLevel?: 'hot' | 'medium' | 'low';
+  interestLevel?: 'hot' | 'medium' | 'low' | 'cold';
   status: string;
   lastConnected?: string;
   notes?: string;
@@ -24,8 +24,23 @@ export interface Contact {
     linkedin?: string;
     twitter?: string;
     website?: string;
+    facebook?: string;
+    instagram?: string;
+    whatsapp?: string;
   };
   customFields?: Record<string, string>;
   createdAt: string | Date;
   updatedAt: string | Date;
+  
+  // Gamification features
+  isTeamMember?: boolean;
+  role?: string;
+  gamificationStats?: {
+    points: number;
+    achievements: string[];
+    level: number;
+    totalDeals: number;
+    winRate: number;
+    lastAchievement?: string;
+  };
 }

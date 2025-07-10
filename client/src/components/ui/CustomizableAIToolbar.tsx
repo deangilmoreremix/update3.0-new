@@ -1,30 +1,43 @@
 import React, { useState } from 'react';
 import { 
-  Brain, 
-  Sparkles, 
-  Wand2, 
-  Settings, 
-  Search, 
+  BarChart3, 
   Mail, 
-  MessageSquare,
-  BarChart3,
+  TrendingUp, 
+  AlertTriangle, 
+  Navigation, 
+  FileText, 
+  Send, 
+  Calendar, 
+  DollarSign, 
+  Heart, 
+  UserPlus, 
+  Search, 
+  BarChart, 
+  Zap, 
+  Clock, 
+  GitBranch, 
+  PenTool, 
+  Video, 
+  FileSearch, 
+  Package, 
+  Settings, 
+  Plus,
+  Brain,
   Target,
   Phone,
-  Calendar,
-  FileText,
-  Zap,
-  TrendingUp,
-  Star,
-  Heart,
-  Edit,
-  Copy,
-  Share2,
-  Download,
-  Upload,
-  Trash2,
-  MoreHorizontal,
-  Plus,
-  X
+  MessageSquare,
+  Wand2,
+  Database,
+  Globe,
+  ArrowRight,
+  Activity,
+  CheckCircle,
+  AlertCircle,
+  Sparkles,
+  Linkedin,
+  Twitter,
+  Facebook,
+  Instagram
 } from 'lucide-react';
 
 interface QuickAIButtonProps {
@@ -50,8 +63,64 @@ interface CustomizableAIToolbarProps {
   showCustomizeButton?: boolean;
 }
 
+const iconMap: Record<string, React.ComponentType<any>> = {
+  BarChart3,
+  Mail,
+  TrendingUp,
+  AlertTriangle,
+  Navigation,
+  FileText,
+  Send,
+  Calendar,
+  DollarSign,
+  Heart,
+  UserPlus,
+  Search,
+  BarChart,
+  Zap,
+  Clock,
+  GitBranch,
+  PenTool,
+  Video,
+  FileSearch,
+  Package,
+  Settings,
+  Plus,
+  Brain,
+  Target,
+  Phone,
+  MessageSquare,
+  Wand2,
+  Database,
+  Globe,
+  ArrowRight,
+  Activity,
+  CheckCircle,
+  AlertCircle,
+  Sparkles
+};
+
+const toolMapping: Record<string, string> = {
+  'leadScoring': 'business-analyzer',
+  'emailPersonalization': 'email-composer', 
+  'contactEnrichment': 'smart-search',
+  'dealRiskAssessment': 'business-analyzer',
+  'nextBestAction': 'business-analyzer',
+  'proposalGeneration': 'proposal-generator',
+  'businessIntelligence': 'smart-search',
+  'companyHealthScoring': 'business-analyzer',
+  'opportunityIdentification': 'business-analyzer'
+};
+
+const defaultQuickActions = [
+  { icon: 'BarChart3', label: 'Lead Score', toolName: 'leadScoring', variant: 'primary' },
+  { icon: 'Mail', label: 'Email AI', toolName: 'emailPersonalization', variant: 'secondary' },
+  { icon: 'Search', label: 'Enrich', toolName: 'contactEnrichment', variant: 'secondary' },
+  { icon: 'TrendingUp', label: 'Insights', toolName: 'businessIntelligence', variant: 'secondary' }
+];
+
 const QuickAIButton: React.FC<QuickAIButtonProps> = ({
-  icon: Icon,
+  icon: IconComponent,
   label,
   toolName,
   entityType,
@@ -62,78 +131,32 @@ const QuickAIButton: React.FC<QuickAIButtonProps> = ({
   className = '',
   onClick
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleClick = async () => {
+  const handleClick = () => {
     if (onClick) {
       onClick();
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      // Handle AI Goals navigation
-      if (toolName === 'ai-goals') {
-        // Navigate to AI Goals page with entity context
-        sessionStorage.setItem('aiGoalsContext', JSON.stringify({
-          entityType,
-          entityId,
-          entityData,
-          suggestedCategories: getSuggestedCategories(entityType)
-        }));
-        
-        // Navigate to AI Goals page
-        window.location.href = '/ai-goals';
-      } else {
-        // Handle other AI tool execution
-        console.log(`Executing ${toolName} for ${entityType} ${entityId}`);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      }
-    } catch (error) {
-      console.error(`Failed to execute ${toolName}:`, error);
-    } finally {
-      setIsLoading(false);
+    } else {
+      // Handle AI tool execution
+      console.log(`Executing ${toolName} for ${entityType} ${entityId}`, entityData);
     }
   };
 
-  const getSuggestedCategories = (type: string) => {
-    switch (type) {
-      case 'contact':
-        return ['Sales', 'Marketing', 'Relationship'];
-      case 'deal':
-        return ['Sales', 'Analytics', 'Automation'];
-      case 'company':
-        return ['Analytics', 'Research', 'Business Intelligence'];
-      default:
-        return [];
-    }
-  };
-
-  const baseClasses = `
-    flex flex-col items-center justify-center rounded-lg text-xs font-medium transition-all duration-200 
-    border shadow-sm hover:shadow-md hover:scale-105 relative
-    ${size === 'sm' ? 'p-1.5' : 'p-2'}
-    ${className}
-  `;
-
-  const variantClasses = {
-    primary: 'bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 border-blue-300/50',
-    secondary: 'bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 hover:from-gray-100 hover:to-gray-200 border-gray-200/50'
-  };
+  const sizeClasses = size === 'sm' ? 'p-2 text-xs' : 'p-3 text-sm';
+  const variantClasses = variant === 'primary' 
+    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700' 
+    : 'bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 hover:from-gray-100 hover:to-gray-200';
 
   return (
     <button
       onClick={handleClick}
-      disabled={isLoading}
-      className={`${baseClasses} ${variantClasses[variant]}`}
-      title={`${label} for ${entityType}`}
+      className={`
+        ${sizeClasses} ${variantClasses} ${className}
+        flex flex-col items-center justify-center rounded-lg font-medium transition-all duration-200 
+        border shadow-sm hover:shadow-md hover:scale-105 min-h-[3rem]
+        ${variant === 'primary' ? 'border-blue-300/50' : 'border-gray-200/50'}
+      `}
     >
-      {isLoading ? (
-        <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin mb-0.5" />
-      ) : (
-        <Icon className={`${size === 'sm' ? 'w-3 h-3' : 'w-4 h-4'} mb-0.5`} />
-      )}
-      <span className="text-[10px] truncate max-w-full">{label}</span>
+      <IconComponent size={size === 'sm' ? 12 : 16} className="mb-1" />
+      <span className="leading-tight text-center">{label}</span>
     </button>
   );
 };
@@ -143,18 +166,23 @@ export const AIGoalsButton: React.FC<{
   entityId: string;
   entityData: any;
   size?: 'sm' | 'md';
-}> = ({ entityType, entityId, entityData, size = 'sm' }) => {
+  variant?: 'primary' | 'secondary';
+  className?: string;
+}> = ({ entityType, entityId, entityData, size = 'sm', variant = 'primary', className = '' }) => {
   return (
-    <QuickAIButton
-      icon={Sparkles}
-      label="AI Goals"
-      toolName="ai-goals"
-      entityType={entityType}
-      entityId={entityId}
-      entityData={entityData}
-      size={size}
-      variant="primary"
-    />
+    <button
+      className={`
+        ${className}
+        flex items-center justify-center py-2 px-3 
+        bg-gradient-to-r from-indigo-500 to-purple-500 text-white 
+        rounded-lg hover:from-indigo-600 hover:to-purple-600 
+        ${size === 'sm' ? 'text-sm' : 'text-base'} font-medium 
+        transition-all duration-200 border border-indigo-300/50 shadow-sm hover:shadow-md hover:scale-105
+      `}
+    >
+      <Target size={size === 'sm' ? 14 : 16} className="mr-2" />
+      AI Goals
+    </button>
   );
 };
 
@@ -165,120 +193,41 @@ export const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
   location,
   layout,
   size,
-  showCustomizeButton = false
+  showCustomizeButton = true
 }) => {
-  const [isCustomizing, setIsCustomizing] = useState(false);
-  const [enabledTools, setEnabledTools] = useState(new Set([
-    'ai-goals', 'smart-search', 'email-composer', 'lead-scorer'
-  ]));
+  const [showCustomizeModal, setShowCustomizeModal] = useState(false);
+  const [customQuickActions, setCustomQuickActions] = useState(defaultQuickActions);
 
-  // Available AI tools based on entity type
-  const availableTools = {
-    deal: [
-      { id: 'ai-goals', icon: Sparkles, label: 'AI Goals', variant: 'primary' as const },
-      { id: 'smart-search', icon: Search, label: 'Search', variant: 'secondary' as const },
-      { id: 'email-composer', icon: Mail, label: 'Email', variant: 'secondary' as const },
-      { id: 'lead-scorer', icon: Target, label: 'Score', variant: 'primary' as const },
-      { id: 'insights', icon: BarChart3, label: 'Insights', variant: 'secondary' as const },
-      { id: 'scheduler', icon: Calendar, label: 'Schedule', variant: 'secondary' as const },
-    ],
-    contact: [
-      { id: 'ai-goals', icon: Sparkles, label: 'AI Goals', variant: 'primary' as const },
-      { id: 'smart-search', icon: Search, label: 'Search', variant: 'secondary' as const },
-      { id: 'email-composer', icon: Mail, label: 'Email', variant: 'secondary' as const },
-      { id: 'contact-enricher', icon: Wand2, label: 'Enrich', variant: 'primary' as const },
-      { id: 'social-finder', icon: MessageSquare, label: 'Social', variant: 'secondary' as const },
-      { id: 'call-assistant', icon: Phone, label: 'Call', variant: 'secondary' as const },
-    ],
-    task: [
-      { id: 'ai-goals', icon: Sparkles, label: 'AI Goals', variant: 'primary' as const },
-      { id: 'smart-search', icon: Search, label: 'Search', variant: 'secondary' as const },
-      { id: 'task-optimizer', icon: TrendingUp, label: 'Optimize', variant: 'primary' as const },
-      { id: 'content-generator', icon: FileText, label: 'Content', variant: 'secondary' as const },
-      { id: 'priority-scorer', icon: Star, label: 'Priority', variant: 'secondary' as const },
-    ]
-  };
-
-  const tools = availableTools[entityType as keyof typeof availableTools] || availableTools.deal;
-  const visibleTools = tools.filter(tool => enabledTools.has(tool.id));
-
-  const toggleTool = (toolId: string) => {
-    const newEnabledTools = new Set(enabledTools);
-    if (newEnabledTools.has(toolId)) {
-      newEnabledTools.delete(toolId);
-    } else {
-      newEnabledTools.add(toolId);
-    }
-    setEnabledTools(newEnabledTools);
-  };
-
-  const layoutClasses = {
-    grid: 'grid grid-cols-3 gap-1',
-    row: 'flex flex-wrap gap-1'
-  };
-
-  if (visibleTools.length === 0) {
-    return null;
-  }
+  const layoutClasses = layout === 'grid' ? 'grid grid-cols-2 gap-2' : 'flex flex-row space-x-2';
 
   return (
     <div className="relative">
-      {/* AI Tools Grid */}
-      <div className={layoutClasses[layout]}>
-        {visibleTools.map((tool) => (
-          <QuickAIButton
-            key={tool.id}
-            icon={tool.icon}
-            label={tool.label}
-            toolName={tool.id}
-            entityType={entityType}
-            entityId={entityId}
-            entityData={entityData}
-            size={size}
-            variant={tool.variant}
-          />
-        ))}
+      <div className={`${layoutClasses} flex-wrap`}>
+        {customQuickActions.map((action, index) => {
+          const IconComponent = iconMap[action.icon] || Brain;
+          return (
+            <QuickAIButton
+              key={index}
+              icon={IconComponent}
+              label={action.label}
+              toolName={action.toolName}
+              entityType={entityType}
+              entityId={entityId}
+              entityData={entityData}
+              size={size}
+              variant={action.variant as 'primary' | 'secondary'}
+            />
+          );
+        })}
       </div>
 
-      {/* Customize Button */}
       {showCustomizeButton && (
         <button
-          onClick={() => setIsCustomizing(!isCustomizing)}
-          className="mt-2 p-1 text-xs text-gray-400 hover:text-gray-600 transition-colors flex items-center justify-center w-full"
+          onClick={() => setShowCustomizeModal(true)}
+          className="mt-2 p-1 text-xs text-gray-500 hover:text-gray-700 transition-colors"
         >
-          <Settings className="w-3 h-3 mr-1" />
-          Customize
+          <Settings size={12} />
         </button>
-      )}
-
-      {/* Customization Panel */}
-      {isCustomizing && (
-        <div className="absolute top-full left-0 right-0 mt-2 p-3 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="text-sm font-medium text-gray-900">AI Tools</h4>
-            <button
-              onClick={() => setIsCustomizing(false)}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-2">
-            {tools.map((tool) => (
-              <label key={tool.id} className="flex items-center space-x-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={enabledTools.has(tool.id)}
-                  onChange={() => toggleTool(tool.id)}
-                  className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
-                />
-                <tool.icon className="w-4 h-4 text-gray-400" />
-                <span className="text-gray-700">{tool.label}</span>
-              </label>
-            ))}
-          </div>
-        </div>
       )}
     </div>
   );

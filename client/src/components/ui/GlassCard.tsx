@@ -3,23 +3,25 @@ import React from 'react';
 interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
+  variant?: 'light' | 'medium' | 'heavy';
   onClick?: () => void;
-  hover?: boolean;
 }
 
-export const GlassCard: React.FC<GlassCardProps> = ({ 
-  children, 
-  className = '', 
-  onClick, 
-  hover = true 
+export const GlassCard: React.FC<GlassCardProps> = ({
+  children,
+  className = '',
+  variant = 'medium',
+  onClick
 }) => {
-  const baseClasses = 'bg-white/90 dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl shadow-lg';
-  const hoverClasses = hover ? 'hover:bg-white/95 dark:hover:bg-white/10 hover:shadow-xl transition-all duration-200' : '';
-  const clickableClasses = onClick ? 'cursor-pointer' : '';
-  
+  const variantClasses = {
+    light: 'glass-light',
+    medium: 'glass-medium',
+    heavy: 'glass-heavy',
+  };
+
   return (
-    <div 
-      className={`${baseClasses} ${hoverClasses} ${clickableClasses} ${className}`}
+    <div
+      className={`rounded-xl shadow-lg ${variantClasses[variant]} ${className}`}
       onClick={onClick}
     >
       {children}

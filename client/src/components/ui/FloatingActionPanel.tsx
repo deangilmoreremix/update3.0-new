@@ -1,78 +1,174 @@
 import React, { useState } from 'react';
-import { Plus, Phone, Mail, Calendar, MessageCircle, Zap } from 'lucide-react';
+import {
+  Plus,
+  BarChart2,
+  Users,
+  Settings,
+  Search,
+  Menu,
+  ChevronRight,
+  UserPlus,
+  X,
+  MessageSquare,
+  Mail,
+  Phone,
+  Zap,
+  PlusCircle,
+  Target,
+  CheckCircle,
+  Clock,
+  Calendar,
+  Brain,
+} from 'lucide-react';
 
-export const FloatingActionPanel: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+interface FloatingActionPanelProps {
+  onNewDeal?: () => void;
+  onAIAnalysis?: () => void;
+  onViewContacts?: () => void;
+  onViewAnalytics?: () => void;
+  onSettings?: () => void;
+  onAddContact?: () => void;
+}
 
-  const actions = [
-    {
-      icon: Phone,
-      label: 'Make Call',
-      color: 'bg-green-500 hover:bg-green-600',
-      onClick: () => console.log('Make call')
-    },
-    {
-      icon: Mail,
-      label: 'Send Email',
-      color: 'bg-blue-500 hover:bg-blue-600',
-      onClick: () => console.log('Send email')
-    },
-    {
-      icon: Calendar,
-      label: 'Schedule Meeting',
-      color: 'bg-purple-500 hover:bg-purple-600',
-      onClick: () => console.log('Schedule meeting')
-    },
-    {
-      icon: MessageCircle,
-      label: 'Send Message',
-      color: 'bg-indigo-500 hover:bg-indigo-600',
-      onClick: () => console.log('Send message')
-    },
-    {
-      icon: Zap,
-      label: 'AI Assistant',
-      color: 'bg-yellow-500 hover:bg-yellow-600',
-      onClick: () => console.log('AI assistant')
+export const FloatingActionPanel: React.FC<FloatingActionPanelProps> = ({
+  onNewDeal,
+  onAIAnalysis,
+  onViewContacts,
+  onViewAnalytics,
+  onSettings,
+  onAddContact
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showContactActions, setShowContactActions] = useState(false);
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+    if (isExpanded) {
+      setShowContactActions(false);
     }
-  ];
+  };
+
+  // Function to handle deal click
+  const handleNewDeal = () => {
+    console.log("New Deal clicked");
+    if (onNewDeal) {
+      onNewDeal();
+    }
+    setIsExpanded(false);
+  };
+
+  // Function to handle contact add click
+  const handleAddContact = () => {
+    console.log("Add Contact clicked");
+    if (onAddContact) {
+      onAddContact();
+    }
+    setIsExpanded(false);
+    setShowContactActions(false);
+  };
 
   return (
-    <div className="fixed bottom-6 left-6 z-50">
-      <div className="relative">
-        {/* Action buttons */}
-        {isOpen && (
-          <div className="absolute bottom-16 left-0 space-y-3">
-            {actions.map((action, index) => {
-              const IconComponent = action.icon;
-              return (
+    <div className="fixed bottom-4 right-4 z-50">
+      <div className="flex flex-col items-end space-y-2">
+        {isExpanded && (
+          <div className="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden w-56 transition-all duration-200 animate-in slide-in-from-right">
+            {/* Quick Action Items */}
+            <div className="p-2">
+              <button
+                onClick={handleNewDeal}
+                className="w-full flex items-center p-3 hover:bg-gray-50 rounded-lg text-sm font-medium text-gray-700 transition-colors"
+              >
+                <PlusCircle className="w-5 h-5 mr-3 text-blue-600" />
+                New Deal
+              </button>
+
+              {/* Contacts Section with Sub-menu */}
+              <div className="relative">
                 <button
-                  key={index}
-                  onClick={action.onClick}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-white shadow-lg transition-all duration-200 hover:scale-105 ${action.color}`}
-                  style={{
-                    transform: `translateY(-${index * 4}px)`,
-                    animationDelay: `${index * 50}ms`
-                  }}
+                  onClick={() => setShowContactActions(!showContactActions)}
+                  className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg text-sm font-medium text-gray-700 transition-colors"
                 >
-                  <IconComponent className="w-5 h-5" />
-                  <span className="font-medium">{action.label}</span>
+                  <div className="flex items-center">
+                    <Users className="w-5 h-5 mr-3 text-indigo-600" />
+                    Contacts
+                  </div>
+                  <ChevronRight className={`w-4 h-4 text-gray-400 transition-transform ${showContactActions ? 'rotate-90' : ''}`} />
                 </button>
-              );
-            })}
+
+                {/* Contact Sub-actions */}
+                {showContactActions && (
+                  <div className="ml-8 space-y-1">
+                    <button
+                      onClick={() => {
+                        if (onViewContacts) {
+                          onViewContacts();
+                          setIsExpanded(false);
+                        }
+                      }}
+                      className="w-full flex items-center p-2 hover:bg-gray-50 rounded-lg text-sm text-gray-700 transition-colors"
+                    >
+                      <Users className="w-4 h-4 mr-2 text-gray-500" />
+                      View All
+                    </button>
+                    <button
+                      onClick={handleAddContact}
+                      className="w-full flex items-center p-2 hover:bg-gray-50 rounded-lg text-sm text-gray-700 transition-colors"
+                    >
+                      <UserPlus className="w-4 h-4 mr-2 text-gray-500" />
+                      Add Contact
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <button
+                onClick={() => {
+                  if (onAIAnalysis) {
+                    onAIAnalysis();
+                    setIsExpanded(false);
+                  }
+                }}
+                className="w-full flex items-center p-3 hover:bg-gray-50 rounded-lg text-sm font-medium text-gray-700 transition-colors"
+              >
+                <Brain className="w-5 h-5 mr-3 text-purple-600" />
+                AI Analysis
+              </button>
+
+              <button
+                onClick={() => {
+                  if (onViewAnalytics) {
+                    onViewAnalytics();
+                    setIsExpanded(false);
+                  }
+                }}
+                className="w-full flex items-center p-3 hover:bg-gray-50 rounded-lg text-sm font-medium text-gray-700 transition-colors"
+              >
+                <BarChart2 className="w-5 h-5 mr-3 text-green-600" />
+                Analytics
+              </button>
+
+              <button
+                onClick={() => {
+                  if (onSettings) {
+                    onSettings();
+                    setIsExpanded(false);
+                  }
+                }}
+                className="w-full flex items-center p-3 hover:bg-gray-50 rounded-lg text-sm font-medium text-gray-700 transition-colors"
+              >
+                <Settings className="w-5 h-5 mr-3 text-gray-600" />
+                Settings
+              </button>
+            </div>
           </div>
         )}
 
         {/* Main toggle button */}
         <button
-          onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center justify-center w-14 h-14 rounded-full shadow-lg transition-all duration-200 hover:scale-110 ${
-            isOpen 
-              ? 'bg-red-500 hover:bg-red-600 rotate-45' 
-              : 'bg-blue-600 hover:bg-blue-700'
-          }`}
+          onClick={toggleExpand}
+          className="p-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full shadow-lg hover:from-blue-700 hover:to-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          <Plus className="w-6 h-6 text-white" />
+          {isExpanded ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
     </div>
