@@ -482,6 +482,169 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Appointments routes - simplified for development
+  app.get("/api/appointments", async (req: Request, res: Response) => {
+    try {
+      // Return mock appointment data for development
+      const mockAppointments = [
+        {
+          id: '1',
+          title: 'Product Demo - TechCorp',
+          description: 'Demonstrate new AI features',
+          startTime: '2025-01-15T14:00:00Z',
+          endTime: '2025-01-15T15:00:00Z',
+          attendees: ['sarah.johnson@techcorp.com', 'sales@company.com'],
+          contactId: '1',
+          dealId: '1',
+          type: 'demo',
+          status: 'scheduled',
+          priority: 'high',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '2',
+          title: 'Discovery Call - Innovate AI',
+          description: 'Understand requirements and pain points',
+          startTime: '2025-01-16T10:00:00Z',
+          endTime: '2025-01-16T11:00:00Z',
+          attendees: ['mchen@innovate.ai', 'sales@company.com'],
+          contactId: '2',
+          dealId: '2',
+          type: 'call',
+          status: 'scheduled',
+          priority: 'medium',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '3',
+          title: 'Contract Review Meeting',
+          description: 'Final contract terms discussion',
+          startTime: '2025-01-17T16:00:00Z',
+          endTime: '2025-01-17T17:00:00Z',
+          attendees: ['e.rodriguez@fintech.com', 'legal@company.com'],
+          contactId: '3',
+          dealId: '3',
+          type: 'meeting',
+          status: 'completed',
+          priority: 'high',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '4',
+          title: 'Technical Requirements Call',
+          description: 'Deep dive into technical specifications',
+          startTime: '2025-01-18T13:00:00Z',
+          endTime: '2025-01-18T14:30:00Z',
+          attendees: ['david.kim@healthcare.com', 'tech@company.com'],
+          contactId: '4',
+          dealId: '4',
+          type: 'call',
+          status: 'scheduled',
+          priority: 'medium',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: '5',
+          title: 'Implementation Planning',
+          description: 'Plan the implementation timeline',
+          startTime: '2025-01-19T11:00:00Z',
+          endTime: '2025-01-19T12:00:00Z',
+          attendees: ['j.williams@ecommerce.com', 'implementation@company.com'],
+          contactId: '5',
+          dealId: '5',
+          type: 'meeting',
+          status: 'scheduled',
+          priority: 'low',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+      ];
+      
+      console.log('Returning mock appointments:', mockAppointments.length);
+      res.json(mockAppointments);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      res.status(500).json({ error: "Failed to fetch appointments" });
+    }
+  });
+
+  app.get("/api/appointments/:id", async (req: Request, res: Response) => {
+    try {
+      // Return mock appointment data for development
+      const mockAppointment = {
+        id: req.params.id,
+        title: 'Sample Appointment',
+        description: 'Sample appointment description',
+        startTime: '2025-01-15T14:00:00Z',
+        endTime: '2025-01-15T15:00:00Z',
+        attendees: ['sample@example.com'],
+        contactId: '1',
+        dealId: '1',
+        type: 'meeting',
+        status: 'scheduled',
+        priority: 'medium',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      
+      console.log('Fetching appointment:', mockAppointment);
+      res.json(mockAppointment);
+    } catch (error) {
+      console.error("Error fetching appointment:", error);
+      res.status(500).json({ error: "Failed to fetch appointment" });
+    }
+  });
+
+  app.post("/api/appointments", async (req: Request, res: Response) => {
+    try {
+      // Create mock appointment with generated ID for development
+      const newAppointment = {
+        id: Date.now().toString(),
+        ...req.body,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      
+      console.log('Creating new appointment:', newAppointment);
+      res.json(newAppointment);
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+      res.status(500).json({ error: "Failed to create appointment" });
+    }
+  });
+
+  app.patch("/api/appointments/:id", async (req: Request, res: Response) => {
+    try {
+      // Update mock appointment for development
+      const updatedAppointment = {
+        id: req.params.id,
+        ...req.body,
+        updatedAt: new Date().toISOString(),
+      };
+      
+      console.log('Updating appointment:', updatedAppointment);
+      res.json(updatedAppointment);
+    } catch (error) {
+      console.error("Error updating appointment:", error);
+      res.status(500).json({ error: "Failed to update appointment" });
+    }
+  });
+
+  app.delete("/api/appointments/:id", async (req: Request, res: Response) => {
+    try {
+      // Mock delete for development
+      console.log('Deleting appointment:', req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting appointment:", error);
+      res.status(500).json({ error: "Failed to delete appointment" });
+    }
+  });
+
   // Deal routes
   app.get("/api/deals", async (req: Request, res: Response) => {
     try {
