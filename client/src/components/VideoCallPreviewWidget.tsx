@@ -187,3 +187,5 @@ export const VideoCallPreviewWidget: React.FC<VideoCallPreviewWidgetProps> = ({
     </div>
   );
 };
+
+export default VideoCallPreviewWidget;

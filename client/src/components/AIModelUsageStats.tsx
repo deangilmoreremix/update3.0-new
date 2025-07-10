@@ -259,3 +259,5 @@ export const AIModelUsageStats: React.FC = () => {
     </div>
   );
 };
+
+export default AIModelUsageStats;

@@ -13,7 +13,7 @@ import DashboardLayoutControls from './DashboardLayoutControls';
 import SalesToolsLauncher from './sales/SalesToolsLauncher';
 
 // Enhanced components from Bolt.new project
-import { VideoCallPreviewWidget } from './VideoCallPreviewWidget';
+import VideoCallPreviewWidget from './VideoCallPreviewWidget';
 import { AIModelUsageStats } from './AIModelUsageStats';
 import { SmartAIControls } from './ai/SmartAIControls';
 
@@ -177,52 +177,44 @@ const Dashboard: React.FC = React.memo(() => {
   };
 
   return (
-    <main className="w-full min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Dashboard Layout Controls */}
-        <DashboardLayoutControls />
-        
-        {/* Drag Mode Indicator */}
-        {isDragModeEnabled && (
-          <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg text-center">
-            <p className={`text-sm ${isDark ? 'text-blue-300' : 'text-blue-700'}`}>
-              🔄 <strong>Drag Mode Active:</strong> You can now drag individual components between sections
-            </p>
-          </div>
-        )}
+    <main className="w-full h-full overflow-y-auto max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
+      {/* Dashboard Layout Controls */}
+      <DashboardLayoutControls />
+      
+      {/* Drag Mode Indicator */}
+      {isDragModeEnabled && (
+        <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg text-center">
+          <p className={`text-sm ${isDark ? 'text-blue-300' : 'text-blue-700'}`}>
+            🔄 <strong>Drag Mode Active:</strong> You can now drag individual components between sections
+          </p>
+        </div>
+      )}
 
-        {/* Render UnifiedDashboard in drag mode for cross-section dragging */}
-        {isDragModeEnabled ? (
-          <UnifiedDashboard />
-        ) : (
-          /* Normal Dashboard Sections (no cross-section dragging) */
-          <Droppable droppableId="dashboard-sections">
-            {(provided) => (
-              <div 
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                className={`space-y-6 pb-20`}
-              >
-                {sectionOrder.map((sectionId, index) => (
-                  <DraggableSection
-                    key={sectionId}
-                    sectionId={sectionId}
-                    index={index}
-                  >
-                    <div id={sectionId} className="w-full">
-                      {renderSectionContent(sectionId)}
-                    </div>
-                  </DraggableSection>
-                ))}
-                {provided.placeholder}
+      {/* Render UnifiedDashboard in drag mode for cross-section dragging */}
+      {isDragModeEnabled ? (
+        <UnifiedDashboard />
+      ) : (
+        /* Enhanced Dashboard Sections with improved styling */
+        <div className="space-y-8 pb-20">
+          {sectionOrder.map((sectionId, index) => (
+            <DraggableSection
+              key={sectionId}
+              sectionId={sectionId}
+              index={index}
+            >
+              <div id={sectionId}>
+                {renderSectionContent(sectionId)}
               </div>
-            )}
-          </Droppable>
-        )}
-        
-        {/* Sales Tools Floating Action Button */}
-        <SalesToolsLauncher variant="fab" />
-      </div>
+            </DraggableSection>
+          ))}
+        </div>
+      )}
+      
+      {/* Sales Tools Floating Action Button */}
+      <SalesToolsLauncher variant="fab" />
+      
+      {/* Enhanced Video Call Widget */}
+      <VideoCallPreviewWidget />
     </main>
   );
 });
