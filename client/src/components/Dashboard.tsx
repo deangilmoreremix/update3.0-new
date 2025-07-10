@@ -195,19 +195,30 @@ const Dashboard: React.FC = React.memo(() => {
         <UnifiedDashboard />
       ) : (
         /* Enhanced Dashboard Sections with improved styling */
-        <div className="space-y-8 pb-20">
-          {sectionOrder.map((sectionId, index) => (
-            <DraggableSection
-              key={sectionId}
-              sectionId={sectionId}
-              index={index}
-            >
-              <div id={sectionId}>
-                {renderSectionContent(sectionId)}
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="dashboard-sections">
+            {(provided) => (
+              <div 
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className="space-y-8 pb-20"
+              >
+                {sectionOrder.map((sectionId, index) => (
+                  <DraggableSection
+                    key={sectionId}
+                    sectionId={sectionId}
+                    index={index}
+                  >
+                    <div id={sectionId}>
+                      {renderSectionContent(sectionId)}
+                    </div>
+                  </DraggableSection>
+                ))}
+                {provided.placeholder}
               </div>
-            </DraggableSection>
-          ))}
-        </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       )}
       
       {/* Sales Tools Floating Action Button */}
