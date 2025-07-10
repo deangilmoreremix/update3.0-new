@@ -1,60 +1,52 @@
 import React from 'react';
 
 interface StatusIndicatorProps {
-  status: 'active' | 'pending' | 'inactive' | 'success' | 'warning' | 'error';
-  size?: 'sm' | 'md' | 'lg';
+  status?: 'active' | 'pending' | 'inactive' | 'success' | 'warning' | 'error';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   pulse?: boolean;
-  label?: string;
 }
 
-export const StatusIndicator: React.FC<StatusIndicatorProps> = ({ 
-  status, 
-  size = 'md', 
-  pulse = false,
-  label 
+export const StatusIndicator: React.FC<StatusIndicatorProps> = ({
+  status = 'active',
+  size = 'md',
+  pulse = false
 }) => {
+  // Get color based on status
   const getStatusColor = () => {
     switch (status) {
       case 'active':
-      case 'success':
         return 'bg-green-500';
       case 'pending':
+        return 'bg-yellow-500';
+      case 'inactive':
+        return 'bg-gray-500';
+      case 'success':
         return 'bg-blue-500';
       case 'warning':
-        return 'bg-yellow-500';
+        return 'bg-orange-500';
       case 'error':
         return 'bg-red-500';
-      case 'inactive':
       default:
-        return 'bg-gray-400';
+        return 'bg-gray-500';
     }
   };
 
+  // Get size class
   const getSizeClass = () => {
     switch (size) {
-      case 'sm':
+      case 'xs':
         return 'w-2 h-2';
+      case 'sm':
+        return 'w-3 h-3';
       case 'lg':
-        return 'w-4 h-4';
+        return 'w-5 h-5';
       case 'md':
       default:
-        return 'w-3 h-3';
+        return 'w-4 h-4';
     }
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <div
-        className={`
-          ${getSizeClass()} 
-          ${getStatusColor()} 
-          rounded-full
-          ${pulse ? 'animate-pulse' : ''}
-        `}
-      />
-      {label && (
-        <span className="text-sm text-gray-600 font-medium">{label}</span>
-      )}
-    </div>
+    <div className={`${getSizeClass()} ${getStatusColor()} rounded-full border border-white dark:border-gray-800 ${pulse ? 'animate-pulse' : ''}`}></div>
   );
 };

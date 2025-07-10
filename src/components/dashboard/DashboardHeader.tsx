@@ -1,43 +1,110 @@
-import React, { useState } from 'react';
-import { GlassCard } from '../ui/GlassCard';
-import { ModernButton } from '../ui/ModernButton';
-import { ChevronDown, Play } from 'lucide-react';
+import React from 'react';
+import { useTheme } from '../../contexts/ThemeContext';
+import { BarChart3, TrendingUp, Calendar, Search, Bell, User } from 'lucide-react';
 
-export const DashboardHeader: React.FC = () => {
-  const [timeFrame, setTimeFrame] = useState('This Month');
+interface DashboardHeaderProps {
+  title?: string;
+  subtitle?: string;
+}
 
-  const timeFrameOptions = ['This Week', 'This Month', 'This Quarter', 'This Year'];
+const DashboardHeader: React.FC<DashboardHeaderProps> = ({ 
+  title = 'Dashboard Overview',
+  subtitle = 'Welcome back! Here\'s an overview of your sales performance'
+}) => {
+  const { isDark } = useTheme();
+  
+  // Get current date
+  const currentDate = new Date();
+  const formattedDate = currentDate.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
 
   return (
-    <GlassCard className="p-6 mb-8">
-      <div className="flex items-center justify-between">
+    <div className="mb-8">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-          <p className="text-gray-600">Your real-time sales performance overview</p>
+          <h1 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            {title}
+          </h1>
+          <p className={`mt-1 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{subtitle}</p>
         </div>
         
-        <div className="flex items-center space-x-4">
-          {/* Time Frame Selector */}
-          <div className="relative">
-            <select 
-              value={timeFrame}
-              onChange={(e) => setTimeFrame(e.target.value)}
-              className="appearance-none bg-white/80 backdrop-blur-md border border-white/20 rounded-lg px-4 py-2 pr-8 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              {timeFrameOptions.map(option => (
-                <option key={option} value={option}>{option}</option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
-          </div>
-          
-          {/* Take Tour Button */}
-          <ModernButton variant="outline" className="flex items-center space-x-2">
-            <Play className="w-4 h-4" />
-            <span>Take Tour</span>
-          </ModernButton>
+        <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm flex items-center`}>
+          <Calendar size={16} className="mr-2" />
+          {formattedDate}
         </div>
       </div>
-    </GlassCard>
+      
+      {/* KPI Summary */}
+      <div className={`mt-6 p-4 rounded-xl border ${
+        isDark 
+          ? 'border-white/10 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10' 
+          : 'border-blue-100 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50'
+      }`}>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center">
+            <div className={`p-3 rounded-lg ${
+              isDark ? 'bg-blue-500/20' : 'bg-blue-100'
+            } mr-3`}>
+              <BarChart3 className={`h-6 w-6 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
+            </div>
+            <div>
+              <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                Monthly Revenue
+              </div>
+              <div className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                $247,890
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex items-center">
+            <div className={`p-3 rounded-lg ${
+              isDark ? 'bg-purple-500/20' : 'bg-purple-100'
+            } mr-3`}>
+              <TrendingUp className={`h-6 w-6 ${isDark ? 'text-purple-400' : 'text-purple-600'}`} />
+            </div>
+            <div>
+              <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                Growth Rate
+              </div>
+              <div className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                +12.5%
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex items-center">
+            <div className={`p-3 rounded-lg ${
+              isDark ? 'bg-green-500/20' : 'bg-green-100'
+            } mr-3`}>
+              <User className={`h-6 w-6 ${isDark ? 'text-green-400' : 'text-green-600'}`} />
+            </div>
+            <div>
+              <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                New Customers
+              </div>
+              <div className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                34
+              </div>
+            </div>
+          </div>
+          
+          <div className={`px-4 py-2 rounded-lg ${
+            isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-white hover:bg-gray-50'
+          } flex items-center space-x-2 cursor-pointer transition-colors`}>
+            <Search size={16} className={isDark ? 'text-gray-400' : 'text-gray-600'} />
+            <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              Search analytics...
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
+
+export default DashboardHeader;
