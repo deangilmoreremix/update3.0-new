@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { BarChart3, TrendingUp } from 'lucide-react';
+import DealAnalytics from '../DealAnalytics';
 import ChartsSection from '../dashboard/ChartsSection';
 
 const SalesPipelineDealAnalytics: React.FC = () => {
@@ -23,28 +24,7 @@ const SalesPipelineDealAnalytics: React.FC = () => {
       {/* Deal Analytics */}
       <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6 mb-6`}>
         <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-6`}>Deal Analytics</h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
-            <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Total Pipeline Value</h4>
-            <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>$2.4M</p>
-            <p className="text-sm text-green-600">+12% from last month</p>
-          </div>
-          <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
-            <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Active Deals</h4>
-            <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>47</p>
-            <p className="text-sm text-blue-600">+5 new this week</p>
-          </div>
-          <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
-            <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Avg Deal Size</h4>
-            <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>$51K</p>
-            <p className="text-sm text-purple-600">+8% increase</p>
-          </div>
-          <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
-            <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Win Rate</h4>
-            <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>68%</p>
-            <p className="text-sm text-green-600">+2.1% improvement</p>
-          </div>
-        </div>
+        <DealAnalytics />
       </div>
 
       {/* Charts Section */}
@@ -85,13 +65,13 @@ const SalesPipelineDealAnalytics: React.FC = () => {
           </div>
           
           <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg border ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
-            <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Proposal to Close</p>
+            <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Proposal to Win</p>
             <div className="flex items-center justify-between mt-2">
               <p className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>45%</p>
               <div className={`text-xs px-2 py-1 rounded-full ${
-                isDark ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-800'
+                isDark ? 'bg-red-500/20 text-red-400' : 'bg-red-100 text-red-800'
               }`}>
-                +1.8%
+                -1.2%
               </div>
             </div>
           </div>

@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { Brain, Zap, Settings, BarChart3, Search } from 'lucide-react';
 import AIInsightsPanel from '../dashboard/AIInsightsPanel';
+import { SmartAIControls } from '../ai/SmartAIControls';
+import AIModelUsageStats from '../AIModelUsageStats';
+import LiveDealAnalysis from '../aiTools/LiveDealAnalysis';
+import SmartSearchRealtime from '../aiTools/SmartSearchRealtime';
 
 const AISmartFeaturesHub: React.FC = () => {
   const { isDark } = useTheme();
@@ -38,7 +42,7 @@ const AISmartFeaturesHub: React.FC = () => {
           return (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center space-x-2 px-4 py-2 ${
                 isActive 
                   ? (isDark ? 'border-b-2 border-purple-500 text-purple-400' : 'border-b-2 border-purple-600 text-purple-600')
@@ -58,37 +62,13 @@ const AISmartFeaturesHub: React.FC = () => {
         
         {activeTab === 'controls' && (
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl p-6`}>
-            <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>Smart AI Controls</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
-                <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Model Selection</h4>
-                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>AI model optimization controls</p>
-              </div>
-              <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
-                <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Processing Queue</h4>
-                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Manage AI processing tasks</p>
-              </div>
-            </div>
+            <SmartAIControls />
           </div>
         )}
         
         {activeTab === 'performance' && (
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl p-6`}>
-            <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>AI Performance Stats</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
-                <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Response Time</h4>
-                <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>1.2s</p>
-              </div>
-              <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
-                <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Accuracy</h4>
-                <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>94%</p>
-              </div>
-              <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
-                <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Tasks Completed</h4>
-                <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>147</p>
-              </div>
-            </div>
+            <AIModelUsageStats />
           </div>
         )}
         
@@ -102,9 +82,7 @@ const AISmartFeaturesHub: React.FC = () => {
                 </h3>
               </div>
               <div className="p-4">
-                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                  Real-time AI analysis of deal progress and recommendations
-                </p>
+                <LiveDealAnalysis />
               </div>
             </div>
             
@@ -115,11 +93,7 @@ const AISmartFeaturesHub: React.FC = () => {
                   Smart Search
                 </h3>
               </div>
-              <div className="p-4">
-                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                  AI-powered semantic search across all CRM data
-                </p>
-              </div>
+              <SmartSearchRealtime />
             </div>
           </div>
         )}
