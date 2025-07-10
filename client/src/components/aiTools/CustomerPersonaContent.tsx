@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useGemini } from '../../services/geminiService';
+import { edgeFunctionService } from '../../services/edgeFunctionService';
 import AIToolContent from '../shared/AIToolContent';
 import { User, Users, Building, RefreshCw, Copy, Plus, Trash2, Check, Download } from 'lucide-react';
 
@@ -14,8 +14,6 @@ const CustomerPersonaContent: React.FC = () => {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-
-  const gemini = useGemini();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -65,13 +63,19 @@ const CustomerPersonaContent: React.FC = () => {
     setError(null);
     
     try {
-      const persona = await gemini.generateCustomerPersona(
-        formData.industry,
-        formData.companySize,
-        validPainPoints
-      );
+      const response = await edgeFunctionService.callAIFunction('/api/ai/customer-persona', {
+        customerData: {
+          industry: formData.industry,
+          companySize: formData.companySize,
+          painPoints: validPainPoints
+        },
+        industry: formData.industry,
+        behaviorData: {
+          patterns: `Company size: ${formData.companySize}`
+        }
+      });
       
-      setResult(persona);
+      setResult(response.result);
       setCopied(false);
     } catch (err) {
       console.error('Error generating customer persona:', err);

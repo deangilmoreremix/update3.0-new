@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useOpenAIStream } from '../../services/openaiStreamingService';
+// import { useOpenAIStream } from '../../services/openaiStreamingService';
 import { Send, User, Bot, RefreshCw, Clock, Copy, Check, X, Zap, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -45,7 +45,7 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
   const [typingSpeed, setTypingSpeed] = useState<'normal' | 'faster' | 'instant'>('normal');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const streamService = useOpenAIStream();
+  // const streamService = useOpenAIStream();
   
   // Scroll to bottom when messages change
   useEffect(() => {

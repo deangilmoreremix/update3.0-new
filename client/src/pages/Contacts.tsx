@@ -24,7 +24,8 @@ import { useDropzone } from 'react-dropzone';
 import { read, utils } from 'xlsx';
 import Fuse from 'fuse.js';
 import Select from 'react-select';
-import AIEnhancedContactCard from '../components/contacts/AIEnhancedContactCard';
+import { AIEnhancedContactCard } from '../components/contacts/AIEnhancedContactCard';
+import { ContactDetailView } from '../components/modals/ContactDetailView';
 import { 
   createColumnHelper, 
   flexRender, 
@@ -66,6 +67,7 @@ const Contacts: React.FC = () => {
   const [viewMode, setViewMode] = useState<'table' | 'card'>('card');
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [showBulkActions, setShowBulkActions] = useState(false);
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
 
   // Table state
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -149,6 +151,11 @@ const Contacts: React.FC = () => {
     } else {
       setSelectedContacts([...selectedContacts, id]);
     }
+  };
+
+  // Handle contact detail modal
+  const handleContactDetailClose = () => {
+    setSelectedContact(null);
   };
 
   const handleSelectAll = () => {
@@ -428,7 +435,7 @@ const Contacts: React.FC = () => {
       Position: contact.position,
       Status: contact.status,
       Score: contact.score,
-      LastContact: contact.lastContact ? contact.lastContact.toLocaleDateString() : '',
+      LastContact: contact.lastContact ? (contact.lastContact instanceof Date ? contact.lastContact.toLocaleDateString() : new Date(contact.lastContact).toLocaleDateString()) : '',
       Industry: contact.industry,
       Location: contact.location,
       Notes: contact.notes
@@ -722,7 +729,7 @@ const Contacts: React.FC = () => {
                     contact={contact}
                     isSelected={selectedContacts.includes(contact.id)}
                     onSelect={() => toggleContactSelection(contact.id)}
-                    onClick={() => window.location.href = `/contacts/${contact.id}`}
+                    onClick={() => setSelectedContact(contact)}
                   />
                 ))}
               </div>
@@ -992,6 +999,16 @@ const Contacts: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Contact Detail Modal */}
+      {selectedContact && (
+        <ContactDetailView
+          contact={selectedContact}
+          isOpen={!!selectedContact}
+          onClose={handleContactDetailClose}
+          onUpdate={updateContact}
+        />
       )}
     </div>
   );

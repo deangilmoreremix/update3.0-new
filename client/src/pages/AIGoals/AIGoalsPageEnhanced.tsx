@@ -12,10 +12,10 @@ import { useAITools } from '../../components/AIToolsProvider';
 
 // Define context type
 interface AIGoalContext {
-  type: 'contact' | 'deal' | 'company';
-  name?: string;
-  title?: string;
-  id?: string;
+  entityType: 'contact' | 'deal' | 'company';
+  entityId: string;
+  entityData: any;
+  suggestedCategories: string[];
 }
 
 const AIGoalsPageEnhanced: React.FC = () => {
@@ -31,7 +31,7 @@ const AIGoalsPageEnhanced: React.FC = () => {
   // Get context from session storage or URL params
   const [context, setContext] = useState<AIGoalContext | null>(() => {
     try {
-      const savedContext = sessionStorage.getItem('currentEntityContext');
+      const savedContext = sessionStorage.getItem('aiGoalsContext');
       return savedContext ? JSON.parse(savedContext) : null;
     } catch {
       return null;
@@ -162,7 +162,7 @@ const AIGoalsPageEnhanced: React.FC = () => {
                       Context-Aware AI Execution
                     </h3>
                     <p className="text-blue-800 dark:text-blue-200">
-                      Ready to execute AI goals with intelligent context detection for {context.type}: {context.name || context.title}
+                      Ready to execute AI goals with intelligent context detection for {context.entityType}: {context.entityData?.name || context.entityData?.title || context.entityData?.company || 'Unknown'}
                     </p>
                   </div>
                 </div>

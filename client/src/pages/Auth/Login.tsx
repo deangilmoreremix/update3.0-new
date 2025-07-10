@@ -1,7 +1,39 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SignIn } from '@clerk/clerk-react';
+import { useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
+  const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+  useEffect(() => {
+    // If Clerk is not configured, redirect to dashboard for development
+    if (!publishableKey) {
+      console.log('Clerk not configured - redirecting to dashboard for development');
+      navigate('/dashboard');
+      return;
+    }
+  }, [publishableKey, navigate]);
+
+  // If no Clerk key, show development notice
+  if (!publishableKey) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-white mb-2">Smart CRM</h1>
+            <p className="text-slate-300">Development Mode</p>
+          </div>
+          
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 shadow-2xl text-center">
+            <p className="text-white mb-4">Authentication is disabled in development mode.</p>
+            <p className="text-slate-300 text-sm">Redirecting to dashboard...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">

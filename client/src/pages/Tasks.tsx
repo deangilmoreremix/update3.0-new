@@ -97,14 +97,16 @@ const Tasks: React.FC = () => {
       const endOfWeek = new Date(today);
       endOfWeek.setDate(endOfWeek.getDate() + (7 - endOfWeek.getDay()));
       
-      if (filter.dateRange === 'overdue' && (task.completed || task.dueDate >= today)) {
+      const taskDate = new Date(task.dueDate);
+      
+      if (filter.dateRange === 'overdue' && (task.status === 'completed' || taskDate >= today)) {
         return false;
       } else if (filter.dateRange === 'today' && (
-        task.dueDate < today || task.dueDate >= tomorrow
+        taskDate < today || taskDate >= tomorrow
       )) {
         return false;
       } else if (filter.dateRange === 'thisWeek' && (
-        task.dueDate < today || task.dueDate > endOfWeek
+        taskDate < today || taskDate > endOfWeek
       )) {
         return false;
       }
@@ -119,9 +121,13 @@ const Tasks: React.FC = () => {
       if (!a.dueDate && !b.dueDate) return 0;
       if (!a.dueDate) return sortBy.direction === 'asc' ? 1 : -1;
       if (!b.dueDate) return sortBy.direction === 'asc' ? -1 : 1;
+      
+      const dateA = new Date(a.dueDate);
+      const dateB = new Date(b.dueDate);
+      
       return sortBy.direction === 'asc' 
-        ? a.dueDate.getTime() - b.dueDate.getTime()
-        : b.dueDate.getTime() - a.dueDate.getTime();
+        ? dateA.getTime() - dateB.getTime()
+        : dateB.getTime() - dateA.getTime();
     }
     
     if (sortBy.field === 'priority') {
@@ -140,26 +146,28 @@ const Tasks: React.FC = () => {
   // Group tasks for display
   const groupedTasks = {
     overdue: sortedTasks.filter(
-      task => !task.completed && task.dueDate && task.dueDate < new Date()
+      task => task.status !== 'completed' && task.dueDate && new Date(task.dueDate) < new Date()
     ),
     today: sortedTasks.filter(task => {
-      if (task.completed || !task.dueDate) return false;
+      if (task.status === 'completed' || !task.dueDate) return false;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
-      return task.dueDate >= today && task.dueDate < tomorrow;
+      const taskDate = new Date(task.dueDate);
+      return taskDate >= today && taskDate < tomorrow;
     }),
     upcoming: sortedTasks.filter(task => {
-      if (task.completed || !task.dueDate) return false;
+      if (task.status === 'completed' || !task.dueDate) return false;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
-      return task.dueDate >= tomorrow;
+      const taskDate = new Date(task.dueDate);
+      return taskDate >= tomorrow;
     }),
-    completed: sortedTasks.filter(task => task.completed),
-    noDueDate: sortedTasks.filter(task => !task.completed && !task.dueDate)
+    completed: sortedTasks.filter(task => task.status === 'completed'),
+    noDueDate: sortedTasks.filter(task => task.status !== 'completed' && !task.dueDate)
   };
   
   // Open task detail or create form
@@ -200,22 +208,27 @@ const Tasks: React.FC = () => {
   };
   
   // Format date for display
-  const formatDate = (date?: Date) => {
+  const formatDate = (date?: string | Date) => {
     if (!date) return 'No due date';
+    
+    // Convert string to Date if needed
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    
+    if (isNaN(dateObj.getTime())) return 'Invalid date';
     
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     
-    if (date < today) {
-      return `Overdue: ${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-    } else if (date >= today && date < tomorrow) {
-      return `Today, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-    } else if (date >= tomorrow && date < new Date(tomorrow.getTime() + 86400000)) {
-      return `Tomorrow, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    if (dateObj < today) {
+      return `Overdue: ${dateObj.toLocaleDateString()} ${dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    } else if (dateObj >= today && dateObj < tomorrow) {
+      return `Today, ${dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    } else if (dateObj >= tomorrow && dateObj < new Date(tomorrow.getTime() + 86400000)) {
+      return `Tomorrow, ${dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
     } else {
-      return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+      return `${dateObj.toLocaleDateString()} ${dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
     }
   };
   

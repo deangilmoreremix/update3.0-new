@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Phone, User, Building, Tag, RefreshCw, Copy } from 'lucide-react';
 import AIToolContent from '../shared/AIToolContent';
-import { useOpenAI } from '../../services/openaiService';
+import { edgeFunctionService } from '../../services/edgeFunctionService';
 
 const CallScriptContent: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +15,6 @@ const CallScriptContent: React.FC = () => {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [reasoning, setReasoning] = useState<string | null>(null);
-  const openai = useOpenAI();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -30,11 +29,20 @@ const CallScriptContent: React.FC = () => {
     setReasoning(null);
 
     try {
-      const prompt = `Create a personalized sales call script to ${formData.callPurpose} for ${formData.prospectName} at ${formData.companyName}, a company in the ${formData.industry} industry.`;
-      const script = await openai.generateScript(prompt); // <- replace with your actual function
-      const reason = await openai.generateReasoning(`Explain the strategy behind the call script for: ${formData.callPurpose}`);
-      setResult(script);
-      setReasoning(reason);
+      const contactInfo = {
+        name: formData.prospectName,
+        company: formData.companyName,
+        industry: formData.industry
+      };
+      
+      const response = await edgeFunctionService.callAIFunction('/api/ai/call-script', {
+        contactInfo,
+        callPurpose: formData.callPurpose,
+        industry: formData.industry
+      });
+      
+      setResult(response.result);
+      setReasoning(`Strategy: This call script is personalized for ${formData.prospectName} at ${formData.companyName} to achieve ${formData.callPurpose} in the ${formData.industry} industry.`);
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Something went wrong');

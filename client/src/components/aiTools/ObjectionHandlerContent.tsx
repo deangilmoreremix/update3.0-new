@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useGemini } from '../../services/geminiService';
+import { edgeFunctionService } from '../../services/edgeFunctionService';
 import AIToolContent from '../shared/AIToolContent';
 import { Shield, User, Building, RefreshCw, Copy, FileText, List, Check } from 'lucide-react';
 
@@ -15,8 +15,6 @@ const ObjectionHandlerContent: React.FC = () => {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-
-  const gemini = useGemini();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -34,19 +32,19 @@ const ObjectionHandlerContent: React.FC = () => {
     setError(null);
     
     try {
-      // Enhance product info with industry and deal stage context
-      const enhancedProductInfo = `
-        Product/Service Info: ${formData.productInfo}
-        Industry: ${formData.industry}
-        Deal Stage: ${formData.dealStage}
-      `;
+      const productInfo = {
+        info: formData.productInfo,
+        industry: formData.industry,
+        dealStage: formData.dealStage
+      };
 
-      const objectionHandler = await gemini.generateObjectionHandler(
-        formData.objection,
-        enhancedProductInfo
-      );
+      const response = await edgeFunctionService.callAIFunction('/api/ai/objection-handler', {
+        objection: formData.objection,
+        context: `Deal Stage: ${formData.dealStage}, Industry: ${formData.industry}`,
+        productInfo
+      });
       
-      setResult(objectionHandler);
+      setResult(response.result);
       setCopied(false);
     } catch (err) {
       console.error('Error generating objection handler:', err);

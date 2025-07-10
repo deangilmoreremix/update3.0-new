@@ -1,0 +1,49 @@
+Define Core Types and Services:
+
+Start by defining the data structure for a contact.
+Modify src/types/contact.ts: Ensure this file contains the Contact interface, as many components will rely on this type definition.
+Implement the AI enrichment and analysis services.
+Modify src/services/aiEnrichmentService.ts: This service provides the core AI functionalities for enriching contact data.
+Modify src/services/openaiService.ts: This service integrates with OpenAI for contact analysis and scoring.
+Modify src/services/geminiService.ts: This service provides additional AI research capabilities.
+Set up the contact data store.
+Modify src/store/contactStore.ts: This file manages the state and data operations for your contacts, interacting with the Contact type.
+Build Reusable UI Components:
+
+Implement the generic UI components that will be used across the contacts feature.
+Modify src/components/ui/StatusIndicator.tsx: A small component to display status.
+Modify src/components/ui/AvatarWithStatus.tsx: This component will display user avatars with a status indicator, relying on StatusIndicator.
+Modify src/components/ui/ModernButton.tsx: A versatile button component used throughout the UI.
+Modify src/components/ui/GlassCard.tsx: A styled card component for various sections.
+Modify src/components/ui/AIResearchButton.tsx: This button triggers AI research, depending on ModernButton and aiEnrichmentService.ts.
+Modify src/components/ui/AIAutoFillButton.tsx: This button uses AI to auto-fill form data, depending on ModernButton and AIResearchButton.
+Modify src/components/ui/CustomizableAIToolbar.tsx: A toolbar for AI actions, depending on ModernButton and Lucide icons.
+Develop Individual Contact-Related Components:
+
+Proceed with the specific components that display and manage contact information.
+Modify src/components/contacts/AIEnhancedContactCard.tsx: This component displays a single contact card, relying on AvatarWithStatus, CustomizableAIToolbar, types/contact.ts, and openaiService.ts.
+Modify src/components/contacts/AIInsightsPanel.tsx: Displays AI-generated insights for a contact, using GlassCard and ModernButton.
+Modify src/components/contacts/AutomationPanel.tsx: Manages automation rules for contacts, using GlassCard and ModernButton.
+Modify src/components/contacts/CommunicationHub.tsx: Provides a unified view of communication history, using GlassCard and ModernButton.
+Modify src/components/contacts/ContactAnalytics.tsx: Displays analytics for a contact, using GlassCard and ModernButton.
+Modify src/components/contacts/ContactJourneyTimeline.tsx: Visualizes the interaction timeline, using GlassCard and ModernButton.
+Implement Contact Modals:
+
+Create the modal components that encapsulate contact forms and detail views.
+Modify src/components/modals/NewContactModal.tsx: This modal allows users to create new contacts, depending on ModernButton, AIAutoFillButton, AIResearchButton, contactStore.ts, and aiEnrichmentService.ts.
+Modify src/components/modals/ImportContactsModal.tsx: This modal handles importing contacts from CSV, depending on ModernButton and contactStore.ts.
+Modify src/components/modals/ContactDetailView.tsx: This modal displays the detailed view of a contact, integrating many of the contacts/ components and relying on contactStore.ts and aiEnrichmentService.ts.
+Integrate the Main Contacts Modal:
+
+Bring all the contact-related functionalities together in the primary contacts modal.
+Modify src/components/modals/ContactsModal.tsx: This is the central component for the contacts feature, orchestrating the display of AIEnhancedContactCards, search, filters, and opening ContactDetailView, ImportContactsModal, and NewContactModal. It also uses contactStore.ts and openaiService.ts.
+Add to the Main Application Layout:
+
+Finally, integrate the ContactsModal into your main application.
+Modify src/App.tsx: This file will be responsible for rendering the ContactsModal (likely conditionally, based on user interaction).
+Ensure Styling and Entry Point are Correct:
+
+Confirm your global styles and application entry point are correctly configured.
+Modify src/styles/design-system.css: Contains global CSS variables and base styles.
+Modify src/index.css: Imports Tailwind CSS and your design system.
+Modify src/main.tsx: The entry point for your React application.
