@@ -24,7 +24,8 @@ interface Contact {
 
 class RealGeminiService {
   private genAI: GoogleGenerativeAI;
-  private model: any;
+  private geminiModel: any;
+  private gemmaModel: any;
 
   constructor() {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
@@ -32,11 +33,30 @@ class RealGeminiService {
       throw new Error('VITE_GEMINI_API_KEY not found in environment variables');
     }
     this.genAI = new GoogleGenerativeAI(apiKey);
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    this.geminiModel = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    this.gemmaModel = this.genAI.getGenerativeModel({ model: 'gemma-2-9b-it' });
+  }
+
+  private selectModel(taskType: 'analysis' | 'enrichment' | 'bulk' = 'analysis') {
+    // Use Gemini for complex analysis and Gemma for faster processing
+    switch (taskType) {
+      case 'bulk':
+        return { model: this.gemmaModel, name: 'gemma-2-9b-it' };
+      case 'enrichment':
+        return { model: this.geminiModel, name: 'gemini-2.5-flash' };
+      case 'analysis':
+      default:
+        // Alternate between models for load balancing
+        return Math.random() > 0.5 
+          ? { model: this.geminiModel, name: 'gemini-2.5-flash' }
+          : { model: this.gemmaModel, name: 'gemma-2-9b-it' };
+    }
   }
 
   async analyzeContact(contact: Contact): Promise<ContactAnalysisResult> {
     try {
+      const selectedModel = this.selectModel('analysis');
+      
       const prompt = `
         Analyze this contact for sales potential and provide actionable insights:
         
@@ -71,7 +91,8 @@ class RealGeminiService {
         Return only the JSON response without any markdown formatting.
       `;
 
-      const result = await this.model.generateContent(prompt);
+      console.log(`Using ${selectedModel.name} for contact analysis`);
+      const result = await selectedModel.model.generateContent(prompt);
       const responseText = result.response.text();
       
       // Parse the JSON response
@@ -86,7 +107,7 @@ class RealGeminiService {
       };
       
     } catch (error) {
-      console.error('Gemini API error:', error);
+      console.error('Google AI API error:', error);
       throw new Error(`Contact analysis failed: ${error.message}`);
     }
   }
@@ -118,6 +139,8 @@ class RealGeminiService {
 
   async enrichContact(contact: Contact): Promise<Partial<Contact>> {
     try {
+      const selectedModel = this.selectModel('enrichment');
+      
       const prompt = `
         Based on the provided contact information, suggest enrichment data that would be realistic for a contact in their industry and role:
         
@@ -139,7 +162,8 @@ class RealGeminiService {
         Return only the JSON response without markdown formatting.
       `;
 
-      const result = await this.model.generateContent(prompt);
+      console.log(`Using ${selectedModel.name} for contact enrichment`);
+      const result = await selectedModel.model.generateContent(prompt);
       const responseText = result.response.text();
       const enrichment = JSON.parse(responseText);
       

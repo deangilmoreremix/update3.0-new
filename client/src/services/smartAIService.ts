@@ -1,5 +1,4 @@
 import { realGeminiService } from './realGeminiService';
-import { realOpenAIService } from './realOpenAIService';
 
 interface Contact {
   id: string;
@@ -21,7 +20,7 @@ interface ContactAnalysisResult {
   insights: string[];
   recommendations: string[];
   confidence: number;
-  modelUsed: 'gemini' | 'openai';
+  modelUsed: 'gemini' | 'gemma';
 }
 
 interface BulkAnalysisResult {
