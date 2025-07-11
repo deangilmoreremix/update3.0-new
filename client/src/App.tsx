@@ -73,6 +73,7 @@ import AIGoalsPageEnhanced from './pages/AIGoals/AIGoalsPageEnhanced';
 import './components/styles/design-system.css';
 
 function App() {
+<<<<<<< HEAD
   const [isContactsModalOpen, setIsContactsModalOpen] = useState(false);
   const [isPipelineModalOpen, setIsPipelineModalOpen] = useState(false);
 

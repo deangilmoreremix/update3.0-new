@@ -9,7 +9,7 @@ import {
   insertBusinessAnalysisSchema,
   insertContentItemSchema,
   insertVoiceProfileSchema
-} from "@shared/schema";
+} from "../shared/schema";
 import { z } from "zod";
 import { extractTenant, requireTenant, requireFeature, addTenantContext, type TenantRequest } from "./middleware/tenantMiddleware";
 import { handleWebhook } from "./integrations/webhookHandlers";
@@ -24,7 +24,7 @@ import { authenticateToken } from "./middleware/authMiddleware";
 import { emailCampaignService } from "./services/emailCampaignService";
 import { emailScheduler } from "./services/emailScheduler";
 import { db } from "./db";
-import { users } from "@shared/schema";
+import { users } from "../shared/schema";
 import { eq } from "drizzle-orm";
 
 export async function registerRoutes(app: Express): Promise<Server> {

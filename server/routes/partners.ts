@@ -17,7 +17,7 @@ import {
   type PartnerCustomer,
   type RevenueSharing,
   type PartnerBilling
-} from '@shared/schema';
+} from '../../shared/schema';
 
 const router = Router();
 

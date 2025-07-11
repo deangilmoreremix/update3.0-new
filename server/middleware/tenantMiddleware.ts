@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { whiteLabelClient } from '../integrations/whiteLabelClient';
 import { tenantService } from '../services/tenantService';
-import { type Tenant, type FeatureKey, type PermissionKey } from '@shared/schema';
+import { type Tenant, type FeatureKey, type PermissionKey } from '../../shared/schema';
 
 export interface TenantRequest extends Request {
   tenantId?: string;

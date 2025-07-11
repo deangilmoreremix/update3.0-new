@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { db } from '../db';
-import { users, type User, type InsertUser } from '@shared/schema';
+import { users, type User, type InsertUser } from '../../shared/schema';
 import { eq, and } from 'drizzle-orm';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-jwt-secret-key';
