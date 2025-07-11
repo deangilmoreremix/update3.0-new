@@ -3,7 +3,7 @@ import { useTaskStore } from '../store/taskStore';
 import { CheckSquare, Plus, Calendar, User, Clock, Flag, Search, Filter } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
-export const TaskManagement: React.FC = () => {
+const TaskManagement: React.FC = () => {
   const { isDark } = useTheme();
   const { tasks, createTask, updateTask, deleteTask } = useTaskStore();
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);

@@ -262,6 +262,16 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenPipelineModal }) => {
     { name: 'Territory Management', tool: 'territory-management', icon: Globe }
   ];
 
+  // Task dropdown tools
+  const taskTools = [
+    { name: 'Task Management', tool: 'task-management', icon: CheckSquare },
+    { name: 'Task Automation', tool: 'task-automation', icon: Bot },
+    { name: 'Project Tracker', tool: 'project-tracker', icon: Briefcase },
+    { name: 'Time Tracking', tool: 'time-tracking', icon: Clock },
+    { name: 'Workflow Builder', tool: 'workflow-builder', icon: Layers },
+    { name: 'Deadline Manager', tool: 'deadline-manager', icon: AlertTriangle }
+  ];
+
   // Communication dropdown tools
   const communicationTools = [
     { name: 'Video Email', tool: 'video-email', icon: Video },
