@@ -80,13 +80,13 @@ const TextMessages: React.FC = () => {
   // SMS Provider configuration
   const [smsProvider, setSmsProvider] = useState<SmsProvider>({
     name: 'twilio',
-    configured: true,
+    configured: !!process.env.TWILIO_ACCOUNT_SID && !!process.env.TWILIO_AUTH_TOKEN,
     configFields: {
-      accountSid: 'AC1234567890abcdef1234567890abcdef',
-      authToken: '1234567890abcdef1234567890abcdef',
-      fromNumber: '+15551234567'
+      accountSid: process.env.TWILIO_ACCOUNT_SID || '',
+      authToken: process.env.TWILIO_AUTH_TOKEN || '',
+      fromNumber: process.env.TWILIO_PHONE_NUMBER || ''
     },
-    status: 'active'
+    status: process.env.TWILIO_ACCOUNT_SID ? 'active' : 'inactive'
   });
   
   // Show provider configuration modal
