@@ -261,12 +261,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ onOpenPipelineModal }) => {
       id: 'pipeline',
       label: 'Pipeline',
       icon: Briefcase,
-      action: () => {
-        onOpenPipelineModal?.();
-        setActiveTab('pipeline');
-        setActiveDropdown(null);
-        setIsMobileMenuOpen(false);
-      },
+      action: () => handleNavigation('/pipeline', 'pipeline'),
       badge: counters.activeDeals,
       color: 'from-green-500 to-emerald-500'
     },

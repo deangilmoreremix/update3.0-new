@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Dashboard from './components/Dashboard';
+// Import page components
+import DashboardPage from './pages/Dashboard';
+import PipelinePage from './pages/Pipeline';
+import ContactsPage from './pages/Contacts';
+import ContactDetail from './pages/ContactDetail';
+import AIToolsPage from './pages/AITools';
+import TasksPage from './pages/Tasks';
+import SettingsPage from './pages/Settings';
 const VideoCallOverlay = React.lazy(() => import('./components/VideoCallOverlay'));
 const VideoCallPreviewWidget = React.lazy(() => import('./components/VideoCallPreviewWidget'));
 import DevicePermissionChecker from './components/DevicePermissionChecker';
@@ -39,21 +46,28 @@ function App() {
                 <ModalsProvider>
                   <div className="min-h-screen h-full w-full flex flex-col transition-all duration-300 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-gradient-to-br from-gray-50 via-white to-gray-100">
                     <DevicePermissionChecker />
-                    <Routes>
-                      <Route path="*" element={
-                        <>
-                          <Navbar onOpenPipelineModal={() => {
-                            const modalsContext = document.getElementById('root')?.__MODALS_CONTEXT;
-                            if (modalsContext && modalsContext.openPipelineModal) {
-                              modalsContext.openPipelineModal();
-                            }
-                          }} />
-                          <div className="flex-1 w-full overflow-hidden">
-                            <Dashboard />
-                          </div>
-                        </>
-                      } />
-                    </Routes>
+                    <Navbar onOpenPipelineModal={() => {
+                      const modalsContext = (document.getElementById('root') as any)?.__MODALS_CONTEXT;
+                      if (modalsContext && modalsContext.openPipelineModal) {
+                        modalsContext.openPipelineModal();
+                      }
+                    }} />
+                    <div className="flex-1 w-full overflow-hidden">
+                      <Routes>
+                        <Route path="/" element={<DashboardPage />} />
+                        <Route path="/dashboard" element={<DashboardPage />} />
+                        <Route path="/pipeline" element={<PipelinePage />} />
+                        <Route path="/contacts" element={<ContactsPage />} />
+                        <Route path="/contacts/:id" element={<ContactDetail />} />
+                        <Route path="/ai-tools" element={<AIToolsPage />} />
+                        <Route path="/ai-goals" element={<AIToolsPage />} />
+                        <Route path="/tasks" element={<TasksPage />} />
+                        <Route path="/appointments" element={<TasksPage />} />
+                        <Route path="/settings" element={<SettingsPage />} />
+                        {/* Fallback to dashboard for unknown routes */}
+                        <Route path="*" element={<DashboardPage />} />
+                      </Routes>
+                    </div>
                   
                   {/* Lazy load video components with suspense to prevent layout shifts */}
                   {shouldRenderVideoComponents && (
