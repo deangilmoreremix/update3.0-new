@@ -1,371 +1,499 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { QueryClientProvider } from '@tanstack/react-query';
-
-import { AIToolsProvider } from './components/AIToolsProvider';
-import { TenantProvider } from './components/TenantProvider';
-import { RoleProvider } from './components/RoleBasedAccess';
-import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
-import { queryClient } from './lib/queryClient';
-import { ClerkProvider } from '@clerk/clerk-react';
-import { ProtectedRoute, SuperAdminRoute, ResellerRoute, UserRoute } from './components/auth/ProtectedRoute';
-
-// Landing Pages
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import ExactNavbar from './components/layout/ExactNavbar';
+import Dashboard from './components/Dashboard';
 import LandingPage from './pages/Landing/LandingPage';
-
-// Auth Pages (preserved for future Clerk integration)
+import SimpleLandingPage from './pages/Landing/SimpleLandingPage';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import ForgotPassword from './pages/Auth/ForgotPassword';
+import UserRoute from './components/auth/UserRoute';
+import AuthenticatedLayout from './components/auth/AuthenticatedLayout';
+import SuperAdminSignup from './pages/SuperAdminSignup';
+import SuperAdminDashboard from './pages/SuperAdminDashboard';
+import EmailCampaignManager from './pages/EmailCampaignManager';
+import VideoCallOverlay from './components/VideoCallOverlay';
+import { AIToolsProvider } from './components/AIToolsProvider';
+import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { NavigationProvider } from './contexts/NavigationContext';
+import { DashboardLayoutProvider } from './contexts/DashboardLayoutContext';
+import { VideoCallProvider } from './contexts/VideoCallContext';
+import { ComponentRegistryProvider } from './contexts/ComponentRegistry';
+import { UnifiedDragDropProvider } from './contexts/UnifiedDragDropContext';
+import { GamificationProvider } from './contexts/GamificationContext';
+import { ContactsModal } from './components/modals/ContactsModal';
+import PipelineModal from './components/modals/PipelineModal';
+import { TenantProvider } from './components/TenantProvider';
+import { RoleProvider } from './components/RoleBasedAccess';
 
-// Main pages
-import Dashboard from './pages/Dashboard';
+// Import existing pages
 import Contacts from './pages/Contacts';
-import ContactDetail from './pages/ContactDetail';
-import Pipeline from './pages/Pipeline';
+import NetlifyContacts from './pages/NetlifyContacts';
+
+import { EnhancedPipeline } from './components/EnhancedPipeline';
 import Tasks from './pages/Tasks';
-import TaskCalendarView from './pages/TaskCalendarView';
-import Appointments from './pages/Appointments';
-import PhoneSystem from './pages/PhoneSystem';
-import TextMessages from './pages/TextMessages';
-import VideoEmail from './pages/VideoEmail';
-import Invoicing from './pages/Invoicing';
-import Settings from './pages/Settings';
-import AITools from './pages/AITools';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import CommunicationHub from './pages/CommunicationHub';
+import DocumentCenter from './pages/DocumentCenter';
 import SalesTools from './pages/SalesTools';
 import LeadAutomation from './pages/LeadAutomation';
 import CircleProspecting from './pages/CircleProspecting';
-import FormsAndSurveys from './pages/FormsAndSurveys';
-import FormPublic from './pages/FormPublic';
-import FAQ from './pages/FAQ';
-
-// Business Analysis
-import BusinessAnalyzer from './pages/BusinessAnalysis/BusinessAnalyzer';
-
-// Content Library
+import Appointments from './pages/Appointments';
+import PhoneSystem from './pages/PhoneSystem';
+import Invoicing from './pages/Invoicing';
+import VideoEmail from './pages/VideoEmail';
+import TextMessages from './pages/TextMessages';
 import ContentLibrary from './pages/ContentLibrary/ContentLibrary';
-
-// Voice Profiles
 import VoiceProfiles from './pages/VoiceProfiles/VoiceProfiles';
-
-// New Feature Pages
-import CommunicationHub from './pages/CommunicationHub';
-import DocumentCenter from './pages/DocumentCenter';
-import AnalyticsDashboard from './pages/AnalyticsDashboard';
-import LeadCapture from './pages/LeadCapture';
-
-// Feature Pages
-import AiToolsFeaturePage from './pages/Landing/FeaturePage/AiToolsFeaturePage';
-import ContactsFeaturePage from './pages/Landing/FeaturePage/ContactsFeaturePage';
-import PipelineFeaturePage from './pages/Landing/FeaturePage/PipelineFeaturePage';
-import AiAssistantFeaturePage from './pages/Landing/FeaturePage/AiAssistantFeaturePage';
-import VisionAnalyzerFeaturePage from './pages/Landing/FeaturePage/VisionAnalyzerFeaturePage';
-import ImageGeneratorFeaturePage from './pages/Landing/FeaturePage/ImageGeneratorFeaturePage';
-import SemanticSearchFeaturePage from './pages/Landing/FeaturePage/SemanticSearchFeaturePage';
-import FunctionAssistantFeaturePage from './pages/Landing/FeaturePage/FunctionAssistantFeaturePage';
-import CommunicationsFeaturePage from './pages/Landing/FeaturePage/CommunicationsFeaturePage';
-import GoalCardDemo from './pages/GoalCardDemo';
-import AIGoalsPage from './pages/AIGoals/AIGoalsPageEnhanced';
-import PartnerOnboardingPage from './pages/PartnerOnboardingPage';
-import PartnerDashboard from './pages/PartnerDashboard';
-import SuperAdminDashboard from './pages/SuperAdminDashboard';
-import UserManagement from './pages/UserManagement';
+import BusinessAnalyzer from './pages/BusinessAnalysis/BusinessAnalyzer';
+import FormsAndSurveys from './pages/FormsAndSurveys';
+import AITools from './pages/AITools';
+import TaskManagement from './pages/TaskManagement';
+import TaskAutomation from './pages/TaskAutomation';
+import ProjectTracker from './pages/ProjectTracker';
+import TimeTracking from './pages/TimeTracking';
+import WorkflowBuilder from './pages/WorkflowBuilder';
+import DeadlineManager from './pages/DeadlineManager';
+import SalesAnalytics from './pages/SalesAnalytics';
+import QuoteBuilder from './pages/QuoteBuilder';
+import CommissionTracker from './pages/CommissionTracker';
+import FollowUpReminders from './pages/FollowUpReminders';
+import TerritoryManagement from './pages/TerritoryManagement';
+import EmailComposer from './pages/EmailComposer';
+import Campaigns from './pages/Campaigns';
+import ImageGenerator from './pages/ImageGenerator';
+import AIModelDemo from './pages/AIModelDemo';
+import FeatureAccessDemo from './pages/FeatureAccessDemo';
+import { SSOConfiguration } from './pages/SSOConfiguration';
 import WhiteLabelCustomization from './pages/WhiteLabelCustomization';
-import PartnerManagementPage from './pages/PartnerManagementPage';
-import RevenueSharingPage from './pages/RevenueSharingPage';
-import FeaturePackageManagementPage from './pages/FeaturePackageManagementPage';
-import UnauthorizedPage from './pages/UnauthorizedPage';
+import AIGoalsPage from './pages/AIGoals/AIGoalsPage';
+import AIGoalsPageEnhanced from './pages/AIGoals/AIGoalsPageEnhanced';
 
-// Layout Components
-import Navbar from './components/Navbar';
-
-// Layout wrapper for authenticated pages
-const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <main className="pt-16">
-        {children}
-      </main>
-    </div>
-  );
-};
+import './components/styles/design-system.css';
 
 function App() {
-  const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-
-  // Demo mode - work without Clerk authentication when key is missing
-  const AppRoutes = () => (
-    <Routes>
-      {/* Auth routes (available for future Clerk integration) */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-
-      {/* Public routes */}
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/form/:formId" element={<FormPublic />} />
-      <Route path="/faq" element={<FAQ />} />
-
-      {/* Protected routes with role-based access */}
-      <Route path="/dashboard" element={
-        <UserRoute>
-          <AuthenticatedLayout>
-            <Dashboard />
-          </AuthenticatedLayout>
-        </UserRoute>
-      } />
-
-      <Route path="/contacts" element={
-        <UserRoute>
-          <AuthenticatedLayout>
-            <Contacts />
-          </AuthenticatedLayout>
-        </UserRoute>
-      } />
-
-      <Route path="/contacts/:id" element={
-        <UserRoute>
-          <AuthenticatedLayout>
-            <ContactDetail />
-          </AuthenticatedLayout>
-        </UserRoute>
-      } />
-
-      <Route path="/pipeline" element={
-        <UserRoute>
-          <AuthenticatedLayout>
-            <Pipeline />
-          </AuthenticatedLayout>
-        </UserRoute>
-      } />
-
-      <Route path="/tasks" element={
-        <UserRoute>
-          <AuthenticatedLayout>
-            <Tasks />
-          </AuthenticatedLayout>
-        </UserRoute>
-      } />
-
-      <Route path="/tasks/calendar" element={
-        <ProtectedRoute>
-          <TaskCalendarView />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/calendar" element={
-        <ProtectedRoute>
-          <TaskCalendarView />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/appointments" element={
-        <ProtectedRoute>
-          <Appointments />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/phone" element={
-        <ProtectedRoute>
-          <PhoneSystem />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/text-messages" element={
-        <ProtectedRoute>
-          <TextMessages />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/video-email" element={
-        <ProtectedRoute>
-          <VideoEmail />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/invoicing" element={
-        <ProtectedRoute>
-          <Invoicing />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/ai-tools" element={
-        <ProtectedRoute>
-          <AITools />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/sales-tools" element={
-        <ProtectedRoute>
-          <SalesTools />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/lead-automation" element={
-        <ProtectedRoute>
-          <LeadAutomation />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/circle-prospecting" element={
-        <ProtectedRoute>
-          <CircleProspecting />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/forms-surveys" element={
-        <ProtectedRoute>
-          <FormsAndSurveys />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/business-analysis" element={
-        <ProtectedRoute>
-          <BusinessAnalyzer />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/content-library" element={
-        <ProtectedRoute>
-          <ContentLibrary />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/voice-profiles" element={
-        <ProtectedRoute>
-          <VoiceProfiles />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/communication-hub" element={
-        <ProtectedRoute>
-          <CommunicationHub />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/document-center" element={
-        <ProtectedRoute>
-          <DocumentCenter />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/analytics-dashboard" element={
-        <ProtectedRoute>
-          <AnalyticsDashboard />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/lead-capture" element={
-        <ProtectedRoute>
-          <LeadCapture />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/settings" element={
-        <ProtectedRoute>
-          <Settings />
-        </ProtectedRoute>
-      } />
-
-      {/* Feature Pages */}
-      <Route path="/features/ai-tools" element={<AiToolsFeaturePage />} />
-      <Route path="/features/contacts" element={<ContactsFeaturePage />} />
-      <Route path="/features/pipeline" element={<PipelineFeaturePage />} />
-      <Route path="/features/ai-assistant" element={<AiAssistantFeaturePage />} />
-      <Route path="/features/vision-analyzer" element={<VisionAnalyzerFeaturePage />} />
-      <Route path="/features/image-generator" element={<ImageGeneratorFeaturePage />} />
-      <Route path="/features/semantic-search" element={<SemanticSearchFeaturePage />} />
-      <Route path="/features/function-assistant" element={<FunctionAssistantFeaturePage />} />
-      <Route path="/features/communications" element={<CommunicationsFeaturePage />} />
-      <Route path="/demo/goal-cards" element={<GoalCardDemo />} />
-      <Route path="/ai-goals" element={<AIGoalsPage />} />
-      <Route path="/partner/onboard" element={<PartnerOnboardingPage />} />
-      <Route path="/partner/dashboard" element={
-        <ResellerRoute>
-          <AuthenticatedLayout>
-            <PartnerDashboard />
-          </AuthenticatedLayout>
-        </ResellerRoute>
-      } />
-      <Route path="/admin/dashboard" element={
-        <SuperAdminRoute>
-          <AuthenticatedLayout>
-            <SuperAdminDashboard />
-          </AuthenticatedLayout>
-        </SuperAdminRoute>
-      } />
-      <Route path="/admin/users" element={
-        <SuperAdminRoute>
-          <AuthenticatedLayout>
-            <UserManagement />
-          </AuthenticatedLayout>
-        </SuperAdminRoute>
-      } />
-      <Route path="/admin/white-label" element={
-        <SuperAdminRoute>
-          <AuthenticatedLayout>
-            <WhiteLabelCustomization />
-          </AuthenticatedLayout>
-        </SuperAdminRoute>
-      } />
-      <Route path="/admin/partner-management" element={
-        <SuperAdminRoute>
-          <AuthenticatedLayout>
-            <PartnerManagementPage />
-          </AuthenticatedLayout>
-        </SuperAdminRoute>
-      } />
-      <Route path="/admin/revenue-sharing" element={
-        <SuperAdminRoute>
-          <AuthenticatedLayout>
-            <RevenueSharingPage />
-          </AuthenticatedLayout>
-        </SuperAdminRoute>
-      } />
-      <Route path="/admin/feature-packages" element={
-        <SuperAdminRoute>
-          <AuthenticatedLayout>
-            <FeaturePackageManagementPage />
-          </AuthenticatedLayout>
-        </SuperAdminRoute>
-      } />
-
-      {/* Unauthorized route */}
-      <Route path="/unauthorized" element={<UnauthorizedPage />} />
-    </Routes>
-  );
+  const [isContactsModalOpen, setIsContactsModalOpen] = useState(false);
+  const [isPipelineModalOpen, setIsPipelineModalOpen] = useState(false);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {publishableKey ? (
-        <ClerkProvider publishableKey={publishableKey}>
-          <TenantProvider>
-            <RoleProvider>
-              <EnhancedHelpProvider>
-                <AIToolsProvider>
-                  <Router>
-                    <AppRoutes />
-                  </Router>
-                </AIToolsProvider>
-              </EnhancedHelpProvider>
-            </RoleProvider>
-          </TenantProvider>
-        </ClerkProvider>
-      ) : (
-        <TenantProvider>
-          <RoleProvider>
-            <EnhancedHelpProvider>
-              <AIToolsProvider>
-                <Router>
-                  <AppRoutes />
-                </Router>
-              </AIToolsProvider>
-            </EnhancedHelpProvider>
-          </RoleProvider>
-        </TenantProvider>
-      )}
-    </QueryClientProvider>
+    <ThemeProvider>
+      <VideoCallProvider>
+        <AIToolsProvider>
+          <NavigationProvider>
+            <ComponentRegistryProvider>
+              <DashboardLayoutProvider>
+                <UnifiedDragDropProvider>
+                  <GamificationProvider>
+                    <EnhancedHelpProvider>
+                      <TenantProvider>
+                        <RoleProvider>
+                        <Router>
+                          <div className="min-h-screen h-full w-full flex flex-col transition-all duration-300 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+                            <Routes>
+                              {/* Landing Page - no navbar */}
+                              <Route path="/" element={<LandingPage />} />
+                              
+                              {/* Authentication Routes - no navbar */}
+                              <Route path="/login" element={<Login />} />
+                              <Route path="/sign-in" element={<Login />} />
+                              <Route path="/signup" element={<Register />} />
+                              <Route path="/sign-up" element={<Register />} />
+                              <Route path="/forgot-password" element={<ForgotPassword />} />
+                              <Route path="/super-admin-signup" element={<SuperAdminSignup />} />
+                              
+                              {/* Routes with navbar */}
+                              <Route path="/super-admin-dashboard" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <SuperAdminDashboard />
+                                  </div>
+                                </>
+                              } />
+                              
+                              <Route path="/email-campaigns" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <EmailCampaignManager />
+                                  </div>
+                                </>
+                              } />
+                              
+                              <Route path="/dashboard" element={
+                                <UserRoute>
+                                  <AuthenticatedLayout>
+                                    <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                    <div className="flex-1 w-full overflow-y-auto pt-24">
+                                      <Dashboard />
+                                    </div>
+                                  </AuthenticatedLayout>
+                                </UserRoute>
+                              } />
+                              
+                              {/* Core CRM Pages */}
+                              <Route path="/contacts" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <NetlifyContacts />
+                                  </div>
+                                </>
+                              } />
+
+                              <Route path="/tasks" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <Tasks />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/analytics" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <AnalyticsDashboard />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* Feature Access Demo */}
+                              <Route path="/feature-access-demo" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <FeatureAccessDemo />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* SSO Configuration */}
+                              <Route path="/sso-config" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <SSOConfiguration />
+                                  </div>
+                                </>
+                              } />
+
+                              {/* White Label Customization */}
+                              <Route path="/white-label" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <WhiteLabelCustomization />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* Other routes would follow the same pattern */}
+                              {/* Sales Tools Routes */}
+                              <Route path="/sales-tools" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <SalesTools />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/lead-automation" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <LeadAutomation />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/circle-prospecting" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <CircleProspecting />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/appointments" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <Appointments />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/phone-system" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <PhoneSystem />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/invoicing" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <Invoicing />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/video-email" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <VideoEmail />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/text-messages" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <TextMessages />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/sales-analytics" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <SalesAnalytics />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/quote-builder" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <QuoteBuilder />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/commission-tracker" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <CommissionTracker />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/follow-up-reminders" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <FollowUpReminders />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/territory-management" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <TerritoryManagement />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/task-management" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <TaskManagement />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/task-automation" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <TaskAutomation />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/project-tracker" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <ProjectTracker />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/time-tracking" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <TimeTracking />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/workflow-builder" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <WorkflowBuilder />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/deadline-manager" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <DeadlineManager />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/email-composer" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <EmailComposer />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/campaigns" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <Campaigns />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/content-library" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <ContentLibrary />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/voice-profiles" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <VoiceProfiles />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/business-analysis" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <BusinessAnalyzer />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/forms" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <FormsAndSurveys />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/image-generator" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <ImageGenerator />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/ai-model-demo" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <AIModelDemo />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/ai-tools" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <AITools />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* AI Goals Routes */}
+                              <Route path="/ai-goals" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <AIGoalsPageEnhanced />
+                                  </div>
+                                </>
+                              } />
+                              <Route path="/ai-goals-basic" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <AIGoalsPage />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* Pipeline Route */}
+                              <Route path="/pipeline" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <EnhancedPipeline />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* Communication Hub Route */}
+                              <Route path="/communication-hub" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <CommunicationHub />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* Document Center Route */}
+                              <Route path="/document-center" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <DocumentCenter />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* For brevity, I'll add a catch-all that redirects to dashboard */}
+                              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                            </Routes>
+                            
+                            <VideoCallOverlay />
+                            
+                            {/* ContactsModal rendered at the root level */}
+                            <ContactsModal
+                              isOpen={isContactsModalOpen}
+                              onClose={() => setIsContactsModalOpen(false)}
+                            />
+                            
+                            {/* PipelineModal rendered at the root level */}
+                            <PipelineModal
+                              isOpen={isPipelineModalOpen}
+                              onClose={() => setIsPipelineModalOpen(false)}
+                            />
+                          </div>
+                        </Router>
+                        </RoleProvider>
+                      </TenantProvider>
+                    </EnhancedHelpProvider>
+                  </GamificationProvider>
+                </UnifiedDragDropProvider>
+              </DashboardLayoutProvider>
+            </ComponentRegistryProvider>
+          </NavigationProvider>
+        </AIToolsProvider>
+      </VideoCallProvider>
+    </ThemeProvider>
   );
 }
 

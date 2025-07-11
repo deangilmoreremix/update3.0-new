@@ -1,62 +1,39 @@
-// API Configuration System
-// Determines if system can operate in Live Mode vs Demo Mode based on available API keys
+// API Configuration Validation
+export const validateAPIConfig = (): { configured: string[]; missing: string[] } => {
+  const configured: string[] = [];
+  const missing: string[] = [];
 
-interface ApiConfiguration {
-  openai: {
-    available: boolean;
-    key?: string;
-  };
-  gemini: {
-    available: boolean;
-    key?: string;
-  };
-  elevenlabs: {
-    available: boolean;
-    key?: string;
-  };
-  composio: {
-    available: boolean;
-    key?: string;
-  };
-  liveMode: boolean;
-}
+  // Check Gemini AI
+  if (import.meta.env.VITE_GEMINI_API_KEY) {
+    configured.push('Gemini AI');
+  } else {
+    missing.push('Gemini AI');
+  }
 
-// Check if environment variables are available
-const getApiConfiguration = (): ApiConfiguration => {
-  const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
-  const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  const elevenlabsKey = import.meta.env.VITE_ELEVENLABS_API_KEY;
-  const composioKey = import.meta.env.VITE_COMPOSIO_API_KEY;
+  // Check OpenAI
+  if (import.meta.env.VITE_OPENAI_API_KEY) {
+    configured.push('OpenAI GPT');
+  } else {
+    missing.push('OpenAI GPT');
+  }
 
-  const openaiAvailable = Boolean(openaiKey);
-  const geminiAvailable = Boolean(geminiKey);
-  const elevenlabsAvailable = Boolean(elevenlabsKey);
-  const composioAvailable = Boolean(composioKey);
+  // Check other services
+  if (import.meta.env.VITE_ANTHROPIC_API_KEY) {
+    configured.push('Anthropic Claude');
+  } else {
+    missing.push('Anthropic Claude');
+  }
 
-  // Live Mode requires at least one LLM provider and Composio for tool integrations
-  const liveMode = (openaiAvailable || geminiAvailable) && composioAvailable;
-
-  return {
-    openai: {
-      available: openaiAvailable,
-      key: openaiKey
-    },
-    gemini: {
-      available: geminiAvailable,
-      key: geminiKey
-    },
-    elevenlabs: {
-      available: elevenlabsAvailable,
-      key: elevenlabsKey
-    },
-    composio: {
-      available: composioAvailable,
-      key: composioKey
-    },
-    liveMode
-  };
+  return { configured, missing };
 };
 
-export const apiConfig = getApiConfiguration();
+export const getAPIKeys = () => ({
+  gemini: import.meta.env.VITE_GEMINI_API_KEY,
+  openai: import.meta.env.VITE_OPENAI_API_KEY,
+  anthropic: import.meta.env.VITE_ANTHROPIC_API_KEY,
+});
 
-export default apiConfig;
+export const isAIConfigured = (): boolean => {
+  const { missing } = validateAPIConfig();
+  return missing.length === 0;
+};

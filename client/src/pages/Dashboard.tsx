@@ -61,7 +61,11 @@ import {
   ResponsiveContainer 
 } from 'recharts';
 
-const Dashboard: React.FC = () => {
+interface DashboardProps {
+  onContactsClick?: () => void;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ onContactsClick }) => {
   const { 
     deals, 
     fetchDeals, 
@@ -79,7 +83,7 @@ const Dashboard: React.FC = () => {
   const { tasks, fetchTasks } = useTaskStore();
   const { fetchAppointments } = useAppointmentStore();
   const { openTool } = useAITools();
-  const { showTours } = useEnhancedHelp();
+  const { showTours, updateTourProgress, isTourCompleted, resetTours } = useEnhancedHelp();
   
   const gemini = useGemini();
   
@@ -369,7 +373,7 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="mt-4 md:mt-0 flex space-x-3">
             <button
-              onClick={() => {/* Tour will auto-start when enabled */}}
+              onClick={() => console.log('Tour temporarily disabled')}
               className="px-3 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md text-sm font-medium text-blue-700 transition-colors duration-200"
             >
               Take Tour
@@ -873,7 +877,25 @@ const Dashboard: React.FC = () => {
         <DealAnalytics />
       </div>
       
-      {/* Dashboard Tour - Temporarily disabled for syntax fix */}
+      {/* Take Tour Button */}
+      {showTours && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <button
+            onClick={() => {
+              if (isTourCompleted('dashboard')) {
+                resetTours();
+              }
+              // Start dashboard tour
+              console.log('Starting dashboard tour...');
+              updateTourProgress('dashboard', 0);
+            }}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-200 flex items-center gap-2 text-sm font-medium"
+          >
+            <span>Take Tour</span>
+            <div className="w-2 h-2 bg-blue-300 rounded-full animate-pulse"></div>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -6,7 +6,7 @@ import {
   insertFeaturePackageSchema,
   type FeaturePackage,
   type InsertFeaturePackage
-} from '@shared/schema';
+} from '../../shared/schema';
 
 const router = Router();
 

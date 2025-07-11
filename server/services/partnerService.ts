@@ -1,5 +1,5 @@
 import { db } from '../db';
-import { tenants, subscriptionPlans, userRoles, tenantSubscriptions, type Tenant, type SubscriptionPlan } from '@shared/schema';
+import { tenants, subscriptionPlans, userRoles, tenantSubscriptions, type Tenant, type SubscriptionPlan } from '../../shared/schema';
 import { eq, and, sql } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 

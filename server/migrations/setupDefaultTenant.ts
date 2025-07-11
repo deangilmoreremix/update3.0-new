@@ -1,5 +1,5 @@
 import { db } from "../db";
-import { tenants, users, contacts, deals, tasks, businessAnalysis, contentItems, voiceProfiles, subscriptionPlans, tenantSubscriptions, userRoles, type Tenant } from "@shared/schema";
+import { tenants, users, contacts, deals, tasks, businessAnalysis, contentItems, voiceProfiles, subscriptionPlans, tenantSubscriptions, userRoles, type Tenant } from "../../shared/schema";
 import { eq, isNull } from "drizzle-orm";
 
 /**

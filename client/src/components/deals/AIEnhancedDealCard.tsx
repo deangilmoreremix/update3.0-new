@@ -1,331 +1,398 @@
-import { useGemini } from '../../services/geminiService';
-import { sendGmailEmail } from '../../services/composioService';
-import { supabase } from '../../services/supabaseClient';
 import React, { useState } from 'react';
 import { Deal } from '../../types';
-import CustomizableAIToolbar from '../ai/CustomizableAIToolbar';
+import { AvatarWithStatus } from '../ui/AvatarWithStatus';
+import { CustomizableAIToolbar } from '../ui/CustomizableAIToolbar';
 import { 
   DollarSign, 
-  Calendar, 
+  Edit, 
+  MoreHorizontal, 
+  Mail, 
+  Phone, 
   User, 
-  Building, 
-  PieChart, 
-  RefreshCw, 
+  BarChart, 
+  ThumbsUp, 
+  ThumbsDown,
+  ExternalLink,
+  Star,
+  UserPlus,
+  Crown,
+  Target,
   Zap,
-  BarChart3,
-  ArrowUp,
-  ArrowDown,
-  Milestone,
-  Flag,
-  MessageSquare,
-  Tag,
+  Brain,
+  Loader2,
+  Sparkles,
+  Heart,
+  Camera,
+  Wand2,
+  Database,
+  Globe,
+  Plus,
+  Search,
+  ArrowRight,
+  Activity,
+  Calendar,
   CheckCircle,
   AlertCircle,
+  TrendingUp,
   Clock
 } from 'lucide-react';
 
 interface AIEnhancedDealCardProps {
   deal: Deal;
-  onClick?: () => void;
+  isSelected?: boolean;
+  onSelect?: () => void;
+  onClick: () => void;
   showAnalyzeButton?: boolean;
+  onAnalyze?: (deal: Deal) => Promise<boolean>;
+  onAIEnrich?: (deal: Deal) => Promise<boolean>;
+  isAnalyzing?: boolean;
+  onToggleFavorite?: (deal: Deal) => Promise<void>;
+  onFindNewImage?: (deal: Deal) => Promise<void>;
 }
 
-const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
+const stageColors: { [key: string]: string } = {
+  'Qualification': 'bg-blue-500',
+  'Proposal': 'bg-yellow-500',
+  'Negotiation': 'bg-orange-500',
+  'Closed Won': 'bg-green-500',
+  'Closed Lost': 'bg-red-500'
+};
+
+const priorityColors: { [key: string]: string } = {
+  'High': 'bg-red-500',
+  'Medium': 'bg-yellow-500',
+  'Low': 'bg-blue-500'
+};
+
+const getScoreColor = (score: number) => {
+  if (score >= 80) return 'bg-green-500';
+  if (score >= 60) return 'bg-blue-500';
+  if (score >= 40) return 'bg-yellow-500';
+  return 'bg-red-500';
+};
+
+export const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
   deal,
+  isSelected = false,
+  onSelect,
   onClick,
-  showAnalyzeButton = true
+  showAnalyzeButton = true,
+  onAnalyze,
+  onAIEnrich,
+  isAnalyzing = false,
+  onToggleFavorite,
+  onFindNewImage
 }) => {
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [aiInsights, setAiInsights] = useState<{
-    winProbabilityAdjustment?: number;
-    riskFactors?: string[];
-    opportunities?: string[];
-    recommendations?: string[];
-    nextSteps?: string[];
-  } | null>(null);
+  const [localAnalyzing, setLocalAnalyzing] = useState(false);
+  const [localEnriching, setLocalEnriching] = useState(false);
+  const [isFinding, setIsFinding] = useState(false);
   
-  // Analyze deal with AI
-  const handleAnalyzeDeal = async (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click
-    setIsAnalyzing(true);
+  // Track last enrichment (mock data if not provided)
+  const [lastEnrichment, setLastEnrichment] = useState<any>(
+    deal.aiScore ? { confidence: deal.aiScore } : null
+  );
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('button') || (e.target as HTMLElement).closest('input') || (e.target as HTMLElement).closest('a')) {
+      return;
+    }
+    onClick();
+  };
+
+  const handleAnalyzeClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!onAnalyze || isAnalyzing || localAnalyzing) return;
     
+    setLocalAnalyzing(true);
     try {
-      // In a real implementation, this would call your AI service
-      // For this demo, we'll simulate the analysis result
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      setAiInsights({
-        winProbabilityAdjustment: Math.floor(Math.random() * 20) - 10, // -10 to +10
-        riskFactors: [
-          'Decision timeline may extend beyond forecast',
-          'Budget approval pending from finance department',
-          'Competitor offering aggressive pricing',
-        ],
-        opportunities: [
-          'Decision maker is dissatisfied with current solution',
-          'Expansion potential to additional departments',
-          'Align with their Q3 digital transformation initiative',
-        ],
-        recommendations: [
-          'Prepare ROI analysis with 12-month projection',
-          'Schedule technical demo with IT stakeholders',
-          'Identify and engage finance decision maker',
-        ],
-        nextSteps: [
-          'Send implementation timeline document',
-          'Follow up on technical requirements questions',
-          'Schedule executive presentation',
-        ]
+      await onAnalyze(deal);
+      setLastEnrichment({ 
+        confidence: Math.max(deal.aiScore || 0, 75),
+        aiProvider: 'Hybrid AI (GPT-4o + Gemini)',
+        timestamp: new Date()
       });
     } catch (error) {
-      console.error('Error analyzing deal:', error);
+      console.error('Analysis failed:', error);
     } finally {
-      setIsAnalyzing(false);
+      setLocalAnalyzing(false);
     }
   };
   
-  // Format currency
-  const formatCurrency = (amount: number) => {
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!onToggleFavorite) return;
+    
+    try {
+      await onToggleFavorite(deal);
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error);
+    }
+  };
+  
+  const handleFindImageClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!onFindNewImage || isFinding) return;
+    
+    setIsFinding(true);
+    try {
+      await onFindNewImage(deal);
+    } catch (error) {
+      console.error('Failed to find new image:', error);
+    } finally {
+      setIsFinding(false);
+    }
+  };
+
+  const handleAIEnrichClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!onAIEnrich || localEnriching) return;
+    
+    setLocalEnriching(true);
+    try {
+      await onAIEnrich(deal);
+      setLastEnrichment({ 
+        confidence: Math.min((deal.aiScore || 0) + 10, 95),
+        aiProvider: 'OpenAI GPT-4o',
+        timestamp: new Date()
+      });
+    } catch (error) {
+      console.error('Enrichment failed:', error);
+    } finally {
+      setLocalEnriching(false);
+    }
+  };
+
+  const analyzing = isAnalyzing || localAnalyzing;
+
+  const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
+      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(amount);
-  };
-  
-  // Format date
-  const formatDate = (date?: Date) => {
-    if (!date) return 'No date set';
-    
-    const today = new Date();
-    const dueDate = new Date(date);
-    
-    // Calculate days difference
-    const diffTime = dueDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    // Return formatted string
-    if (diffDays < 0) {
-      return `Overdue by ${Math.abs(diffDays)} days`;
-    } else if (diffDays === 0) {
-      return 'Due today';
-    } else if (diffDays === 1) {
-      return 'Due tomorrow';
-    } else if (diffDays < 7) {
-      return `Due in ${diffDays} days`;
-    }
-    
-    return date.toLocaleDateString();
-  };
-  
-  // Get stage badge color
-  const getStageBadgeColor = (stage: string) => {
-    switch(stage) {
-      case 'qualification': return 'bg-blue-100 text-blue-700';
-      case 'proposal': return 'bg-indigo-100 text-indigo-700';
-      case 'negotiation': return 'bg-purple-100 text-purple-700';
-      case 'closed-won': return 'bg-green-100 text-green-700';
-      case 'closed-lost': return 'bg-red-100 text-red-700';
-      default: return 'bg-gray-100 text-gray-700';
-    }
-  };
-  
-  // Get priority badge color
-  const getPriorityBadgeColor = (priority?: string) => {
-    switch(priority) {
-      case 'high': return 'bg-red-100 text-red-700';
-      case 'medium': return 'bg-yellow-100 text-yellow-700';
-      case 'low': return 'bg-green-100 text-green-700';
-      default: return 'bg-gray-100 text-gray-700';
-    }
+    }).format(value);
   };
 
-  // Get stage name
-  const getStageName = (stage: string) => {
-    const names: Record<string, string> = {
-      'qualification': 'Qualification',
-      'proposal': 'Proposal',
-      'negotiation': 'Negotiation',
-      'closed-won': 'Closed Won',
-      'closed-lost': 'Closed Lost'
-    };
-    
-    return names[stage] || stage;
-  };
-  
   return (
-    <div 
-      className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 transition-all hover:border-blue-300 hover:shadow-md cursor-pointer"
-      onClick={onClick}
+    <div
+      onClick={handleCardClick}
+      className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group relative border border-gray-200 hover:border-gray-300 overflow-hidden"
     >
-      <div className="flex justify-between items-start">
-        <div>
-          <h3 className="text-lg font-medium text-gray-900">{deal.title}</h3>
-          
-          <div className="flex flex-wrap gap-2 mt-1">
-            <span className={`text-xs px-2 py-0.5 rounded-full ${getStageBadgeColor(deal.stage)}`}>
-              {getStageName(deal.stage)}
-            </span>
-            
-            {deal.priority && (
-              <span className={`text-xs px-2 py-0.5 rounded-full flex items-center ${getPriorityBadgeColor(deal.priority)}`}>
-                <Flag size={10} className="mr-1" />
-                {deal.priority}
-              </span>
-            )}
-          </div>
-          
-          <div className="mt-3 space-y-1">
-            <div className="flex items-center text-sm">
-              <Building size={16} className="text-gray-400 mr-2" />
-              <span className="text-gray-600">{deal.company}</span>
-            </div>
-            
-            <div className="flex items-center text-sm">
-              <User size={16} className="text-gray-400 mr-2" />
-              <span className="text-gray-600">{deal.contact}</span>
-            </div>
-            
-            <div className="flex items-center text-sm">
-              <DollarSign size={16} className="text-gray-400 mr-2" />
-              <span className="text-gray-800 font-medium">{formatCurrency(deal.value)}</span>
-            </div>
-            
-            {deal.dueDate && (
-              <div className="flex items-center text-sm">
-                <Calendar size={16} className="text-gray-400 mr-2" />
-                <span className={`${deal.dueDate < new Date() ? 'text-red-600 font-medium' : 'text-gray-600'}`}>
-                  {formatDate(deal.dueDate)}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-        
-        {/* Probability Section */}
-        <div className="flex flex-col items-end">
-          <div className="flex items-center mb-1">
-            <span className="text-sm text-gray-500 mr-2">Win probability</span>
-            <span className="font-medium">
-              {deal.probability}%
-              {aiInsights?.winProbabilityAdjustment && (
-                <span className={aiInsights.winProbabilityAdjustment > 0 ? 'text-green-500' : 'text-red-500'}>
-                  {aiInsights.winProbabilityAdjustment > 0 ? ' +' : ' '}
-                  {aiInsights.winProbabilityAdjustment}%
-                </span>
-              )}
-            </span>
-          </div>
-          
-          <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div 
-              className={`h-full ${deal.stage === 'closed-won' ? 'bg-green-500' : 'bg-blue-500'}`} 
-              style={{ width: `${deal.probability}%` }}
-            ></div>
-          </div>
-          
-          {showAnalyzeButton && !aiInsights && (
-            <button
-              onClick={handleAnalyzeDeal}
-              disabled={isAnalyzing}
-              className="mt-3 flex items-center text-xs text-blue-600 hover:text-blue-800"
-            >
-              {isAnalyzing ? (
-                <>
-                  <RefreshCw size={14} className="mr-1 animate-spin" />
-                  Analyzing...
-                </>
-              ) : (
-                <>
-                  <Zap size={14} className="mr-1" />
-                  AI Analysis
-                </>
-              )}
-            </button>
-          )}
-        </div>
-      </div>
-      
-      {/* AI Insights */}
-      {aiInsights && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium flex items-center">
-              <BarChart3 size={16} className="mr-1.5 text-blue-500" />
-              AI Deal Insights
-            </h4>
-          </div>
-          
-          <div className="text-xs space-y-3">
-            {aiInsights.riskFactors && (
-              <div className="bg-red-50 p-2 rounded-md border border-red-100">
-                <p className="font-medium text-red-800 mb-1">Risk Factors:</p>
-                <ul className="list-disc list-inside text-red-700 pl-1 space-y-0.5">
-                  {aiInsights.riskFactors.slice(0, 2).map((risk, idx) => (
-                    <li key={idx}>{risk}</li>
-                  ))}
-                  {aiInsights.riskFactors.length > 2 && <li>+ {aiInsights.riskFactors.length - 2} more</li>}
-                </ul>
-              </div>
-            )}
-            
-            {aiInsights.opportunities && (
-              <div className="bg-green-50 p-2 rounded-md border border-green-100">
-                <p className="font-medium text-green-800 mb-1">Opportunities:</p>
-                <ul className="list-disc list-inside text-green-700 pl-1 space-y-0.5">
-                  {aiInsights.opportunities.slice(0, 2).map((opportunity, idx) => (
-                    <li key={idx}>{opportunity}</li>
-                  ))}
-                  {aiInsights.opportunities.length > 2 && <li>+ {aiInsights.opportunities.length - 2} more</li>}
-                </ul>
-              </div>
-            )}
-            
-            {aiInsights.nextSteps && (
-              <div className="bg-blue-50 p-2 rounded-md border border-blue-100">
-                <p className="font-medium text-blue-800 mb-1">Suggested Next Steps:</p>
-                <ul className="list-disc list-inside text-blue-700 pl-1 space-y-0.5">
-                  {aiInsights.nextSteps.slice(0, 2).map((step, idx) => (
-                    <li key={idx}>{step}</li>
-                  ))}
-                  {aiInsights.nextSteps.length > 2 && <li>+ {aiInsights.nextSteps.length - 2} more</li>}
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-      
-      {/* Action Buttons - Organized Footer Section */}
-      <div className="mt-4 pt-4 -mx-4 px-4 pb-4 bg-gradient-to-b from-gray-50/40 to-gray-50/60 border-t border-gray-100/80 rounded-b-lg">
-        {/* AI Tools Section */}
-        <div className="mb-4">
-          <CustomizableAIToolbar
-            entityType="deal"
-            entityId={deal.id}
-            entityData={deal}
-            location="dealCards"
-            layout="grid"
-            size="sm"
-            showCustomizeButton={true}
-            className="w-full"
+      {/* Selection Checkbox */}
+      {onSelect && (
+        <div className="absolute top-4 left-4 z-10">
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={(e) => {
+              e.stopPropagation();
+              onSelect();
+            }}
+            className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 bg-white border-gray-300"
           />
         </div>
+      )}
+
+      {/* Header Actions */}
+      <div className="absolute top-4 right-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+        {/* AI Analysis Button */}
+        {showAnalyzeButton && onAnalyze && (
+          <button 
+            onClick={handleAnalyzeClick}
+            disabled={analyzing}
+            className={`p-2 rounded-lg transition-all duration-200 relative ${
+              deal.aiScore 
+                ? 'bg-purple-100 text-purple-600 hover:bg-purple-200' 
+                : 'bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 shadow-lg'
+            }`}
+            title={deal.aiScore ? 'Re-analyze with AI' : 'Analyze with AI'}
+          >
+            {analyzing ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Brain className="w-4 h-4" />
+            )}
+            {!deal.aiScore && !analyzing && (
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+            )}
+          </button>
+        )}
         
-        {/* Traditional Actions Section */}
-        <div className="pt-2 border-t border-gray-100/60">
-          <div className="grid grid-cols-2 gap-1.5">
-            <button className="flex items-center justify-center py-1.5 px-2 bg-gradient-to-r from-orange-50 to-orange-100 text-orange-700 rounded-full hover:from-orange-100 hover:to-orange-200 text-xs font-medium transition-all duration-200 border border-orange-200/50 shadow-sm">
-              <PieChart size={11} className="mr-1" /> Analyze
-            </button>
-            <button className="flex items-center justify-center py-1.5 px-2 bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 rounded-full hover:from-gray-100 hover:to-gray-200 text-xs font-medium transition-all duration-200 border border-gray-200/50 shadow-sm">
-              <MessageSquare size={11} className="mr-1" /> Notes
-            </button>
+        {/* AI Enrich Button */}
+        {onAIEnrich && (
+          <button 
+            onClick={handleAIEnrichClick}
+            disabled={localEnriching}
+            className="p-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:from-green-600 hover:to-blue-600 transition-colors shadow-lg"
+            title="AI Enrich Deal"
+          >
+            {localEnriching ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Sparkles className="w-4 h-4" />
+            )}
+          </button>
+        )}
+        
+        {/* Favorite Button */}
+        {onToggleFavorite && (
+          <button
+            onClick={handleFavoriteClick}
+            className={`p-2 rounded-lg transition-colors ${
+              deal.isFavorite 
+                ? 'text-red-500 hover:bg-red-50' 
+                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+            }`}
+            title={deal.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            <Heart className={`w-4 h-4 ${deal.isFavorite ? 'fill-current' : ''}`} />
+          </button>
+        )}
+        
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            // Handle edit action
+          }}
+          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            // Handle more actions
+          }}
+          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <MoreHorizontal className="w-4 h-4" />
+        </button>
+      </div>
+
+      <div className="p-6">
+        {/* Company Logo and AI Score Section */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="text-center flex-1">
+            <div className="relative inline-block mb-3">
+              {/* Company Avatar */}
+              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                {deal.company.charAt(0)}
+              </div>
+              
+              {/* Analysis Loading Indicator */}
+              {analyzing && (
+                <div className="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center">
+                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
+              
+              {/* Favorite Badge */}
+              {deal.isFavorite && (
+                <div className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg ring-2 ring-white">
+                  <Heart className="w-2.5 h-2.5" />
+                </div>
+              )}
+              
+              {/* AI Enhancement Indicator */}
+              {lastEnrichment && (
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-4 w-4 rounded-full bg-purple-500 text-white flex items-center justify-center shadow-lg ring-2 ring-white">
+                  <Sparkles className="w-2 h-2" />
+                </div>
+              )}
+              
+              {/* AI Image Search Button */}
+              {onFindNewImage && (
+                <button 
+                  onClick={handleFindImageClick}
+                  disabled={isFinding}
+                  className="absolute -bottom-1 -right-1 p-1.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full hover:from-purple-700 hover:to-blue-700 transition-colors shadow-lg relative"
+                >
+                  {isFinding ? (
+                    <div className="animate-spin w-3 h-3 border border-white border-t-transparent rounded-full" />
+                  ) : (
+                    <Camera className="w-3 h-3" />
+                  )}
+                </button>
+              )}
+            </div>
+            <h3 className="text-gray-900 font-semibold text-lg mb-1 group-hover:text-blue-600 transition-colors">{deal.title}</h3>
+            <p className="text-gray-600 text-sm">{deal.company}</p>
+            <p className="text-gray-500 text-xs">{deal.contact}</p>
+          </div>
+
+          {/* AI Score */}
+          {deal.aiScore && (
+            <div className="text-center">
+              <div className={`w-12 h-12 rounded-full text-white flex items-center justify-center text-sm font-bold ${getScoreColor(deal.aiScore)}`}>
+                {deal.aiScore}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">AI Score</p>
+            </div>
+          )}
+        </div>
+
+        {/* Deal Info & Stats */}
+        <div className="space-y-3">
+          {/* Value and Stage */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <DollarSign className="w-4 h-4 text-green-600 mr-1" />
+              <span className="text-lg font-bold text-gray-900">{formatCurrency(deal.value)}</span>
+            </div>
+            <span className={`px-2 py-1 rounded-full text-xs font-medium text-white ${stageColors[deal.stage] || 'bg-gray-500'}`}>
+              {deal.stage}
+            </span>
+          </div>
+
+          {/* Priority and Probability */}
+          <div className="flex items-center justify-between">
+            <span className={`px-2 py-1 rounded-full text-xs font-medium text-white ${priorityColors[deal.priority] || 'bg-gray-500'}`}>
+              {deal.priority} Priority
+            </span>
+            {deal.probability && (
+              <div className="flex items-center">
+                <TrendingUp className="w-4 h-4 text-blue-600 mr-1" />
+                <span className="text-sm text-gray-600">{deal.probability}%</span>
+              </div>
+            )}
+          </div>
+
+          {/* Due Date */}
+          {deal.dueDate && (
+            <div className="flex items-center">
+              <Calendar className="w-4 h-4 text-gray-500 mr-2" />
+              <span className="text-sm text-gray-600">Due: {new Date(deal.dueDate).toLocaleDateString()}</span>
+            </div>
+          )}
+
+          {/* Contact Actions */}
+          <div className="flex items-center space-x-2">
+            {deal.contact && (
+              <>
+                <button className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors">
+                  <Mail className="w-4 h-4" />
+                </button>
+                <button className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors">
+                  <Phone className="w-4 h-4" />
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* AI Toolbar */}
+          <div className="pt-3 border-t border-gray-100">
+            <CustomizableAIToolbar
+              entityType="deal"
+              entityId={deal.id}
+              entityData={deal}
+              location="deal-card"
+              layout="row"
+              size="sm"
+              showCustomizeButton={false}
+            />
           </div>
         </div>
       </div>
     </div>
   );
 };
-
-export default AIEnhancedDealCard;

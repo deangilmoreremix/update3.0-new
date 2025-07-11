@@ -1,58 +1,99 @@
 export interface Contact {
   id: string;
+  firstName?: string;
+  lastName?: string;
   name: string;
   email: string;
   phone?: string;
+  title?: string;
   company?: string;
   position?: string;
-  lastContact?: Date;
-  notes?: string;
-  status: 'lead' | 'prospect' | 'customer' | 'churned';
-  score?: number;
-  lastActivityDate?: Date;
-  leadSource?: string;
   industry?: string;
-  annualRevenue?: number;
-  employeeCount?: number;
   location?: string;
+  avatar?: string;
+  avatarSrc?: string;
+  source?: string;
+  sources?: string[];
+  interestLevel?: 'hot' | 'medium' | 'low' | 'cold';
+  status: 'active' | 'pending' | 'inactive' | 'lead' | 'prospect' | 'customer' | 'churned';
+  lastContact?: string;
+  lastConnected?: string;
+  notes?: string;
+  score?: number;
+  aiScore?: number;
+  tags?: string[];
+  favorite?: boolean;
+  isFavorite?: boolean;
   socialProfiles?: {
     linkedin?: string;
     twitter?: string;
-    other?: string;
+    website?: string;
   };
-  tags?: string[];
-  userId?: string; // For Supabase association
+  customFields?: Record<string, any>;
+  leadSource?: string;
+  annualRevenue?: number;
+  employeeCount?: number;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  userId: string;
+  tenantId?: string;
 }
 
 export interface Deal {
   id: string;
   title: string;
+  company: string;
+  contact: string;
+  contactId?: string;
   value: number;
-  stage: 'initial' | 'negotiation' | 'proposal' | 'closed-won' | 'closed-lost' | 'qualification';
-  contactId: string;
-  probability?: number;
+  stage: 'qualification' | 'proposal' | 'negotiation' | 'closed-won' | 'closed-lost';
+  probability: number;
+  priority: 'high' | 'medium' | 'low';
+  dueDate?: Date;
   notes?: string;
   createdAt: Date;
   updatedAt: Date;
-  expectedCloseDate?: Date;
-  lostReason?: string;
-  products?: string[];
-  competitors?: string[];
-  decisionMakers?: string[];
-  lastActivityDate?: Date;
-  assignedTo?: string;
-  currency?: string;
-  discountAmount?: number;
-  discountPercentage?: number;
-  priority?: 'low' | 'medium' | 'high';
-  nextSteps?: string[];
-  aiInsights?: {
-    riskFactors?: string[];
-    opportunities?: string[];
-    competitiveThreats?: string[];
-    winStrategy?: string;
+  contactAvatar?: string;
+  companyAvatar?: string;
+  lastActivity?: string;
+  tags?: string[];
+  
+  // AI and enhanced features
+  isFavorite?: boolean;
+  customFields?: Record<string, string | number | boolean>;
+  socialProfiles?: {
+    linkedin?: string;
+    twitter?: string;
+    facebook?: string;
+    website?: string;
   };
-  daysInStage?: number;
+  lastEnrichment?: {
+    confidence: number;
+    aiProvider?: string;
+    timestamp?: Date;
+  };
+  links?: Array<{
+    title: string;
+    url: string;
+    type?: string;
+    createdAt?: string;
+  }>;
+  attachments?: Array<{
+    id: string;
+    name: string;
+    size: number;
+    type: string;
+    uploadedAt: string;
+  }>;
+  nextFollowUp?: string;
+  aiScore?: number;
+}
+
+export interface PipelineColumn {
+  id: string;
+  title: string;
+  dealIds: string[];
+  color: string;
 }
 
 export interface Task {

@@ -392,29 +392,6 @@ function App() {
                       } />
 
                       <Route path="/deadline-manager" element={
-                        <ProtectedRoute>
-                          <AuthenticatedLayout>
-                            <Tasks />
-                          </AuthenticatedLayout>
-                        </ProtectedRoute>
-                      } />
-
-                      <Route path="/sales-analytics" element={
-                        <ProtectedRoute>
-                          <AuthenticatedLayout>
-                            <AnalyticsDashboard />
-                          </AuthenticatedLayout>
-                        </ProtectedRoute>
-                      } />
-
-                      <Route path="/email-composer" element={
-                        <ProtectedRoute>
-                          <AuthenticatedLayout>
-                            <VideoEmail />
-                          </AuthenticatedLayout>
-                        </ProtectedRoute>
-                      } />
-
                       <Route path="/image-generator" element={
                         <ProtectedRoute>
                           <AuthenticatedLayout>
@@ -458,13 +435,11 @@ function App() {
                       {/* Unauthorized route */}
                       <Route path="/unauthorized" element={<UnauthorizedPage />} />
                     </Routes>
-                  </NavigationProvider>
-                </Router>
-              </AIToolsProvider>
-            </EnhancedHelpProvider>
-          </RoleProvider>
-        </TenantProvider>
-      </ThemeProvider>
+              </Router>
+            </AIToolsProvider>
+          </EnhancedHelpProvider>
+        </RoleProvider>
+      </TenantProvider>
     </QueryClientProvider>
   );
 }

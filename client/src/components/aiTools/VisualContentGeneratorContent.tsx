@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useOpenAI } from '../../services/openaiService';
+import { edgeFunctionService } from '../../services/edgeFunctionService';
 import AIToolContent from '../shared/AIToolContent';
 import { Image, PlusCircle, Minus, RefreshCw, Download, Check, Copy, Palette, FileText, BarChart2 } from 'lucide-react';
 

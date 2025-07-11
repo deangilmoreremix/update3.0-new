@@ -1,63 +1,89 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
+// Accessible theme context with better TypeScript support
 interface ThemeContextType {
-  isDark: boolean;
-  toggleTheme: () => void; 
-  isThemeChanging: boolean;
+  isDarkMode: boolean;
+  toggleDarkMode: () => void;
+  theme: 'light' | 'dark' | 'auto';
+  setTheme: (theme: 'light' | 'dark' | 'auto') => void;
+  isInitialized: boolean; // Track if theme is initialized to prevent flash
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
 };
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isDark, setIsDark] = useState(() => {
-    // Try to get from local storage synchronously to avoid flash of wrong theme
-    // Check localStorage first, then system preference
+  // Initialize state with localStorage or OS preference
+  const [theme, setThemeState] = useState<'light' | 'dark' | 'auto'>(() => {
     const saved = localStorage.getItem('theme');
-    if (saved) {
-      return saved === 'dark';
-    }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return (saved as 'light' | 'dark' | 'auto') || 'auto';
   });
 
-  // Add a state to track theme transitions
-  const [isThemeChanging, setIsThemeChanging] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
+  
+  // Helper to set theme with localStorage persistence
+  const setTheme = (newTheme: 'light' | 'dark' | 'auto') => {
+    setThemeState(newTheme);
+    localStorage.setItem('theme', newTheme);
+  };
 
+  // Handle system preference changes
   useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    const updateTheme = () => {
+      if (theme === 'auto') {
+        setIsDarkMode(mediaQuery.matches);
+      } else {
+        setIsDarkMode(theme === 'dark');
+      }
+    };
+
+    updateTheme();
+    mediaQuery.addEventListener('change', updateTheme);
+
+    return () => mediaQuery.removeEventListener('change', updateTheme);
+  }, [theme]); 
+
+  // Apply theme to document, set metadata, and mark as initialized
+  useEffect(() => {
+    // Only apply after we have determined the theme
+    localStorage.setItem('theme', theme);
+    document.documentElement.classList.toggle('dark', isDarkMode);
+    
+    // Update theme-color meta tag for mobile browsers
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', isDarkMode ? '#121212' : '#ffffff');
     }
     
-    // Use localStorage asynchronously to avoid blocking the main thread
-    setTimeout(() => {
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    }, 0);
-  }, [isDark]);
+    // Prevent flash by marking as initialized after the theme is applied
+    if (!isInitialized) {
+      setIsInitialized(true);
+    }
+  }, [theme, isDarkMode, isInitialized]);
 
-  // Helper to handle theme transition state
-  const handleThemeChange = useCallback(() => {
-    setIsThemeChanging(true);
-    setIsDark(prev => !prev);
-    
-    // Reset the transition state after animation completes
-    setTimeout(() => setIsThemeChanging(false), 300);
-  }, []);
-
-  const toggleTheme = () => {
-    setIsDark(prev => !prev);
+  // Accessible toggle function
+  const toggleDarkMode = () => {
+    setTheme(isDarkMode ? 'light' : 'dark');
   };
 
   return (
-    <ThemeContext.Provider value={{ isDark, toggleTheme, isThemeChanging }}>
+    <ThemeContext.Provider value={{ 
+      isDarkMode, 
+      toggleDarkMode, 
+      theme, 
+      setTheme, 
+      isInitialized 
+    }}>
       {children}
     </ThemeContext.Provider>
   );
