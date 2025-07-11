@@ -1,6 +1,8 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth, UserRole } from '@/hooks/useAuth';
+import { useAuth } from '../hooks/useAuth';
+
+export type UserRole = 'super_admin' | 'reseller' | 'user';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -52,23 +54,6 @@ export function ProtectedRoute({
   return <>{children}</>;
 }
 
-// Specific role-based components
-export function SuperAdminRoute({ children }: { children: React.ReactNode }) {
-  return (
-    <ProtectedRoute requiredRole="super_admin" fallbackPath="/unauthorized">
-      {children}
-    </ProtectedRoute>
-  );
-}
-
-export function ResellerRoute({ children }: { children: React.ReactNode }) {
-  return (
-    <ProtectedRoute requiredRole="reseller" fallbackPath="/unauthorized">
-      {children}
-    </ProtectedRoute>
-  );
-}
-
 export function UserRoute({ children }: { children: React.ReactNode }) {
   return (
     <ProtectedRoute requiredRole="user">
@@ -76,3 +61,27 @@ export function UserRoute({ children }: { children: React.ReactNode }) {
     </ProtectedRoute>
   );
 }
+
+export function ResellerRoute({ children }: { children: React.ReactNode }) {
+  return (
+    <ProtectedRoute requiredRole="reseller">
+      {children}
+    </ProtectedRoute>
+  );
+}
+
+export function SuperAdminRoute({ children }: { children: React.ReactNode }) {
+  return (
+    <ProtectedRoute requiredRole="super_admin">
+      {children}
+    </ProtectedRoute>
+  );
+}
+
+const superAdminUser: AuthUser = {
+  id: 'super-admin-1',
+  email: 'superadmin@smart-crm.com',
+  firstName: 'Super',
+  lastName: 'Admin',
+  role: 'super_admin'
+};
