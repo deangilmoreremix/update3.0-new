@@ -124,3 +124,9 @@ export interface VoiceProfile {
   updatedAt: Date;
   userId: string;
 }
+
+export interface ApiKeys {
+  openai?: string;
+  gemini?: string;
+  elevenlabs?: string;
+}

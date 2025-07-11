@@ -1,4 +1,4 @@
-export type Json =
+type Json =
   | string
   | number
   | boolean
@@ -39,59 +39,6 @@ export interface Database {
           social_links?: Json | null
           analysis_results?: Json | null
           user_id?: string | null
-        }
-      }
-      'contacts': {
-        Row: {
-          id: string
-          user_id: string
-          name: string
-          email: string | null
-          phone: string | null
-          company: string | null
-          position: string | null
-          status: string | null
-          score: number | null
-          last_contact: string | null
-          notes: string | null
-          industry: string | null
-          location: string | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          name: string
-          email?: string | null
-          phone?: string | null
-          company?: string | null
-          position?: string | null
-          status?: string | null
-          score?: number | null
-          last_contact?: string | null
-          notes?: string | null
-          industry?: string | null
-          location?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          name?: string
-          email?: string | null
-          phone?: string | null
-          company?: string | null
-          position?: string | null
-          status?: string | null
-          score?: number | null
-          last_contact?: string | null
-          notes?: string | null
-          industry?: string | null
-          location?: string | null
-          created_at?: string | null
-          updated_at?: string | null
         }
       }
       'Business Analyzer': {

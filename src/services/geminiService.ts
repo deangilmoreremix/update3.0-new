@@ -1,400 +1,1011 @@
-// Gemini AI service for contact research and enhancement
-import { ContactEnrichmentData } from './aiEnrichmentService';
-import { logger } from './logger.service';
-import { aiOrchestratorService } from './aiOrchestratorService';
-import { enhancedGeminiService } from './enhancedGeminiService';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { useApiStore } from '../store/apiStore';
 
-class GeminiAIService {
-  private apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  private apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models';
-  private model = 'gemini-1.5-flash:generateContent';
+// Custom hook for Gemini API integration
+export function useGemini() {
+  const { apiKeys } = useApiStore();
+  const GEMINI_API_KEY = apiKeys.gemini;
+  
+  // Helper function to check if API key is available
+  const checkApiKey = () => {
+    if (!GEMINI_API_KEY) {
+      return {
+        error: 'Gemini API key is not configured. Please add your API key in the settings.',
+        hasKey: false
+      };
+    }
+    return { hasKey: true };
+  };
 
-  setApiKey(key: string) {
-    this.apiKey = key;
-  }
-
-  async researchContactByName(firstName: string, lastName: string, company?: string): Promise<ContactEnrichmentData> {
-    logger.info(`Researching contact with Gemini: ${firstName} ${lastName} ${company ? `at ${company}` : ''}`);
-    
-    if (!this.apiKey) {
-      throw new Error('Gemini API key is not configured. Please set the VITE_GEMINI_API_KEY environment variable.');
+  // Initialize AI only if key is available
+  const initializeAI = () => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      return null;
     }
     
     try {
-      const response = await fetch(`${this.apiUrl}/${this.model}?key=${this.apiKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: `Research information about a professional named ${firstName} ${lastName}${company ? ` who works at ${company}` : ''}.
-              
-              Return a JSON object with the following structure:
-              {
-                "firstName": "${firstName}",
-                "lastName": "${lastName}",
-                "name": "${firstName} ${lastName}",
-                "email": "likely email",
-                "phone": "likely phone if available",
-                "title": "likely job title",
-                "company": "${company || 'company name if known'}",
-                "industry": "likely industry",
-                "location": {
-                  "city": "likely city",
-                  "state": "likely state",
-                  "country": "likely country"
-                },
-                "socialProfiles": {
-                  "linkedin": "likely LinkedIn URL",
-                  "twitter": "likely Twitter URL if available",
-                  "website": "likely company website"
-                },
-                "bio": "brief professional bio",
-                "confidence": "number between 40 and 85 indicating confidence level"
-              }`
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.2,
-            topK: 32,
-            topP: 0.8,
-            maxOutputTokens: 1024
-          }
-        })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Gemini API error: ${errorData.error?.message || response.statusText}`);
-      }
-      
-      const data = await response.json();
-      const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      
-      if (!content) {
-        throw new Error('Invalid response from Gemini');
-      }
-      
-      try {
-        // Extract JSON from the response text
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) {
-          throw new Error('No JSON found in response');
-        }
-        
-        const parsedData = JSON.parse(jsonMatch[0]);
-        logger.info(`Successfully researched contact: ${firstName} ${lastName}`);
-        
-        return {
-          ...parsedData,
-          confidence: parsedData.confidence || 60
-        };
-      } catch (parseError) {
-        logger.error('Failed to parse Gemini response', parseError as Error);
-        throw new Error('Failed to parse research response');
-      }
+      const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+      return genAI.getGenerativeModel({ model: "gemini-pro" });
     } catch (error) {
-      logger.error('Gemini research failed', error as Error);
-      
-      // Return minimal data to prevent UI breakage
-      return {
-        firstName,
-        lastName,
-        name: `${firstName} ${lastName}`,
-        company: company || '',
-        confidence: 30,
-        notes: 'API research failed, showing basic information'
-      };
+      console.error('Error initializing Gemini AI:', error);
+      return null;
     }
-  }
+  };
 
-  async researchContactByLinkedIn(linkedinUrl: string): Promise<ContactEnrichmentData> {
-    logger.info(`Researching LinkedIn profile: ${linkedinUrl}`);
-    
-    if (!this.apiKey) {
-      throw new Error('Gemini API key is not configured');
+  // Generate a customer persona with structured output
+  const generateCustomerPersona = async (industry: string, companySize: string, interests: string[]) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      throw new Error(keyCheck.error);
     }
-    
+
+    const model = initializeAI();
+    if (!model) {
+      throw new Error('Failed to initialize Gemini AI model');
+    }
+
     try {
-      const response = await fetch(`${this.apiUrl}/${this.model}?key=${this.apiKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: `Research a professional from this LinkedIn URL: ${linkedinUrl}.
-              
-              Return a JSON object with the following structure:
-              {
-                "firstName": "first name",
-                "lastName": "last name",
-                "name": "full name",
-                "email": "likely email based on name and company",
-                "title": "job title",
-                "company": "company name",
-                "industry": "industry",
-                "location": {
-                  "city": "city",
-                  "state": "state",
-                  "country": "country"
-                },
-                "socialProfiles": {
-                  "linkedin": "${linkedinUrl}",
-                  "twitter": "likely Twitter URL if available",
-                  "website": "likely company website"
-                },
-                "bio": "professional summary",
-                "confidence": "number between 50 and 90 indicating confidence level"
-              }`
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.2,
-            topK: 32,
-            topP: 0.8,
-            maxOutputTokens: 1024
-          }
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`API error: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      
-      // Extract JSON from the response text
-      const jsonMatch = content.match(/\{[\s\S]*\}/);
-      const parsedData = JSON.parse(jsonMatch[0]);
-      
-      return {
-        ...parsedData,
-        socialProfiles: {
-          ...parsedData.socialProfiles,
-          linkedin: linkedinUrl
-        },
-        confidence: parsedData.confidence || 75
-      };
-    } catch (error) {
-      logger.error('LinkedIn profile research failed', error as Error);
-      
-      // Parse username from LinkedIn URL
-      const username = linkedinUrl.split('/in/')[1]?.replace('/', '') || 'unknown';
-      const nameParts = username.split('-');
-      
-      // Return minimal data to prevent UI breakage
-      return {
-        firstName: nameParts[0]?.charAt(0).toUpperCase() + nameParts[0]?.slice(1) || 'Unknown',
-        lastName: nameParts[1]?.charAt(0).toUpperCase() + nameParts[1]?.slice(1) || '',
-        name: `${nameParts[0]?.charAt(0).toUpperCase() + nameParts[0]?.slice(1) || 'Unknown'} ${nameParts[1]?.charAt(0).toUpperCase() + nameParts[1]?.slice(1) || ''}`,
-        socialProfiles: {
-          linkedin: linkedinUrl
-        },
-        confidence: 40,
-        notes: 'API research failed, showing basic information derived from URL'
-      };
-    }
-  }
-
-  async generatePersonalizedMessage(contact: any, messageType: 'email' | 'linkedin' | 'cold-outreach'): Promise<string> {
-    logger.info(`Generating ${messageType} message for ${contact.name || 'contact'}`);
-    
-    if (!this.apiKey) {
-      throw new Error('Gemini API key is not configured');
-    }
-    
-    try {
-      const response = await fetch(`${this.apiUrl}/${this.model}?key=${this.apiKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: `Generate a personalized ${messageType} message for a contact with the following information:
-              ${JSON.stringify(contact, null, 2)}
-              
-              The message should be professional, concise, and tailored to their industry and role.`
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.7,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 1024
-          }
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`API error: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      return data.candidates[0].content.parts[0].text;
-    } catch (error) {
-      logger.error('Message generation failed', error as Error);
-      
-      // Return a fallback message
-      const firstName = contact.firstName || (contact.name ? contact.name.split(' ')[0] : 'there');
-      const company = contact.company || 'your company';
-      const industry = contact.industry || 'your industry';
-      
-      const templates = {
-        email: `Hi ${firstName},\n\nI hope this message finds you well. I noticed your profile and was impressed by your work at ${company}.\n\nI'd love to connect and discuss how we might be able to help with your current initiatives.\n\nBest regards,\n[Your Name]`,
-        linkedin: `Hi ${firstName}, I noticed we share interests in ${industry}. Your experience at ${company} is impressive! I'd love to connect.`,
-        'cold-outreach': `Hello ${firstName},\n\nI hope this message finds you well. I've been researching leaders in ${industry} and your work at ${company} caught my attention.\n\nI'd love to schedule a brief call to discuss how we might be able to help with your goals.\n\nBest,\n[Your Name]`
-      };
-      
-      return templates[messageType];
-    }
-  }
-}
-
-// Create singleton instance
-export const geminiService = new GeminiAIService();
-
-// Create a useGemini hook that wraps the new services but provides the old interface
-export const useGemini = () => {
-  return {
-    generateContent: async (request: any) => {
-      try {
-        if (request.prompt) {
-          // For backward compatibility, if a prompt is provided, use enhancedGeminiService
-          return await enhancedGeminiService.generateContent({
-            prompt: request.prompt,
-            model: request.model,
-            temperature: request.temperature,
-            maxTokens: request.maxTokens,
-            systemInstruction: request.systemInstruction,
-            customerId: request.customerId,
-            featureUsed: request.featureUsed
-          });
-        } else {
-          // Return a compatible object for the old interface
-          const content = await geminiService.generatePersonalizedMessage(
-            request,
-            'email'
-          );
-          return { content, model: 'gemini-1.5-flash', provider: 'Google' };
-        }
-      } catch (error) {
-        console.error("Error in useGemini.generateContent:", error);
-        return { 
-          content: "I'm sorry, I'm having trouble processing that request.",
-          model: "fallback", 
-          provider: "fallback" 
-        };
-      }
-    },
-
-    analyzeDeal: async (dealData: any, options: any = {}) => {
-      try {
-        const content = await geminiService.generatePersonalizedMessage(
-          { ...dealData, analysisType: 'deal' },
-          'email'
-        );
+      const prompt = `
+        Generate a comprehensive customer persona for a ${companySize} company in the ${industry} industry.
+        They are interested in: ${interests.join(', ')}.
         
-        // Return in the format expected by components
-        return {
-          content: {
-            riskLevel: "medium",
-            keyInsights: [content.substring(0, 100) + "..."],
-            recommendedActions: ["Review the deal details"],
-            winProbability: 65,
-            potentialBlockers: []
-          },
-          model: "gemini-1.5-flash",
-          provider: "Google",
-          responseTime: 1000,
-          success: true
-        };
-      } catch (error) {
-        console.error("Error in useGemini.analyzeDeal:", error);
-        return {
-          content: null,
-          success: false,
-          error: error instanceof Error ? error.message : "Unknown error"
-        };
-      }
-    },
-
-    analyzePipelineHealth: async (pipelineData: any, options: any = {}) => {
-      try {
-        const content = await geminiService.generatePersonalizedMessage(
-          { ...pipelineData, analysisType: 'pipeline' },
-          'email'
-        );
-        
-        // Return in the format expected by components
-        return {
-          content: {
-            healthScore: 75,
-            keyInsights: [content.substring(0, 100) + "..."],
-            bottlenecks: [],
-            opportunities: [],
-            forecastAccuracy: 80
-          },
-          model: "gemini-1.5-flash",
-          provider: "Google",
-          responseTime: 1000,
-          success: true
-        };
-      } catch (error) {
-        console.error("Error in useGemini.analyzePipelineHealth:", error);
-        return {
-          content: null,
-          success: false,
-          error: error instanceof Error ? error.message : "Unknown error"
-        };
-      }
-    },
-
-    // Stub for other methods used by components
-    generateEmail: async (context: any, customerId?: string, model?: string) => {
-      try {
-        const content = await geminiService.generatePersonalizedMessage(
-          context,
-          'email'
-        );
-        return {
-          subject: `About: ${context.purpose || 'Your inquiry'}`,
-          body: content
-        };
-      } catch (error) {
-        console.error("Error in useGemini.generateEmail:", error);
-        return {
-          subject: `About: ${context.purpose || 'Your inquiry'}`,
-          body: "I'm sorry, I couldn't generate an email at this time."
-        };
-      }
-    },
-
-    getAvailableModels: async () => {
-      return [
+        Return the response as a structured JSON object with the following format:
         {
-          id: 'gemini-1.5-flash',
-          name: 'Gemini 1.5 Flash',
-          provider: 'gemini',
-          capabilities: ['text-generation']
+          "businessGoals": ["goal1", "goal2", ...],
+          "painPoints": ["painPoint1", "painPoint2", ...],
+          "buyingPreferences": ["preference1", "preference2", ...],
+          "commonObjections": ["objection1", "objection2", ...],
+          "communicationStyle": "description of preferred communication style"
         }
-      ];
-    },
+        
+        Respond ONLY with the JSON object, no additional text.
+      `;
 
-    getRecommendedModel: async (useCase: string) => {
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const responseText = response.text();
+      
+      try {
+        // Extract JSON from the response
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        // Fallback to returning the text if JSON parsing fails
+        return responseText;
+      } catch (error) {
+        console.error('Error parsing JSON from Gemini response:', error);
+        return responseText;
+      }
+    } catch (error) {
+      console.error('Gemini API error:', error);
+      throw error;
+    }
+  };
+
+  // Analyze market trends with structured output
+  const analyzeMarketTrends = async (industry: string, audience: string, timeframe: string) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      throw new Error(keyCheck.error);
+    }
+
+    const model = initializeAI();
+    if (!model) {
+      throw new Error('Failed to initialize Gemini AI model');
+    }
+
+    try {
+      const prompt = `
+        Analyze market trends for the ${industry} industry, focusing on ${audience} for the ${timeframe}.
+        
+        Return the response as a structured JSON object with the following format:
+        {
+          "currentTrends": ["trend1", "trend2", ...],
+          "opportunities": ["opportunity1", "opportunity2", ...],
+          "challenges": ["challenge1", "challenge2", ...],
+          "economicFactors": ["factor1", "factor2", ...],
+          "predictions": ["prediction1", "prediction2", ...],
+          "recommendations": ["recommendation1", "recommendation2", ...]
+        }
+        
+        Respond ONLY with the JSON object, no additional text.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const responseText = response.text();
+      
+      try {
+        // Extract JSON from the response
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        // Fallback to returning the text if JSON parsing fails
+        return responseText;
+      } catch (error) {
+        console.error('Error parsing JSON from Gemini response:', error);
+        return responseText;
+      }
+    } catch (error) {
+      console.error('Gemini API error:', error);
+      throw error;
+    }
+  };
+
+  // Optimize voice tone with structured output
+  const optimizeVoiceTone = async (content: string, audience: string, purpose: string) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      throw new Error(keyCheck.error);
+    }
+
+    const model = initializeAI();
+    if (!model) {
+      throw new Error('Failed to initialize Gemini AI model');
+    }
+
+    try {
+      const prompt = `
+        Optimize the following content for tone of voice:
+        "${content}"
+        
+        Target audience: ${audience}
+        Purpose: ${purpose}
+        
+        Return the response as a structured JSON object with the following format:
+        {
+          "optimizedContent": "the rewritten content",
+          "toneAnalysis": {
+            "original": "description of original tone",
+            "optimized": "description of optimized tone"
+          },
+          "keyChanges": ["change1", "change2", ...]
+        }
+        
+        Respond ONLY with the JSON object, no additional text.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const responseText = response.text();
+      
+      try {
+        // Extract JSON from the response
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        // Fallback to returning the text if JSON parsing fails
+        return responseText;
+      } catch (error) {
+        console.error('Error parsing JSON from Gemini response:', error);
+        return responseText;
+      }
+    } catch (error) {
+      console.error('Gemini API error:', error);
+      throw error;
+    }
+  };
+
+  // Generate meeting agenda with structured output
+  const generateMeetingAgenda = async (
+    meetingPurpose: string,
+    attendees: string[],
+    previousNotes?: string
+  ) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      throw new Error(keyCheck.error);
+    }
+
+    const model = initializeAI();
+    if (!model) {
+      throw new Error('Failed to initialize Gemini AI model');
+    }
+
+    try {
+      const prompt = `
+        Create a detailed meeting agenda for "${meetingPurpose}" with the following attendees:
+        ${attendees.map((a, i) => `${i + 1}. ${a}`).join('\n')}
+
+        ${previousNotes ? `Previous meeting notes: ${previousNotes}` : ''}
+
+        Return the response as a structured JSON object with the following format:
+        {
+          "title": "Meeting title",
+          "timeAllocations": [
+            {"topic": "topic1", "duration": "X minutes", "description": "description1"},
+            {"topic": "topic2", "duration": "Y minutes", "description": "description2"},
+            ...
+          ],
+          "discussionTopics": ["topic1", "topic2", ...],
+          "actionItems": ["action1", "action2", ...],
+          "preparationNotes": "notes for preparation"
+        }
+        
+        Respond ONLY with the JSON object, no additional text.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const responseText = response.text();
+      
+      try {
+        // Extract JSON from the response
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        // Fallback to returning the text if JSON parsing fails
+        return responseText;
+      } catch (error) {
+        console.error('Error parsing JSON from Gemini response:', error);
+        return responseText;
+      }
+    } catch (error) {
+      console.error('Gemini API error in meeting agenda generation:', error);
+      throw error;
+    }
+  };
+
+  // For real-time analysis with structured output
+  const analyzeSentimentRealTime = async (text: string) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
       return {
-        id: 'gemini-1.5-flash',
-        name: 'Gemini 1.5 Flash',
-        provider: 'gemini'
+        sentiment: 0,
+        emotions: ['neutral'],
+        keyPhrases: [],
+        error: keyCheck.error
+      };
+    }
+
+    const model = initializeAI();
+    if (!model) {
+      return {
+        sentiment: 0,
+        emotions: ['neutral'],
+        keyPhrases: [],
+        error: 'Failed to initialize Gemini AI model'
+      };
+    }
+
+    try {
+      const prompt = `
+        Analyze the sentiment of the following text. 
+        Return the response as a structured JSON object with the following format:
+        {
+          "sentiment": 0.0, // number between -1 and 1
+          "emotions": ["emotion1", "emotion2", ...],
+          "keyPhrases": ["phrase1", "phrase2", ...]
+        }
+        
+        Text to analyze: "${text}"
+        
+        Respond ONLY with the JSON object, no additional text.
+      `;
+      
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const responseText = response.text();
+      
+      try {
+        // Extract JSON from the response
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        
+        // Fallback if JSON parsing fails
+        return {
+          sentiment: 0,
+          emotions: ['neutral'],
+          keyPhrases: []
+        };
+      } catch (error) {
+        console.error('Error parsing JSON from Gemini response:', error);
+        return {
+          sentiment: 0,
+          emotions: ['neutral'],
+          keyPhrases: []
+        };
+      }
+    } catch (error) {
+      console.error('Error analyzing sentiment:', error);
+      return {
+        sentiment: 0,
+        emotions: ['neutral'],
+        keyPhrases: []
       };
     }
   };
-};
 
-export default geminiService;
+  // Access the underlying generative model instance directly
+  const getGenerativeModel = ({ model }: { model: string }) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      throw new Error(keyCheck.error);
+    }
+
+    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+    
+    // Always use gemini-pro if gemini-2.5-flash is requested
+    if (model === 'gemini-2.5-flash') {
+      return genAI.getGenerativeModel({ model: 'gemini-pro' });
+    }
+    return genAI.getGenerativeModel({ model });
+  };
+
+  // Generate email response with structured output
+  const generateEmailResponse = async (
+    originalEmail: string, 
+    contactInfo: any, 
+    dealContext?: string
+  ) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      throw new Error(keyCheck.error);
+    }
+
+    const model = initializeAI();
+    if (!model) {
+      throw new Error('Failed to initialize Gemini AI model');
+    }
+
+    try {
+      const prompt = `
+        Generate a professional response to the following email:
+        "${originalEmail}"
+        
+        Contact information:
+        ${contactInfo.name ? `Name: ${contactInfo.name}` : ''}
+        ${contactInfo.position ? `Position: ${contactInfo.position}` : ''}
+        ${contactInfo.company ? `Company: ${contactInfo.company}` : ''}
+        
+        ${dealContext ? `Context about our relationship: ${dealContext}` : ''}
+        
+        Return the response as a structured JSON object with the following format:
+        {
+          "subject": "suggested email subject",
+          "greeting": "email greeting",
+          "body": "main email body",
+          "closing": "email closing",
+          "signature": "email signature",
+          "followUpSuggestion": "suggested follow-up action and timing"
+        }
+        
+        Respond ONLY with the JSON object, no additional text.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const responseText = response.text();
+      
+      try {
+        // Extract JSON from the response
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        // Fallback to returning the text if JSON parsing fails
+        return responseText;
+      } catch (error) {
+        console.error('Error parsing JSON from Gemini response:', error);
+        return responseText;
+      }
+    } catch (error) {
+      console.error('Gemini API error in email response generation:', error);
+      throw error;
+    }
+  };
+
+  // Generate personalization suggestions with structured output
+  const suggestPersonalization = async (contact: any, previousInteractions: string[]) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      throw new Error(keyCheck.error);
+    }
+
+    const model = initializeAI();
+    if (!model) {
+      throw new Error('Failed to initialize Gemini AI model');
+    }
+
+    try {
+      const contactDetails = Object.entries(contact)
+        .filter(([key, value]) => value !== undefined && key !== 'id')
+        .map(([key, value]) => {
+          if (key === 'lastContact' && value instanceof Date) {
+            return `${key}: ${value.toISOString().split('T')[0]}`;
+          }
+          return `${key}: ${value}`;
+        })
+        .join('\n');
+      
+      const interactionsText = previousInteractions.length > 0 
+        ? previousInteractions.map((interaction, idx) => `Interaction ${idx + 1}: ${interaction}`).join('\n\n')
+        : "No previous interactions";
+      
+      const prompt = `
+        Based on the following contact information and previous interactions, 
+        suggest personalized talking points and approaches for effective communication:
+        
+        Contact Information:
+        ${contactDetails}
+        
+        Previous Interactions:
+        ${interactionsText}
+        
+        Return the response as a structured JSON object with the following format:
+        {
+          "insights": ["insight1", "insight2", ...],
+          "recommendedTopics": ["topic1", "topic2", ...],
+          "potentialPainPoints": ["painPoint1", "painPoint2", ...],
+          "communicationStyle": "suggested communication style",
+          "valuePropositions": ["proposition1", "proposition2", ...]
+        }
+        
+        Respond ONLY with the JSON object, no additional text.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const responseText = response.text();
+      
+      try {
+        // Extract JSON from the response
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        // Fallback to returning the text if JSON parsing fails
+        return responseText;
+      } catch (error) {
+        console.error('Error parsing JSON from Gemini response:', error);
+        return responseText;
+      }
+    } catch (error) {
+      console.error('Gemini API error in personalization suggestion:', error);
+      throw error;
+    }
+  };
+
+  // Generate objection handler with structured output
+  const generateObjectionHandler = async (objection: string, productInfo: string) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      throw new Error(keyCheck.error);
+    }
+
+    const model = initializeAI();
+    if (!model) {
+      throw new Error('Failed to initialize Gemini AI model');
+    }
+
+    try {
+      const prompt = `
+        Create a strategic response to handle the following sales objection:
+        "${objection}"
+        
+        Product/Service Information:
+        ${productInfo}
+        
+        Return the response as a structured JSON object with the following format:
+        {
+          "acknowledgement": "how to acknowledge the concern",
+          "reframe": "how to reframe the objection",
+          "evidence": "evidence to address the objection",
+          "valueRedirection": "how to redirect to value",
+          "nextQuestion": "question to continue the conversation"
+        }
+        
+        Respond ONLY with the JSON object, no additional text.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const responseText = response.text();
+      
+      try {
+        // Extract JSON from the response
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        // Fallback to returning the text if JSON parsing fails
+        return responseText;
+      } catch (error) {
+        console.error('Error parsing JSON from Gemini response:', error);
+        return responseText;
+      }
+    } catch (error) {
+      console.error('Gemini API error in objection handling:', error);
+      throw error;
+    }
+  };
+
+  // Validate form field with structured output
+  const validateFormField = async (
+    fieldName: string,
+    fieldValue: string,
+    formContext: string = 'general'
+  ) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      return {
+        valid: true,
+        message: "API key not configured - validation skipped"
+      };
+    }
+
+    const model = initializeAI();
+    if (!model) {
+      return {
+        valid: true,
+        message: "Failed to initialize AI model - validation skipped"
+      };
+    }
+
+    try {
+      const prompt = `
+        Validate the following form field in a ${formContext} context:
+        Field name: ${fieldName}
+        Value: "${fieldValue}"
+        
+        Return the response as a structured JSON object with the following format:
+        {
+          "valid": true/false,
+          "message": "validation message or suggestion for improvement"
+        }
+        
+        Respond ONLY with the JSON object, no additional text.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const responseText = response.text();
+      
+      try {
+        // Extract JSON from the response
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        
+        // Default return if no JSON is found
+        return {
+          valid: true,
+          message: "Valid input"
+        };
+      } catch (e) {
+        console.error("Failed to parse validation result:", e);
+        return {
+          valid: true,
+          message: "Unable to validate"
+        };
+      }
+    } catch (error) {
+      console.error('Gemini API error in form validation:', error);
+      return { valid: true, message: "Error validating field" };
+    }
+  };
+
+  // Generate content with reasoning capabilities and structured output
+  const generateContentWithReasoning = async (
+    contentType: string,
+    topic: string,
+    audience: string,
+    additionalContext?: string
+  ) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      throw new Error(keyCheck.error);
+    }
+
+    const model = initializeAI();
+    if (!model) {
+      throw new Error('Failed to initialize Gemini AI model');
+    }
+
+    try {
+      const prompt = `
+        Generate high-quality ${contentType} content about "${topic}" for ${audience}.
+        
+        Additional context: ${additionalContext || 'None provided'}
+        
+        Return the response as a structured JSON object with the following format:
+        {
+          "reasoning": {
+            "audienceAnalysis": "analysis of audience needs",
+            "structureRationale": "reasoning for content structure",
+            "keyPointsRationale": "why these key points were chosen",
+            "toneConsiderations": "tone and style considerations"
+          },
+          "content": {
+            "title": "content title",
+            "body": "full content body",
+            "callToAction": "suggested call to action"
+          }
+        }
+        
+        Respond ONLY with the JSON object, no additional text.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const responseText = response.text();
+      
+      try {
+        // Extract JSON from the response
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        // Fallback to returning the text if JSON parsing fails
+        return responseText;
+      } catch (error) {
+        console.error('Error parsing JSON from Gemini response:', error);
+        return responseText;
+      }
+    } catch (error) {
+      console.error('Gemini API error in content generation with reasoning:', error);
+      throw error;
+    }
+  };
+
+  // Generate blog post with reasoning and structured output
+  const generateBlogPostWithReasoning = async (
+    topic: string,
+    targetAudience: string,
+    keyPoints: string[],
+    tone: string = 'professional'
+  ) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      throw new Error(keyCheck.error);
+    }
+
+    const model = initializeAI();
+    if (!model) {
+      throw new Error('Failed to initialize Gemini AI model');
+    }
+
+    try {
+      const prompt = `
+        Generate a comprehensive blog post about "${topic}" for ${targetAudience}.
+        
+        Key points to include:
+        ${keyPoints.map((point, index) => `${index + 1}. ${point}`).join('\n')}
+        
+        Tone: ${tone}
+        
+        Return the response as a structured JSON object with the following format:
+        {
+          "reasoning": {
+            "audienceRelevance": "why this topic matters to the audience",
+            "structureStrategy": "reasoning for blog structure",
+            "headlineApproach": "approach to creating compelling headline",
+            "supportingEvidence": "types of evidence used"
+          },
+          "blogPost": {
+            "headline": "blog post headline",
+            "introduction": "introduction paragraph",
+            "sections": [
+              {"heading": "section1 heading", "content": "section1 content"},
+              {"heading": "section2 heading", "content": "section2 content"}
+            ],
+            "conclusion": "conclusion paragraph",
+            "callToAction": "call to action"
+          }
+        }
+        
+        Respond ONLY with the JSON object, no additional text.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const responseText = response.text();
+      
+      try {
+        // Extract JSON from the response
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        // Fallback to returning the text if JSON parsing fails
+        return responseText;
+      } catch (error) {
+        console.error('Error parsing JSON from Gemini response:', error);
+        return responseText;
+      }
+    } catch (error) {
+      console.error('Gemini API error in blog post generation:', error);
+      throw error;
+    }
+  };
+
+  // Generate social media content with reasoning and structured output
+  const generateSocialMediaWithReasoning = async (
+    platform: 'linkedin' | 'twitter' | 'facebook' | 'instagram',
+    topic: string,
+    purpose: string,
+    brandVoice: string
+  ) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      throw new Error(keyCheck.error);
+    }
+
+    const model = initializeAI();
+    if (!model) {
+      throw new Error('Failed to initialize Gemini AI model');
+    }
+
+    try {
+      const prompt = `
+        Generate engaging social media content for ${platform} about "${topic}".
+        
+        Purpose: ${purpose}
+        Brand voice: ${brandVoice}
+        
+        Return the response as a structured JSON object with the following format:
+        {
+          "reasoning": {
+            "platformConsiderations": "what works well on ${platform}",
+            "formatRationale": "reasoning for format and length",
+            "attentionStrategy": "strategy for grabbing attention",
+            "engagementApproach": "approach to maximize engagement"
+          },
+          "content": {
+            "post": "complete social media post",
+            "hashtags": ["hashtag1", "hashtag2", ...],
+            "bestTimeToPost": "recommended posting time",
+            "estimatedEngagement": "engagement prediction"
+          }
+        }
+        
+        Respond ONLY with the JSON object, no additional text.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const responseText = response.text();
+      
+      try {
+        // Extract JSON from the response
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        // Fallback to returning the text if JSON parsing fails
+        return responseText;
+      } catch (error) {
+        console.error('Error parsing JSON from Gemini response:', error);
+        return responseText;
+      }
+    } catch (error) {
+      console.error('Gemini API error in social media generation:', error);
+      throw error;
+    }
+  };
+
+  // Generate email campaign with reasoning and structured output
+  const generateEmailCampaignWithReasoning = async (
+    campaignType: string,
+    audience: string,
+    productInfo: string,
+    goal: string
+  ) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      throw new Error(keyCheck.error);
+    }
+
+    const model = initializeAI();
+    if (!model) {
+      throw new Error('Failed to initialize Gemini AI model');
+    }
+
+    try {
+      const prompt = `
+        Generate a complete email campaign for a ${campaignType} targeting ${audience}.
+        
+        Product/Service Information:
+        ${productInfo}
+        
+        Campaign Goal: ${goal}
+        
+        Return the response as a structured JSON object with the following format:
+        {
+          "reasoning": {
+            "audienceMotivation": "what motivates this audience",
+            "subjectLineStrategy": "strategy for compelling subject lines",
+            "emailStructure": "reasoning for email structure",
+            "followUpStrategy": "follow-up timing and approach"
+          },
+          "campaign": {
+            "subjectLines": ["subject1", "subject2", "subject3"],
+            "emailBody": "complete email body",
+            "recommendedSendTime": "best time to send",
+            "followUpPlan": "follow-up strategy details"
+          }
+        }
+        
+        Respond ONLY with the JSON object, no additional text.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const responseText = response.text();
+      
+      try {
+        // Extract JSON from the response
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        // Fallback to returning the text if JSON parsing fails
+        return responseText;
+      } catch (error) {
+        console.error('Error parsing JSON from Gemini response:', error);
+        return responseText;
+      }
+    } catch (error) {
+      console.error('Gemini API error in email campaign generation:', error);
+      throw error;
+    }
+  };
+
+  // Generate sales script with reasoning and structured output
+  const generateSalesScriptWithReasoning = async (
+    productName: string,
+    targetCustomer: string,
+    painPoints: string[],
+    competitiveAdvantages: string[]
+  ) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      throw new Error(keyCheck.error);
+    }
+
+    const model = initializeAI();
+    if (!model) {
+      throw new Error('Failed to initialize Gemini AI model');
+    }
+
+    try {
+      const prompt = `
+        Generate a comprehensive sales script for ${productName} targeting ${targetCustomer}.
+        
+        Customer Pain Points:
+        ${painPoints.map((point, index) => `${index + 1}. ${point}`).join('\n')}
+        
+        Our Competitive Advantages:
+        ${competitiveAdvantages.map((advantage, index) => `${index + 1}. ${advantage}`).join('\n')}
+        
+        Return the response as a structured JSON object with the following format:
+        {
+          "reasoning": {
+            "openingStrategy": "reasoning for opening approach",
+            "discoveryQuestions": "approach to discovery questions",
+            "valuePropositionRationale": "reasoning for value proposition",
+            "objectionHandlingStrategy": "approach to handling objections",
+            "closingStrategy": "reasoning for closing approach"
+          },
+          "script": {
+            "opening": "script opening",
+            "discoveryQuestions": ["question1", "question2", ...],
+            "valueProposition": "value proposition script",
+            "objectionHandling": {
+              "objection1": "response1",
+              "objection2": "response2"
+            },
+            "closing": "closing script"
+          }
+        }
+        
+        Respond ONLY with the JSON object, no additional text.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const responseText = response.text();
+      
+      try {
+        // Extract JSON from the response
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        // Fallback to returning the text if JSON parsing fails
+        return responseText;
+      } catch (error) {
+        console.error('Error parsing JSON from Gemini response:', error);
+        return responseText;
+      }
+    } catch (error) {
+      console.error('Gemini API error in sales script generation:', error);
+      throw error;
+    }
+  };
+
+  // Generic reasoning generator with structured output
+  const generateReasoning = async (prompt: string) => {
+    const keyCheck = checkApiKey();
+    if (!keyCheck.hasKey) {
+      throw new Error(keyCheck.error);
+    }
+
+    const model = initializeAI();
+    if (!model) {
+      throw new Error('Failed to initialize Gemini AI model');
+    }
+
+    try {
+      const structuredPrompt = `
+        ${prompt}
+        
+        Return the response as a structured JSON object with the following format:
+        {
+          "reasoning": "detailed explanation of the reasoning",
+          "keyPoints": ["point1", "point2", ...],
+          "strategicConsiderations": ["consideration1", "consideration2", ...],
+          "recommendations": ["recommendation1", "recommendation2", ...]
+        }
+        
+        Respond ONLY with the JSON object, no additional text.
+      `;
+
+      const result = await model.generateContent(structuredPrompt);
+      const response = await result.response;
+      const responseText = response.text();
+      
+      try {
+        // Extract JSON from the response
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        // Fallback to returning the text if JSON parsing fails
+        return responseText;
+      } catch (error) {
+        console.error('Error parsing JSON from Gemini response:', error);
+        return responseText;
+      }
+    } catch (error) {
+      console.error('Gemini API reasoning error:', error);
+      throw error;
+    }
+  };
+
+  // Add a function to check if the service is available
+  const isAvailable = () => {
+    return Boolean(GEMINI_API_KEY);
+  };
+
+  return {
+    generateCustomerPersona,
+    optimizeVoiceTone,
+    generateMeetingAgenda,
+    analyzeSentimentRealTime,
+    getGenerativeModel,
+    analyzeMarketTrends,
+    generateEmailResponse,
+    suggestPersonalization,
+    generateObjectionHandler,
+    validateFormField,
+    // New reasoning-based content generation functions
+    generateContentWithReasoning,
+    generateBlogPostWithReasoning,
+    generateSocialMediaWithReasoning,
+    generateEmailCampaignWithReasoning,
+    generateSalesScriptWithReasoning,
+    generateReasoning,
+    // Utility functions
+    isAvailable,
+    checkApiKey
+  };
+}

@@ -1,235 +1,334 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User as UserIcon, Loader2 } from 'lucide-react';
-import { geminiService } from '../../services/geminiService';
-import { useTheme } from '../../contexts/ThemeContext';
-import { useDealStore } from '../../store/dealStore';
-import { useContactStore } from '../../store/contactStore';
-
-interface StreamingChatProps {
-  systemPrompt: string;
-  initialMessage: string;
-  placeholder: string;
-}
+import React, { useState, useEffect, useRef } from 'react';
+import { useOpenAIStream } from '../../services/openaiStreamingService';
+import { Send, User, Bot, RefreshCw, Clock, Copy, Check, X, Zap, Settings } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Message {
   id: string;
+  role: 'user' | 'assistant' | 'system';
   content: string;
-  sender: 'user' | 'ai';
   timestamp: Date;
-  model?: string;
-  provider?: string;
 }
 
-const StreamingChat: React.FC<StreamingChatProps> = ({ systemPrompt, initialMessage, placeholder }) => {
-  const { isDark } = useTheme();
-  const { deals } = useDealStore();
-  const { contacts } = useContactStore();
-  
+interface StreamingChatProps {
+  systemPrompt?: string;
+  initialMessage?: string;
+  placeholder?: string;
+  modelOptions?: { value: string; label: string }[];
+}
+
+const StreamingChat: React.FC<StreamingChatProps> = ({
+  systemPrompt = "You are an AI sales assistant helping with CRM tasks, sales strategies, and customer communication.",
+  initialMessage = "Hello! I'm your AI sales assistant. How can I help you today?",
+  placeholder = "Type your message here...",
+  modelOptions = [
+    { value: 'gpt-4o', label: 'GPT-4o' },
+    { value: 'gpt-4o-mini', label: 'GPT-4o Mini' },
+    { value: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro' },
+    { value: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash' }
+  ]
+}) => {
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: '1',
+      id: '0',
+      role: 'assistant',
       content: initialMessage,
-      sender: 'ai',
       timestamp: new Date()
     }
   ]);
+  
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [currentResponse, setCurrentResponse] = useState('');
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string>('gpt-4o');
+  const [showSettings, setShowSettings] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const [typingSpeed, setTypingSpeed] = useState<'normal' | 'faster' | 'instant'>('normal');
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
+  const streamService = useOpenAIStream();
+  
+  // Scroll to bottom when messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, currentResponse]);
-
-  // Simulate typing effect
-  useEffect(() => {
-    if (isTyping && currentResponse) {
-      const timer = setTimeout(() => {
-        setIsTyping(false);
-        setMessages(prev => [...prev, {
-          id: Date.now().toString(),
-          content: currentResponse,
-          sender: 'ai',
-          timestamp: new Date()
-        }]);
-        setCurrentResponse('');
-      }, 1000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [isTyping, currentResponse]);
-
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
-
+    scrollToBottom();
+  }, [messages]);
+  
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: typingSpeed === 'instant' ? 'auto' : 'smooth' });
+  };
+  
+  const handleSendMessage = async () => {
+    if (!input.trim()) return;
+    
+    // Add user message to the chat
     const userMessage: Message = {
       id: Date.now().toString(),
-      content: input,
-      sender: 'user',
+      role: 'user',
+      content: input.trim(),
       timestamp: new Date()
     };
-
+    
     setMessages(prev => [...prev, userMessage]);
     setInput('');
-    setIsLoading(true);
-
-    try {
-      // Get context data for the AI to use
-      const contextData = {
-        deals: Object.values(deals).map(deal => ({
-          id: deal.id,
-          title: deal.title,
-          value: deal.value,
-          stage: deal.stage,
-          probability: deal.probability
-        })),
-        contacts: Object.values(contacts).map(contact => ({
-          id: contact.id,
-          name: contact.name,
-          company: contact.company,
-          status: contact.status
-        })),
-        totalDeals: Object.keys(deals).length,
-        totalContacts: Object.keys(contacts).length
-      };
+    setIsStreaming(true);
+    
+    // Create a placeholder for the assistant response
+    const assistantMsgId = Date.now() + 1 + '';
+    const initialAssistantMessage: Message = {
+      id: assistantMsgId,
+      role: 'assistant',
+      content: '',
+      timestamp: new Date()
+    };
+    
+    if (typingSpeed === 'instant') {
+      try {
+        // For instant mode, get the full response first then show it
+        const fullResponse = await streamService.streamChatCompletion(
+          input.trim(),
+          systemPrompt,
+          () => {}, // Empty callback since we don't update incrementally
+          selectedModel
+        );
+        
+        setMessages(prev => [...prev, userMessage, {
+          id: assistantMsgId,
+          role: 'assistant',
+          content: fullResponse,
+          timestamp: new Date()
+        }]);
+      } catch (error) {
+        console.error('Error getting response:', error);
+      } finally {
+        setIsStreaming(false);
+      }
+    } else {
+      setMessages(prev => [...prev, userMessage, initialAssistantMessage]);
       
-      // Prepare conversation context
-      const conversationHistory = messages.map(msg => ({
-        role: msg.sender === 'user' ? 'user' : 'assistant',
-        content: msg.content
-      }));
-      
-      // Create a context object that represents the conversation and CRM data
-      const aiContext = {
-        systemPrompt,
-        conversationHistory,
-        crmData: contextData,
-        userQuery: input
-      };
-      
-      // Use geminiService to generate response
-      const response = await geminiService.generatePersonalizedMessage(aiContext, 'email');
-
-      // Simulate streaming by setting typing state
-      setIsTyping(true);
-      setCurrentResponse(response);
-      
-    } catch (error) {
-      console.error('Error generating response:', error);
-      setMessages(prev => [...prev, {
-        id: Date.now().toString(),
-        content: "I'm sorry, I'm having trouble generating a response right now. Please try again later.",
-        sender: 'ai',
-        timestamp: new Date()
-      }]);
-    } finally {
-      setIsLoading(false);
+      try {
+        // Stream the response
+        await streamService.streamChatCompletion(
+          input.trim(),
+          systemPrompt,
+          (token) => {
+            setMessages(currentMessages => {
+              const messageIndex = currentMessages.findIndex(m => m.id === assistantMsgId);
+              if (messageIndex === -1) return currentMessages;
+              
+              const updatedMessages = [...currentMessages];
+              updatedMessages[messageIndex] = {
+                ...updatedMessages[messageIndex],
+                content: updatedMessages[messageIndex].content + token
+              };
+              
+              return updatedMessages;
+            });
+          },
+          selectedModel
+        );
+      } catch (error) {
+        console.error('Error streaming response:', error);
+      } finally {
+        setIsStreaming(false);
+      }
     }
   };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
+  
+  const getSpeedDelay = () => {
+    switch (typingSpeed) {
+      case 'faster': return 10;
+      case 'instant': return 0;
+      default: return 20; // normal
     }
+  };
+  
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  };
+  
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+    <div className="flex flex-col h-full rounded-xl border border-gray-200 overflow-hidden bg-white shadow-md">
+      {/* Header with model selection */}
+      <div className="flex justify-between items-center p-3 bg-gradient-to-r from-indigo-50 to-violet-50 border-b border-gray-200">
+        <div className="flex items-center">
+          <Zap size={20} className="text-indigo-600 mr-2" />
+          <h3 className="font-semibold">AI Assistant</h3>
+        </div>
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={() => setShowSettings(!showSettings)}
+            className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
           >
-            <div className={`flex max-w-[80%] ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-              <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                message.sender === 'user' ? 'bg-blue-500 ml-2' : 'bg-gray-600 mr-2'
-              }`}>
-                {message.sender === 'user' ? (
-                  <UserIcon className="text-white" size={16} />
-                ) : (
-                  <Bot size={16} className="text-white" />
-                )}
-              </div>
-              <div className={`px-4 py-2 rounded-lg ${
-                message.sender === 'user' 
-                  ? 'bg-blue-500 text-white' 
-                  : isDark ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-900'
-              }`}>
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                {message.model && message.provider && (
-                  <div className="mt-1 text-xs opacity-70">
-                    Generated by {message.provider} {message.model}
+            <Settings size={18} />
+          </button>
+        </div>
+      </div>
+      
+      {/* Settings panel */}
+      <AnimatePresence>
+        {showSettings && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="border-b border-gray-200 overflow-hidden"
+          >
+            <div className="p-4 bg-gray-50">
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">AI Model</label>
+                  <select
+                    value={selectedModel}
+                    onChange={(e) => setSelectedModel(e.target.value)}
+                    className="w-full p-2 border rounded-md text-sm"
+                  >
+                    {modelOptions.map(option => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Response Speed</label>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setTypingSpeed('normal')}
+                      className={`px-3 py-1.5 text-sm rounded-md ${
+                        typingSpeed === 'normal' 
+                          ? 'bg-indigo-100 text-indigo-700 border border-indigo-200' 
+                          : 'bg-gray-100 text-gray-700 border border-gray-200'
+                      }`}
+                    >
+                      Normal
+                    </button>
+                    <button
+                      onClick={() => setTypingSpeed('faster')}
+                      className={`px-3 py-1.5 text-sm rounded-md ${
+                        typingSpeed === 'faster' 
+                          ? 'bg-indigo-100 text-indigo-700 border border-indigo-200' 
+                          : 'bg-gray-100 text-gray-700 border border-gray-200'
+                      }`}
+                    >
+                      Faster
+                    </button>
+                    <button
+                      onClick={() => setTypingSpeed('instant')}
+                      className={`px-3 py-1.5 text-sm rounded-md ${
+                        typingSpeed === 'instant' 
+                          ? 'bg-indigo-100 text-indigo-700 border border-indigo-200' 
+                          : 'bg-gray-100 text-gray-700 border border-gray-200'
+                      }`}
+                    >
+                      Instant
+                    </button>
                   </div>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-        
-        {/* Typing indicator */}
-        {isTyping && (
-          <div className="flex justify-start">
-            <div className="flex max-w-[80%]">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-600 mr-2 flex items-center justify-center">
-                <Bot size={16} className="text-white" />
-              </div>
-              <div className="px-4 py-2 rounded-lg bg-gray-700 text-white">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
-        
-        {isLoading && !isTyping && (
-          <div className="flex justify-start">
-            <div className="flex max-w-[80%]">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-600 mr-2 flex items-center justify-center">
-                <Bot size={16} className="text-white" />
-              </div>
-              <div className="px-4 py-2 rounded-lg bg-gray-700 text-white">
-                <Loader2 size={16} className="animate-spin text-white" />
+      </AnimatePresence>
+      
+      {/* Messages area */}
+      <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+        <div className="space-y-4">
+          {messages.map((message) => (
+            <div 
+              key={message.id} 
+              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              <div className={`max-w-[80%] relative group ${
+                message.role === 'user' 
+                  ? 'bg-indigo-600 text-white rounded-t-lg rounded-bl-lg' 
+                  : 'bg-white text-gray-800 rounded-t-lg rounded-br-lg border border-gray-200 shadow-sm'
+              } px-4 py-3`}>
+                <div className="flex items-center mb-1">
+                  {message.role === 'user' ? (
+                    <User size={14} className="mr-1" />
+                  ) : (
+                    <Bot size={14} className="mr-1" />
+                  )}
+                  <span className="text-xs opacity-75">
+                    {message.role === 'user' ? 'You' : 'Assistant'}
+                  </span>
+                  <span className="text-xs ml-2 opacity-50">
+                    {formatTime(message.timestamp)}
+                  </span>
+                </div>
+                
+                <p className="whitespace-pre-line text-sm">{message.content}</p>
+                
+                {/* Copy button - only for assistant messages */}
+                {message.role === 'assistant' && message.content && (
+                  <button 
+                    onClick={() => copyToClipboard(message.content)}
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  >
+                    {isCopied ? <Check size={14} /> : <Copy size={14} />}
+                  </button>
+                )}
               </div>
             </div>
-          </div>
-        )}
-        
-        <div ref={messagesEndRef} />
+          ))}
+          <div ref={messagesEndRef} />
+          
+          {isStreaming && (
+            <div className="flex justify-center">
+              <div className="flex items-center space-x-1 text-indigo-500 text-sm bg-indigo-50 rounded-full px-3 py-1">
+                <RefreshCw size={14} className="animate-spin" />
+                <span>AI is thinking...</span>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
       
-      <div className={`p-4 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-        <div className="flex space-x-2">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
+      {/* Input area */}
+      <div className="border-t border-gray-200 p-3 bg-white">
+        <form 
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSendMessage();
+          }}
+          className="flex items-center space-x-2"
+        >
+          <input 
+            type="text" 
+            value={input} 
+            onChange={(e) => setInput(e.target.value)} 
             placeholder={placeholder}
-            className={`flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm ${
-              isDark 
-                ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-500' 
-                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'
-            } disabled:opacity-50`}
-            disabled={isLoading || isTyping}
+            className="flex-1 p-2 border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            disabled={isStreaming}
           />
-          <button
-            onClick={handleSend}
-            disabled={!input.trim() || isLoading || isTyping}
-            className={`px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors`}
+          <button 
+            type="submit"
+            disabled={isStreaming || !input.trim()} 
+            className={`p-2 rounded-md text-white ${
+              isStreaming || !input.trim() ? 'bg-gray-300 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'
+            }`}
           >
-            {isLoading || isTyping ? (
-              <Loader2 size={16} className="animate-spin" />
+            {isStreaming ? (
+              <RefreshCw size={18} className="animate-spin" />
             ) : (
-              <Send size={16} />
+              <Send size={18} />
             )}
           </button>
+        </form>
+        
+        <div className="flex justify-between mt-1 text-xs text-gray-500">
+          <div className="flex items-center">
+            <Clock size={12} className="mr-1" />
+            <span>Responses stream in real-time</span>
+          </div>
+          <span className="text-indigo-600">
+            {selectedModel.includes('gemini') ? 'Powered by Gemini AI' : 'Powered by OpenAI'}
+          </span>
         </div>
       </div>
     </div>

@@ -1,111 +1,248 @@
 import { create } from 'zustand';
+import { Task } from '../types';
+import { v4 as uuidv4 } from 'uuid';
 
-export interface Task {
-  id: string;
-  title: string;
-  description?: string;
-  completed: boolean;
-  priority: 'low' | 'medium' | 'high';
-  dueDate?: Date;
-  contactId?: string;
-  dealId?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface TaskStore {
+interface TaskState {
   tasks: Record<string, Task>;
   isLoading: boolean;
   error: string | null;
+  selectedTask: string | null;
+  
+  // Actions
   fetchTasks: () => Promise<void>;
-  addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void;
-  updateTask: (id: string, updates: Partial<Task>) => void;
-  deleteTask: (id: string) => void;
+  createTask: (task: Partial<Task>) => Promise<void>;
+  updateTask: (id: string, task: Partial<Task>) => Promise<void>;
+  deleteTask: (id: string) => Promise<void>;
+  selectTask: (id: string | null) => void;
+  markTaskComplete: (id: string, completed: boolean) => Promise<void>;
 }
 
-export const useTaskStore = create<TaskStore>((set, get) => ({
+export const useTaskStore = create<TaskState>((set, get) => ({
   tasks: {
-    '1': {
-      id: '1',
-      title: 'Follow up with Jane Doe',
-      description: 'Discuss enterprise software requirements',
+    'task-1': {
+      id: 'task-1',
+      title: 'Follow up with John Doe',
+      description: 'Send proposal follow-up email',
+      dueDate: new Date(Date.now() + 86400000), // tomorrow
       completed: false,
       priority: 'high',
-      dueDate: new Date('2024-02-10'),
-      contactId: '1',
-      dealId: '1',
-      createdAt: new Date('2024-01-01'),
-      updatedAt: new Date('2024-01-15')
+      relatedTo: {
+        type: 'contact',
+        id: '1'
+      },
+      category: 'follow-up',
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
-    '2': {
-      id: '2',
-      title: 'Prepare proposal for Ford',
-      description: 'Create detailed proposal for marketing automation',
+    'task-2': {
+      id: 'task-2',
+      title: 'Prepare demo for Acme Inc',
+      description: 'Create custom demo showing enterprise features',
+      dueDate: new Date(Date.now() + 172800000), // 2 days
       completed: false,
       priority: 'medium',
-      dueDate: new Date('2024-02-08'),
-      contactId: '2',
-      dealId: '2',
-      createdAt: new Date('2024-01-05'),
-      updatedAt: new Date('2024-01-18')
+      relatedTo: {
+        type: 'deal',
+        id: 'deal-1'
+      },
+      category: 'meeting',
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
-    '3': {
-      id: '3',
-      title: 'Schedule demo with Zenith',
-      description: 'Set up cloud infrastructure demo',
-      completed: true,
+    'task-3': {
+      id: 'task-3',
+      title: 'Update sales forecast',
+      description: 'Review pipeline and update Q3 forecast',
+      dueDate: new Date(Date.now() + 259200000), // 3 days
+      completed: false,
       priority: 'medium',
-      dueDate: new Date('2024-02-05'),
-      contactId: '3',
-      dealId: '3',
-      createdAt: new Date('2024-01-10'),
-      updatedAt: new Date('2024-01-20')
+      category: 'other',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    'task-4': {
+      id: 'task-4',
+      title: 'Call Sarah Williams',
+      description: 'Discuss renewal options',
+      dueDate: new Date(Date.now() - 86400000), // yesterday
+      completed: true,
+      completedAt: new Date(Date.now() - 43200000), // 12 hours ago
+      priority: 'high',
+      relatedTo: {
+        type: 'contact',
+        id: '4'
+      },
+      category: 'call',
+      createdAt: new Date(Date.now() - 172800000), // 2 days ago
+      updatedAt: new Date(Date.now() - 43200000)
+    },
+    'task-5': {
+      id: 'task-5',
+      title: 'Send contract to Globex Corp',
+      description: 'Finalize and send contract for signature',
+      dueDate: new Date(Date.now() + 86400000), // tomorrow
+      completed: false,
+      priority: 'high',
+      relatedTo: {
+        type: 'deal',
+        id: 'deal-2'
+      },
+      category: 'email',
+      createdAt: new Date(),
+      updatedAt: new Date()
     }
   },
   isLoading: false,
   error: null,
-
+  selectedTask: null,
+  
   fetchTasks: async () => {
     set({ isLoading: true, error: null });
+    
     try {
-      // Simulate API call
+      // In a real app, we would fetch tasks from the API here
+      // For now, we'll just simulate a delay and use the mock data
       await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // In a real implementation, we would set the tasks from the API response
+      // set({ tasks: fetchedTasks });
+      
       set({ isLoading: false });
-    } catch (error) {
-      set({ error: 'Failed to fetch tasks', isLoading: false });
+    } catch (err) {
+      console.error('Error fetching tasks:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to fetch tasks' 
+      });
     }
   },
-
-  addTask: (taskData) => {
-    const newTask: Task = {
-      ...taskData,
-      id: Date.now().toString(),
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
+  
+  createTask: async (taskData: Partial<Task>) => {
+    set({ isLoading: true, error: null });
     
-    set(state => ({
-      tasks: { ...state.tasks, [newTask.id]: newTask }
-    }));
+    try {
+      // In a real app, we would create the task via API
+      // For now, we'll just simulate a delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const taskId = uuidv4();
+      const newTask: Task = {
+        id: taskId,
+        title: taskData.title || 'New Task',
+        description: taskData.description || '',
+        dueDate: taskData.dueDate,
+        completed: taskData.completed || false,
+        priority: taskData.priority || 'medium',
+        relatedTo: taskData.relatedTo,
+        category: taskData.category || 'other',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        assignedTo: taskData.assignedTo,
+        completedAt: taskData.completed ? new Date() : undefined,
+        reminderDate: taskData.reminderDate,
+        notes: taskData.notes,
+        tags: taskData.tags
+      };
+      
+      const { tasks } = get();
+      
+      set({ 
+        tasks: { ...tasks, [taskId]: newTask },
+        isLoading: false 
+      });
+      
+      return Promise.resolve();
+    } catch (err) {
+      console.error('Error creating task:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to create task' 
+      });
+      return Promise.reject(err);
+    }
   },
-
-  updateTask: (id, updates) => {
-    set(state => ({
-      tasks: {
-        ...state.tasks,
-        [id]: {
-          ...state.tasks[id],
-          ...updates,
-          updatedAt: new Date()
-        }
+  
+  updateTask: async (id: string, taskData: Partial<Task>) => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      // In a real app, we would update the task via API
+      // For now, we'll just simulate a delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const { tasks } = get();
+      const existingTask = tasks[id];
+      
+      if (!existingTask) {
+        throw new Error(`Task with id ${id} not found`);
       }
-    }));
+      
+      const updatedTask: Task = {
+        ...existingTask,
+        ...taskData,
+        updatedAt: new Date()
+      };
+      
+      if (taskData.completed === true && !existingTask.completed) {
+        updatedTask.completedAt = new Date();
+      }
+      
+      if (taskData.completed === false) {
+        updatedTask.completedAt = undefined;
+      }
+      
+      set({ 
+        tasks: { ...tasks, [id]: updatedTask },
+        isLoading: false 
+      });
+      
+      return Promise.resolve();
+    } catch (err) {
+      console.error('Error updating task:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to update task' 
+      });
+      return Promise.reject(err);
+    }
   },
-
-  deleteTask: (id) => {
-    set(state => {
-      const { [id]: deleted, ...rest } = state.tasks;
-      return { tasks: rest };
+  
+  deleteTask: async (id: string) => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      // In a real app, we would delete the task via API
+      // For now, we'll just simulate a delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const { tasks } = get();
+      const { [id]: deletedTask, ...remainingTasks } = tasks;
+      
+      set({ 
+        tasks: remainingTasks,
+        isLoading: false,
+        selectedTask: null 
+      });
+      
+      return Promise.resolve();
+    } catch (err) {
+      console.error('Error deleting task:', err);
+      set({ 
+        isLoading: false, 
+        error: err instanceof Error ? err.message : 'Failed to delete task' 
+      });
+      return Promise.reject(err);
+    }
+  },
+  
+  selectTask: (id) => {
+    set({ selectedTask: id });
+  },
+  
+  markTaskComplete: async (id: string, completed: boolean) => {
+    get().updateTask(id, { 
+      completed,
+      completedAt: completed ? new Date() : undefined 
     });
   }
 }));
