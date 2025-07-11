@@ -7,7 +7,6 @@ import { TenantProvider } from './components/TenantProvider';
 import { RoleProvider } from './components/RoleBasedAccess';
 import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
 import { queryClient } from './lib/queryClient';
-import { ClerkProvider } from '@clerk/clerk-react';
 import { ProtectedRoute, SuperAdminRoute, ResellerRoute, UserRoute } from './components/auth/ProtectedRoute';
 
 // Landing Pages
@@ -92,22 +91,13 @@ const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
-  const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-
-  if (!publishableKey) {
-    throw new Error('Missing Publishable Key');
-  }
-
   return (
     <QueryClientProvider client={queryClient}>
-      <ClerkProvider 
-        publishableKey={publishableKey}
-      >
-        <TenantProvider>
-          <RoleProvider>
-            <EnhancedHelpProvider>
-              <AIToolsProvider>
-                <Router>
+      <TenantProvider>
+        <RoleProvider>
+          <EnhancedHelpProvider>
+            <AIToolsProvider>
+              <Router>
             <Routes>
               {/* Auth routes (available for future Clerk integration) */}
               <Route path="/login" element={<Login />} />
@@ -346,12 +336,11 @@ function App() {
               {/* Unauthorized route */}
               <Route path="/unauthorized" element={<UnauthorizedPage />} />
             </Routes>
-                </Router>
-              </AIToolsProvider>
-            </EnhancedHelpProvider>
-          </RoleProvider>
-        </TenantProvider>
-      </ClerkProvider>
+              </Router>
+            </AIToolsProvider>
+          </EnhancedHelpProvider>
+        </RoleProvider>
+      </TenantProvider>
     </QueryClientProvider>
   );
 }
