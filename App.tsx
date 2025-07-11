@@ -8,15 +8,15 @@ import { RoleProvider } from './RoleBasedAccess';
 import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
 import { queryClient } from './lib/queryClient';
 import { ProtectedRoute, SuperAdminRoute, ResellerRoute, UserRoute } from './auth/ProtectedRoute';
-import { ThemeProvider } from './contexts/ThemeContext';
-import { NavigationProvider } from './contexts/NavigationContext';
+import { ThemeProvider } from './src/contexts/ThemeContext';
+import { NavigationProvider } from './src/contexts/NavigationContext';
 
 // Landing Pages
 import LandingPage from './pages/Landing/LandingPage';
 
 // Auth Pages (preserved for future Clerk integration)
 import Login from './pages/Auth/Login';
-import Register from './pages/Auth/Register';
+import Register from './pages/Auth/Register'; // Your updated Register component
 import ForgotPassword from './pages/Auth/ForgotPassword';
 
 // Main pages
@@ -78,7 +78,7 @@ import FeaturePackageManagementPage from './pages/FeaturePackageManagementPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 
 // Layout Components
-import Navbar from './components/Navbar'; // or wherever the advanced navbar is located
+import Navbar from './Navbar';
 
 // Layout wrapper for authenticated pages
 const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
@@ -95,17 +95,18 @@ const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TenantProvider>
-        <RoleProvider>
-          <EnhancedHelpProvider>
-            <AIToolsProvider>
-              <ThemeProvider>
+      <ThemeProvider>
+        <TenantProvider>
+          <RoleProvider>
+            <EnhancedHelpProvider>
+              <AIToolsProvider>
                 <Router>
                   <NavigationProvider>
                     <Routes>
                       {/* Auth routes (available for future Clerk integration) */}
                       <Route path="/login" element={<Login />} />
                       <Route path="/register" element={<Register />} />
+                      <Route path="/signup" element={<Register />} />
                       <Route path="/forgot-password" element={<ForgotPassword />} />
 
                       {/* Public routes */}
@@ -459,11 +460,11 @@ function App() {
                     </Routes>
                   </NavigationProvider>
                 </Router>
-              </ThemeProvider>
-            </AIToolsProvider>
-          </EnhancedHelpProvider>
-        </RoleProvider>
-      </TenantProvider>
+              </AIToolsProvider>
+            </EnhancedHelpProvider>
+          </RoleProvider>
+        </TenantProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
