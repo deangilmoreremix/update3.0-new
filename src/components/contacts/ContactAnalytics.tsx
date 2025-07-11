@@ -1,300 +1,435 @@
-import React, { useState } from 'react';
-import { GlassCard } from '../ui/GlassCard';
-import { ModernButton } from '../ui/ModernButton';
+import React from 'react';
 import { Contact } from '../../types/contact';
 import { 
-  BarChart3, 
+  BarChart, LineChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
+  Cell, PieChart, Pie 
+} from 'recharts';
+import { 
+  BarChart2, 
   TrendingUp, 
+  Calendar, 
   Clock, 
-  Target, 
-  DollarSign, 
-  Activity, 
-  Calendar,
-  Mail,
-  Phone,
+  Mail, 
+  Phone, 
   MessageSquare,
-  Users,
-  Award,
-  AlertTriangle,
-  Filter,
-  Download,
-  RefreshCw
+  ArrowUp,
+  ArrowDown,
+  Target,
+  Activity,
+  Eye,
+  Star,
+  DollarSign,
+  Clock as ClockIcon,
+  BarChart as BarChartIcon
 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, Area, AreaChart } from 'recharts';
 
 interface ContactAnalyticsProps {
   contact: Contact;
 }
 
-// Sample analytics data
-const engagementData = [
-  { month: 'Jan', emails: 12, calls: 4, meetings: 2, responses: 8 },
-  { month: 'Feb', emails: 15, calls: 6, meetings: 3, responses: 12 },
-  { month: 'Mar', emails: 18, calls: 5, meetings: 4, responses: 14 },
-  { month: 'Apr', emails: 22, calls: 8, meetings: 5, responses: 18 },
-  { month: 'May', emails: 20, calls: 7, meetings: 6, responses: 16 },
-  { month: 'Jun', emails: 25, calls: 9, meetings: 7, responses: 20 }
-];
-
-const channelPerformance = [
-  { name: 'Email', value: 45, responses: 32, color: '#3b82f6' },
-  { name: 'Phone', value: 25, responses: 22, color: '#10b981' },
-  { name: 'LinkedIn', value: 20, responses: 15, color: '#0077b5' },
-  { name: 'SMS', value: 10, responses: 8, color: '#8b5cf6' }
-];
-
-const responseTimeData = [
-  { day: 'Mon', avgTime: 4.2, interactions: 8 },
-  { day: 'Tue', avgTime: 2.8, interactions: 12 },
-  { day: 'Wed', avgTime: 3.5, interactions: 10 },
-  { day: 'Thu', avgTime: 2.1, interactions: 15 },
-  { day: 'Fri', avgTime: 5.8, interactions: 6 },
-  { day: 'Sat', avgTime: 8.2, interactions: 2 },
-  { day: 'Sun', avgTime: 12.5, interactions: 1 }
-];
-
-const dealProgressData = [
-  { stage: 'Lead', value: 15, date: '2024-01-15' },
-  { stage: 'Qualified', value: 35, date: '2024-01-18' },
-  { stage: 'Demo', value: 55, date: '2024-01-22' },
-  { stage: 'Proposal', value: 75, date: '2024-01-25' },
-  { stage: 'Negotiation', value: 85, date: '2024-01-28' }
-];
-
 export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) => {
-  const [timeRange, setTimeRange] = useState('6m');
-  const [selectedMetric, setSelectedMetric] = useState('engagement');
-
-  const timeRanges = [
-    { value: '1m', label: 'Last Month' },
-    { value: '3m', label: 'Last 3 Months' },
-    { value: '6m', label: 'Last 6 Months' },
-    { value: '1y', label: 'Last Year' }
+  // Sample data for charts and analytics - in a real app, this would come from API calls
+  
+  // Engagement trend data
+  const engagementData = [
+    { month: 'Jan', emails: 4, calls: 1, meetings: 1, score: 40 },
+    { month: 'Feb', emails: 3, calls: 2, meetings: 0, score: 35 },
+    { month: 'Mar', emails: 7, calls: 2, meetings: 1, score: 65 },
+    { month: 'Apr', emails: 5, calls: 3, meetings: 2, score: 75 },
+    { month: 'May', emails: 10, calls: 1, meetings: 1, score: 80 },
+    { month: 'Jun', emails: 8, calls: 2, meetings: 2, score: 85 }
   ];
-
-  const metrics = [
-    { id: 'engagement', label: 'Engagement', icon: Activity },
-    { id: 'response', label: 'Response Rate', icon: MessageSquare },
-    { id: 'pipeline', label: 'Pipeline Progress', icon: TrendingUp },
-    { id: 'channels', label: 'Channel Performance', icon: BarChart3 }
+  
+  // Communication breakdown
+  const communicationData = [
+    { name: 'Emails', value: 37, color: '#3b82f6' },
+    { name: 'Calls', value: 11, color: '#10b981' },
+    { name: 'Meetings', value: 7, color: '#8b5cf6' },
+    { name: 'SMS', value: 5, color: '#f59e0b' }
+  ];
+  
+  // Email engagement
+  const emailEngagementData = [
+    { name: 'Open Rate', value: 76, color: '#3b82f6' },
+    { name: 'Click Rate', value: 42, color: '#10b981' },
+    { name: 'Response Rate', value: 31, color: '#8b5cf6' }
+  ];
+  
+  // Page visits data
+  const pageVisitsData = [
+    { page: 'Homepage', visits: 12 },
+    { page: 'Pricing', visits: 8 },
+    { page: 'Features', visits: 6 },
+    { page: 'Blog', visits: 4 },
+    { page: 'Contact Us', visits: 2 }
+  ];
+  
+  // Time to response data
+  const timeToResponseData = [
+    { day: 'Mon', hours: 2.5 },
+    { day: 'Tue', hours: 3.1 },
+    { day: 'Wed', hours: 1.2 },
+    { day: 'Thu', hours: 0.8 },
+    { day: 'Fri', hours: 1.5 },
+    { day: 'Sat', hours: 4.2 },
+    { day: 'Sun', hours: 5.0 }
+  ];
+  
+  // Deal metrics
+  const dealMetrics = {
+    total: 3,
+    won: 1,
+    active: 2,
+    lost: 0,
+    totalValue: 85000,
+    avgDealSize: 28333,
+    winRate: 100,
+    conversionTime: 32 // days
+  };
+  
+  // Calculate engagement metrics
+  const engagementMetrics = {
+    totalInteractions: 60,
+    lastQuarterGrowth: 25, // percentage
+    avgResponseTime: 2.4, // hours
+    engagementScore: contact.aiScore || 70
+  };
+  
+  // Calculate key performance indicators
+  const kpis = [
+    {
+      name: 'Total Interactions',
+      value: engagementMetrics.totalInteractions,
+      change: '+15%',
+      trend: 'up',
+      icon: Activity
+    },
+    {
+      name: 'Response Time',
+      value: `${engagementMetrics.avgResponseTime}h`,
+      change: '-18%',
+      trend: 'down',
+      icon: Clock
+    },
+    {
+      name: 'Deal Value',
+      value: `$${dealMetrics.totalValue.toLocaleString()}`,
+      change: '+30%',
+      trend: 'up',
+      icon: DollarSign
+    },
+    {
+      name: 'Engagement',
+      value: `${engagementMetrics.engagementScore}%`,
+      change: '+12%',
+      trend: 'up',
+      icon: Target
+    }
   ];
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-2xl font-bold text-gray-900">Contact Analytics</h3>
-          <p className="text-gray-600">Detailed performance metrics for {contact.name}</p>
-        </div>
-        <div className="flex items-center space-x-3">
-          <select
-            value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            {timeRanges.map(range => (
-              <option key={range.value} value={range.value}>{range.label}</option>
-            ))}
-          </select>
-          <ModernButton variant="outline" size="sm" className="flex items-center space-x-2">
-            <Download className="w-4 h-4" />
-            <span>Export</span>
-          </ModernButton>
-          <ModernButton variant="outline" size="sm" className="flex items-center space-x-2">
-            <RefreshCw className="w-4 h-4" />
-            <span>Refresh</span>
-          </ModernButton>
-        </div>
+      <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+        <BarChart2 className="w-5 h-5 mr-2 text-blue-600" />
+        Contact Analytics Dashboard
+      </h3>
+      
+      {/* KPI Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {kpis.map((kpi, index) => (
+          <div key={index} className="bg-white rounded-xl shadow-sm p-4 border border-gray-200">
+            <div className="flex items-center justify-between mb-3">
+              <div className="p-2 rounded-lg bg-blue-100">
+                <kpi.icon className="h-5 w-5 text-blue-600" />
+              </div>
+              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                kpi.trend === 'up' 
+                  ? 'bg-green-100 text-green-700' 
+                  : 'bg-red-100 text-red-700'
+              }`}>
+                {kpi.trend === 'up' ? <ArrowUp className="inline h-3 w-3 mr-1" /> : <ArrowDown className="inline h-3 w-3 mr-1" />}
+                {kpi.change}
+              </span>
+            </div>
+            <h4 className="text-sm font-medium text-gray-500">{kpi.name}</h4>
+            <p className="text-2xl font-bold text-gray-900 mt-1">{kpi.value}</p>
+          </div>
+        ))}
       </div>
-
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <GlassCard className="p-6">
-          <div className="flex items-center justify-between mb-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <BarChart3 className="w-6 h-6 text-blue-600" />
-            </div>
-            <TrendingUp className="w-5 h-5 text-green-500" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-gray-900">85%</p>
-            <p className="text-sm text-gray-600">Engagement Score</p>
-            <p className="text-xs text-green-600 mt-1">+12% from last month</p>
-          </div>
-        </GlassCard>
-        
-        <GlassCard className="p-6">
-          <div className="flex items-center justify-between mb-3">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Target className="w-6 h-6 text-green-600" />
-            </div>
-            <TrendingUp className="w-5 h-5 text-green-500" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-gray-900">78%</p>
-            <p className="text-sm text-gray-600">Response Rate</p>
-            <p className="text-xs text-green-600 mt-1">+5% from last month</p>
-          </div>
-        </GlassCard>
-        
-        <GlassCard className="p-6">
-          <div className="flex items-center justify-between mb-3">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Clock className="w-6 h-6 text-purple-600" />
-            </div>
-            <TrendingUp className="w-5 h-5 text-red-500" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-gray-900">3.2h</p>
-            <p className="text-sm text-gray-600">Avg Response Time</p>
-            <p className="text-xs text-red-600 mt-1">+0.8h from last month</p>
-          </div>
-        </GlassCard>
-        
-        <GlassCard className="p-6">
-          <div className="flex items-center justify-between mb-3">
-            <div className="p-2 bg-yellow-100 rounded-lg">
-              <DollarSign className="w-6 h-6 text-yellow-600" />
-            </div>
-            <TrendingUp className="w-5 h-5 text-green-500" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-gray-900">$85K</p>
-            <p className="text-sm text-gray-600">Pipeline Value</p>
-            <p className="text-xs text-green-600 mt-1">+$15K from last month</p>
-          </div>
-        </GlassCard>
-      </div>
-
-      {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Engagement Trends */}
-        <GlassCard className="p-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <Activity className="w-5 h-5 mr-2 text-blue-500" />
-            Engagement Trends
+      
+      {/* Engagement Trend Chart */}
+      <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="text-base font-semibold text-gray-900 flex items-center">
+            <TrendingUp className="w-4 h-4 mr-2 text-blue-600" />
+            Engagement Trend
           </h4>
-          <ResponsiveContainer width="100%" height={250}>
-            <AreaChart data={engagementData}>
-              <CartesianGrid strokeDasharray="3 3" />
+          <select className="text-sm border border-gray-300 rounded-md px-2 py-1">
+            <option>Last 6 Months</option>
+            <option>Last 12 Months</option>
+            <option>YTD</option>
+            <option>All Time</option>
+          </select>
+        </div>
+        
+        <div className="h-72">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={engagementData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
               <XAxis dataKey="month" />
               <YAxis />
-              <Area type="monotone" dataKey="emails" stackId="1" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
-              <Area type="monotone" dataKey="calls" stackId="1" stroke="#10b981" fill="#10b981" fillOpacity={0.6} />
-              <Area type="monotone" dataKey="meetings" stackId="1" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.6} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </GlassCard>
-
-        {/* Channel Performance */}
-        <GlassCard className="p-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <BarChart3 className="w-5 h-5 mr-2 text-green-500" />
-            Channel Performance
-          </h4>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie
-                data={channelPerformance}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={100}
-                dataKey="value"
-                label={({ name, value }) => `${name}: ${value}%`}
-              >
-                {channelPerformance.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-        </GlassCard>
-
-        {/* Response Time Analysis */}
-        <GlassCard className="p-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <Clock className="w-5 h-5 mr-2 text-purple-500" />
-            Response Time by Day
-          </h4>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={responseTimeData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="day" />
-              <YAxis />
-              <Bar dataKey="avgTime" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </GlassCard>
-
-        {/* Deal Progress */}
-        <GlassCard className="p-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <TrendingUp className="w-5 h-5 mr-2 text-yellow-500" />
-            Deal Progression
-          </h4>
-          <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={dealProgressData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="stage" />
-              <YAxis />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'white',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '0.5rem',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+                }}
+              />
               <Line 
                 type="monotone" 
-                dataKey="value" 
-                stroke="#f59e0b" 
+                dataKey="score" 
+                stroke="#8b5cf6" 
                 strokeWidth={3}
-                dot={{ fill: '#f59e0b', strokeWidth: 2, r: 6 }}
+                dot={{ r: 4, fill: '#8b5cf6', strokeWidth: 2, stroke: '#8b5cf6' }}
+                activeDot={{ r: 6, fill: '#8b5cf6', stroke: 'white', strokeWidth: 2 }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="emails" 
+                stroke="#3b82f6" 
+                strokeWidth={2}
+                dot={{ r: 3, fill: '#3b82f6' }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="calls" 
+                stroke="#10b981"
+                strokeWidth={2}
+                dot={{ r: 3, fill: '#10b981' }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="meetings" 
+                stroke="#f59e0b"
+                strokeWidth={2}
+                dot={{ r: 3, fill: '#f59e0b' }}
               />
             </LineChart>
           </ResponsiveContainer>
-        </GlassCard>
-      </div>
-
-      {/* Detailed Metrics Table */}
-      <GlassCard className="p-6">
-        <h4 className="text-lg font-semibold text-gray-900 mb-4">Detailed Metrics</h4>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-200">
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Metric</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">This Period</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Previous Period</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Change</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Trend</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                { metric: 'Total Interactions', current: '52', previous: '47', change: '+10.6%', trend: 'up' },
-                { metric: 'Email Opens', current: '42', previous: '38', change: '+10.5%', trend: 'up' },
-                { metric: 'Call Duration (avg)', current: '18.5 min', previous: '16.2 min', change: '+14.2%', trend: 'up' },
-                { metric: 'Meeting Attendance', current: '95%', previous: '88%', change: '+8.0%', trend: 'up' },
-                { metric: 'Response Speed', current: '3.2 hours', previous: '2.4 hours', change: '+33.3%', trend: 'down' }
-              ].map((row, index) => (
-                <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-                  <td className="py-3 px-4 font-medium text-gray-900">{row.metric}</td>
-                  <td className="py-3 px-4 text-gray-700">{row.current}</td>
-                  <td className="py-3 px-4 text-gray-700">{row.previous}</td>
-                  <td className={`py-3 px-4 font-medium ${
-                    row.trend === 'up' ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {row.change}
-                  </td>
-                  <td className="py-3 px-4">
-                    {row.trend === 'up' ? (
-                      <TrendingUp className="w-4 h-4 text-green-500" />
-                    ) : (
-                      <TrendingUp className="w-4 h-4 text-red-500 transform rotate-180" />
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
-      </GlassCard>
+      </div>
+      
+      {/* Multi-Chart Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Communication Mix */}
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+          <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
+            <MessageSquare className="w-4 h-4 mr-2 text-blue-600" />
+            Communication Mix
+          </h4>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={communicationData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={90}
+                  paddingAngle={5}
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  labelLine={false}
+                >
+                  {communicationData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="grid grid-cols-2 gap-4 mt-2">
+            <div className="text-center">
+              <p className="text-2xl font-bold text-gray-900">
+                {communicationData.reduce((sum, item) => sum + item.value, 0)}
+              </p>
+              <p className="text-sm text-gray-500">Total Interactions</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-gray-900">
+                {Math.round(communicationData.reduce((sum, item) => sum + item.value, 0) / 6)} <span className="text-sm text-gray-500">/ mo</span>
+              </p>
+              <p className="text-sm text-gray-500">Average Monthly</p>
+            </div>
+          </div>
+        </div>
+        
+        {/* Email Engagement */}
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+          <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
+            <Mail className="w-4 h-4 mr-2 text-blue-600" />
+            Email Engagement
+          </h4>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={emailEngagementData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+                <XAxis dataKey="name" />
+                <YAxis unit="%" />
+                <Tooltip />
+                <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                  {emailEngagementData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+      
+      {/* Second Multi-Chart Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Website Activity */}
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+          <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
+            <Eye className="w-4 h-4 mr-2 text-blue-600" />
+            Website Page Visits
+          </h4>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={pageVisitsData}
+                layout="vertical"
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#eee" horizontal={false} />
+                <XAxis type="number" />
+                <YAxis type="category" dataKey="page" />
+                <Tooltip />
+                <Bar dataKey="visits" fill="#3b82f6" radius={[0, 4, 4, 0]}>
+                  {pageVisitsData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={`hsl(${220 + index * 10}, 90%, 60%)`} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        
+        {/* Response Time */}
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+          <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
+            <ClockIcon className="w-4 h-4 mr-2 text-blue-600" />
+            Response Time
+          </h4>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={timeToResponseData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+                <XAxis dataKey="day" />
+                <YAxis unit="h" />
+                <Tooltip 
+                  formatter={(value: number) => [`${value} hours`, 'Response Time']}
+                  labelStyle={{ color: '#6b7280' }}
+                  contentStyle={{ 
+                    backgroundColor: 'white',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '0.5rem',
+                  }}
+                />
+                <Bar 
+                  dataKey="hours" 
+                  fill="#8b5cf6"
+                  radius={[4, 4, 0, 0]}
+                  barSize={30}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+      
+      {/* Deal Metrics */}
+      <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+        <h4 className="text-base font-semibold text-gray-900 mb-6 flex items-center">
+          <BarChartIcon className="w-4 h-4 mr-2 text-blue-600" />
+          Deal Metrics
+        </h4>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center p-4 bg-blue-100 rounded-full mb-3">
+              <Star className="w-6 h-6 text-blue-600" />
+            </div>
+            <p className="text-2xl font-bold text-gray-900">{dealMetrics.total}</p>
+            <p className="text-sm text-gray-600">Total Deals</p>
+          </div>
+          
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center p-4 bg-green-100 rounded-full mb-3">
+              <DollarSign className="w-6 h-6 text-green-600" />
+            </div>
+            <p className="text-2xl font-bold text-gray-900">${dealMetrics.totalValue.toLocaleString()}</p>
+            <p className="text-sm text-gray-600">Total Value</p>
+          </div>
+          
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center p-4 bg-purple-100 rounded-full mb-3">
+              <TrendingUp className="w-6 h-6 text-purple-600" />
+            </div>
+            <p className="text-2xl font-bold text-gray-900">{dealMetrics.winRate}%</p>
+            <p className="text-sm text-gray-600">Win Rate</p>
+          </div>
+          
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center p-4 bg-yellow-100 rounded-full mb-3">
+              <Calendar className="w-6 h-6 text-yellow-600" />
+            </div>
+            <p className="text-2xl font-bold text-gray-900">{dealMetrics.conversionTime}d</p>
+            <p className="text-sm text-gray-600">Avg. Conversion</p>
+          </div>
+        </div>
+        
+        <div className="mt-8 pt-6 border-t border-gray-200">
+          <div className="flex justify-between items-center mb-4">
+            <h5 className="text-sm font-medium text-gray-700">Active Deals</h5>
+            <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+              {dealMetrics.active} Active
+            </span>
+          </div>
+          
+          <div className="space-y-3">
+            <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
+              <div className="flex justify-between mb-2">
+                <h6 className="text-sm font-medium text-gray-900">Enterprise Software License</h6>
+                <span className="text-sm font-semibold text-gray-900">$75,000</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-gray-500">Qualification Stage</span>
+                <span className="text-xs px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded-full">
+                  30% Probability
+                </span>
+              </div>
+            </div>
+            
+            <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
+              <div className="flex justify-between mb-2">
+                <h6 className="text-sm font-medium text-gray-900">Cloud Infrastructure Setup</h6>
+                <span className="text-sm font-semibold text-gray-900">$10,000</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-gray-500">Proposal Stage</span>
+                <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full">
+                  65% Probability
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

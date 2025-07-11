@@ -1,7 +1,4 @@
-import React, { useState } from 'react';
-import { useDealStore } from '../store/dealStore';
-import { useContactStore } from '../store/contactStore';
-import { useTheme } from '../contexts/ThemeContext';
+import React, { useState, useMemo } from 'react';
 import { 
   LineChart, 
   Line, 
@@ -17,22 +14,24 @@ import {
   Pie, 
   Cell 
 } from 'recharts';
-import {
-  DollarSign,
-  Target,
-  Users,
-  TrendingUp,
-  TrendingDown,
-  Activity,
+import { 
+  DollarSign, 
+  Target, 
+  Users, 
+  TrendingUp, 
+  Activity, 
+  ZapOff, 
   Calendar,
   ArrowUp,
-  ArrowDown,
   BarChart3,
-  PieChart as PieChartIcon,
-  ZapOff
+  ChevronDown
 } from 'lucide-react';
-import Avatar from './ui/Avatar';
-import { getInitials } from '../utils/avatars';
+import { Deal } from '../types';
+
+interface DealAnalyticsProps {
+  deals: Record<string, Deal>;
+  contacts?: any[];
+}
 
 interface KPIMetric {
   title: string;
@@ -41,7 +40,6 @@ interface KPIMetric {
   changeType: 'increase' | 'decrease';
   icon: React.ComponentType<{ className?: string }>;
   description: string;
-  relatedContacts?: Array<{ id: string; name: string; avatar?: string; }>;
 }
 
 interface PipelineStage {
@@ -51,42 +49,8 @@ interface PipelineStage {
   color: string;
 }
 
-const DealAnalytics: React.FC = () => {
-  const { deals, stageValues } = useDealStore();
-  const { contacts } = useContactStore();
-  const { isDark } = useTheme();
+const DealAnalytics: React.FC<DealAnalyticsProps> = ({ deals, contacts = [] }) => {
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'quarter'>('month');
-
-  // Render avatar stack
-  const renderAvatarStack = (contacts: Array<{ id: string; name: string; avatar?: string }>, maxVisible: number = 3) => {
-    const visibleContacts = contacts.slice(0, maxVisible);
-    const remainingCount = Math.max(0, contacts.length - maxVisible);
-    
-    return (
-      <div className="flex items-center mt-2">
-        <div className="flex -space-x-2">
-          {visibleContacts.map((contact, index) => (
-            <div key={contact.id} className="relative" style={{ zIndex: maxVisible - index }}>
-              <Avatar
-                src={contact.avatar}
-                alt={contact.name}
-                size="sm"
-                fallback={getInitials(contact.name)}
-                className="border-2 border-white dark:border-gray-900"
-              />
-            </div>
-          ))}
-          {remainingCount > 0 && (
-            <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold border-2 border-white dark:border-gray-900 ${
-              isDark ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700'
-            }`}>
-              +{remainingCount}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
 
   // Calculate KPI metrics
   const calculateKPIs = (): KPIMetric[] => {
@@ -97,42 +61,9 @@ const DealAnalytics: React.FC = () => {
     const totalDeals = dealsArray.length;
     const wonDeals = dealsArray.filter(deal => deal.stage === 'closed-won').length;
     const conversionRate = totalDeals > 0 ? (wonDeals / totalDeals) * 100 : 0;
-    const totalContacts = Object.keys(contacts).length || 0;
+    const totalContacts = contacts?.length || 0;
     const avgDealSize = wonDeals > 0 ? totalRevenue / wonDeals : 0;
-
-    // Get representative contacts
-    const representativeContacts = Object.values(contacts).slice(0, 5).map(contact => ({
-      id: contact.id,
-      name: contact.name,
-      avatar: contact.avatar
-    }));
-
-    // Get contacts associated with won deals
-    const wonDealContacts = dealsArray
-      .filter(deal => deal.stage === 'closed-won')
-      .map(deal => {
-        const contact = contacts[deal.contactId];
-        return contact ? {
-          id: contact.id,
-          name: contact.name,
-          avatar: contact.avatar
-        } : null;
-      })
-      .filter(Boolean) as Array<{ id: string; name: string; avatar?: string; }>;
-
-    // Get contacts associated with high-value deals
-    const highValueDealContacts = dealsArray
-      .filter(deal => deal.value > 50000)
-      .map(deal => {
-        const contact = contacts[deal.contactId];
-        return contact ? {
-          id: contact.id,
-          name: contact.name,
-          avatar: contact.avatar
-        } : null;
-      })
-      .filter(Boolean) as Array<{ id: string; name: string; avatar?: string; }>;
-
+    
     return [
       {
         title: 'Total Revenue',
@@ -140,8 +71,7 @@ const DealAnalytics: React.FC = () => {
         change: 12.5,
         changeType: 'increase',
         icon: DollarSign,
-        description: 'Revenue from closed deals',
-        relatedContacts: wonDealContacts
+        description: 'Revenue from closed deals'
       },
       {
         title: 'Conversion Rate',
@@ -149,8 +79,7 @@ const DealAnalytics: React.FC = () => {
         change: 8.2,
         changeType: 'increase',
         icon: Target,
-        description: 'Deals won vs total deals',
-        relatedContacts: wonDealContacts
+        description: 'Deals won vs total deals'
       },
       {
         title: 'Total Contacts',
@@ -158,8 +87,7 @@ const DealAnalytics: React.FC = () => {
         change: 15.3,
         changeType: 'increase',
         icon: Users,
-        description: 'Active contacts in pipeline',
-        relatedContacts: representativeContacts
+        description: 'Active contacts in pipeline'
       },
       {
         title: 'Avg Deal Size',
@@ -167,75 +95,61 @@ const DealAnalytics: React.FC = () => {
         change: -2.1,
         changeType: 'decrease',
         icon: TrendingUp,
-        description: 'Average revenue per deal',
-        relatedContacts: highValueDealContacts
+        description: 'Average revenue per deal'
       }
     ];
   };
 
-  // Calculate deal counts by stage
-  const calculateDealCounts = () => {
+  // Calculate stage data
+  const stageData = useMemo(() => {
     const dealsArray = Object.values(deals);
-    return {
-      qualification: dealsArray.filter(deal => deal.stage === 'qualification').length,
-      proposal: dealsArray.filter(deal => deal.stage === 'proposal').length,
-      negotiation: dealsArray.filter(deal => deal.stage === 'negotiation').length,
-      'closed-won': dealsArray.filter(deal => deal.stage === 'closed-won').length,
-      'closed-lost': dealsArray.filter(deal => deal.stage === 'closed-lost').length
-    };
-  };
+    const stageValues: Record<string, number> = {};
+    const dealCounts: Record<string, number> = {};
+    
+    ['qualification', 'proposal', 'negotiation', 'closed-won', 'closed-lost'].forEach(stage => {
+      const stageDeals = dealsArray.filter(deal => deal.stage === stage);
+      stageValues[stage] = stageDeals.reduce((sum, deal) => sum + deal.value, 0);
+      dealCounts[stage] = stageDeals.length;
+    });
 
-  // Calculate values by status with representative contacts
-  const calculateValuesByStatus = () => {
-    const dealsArray = Object.values(deals);
-    
-    // Get active deals with contacts
-    const activeDealsWithContacts = dealsArray
-      .filter(deal => deal.stage !== 'closed-won' && deal.stage !== 'closed-lost')
-      .map(deal => ({
-        ...deal,
-        contact: contacts[deal.contactId]
-      }))
-      .filter(deal => deal.contact)
-      .slice(0, 5);
-    
-    // Get won deals with contacts
-    const wonDealsWithContacts = dealsArray
-      .filter(deal => deal.stage === 'closed-won')
-      .map(deal => ({
-        ...deal,
-        contact: contacts[deal.contactId]
-      }))
-      .filter(deal => deal.contact)
-      .slice(0, 5);
-    
-    // Get lost deals with contacts
-    const lostDealsWithContacts = dealsArray
-      .filter(deal => deal.stage === 'closed-lost')
-      .map(deal => ({
-        ...deal,
-        contact: contacts[deal.contactId]
-      }))
-      .filter(deal => deal.contact)
-      .slice(0, 5);
-    
-    return {
-      active: dealsArray
-        .filter(deal => deal.stage !== 'closed-won' && deal.stage !== 'closed-lost')
-        .reduce((sum, deal) => sum + deal.value, 0),
-      won: dealsArray
-        .filter(deal => deal.stage === 'closed-won')
-        .reduce((sum, deal) => sum + deal.value, 0),
-      lost: dealsArray
-        .filter(deal => deal.stage === 'closed-lost')
-        .reduce((sum, deal) => sum + deal.value, 0),
-      activeDealsWithContacts,
-      wonDealsWithContacts,
-      lostDealsWithContacts
-    };
-  };
+    return { stageValues, dealCounts };
+  }, [deals]);
 
-  // Generate trend data
+  // Enhanced pipeline stage data with colors
+  const pipelineStageData: PipelineStage[] = [
+    {
+      name: 'Qualification',
+      value: stageData.stageValues.qualification || 0,
+      deals: stageData.dealCounts.qualification || 0,
+      color: '#3B82F6'
+    },
+    {
+      name: 'Proposal',
+      value: stageData.stageValues.proposal || 0,
+      deals: stageData.dealCounts.proposal || 0,
+      color: '#8B5CF6'
+    },
+    {
+      name: 'Negotiation',
+      value: stageData.stageValues.negotiation || 0,
+      deals: stageData.dealCounts.negotiation || 0,
+      color: '#F59E0B'
+    },
+    {
+      name: 'Won',
+      value: stageData.stageValues['closed-won'] || 0,
+      deals: stageData.dealCounts['closed-won'] || 0,
+      color: '#10B981'
+    },
+    {
+      name: 'Lost',
+      value: stageData.stageValues['closed-lost'] || 0,
+      deals: stageData.dealCounts['closed-lost'] || 0,
+      color: '#EF4444'
+    }
+  ];
+
+  // Generate trend data for chart
   const generateTrendData = () => {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
     const totalValue = Object.values(deals).reduce((sum, deal) => sum + deal.value, 0);
@@ -244,60 +158,22 @@ const DealAnalytics: React.FC = () => {
       month,
       revenue: Math.floor(totalValue * (0.7 + Math.random() * 0.6) / 6),
       deals: Math.floor(Object.keys(deals).length * (0.8 + Math.random() * 0.4) / 6),
-      pipeline: Math.floor(valuesByStatus.active * (0.6 + Math.random() * 0.8) / 6)
+      pipeline: Math.floor((stageData.stageValues.qualification + stageData.stageValues.proposal + stageData.stageValues.negotiation) * (0.6 + Math.random() * 0.8) / 6)
     }));
   };
 
-  // Calculate conversion rates
-  const calculateConversionRate = (fromStage: string, toStage: string) => {
-    const dealCounts = calculateDealCounts();
-    const fromCount = dealCounts[fromStage as keyof typeof dealCounts];
-    const toCount = dealCounts[toStage as keyof typeof dealCounts];
-    
-    return fromCount > 0 ? Math.round((toCount / fromCount) * 100) : 0;
+  const trendData = generateTrendData();
+  const kpiMetrics = calculateKPIs();
+
+  // Calculate value by status
+  const valueByStatus = {
+    active: (stageData.stageValues.qualification || 0) + (stageData.stageValues.proposal || 0) + (stageData.stageValues.negotiation || 0),
+    won: stageData.stageValues['closed-won'] || 0,
+    lost: stageData.stageValues['closed-lost'] || 0
   };
 
-  const kpiMetrics = calculateKPIs();
-  const dealCounts = calculateDealCounts();
-  const valuesByStatus = calculateValuesByStatus();
-  const trendData = generateTrendData();
-
-  // Pipeline stage data with colors
-  const pipelineStageData: PipelineStage[] = [
-    {
-      name: 'Qualification',
-      value: stageValues.qualification || 0,
-      deals: dealCounts.qualification,
-      color: '#3B82F6'
-    },
-    {
-      name: 'Proposal',
-      value: stageValues.proposal || 0,
-      deals: dealCounts.proposal,
-      color: '#8B5CF6'
-    },
-    {
-      name: 'Negotiation',
-      value: stageValues.negotiation || 0,
-      deals: dealCounts.negotiation,
-      color: '#F59E0B'
-    },
-    {
-      name: 'Won',
-      value: stageValues['closed-won'] || 0,
-      deals: dealCounts['closed-won'],
-      color: '#10B981'
-    },
-    {
-      name: 'Lost',
-      value: stageValues['closed-lost'] || 0,
-      deals: dealCounts['closed-lost'],
-      color: '#EF4444'
-    }
-  ];
-
-  // Convert to array format for bar charts
-  const stageData = Object.entries(dealCounts).map(([stage, count]) => ({
+  // Convert to array format for charts
+  const stageDataArray = Object.entries(stageData.dealCounts).map(([stage, count]) => ({
     stage: stage === 'closed-won' ? 'Won' : 
            stage === 'closed-lost' ? 'Lost' :
            stage === 'qualification' ? 'Qualified' : 
@@ -305,24 +181,13 @@ const DealAnalytics: React.FC = () => {
     count
   }));
 
-  // Calculate monthly pipeline value
-  const pipelineByMonth: Record<string, number> = {};
-  Object.values(deals).forEach(deal => {
-    if (deal.stage !== 'closed-won' && deal.stage !== 'closed-lost') {
-      const month = deal.dueDate ? 
-        `${deal.dueDate.getFullYear()}-${String(deal.dueDate.getMonth() + 1).padStart(2, '0')}` : 
-        'No date';
-        
-      pipelineByMonth[month] = (pipelineByMonth[month] || 0) + deal.value;
-    }
-  });
-
-  const monthlyData = Object.entries(pipelineByMonth)
-    .sort()
-    .map(([month, value]) => ({
-      month: month === 'No date' ? month : month.split('-')[1],
-      value
-    }));
+  // Calculate conversion rates between stages
+  const calculateConversionRate = (fromStage: string, toStage: string) => {
+    const fromCount = stageData.dealCounts[fromStage as keyof typeof stageData.dealCounts];
+    const toCount = stageData.dealCounts[toStage as keyof typeof stageData.dealCounts];
+    
+    return fromCount > 0 ? Math.round((toCount / fromCount) * 100) : 0;
+  };
 
   const conversionRates = {
     qualToProposal: calculateConversionRate('qualification', 'proposal'),
@@ -331,51 +196,25 @@ const DealAnalytics: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Deal Analytics</h2>
-        
-        {/* Period Selector */}
-        <div className="flex gap-2">
-          {(['week', 'month', 'quarter'] as const).map((period) => (
-            <button
-              key={period}
-              onClick={() => setSelectedPeriod(period)}
-              className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                selectedPeriod === period 
-                  ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
-                  : `${isDark ? 'text-gray-400 hover:bg-gray-700' : 'text-gray-600 hover:bg-gray-100'}`
-              }`}
-            >
-              {period.charAt(0).toUpperCase() + period.slice(1)}
-            </button>
-          ))}
-        </div>
-      </div>
-
+    <div className="space-y-6 mb-8">
       {/* KPI Metrics Dashboard */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {kpiMetrics.map((metric, index) => (
-          <div key={index} className={`relative overflow-hidden ${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-xl p-4`}>
+          <div key={index} className="relative overflow-hidden bg-white rounded-xl shadow-sm border border-gray-200 p-4">
             <div className="flex items-center justify-between mb-2">
-              <metric.icon className={`h-8 w-8 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
-              <div className={`text-xs px-2 py-1 rounded-full ${
+              <metric.icon className="h-8 w-8 text-blue-600" />
+              <span className={`text-xs px-2 py-1 rounded-full font-medium ${
                 metric.changeType === 'increase' 
-                  ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
-                  : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                  ? 'bg-green-100 text-green-800' 
+                  : 'bg-red-100 text-red-800'
               }`}>
                 {metric.changeType === 'increase' ? '+' : ''}{metric.change}%
-              </div>
+              </span>
             </div>
             <div className="space-y-1">
-              <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{metric.value}</p>
-              <p className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{metric.title}</p>
-              <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{metric.description}</p>
-              
-              {/* Avatar stack for related contacts */}
-              {metric.relatedContacts && metric.relatedContacts.length > 0 && (
-                renderAvatarStack(metric.relatedContacts)
-              )}
+              <p className="text-2xl font-bold text-gray-900">{metric.value}</p>
+              <p className="text-sm font-medium text-gray-600">{metric.title}</p>
+              <p className="text-xs text-gray-500">{metric.description}</p>
             </div>
           </div>
         ))}
@@ -383,295 +222,245 @@ const DealAnalytics: React.FC = () => {
 
       {/* Summary Cards with Gradients */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className={`${isDark ? 'bg-gradient-to-r from-blue-500/20 to-blue-600/20 border-blue-500/30' : 'bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200'} border rounded-lg p-4`}>
+        <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
           <div className="flex justify-between items-start">
             <div>
-              <p className={`text-xs font-medium ${isDark ? 'text-blue-300' : 'text-blue-800'}`}>Active Pipeline</p>
-              <p className={`text-xl font-semibold mt-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>${Math.round(valuesByStatus.active / 1000)}k</p>
+              <p className="text-xs font-medium text-blue-800">Active Pipeline</p>
+              <p className="text-xl font-semibold mt-1">${Math.round(valueByStatus.active / 1000)}k</p>
             </div>
-            <div className={`p-2 rounded-full ${isDark ? 'bg-blue-500/30' : 'bg-blue-200/50'}`}>
-              <Activity className={`h-5 w-5 ${isDark ? 'text-blue-300' : 'text-blue-700'}`} />
+            <div className="p-2 rounded-full bg-blue-200/50">
+              <Activity className="h-5 w-5 text-blue-700" />
             </div>
           </div>
-          
-          {/* Avatar stack for active deals */}
-          {valuesByStatus.activeDealsWithContacts && valuesByStatus.activeDealsWithContacts.length > 0 && (
-            renderAvatarStack(valuesByStatus.activeDealsWithContacts.map(deal => deal.contact))
-          )}
         </div>
         
-        <div className={`${isDark ? 'bg-gradient-to-r from-green-500/20 to-green-600/20 border-green-500/30' : 'bg-gradient-to-r from-green-50 to-green-100 border-green-200'} border rounded-lg p-4`}>
+        <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
           <div className="flex justify-between items-start">
             <div>
-              <p className={`text-xs font-medium ${isDark ? 'text-green-300' : 'text-green-800'}`}>Won Deals (YTD)</p>
-              <p className={`text-xl font-semibold mt-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>${Math.round(valuesByStatus.won / 1000)}k</p>
+              <p className="text-xs font-medium text-green-800">Won Deals (YTD)</p>
+              <p className="text-xl font-semibold mt-1">${Math.round(valueByStatus.won / 1000)}k</p>
             </div>
-            <div className={`p-2 rounded-full ${isDark ? 'bg-green-500/30' : 'bg-green-200/50'}`}>
-              <TrendingUp className={`h-5 w-5 ${isDark ? 'text-green-300' : 'text-green-700'}`} />
+            <div className="p-2 rounded-full bg-green-200/50">
+              <TrendingUp className="h-5 w-5 text-green-700" />
             </div>
           </div>
-          
-          {/* Avatar stack for won deals */}
-          {valuesByStatus.wonDealsWithContacts && valuesByStatus.wonDealsWithContacts.length > 0 && (
-            renderAvatarStack(valuesByStatus.wonDealsWithContacts.map(deal => deal.contact))
-          )}
         </div>
         
-        <div className={`${isDark ? 'bg-gradient-to-r from-red-500/20 to-red-600/20 border-red-500/30' : 'bg-gradient-to-r from-red-50 to-red-100 border-red-200'} border rounded-lg p-4`}>
+        <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-4 border border-red-200">
           <div className="flex justify-between items-start">
             <div>
-              <p className={`text-xs font-medium ${isDark ? 'text-red-300' : 'text-red-800'}`}>Lost Deals (YTD)</p>
-              <p className={`text-xl font-semibold mt-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>${Math.round(valuesByStatus.lost / 1000)}k</p>
+              <p className="text-xs font-medium text-red-800">Lost Deals (YTD)</p>
+              <p className="text-xl font-semibold mt-1">${Math.round(valueByStatus.lost / 1000)}k</p>
             </div>
-            <div className={`p-2 rounded-full ${isDark ? 'bg-red-500/30' : 'bg-red-200/50'}`}>
-              <ZapOff className={`h-5 w-5 ${isDark ? 'text-red-300' : 'text-red-700'}`} />
+            <div className="p-2 rounded-full bg-red-200/50">
+              <ZapOff className="h-5 w-5 text-red-700" />
             </div>
           </div>
-          
-          {/* Avatar stack for lost deals */}
-          {valuesByStatus.lostDealsWithContacts && valuesByStatus.lostDealsWithContacts.length > 0 && (
-            renderAvatarStack(valuesByStatus.lostDealsWithContacts.map(deal => deal.contact))
-          )}
         </div>
       </div>
 
-      {/* Charts Grid */}
+      {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Revenue Performance Trend */}
-        <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-xl shadow-sm`}>
-          <div className="p-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-            <h3 className={`text-base font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Revenue Performance Trend</h3>
-            <div className={`text-xs px-2 py-1 rounded-full ${isDark ? 'bg-white/10 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>
-              {selectedPeriod} view
+        {/* Revenue Trend Line Chart */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-base font-semibold text-gray-900">Revenue Performance Trend</h3>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setSelectedPeriod('week')}
+                className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                  selectedPeriod === 'week' 
+                    ? 'bg-blue-100 text-blue-700' 
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                Week
+              </button>
+              <button
+                onClick={() => setSelectedPeriod('month')}
+                className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                  selectedPeriod === 'month' 
+                    ? 'bg-blue-100 text-blue-700' 
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                Month
+              </button>
+              <button
+                onClick={() => setSelectedPeriod('quarter')}
+                className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                  selectedPeriod === 'quarter' 
+                    ? 'bg-blue-100 text-blue-700' 
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                Quarter
+              </button>
             </div>
           </div>
-          <div className="p-4">
-            <ResponsiveContainer width="100%" height={320}>
-              <LineChart data={trendData}>
-                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "rgba(255,255,255,0.1)" : "#f0f0f0"} />
-                <XAxis 
-                  dataKey="month" 
-                  tick={{ fontSize: 12, fill: isDark ? '#9CA3AF' : '#6B7280' }}
-                  axisLine={{ stroke: isDark ? 'rgba(255,255,255,0.2)' : '#e0e0e0' }}
-                />
-                <YAxis 
-                  tick={{ fontSize: 12, fill: isDark ? '#9CA3AF' : '#6B7280' }}
-                  axisLine={{ stroke: isDark ? 'rgba(255,255,255,0.2)' : '#e0e0e0' }}
-                  tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                />
-                <Tooltip 
-                  formatter={(value: any, name: string) => [
-                    name === 'revenue' ? `$${(value / 1000).toFixed(1)}k` : value,
-                    name === 'revenue' ? 'Revenue' : name === 'deals' ? 'Deals Closed' : 'Pipeline Value'
-                  ]}
-                  labelStyle={{ color: isDark ? '#F3F4F6' : '#374151' }}
-                  contentStyle={{ 
-                    backgroundColor: isDark ? 'rgba(17, 24, 39, 0.9)' : '#ffffff',
-                    border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : '#e5e7eb'}`,
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                  }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="revenue" 
-                  stroke="#3B82F6" 
-                  strokeWidth={3}
-                  dot={{ fill: '#3B82F6', strokeWidth: 2, r: 5 }}
-                  activeDot={{ r: 7, stroke: '#3B82F6', strokeWidth: 2, fill: isDark ? '#111827' : '#ffffff' }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="pipeline" 
-                  stroke="#8B5CF6" 
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  dot={{ fill: '#8B5CF6', strokeWidth: 2, r: 4 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          <ResponsiveContainer width="100%" height={280}>
+            <LineChart data={trendData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <XAxis 
+                dataKey="month" 
+                tick={{ fontSize: 12 }}
+                axisLine={{ stroke: '#e0e0e0' }}
+              />
+              <YAxis 
+                tick={{ fontSize: 12 }}
+                axisLine={{ stroke: '#e0e0e0' }}
+                tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+              />
+              <Tooltip 
+                formatter={(value: any, name: string) => [
+                  name === 'revenue' ? `$${(value / 1000).toFixed(1)}k` : value,
+                  name === 'revenue' ? 'Revenue' : name === 'deals' ? 'Deals Closed' : 'Pipeline Value'
+                ]}
+                labelStyle={{ color: '#374151' }}
+                contentStyle={{ 
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="revenue" 
+                stroke="#3B82F6" 
+                strokeWidth={3}
+                dot={{ fill: '#3B82F6', strokeWidth: 2, r: 5 }}
+                activeDot={{ r: 7, stroke: '#3B82F6', strokeWidth: 2, fill: '#ffffff' }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="pipeline" 
+                stroke="#8B5CF6" 
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                dot={{ fill: '#8B5CF6', strokeWidth: 2, r: 4 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
 
-        {/* Pipeline Distribution */}
-        <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-xl shadow-sm`}>
-          <div className="p-4 border-b border-gray-200 dark:border-white/10">
-            <h3 className={`text-base font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Pipeline Distribution</h3>
-          </div>
-          <div className="p-4">
-            <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie
-                  data={pipelineStageData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {pipelineStageData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  formatter={(value: any) => [`$${(value / 1000).toFixed(1)}k`, 'Value']} 
-                  contentStyle={{
-                    backgroundColor: isDark ? 'rgba(17, 24, 39, 0.9)' : '#ffffff',
-                    border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : '#e5e7eb'}`,
-                    borderRadius: '8px'
-                  }}
-                />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+        {/* Pipeline Distribution Pie Chart */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h3 className="text-base font-semibold text-gray-900 mb-4">Pipeline Distribution</h3>
+          <ResponsiveContainer width="100%" height={280}>
+            <PieChart>
+              <Pie
+                data={pipelineStageData}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={120}
+                paddingAngle={5}
+                dataKey="value"
+              >
+                {pipelineStageData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value: any) => [`$${(value / 1000).toFixed(1)}k`, 'Value']} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
+      </div>
 
+      {/* Bottom Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Stage Performance */}
-        <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-xl shadow-sm`}>
-          <div className="p-4 border-b border-gray-200 dark:border-white/10">
-            <h3 className={`text-base font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Stage Performance</h3>
-          </div>
-          <div className="p-4">
-            <div className="space-y-4">
-              {pipelineStageData.map((stage, index) => (
-                <div key={index} className={`flex items-center justify-between p-3 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg`}>
-                  <div className="flex items-center gap-3">
-                    <div 
-                      className="w-4 h-4 rounded-full" 
-                      style={{ backgroundColor: stage.color }}
-                    />
-                    <span className={`font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>{stage.name}</span>
-                  </div>
-                  <div className="text-right">
-                    <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>${(stage.value / 1000).toFixed(1)}k</p>
-                    <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{stage.deals} deals</p>
-                  </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h3 className="text-base font-semibold text-gray-900 mb-4">Stage Performance</h3>
+          <div className="space-y-4">
+            {pipelineStageData.map((stage, index) => (
+              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-4 h-4 rounded-full" 
+                    style={{ backgroundColor: stage.color }}
+                  />
+                  <span className="font-medium text-gray-700">{stage.name}</span>
                 </div>
-              ))}
-            </div>
-
-            {/* Conversion Rate Metrics */}
-            <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-              <div className={`border ${isDark ? 'border-indigo-500/30 bg-indigo-500/20' : 'border-indigo-100 bg-indigo-50'} rounded-lg p-2`}>
-                <p className={`text-xs ${isDark ? 'text-indigo-300' : 'text-indigo-600'} mb-1`}>Qual → Proposal</p>
-                <p className={`text-lg font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{conversionRates.qualToProposal}%</p>
+                <div className="text-right">
+                  <p className="font-semibold text-gray-900">${(stage.value / 1000).toFixed(1)}k</p>
+                  <p className="text-sm text-gray-500">{stage.deals} deals</p>
+                </div>
               </div>
-              <div className={`border ${isDark ? 'border-indigo-500/30 bg-indigo-500/20' : 'border-indigo-100 bg-indigo-50'} rounded-lg p-2`}>
-                <p className={`text-xs ${isDark ? 'text-indigo-300' : 'text-indigo-600'} mb-1`}>Prop → Negotiation</p>
-                <p className={`text-lg font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{conversionRates.proposalToNegotiation}%</p>
-              </div>
-              <div className={`border ${isDark ? 'border-indigo-500/30 bg-indigo-500/20' : 'border-indigo-100 bg-indigo-50'} rounded-lg p-2`}>
-                <p className={`text-xs ${isDark ? 'text-indigo-300' : 'text-indigo-600'} mb-1`}>Neg → Won</p>
-                <p className={`text-lg font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{conversionRates.negotiationToWon}%</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
         {/* Deal Distribution Bar Chart */}
-        <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-xl shadow-sm`}>
-          <div className="p-4 border-b border-gray-200 dark:border-white/10">
-            <h3 className={`text-base font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Deal Distribution by Stage</h3>
-          </div>
-          <div className="p-4">
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={stageData} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={isDark ? "rgba(255,255,255,0.1)" : "#f0f0f0"} />
-                  <XAxis type="number" tick={{ fontSize: 12, fill: isDark ? '#9CA3AF' : '#6B7280' }} />
-                  <YAxis 
-                    dataKey="stage" 
-                    type="category" 
-                    tick={{ fontSize: 12, fill: isDark ? '#9CA3AF' : '#6B7280' }}
-                  />
-                  <Tooltip 
-                    formatter={(value: any) => [`${value} deals`, 'Count']}
-                    contentStyle={{ 
-                      borderRadius: '6px',
-                      backgroundColor: isDark ? 'rgba(17, 24, 39, 0.9)' : '#ffffff',
-                      border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : '#e5e7eb'}`
-                    }}
-                  />
-                  <Bar 
-                    dataKey="count" 
-                    fill="#4f46e5"
-                    radius={[0, 4, 4, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h3 className="text-base font-semibold text-gray-900 mb-4">Deal Distribution</h3>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={stageDataArray} layout="vertical">
+              <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+              <XAxis type="number" />
+              <YAxis dataKey="stage" type="category" />
+              <Tooltip 
+                formatter={(value: any) => [`${value} deals`, 'Count']}
+                contentStyle={{ borderRadius: '6px' }}
+              />
+              <Bar 
+                dataKey="count" 
+                fill="#4f46e5"
+                radius={[0, 4, 4, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
-            {/* Quick Stats Summary */}
-            <div className="mt-4 flex justify-around">
-              <div className="text-center">
-                <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} mb-1`}>Top Deal</p>
-                <div className="flex items-center justify-center">
-                  <DollarSign size={16} className={isDark ? 'text-green-400' : 'text-green-600'} />
-                  <span className={`text-base font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>$95k</span>
+        {/* Conversion Rates & Quick Stats */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h3 className="text-base font-semibold text-gray-900 mb-4">Conversion Rates</h3>
+          <div className="grid grid-cols-1 gap-2 mb-4">
+            <div className="border border-indigo-100 bg-indigo-50 rounded-lg p-3 text-center">
+              <p className="text-xs text-indigo-600 mb-1">Qual → Proposal</p>
+              <p className="text-lg font-medium">{conversionRates.qualToProposal}%</p>
+            </div>
+            <div className="border border-indigo-100 bg-indigo-50 rounded-lg p-3 text-center">
+              <p className="text-xs text-indigo-600 mb-1">Prop → Negotiation</p>
+              <p className="text-lg font-medium">{conversionRates.proposalToNegotiation}%</p>
+            </div>
+            <div className="border border-indigo-100 bg-indigo-50 rounded-lg p-3 text-center">
+              <p className="text-xs text-indigo-600 mb-1">Neg → Won</p>
+              <p className="text-lg font-medium">{conversionRates.negotiationToWon}%</p>
+            </div>
+          </div>
+          
+          {/* Quick Stats Summary */}
+          <div className="border-t border-gray-200 pt-4">
+            <h4 className="text-sm font-medium text-gray-700 mb-3">Quick Stats</h4>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-gray-500">Top Deal</span>
+                <div className="flex items-center">
+                  <DollarSign size={16} className="text-green-600" />
+                  <span className="text-sm font-medium">$120k</span>
                 </div>
               </div>
-              <div className="text-center">
-                <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} mb-1`}>Avg Time to Close</p>
-                <div className="flex items-center justify-center">
-                  <Calendar size={16} className={isDark ? 'text-blue-400' : 'text-blue-600'} />
-                  <span className={`text-base font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>32 days</span>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-gray-500">Avg Time to Close</span>
+                <div className="flex items-center">
+                  <Calendar size={16} className="text-blue-600" />
+                  <span className="text-sm font-medium">32 days</span>
                 </div>
               </div>
-              <div className="text-center">
-                <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} mb-1`}>Win Rate</p>
-                <div className="flex items-center justify-center">
-                  <ArrowUp size={16} className={isDark ? 'text-green-400' : 'text-green-600'} />
-                  <span className={`text-base font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>24%</span>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-gray-500">Win Rate</span>
+                <div className="flex items-center">
+                  <ArrowUp size={16} className="text-green-600" />
+                  <span className="text-sm font-medium">{((stageData.dealCounts['closed-won'] || 0) / Object.values(stageData.dealCounts).reduce((a, b) => a + b, 0) * 100).toFixed(0)}%</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Monthly Pipeline Value */}
-      {monthlyData.length > 0 && (
-        <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-xl shadow-sm`}>
-          <div className="p-4 border-b border-gray-200 dark:border-white/10">
-            <h3 className={`text-base font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Pipeline Value by Month</h3>
-          </div>
-          <div className="p-4">
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={monthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "rgba(255,255,255,0.1)" : "#f0f0f0"} />
-                  <XAxis 
-                    dataKey="month" 
-                    tick={{ fontSize: 12, fill: isDark ? '#9CA3AF' : '#6B7280' }}
-                  />
-                  <YAxis 
-                    tickFormatter={(value) => `$${value / 1000}k`}
-                    tick={{ fontSize: 12, fill: isDark ? '#9CA3AF' : '#6B7280' }}
-                  />
-                  <Tooltip 
-                    formatter={(value: any) => [`$${(value / 1000).toFixed(1)}k`, 'Pipeline Value']}
-                    contentStyle={{ 
-                      borderRadius: '6px',
-                      backgroundColor: isDark ? 'rgba(17, 24, 39, 0.9)' : '#ffffff',
-                      border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : '#e5e7eb'}`
-                    }}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="value" 
-                    stroke="#4f46e5" 
-                    strokeWidth={2}
-                    dot={{ stroke: '#312e81', strokeWidth: 2 }}
-                    activeDot={{ r: 6 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -24,7 +24,20 @@ import {
   Plus,
   Brain,
   Target,
-  Phone
+  Phone,
+  MessageSquare,
+  Wand2,
+  Database,
+  Globe,
+  ArrowRight,
+  Activity,
+  CheckCircle,
+  AlertCircle,
+  Sparkles,
+  Linkedin,
+  Twitter,
+  Facebook,
+  Instagram
 } from 'lucide-react';
 
 interface QuickAIButtonProps {
@@ -75,7 +88,16 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   Plus,
   Brain,
   Target,
-  Phone
+  Phone,
+  MessageSquare,
+  Wand2,
+  Database,
+  Globe,
+  ArrowRight,
+  Activity,
+  CheckCircle,
+  AlertCircle,
+  Sparkles
 };
 
 const toolMapping: Record<string, string> = {
