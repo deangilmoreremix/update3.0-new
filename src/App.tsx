@@ -9,6 +9,15 @@ import ContactDetail from './pages/ContactDetail';
 import AIToolsPage from './pages/AITools';
 import TasksPage from './pages/Tasks';
 import SettingsPage from './pages/Settings';
+import AppointmentsPage from './pages/Appointments';
+import VideoEmailPage from './pages/VideoEmail';
+import TextMessagesPage from './pages/TextMessages';
+import SalesToolsPage from './pages/SalesTools';
+import LeadAutomationPage from './pages/LeadAutomation';
+import CircleProspectingPage from './pages/CircleProspecting';
+import PhoneSystemPage from './pages/PhoneSystem';
+import InvoicingPage from './pages/Invoicing';
+import FormsAndSurveysPage from './pages/FormsAndSurveys';
 const VideoCallOverlay = React.lazy(() => import('./components/VideoCallOverlay'));
 const VideoCallPreviewWidget = React.lazy(() => import('./components/VideoCallPreviewWidget'));
 import DevicePermissionChecker from './components/DevicePermissionChecker';
@@ -62,8 +71,44 @@ function App() {
                         <Route path="/ai-tools" element={<AIToolsPage />} />
                         <Route path="/ai-goals" element={<AIToolsPage />} />
                         <Route path="/tasks" element={<TasksPage />} />
-                        <Route path="/appointments" element={<TasksPage />} />
                         <Route path="/settings" element={<SettingsPage />} />
+                        
+                        {/* Sales Tools Routes */}
+                        <Route path="/sales-tools" element={<SalesToolsPage />} />
+                        <Route path="/lead-automation" element={<LeadAutomationPage />} />
+                        <Route path="/circle-prospecting" element={<CircleProspectingPage />} />
+                        <Route path="/appointments" element={<AppointmentsPage />} />
+                        <Route path="/phone-system" element={<PhoneSystemPage />} />
+                        <Route path="/invoicing" element={<InvoicingPage />} />
+                        
+                        {/* Communication Tools Routes */}
+                        <Route path="/video-email" element={<VideoEmailPage />} />
+                        <Route path="/text-messages" element={<TextMessagesPage />} />
+                        <Route path="/email-composer" element={<AIToolsPage />} />
+                        <Route path="/campaigns" element={<AIToolsPage />} />
+                        
+                        {/* Content & Forms Routes */}
+                        <Route path="/forms" element={<FormsAndSurveysPage />} />
+                        <Route path="/content-library" element={<AIToolsPage />} />
+                        <Route path="/voice-profiles" element={<AIToolsPage />} />
+                        <Route path="/business-analysis" element={<AIToolsPage />} />
+                        <Route path="/image-generator" element={<AIToolsPage />} />
+                        <Route path="/ai-model-demo" element={<AIToolsPage />} />
+                        
+                        {/* Task Management Routes */}
+                        <Route path="/task-automation" element={<TasksPage />} />
+                        <Route path="/project-tracker" element={<TasksPage />} />
+                        <Route path="/time-tracking" element={<TasksPage />} />
+                        <Route path="/workflow-builder" element={<TasksPage />} />
+                        <Route path="/deadline-manager" element={<TasksPage />} />
+                        
+                        {/* Sales Analytics Routes */}
+                        <Route path="/sales-analytics" element={<AIToolsPage />} />
+                        <Route path="/quote-builder" element={<AIToolsPage />} />
+                        <Route path="/commission-tracker" element={<AIToolsPage />} />
+                        <Route path="/follow-up-reminders" element={<AIToolsPage />} />
+                        <Route path="/territory-management" element={<AIToolsPage />} />
+                        
                         {/* Fallback to dashboard for unknown routes */}
                         <Route path="*" element={<DashboardPage />} />
                       </Routes>
