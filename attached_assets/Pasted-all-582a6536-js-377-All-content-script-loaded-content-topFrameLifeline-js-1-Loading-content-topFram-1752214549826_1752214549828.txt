@@ -1,0 +1,110 @@
+all.582a6536.js:377 All: content script loaded
+content_topFrameLifeline.js:1 Loading content_topFrameLifeline.js
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: CONNECT
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: MESSAGE Object
+_app-b467532202cb6abe.js:38 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+index.js:1410 [HMR] Waiting for update signal from WDS...
+_app-b467532202cb6abe.js:38 [LaunchDarkly] LaunchDarkly client initialized
+Smart-CRM:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+stallwart.build.js:1 stallwart: failed ping 1
+_app-b467532202cb6abe.js:38 Adding extension: ZIP Extractor Object
+stallwart.build.js:1 stallwart: failed ping 2
+stallwart.build.js:1 stallwart: failed ping 3
+stallwart.build.js:1 stallwart: failed ping 4
+stallwart.build.js:1 stallwart: failed ping 5
+stallwart.build.js:1 stallwart: session stalled
+framework-b81ecea7907eb7aa.js:1 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_ @ framework-b81ecea7907eb7aa.js:1
+framework-b81ecea7907eb7aa.js:1 Unrecognized feature: 'battery'.
+_ @ framework-b81ecea7907eb7aa.js:1
+framework-b81ecea7907eb7aa.js:1 Unrecognized feature: 'layout-animations'.
+_ @ framework-b81ecea7907eb7aa.js:1
+framework-b81ecea7907eb7aa.js:1 Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-b81ecea7907eb7aa.js:1
+framework-b81ecea7907eb7aa.js:1 Unrecognized feature: 'navigation-override'.
+_ @ framework-b81ecea7907eb7aa.js:1
+framework-b81ecea7907eb7aa.js:1 Unrecognized feature: 'oversized-images'.
+_ @ framework-b81ecea7907eb7aa.js:1
+framework-b81ecea7907eb7aa.js:1 Unrecognized feature: 'publickey-credentials'.
+_ @ framework-b81ecea7907eb7aa.js:1
+framework-b81ecea7907eb7aa.js:1 Unrecognized feature: 'unoptimized-images'.
+_ @ framework-b81ecea7907eb7aa.js:1
+framework-b81ecea7907eb7aa.js:1 Unrecognized feature: 'unsized-media'.
+_ @ framework-b81ecea7907eb7aa.js:1
+framework-b81ecea7907eb7aa.js:1 Unrecognized feature: 'pointer-lock'.
+_ @ framework-b81ecea7907eb7aa.js:1
+framework-b81ecea7907eb7aa.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-b81ecea7907eb7aa.js:1
+framework-b81ecea7907eb7aa.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-b81ecea7907eb7aa.js:1
+_app-b467532202cb6abe.js:38 Adding extension: Prettier - Code Formatter Object
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: TIMEOUT
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: CONNECT
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: MESSAGE Object
+framework-b81ecea7907eb7aa.js:1 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_ @ framework-b81ecea7907eb7aa.js:1
+analytics.google.com/g/collect?v=2&tid=G-MPJY3F1YEL&gtm=45je57a0h2v9135634466za200&_p=1752214195406&gcd=13l3l3l3l2l1&npa=0&dma=0&tag_exp=101509157~103116026~103200004~103233427~103351869~103351871~104684208~104684211~104909302~104909304~104935091~104935093&ul=en-us&sr=1920x1080&cid=1371589600.1741904437&ecid=707616381&ir=1&uaa=x86&uab=64&uafvl=Not)A%253BBrand%3B8.0.0.0%7CChromium%3B138.0.7204.93%7CGoogle%2520Chrome%3B138.0.7204.93&uamb=0&uam=&uap=macOS&uapv=15.5.0&uaw=0&are=1&frm=0&pscdl=noapi&_eu=EBAIAAQ&_s=5&dl=https%3A%2F%2Freplit.com%2F%40deanvideoremixi%2FSmart-CRM&dp=%2F%40deanvideoremixi%2FSmart-CRM&dt=replEnvironmentDesktop&sid=1752205394&sct=181&seg=1&_tu=wAQ&en=Workspace%20Port%20Opened&_ee=1&ep.event_category=All&ep.value=0&_et=9803&tfd=69161:1  Failed to load resource: net::ERR_CONNECTION_CLOSED
+2e0bfc020b13003a55f30f6e9704acc0:1  Failed to load resource: the server responded with a status of 404 ()
+2e0bfc020b13003a55f30f6e9704acc0:1  Failed to load resource: the server responded with a status of 404 ()
+2e0bfc020b13003a55f30f6e9704acc0:1  Failed to load resource: the server responded with a status of 404 ()
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: TIMEOUT
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: CONNECT
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: MESSAGE Object
+2e0bfc020b13003a55f30f6e9704acc0:1  Failed to load resource: the server responded with a status of 404 ()
+framework-b81ecea7907eb7aa.js:1 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_ @ framework-b81ecea7907eb7aa.js:1
+workspace_iframe.html:32 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+Console.js:61 Supabase is not properly configured. Some features may not work.
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 Supabase not configured properly. Using fallback AI model configurations.
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 Module "events" has been externalized for browser compatibility. Cannot access "events.EventEmitter" in client code. See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 Module "events" has been externalized for browser compatibility. Cannot access "events.EventEmitter" in client code. See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 Module "util" has been externalized for browser compatibility. Cannot access "util.debuglog" in client code. See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 Module "util" has been externalized for browser compatibility. Cannot access "util.inspect" in client code. See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 Cleaning up video call...
+Console.js:61 [INFO] Contacts fetched successfully 
+2e0bfc020b13003a55f30f6e9704acc0:1  Failed to load resource: the server responded with a status of 404 ()
+2e0bfc020b13003a55f30f6e9704acc0:1  Failed to load resource: the server responded with a status of 404 ()
+2e0bfc020b13003a55f30f6e9704acc0:1  Failed to load resource: the server responded with a status of 404 ()
+2e0bfc020b13003a55f30f6e9704acc0:1  Failed to load resource: the server responded with a status of 404 ()
+2e0bfc020b13003a55f30f6e9704acc0:1  Failed to load resource: the server responded with a status of 404 ()
+2e0bfc020b13003a55f30f6e9704acc0:1  Failed to load resource: the server responded with a status of 404 ()
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: TIMEOUT
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: CONNECT
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: MESSAGE Object
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: TIMEOUT
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: CONNECT
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: MESSAGE Object
+2e0bfc020b13003a55f30f6e9704acc0:1  Failed to load resource: the server responded with a status of 404 ()
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: TIMEOUT
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: CONNECT
+content_topFrameLifeline.js:1 CONTENT <-> SERVICE LIFELINE: MESSAGE Object

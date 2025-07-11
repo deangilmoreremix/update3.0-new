@@ -59,6 +59,24 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenPipelineModal }) => {
 
   const counters = getCounters();
 
+  // Update active tab based on current route
+  useEffect(() => {
+    const path = location.pathname;
+    console.log('Current path:', path);
+    const pathToTab = {
+      '/dashboard': 'dashboard',
+      '/contacts': 'contacts',
+      '/ai-goals': 'ai-goals',
+      '/ai-tools': 'ai-tools',
+      '/appointments': 'appointments',
+      '/pipeline': 'pipeline'
+    };
+    
+    const currentTab = pathToTab[path] || 'dashboard';
+    console.log('Setting active tab to:', currentTab);
+    setActiveTab(currentTab);
+  }, [location.pathname]);
+
   // Tasks dropdown tools (defined early to use in navigation)
   const taskTools = [
     { name: 'Task Management', tool: 'task-management', icon: CheckSquare },
@@ -74,13 +92,12 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenPipelineModal }) => {
   };
 
   const handleNavigation = (route: string, tabName: string) => {
-    console.log('Navigation clicked:', { route, tabName });
+    console.log('Navigating to:', route);
     try {
       navigate(route);
       setActiveTab(tabName);
       setActiveDropdown(null);
       setIsMobileMenuOpen(false);
-      console.log('Navigation successful to:', route);
     } catch (error) {
       console.error('Navigation error:', error);
     }
@@ -410,7 +427,6 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenPipelineModal }) => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        console.log('Tab clicked:', tab.id, tab.label);
                         tab.action();
                       }}
                       className={`
