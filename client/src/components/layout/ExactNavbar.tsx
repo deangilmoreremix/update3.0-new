@@ -102,7 +102,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenPipelineModal }) => {
     else if (toolName === 'commission-tracker') navigate('/commission-tracker');
     else if (toolName === 'follow-up-reminders') navigate('/follow-up-reminders');
     else if (toolName === 'territory-management') navigate('/territory-management');
-    else if (toolName === 'task-management') navigate('/tasks');
+    else if (toolName === 'task-management') navigate('/task-management');
     else if (toolName === 'task-automation') navigate('/task-automation');
     else if (toolName === 'project-tracker') navigate('/project-tracker');
     else if (toolName === 'time-tracking') navigate('/time-tracking');
