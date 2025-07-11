@@ -435,11 +435,13 @@ function App() {
                       {/* Unauthorized route */}
                       <Route path="/unauthorized" element={<UnauthorizedPage />} />
                     </Routes>
-              </Router>
-            </AIToolsProvider>
-          </EnhancedHelpProvider>
-        </RoleProvider>
-      </TenantProvider>
+                  </NavigationProvider>
+                </Router>
+              </AIToolsProvider>
+            </EnhancedHelpProvider>
+          </RoleProvider>
+        </TenantProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
