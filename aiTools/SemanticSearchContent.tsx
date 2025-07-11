@@ -1,15 +1,73 @@
 import React, { useState, useEffect } from 'react';
 import { useOpenAIEmbeddings } from '../../services/openaiEmbeddingsService';
 import { useDealStore } from '../../store/dealStore';
-import { useContactStore } from '../../store/contactStore';
 import AIToolContent from '../shared/AIToolContent';
 import { Search, Database, RefreshCw, ChevronRight } from 'lucide-react';
 import { Contact, Deal } from '../../types';
 
+// Mock contacts for the demo
+const mockContacts: Contact[] = [
+  {
+    id: '1',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    phone: '(555) 123-4567',
+    company: 'Acme Inc',
+    position: 'CTO',
+    status: 'customer',
+    score: 85,
+    lastContact: new Date('2023-06-15'),
+    notes: 'Interested in enterprise plan. Has concerns about implementation timeline.',
+    industry: 'Technology',
+    location: 'San Francisco, CA'
+  },
+  {
+    id: '2',
+    name: 'Jane Smith',
+    email: 'jane.smith@globex.com',
+    phone: '(555) 987-6543',
+    company: 'Globex Corp',
+    position: 'Marketing Director',
+    status: 'lead',
+    score: 65,
+    lastContact: new Date('2023-05-28'),
+    notes: 'Looking for marketing automation tools. Complained about current vendor being too expensive.',
+    industry: 'Manufacturing',
+    location: 'Chicago, IL'
+  },
+  {
+    id: '3',
+    name: 'Robert Johnson',
+    email: 'robert@initech.com',
+    phone: '(555) 456-7890',
+    company: 'Initech',
+    position: 'CEO',
+    status: 'prospect',
+    score: 75,
+    lastContact: new Date('2023-06-02'),
+    notes: 'Interested in comprehensive CRM solution. Budget concerns, but decision maker.',
+    industry: 'Financial Services',
+    location: 'New York, NY'
+  },
+  {
+    id: '4',
+    name: 'Sarah Williams',
+    email: 'sarah@umbrella.org',
+    phone: '(555) 234-5678',
+    company: 'Umbrella Corp',
+    position: 'Procurement Manager',
+    status: 'customer',
+    score: 90,
+    lastContact: new Date('2023-06-10'),
+    notes: 'Happy with our service. Looking to expand usage to other departments.',
+    industry: 'Healthcare',
+    location: 'Boston, MA'
+  }
+];
+
 const SemanticSearchContent: React.FC = () => {
   const embeddings = useOpenAIEmbeddings();
   const { deals } = useDealStore();
-  const { contacts } = useContactStore();
   
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -37,8 +95,7 @@ const SemanticSearchContent: React.FC = () => {
     
     try {
       // Generate embeddings for contacts
-      const contactsArray = Object.values(contacts);
-      const contactEmbs = await embeddings.createContactEmbeddings(contactsArray);
+      const contactEmbs = await embeddings.createContactEmbeddings(mockContacts);
       setContactEmbeddings(contactEmbs);
       
       // Generate embeddings for deals
@@ -80,7 +137,7 @@ const SemanticSearchContent: React.FC = () => {
       
       // Search contacts if selected
       if (searchType === 'all' || searchType === 'contacts') {
-        const contactsById = Object.values(contacts).reduce((acc, contact) => {
+        const contactsById = mockContacts.reduce((acc, contact) => {
           acc[contact.id] = contact;
           return acc;
         }, {} as Record<string, Contact>);
@@ -190,7 +247,7 @@ const SemanticSearchContent: React.FC = () => {
                 <Database size={14} className="inline mr-1" />
                 <span>
                   {isEmbeddingCreated ? (
-                    `${Object.keys(contacts).length + Object.keys(deals).length} indexed items (${Object.keys(contacts).length} contacts, ${Object.keys(deals).length} deals)`
+                    `${mockContacts.length + Object.keys(deals).length} indexed items (${mockContacts.length} contacts, ${Object.keys(deals).length} deals)`
                   ) : (
                     'Preparing search database...'
                   )}

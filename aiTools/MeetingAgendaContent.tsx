@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useGemini } from '../../services/geminiService';
 import AIToolContent from '../shared/AIToolContent';
 import { Calendar, Users, FileText, RefreshCw, Copy, Check, Plus, Trash2, Clock } from 'lucide-react';
+import ReasoningToggle from '../shared/ReasoningToggle';
 
 const MeetingAgendaContent: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ const MeetingAgendaContent: React.FC = () => {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [reasoning, setReasoning] = useState<string | null>(null);
 
   const gemini = useGemini();
 
@@ -65,6 +67,7 @@ const MeetingAgendaContent: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
+    setReasoning(null);
     
     try {
       const agenda = await gemini.generateMeetingAgenda(
@@ -72,8 +75,12 @@ const MeetingAgendaContent: React.FC = () => {
         validAttendees,
         formData.previousMeetingNotes || undefined
       );
-      
+
+      const reasoningPrompt = `Outline the reasoning behind this meeting agenda for ${formData.meetingPurpose}. Include why each section is important.`;
+      const reasonText = await gemini.generateReasoning(reasoningPrompt);
+
       setResult(agenda);
+      setReasoning(reasonText);
       setCopied(false);
     } catch (err) {
       console.error('Error generating meeting agenda:', err);
@@ -121,7 +128,7 @@ const MeetingAgendaContent: React.FC = () => {
           <div>
             <h3 className="font-medium text-amber-800">Meeting Agenda Generator</h3>
             <p className="text-sm text-amber-700 mt-1">
-              Create structured, effective meeting agendas to keep your sales meetings focused and productive.
+              Create structured, effective meeting agendas to keep your sales meetings focused and productive. Toggle reasoning after generation to see how the agenda was planned.
             </p>
           </div>
         </div>
@@ -261,30 +268,33 @@ const MeetingAgendaContent: React.FC = () => {
       </AIToolContent>
 
       {result && !isLoading && !error && (
-        <div className="mt-6">
-          <div className="flex justify-end space-x-2 mb-2">
-            <button 
-              onClick={handleCopy}
-              className={`inline-flex items-center px-3 py-1.5 rounded text-sm transition-colors ${
-                copied 
-                  ? 'bg-green-100 text-green-700' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {copied ? (
-                <>
-                  <Check size={16} className="mr-1" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy size={16} className="mr-1" />
-                  Copy to Clipboard
-                </>
-              )}
-            </button>
+        <>
+          <div className="mt-6">
+            <div className="flex justify-end space-x-2 mb-2">
+              <button
+                onClick={handleCopy}
+                className={`inline-flex items-center px-3 py-1.5 rounded text-sm transition-colors ${
+                  copied
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {copied ? (
+                  <>
+                    <Check size={16} className="mr-1" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy size={16} className="mr-1" />
+                    Copy to Clipboard
+                  </>
+                )}
+              </button>
+            </div>
           </div>
-        </div>
+          <ReasoningToggle reasoning={reasoning} />
+        </>
       )}
     </div>
   );

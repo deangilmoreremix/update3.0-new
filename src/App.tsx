@@ -18,6 +18,7 @@ import CircleProspectingPage from './pages/CircleProspecting';
 import PhoneSystemPage from './pages/PhoneSystem';
 import InvoicingPage from './pages/Invoicing';
 import FormsAndSurveysPage from './pages/FormsAndSurveys';
+import WhiteLabelCustomization from './pages/WhiteLabelCustomization';
 const VideoCallOverlay = React.lazy(() => import('./components/VideoCallOverlay'));
 const VideoCallPreviewWidget = React.lazy(() => import('./components/VideoCallPreviewWidget'));
 import DevicePermissionChecker from './components/DevicePermissionChecker';
@@ -108,6 +109,9 @@ function App() {
                         <Route path="/commission-tracker" element={<AIToolsPage />} />
                         <Route path="/follow-up-reminders" element={<AIToolsPage />} />
                         <Route path="/territory-management" element={<AIToolsPage />} />
+                        
+                        {/* White-Label Customization Route */}
+                        <Route path="/white-label" element={<WhiteLabelCustomization />} />
                         
                         {/* Fallback to dashboard for unknown routes */}
                         <Route path="*" element={<DashboardPage />} />

@@ -1,34 +1,10 @@
-import { supabase } from '../../services/supabaseClient';
-import { sendGmailEmail } from '../../services/composioService'; // You'll create this file below
 import React, { useState } from 'react';
 import * as edgeFunctionService from '../../services/edgeFunctionService';
 import { useOpenAI } from '../../services/openaiService';
 import AIToolContent from '../shared/AIToolContent';
 import { Mail, User, Building, RefreshCw, Copy, FileText, Send } from 'lucide-react';
+import ReasoningToggle from '../shared/ReasoningToggle';
 import Select from 'react-select';
-const logEmailToLead = async ({
-  leadId,
-  summary,
-  content,
-}: {
-  leadId: string;
-  summary: string;
-  content: string;
-}) => {
-  const { error } = await supabase.from('lead_communications').insert([
-    {
-      lead_id: leadId,
-      type: 'email',
-      summary,
-      content,
-    },
-  ]);
-
-  if (error) {
-    console.error('Error logging email:', error);
-    throw error;
-  }
-};
 
 const EmailComposerContent: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -43,6 +19,7 @@ const EmailComposerContent: React.FC = () => {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [reasoning, setReasoning] = useState<string | null>(null);
 
   const openai = useOpenAI();
 
@@ -60,6 +37,7 @@ const EmailComposerContent: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
+    setReasoning(null);
     
     try {
       const contactInfo = {
@@ -67,14 +45,18 @@ const EmailComposerContent: React.FC = () => {
         position: formData.recipientPosition,
         company: formData.recipientCompany
       };
-      
+
       const emailDraft = await openai.generateEmailDraft(
         formData.recipientName,
         formData.emailPurpose,
         formData.additionalContext
       );
-      
+
+      const reasoningPrompt = `Explain the strategy and key considerations behind generating this email for ${formData.recipientName} about ${formData.emailPurpose}.`;
+      const reasonText = await openai.generateReasoning(reasoningPrompt);
+
       setResult(emailDraft);
+      setReasoning(reasonText);
       setCopied(false);
     } catch (err) {
       console.error('Error generating email:', err);
@@ -114,7 +96,7 @@ const EmailComposerContent: React.FC = () => {
           <div>
             <h3 className="font-medium text-blue-800">Smart Email Composer</h3>
             <p className="text-sm text-blue-700 mt-1">
-              Generate personalized, professional emails for your contacts with just a few details. Perfect for introductions, follow-ups, and more.
+              Generate personalized, professional emails for your contacts with just a few details. Perfect for introductions, follow-ups, and more. Use the reasoning toggle below to learn why each email was crafted.
             </p>
           </div>
         </div>
@@ -250,7 +232,7 @@ const EmailComposerContent: React.FC = () => {
       {result && !isLoading && !error && (
         <div className="mt-6">
           <div className="flex justify-end space-x-2 mb-2">
-            <button 
+            <button
               onClick={handleCopy}
               className={`inline-flex items-center px-3 py-1.5 rounded text-sm transition-colors ${
                 copied 
@@ -275,6 +257,7 @@ const EmailComposerContent: React.FC = () => {
               Send Email
             </button>
           </div>
+          <ReasoningToggle reasoning={reasoning} />
         </div>
       )}
     </div>
