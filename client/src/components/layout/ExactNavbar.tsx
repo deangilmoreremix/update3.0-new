@@ -74,10 +74,16 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenPipelineModal }) => {
   };
 
   const handleNavigation = (route: string, tabName: string) => {
-    navigate(route);
-    setActiveTab(tabName);
-    setActiveDropdown(null);
-    setIsMobileMenuOpen(false);
+    console.log('Navigation clicked:', { route, tabName });
+    try {
+      navigate(route);
+      setActiveTab(tabName);
+      setActiveDropdown(null);
+      setIsMobileMenuOpen(false);
+      console.log('Navigation successful to:', route);
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
   };
 
   const handleAIToolClick = (toolName: string) => {
@@ -404,6 +410,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenPipelineModal }) => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
+                        console.log('Tab clicked:', tab.id, tab.label);
                         tab.action();
                       }}
                       className={`
