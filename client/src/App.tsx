@@ -73,7 +73,6 @@ import AIGoalsPageEnhanced from './pages/AIGoals/AIGoalsPageEnhanced';
 import './components/styles/design-system.css';
 
 function App() {
-<<<<<<< HEAD
   const [isContactsModalOpen, setIsContactsModalOpen] = useState(false);
   const [isPipelineModalOpen, setIsPipelineModalOpen] = useState(false);
 
@@ -431,6 +430,36 @@ function App() {
                                   <ExactNavbar />
                                   <div className="flex-1 w-full overflow-y-auto pt-24">
                                     <AIGoalsPage />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* Pipeline Route */}
+                              <Route path="/pipeline" element={
+                                <>
+                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <EnhancedPipeline />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* Communication Hub Route */}
+                              <Route path="/communication-hub" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <CommunicationHub />
+                                  </div>
+                                </>
+                              } />
+                              
+                              {/* Document Center Route */}
+                              <Route path="/document-center" element={
+                                <>
+                                  <ExactNavbar />
+                                  <div className="flex-1 w-full overflow-y-auto pt-24">
+                                    <DocumentCenter />
                                   </div>
                                 </>
                               } />
