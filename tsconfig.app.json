@@ -6,22 +6,13 @@
     "module": "ESNext",
     "skipLibCheck": true,
 
-    /* Change bundler to node for better path mapping support */
-    "moduleResolution": "node",
+    /* Bundler mode */
+    "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-
-    /* Path mapping for custom aliases */
-    "baseUrl": ".",
-    "paths": {
-      "@shared/*": ["./shared/*"],
-      "@/*": ["./src/*"]
-    },
 
     /* Linting */
     "strict": true,
@@ -29,5 +20,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "server", "shared", "types.ts"]
+  "include": ["src"]
 }

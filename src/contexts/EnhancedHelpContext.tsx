@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 interface EnhancedHelpContextType {
-  isHelpVisible: boolean;
-  setHelpVisible: (visible: boolean) => void;
-  helpContent: string;
-  setHelpContent: (content: string) => void;
+  showTours: boolean;
+  setShowTours: (show: boolean) => void;
+  currentTour: string | null;
+  startTour: (tourName: string) => void;
+  endTour: () => void;
 }
 
 const EnhancedHelpContext = createContext<EnhancedHelpContextType | undefined>(undefined);
@@ -17,23 +18,22 @@ export const useEnhancedHelp = () => {
   return context;
 };
 
-interface EnhancedHelpProviderProps {
-  children: ReactNode;
-}
+export const EnhancedHelpProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [showTours, setShowTours] = useState(false);
+  const [currentTour, setCurrentTour] = useState<string | null>(null);
 
-export const EnhancedHelpProvider: React.FC<EnhancedHelpProviderProps> = ({ children }) => {
-  const [isHelpVisible, setHelpVisible] = useState(false);
-  const [helpContent, setHelpContent] = useState('');
+  const startTour = (tourName: string) => {
+    setCurrentTour(tourName);
+    setShowTours(true);
+  };
 
-  const value = {
-    isHelpVisible,
-    setHelpVisible,
-    helpContent,
-    setHelpContent,
+  const endTour = () => {
+    setCurrentTour(null);
+    setShowTours(false);
   };
 
   return (
-    <EnhancedHelpContext.Provider value={value}>
+    <EnhancedHelpContext.Provider value={{ showTours, setShowTours, currentTour, startTour, endTour }}>
       {children}
     </EnhancedHelpContext.Provider>
   );

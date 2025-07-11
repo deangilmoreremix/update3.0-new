@@ -179,14 +179,13 @@ class SupabaseAIService {
   private async checkSupabaseConnection(): Promise<void> {
     try {
       // Check if environment variables are set to actual values (not placeholders)
-      let supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      let supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
       
       if (!supabaseUrl || !supabaseKey || 
           supabaseUrl.includes('your_supabase_project_url') ||
           supabaseKey.includes('your_supabase_anon_key') ||
           supabaseUrl === 'your-project-ref.supabase.co' ||
-          supabaseUrl.includes('placeholder') ||
           supabaseUrl.length < 10 ||
           supabaseKey.length < 10) {
         console.warn('Supabase not configured properly. Using fallback AI model configurations.');
@@ -195,25 +194,14 @@ class SupabaseAIService {
         return;
       }
 
-      // Skip testing connection if URL is invalid
-      if (!supabaseUrl.startsWith('http')) {
+      // Test connection with a simple query
+      const { error } = await supabase.from('ai_models').select('id').limit(1);
+      if (error) {
         console.warn('Supabase connection failed. Using fallback configurations:', error);
         this.supabaseAvailable = false;
       } else {
-        // Test connection with a simple query
-        try {
-          const { error } = await supabase.from('ai_models').select('id').limit(1);
-          if (error) {
-            console.warn('Supabase connection failed. Using fallback configurations:', error);
-            this.supabaseAvailable = false;
-          } else {
-            this.supabaseAvailable = true;
-            console.info('Supabase AI service connected successfully');
-          }
-        } catch (innerError) {
-          console.warn('Supabase connection check failed. Using fallback configurations:', innerError);
-          this.supabaseAvailable = false;
-        }
+        this.supabaseAvailable = true;
+        console.info('Supabase AI service connected successfully');
       }
     } catch (error) {
       console.warn('Supabase connection check failed. Using fallback configurations:', error);

@@ -902,11 +902,16 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
       }
     }
-  }, [isInCall, localStreamRef, remoteStream]);
-
-  // Start recording function
-  const startRecording = useCallback(async () => {
-    if (!isInCall || !localStreamRef.current) {
+    // Cleanup function to stop tracks
+    const stopPreviewStream = () => {
+      if (!previewStream) return;
+      previewStream.getTracks().forEach(track => track.stop());
+      setPreviewStream(null);
+    };
+    
+    // Exit early if not visible or video not enabled
+    if (!isVisible || !videoEnabled) {
+      stopPreviewStream();
       throw new Error('Cannot start recording: not in call or no local stream');
     }
 
@@ -999,9 +1004,8 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setIsRecording(false);
       throw error;
     }
-  }, [isInCall, remoteStream]);
+  }, [isInCall, localStreamRef, remoteStream]);
 
-  // Stop recording function
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current && isRecording) {
       console.log('Stopping recording...');
@@ -1090,11 +1094,9 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, [isInCall]);
 
   // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      cleanup();
-    };
-  }, [cleanup]);
+    
+    // Proper cleanup on unmount or dependency changes
+    return stopPreviewStream;
 
   const value: VideoCallContextType = {
     // Call State
