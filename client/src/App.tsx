@@ -4,8 +4,11 @@ import ExactNavbar from './components/layout/ExactNavbar';
 import Dashboard from './components/Dashboard';
 import LandingPage from './pages/Landing/LandingPage';
 import SimpleLandingPage from './pages/Landing/SimpleLandingPage';
-import { SignIn } from './pages/auth/SignIn';
-import { SignUp } from './pages/auth/SignUp';
+import Login from './pages/Auth/Login';
+import Register from './pages/Auth/Register';
+import ForgotPassword from './pages/Auth/ForgotPassword';
+import UserRoute from './components/auth/UserRoute';
+import AuthenticatedLayout from './components/auth/AuthenticatedLayout';
 import SuperAdminSignup from './pages/SuperAdminSignup';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import EmailCampaignManager from './pages/EmailCampaignManager';
@@ -92,10 +95,11 @@ function App() {
                               <Route path="/" element={<LandingPage />} />
                               
                               {/* Authentication Routes - no navbar */}
-                              <Route path="/login" element={<SignIn />} />
-                              <Route path="/sign-in" element={<SignIn />} />
-                              <Route path="/signup" element={<SignUp />} />
-                              <Route path="/sign-up" element={<SignUp />} />
+                              <Route path="/login" element={<Login />} />
+                              <Route path="/sign-in" element={<Login />} />
+                              <Route path="/signup" element={<Register />} />
+                              <Route path="/sign-up" element={<Register />} />
+                              <Route path="/forgot-password" element={<ForgotPassword />} />
                               <Route path="/super-admin-signup" element={<SuperAdminSignup />} />
                               
                               {/* Routes with navbar */}
@@ -118,12 +122,14 @@ function App() {
                               } />
                               
                               <Route path="/dashboard" element={
-                                <>
-                                  <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
-                                  <div className="flex-1 w-full overflow-y-auto pt-24">
-                                    <Dashboard />
-                                  </div>
-                                </>
+                                <UserRoute>
+                                  <AuthenticatedLayout>
+                                    <ExactNavbar onOpenPipelineModal={() => setIsPipelineModalOpen(true)} />
+                                    <div className="flex-1 w-full overflow-y-auto pt-24">
+                                      <Dashboard />
+                                    </div>
+                                  </AuthenticatedLayout>
+                                </UserRoute>
                               } />
                               
                               {/* Core CRM Pages */}
