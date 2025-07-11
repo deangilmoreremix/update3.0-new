@@ -1,203 +1,224 @@
-// OpenAI integration service for contact research and analysis
-import { ContactEnrichmentData } from './aiEnrichmentService';
-import { logger } from './logger.service';
+import { Contact } from '../types/contact';
+import { AIContactAnalysis } from '../types/contact';
+import { shouldUseRealAPIs } from '../config/apiConfig';
+import { useRealOpenAI } from './realOpenAIService';
+import { IntelligentAIService } from './intelligentAIService';
 
-interface ContactAnalysisResult {
-  score: number;
-  insights: string[];
-  recommendations: string[];
-  riskFactors: string[];
-  opportunities: string[];
+interface OpenAIService {
+  analyzeContact: (contact: Contact) => Promise<AIContactAnalysis>;
+  generateEmail: (contact: Contact, context?: string) => Promise<string>;
+  getInsights: (contact: Contact) => Promise<string[]>;
+  generateDealSummary: (dealData: any) => Promise<string>;
+  suggestNextActions: (dealData: any) => Promise<string[]>;
 }
 
-export const useOpenAI = () => {
-  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-  
-  const analyzeContact = async (contact: any): Promise<ContactAnalysisResult> => {
-    logger.info(`Analyzing contact with OpenAI: ${contact.name}`);
+class MockOpenAIService implements OpenAIService {
+  async analyzeContact(contact: Contact): Promise<AIContactAnalysis> {
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
-    if (!apiKey) {
-      throw new Error('OpenAI API key is not configured. Please set the VITE_OPENAI_API_KEY environment variable.');
+    console.log('🤖 OpenAI: Analyzing contact (Mock Mode)');
+    
+    // Mock analysis based on contact data
+    let score = 50;
+    const insights: string[] = [];
+    const recommendations: string[] = [];
+    const riskFactors: string[] = [];
+    
+    // Calculate score based on various factors
+    if (contact.interestLevel === 'hot') score += 30;
+    else if (contact.interestLevel === 'medium') score += 15;
+    else if (contact.interestLevel === 'low') score += 5;
+    
+    if (contact.status === 'customer') score += 20;
+    else if (contact.status === 'prospect') score += 10;
+    
+    if (contact.sources.includes('LinkedIn')) score += 10;
+    if (contact.sources.includes('Referral')) score += 15;
+    
+    if (contact.customFields?.['Annual Revenue']) score += 10;
+    if (contact.phone) score += 5;
+    
+    // Generate insights
+    if (score >= 80) {
+      insights.push('🎯 High-value prospect with strong engagement potential');
+      insights.push('📈 Strong buying signals detected in profile data');
+      recommendations.push('Schedule a product demo within the next week');
+      recommendations.push('Prepare executive-level presentation materials');
+    } else if (score >= 60) {
+      insights.push('💡 Moderate engagement potential, requires nurturing');
+      insights.push('📊 Contact shows interest but needs education');
+      recommendations.push('Send targeted content based on industry interests');
+      recommendations.push('Schedule discovery call to understand needs');
+    } else {
+      insights.push('⏰ Early-stage prospect, focus on relationship building');
+      insights.push('📚 Contact needs education about our value proposition');
+      recommendations.push('Add to nurture campaign for long-term development');
+      recommendations.push('Research company challenges and pain points');
     }
     
-    try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are an expert CRM analyst with deep expertise in sales, marketing, and customer relationship management. Analyze the contact information provided and return a structured JSON response with a lead score (0-100), key insights, recommendations, risk factors, and opportunities.'
-            },
-            {
-              role: 'user',
-              content: `Analyze this contact:\n\n${JSON.stringify(contact, null, 2)}\n\nProvide an analysis with lead score, insights, recommendations, risk factors, and opportunities.`
-            }
-          ],
-          temperature: 0.3,
-          response_format: { type: "json_object" }
-        })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
-      }
-      
-      const data = await response.json();
-      const content = data.choices?.[0]?.message?.content;
-      
-      if (!content) {
-        throw new Error('Invalid response from OpenAI');
-      }
-      
-      try {
-        const parsedContent = JSON.parse(content);
-        logger.info(`Successfully analyzed contact: ${contact.name}`);
-        
-        return {
-          score: parsedContent.score ?? Math.floor(Math.random() * 40) + 60, // Fallback to random score if missing
-          insights: parsedContent.insights ?? ['No insights available'],
-          recommendations: parsedContent.recommendations ?? ['No recommendations available'],
-          riskFactors: parsedContent.riskFactors ?? [],
-          opportunities: parsedContent.opportunities ?? []
-        };
-      } catch (parseError) {
-        logger.error('Failed to parse OpenAI response', parseError as Error);
-        throw new Error('Failed to parse analysis response');
-      }
-    } catch (error) {
-      logger.error('OpenAI analysis failed', error as Error);
-      // Fallback to a basic analysis to prevent UI breakage
-      return {
-        score: 50,
-        insights: ['API analysis currently unavailable'],
-        recommendations: ['Try again later'],
-        riskFactors: ['Analysis incomplete'],
-        opportunities: []
-      };
+    if (contact.interestLevel === 'hot') {
+      insights.push('🔥 Currently showing high interest levels');
+      recommendations.push('Strike while iron is hot - reach out immediately');
     }
-  };
+    
+    if (!contact.phone) {
+      riskFactors.push('⚠️ Missing phone contact information');
+    }
+    
+    if (contact.status === 'churned') {
+      riskFactors.push('🚨 Previously churned customer - approach with caution');
+    }
+    
+    return {
+      score: Math.min(100, Math.max(0, score)),
+      insights,
+      recommendations,
+      riskFactors
+    };
+  }
 
-  const generateEmailTemplate = async (contact: any, purpose: string) => {
-    if (!apiKey) {
-      throw new Error('OpenAI API key is not configured');
-    }
+  async generateEmail(contact: Contact, context?: string): Promise<string> {
+    await new Promise(resolve => setTimeout(resolve, 800));
     
-    try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are an expert email copywriter. Generate a professional email template with a subject line and body.'
-            },
-            {
-              role: 'user',
-              content: `Generate an email template for ${purpose} to send to ${contact.name}, ${contact.title} at ${contact.company}.`
-            }
-          ],
-          temperature: 0.7,
-          response_format: { type: "json_object" }
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`API error: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      const content = JSON.parse(data.choices[0].message.content);
-      
-      return {
-        subject: content.subject || `Following up on ${purpose} - ${contact.company}`,
-        body: content.body || `Hi ${contact.firstName || contact.name.split(' ')[0]},\n\nI hope this email finds you well.`
-      };
-    } catch (error) {
-      logger.error('Email template generation failed', error as Error);
-      return {
-        subject: `Following up on ${purpose} - ${contact.company}`,
-        body: `Hi ${contact.firstName || contact.name.split(' ')[0]},\n\nI hope this email finds you well. I wanted to follow up on our recent conversation regarding ${purpose}.`
-      };
-    }
-  };
+    console.log('✉️ OpenAI: Generating email (Mock Mode)');
 
-  const researchContactByEmail = async (email: string): Promise<ContactEnrichmentData> => {
-    logger.info(`Researching contact by email: ${email}`);
-    
-    if (!apiKey) {
-      throw new Error('OpenAI API key is not configured');
-    }
-    
-    try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are an AI assistant that helps with contact research. Given an email address, infer likely company information and return structured data.'
-            },
-            {
-              role: 'user',
-              content: `Research information for this contact email: ${email}`
-            }
-          ],
-          temperature: 0.3,
-          response_format: { type: "json_object" }
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`API error: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      const content = JSON.parse(data.choices[0].message.content);
-      
-      return {
-        ...content,
-        email,
-        confidence: content.confidence || 70
-      };
-    } catch (error) {
-      logger.error('Contact research by email failed', error as Error);
-      
-      // Minimal fallback to prevent UI breakage
-      const parts = email.split('@');
-      const domain = parts[1] || 'company.com';
-      const nameparts = parts[0].split('.');
-      
-      return {
-        firstName: nameparts[0]?.charAt(0).toUpperCase() + nameparts[0]?.slice(1) || '',
-        lastName: nameparts[1]?.charAt(0).toUpperCase() + nameparts[1]?.slice(1) || '',
-        email: email,
-        company: domain.split('.')[0],
-        confidence: 30,
-        notes: 'API research failed, showing inferred data'
-      };
-    }
-  };
+    return `Subject: ${context ? `Following up on ${context}` : 'Following up on our conversation'}
 
-  return {
-    analyzeContact,
-    generateEmailTemplate,
-    researchContactByEmail,
-  };
+Hi ${contact.firstName || contact.name},
+
+I hope this email finds you well. I wanted to follow up on our recent discussion about ${contact.company}'s ${context || 'business objectives'}.
+
+Based on our conversation and your role as ${contact.title}, I believe our solution could provide significant value to your team, particularly in:
+
+• Streamlining operations and reducing costs
+• Improving efficiency and productivity
+• Driving measurable ROI for ${contact.company}
+
+I'd love to show you how companies similar to ${contact.company} have achieved remarkable results using our platform.
+
+Would you be available for a brief 15-minute call this week to discuss how we can help ${contact.company} achieve its goals?
+
+I'm confident we can deliver substantial value for your team.
+
+Best regards,
+[Your Name]
+
+P.S. I've attached a case study from a ${contact.industry || 'similar'} company that saw 40% efficiency improvements.`;
+  }
+
+  async getInsights(contact: Contact): Promise<string[]> {
+    await new Promise(resolve => setTimeout(resolve, 600));
+    
+    console.log('💡 OpenAI: Generating insights (Mock Mode)');
+    
+    const insights: string[] = [];
+    
+    if (contact.interestLevel === 'hot') {
+      insights.push('🔥 Hot lead - high conversion probability, prioritize immediate outreach');
+    }
+    
+    if (contact.sources.includes('Referral')) {
+      insights.push('🤝 Referral source indicates higher trust level and faster sales cycle');
+    }
+    
+    if (contact.customFields?.['Annual Revenue']) {
+      insights.push('💰 Revenue data available - tailor pricing strategy accordingly');
+    }
+    
+    if (contact.status === 'customer') {
+      insights.push('✅ Existing customer - focus on expansion, upselling, and retention');
+    }
+
+    if (contact.industry) {
+      insights.push(`🏭 Industry expertise: Leverage ${contact.industry} case studies and trends`);
+    }
+
+    insights.push('📈 Personalized outreach based on title and company size likely to increase response rates');
+    
+    return insights;
+  }
+
+  async generateDealSummary(dealData: any): Promise<string> {
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    console.log('📋 OpenAI: Generating deal summary (Mock Mode)');
+    
+    return `## Deal Summary: ${dealData.title}
+
+**Company:** ${dealData.company}  
+**Value:** $${dealData.value?.toLocaleString()}  
+**Stage:** ${dealData.stage}  
+**Probability:** ${dealData.probability}%  
+
+### Key Highlights:
+• Strong potential with ${dealData.company} showing genuine interest
+• Deal value of $${dealData.value?.toLocaleString()} represents significant opportunity
+• Current ${dealData.probability}% probability indicates ${dealData.probability >= 70 ? 'high' : dealData.probability >= 40 ? 'moderate' : 'early'} stage confidence
+
+### Strategic Focus:
+${dealData.probability >= 70 ? 'Focus on closing activities and removing final objections' :
+  dealData.probability >= 40 ? 'Continue building value and addressing concerns' :
+  'Concentrate on qualification and discovery'}
+
+### Next Steps:
+• Maintain regular contact with key stakeholders
+• Address any remaining technical or financial concerns  
+• ${dealData.dueDate ? `Target close date: ${new Date(dealData.dueDate).toLocaleDateString()}` : 'Establish clear timeline for decision'}`;
+  }
+
+  async suggestNextActions(dealData: any): Promise<string[]> {
+    await new Promise(resolve => setTimeout(resolve, 600));
+    
+    console.log('🎯 OpenAI: Suggesting next actions (Mock Mode)');
+    
+    const actions: string[] = [];
+    
+    switch (dealData.stage) {
+      case 'qualification':
+        actions.push('📞 Schedule comprehensive discovery call with key stakeholders');
+        actions.push('📝 Send detailed qualification questionnaire');
+        actions.push('🔍 Research company\'s current challenges and pain points');
+        actions.push('👥 Identify all decision makers and influencers');
+        break;
+      case 'proposal':
+        actions.push('📋 Follow up on proposal status and gather feedback');
+        actions.push('🎤 Schedule presentation to demonstrate value proposition');
+        actions.push('❓ Address any technical or commercial questions');
+        actions.push('📊 Provide ROI calculations and business case');
+        break;
+      case 'negotiation':
+        actions.push('📄 Review and negotiate contract terms');
+        actions.push('🤝 Schedule final discussion with all stakeholders');
+        actions.push('💰 Prepare pricing alternatives and concessions');
+        actions.push('⏰ Establish clear timeline for final decision');
+        break;
+      default:
+        actions.push('📅 Schedule regular follow-up meetings');
+        actions.push('📚 Send relevant case studies and success stories');
+        actions.push('🔗 Connect with additional key stakeholders');
+        actions.push('📈 Share industry insights and market trends');
+    }
+
+    // Add priority-based actions
+    if (dealData.priority === 'high') {
+      actions.unshift('🚨 URGENT: Escalate to senior management for immediate attention');
+    }
+
+    return actions;
+  }
+}
+
+export const useOpenAI = (): OpenAIService => {
+  if (shouldUseRealAPIs()) {
+    try {
+      console.log('🔄 Attempting to use Real OpenAI Service...');
+      return useRealOpenAI();
+    } catch (error) {
+      console.warn('⚠️ Failed to initialize real OpenAI service, falling back to mock:', error);
+      return new MockOpenAIService();
+    }
+  }
+  console.log('🎭 Using Mock OpenAI Service (API key not configured)');
+  return new MockOpenAIService();
 };

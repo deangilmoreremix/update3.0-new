@@ -1,109 +1,69 @@
-import React from 'react';
-import { useTheme } from '../../contexts/ThemeContext';
+import React, { ButtonHTMLAttributes, forwardRef } from 'react';
 import { Loader2 } from 'lucide-react';
 
-interface ModernButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
+interface ModernButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   loading?: boolean;
-  disabled?: boolean;
-  className?: string;
-  variant?: 'primary' | 'secondary' | 'outline' | 'danger' | 'glass' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  type?: 'button' | 'submit' | 'reset';
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
-export const ModernButton: React.FC<ModernButtonProps> = ({
-  children,
-  onClick,
-  loading = false,
-  disabled = false,
-  className = '',
-  variant = 'primary',
-  size = 'md',
-  type = 'button'
-}) => {
-  const { isDark } = useTheme();
+export const ModernButton = forwardRef<HTMLButtonElement, ModernButtonProps>(
+  ({ 
+    variant = 'primary', 
+    size = 'md', 
+    loading = false,
+    leftIcon,
+    rightIcon,
+    className = '',
+    disabled,
+    children,
+    ...props 
+  }, ref) => {
+    const baseClasses = 'inline-flex items-center justify-center font-medium transition-colors rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2';
+    
+    // Variant styles
+    const variantClasses = {
+      primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 dark:bg-blue-700 dark:hover:bg-blue-800 dark:focus:ring-blue-600',
+      secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500 dark:bg-gray-700 dark:hover:bg-gray-800',
+      outline: 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700',
+      ghost: 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:ring-gray-500 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white',
+      danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 dark:bg-red-700 dark:hover:bg-red-800',
+      success: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 dark:bg-green-700 dark:hover:bg-green-800',
+    };
 
-  const getVariantClass = () => {
-    switch (variant) {
-      case 'primary':
-        return `${
-          isDark
-            ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white'
-            : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white'
-        }`;
-      case 'secondary':
-        return `${
-          isDark
-            ? 'bg-gray-700 hover:bg-gray-600 text-white'
-            : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
-        }`;
-      case 'outline':
-        return `${
-          isDark
-            ? 'bg-transparent border border-gray-700 hover:bg-gray-700/10 text-white'
-            : 'bg-transparent border border-gray-300 hover:bg-gray-100 text-gray-800'
-        }`;
-      case 'danger':
-        return `${
-          isDark
-            ? 'bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20'
-            : 'bg-red-100 hover:bg-red-200 text-red-600 border border-red-200'
-        }`;
-      case 'glass':
-        return `${
-          isDark
-            ? 'bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30'
-            : 'bg-white/20 backdrop-blur-md border border-gray-300/30 text-gray-800 hover:bg-white/30'
-        }`;
-      case 'ghost':
-        return `${
-          isDark
-            ? 'bg-transparent hover:bg-gray-700/20 text-gray-200'
-            : 'bg-transparent hover:bg-gray-100 text-gray-700'
-        }`;
-      default:
-        return `${
-          isDark
-            ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white'
-            : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white'
-        }`;
-    }
-  };
+    // Size styles
+    const sizeClasses = {
+      xs: 'text-xs px-2.5 py-1.5',
+      sm: 'text-sm px-3 py-2',
+      md: 'text-sm px-4 py-2',
+      lg: 'text-base px-6 py-3',
+    };
 
-  const getSizeClass = () => {
-    switch (size) {
-      case 'sm': return 'px-3 py-1.5 text-sm';
-      case 'md': return 'px-4 py-2';
-      case 'lg': return 'px-6 py-3 text-lg';
-      default: return 'px-4 py-2';
-    }
-  };
-
-  // Only apply hover effects to certain variants
-  const getHoverEffects = () => {
-    const isTransformVariant = ['primary', 'secondary', 'danger'].includes(variant);
-    return isTransformVariant && !disabled && !loading ? 'transform hover:-translate-y-1 hover:shadow-md' : '';
-  };
-
-  return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`
-        rounded-lg transition-all duration-200 font-medium
-        ${getVariantClass()} ${getSizeClass()} 
-        ${getHoverEffects()}
-        ${disabled || loading ? 'opacity-50 cursor-not-allowed' : ''}
-        ${className}
-      `}
-    >
-      <div className="flex items-center justify-center gap-2">
-        {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+    return (
+      <button
+        ref={ref}
+        disabled={disabled || loading}
+        className={`
+          ${baseClasses} 
+          ${variantClasses[variant]} 
+          ${sizeClasses[size]} 
+          ${loading || disabled ? 'opacity-70 cursor-not-allowed' : ''} 
+          dark:focus:ring-offset-gray-900
+          ${className}
+        `}
+        {...props}
+      >
+        {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+        {!loading && leftIcon && <span className="mr-2">{leftIcon}</span>}
         {children}
-      </div>
-    </button>
-  );
-};
+        {!loading && rightIcon && <span className="ml-2">{rightIcon}</span>}
+      </button>
+    );
+  }
+);
+
+ModernButton.displayName = 'ModernButton';
+
+export default ModernButton;

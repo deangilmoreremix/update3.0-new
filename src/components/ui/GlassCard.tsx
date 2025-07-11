@@ -1,32 +1,27 @@
 import React from 'react';
-import { useTheme } from '../../contexts/ThemeContext';
 
 interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
+  variant?: 'light' | 'medium' | 'heavy';
   onClick?: () => void;
-  hover?: boolean;
 }
 
-export const GlassCard: React.FC<GlassCardProps> = ({ 
-  children, 
-  className = '', 
-  onClick,
-  hover = true 
+export const GlassCard: React.FC<GlassCardProps> = ({
+  children,
+  className = '',
+  variant = 'medium',
+  onClick
 }) => {
-  const { isDark } = useTheme();
+  const variantClasses = {
+    light: 'glass-light',
+    medium: 'glass-medium',
+    heavy: 'glass-heavy',
+  };
 
   return (
     <div
-      className={`
-        ${isDark 
-          ? 'bg-white/5 backdrop-blur-xl border border-white/10' 
-          : 'bg-white/95 backdrop-blur-xl border border-gray-200'
-        } rounded-2xl 
-        ${hover ? `transition-all duration-300 ${isDark ? 'hover:bg-white/10' : 'hover:bg-white/100'} ${hover ? 'hover:shadow-xl hover:scale-[1.02]' : ''}` : ''}
-        ${onClick ? 'cursor-pointer' : ''}
-        ${className}
-      `}
+      className={`rounded-xl shadow-lg ${variantClasses[variant]} dark:shadow-gray-900/30 dark:border-gray-700 dark:text-gray-100 ${className}`}
       onClick={onClick}
     >
       {children}
