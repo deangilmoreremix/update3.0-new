@@ -40,6 +40,8 @@ import ContactImport from '../components/contacts/ContactImport';
 import ContactExport from '../components/contacts/ContactExport';
 
 const Contacts: React.FC = () => {
+  console.log("✅ Contacts component rendered");
+
   // Use the contact store
   const { 
     contacts: storeContacts, 

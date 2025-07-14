@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 
 import { AIToolsProvider } from './AIToolsProvider';
@@ -20,11 +20,11 @@ import Register from './pages/Auth/Register'; // Your updated Register component
 import ForgotPassword from './pages/Auth/ForgotPassword';
 
 // Main pages
-import Dashboard from './pages/Dashboard';
-import Contacts from './pages/Contacts';
+import Dashboard from './pages/DashboardSimple';
+import Contacts from './pages/ContactsSimple';
 import ContactDetail from './pages/ContactDetail';
-import Pipeline from './pages/Pipeline';
-import Tasks from './pages/Tasks';
+import Pipeline from './pages/PipelineSimple';
+import Tasks from './pages/TasksSimple';
 import TaskCalendarView from './pages/TaskCalendarView';
 import Appointments from './pages/Appointments';
 import PhoneSystem from './pages/PhoneSystem';
@@ -110,49 +110,40 @@ function App() {
                       <Route path="/forgot-password" element={<ForgotPassword />} />
 
                       {/* Public routes */}
-                      <Route path="/" element={<LandingPage />} />
+                      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                      <Route path="/landing" element={<LandingPage />} />
                       <Route path="/form/:formId" element={<FormPublic />} />
                       <Route path="/faq" element={<FAQ />} />
 
                       {/* Protected routes with role-based access */}
                       <Route path="/dashboard" element={
-                        <UserRoute>
-                          <AuthenticatedLayout>
-                            <Dashboard />
-                          </AuthenticatedLayout>
-                        </UserRoute>
+                        <AuthenticatedLayout>
+                          <Dashboard />
+                        </AuthenticatedLayout>
                       } />
 
                       <Route path="/contacts" element={
-                        <UserRoute>
-                          <AuthenticatedLayout>
-                            <Contacts />
-                          </AuthenticatedLayout>
-                        </UserRoute>
+                        <AuthenticatedLayout>
+                          <Contacts />
+                        </AuthenticatedLayout>
                       } />
 
                       <Route path="/contacts/:id" element={
-                        <UserRoute>
-                          <AuthenticatedLayout>
-                            <ContactDetail />
-                          </AuthenticatedLayout>
-                        </UserRoute>
+                        <AuthenticatedLayout>
+                          <ContactDetail />
+                        </AuthenticatedLayout>
                       } />
 
                       <Route path="/pipeline" element={
-                        <UserRoute>
-                          <AuthenticatedLayout>
-                            <Pipeline />
-                          </AuthenticatedLayout>
-                        </UserRoute>
+                        <AuthenticatedLayout>
+                          <Pipeline />
+                        </AuthenticatedLayout>
                       } />
 
                       <Route path="/tasks" element={
-                        <UserRoute>
-                          <AuthenticatedLayout>
-                            <Tasks />
-                          </AuthenticatedLayout>
-                        </UserRoute>
+                        <AuthenticatedLayout>
+                          <Tasks />
+                        </AuthenticatedLayout>
                       } />
 
                       <Route path="/tasks/calendar" element={
@@ -392,6 +383,13 @@ function App() {
                       } />
 
                       <Route path="/deadline-manager" element={
+                        <ProtectedRoute>
+                          <AuthenticatedLayout>
+                            <Tasks />
+                          </AuthenticatedLayout>
+                        </ProtectedRoute>
+                      } />
+
                       <Route path="/image-generator" element={
                         <ProtectedRoute>
                           <AuthenticatedLayout>

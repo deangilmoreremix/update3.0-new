@@ -5,11 +5,12 @@ import { useContactStore } from '../store/contactStore';
 import { useGemini } from '../services/geminiService';
 import { useTaskStore } from '../store/taskStore';
 import { useAppointmentStore } from '../store/appointmentStore';
-import { useAITools } from '../components/AIToolsProvider';
-import AppointmentWidget from '../components/AppointmentWidget';
-import AIToolsCard from '../components/Dashboard/AIToolsCard';
-import DealAnalytics from '../components/DealAnalytics';
-import HelpTooltip from '../components/ui/HelpTooltip';
+// Temporarily comment out missing imports
+// import { useAITools } from '../AIToolsProvider';
+// import AppointmentWidget from '../AppointmentWidget';
+// import AIToolsCard from '../Dashboard/AIToolsCard';
+// import DealAnalytics from '../DealAnalytics';
+// import HelpTooltip from '../ui/HelpTooltip';
 import { useEnhancedHelp } from '../contexts/EnhancedHelpContext';
 import { 
   BarChart3, 
@@ -41,10 +42,10 @@ import {
   Palette
 } from 'lucide-react';
 
-// Import AI tools components
-import StreamingChat from '../components/aiTools/StreamingChat';
-import SmartSearchRealtime from '../components/aiTools/SmartSearchRealtime';
-import LiveDealAnalysis from '../components/aiTools/LiveDealAnalysis';
+// Import AI tools components - temporarily commented out
+// import StreamingChat from '../aiTools/StreamingChat';
+// import SmartSearchRealtime from '../aiTools/SmartSearchRealtime';
+// import LiveDealAnalysis from '../aiTools/LiveDealAnalysis';
 
 // Import recharts components for data visualization
 import { 
@@ -62,6 +63,8 @@ import {
 } from 'recharts';
 
 const Dashboard: React.FC = () => {
+  console.log("✅ Dashboard component rendered");
+
   const { 
     deals, 
     fetchDeals, 
