@@ -36,18 +36,19 @@
     "react-router-hash-link": "^2.4.3",
     "react-select": "^5.10.2",
     "react-simplemde-editor": "^5.2.0",
-    "recharts": "^2.5.0",
+    "recharts": "^2.15.4",
     "simple-peer": "^9.11.1",
     "socket.io-client": "^4.7.4",
     "ts-node": "^10.9.2",
     "uuid": "^9.0.1",
     "xlsx": "^0.18.5",
     "zod": "^3.25.76",
-    "zustand": "^4.3.6"
+    "zustand": "^4.5.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
     "@types/react": "^18.3.5",
+    "@types/react-beautiful-dnd": "^13.1.8",
     "@types/react-dom": "^18.3.0",
     "@types/simple-peer": "^9.11.8",
     "@vitejs/plugin-react": "^4.6.0",
