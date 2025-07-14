@@ -181,10 +181,15 @@ export default defineConfig({
 
 ### **3. App.tsx Routing Updates**
 ```typescript
-// Replace existing imports with enhanced components
+// Replace your existing imports with enhanced components
 import Dashboard from './pages/DashboardEnhanced';
 import Pipeline from './pages/PipelineEnhanced';
 import Contacts from './pages/ContactsEnhanced';
+
+// Your existing routing structure stays the same
+<Route path="/dashboard" element={<Dashboard />} />
+<Route path="/pipeline" element={<Pipeline />} />
+<Route path="/contacts" element={<Contacts />} />
 ```
 
 ---
