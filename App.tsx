@@ -20,10 +20,10 @@ import Register from './pages/Auth/Register'; // Your updated Register component
 import ForgotPassword from './pages/Auth/ForgotPassword';
 
 // Main pages
-import Dashboard from './pages/DashboardSimple';
-import Contacts from './pages/ContactsSimple';
+import Dashboard from './pages/DashboardEnhanced';
+import Contacts from './pages/ContactsEnhanced';
 import ContactDetail from './pages/ContactDetail';
-import Pipeline from './pages/PipelineSimple';
+import Pipeline from './pages/PipelineEnhanced';
 import Tasks from './pages/TasksSimple';
 import TaskCalendarView from './pages/TaskCalendarView';
 import Appointments from './pages/Appointments';
