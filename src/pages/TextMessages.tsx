@@ -403,7 +403,7 @@ const TextMessages: React.FC = () => {
     }
   };
   
-  const useTemplate = (templateContent: string) => {
+  const applyTemplate = (templateContent: string) => {
     if (selectedContact) {
       const personalizedContent = templateContent.replace('{name}', selectedContact.name);
       setNewMessage(personalizedContent);
@@ -755,7 +755,7 @@ const TextMessages: React.FC = () => {
                           {filteredTemplates.map(template => (
                             <div 
                               key={template.id}
-                              onClick={() => useTemplate(template.content)}
+                              onClick={() => applyTemplate(template.content)}
                               className="p-2 bg-white hover:bg-blue-50 border border-gray-200 rounded cursor-pointer"
                             >
                               <div className="flex justify-between">

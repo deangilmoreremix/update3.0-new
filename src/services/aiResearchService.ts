@@ -58,10 +58,14 @@ interface AIResearchService {
 class EnhancedAIResearchService implements AIResearchService {
   private intelligentAI: IntelligentAIService;
 
-  constructor() {
-    const openaiService = useOpenAI();
-    const geminiService = useGeminiAI();
-    this.intelligentAI = new IntelligentAIService(openaiService, geminiService);
+  constructor(openaiService?: any, geminiService?: any) {
+    // Use dependency injection instead of hooks
+    if (openaiService && geminiService) {
+      this.intelligentAI = new IntelligentAIService(openaiService, geminiService);
+    } else {
+      // Fallback initialization
+      this.intelligentAI = null;
+    }
   }
 
   async researchCompany(companyName: string, domain?: string, priority: 'speed' | 'quality' | 'cost' = 'quality'): Promise<CompanyResearchData> {

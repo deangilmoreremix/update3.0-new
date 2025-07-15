@@ -34,11 +34,11 @@ export interface ComposioAgentResult {
 }
 
 export class ComposioAgentRunner {
-  private agentSuite: ReturnType<typeof useOpenAIAgentSuite>;
+  private agentSuite: any; // Will be injected via dependency injection
   
-  constructor() {
-    // Initialize agent suite for Composio interactions
-    this.agentSuite = useOpenAIAgentSuite();
+  constructor(agentSuite?: any) {
+    // Initialize agent suite for Composio interactions via dependency injection
+    this.agentSuite = agentSuite;
   }
   
   async executeGoal(request: ComposioAgentRequest): Promise<ComposioAgentResult> {

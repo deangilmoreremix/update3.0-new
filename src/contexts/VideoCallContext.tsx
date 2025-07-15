@@ -495,7 +495,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setIsGroupCall(true);
       
       // Get real user media
-      const stream = await getUserMedia(type === 'video', true);
+      await getUserMedia(type === 'video', true);
       
       // Initialize participants
       const initialParticipants = callParticipants.map(p => ({
