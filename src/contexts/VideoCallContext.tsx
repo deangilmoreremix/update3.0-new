@@ -902,16 +902,11 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
       }
     }
-    // Cleanup function to stop tracks
-    const stopPreviewStream = () => {
-      if (!previewStream) return;
-      previewStream.getTracks().forEach(track => track.stop());
-      setPreviewStream(null);
-    };
-    
-    // Exit early if not visible or video not enabled
-    if (!isVisible || !videoEnabled) {
-      stopPreviewStream();
+  }, [isScreenSharing, currentCall?.type]);
+
+  // Real call recording implementation
+  const startRecording = useCallback(async () => {
+    if (!isInCall || !localStreamRef.current) {
       throw new Error('Cannot start recording: not in call or no local stream');
     }
 
@@ -1004,7 +999,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setIsRecording(false);
       throw error;
     }
-  }, [isInCall, localStreamRef, remoteStream]);
+  }, [isInCall, remoteStream]);
 
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current && isRecording) {
