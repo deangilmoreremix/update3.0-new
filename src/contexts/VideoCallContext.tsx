@@ -1093,11 +1093,6 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return () => clearInterval(interval);
   }, [isInCall]);
 
-  // Cleanup on unmount
-    
-    // Proper cleanup on unmount or dependency changes
-    return stopPreviewStream;
-
   const value: VideoCallContextType = {
     // Call State
     currentCall,
