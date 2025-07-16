@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Grid3X3, ExternalLink } from 'lucide-react';
+import { Grid3X3, ExternalLink, Megaphone, Users, FileText, Palette } from 'lucide-react';
 
 const ConnectedApps: React.FC = () => {
   const { isDark } = useTheme();
