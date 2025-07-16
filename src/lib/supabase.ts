@@ -3,18 +3,26 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables. Please check your .env file.');
-}
+// Create a more defensive Supabase client
+let supabase: ReturnType<typeof createClient>;
 
-// Validate URL format
 try {
-  new URL(supabaseUrl);
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.warn('Missing Supabase environment variables. Some features may not work.');
+    // Create a dummy client to prevent app crashes
+    supabase = createClient('https://dummy.supabase.co', 'dummy-key');
+  } else {
+    // Validate URL format
+    new URL(supabaseUrl);
+    supabase = createClient(supabaseUrl, supabaseAnonKey);
+  }
 } catch (error) {
-  throw new Error(`Invalid Supabase URL format: "${supabaseUrl}". Please ensure VITE_SUPABASE_URL is set to a valid URL like "https://your-project-ref.supabase.co" in your .env file.`);
+  console.error('Failed to create Supabase client:', error);
+  // Create a dummy client to prevent app crashes
+  supabase = createClient('https://dummy.supabase.co', 'dummy-key');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export { supabase };
 
 // Storage bucket names
 export const STORAGE_BUCKETS = {
