@@ -1,19 +1,9 @@
 import { Routes, Route } from 'react-router-dom';
 
-// Simple placeholder components to test imports one by one
-function DashboardPage() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">SmartCRM Dashboard</h1>
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <p className="text-gray-600">Dashboard is loading with basic imports...</p>
-        </div>
-      </div>
-    </div>
-  );
-}
+// Import real Dashboard component
+import DashboardPage from './pages/Dashboard';
 
+// Simple placeholder components for other pages
 function PipelinePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-8">
