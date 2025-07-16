@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApiStore } from '../store/apiStore';
-import { Eye, EyeOff, Key, Database, ChevronRight, ChevronDown, Check, X } from 'lucide-react';
+import { Eye, EyeOff, Key, Database, ChevronRight, ChevronDown, Check } from 'lucide-react';
 import { composioApps, composioAuthMap } from '../agents/useOpenAIAgentSuite';
 
 const Settings: React.FC = () => {

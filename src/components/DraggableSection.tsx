@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useDashboardLayout } from '../contexts/DashboardLayoutContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { GripVertical, Eye, EyeOff } from 'lucide-react';
+import { GripVertical, EyeOff } from 'lucide-react';
 
 interface DraggableSectionProps {
   sectionId: string;
@@ -9,7 +9,7 @@ interface DraggableSectionProps {
   index: number;
 }
 
-const DraggableSection: React.FC<DraggableSectionProps> = ({ sectionId, children, index }) => {
+const DraggableSection: React.FC<DraggableSectionProps> = ({ sectionId, children, _index }) => {
   const { 
     isDragging, 
     setIsDragging, 

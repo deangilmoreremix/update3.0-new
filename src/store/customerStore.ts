@@ -177,7 +177,7 @@ export const useCustomerStore = create<CustomerStore>((set, get) => ({
       if (error) throw error;
 
       set(state => {
-        const { [id]: deleted, ...rest } = state.customers;
+        const { [id]: _deleted, ...rest } = state.customers;
         return { customers: rest };
       });
     } catch (error) {

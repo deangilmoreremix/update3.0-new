@@ -1,4 +1,4 @@
-import { useGemini } from './geminiService';
+
 
 export async function callGemini(prompt: string) {
   try {

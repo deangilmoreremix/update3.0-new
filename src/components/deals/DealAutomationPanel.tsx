@@ -245,7 +245,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
     }
   };
   
-  const getAutomationStatusIcon = (status: string) => {
+  const _getAutomationStatusIcon = (status: string) => {
     switch (status) {
       case 'active': return Play;
       case 'paused': return Pause;
@@ -265,7 +265,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
     }
   };
   
-  const getAutomationStatusColor = (status: string) => {
+  const _getAutomationStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'text-green-600';
       case 'paused': return 'text-yellow-600';

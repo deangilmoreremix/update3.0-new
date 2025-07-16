@@ -1,4 +1,4 @@
-import { LucideIcon } from 'lucide-react';
+
 
 export interface Goal {
   id: string;
@@ -30,7 +30,7 @@ export interface GoalCategory {
   id: string;
   name: string;
   description: string;
-  icon: any; // LucideIcon component
+  icon: unknown; // LucideIcon component
   color: string;
   totalGoals: number;
 }
@@ -42,7 +42,7 @@ export interface GoalProgress {
   steps: ExecutionStep[];
   startTime: Date;
   endTime?: Date;
-  results?: any;
+  results?: unknown;
 }
 
 export interface ExecutionStep {
@@ -52,7 +52,7 @@ export interface ExecutionStep {
   progress: number;
   agent: string;
   duration?: number;
-  result?: any;
+  result?: unknown;
 }
 
 export interface AgentGoalMapping {

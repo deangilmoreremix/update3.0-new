@@ -342,7 +342,7 @@ export function useGemini() {
   // Generate email response with structured output
   const generateEmailResponse = async (
     originalEmail: string, 
-    contactInfo: any, 
+    contactInfo: unknown, 
     dealContext?: string
   ) => {
     const keyCheck = checkApiKey();
@@ -403,7 +403,7 @@ export function useGemini() {
   };
 
   // Generate personalization suggestions with structured output
-  const suggestPersonalization = async (contact: any, previousInteractions: string[]) => {
+  const suggestPersonalization = async (contact: unknown, previousInteractions: string[]) => {
     const keyCheck = checkApiKey();
     if (!keyCheck.hasKey) {
       throw new Error(keyCheck.error);

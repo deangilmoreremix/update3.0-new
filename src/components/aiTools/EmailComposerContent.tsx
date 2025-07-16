@@ -40,7 +40,7 @@ const EmailComposerContent: React.FC = () => {
     setReasoning(null);
     
     try {
-      const contactInfo = {
+      const _contactInfo = {
         name: formData.recipientName,
         position: formData.recipientPosition,
         company: formData.recipientCompany

@@ -116,7 +116,7 @@ const AIEnhancedContactCard: React.FC<AIEnhancedContactCardProps> = ({
   };
   
   // Last contact indicator
-  const getLastContactIndicator = (date?: Date) => {
+  const _getLastContactIndicator = (date?: Date) => {
     if (!date) return null;
     
     const now = new Date();

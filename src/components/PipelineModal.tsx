@@ -9,7 +9,7 @@ interface PipelineModalProps {
 }
 
 const PipelineModal: React.FC<PipelineModalProps> = ({ isOpen, onClose }) => {
-  const { deals, stageValues, totalPipelineValue } = useDealStore();
+  const { deals, _stageValues, totalPipelineValue } = useDealStore();
   const { isDark } = useTheme();
   const [activeView, setActiveView] = useState<'pipeline' | 'analysis'>('pipeline');
 

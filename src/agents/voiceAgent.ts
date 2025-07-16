@@ -1,6 +1,6 @@
-import { callOpenAI } from "../services/callOpenAI";
 
-export async function voiceAgent(input: any, setSteps?: (steps: any) => void) {
+
+export async function voiceAgent(input: unknown, setSteps?: (steps: unknown) => void) {
   const name = input.name || "there";
   const company = input.company || "your company";
   const messageType = input.messageType || "follow-up";

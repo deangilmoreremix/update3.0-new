@@ -10,7 +10,7 @@ const threeWeeks = new Date(today.getTime() + 21 * 24 * 60 * 60 * 1000);
 const sixWeeks = new Date(today.getTime() + 42 * 24 * 60 * 60 * 1000);
 
 // Helper function to find contact by name similarity
-const findContactByName = (contactName: string) => {
+const _findContactByName = (contactName: string) => {
   return mockContacts.find(contact => 
     contact.name.toLowerCase().includes(contactName.toLowerCase()) ||
     contactName.toLowerCase().includes(contact.firstName.toLowerCase()) ||

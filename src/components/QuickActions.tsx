@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, UserPlus, Calendar, Mail, Target, Phone } from 'lucide-react';
+import { Plus, UserPlus, Calendar, Mail } from 'lucide-react';
 
 const QuickActions = () => {
   const actions = [

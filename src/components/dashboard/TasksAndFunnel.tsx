@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
-import { MoreHorizontal, ArrowRight, Calendar, UserPlus, Users, Plus } from 'lucide-react';
+import { MoreHorizontal, ArrowRight, UserPlus, Users, Plus } from 'lucide-react';
 import Avatar from '../ui/Avatar';
-import { getInitials } from '../../utils/avatars';
+
 
 // Update taskData to include contactIds instead of direct assignee objects
 const taskData = [

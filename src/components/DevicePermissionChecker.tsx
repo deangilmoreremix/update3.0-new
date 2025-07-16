@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Camera, 
   Mic, 
@@ -59,49 +59,7 @@ const DevicePermissionChecker: React.FC = () => {
   const [testStream, setTestStream] = useState<MediaStream | null>(null);
   const [showPreview, setShowPreview] = useState(false);
 
-  // Check permissions on component mount
-  useEffect(() => {
-    if (showChecker) {
-      checkPermissions();
-      enumerateDevices();
-    }
-  }, [showChecker]);
-
-  // Cleanup test stream on unmount
-  useEffect(() => {
-    return () => {
-      if (testStream) {
-        testStream.getTracks().forEach(track => track.stop());
-      }
-    };
-  }, [testStream]);
-
-  const checkPermissions = async () => {
-    setIsChecking(true);
-    
-    try {
-      // Check camera permission
-      const cameraPermission = await navigator.permissions.query({ name: 'camera' as PermissionName });
-      
-      // Check microphone permission
-      const microphonePermission = await navigator.permissions.query({ name: 'microphone' as PermissionName });
-      
-      setPermissions({
-        camera: cameraPermission.state,
-        microphone: microphonePermission.state,
-        screen: 'prompt' // Screen sharing is always prompt-based
-      });
-      
-    } catch (error) {
-      console.error('Error checking permissions:', error);
-      // Fallback to testing with getUserMedia
-      await testPermissions();
-    } finally {
-      setIsChecking(false);
-    }
-  };
-
-  const testPermissions = async () => {
+  const testPermissions = useCallback(async () => {
     const newPermissions: DevicePermissions = {
       camera: 'unknown',
       microphone: 'unknown',
@@ -127,7 +85,49 @@ const DevicePermissionChecker: React.FC = () => {
     }
 
     setPermissions(newPermissions);
-  };
+  }, []);
+
+  const checkPermissions = useCallback(async () => {
+    setIsChecking(true);
+    
+    try {
+      // Check camera permission
+      const cameraPermission = await navigator.permissions.query({ name: 'camera' as PermissionName });
+      
+      // Check microphone permission
+      const microphonePermission = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+      
+      setPermissions({
+        camera: cameraPermission.state,
+        microphone: microphonePermission.state,
+        screen: 'prompt' // Screen sharing is always prompt-based
+      });
+      
+    } catch (error) {
+      console.error('Error checking permissions:', error);
+      // Fallback to testing with getUserMedia
+      await testPermissions();
+    } finally {
+      setIsChecking(false);
+    }
+  }, [testPermissions]);
+
+  // Check permissions on component mount
+  useEffect(() => {
+    if (showChecker) {
+      checkPermissions();
+      enumerateDevices();
+    }
+  }, [showChecker, checkPermissions]);
+
+  // Cleanup test stream on unmount
+  useEffect(() => {
+    return () => {
+      if (testStream) {
+        testStream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [testStream]);
 
   const enumerateDevices = async () => {
     try {

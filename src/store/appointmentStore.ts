@@ -232,7 +232,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       await new Promise(resolve => setTimeout(resolve, 500));
       
       const { appointments } = get();
-      const { [id]: deletedAppointment, ...remainingAppointments } = appointments;
+      const { [id]: _deletedAppointment, ...remainingAppointments } = appointments;
       
       set({ 
         appointments: remainingAppointments,

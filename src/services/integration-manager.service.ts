@@ -3,7 +3,7 @@
  * Main orchestrator that coordinates all integration services
  */
 
-import { contactAPI, ContactFilters } from './contact-api.service';
+import { contactAPI } from './contact-api.service';
 import { aiIntegration, AIAnalysisRequest, BulkAnalysisRequest } from './ai-integration.service';
 import { httpClient } from './http-client.service';
 import { validationService } from './validation.service';
@@ -50,13 +50,13 @@ export interface ContactWorkflow {
 
 export interface WorkflowStep {
   type: 'enrichment' | 'analysis' | 'validation' | 'notification' | 'tagging';
-  config: any;
-  conditions?: any;
+  config: unknown;
+  conditions?: unknown;
 }
 
 export interface WorkflowTrigger {
   type: 'contact_created' | 'contact_updated' | 'score_threshold' | 'manual';
-  config: any;
+  config: unknown;
 }
 
 class IntegrationManagerService {
@@ -213,7 +213,7 @@ class IntegrationManagerService {
   }
   
   // AI Integration Methods
-  async analyzeContact(contactId: string, options?: Partial<AIAnalysisRequest['options']>): Promise<any> {
+  async analyzeContact(contactId: string, options?: Partial<AIAnalysisRequest['options']>): Promise<unknown> {
     const startTime = Date.now();
     this.trackRequest();
     
@@ -258,7 +258,7 @@ class IntegrationManagerService {
   async enrichAndAnalyzeContact(
     contactId: string,
     enrichmentRequest?: Partial<ContactEnrichmentData>
-  ): Promise<{ contact: Contact; enrichment: ContactEnrichmentData; analysis: any }> {
+  ): Promise<{ contact: Contact; enrichment: ContactEnrichmentData; analysis: unknown }> {
     const startTime = Date.now();
     this.trackRequest();
     
@@ -319,7 +319,7 @@ class IntegrationManagerService {
   async bulkAnalyzeContacts(
     contactIds: string[],
     analysisTypes: AIAnalysisRequest['analysisTypes'] = ['scoring']
-  ): Promise<any> {
+  ): Promise<unknown> {
     const startTime = Date.now();
     this.trackRequest();
     
@@ -546,7 +546,7 @@ class IntegrationManagerService {
       }
       
       // Calculate requests per minute
-      const oneMinuteAgo = Date.now() - 60000;
+      const _oneMinuteAgo = Date.now() - 60000;
       healthCheck.metrics.requestsPerMinute = this.metrics.requestCount; // Simplified
       
       // Determine overall status
@@ -607,7 +607,7 @@ class IntegrationManagerService {
     logger.info('All caches cleared');
   }
   
-  async getSystemMetrics(): Promise<any> {
+  async getSystemMetrics(): Promise<unknown> {
     return {
       ...this.metrics,
       cache: cacheService.getStats(),

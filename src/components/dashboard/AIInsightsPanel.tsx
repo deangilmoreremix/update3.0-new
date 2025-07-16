@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Brain, Zap, RefreshCw, TrendingUp, AlertTriangle, CheckCircle, Info } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAITools } from '../../components/AIToolsProvider';
@@ -29,7 +29,7 @@ const AIInsightsPanel = () => {
   const [apiKeysConfigured, setApiKeysConfigured] = useState(true);
 
   // Create initial insights with the three required categories
-  const createDefaultInsights = (): Insight[] => {
+  const createDefaultInsights = useCallback((): Insight[] => {
     // Get contacts for the insights
     const activeDeals = Object.values(deals).filter(deal => 
       deal.stage !== 'closed-won' && deal.stage !== 'closed-lost'
@@ -58,7 +58,7 @@ const AIInsightsPanel = () => {
     }).filter(Boolean) as Array<{ id: string; name: string; avatar?: string; }>;
 
     // High probability deals
-    const highProbDeals = activeDeals.filter(deal => deal.probability > 70);
+    const highProbDeals = activeDeals.filter(deal => deal.probability && deal.probability > 70);
     const highProbContacts = highProbDeals.map(deal => {
       const contact = contacts[deal.contactId];
       return contact ? {
@@ -97,82 +97,11 @@ const AIInsightsPanel = () => {
         relatedContacts: highProbContacts
       }
     ];
-  };
+  }, [deals, contacts, isDark]);
   
   const [insights, setInsights] = useState<Insight[]>(createDefaultInsights());
 
-  useEffect(() => {
-    // Generate initial insights when component mounts
-    generateInitialInsights();
-  }, []);
-
-  // When theme changes, regenerate default insights to update colors
-  useEffect(() => {
-    setInsights(createDefaultInsights());
-  }, [isDark]);
-
-  const generateInitialInsights = async () => {
-    // Only generate if we have enough data
-    if (Object.keys(deals).length < 2 || Object.keys(contacts).length < 2) {
-      return;
-    }
-
-    try {
-      await generateRealInsights();
-    } catch (error) {
-      console.error("Failed to generate initial insights:", error);
-      // Don't set error state for initial load failures
-    }
-  };
-
-  const generateInsights = async () => {
-    setIsGenerating(true);
-    setError(null);
-    
-    try {
-      await generateRealInsights();
-    } catch (error) {
-      console.error("Failed to generate insights:", error);
-      // Set a more user-friendly error message
-      setError("Unable to generate AI insights at this time. Please try again later.");
-      setApiKeysConfigured(false);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  // Render avatar stack for related contacts
-  const renderAvatarStack = (contacts: Array<{ id: string; name: string; avatar?: string }>, maxVisible: number = 3) => {
-    const visibleContacts = contacts.slice(0, maxVisible);
-    const remainingCount = Math.max(0, contacts.length - maxVisible);
-    
-    return (
-      <div className="flex items-center mt-2">
-        <div className="flex -space-x-2">
-          {visibleContacts.map((contact, index) => (
-            <div key={contact.id} className="relative" style={{ zIndex: maxVisible - index }}>
-              <Avatar
-                src={contact.avatar}
-                alt={contact.name}
-                size="sm"
-                fallback={getInitials(contact.name)}
-                className="border-2 border-white dark:border-gray-900"
-              />
-            </div>
-          ))}
-          {remainingCount > 0 && (
-            <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold border-2 border-white dark:border-gray-900 ${
-              isDark ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700'
-            }`}>
-              +{remainingCount}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const generateRealInsights = async () => {
+  const generateRealInsights = useCallback(async () => {
     // Convert to arrays for analysis
     const dealsArray = Object.values(deals);
     const contactsArray = Object.values(contacts);
@@ -229,6 +158,77 @@ const AIInsightsPanel = () => {
       setError("Unable to generate AI insights at this time. Please try again later.");
       setApiKeysConfigured(false);
     }
+  }, [deals, contacts, createDefaultInsights]);
+
+  const generateInitialInsights = useCallback(async () => {
+    // Only generate if we have enough data
+    if (Object.keys(deals).length < 2 || Object.keys(contacts).length < 2) {
+      return;
+    }
+
+    try {
+      await generateRealInsights();
+    } catch (error) {
+      console.error("Failed to generate initial insights:", error);
+      // Don't set error state for initial load failures
+    }
+  }, [deals, contacts, generateRealInsights]);
+
+  useEffect(() => {
+    // Generate initial insights when component mounts
+    generateInitialInsights();
+  }, [generateInitialInsights]);
+
+  // When theme changes, regenerate default insights to update colors
+  useEffect(() => {
+    setInsights(createDefaultInsights());
+  }, [isDark, createDefaultInsights]);
+
+  const generateInsights = async () => {
+    setIsGenerating(true);
+    setError(null);
+    
+    try {
+      await generateRealInsights();
+    } catch (error) {
+      console.error("Failed to generate insights:", error);
+      // Set a more user-friendly error message
+      setError("Unable to generate AI insights at this time. Please try again later.");
+      setApiKeysConfigured(false);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  // Render avatar stack for related contacts
+  const renderAvatarStack = (contacts: Array<{ id: string; name: string; avatar?: string }>, maxVisible: number = 3) => {
+    const visibleContacts = contacts.slice(0, maxVisible);
+    const remainingCount = Math.max(0, contacts.length - maxVisible);
+    
+    return (
+      <div className="flex items-center mt-2">
+        <div className="flex -space-x-2">
+          {visibleContacts.map((contact, index) => (
+            <div key={contact.id} className="relative" style={{ zIndex: maxVisible - index }}>
+              <Avatar
+                src={contact.avatar}
+                alt={contact.name}
+                size="sm"
+                fallback={getInitials(contact.name)}
+                className="border-2 border-white dark:border-gray-900"
+              />
+            </div>
+          ))}
+          {remainingCount > 0 && (
+            <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold border-2 border-white dark:border-gray-900 ${
+              isDark ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700'
+            }`}>
+              +{remainingCount}
+            </div>
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (

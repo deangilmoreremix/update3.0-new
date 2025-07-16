@@ -5,8 +5,8 @@
 
 import { logger } from './logger.service';
 import { rateLimiter } from './rate-limiter.service';
-import { cacheService } from './cache.service';
-import apiConfig, { AIModel, getModelsByCapability } from '../config/api.config';
+
+import apiConfig, { AIModel } from '../config/api.config';
 
 export interface TaskRequirements {
   accuracy: 'low' | 'medium' | 'high' | 'critical';
@@ -21,7 +21,7 @@ export interface TaskContext {
             'relationship_mapping' | 'sentiment_analysis' | 'lead_qualification' | 
             'opportunity_analysis' | 'risk_assessment' | 'engagement_prediction';
   requirements: TaskRequirements;
-  contactData?: any;
+  contactData?: unknown;
   businessContext?: string;
   urgency?: 'low' | 'medium' | 'high' | 'critical';
   batchSize?: number;

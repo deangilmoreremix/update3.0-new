@@ -109,7 +109,7 @@ const FeatureShowcase: React.FC = () => {
         </div>
         
         <div className="flex flex-wrap justify-center mb-12 gap-2">
-          {features.map((feature, index) => (
+          {features.map((feature, _index) => (
             <button
               key={feature.id}
               onClick={() => setActiveFeature(feature.id)}

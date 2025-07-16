@@ -2,7 +2,7 @@
 // Orchestrates actions through Composio API for external business tools
 
 import realApiService from '../services/realApiService';
-import { useOpenAIAgentSuite } from './useOpenAIAgentSuite';
+
 import { realAgentExecutor } from './realAgentExecutor';
 import type { Goal } from '../data/goalsData';
 
@@ -10,11 +10,11 @@ export interface ComposioAgentRequest {
   goal: Goal;
   entityId?: string;
   crmContext?: {
-    contacts: any[];
-    deals: any[];
-    tasks: any[];
+    contacts: unknown[];
+    deals: unknown[];
+    tasks: unknown[];
   };
-  userPreferences?: any;
+  userPreferences?: unknown;
 }
 
 export interface ComposioAgentResult {
@@ -34,9 +34,9 @@ export interface ComposioAgentResult {
 }
 
 export class ComposioAgentRunner {
-  private agentSuite: any; // Will be injected via dependency injection
+  private agentSuite: unknown; // Will be injected via dependency injection
   
-  constructor(agentSuite?: any) {
+  constructor(agentSuite?: unknown) {
     // Initialize agent suite for Composio interactions via dependency injection
     this.agentSuite = agentSuite;
   }
@@ -47,10 +47,10 @@ export class ComposioAgentRunner {
     
     try {
       // Phase 1: Agent Analysis and Planning
-      const planningResult = await this.planExecution(goal, crmContext);
+      const _planningResult = await this.planExecution(goal, crmContext);
       
       // Phase 2: Tool Authentication and Setup
-      const toolsSetup = await this.setupRequiredTools(goal.toolsNeeded, entityId);
+      const _toolsSetup = await this.setupRequiredTools(goal.toolsNeeded, entityId);
       
       // Phase 3: Execute Primary Agent Action
       const executionResult = await realAgentExecutor.executeAgent({
@@ -103,7 +103,7 @@ export class ComposioAgentRunner {
     }
   }
   
-  private async planExecution(goal: Goal, crmContext?: any) {
+  private async planExecution(goal: Goal, crmContext?: unknown) {
     // Use AI to analyze goal and create execution plan
     const planningPrompt = `Analyze business automation goal and create execution plan:
 
@@ -144,7 +144,7 @@ Create a step-by-step execution plan with specific actions for each tool and age
     return setupResults;
   }
   
-  private async executeToolActions(goal: Goal, entityId: string, crmContext?: any) {
+  private async executeToolActions(goal: Goal, entityId: string, crmContext?: unknown) {
     const toolActions = [];
     
     // Execute actions based on goal requirements and available tools
@@ -184,7 +184,7 @@ Create a step-by-step execution plan with specific actions for each tool and age
     return toolActions;
   }
   
-  private async executeEmailActions(goal: Goal, entityId: string, crmContext?: any) {
+  private async executeEmailActions(goal: Goal, entityId: string, crmContext?: unknown) {
     if (!crmContext?.contacts?.length) return null;
     
     // Send personalized emails to high-priority contacts
@@ -213,7 +213,7 @@ Create a step-by-step execution plan with specific actions for each tool and age
     };
   }
   
-  private async executeCalendarActions(goal: Goal, entityId: string, crmContext?: any) {
+  private async executeCalendarActions(goal: Goal, entityId: string, crmContext?: unknown) {
     const now = new Date();
     const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
     
@@ -237,7 +237,7 @@ Create a step-by-step execution plan with specific actions for each tool and age
     }
   }
   
-  private async executeLinkedInActions(goal: Goal, entityId: string, crmContext?: any) {
+  private async executeLinkedInActions(goal: Goal, entityId: string, crmContext?: unknown) {
     // Simulate LinkedIn outreach for lead generation goals
     if (goal.category === 'Sales' && crmContext?.contacts?.length) {
       return {
@@ -250,7 +250,7 @@ Create a step-by-step execution plan with specific actions for each tool and age
     return null;
   }
   
-  private async executeSlackActions(goal: Goal, entityId: string, crmContext?: any) {
+  private async executeSlackActions(goal: Goal, entityId: string, crmContext?: unknown) {
     try {
       await this.agentSuite.postToSlack({
         channel: '#automation-updates',
@@ -269,7 +269,7 @@ Create a step-by-step execution plan with specific actions for each tool and age
     }
   }
   
-  private async executeCRMActions(goal: Goal, toolId: string, entityId: string, crmContext?: any) {
+  private async executeCRMActions(goal: Goal, toolId: string, entityId: string, crmContext?: unknown) {
     // Simulate CRM updates and data synchronization
     return {
       tool: toolId,
@@ -289,7 +289,7 @@ Create a step-by-step execution plan with specific actions for each tool and age
     };
   }
   
-  private async updateCRMData(goal: Goal, toolActions: any[], crmContext?: any) {
+  private async updateCRMData(goal: Goal, toolActions: unknown[], crmContext?: unknown) {
     // Simulate CRM updates based on goal execution
     const updates = {
       contactsCreated: 0,
@@ -310,7 +310,7 @@ Create a step-by-step execution plan with specific actions for each tool and age
     return updates;
   }
   
-  private calculateBusinessImpact(goal: Goal, toolActions: any[]): string {
+  private calculateBusinessImpact(goal: Goal, toolActions: unknown[]): string {
     const baseImpact = goal.businessImpact;
     const toolsUsedCount = toolActions.length;
     const successfulActions = toolActions.filter(a => a.impact).length;
@@ -324,7 +324,7 @@ Create a step-by-step execution plan with specific actions for each tool and age
     }
   }
   
-  private generateRecommendations(goal: Goal, executionResult: any): string[] {
+  private generateRecommendations(goal: Goal, executionResult: unknown): string[] {
     const recommendations = [
       `Monitor ${goal.successMetrics.join(', ')} over the next 30 days`,
       'Review automation performance and optimize workflows',

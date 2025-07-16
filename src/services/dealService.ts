@@ -2,7 +2,7 @@ import { supabase } from './supabaseClient';
 import { Deal } from '../types';
 
 // Fetch all deals for the current user
-const fetchDeals = async (userId: string) => {
+const _fetchDeals = async (userId: string) => {
   try {
     const { data, error } = await supabase
       .from('deals')
@@ -18,7 +18,7 @@ const fetchDeals = async (userId: string) => {
 };
 
 // Fetch deals by stage
-const fetchDealsByStage = async (userId: string, stage: string) => {
+const _fetchDealsByStage = async (userId: string, stage: string) => {
   try {
     const { data, error } = await supabase
       .from('deals')
@@ -35,7 +35,7 @@ const fetchDealsByStage = async (userId: string, stage: string) => {
 };
 
 // Create a new deal
-const createDeal = async (dealData: Partial<Deal>, userId: string) => {
+const _createDeal = async (dealData: Partial<Deal>, userId: string) => {
   try {
     const { data, error } = await supabase
       .from('deals')
@@ -50,7 +50,7 @@ const createDeal = async (dealData: Partial<Deal>, userId: string) => {
 };
 
 // Update an existing deal
-const updateDeal = async (id: string, dealData: Partial<Deal>) => {
+const _updateDeal = async (id: string, dealData: Partial<Deal>) => {
   try {
     // Add updated_at timestamp
     const updatedDealData = {
@@ -72,7 +72,7 @@ const updateDeal = async (id: string, dealData: Partial<Deal>) => {
 };
 
 // Delete a deal
-const deleteDeal = async (id: string) => {
+const _deleteDeal = async (id: string) => {
   try {
     const { error } = await supabase
       .from('deals')
@@ -87,7 +87,7 @@ const deleteDeal = async (id: string) => {
 };
 
 // Update deal stage and handle stage transition logic
-const updateDealStage = async (id: string, newStage: string, oldStage: string) => {
+const _updateDealStage = async (id: string, newStage: string, oldStage: string) => {
   try {
     // Get current deal data to calculate days in stage
     const { data: currentDealData, error: fetchError } = await supabase
@@ -144,7 +144,7 @@ const updateDealStage = async (id: string, newStage: string, oldStage: string) =
 };
 
 // Get deal statistics
-const getDealStats = async (userId: string) => {
+const _getDealStats = async (userId: string) => {
   try {
     const { data, error } = await supabase
       .from('deals')
@@ -185,7 +185,7 @@ const getDealStats = async (userId: string) => {
 };
 
 // Fetch deals that need attention
-const getHighPriorityDeals = async (userId: string) => {
+const _getHighPriorityDeals = async (userId: string) => {
   try {
     const { data, error } = await supabase
       .from('deals')
@@ -203,7 +203,7 @@ const getHighPriorityDeals = async (userId: string) => {
 };
 
 // For development/demo purposes when Supabase isn't available
-export const fetchDealsFromSupabase = async (userId?: string) => {
+export const fetchDealsFromSupabase = async (_userId?: string) => {
   try {
     // This is a simulated function since we don't have the actual deals table yet
     // In a real implementation, we would query Supabase
@@ -302,7 +302,7 @@ export const fetchDealsFromSupabase = async (userId?: string) => {
 };
 
 // Create a new deal in Supabase
-export const createDealInSupabase = async (dealData: any) => {
+export const createDealInSupabase = async (dealData: unknown) => {
   try {
     // In a real implementation, we would insert into Supabase
     // For now, we'll simulate a successful response
@@ -323,7 +323,7 @@ export const createDealInSupabase = async (dealData: any) => {
 };
 
 // Update a deal in Supabase
-export const updateDealInSupabase = async (id: string, dealData: any) => {
+export const updateDealInSupabase = async (id: string, dealData: unknown) => {
   try {
     // In a real implementation, we would update in Supabase
     // For now, we'll simulate a successful response
@@ -342,7 +342,7 @@ export const updateDealInSupabase = async (id: string, dealData: any) => {
 };
 
 // Delete a deal from Supabase
-export const deleteDealFromSupabase = async (id: string) => {
+export const deleteDealFromSupabase = async (_id: string) => {
   try {
     // In a real implementation, we would delete from Supabase
     // For now, we'll simulate a successful response

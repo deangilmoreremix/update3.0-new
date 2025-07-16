@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useGemini } from '../services/geminiService';
-import { Target, Search, Download, User, Home, MapPin, CreditCard, Database, Brain } from 'lucide-react';
+import { Target, Search, Download, User, MapPin, Database, Brain } from 'lucide-react';
 import { MapContainer, TileLayer, Circle, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { icon } from 'leaflet';
@@ -42,7 +42,7 @@ const CircleProspecting: React.FC = () => {
   const [aiInsight, setAiInsight] = useState<string | null>(null);
   
   // Mock prospect data
-  const [prospects, setProspects] = useState<ProspectData[]>([
+  const [prospects, _setProspects] = useState<ProspectData[]>([
     {
       id: '1',
       name: 'John Smith',
@@ -141,7 +141,7 @@ const CircleProspecting: React.FC = () => {
     }
   };
   
-  const prospectsInRadius = prospects.filter(prospect => {
+  const prospectsInRadius = prospects.filter(_prospect => {
     // In a real app, we would calculate the distance between center and each prospect
     // For demo purposes, we'll assume all prospects are within the radius
     return true;

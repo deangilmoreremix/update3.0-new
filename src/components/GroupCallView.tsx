@@ -138,7 +138,7 @@ const GroupCallView: React.FC = () => {
   const [focusedParticipant, setFocusedParticipant] = useState<string | null>(null);
   const [layout, setLayout] = useState<'grid' | 'focus'>('grid');
   const [showChat, setShowChat] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
+  const [_showSettings, _setShowSettings] = useState(false);
   
   // Add local participant to list
   const allParticipants = [

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as edgeFunctionService from '../../services/edgeFunctionService';
 import AIToolContent from '../shared/AIToolContent';
-import { Brain, BarChart3, TrendingUp, ChevronDown, ChevronUp } from 'lucide-react';
+import { Brain, BarChart3, ChevronDown, ChevronUp } from 'lucide-react';
 
 const SalesInsightsContent: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);

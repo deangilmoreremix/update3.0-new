@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AvatarWithStatus } from '../ui/AvatarWithStatus';
 import { ModernButton } from '../ui/ModernButton';
-import { CustomizableAIToolbar } from '../ui/CustomizableAIToolbar';
+
 import { AIResearchButton } from '../ui/AIResearchButton';
 import { aiEnrichmentService, ContactEnrichmentData } from '../../services/aiEnrichmentService';
 import { ContactJourneyTimeline } from '../contacts/ContactJourneyTimeline';
@@ -143,7 +143,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
     }
   };
 
-  const handleEditField = (field: string, value: any) => {
+  const handleEditField = (field: string, value: unknown) => {
     setEditedContact(prev => ({ ...prev, [field]: value }));
   };
 
@@ -157,13 +157,13 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
         let updates: Partial<Contact> = {};
         
         if (editingField.startsWith('social_')) {
-          const platform = editingField.replace('social_', '');
+          const _platform = editingField.replace('social_', '');
           const socialProfiles = {
             ...(editedContact.socialProfiles || {}),
           };
           updates = { socialProfiles };
         } else if (editingField.startsWith('custom_')) {
-          const fieldName = editingField.replace('custom_', '');
+          const _fieldName = editingField.replace('custom_', '');
           const customFields = {
             ...(editedContact.customFields || {}),
           };
@@ -247,7 +247,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
     }
   };
 
-  const handleRemoveSocialProfile = async (platform: string) => {
+  const _handleRemoveSocialProfile = async (platform: string) => {
     if (!editedContact.socialProfiles) return;
     
     const socialProfiles = { ...editedContact.socialProfiles };
@@ -345,7 +345,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
     
     try {
       // Apply enrichment data to contact
-      const updates: any = {};
+      const updates: unknown = {};
       
       if (enrichmentData.phone && !editedContact.phone) {
         updates.phone = enrichmentData.phone;
@@ -364,7 +364,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
       
       // Social profiles
       if (enrichmentData.socialProfiles) {
-        const socialUpdates: any = {};
+        const socialUpdates: unknown = {};
         Object.entries(enrichmentData.socialProfiles).forEach(([key, value]) => {
           if (value && !editedContact.socialProfiles?.[key as keyof typeof editedContact.socialProfiles]) {
             socialUpdates[key] = value;

@@ -126,12 +126,12 @@ const Contacts: React.FC = () => {
     }
   ]);
   
-  const openai = useOpenAI();
+  const _openai = useOpenAI();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddContactModal, setShowAddContactModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
-  const [importedData, setImportedData] = useState<any[]>([]);
+  const [importedData, setImportedData] = useState<unknown[]>([]);
   const [importValidation, setImportValidation] = useState<{error?: string, success?: string}>({});
   const [viewMode, setViewMode] = useState<'table' | 'card'>('card');
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
@@ -285,7 +285,7 @@ const Contacts: React.FC = () => {
     }
     
     // Convert imported data to Contact format
-    const newContacts: Contact[] = importedData.map((row: any, index) => {
+    const newContacts: Contact[] = importedData.map((row: unknown, index) => {
       // Map the imported data to our Contact type
       // This would need to be adjusted based on actual import format
       return {
@@ -318,7 +318,7 @@ const Contacts: React.FC = () => {
   // Create a new contact form
   const { register, handleSubmit, reset, formState: { errors } } = useForm<Contact>();
   
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: unknown) => {
     // Add new contact
     const newContact: Contact = {
       ...data,

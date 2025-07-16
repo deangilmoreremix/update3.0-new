@@ -43,7 +43,7 @@ const CallHistory: React.FC = () => {
     if (savedHistory) {
       try {
         const parsed = JSON.parse(savedHistory);
-        setCallHistory(parsed.map((call: any) => ({
+        setCallHistory(parsed.map((call: unknown) => ({
           ...call,
           startTime: new Date(call.startTime),
           endTime: call.endTime ? new Date(call.endTime) : undefined
@@ -105,7 +105,7 @@ const CallHistory: React.FC = () => {
   };
 
   // Add new call to history (this would be called from the video call context)
-  const addCallToHistory = (callData: Omit<CallRecord, 'id'>) => {
+  const _addCallToHistory = (callData: Omit<CallRecord, 'id'>) => {
     const newCall: CallRecord = {
       ...callData,
       id: Date.now().toString()

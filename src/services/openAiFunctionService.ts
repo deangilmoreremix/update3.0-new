@@ -371,7 +371,7 @@ export const useOpenAIFunctions = () => {
   };
   
   // Execute function calls from OpenAI
-  const executeFunction = async (functionName: string, args: any) => {
+  const executeFunction = async (functionName: string, args: unknown) => {
     if (typeof crmFunctions[functionName as keyof CrmFunctions] === 'function') {
       // Convert arguments if needed (e.g., parse dates)
       try {

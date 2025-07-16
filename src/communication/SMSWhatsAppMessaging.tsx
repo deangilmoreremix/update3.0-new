@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Send, Phone, MessageCircle, Clock, Check, CheckCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
@@ -46,19 +46,19 @@ const SMSWhatsAppMessaging: React.FC = () => {
   useEffect(() => {
     fetchContacts();
     fetchMessages();
-  }, [activeTab]);
+  }, [activeTab, fetchContacts, fetchMessages]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  const fetchContacts = async () => {
+  const fetchContacts = useCallback(async () => {
     try {
       const response = await fetch('/api/contacts');
       const contactsData = await response.json();
       
-      const formattedContacts: Contact[] = contactsData.map((contact: any) => ({
+      const formattedContacts: Contact[] = contactsData.map((contact: unknown) => ({
         id: contact.id,
         name: contact.name,
         phone: contact.phone || '+1234567890',
@@ -77,9 +77,9 @@ const SMSWhatsAppMessaging: React.FC = () => {
         variant: "destructive"
       });
     }
-  };
+  }, [toast]);
 
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     if (!selectedContact) return;
     
     try {
@@ -113,7 +113,7 @@ const SMSWhatsAppMessaging: React.FC = () => {
     } catch (error) {
       console.error('Failed to fetch messages:', error);
     }
-  };
+  }, [selectedContact, activeTab]);
 
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectedContact) return;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useGemini } from '../../services/geminiService';
 import { CheckCircle, XCircle, AlertCircle, RefreshCw } from 'lucide-react';
 

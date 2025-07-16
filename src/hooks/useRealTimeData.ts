@@ -113,7 +113,7 @@ export const useActivityTracking = () => {
     entity_type: 'contact' | 'deal';
     entity_id: string;
     description: string;
-    metadata?: any;
+    metadata?: unknown;
   }) => {
     try {
       const supabase = getSupabaseService();

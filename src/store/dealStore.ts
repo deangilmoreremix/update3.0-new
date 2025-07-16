@@ -234,7 +234,7 @@ export const useDealStore = create<DealState>((set, get) => ({
         stageValues[columnId] = totalValue;
       });
       
-      const totalPipelineValue = Object.values(stageValues).reduce((a, b) => a + b, 0);
+      const _totalPipelineValue = Object.values(stageValues).reduce((a, b) => a + b, 0);
       
       // Use the mock data for now instead of the API response
       // In a real implementation, we would use the transformed data from the API
@@ -388,7 +388,7 @@ export const useDealStore = create<DealState>((set, get) => ({
       const stage = deals[id].stage;
       
       // Remove the deal from the deals object
-      const { [id]: deletedDeal, ...remainingDeals } = deals;
+      const { [id]: _deletedDeal, ...remainingDeals } = deals;
       
       // Remove the deal ID from the column
       const updatedColumns = {

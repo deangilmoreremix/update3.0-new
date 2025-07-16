@@ -61,7 +61,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
   onToggleFavorite,
   onFindNewImage
 }) => {
-  const [showAIInsights, setShowAIInsights] = useState(false);
+  const [_showAIInsights, _setShowAIInsights] = useState(false);
   const [localAnalyzing, setLocalAnalyzing] = useState(false);
   const [localEnriching, setLocalEnriching] = useState(false);
   const [isFinding, setIsFinding] = useState(false);
@@ -69,7 +69,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
   const cardRef = useRef<HTMLDivElement>(null);
 
   // New state to track AI enrichment status
-  const [lastEnrichment, setLastEnrichment] = useState<any>(
+  const [lastEnrichment, setLastEnrichment] = useState<unknown>(
     deal.lastEnrichment || (deal.probability > 75 ? { confidence: deal.probability } : null)
   );
 

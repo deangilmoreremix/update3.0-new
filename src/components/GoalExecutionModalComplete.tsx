@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { Goal } from '../types/goals';
 import { composioService } from '../services/composioService';
-import { callMCP } from '../utils/llm/mcpClient';
+
 import { runAgentWorkflow, getAgentForGoal, AVAILABLE_AGENTS, type AgentType } from '../agents/AgentOrchestrator';
-import { getOptimalGemmaConfig, enhanceAgenticPrompt, addChainOfThought } from '../services/gemmaAgentOptimizer';
+import { getOptimalGemmaConfig } from '../services/gemmaAgentOptimizer';
 import { 
   X, 
   Maximize2,
@@ -42,7 +42,7 @@ interface ExecutionStep {
   status: 'pending' | 'running' | 'completed' | 'error';
   startTime?: Date;
   completionTime?: Date;
-  result?: any;
+  result?: unknown;
   thinking?: string;
   toolsUsed?: string[];
   crmImpact?: string;
@@ -73,8 +73,8 @@ interface GoalExecutionModalProps {
   isOpen: boolean;
   onClose: () => void;
   realMode?: boolean;
-  onComplete?: (result: any) => void;
-  contextData?: any;
+  onComplete?: (result: unknown) => void;
+  contextData?: unknown;
 }
 
 const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
@@ -90,8 +90,8 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
   const [agents, setAgents] = useState<Agent[]>([]);
   const [executionSteps, setExecutionSteps] = useState<ExecutionStep[]>([]);
   const [logs, setLogs] = useState<string[]>([]);
-  const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
-  const [estimatedTimeRemaining, setEstimatedTimeRemaining] = useState<number>(0);
+  const [_selectedAgent, _setSelectedAgent] = useState<string | null>(null);
+  const [_estimatedTimeRemaining, setEstimatedTimeRemaining] = useState<number>(0);
   const [executionStartTime, setExecutionStartTime] = useState<Date | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'agents' | 'steps' | 'logs' | 'results'>('overview');
   const [chainOfThought, setChainOfThought] = useState<string[]>([]);
@@ -612,7 +612,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
 
           {activeTab === 'steps' && (
             <div className="space-y-4">
-              {executionSteps.map((step, index) => (
+              {executionSteps.map((step, _index) => (
                 <div key={step.id} className="flex items-center space-x-4 p-4 border rounded-lg">
                   <div className="flex-shrink-0">
                     {step.status === 'completed' && <CheckCircle className="h-6 w-6 text-green-500" />}

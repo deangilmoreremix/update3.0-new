@@ -216,7 +216,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       await new Promise(resolve => setTimeout(resolve, 500));
       
       const { tasks } = get();
-      const { [id]: deletedTask, ...remainingTasks } = tasks;
+      const { [id]: _deletedTask, ...remainingTasks } = tasks;
       
       set({ 
         tasks: remainingTasks,

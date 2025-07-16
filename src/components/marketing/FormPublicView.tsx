@@ -87,7 +87,7 @@ const FormPublicView: React.FC = () => {
     
     // Clear error for this field if it exists
     if (errors[field]) {
-      const { [field]: removedError, ...restErrors } = errors;
+      const { [field]: _removedError, ...restErrors } = errors;
       setErrors(restErrors);
     }
   };
@@ -151,7 +151,7 @@ const FormPublicView: React.FC = () => {
     );
   }
   
-  const renderField = (field: any) => {
+  const renderField = (field: unknown) => {
     const { id, type, label, required, options, placeholder } = field;
     
     switch (type) {

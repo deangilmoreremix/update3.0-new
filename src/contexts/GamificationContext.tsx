@@ -128,7 +128,7 @@ const sampleChallenges: Challenge[] = [
 export const GamificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { contacts, updateContact, updateTeamMemberStats: updateContactStats } = useContactStore();
   const [achievements, setAchievements] = useState<Achievement[]>(sampleAchievements);
-  const [challenges, setChallenges] = useState<Challenge[]>(sampleChallenges);
+  const [challenges, _setChallenges] = useState<Challenge[]>(sampleChallenges);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [teamMembers, setTeamMembers] = useState<Contact[]>([]);
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useOpenAIAssistants } from '../../services/openaiAssistantsService';
 import { User, Bot, Send, RefreshCw, Plus, Settings, X, Save, MessagesSquare, Clock, Sparkles } from 'lucide-react';
 
@@ -33,32 +33,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
   const messageEndRef = useRef<HTMLDivElement>(null);
   const messageContainerRef = useRef<HTMLDivElement>(null);
   
-  // Initialize thread on first load
-  useEffect(() => {
-    initializeThread();
-  }, []);
-  
-  // Scroll to bottom on new messages
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-  
-  // Poll for updates when there's an active run
-  useEffect(() => {
-    let intervalId: NodeJS.Timeout;
-    
-    if (runId && threadId) {
-      intervalId = setInterval(() => {
-        checkRunStatus();
-      }, 1000);
-    }
-    
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-    };
-  }, [runId, threadId]);
-  
-  const initializeThread = async () => {
+  const initializeThread = useCallback(async () => {
     try {
       if (!threadId) {
         const thread = await assistants.createThread();
@@ -80,7 +55,79 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
       setError('Error initializing chat thread');
       console.error(err);
     }
-  };
+  }, [threadId, assistants]);
+
+  const checkRunStatus = useCallback(async () => {
+    if (!threadId || !runId) return;
+    
+    try {
+      const run = await assistants.getRunStatus(threadId, runId);
+      
+      if (run.status === 'completed') {
+        // Get the latest messages
+        const threadMessages = await assistants.getThreadMessages(threadId);
+        
+        if (threadMessages.data.length > 0) {
+          // Convert the latest assistant message to our format
+          const latestAssistantMessage = threadMessages.data.find(m => m.role === 'assistant');
+          
+          if (latestAssistantMessage && latestAssistantMessage.content[0].type === 'text') {
+            const newMessage: Message = {
+              id: latestAssistantMessage.id,
+              role: 'assistant',
+              content: latestAssistantMessage.content[0].text.value,
+              createdAt: new Date(latestAssistantMessage.created_at * 1000)
+            };
+            
+            // Check if we already have this message
+            const messageExists = messages.some(m => m.id === newMessage.id);
+            if (!messageExists) {
+              setMessages(prev => [...prev, newMessage]);
+            }
+          }
+        }
+        
+        setRunId(null);
+        setIsLoading(false);
+      } else if (run.status === 'failed') {
+        setError('The assistant encountered an error');
+        setRunId(null);
+        setIsLoading(false);
+      }
+      // For other statuses (queued, in_progress), keep waiting
+      
+    } catch (err) {
+      setError('Error checking message status');
+      console.error(err);
+      setRunId(null);
+      setIsLoading(false);
+    }
+  }, [threadId, runId, assistants, messages]);
+
+  // Initialize thread on first load
+  useEffect(() => {
+    initializeThread();
+  }, [initializeThread]);
+  
+  // Scroll to bottom on new messages
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+  
+  // Poll for updates when there's an active run
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+    
+    if (runId && threadId) {
+      intervalId = setInterval(() => {
+        checkRunStatus();
+      }, 1000);
+    }
+    
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [runId, threadId, checkRunStatus]);
   
   const createNewAssistant = async () => {
     if (!assistantName || !assistantInstructions) {
@@ -150,53 +197,6 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
     } catch (err) {
       setError('Error sending message');
       console.error(err);
-      setIsLoading(false);
-    }
-  };
-  
-  const checkRunStatus = async () => {
-    if (!threadId || !runId) return;
-    
-    try {
-      const run = await assistants.getRunStatus(threadId, runId);
-      
-      if (run.status === 'completed') {
-        // Get the latest messages
-        const threadMessages = await assistants.getThreadMessages(threadId);
-        
-        if (threadMessages.data.length > 0) {
-          // Convert the latest assistant message to our format
-          const latestAssistantMessage = threadMessages.data.find(m => m.role === 'assistant');
-          
-          if (latestAssistantMessage && latestAssistantMessage.content[0].type === 'text') {
-            const newMessage: Message = {
-              id: latestAssistantMessage.id,
-              role: 'assistant',
-              content: latestAssistantMessage.content[0].text.value,
-              createdAt: new Date(latestAssistantMessage.created_at * 1000)
-            };
-            
-            // Check if we already have this message
-            const messageExists = messages.some(m => m.id === newMessage.id);
-            if (!messageExists) {
-              setMessages(prev => [...prev, newMessage]);
-            }
-          }
-        }
-        
-        setRunId(null);
-        setIsLoading(false);
-      } else if (run.status === 'failed') {
-        setError('The assistant encountered an error');
-        setRunId(null);
-        setIsLoading(false);
-      }
-      // For other statuses (queued, in_progress), keep waiting
-      
-    } catch (err) {
-      setError('Error checking message status');
-      console.error(err);
-      setRunId(null);
       setIsLoading(false);
     }
   };

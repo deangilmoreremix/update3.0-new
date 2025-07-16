@@ -1,5 +1,5 @@
-import { useOpenAI } from './openaiService';
-import { useGeminiAI } from './geminiService';
+
+
 import { IntelligentAIService } from './intelligentAIService';
 
 interface CompanyResearchData {
@@ -51,14 +51,14 @@ interface AIResearchService {
   findContactPerson: (personName: string, companyName?: string, priority?: 'speed' | 'quality' | 'cost') => Promise<ContactPersonData>;
   findCompanyLogo: (companyName: string, domain?: string) => Promise<string>;
   findPersonImage: (personName: string, company?: string, title?: string) => Promise<string>;
-  enhanceWithAI: (data: any, query: string, priority?: 'speed' | 'quality' | 'cost') => Promise<any>;
-  getTaskRouting: () => any[];
+  enhanceWithAI: (data: unknown, query: string, priority?: 'speed' | 'quality' | 'cost') => Promise<unknown>;
+  getTaskRouting: () => unknown[];
 }
 
 class EnhancedAIResearchService implements AIResearchService {
   private intelligentAI: IntelligentAIService;
 
-  constructor(openaiService?: any, geminiService?: any) {
+  constructor(openaiService?: unknown, geminiService?: unknown) {
     // Use dependency injection instead of hooks
     if (openaiService && geminiService) {
       this.intelligentAI = new IntelligentAIService(openaiService, geminiService);
@@ -144,7 +144,7 @@ class EnhancedAIResearchService implements AIResearchService {
 
   async findCompanyLogo(companyName: string, domain?: string): Promise<string> {
     // Generate company logo using DiceBear API with company initials
-    const initials = companyName
+    const _initials = companyName
       .split(' ')
       .map(word => word[0])
       .join('')
@@ -160,7 +160,7 @@ class EnhancedAIResearchService implements AIResearchService {
     return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&backgroundColor=3b82f6,8b5cf6,f59e0b,10b981,ef4444`;
   }
 
-  async enhanceWithAI(data: any, query: string, priority: 'speed' | 'quality' | 'cost' = 'quality'): Promise<any> {
+  async enhanceWithAI(data: unknown, query: string, priority: 'speed' | 'quality' | 'cost' = 'quality'): Promise<unknown> {
     try {
       console.log(`✨ AI Enhancement: ${query} (Priority: ${priority})`);
       
@@ -296,7 +296,7 @@ class EnhancedAIResearchService implements AIResearchService {
     const prefixes = ['Tech', 'Smart', 'Digital', 'Cloud', 'Data', 'AI'];
     const suffixes = ['Solutions', 'Systems', 'Corp', 'Inc', 'Technologies', 'Labs'];
     
-    return Array.from({ length: 3 }, (_, i) => {
+    return Array.from({ length: 3 }, (_, _i) => {
       const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
       const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
       return `${prefix}${suffix}`;

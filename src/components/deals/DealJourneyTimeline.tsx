@@ -167,7 +167,7 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
         <div className="absolute left-6 top-0 bottom-0 w-px bg-gray-200 z-0"></div>
         
         <div className="space-y-8">
-          {timelineEvents.map((event, index) => (
+          {timelineEvents.map((event, _index) => (
             <div key={event.id} className="relative z-10 flex items-start">
               <div className={`flex-shrink-0 w-12 h-12 rounded-full ${event.iconColor} flex items-center justify-center shadow-md mr-4`}>
                 <event.icon className="h-5 w-5 text-white" />

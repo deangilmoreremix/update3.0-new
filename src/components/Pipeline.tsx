@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import AIEnhancedDealCard from './AIEnhancedDealCard';
 import DealAnalytics from './DealAnalytics';
@@ -32,7 +32,7 @@ const Pipeline: React.FC = () => {
   const [deals, setDeals] = useState<Record<string, Deal>>(mockDeals);
   const [columns, setColumns] = useState<Record<string, PipelineColumn>>(mockColumns);
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeFilters, setActiveFilters] = useState<any[]>([]);
+  const [activeFilters, setActiveFilters] = useState<unknown[]>([]);
   const [viewMode, setViewMode] = useState<'kanban' | 'list'>('kanban');
   const [selectedDealId, setSelectedDealId] = useState<string | null>(null);
   const [showContactsModal, setShowContactsModal] = useState(false);
@@ -177,7 +177,7 @@ const Pipeline: React.FC = () => {
     setSelectedDealId(dealId);
   };
 
-  const handleApplyFilters = (filters: any[]) => {
+  const handleApplyFilters = (filters: unknown[]) => {
     setActiveFilters(filters);
   };
 
@@ -309,7 +309,7 @@ const Pipeline: React.FC = () => {
     }
   };
 
-  const stageValues = calculateStageValues(filteredDeals, filteredColumns);
+  const _stageValues = calculateStageValues(filteredDeals, filteredColumns);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">

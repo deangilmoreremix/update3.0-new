@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Check, Mail, Calendar, Briefcase, Users, Brain, CheckCircle, BarChart3, Target } from 'lucide-react';
+import { ArrowRight, Mail, Briefcase, Users, CheckCircle, BarChart3 } from 'lucide-react';
 
 interface DemoSlide {
   title: string;

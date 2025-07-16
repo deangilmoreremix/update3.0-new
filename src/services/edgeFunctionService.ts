@@ -2,7 +2,7 @@ import { callEdgeFunction } from './supabaseClient';
 import { Contact, Deal } from '../types';
 
 // Email generation
-const generateEmailContent = async (contactName: string, purpose: string): Promise<string> => {
+const _generateEmailContent = async (contactName: string, purpose: string): Promise<string> => {
   try {
     const response = await callEdgeFunction('ai-content-generator', {
       contentType: 'email',
@@ -18,7 +18,7 @@ const generateEmailContent = async (contactName: string, purpose: string): Promi
 };
 
 // Text message generation
-const generateTextMessage = async (contactName: string, purpose: string): Promise<string> => {
+const _generateTextMessage = async (contactName: string, purpose: string): Promise<string> => {
   try {
     const response = await callEdgeFunction('ai-content-generator', {
       contentType: 'text',
@@ -127,7 +127,7 @@ export const generateSalesForecast = async (
 };
 
 // Proposal generator
-const generateProposal = async (
+const _generateProposal = async (
   contact: Partial<Contact>, 
   dealDetails: string, 
   previousInteractions: string[]
@@ -180,7 +180,7 @@ export const generateMeetingSummary = async (transcript: string): Promise<string
 
 // Business analysis
 export const analyzeBusinessData = async (
-  businessData: any, 
+  businessData: unknown, 
   userId?: string
 ): Promise<string> => {
   try {
@@ -215,7 +215,7 @@ export const generateSalesInsights = async (
 };
 
 // Real-time analysis functions
-const analyzeSentimentRealTime = async (text: string): Promise<any> => {
+const _analyzeSentimentRealTime = async (text: string): Promise<unknown> => {
   try {
     const response = await callEdgeFunction('realtime-analysis', {
       analysisType: 'sentiment',
@@ -229,7 +229,7 @@ const analyzeSentimentRealTime = async (text: string): Promise<any> => {
   }
 };
 
-const provideEmailFeedback = async (emailContent: string): Promise<string> => {
+const _provideEmailFeedback = async (emailContent: string): Promise<string> => {
   try {
     const response = await callEdgeFunction('realtime-analysis', {
       analysisType: 'email-feedback',
@@ -243,11 +243,11 @@ const provideEmailFeedback = async (emailContent: string): Promise<string> => {
   }
 };
 
-const validateFormField = async (
+const _validateFormField = async (
   fieldName: string, 
   fieldValue: string, 
   formContext: string = 'general'
-): Promise<any> => {
+): Promise<unknown> => {
   try {
     const response = await callEdgeFunction('realtime-analysis', {
       analysisType: 'form-validation',
@@ -265,7 +265,7 @@ const validateFormField = async (
   }
 };
 
-const analyzeCallRealTime = async (transcript: string): Promise<any> => {
+const _analyzeCallRealTime = async (transcript: string): Promise<unknown> => {
   try {
     const response = await callEdgeFunction('realtime-analysis', {
       analysisType: 'call-insights',
@@ -279,7 +279,7 @@ const analyzeCallRealTime = async (transcript: string): Promise<any> => {
   }
 };
 
-const summarizeMeetingRealTime = async (partialTranscript: string): Promise<string> => {
+const _summarizeMeetingRealTime = async (partialTranscript: string): Promise<string> => {
   try {
     const response = await callEdgeFunction('realtime-analysis', {
       analysisType: 'meeting-summary-realtime',

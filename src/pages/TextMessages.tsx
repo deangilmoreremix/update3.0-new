@@ -179,7 +179,7 @@ const TextMessages: React.FC = () => {
   const [showScheduler, setShowScheduler] = useState(false);
 
   // Template management
-  const [messageTemplates, setMessageTemplates] = useState<MessageTemplate[]>([
+  const [messageTemplates, _setMessageTemplates] = useState<MessageTemplate[]>([
     {
       id: 'template-1',
       name: 'Follow-up',
@@ -218,7 +218,7 @@ const TextMessages: React.FC = () => {
   ]);
   
   // Template categories
-  const [templateCategories, setTemplateCategories] = useState<TemplateCategory[]>([
+  const [templateCategories, _setTemplateCategories] = useState<TemplateCategory[]>([
     { id: 'follow-up', name: 'Follow Up' },
     { id: 'appointment', name: 'Appointments' },
     { id: 'resource', name: 'Resources' },
@@ -259,7 +259,7 @@ const TextMessages: React.FC = () => {
   ]);
 
   // Stats tracking
-  const [messageStats, setMessageStats] = useState({
+  const [messageStats, _setMessageStats] = useState({
     sent: 145,
     received: 98,
     responseRate: 84,

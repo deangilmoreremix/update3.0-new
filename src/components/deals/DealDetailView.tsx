@@ -381,7 +381,7 @@ return (
                         >
                           <Upload className="w-4 h-4 inline mr-1" />
                           Upload File
-                          <input type="file" className="hidden" onChange={(e) => {/* Handle file upload */}} />
+                          <input type="file" className="hidden" onChange={(_e) => {/* Handle file upload */}} />
                         </label>
                       </div>
                       

@@ -7,7 +7,7 @@ interface VoiceProfile {
   id: string;
   name: string;
   voice_id: string;
-  settings?: any;
+  settings?: unknown;
   created_at?: string;
   user_id?: string;
 }
@@ -37,7 +37,7 @@ const VoiceProfiles: React.FC = () => {
   // Form state
   const [formName, setFormName] = useState('');
   const [formVoiceId, setFormVoiceId] = useState('');
-  const [formSettings, setFormSettings] = useState<any>({
+  const [formSettings, setFormSettings] = useState<unknown>({
     pitch: 1,
     speed: 1,
     volume: 1

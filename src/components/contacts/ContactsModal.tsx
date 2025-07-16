@@ -38,7 +38,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
   isOpen, 
   onClose 
 }) => {
-  const { contacts, isLoading, updateContact, createContact, fetchContacts } = useContactStore();
+  const { contacts, isLoading, updateContact, _createContact, fetchContacts } = useContactStore();
   const { teamMembers, addTeamMember, removeTeamMember } = useGamification();
   const openai = useOpenAI();
   
@@ -126,7 +126,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
 
     // Apply sorting
     result.sort((a, b) => {
-      let aValue: any, bValue: any;
+      let aValue: unknown, bValue: unknown;
       
       switch (sortBy) {
         case 'name':
@@ -242,7 +242,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
     setSelectedContact(null);
   };
 
-  const handleSort = (field: typeof sortBy) => {
+  const _handleSort = (field: typeof sortBy) => {
     if (sortBy === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
@@ -264,7 +264,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
     await removeTeamMember(contactId);
   };
 
-  const handleContactCreated = (contact: Contact) => {
+  const handleContactCreated = (_contact: Contact) => {
     // Handle the new contact creation
     setShowAddContactModal(false);
   };

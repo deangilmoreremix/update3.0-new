@@ -159,7 +159,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
     }
   };
   
-  const getContentIcon = () => {
+  const _getContentIcon = () => {
     switch(contentType) {
       case 'email': return <Mail className="h-6 w-6 text-blue-600" />;
       case 'proposal': return <FileText className="h-6 w-6 text-purple-600" />;

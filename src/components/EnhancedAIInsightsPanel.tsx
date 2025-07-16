@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { GlassCard } from './ui/GlassCard';
 import { ModernButton } from './ui/ModernButton';
 import { SmartAIControls } from './ai/SmartAIControls';
-import { useSmartAI, useTaskOptimization } from '../hooks/useSmartAI';
+import { useTaskOptimization } from '../hooks/';
 import { 
   Brain, 
   TrendingUp, 
@@ -27,7 +27,7 @@ import {
 export const EnhancedAIInsightsPanel: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedView, setSelectedView] = useState<'insights' | 'controls' | 'performance'>('insights');
-  const { getRecommendations, getInsights, performance } = useTaskOptimization();
+  const { getRecommendations, _getInsights, performance } = useTaskOptimization();
   const [taskRecommendations, setTaskRecommendations] = useState<Record<string, any>>({});
 
   const generateInsights = () => {
@@ -297,7 +297,7 @@ export const EnhancedAIInsightsPanel: React.FC = () => {
           <div>
             <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Model Performance Breakdown</h4>
             <div className="space-y-3">
-              {performance.modelPerformance.map((model: any, index: number) => (
+              {performance.modelPerformance.map((model: unknown, index: number) => (
                 <div key={index} className="flex items-center justify-between p-4 bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10">
                   <div className="flex items-center space-x-3">
                     <div className={`w-3 h-3 rounded-full ${

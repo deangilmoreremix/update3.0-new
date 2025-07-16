@@ -1,7 +1,7 @@
-import { ImportContactsModal } from './ImportContactsModal';
-import { NewContactModal } from './NewContactModal';
-import { useContactStore } from '../../store/contactStore';
-import { useOpenAI } from '../../services/openaiService';
+
+
+
+
 import { aiEnrichmentService, ContactEnrichmentData } from '../../services/aiEnrichmentService';
 import { Contact } from '../../types/contact';
 import { AIEnhancedContactCard } from '../contacts/AIEnhancedContactCard';
@@ -9,12 +9,12 @@ import Fuse from 'fuse.js';
 
 const [analysisProgress, setAnalysisProgress] = useState<{current: number, total: number} | null>(null);
 const [aiResults, setAiResults] = useState<{success: number, failed: number} | null>(null);
-const [analyzingContactIds, setAnalyzingContactIds] = useState<string[]>([]);
+const [analyzingContactIds, _setAnalyzingContactIds] = useState<string[]>([]);
 const [isBulkEnriching, setIsBulkEnriching] = useState(false);
 const [enrichingContactIds, setEnrichingContactIds] = useState<string[]>([]);
 
 // Modal States
-const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+const [_isImportModalOpen, _setIsImportModalOpen] = useState(false);
 
 const handleBulkAIEnrich = async () => {
     if (selectedContacts.length === 0) {

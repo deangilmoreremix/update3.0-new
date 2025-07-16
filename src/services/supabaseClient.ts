@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '../types/database.types';
-import { useApiStore } from '../store/apiStore';
+
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -21,7 +21,7 @@ const isValidUUID = (uuid: string) => {
 };
 
 // Authentication helpers
-const signIn = async (email: string, password: string) => {
+const _signIn = async (email: string, password: string) => {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -30,7 +30,7 @@ const signIn = async (email: string, password: string) => {
   return { data, error };
 };
 
-const signUp = async (email: string, password: string) => {
+const _signUp = async (email: string, password: string) => {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -39,7 +39,7 @@ const signUp = async (email: string, password: string) => {
   return { data, error };
 };
 
-const signOut = async () => {
+const _signOut = async () => {
   const { error } = await supabase.auth.signOut();
   return { error };
 };
@@ -49,7 +49,7 @@ export const getCurrentUser = async () => {
   return { user: data.user, error };
 };
 
-const getSession = async () => {
+const _getSession = async () => {
   const { data, error } = await supabase.auth.getSession();
   return { session: data.session, error };
 };
@@ -73,7 +73,7 @@ export const fetchBusinessAnalysis = async (userId?: string) => {
   }
 };
 
-export const createBusinessAnalysis = async (analysisData: any) => {
+export const createBusinessAnalysis = async (analysisData: unknown) => {
   try {
     const { data, error } = await supabase
       .from('business_analyzer')
@@ -87,7 +87,7 @@ export const createBusinessAnalysis = async (analysisData: any) => {
   }
 };
 
-const updateBusinessAnalysis = async (id: number, analysisData: any) => {
+const _updateBusinessAnalysis = async (id: number, analysisData: unknown) => {
   const { data, error } = await supabase
     .from('business_analyzer')
     .update(analysisData)
@@ -96,7 +96,7 @@ const updateBusinessAnalysis = async (id: number, analysisData: any) => {
   return { data, error };
 };
 
-const deleteBusinessAnalysis = async (id: number) => {
+const _deleteBusinessAnalysis = async (id: number) => {
   const { error } = await supabase
     .from('business_analyzer')
     .delete()
@@ -119,7 +119,7 @@ export const fetchContentItems = async (userId?: string) => {
   return { data, error };
 };
 
-export const createContentItem = async (contentData: any) => {
+export const createContentItem = async (contentData: unknown) => {
   const { data, error } = await supabase
     .from('content_items')
     .insert([contentData]);
@@ -127,7 +127,7 @@ export const createContentItem = async (contentData: any) => {
   return { data, error };
 };
 
-const updateContentItem = async (id: string, contentData: any) => {
+const _updateContentItem = async (id: string, contentData: unknown) => {
   const { data, error } = await supabase
     .from('content_items')
     .update(contentData)
@@ -159,7 +159,7 @@ export const fetchVoiceProfiles = async (userId?: string) => {
   return { data, error };
 };
 
-export const createVoiceProfile = async (profileData: any) => {
+export const createVoiceProfile = async (profileData: unknown) => {
   const { data, error } = await supabase
     .from('voice_profiles')
     .insert([profileData]);
@@ -167,7 +167,7 @@ export const createVoiceProfile = async (profileData: any) => {
   return { data, error };
 };
 
-export const updateVoiceProfile = async (id: string, profileData: any) => {
+export const updateVoiceProfile = async (id: string, profileData: unknown) => {
   const { data, error } = await supabase
     .from('voice_profiles')
     .update(profileData)
@@ -186,7 +186,7 @@ export const deleteVoiceProfile = async (id: string) => {
 };
 
 // Image Assets
-const fetchImageAssets = async (userId?: string) => {
+const _fetchImageAssets = async (userId?: string) => {
   try {
     const query = supabase
       .from('image_assets')
@@ -211,7 +211,7 @@ const fetchImageAssets = async (userId?: string) => {
   }
 };
 
-const createImageAsset = async (assetData: any) => {
+const _createImageAsset = async (assetData: unknown) => {
   try {
     // Check if user_id is a valid UUID
     if (assetData.user_id && !isValidUUID(assetData.user_id)) {
@@ -230,7 +230,7 @@ const createImageAsset = async (assetData: any) => {
   }
 };
 
-const updateImageAsset = async (id: string, assetData: any) => {
+const _updateImageAsset = async (id: string, assetData: unknown) => {
   const { data, error } = await supabase
     .from('image_assets')
     .update(assetData)
@@ -239,7 +239,7 @@ const updateImageAsset = async (id: string, assetData: any) => {
   return { data, error };
 };
 
-const deleteImageAsset = async (id: string) => {
+const _deleteImageAsset = async (id: string) => {
   const { error } = await supabase
     .from('image_assets')
     .delete()
@@ -249,7 +249,7 @@ const deleteImageAsset = async (id: string) => {
 };
 
 // Edge Function Helpers
-export const callEdgeFunction = async (functionName: string, payload: any) => {
+export const callEdgeFunction = async (functionName: string, payload: unknown) => {
   try {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     

@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { useRef } from 'react';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useDealStore } from '../store/dealStore';
-import { DollarSign, Calendar, ArrowUp, ArrowDown, TrendingUp, Activity, ZapOff } from 'lucide-react';
+import { DollarSign, Calendar, ArrowUp, TrendingUp, Activity, ZapOff } from 'lucide-react';
 
 interface DealAnalyticsProps {
   title?: string;
@@ -134,7 +134,7 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({
                 <XAxis type="number" />
                 <YAxis dataKey="stage" type="category" />
                 <Tooltip 
-                  formatter={(value: any) => [`${value} deals`, 'Count']}
+                  formatter={(value: unknown) => [`${value} deals`, 'Count']}
                   contentStyle={{ borderRadius: '6px' }}
                 />
                 <Bar 
@@ -173,7 +173,7 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({
                   tickFormatter={(value) => `$${value / 1000}k`}
                 />
                 <Tooltip 
-                  formatter={(value: any) => [`$${(value / 1000).toFixed(1)}k`, 'Pipeline Value']}
+                  formatter={(value: unknown) => [`$${(value / 1000).toFixed(1)}k`, 'Pipeline Value']}
                   contentStyle={{ borderRadius: '6px' }}
                 />
                 <Line 

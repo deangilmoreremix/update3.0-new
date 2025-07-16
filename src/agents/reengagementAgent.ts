@@ -1,6 +1,6 @@
-import { callOpenAI } from "../services/callOpenAI";
 
-export async function reengagementAgent(input: any, setSteps?: (steps: any) => void) {
+
+export async function reengagementAgent(input: unknown, setSteps?: (steps: unknown) => void) {
   const name = input.name || "there";
   const company = input.company || "your company";
   const lastInteractionDate = input.lastInteractionDate || "3 months ago";

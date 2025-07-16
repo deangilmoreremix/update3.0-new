@@ -63,7 +63,7 @@ const VideoCallOverlay = () => {
   const [callDuration, setCallDuration] = useState(0);
   const [showMessaging, setShowMessaging] = useState(false);
   const [showRecording, setShowRecording] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
+  const [_showSettings, _setShowSettings] = useState(false);
   
   // Use refs with useRef to avoid re-renders when updating refs
   const localVideoRef = useRef<HTMLVideoElement>(null); 

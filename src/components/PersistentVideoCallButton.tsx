@@ -11,7 +11,7 @@ const PersistentVideoCallButton: React.FC = () => {
   const { contacts } = useContactStore();
   const { isDark } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
-  const [selectedContact, setSelectedContact] = useState<string | null>(null);
+  const [_selectedContact, setSelectedContact] = useState<string | null>(null);
 
   // Don't show if already in a call
   if (callStatus !== 'idle') return null;

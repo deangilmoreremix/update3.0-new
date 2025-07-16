@@ -79,7 +79,7 @@ export const EnhancedNavbar: React.FC = () => {
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
   };
 
-  const Dropdown = ({ title, items, isOpen }: { title: string; items: any[]; isOpen: boolean }) => (
+  const Dropdown = ({ title, items, isOpen }: { title: string; items: unknown[]; isOpen: boolean }) => (
     <div className="relative">
       <button
         onClick={() => toggleDropdown(title)}

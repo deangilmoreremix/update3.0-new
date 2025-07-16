@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+
 import { useDealStore } from '../store/dealStore';
 import { useGemini } from '../services/geminiService';
 import { 
@@ -49,13 +49,13 @@ const Pipeline: React.FC = () => {
     moveDealToStage
   } = useDealStore();
   
-  const gemini = useGemini();
+  const _gemini = useGemini();
   
   // Local state
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
-  const [filterValue, setFilterValue] = useState<[number, number] | null>(null);
+  const [filterValue, _setFilterValue] = useState<[number, number] | null>(null);
   const [showAddDealModal, setShowAddDealModal] = useState(false);
   const [newDealData, setNewDealData] = useState<Partial<Deal>>({
     title: '',

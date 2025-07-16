@@ -35,7 +35,7 @@ const AutoFormCompleter: React.FC<AutoFormCompleterProps> = ({
   const [isAutocompleteEnabled, setIsAutocompleteEnabled] = useState(true);
   const [completionScore, setCompletionScore] = useState(0);
   const [showSuggestionPopup, setShowSuggestionPopup] = useState(false);
-  const [currentFieldWithSuggestion, setCurrentFieldWithSuggestion] = useState<string | null>(null);
+  const [_currentFieldWithSuggestion, setCurrentFieldWithSuggestion] = useState<string | null>(null);
   
   const autocompleteTimerRef = useRef<NodeJS.Timeout | null>(null);
   
@@ -220,7 +220,7 @@ const AutoFormCompleter: React.FC<AutoFormCompleterProps> = ({
   };
   
   // Auto-complete remaining fields based on partial data
-  const autocompleteForm = async (changedField: string, value: string) => {
+  const autocompleteForm = async (changedField: string, _value: string) => {
     // Don't autocomplete if there's not enough data yet
     const filledFields = Object.entries(formData).filter(([_, val]) => val.trim().length > 0);
     if (filledFields.length < 2) return;

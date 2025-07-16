@@ -37,7 +37,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
   // Sample data for charts and analytics - in a real app, this would come from API calls
   
   // Generate activity timeline data
-  const activityData = [
+  const _activityData = [
     { date: '2023-06-15', emails: 2, calls: 0, meetings: 1, stage: 'qualification' },
     { date: '2023-07-01', emails: 3, calls: 1, meetings: 0, stage: 'qualification' },
     { date: '2023-07-15', emails: 1, calls: 2, meetings: 0, stage: 'proposal' },

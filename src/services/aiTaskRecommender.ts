@@ -1,4 +1,4 @@
-import { enhancedGeminiService } from './enhancedGeminiService';
+
 
 export type TaskType = 
   | 'email_generation' 

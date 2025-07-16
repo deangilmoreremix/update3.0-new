@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Video, 
   Mic, 
@@ -54,8 +54,8 @@ const VideoCallPreviewWidget = React.memo(() => {
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [showDropdownMenu, setShowDropdownMenu] = useState(false);
   
-  const [localVideoStream, setLocalVideoStream] = useState<MediaStream | null>(null);
-  const localVideoRef = useRef<HTMLVideoElement>(null);
+  const [_localVideoStream, _setLocalVideoStream] = useState<MediaStream | null>(null);
+  const _localVideoRef = useRef<HTMLVideoElement>(null);
 
   // Show preview widget only when not in an actual call
   if (currentCall || callStatus !== 'idle') return null;
@@ -623,6 +623,6 @@ const VideoCallPreviewWidget = React.memo(() => {
       </div>
     </div>
   );
-}, (prevProps, nextProps) => true); // Always return true to prevent re-renders from parent changes
+}, (_prevProps, _nextProps) => true); // Always return true to prevent re-renders from parent changes
 
 export default VideoCallPreviewWidget;

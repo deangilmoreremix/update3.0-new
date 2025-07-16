@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Target, BarChart3, TrendingUp, Check, Clock, Brain, Zap, Activity, Sparkles, Calendar, CheckSquare, ChevronRight, XCircle } from 'lucide-react';
+import { Target, BarChart3, TrendingUp, Clock, Brain, Zap, Activity, Sparkles, CheckSquare, ChevronRight, XCircle } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabase';
 
@@ -28,7 +28,7 @@ const AIGoalsPanel: React.FC = () => {
         setError(null);
         
         // Try to fetch from Supabase
-        let { data, error } = await supabase
+        const { data, error } = await supabase
           .from('user_goals')
           .select('*')
           .order('category');

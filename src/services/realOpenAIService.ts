@@ -13,8 +13,8 @@ interface OpenAIService {
   analyzeContact: (contact: Contact) => Promise<AIContactAnalysis>;
   generateEmail: (contact: Contact, context?: string) => Promise<string>;
   getInsights: (contact: Contact) => Promise<string[]>;
-  generateDealSummary: (dealData: any) => Promise<string>;
-  suggestNextActions: (dealData: any) => Promise<string[]>;
+  generateDealSummary: (dealData: unknown) => Promise<string>;
+  suggestNextActions: (dealData: unknown) => Promise<string[]>;
 }
 
 class RealOpenAIService implements OpenAIService {
@@ -168,7 +168,7 @@ class RealOpenAIService implements OpenAIService {
     }
   }
 
-  async generateDealSummary(dealData: any): Promise<string> {
+  async generateDealSummary(dealData: unknown): Promise<string> {
     try {
       const prompt = `
         Summarize this deal opportunity:
@@ -195,7 +195,7 @@ class RealOpenAIService implements OpenAIService {
     }
   }
 
-  async suggestNextActions(dealData: any): Promise<string[]> {
+  async suggestNextActions(dealData: unknown): Promise<string[]> {
     try {
       const prompt = `
         Suggest next actions for this deal:
@@ -285,7 +285,7 @@ Best regards,
     return insights;
   }
 
-  private generateBasicNextActions(dealData: any): string[] {
+  private generateBasicNextActions(dealData: unknown): string[] {
     const actions: string[] = [];
     
     switch (dealData.stage) {

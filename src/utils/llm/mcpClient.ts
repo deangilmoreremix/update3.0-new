@@ -19,7 +19,7 @@ export interface MCPCallRequest {
 
 export interface MCPCallResponse {
   success: boolean;
-  result?: any;
+  result?: unknown;
   error?: string;
   executionTime?: number;
   modelUsed?: string;

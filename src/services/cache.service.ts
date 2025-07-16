@@ -175,27 +175,27 @@ class CacheService {
   }
   
   // Namespace-specific methods for contacts
-  setContact(contactId: string, contact: any, ttl?: number): void {
+  setContact(contactId: string, contact: unknown, ttl?: number): void {
     this.set('contact', contactId, contact, ttl, ['contact']);
   }
   
-  getContact(contactId: string): any | null {
+  getContact(contactId: string): unknown | null {
     return this.get('contact', contactId);
   }
   
-  setContactList(filters: object, contacts: any[], ttl?: number): void {
+  setContactList(filters: object, contacts: unknown[], ttl?: number): void {
     this.set('contact_list', filters, contacts, ttl, ['contact', 'list']);
   }
   
-  getContactList(filters: object): any[] | null {
+  getContactList(filters: object): unknown[] | null {
     return this.get('contact_list', filters);
   }
   
-  setAIAnalysis(contactId: string, analysis: any, ttl?: number): void {
+  setAIAnalysis(contactId: string, analysis: unknown, ttl?: number): void {
     this.set('ai_analysis', contactId, analysis, ttl, ['ai', 'analysis']);
   }
   
-  getAIAnalysis(contactId: string): any | null {
+  getAIAnalysis(contactId: string): unknown | null {
     return this.get('ai_analysis', contactId);
   }
   

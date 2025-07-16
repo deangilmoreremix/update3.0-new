@@ -38,7 +38,7 @@ const FormsAndSurveys: React.FC = () => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showFormDetail, setShowFormDetail] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'builder' | 'preview' | 'submissions' | 'settings'>('builder');
-  const [showPreview, setShowPreview] = useState(false);
+  const [_showPreview, _setShowPreview] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [formPurpose, setFormPurpose] = useState('');
   const [aiSuggestion, setAiSuggestion] = useState<FormField[] | null>(null);
@@ -153,7 +153,7 @@ const FormsAndSurveys: React.FC = () => {
   };
   
   // Handle changes to the editing field
-  const handleEditingChange = (key: string, value: any) => {
+  const handleEditingChange = (key: string, value: unknown) => {
     if (!editingField) return;
     
     setEditingField({
@@ -417,7 +417,7 @@ const FormsAndSurveys: React.FC = () => {
   };
   
   // Render form analytics
-  const renderFormAnalytics = (form: any) => {
+  const renderFormAnalytics = (form: unknown) => {
     const conversionRate = form.submissions > 0 && form.totalViews 
       ? ((form.submissions / form.totalViews) * 100).toFixed(1) 
       : '0.0';

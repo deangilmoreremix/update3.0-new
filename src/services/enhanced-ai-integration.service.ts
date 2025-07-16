@@ -29,7 +29,7 @@ export interface SmartBulkRequest {
 
 class EnhancedAIIntegrationService {
   
-  async smartAnalyzeContact(request: EnhancedAIAnalysisRequest): Promise<any> {
+  async smartAnalyzeContact(request: EnhancedAIAnalysisRequest): Promise<unknown> {
     const startTime = Date.now();
     const { contactId, contact, analysisTypes, urgency = 'medium', requirements, businessContext } = request;
     
@@ -123,9 +123,9 @@ class EnhancedAIIntegrationService {
     };
   }
 
-  async smartBulkAnalysis(request: SmartBulkRequest): Promise<any> {
+  async smartBulkAnalysis(request: SmartBulkRequest): Promise<unknown> {
     const { contacts, analysisType, urgency = 'medium', costLimit, timeLimit } = request;
-    const startTime = Date.now();
+    const _startTime = Date.now();
     
     logger.info(`Starting smart bulk analysis`, {
       contactCount: contacts.length,
@@ -186,11 +186,11 @@ class EnhancedAIIntegrationService {
   private async executeBulkWithModel(
     contacts: Array<{ contactId: string; contact: Contact }>,
     analysisType: string,
-    modelSelection: any
-  ): Promise<any> {
+    modelSelection: unknown
+  ): Promise<unknown> {
     const batchSize = this.getOptimalBatchSize(modelSelection.provider, contacts.length);
-    const results: any[] = [];
-    const failed: any[] = [];
+    const results: unknown[] = [];
+    const failed: unknown[] = [];
     let totalCost = 0;
     const startTime = Date.now();
 
@@ -246,8 +246,8 @@ class EnhancedAIIntegrationService {
   private async processBatch(
     batch: Array<{ contactId: string; contact: Contact }>,
     analysisType: string,
-    modelSelection: any
-  ): Promise<{ successful: any[]; failed: any[]; cost: number }> {
+    modelSelection: unknown
+  ): Promise<{ successful: unknown[]; failed: unknown[]; cost: number }> {
     const promises = batch.map(async ({ contactId, contact }) => {
       try {
         const result = await this.executeAnalysisWithModel(
@@ -268,7 +268,7 @@ class EnhancedAIIntegrationService {
     return { successful, failed, cost };
   }
 
-  private async executeAnalysisWithModel(request: any, modelSelection: any): Promise<any> {
+  private async executeAnalysisWithModel(request: unknown, modelSelection: unknown): Promise<unknown> {
     // Use the base AI integration service with the selected model
     const enhancedRequest = {
       ...request,
@@ -285,7 +285,7 @@ class EnhancedAIIntegrationService {
   private getDefaultRequirements(
     analysisType: string, 
     urgency: string, 
-    customRequirements?: any
+    customRequirements?: unknown
   ): import('./task-router.service').TaskRequirements {
     const baseRequirements = {
       accuracy: urgency === 'critical' ? 'critical' as const : urgency === 'high' ? 'high' as const : 'medium' as const,
@@ -325,7 +325,7 @@ class EnhancedAIIntegrationService {
     }
   }
 
-  private estimateAccuracy(result: any): number {
+  private estimateAccuracy(result: unknown): number {
     // Simple accuracy estimation based on confidence and result completeness
     if (result.confidence) return result.confidence / 100;
     if (result.score) return Math.min(result.score / 100, 1);
@@ -333,7 +333,7 @@ class EnhancedAIIntegrationService {
   }
 
   // Convenience methods for common operations
-  async scoreContact(contactId: string, contact: Contact, urgency: 'low' | 'medium' | 'high' = 'medium'): Promise<any> {
+  async scoreContact(contactId: string, contact: Contact, urgency: 'low' | 'medium' | 'high' = 'medium'): Promise<unknown> {
     return this.smartAnalyzeContact({
       contactId,
       contact,
@@ -342,7 +342,7 @@ class EnhancedAIIntegrationService {
     });
   }
 
-  async enrichContact(contactId: string, contact: Contact, priority: 'standard' | 'premium' = 'standard'): Promise<any> {
+  async enrichContact(contactId: string, contact: Contact, priority: 'standard' | 'premium' = 'standard'): Promise<unknown> {
     return this.smartAnalyzeContact({
       contactId,
       contact,
@@ -352,7 +352,7 @@ class EnhancedAIIntegrationService {
     });
   }
 
-  async categorizeAndTag(contactId: string, contact: Contact): Promise<any> {
+  async categorizeAndTag(contactId: string, contact: Contact): Promise<unknown> {
     return this.smartAnalyzeContact({
       contactId,
       contact,
@@ -362,7 +362,7 @@ class EnhancedAIIntegrationService {
     });
   }
 
-  async qualifyLead(contactId: string, contact: Contact, businessContext?: string): Promise<any> {
+  async qualifyLead(contactId: string, contact: Contact, businessContext?: string): Promise<unknown> {
     return this.smartAnalyzeContact({
       contactId,
       contact,
@@ -373,11 +373,11 @@ class EnhancedAIIntegrationService {
   }
 
   // Performance and monitoring
-  getPerformanceInsights(): any {
+  getPerformanceInsights(): unknown {
     return taskRouter.getPerformanceStats();
   }
 
-  getTaskRecommendations(taskType: string): any {
+  getTaskRecommendations(taskType: string): unknown {
     return taskRouter.getTaskRecommendations(taskType);
   }
 }

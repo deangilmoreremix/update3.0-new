@@ -62,7 +62,7 @@ const PreCallSetup: React.FC<PreCallSetupProps> = ({
     speaker?: string;
   }>({});
   const [previewStream, setPreviewStream] = useState<MediaStream | null>(null);
-  const [isTestingDevices, setIsTestingDevices] = useState(false);
+  const [_isTestingDevices, _setIsTestingDevices] = useState(false);
   const [deviceTests, setDeviceTests] = useState<{
     camera: 'idle' | 'testing' | 'success' | 'error';
     microphone: 'idle' | 'testing' | 'success' | 'error';

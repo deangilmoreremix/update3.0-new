@@ -1,18 +1,18 @@
 // Logger service for consistent logging across the application
 class LoggerService {
-  info(message: string, context?: any): void {
+  info(message: string, context?: unknown): void {
     console.info(`[INFO] ${message}`, context || '');
   }
 
-  error(message: string, error?: Error, context?: any): void {
+  error(message: string, error?: Error, context?: unknown): void {
     console.error(`[ERROR] ${message}`, error || '', context || '');
   }
 
-  warn(message: string, context?: any): void {
+  warn(message: string, context?: unknown): void {
     console.warn(`[WARN] ${message}`, context || '');
   }
 
-  debug(message: string, context?: any): void {
+  debug(message: string, context?: unknown): void {
     console.debug(`[DEBUG] ${message}`, context || '');
   }
 }

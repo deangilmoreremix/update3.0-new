@@ -41,12 +41,12 @@ import {
 } from 'lucide-react';
 
 interface QuickAIButtonProps {
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<unknown>;
   label: string;
   toolName: string;
   entityType: string;
   entityId: string;
-  entityData: any;
+  entityData: unknown;
   size?: 'sm' | 'md';
   variant?: 'primary' | 'secondary';
   className?: string;
@@ -56,14 +56,14 @@ interface QuickAIButtonProps {
 interface CustomizableAIToolbarProps {
   entityType: string;
   entityId: string;
-  entityData: any;
+  entityData: unknown;
   location: string;
   layout: 'grid' | 'row';
   size: 'sm' | 'md';
   showCustomizeButton?: boolean;
 }
 
-const iconMap: Record<string, React.ComponentType<any>> = {
+const iconMap: Record<string, React.ComponentType<unknown>> = {
   BarChart3,
   Mail,
   TrendingUp,
@@ -100,7 +100,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   Sparkles
 };
 
-const toolMapping: Record<string, string> = {
+const _toolMapping: Record<string, string> = {
   'leadScoring': 'business-analyzer',
   'emailPersonalization': 'email-composer', 
   'contactEnrichment': 'smart-search',
@@ -164,11 +164,11 @@ const QuickAIButton: React.FC<QuickAIButtonProps> = ({
 export const AIGoalsButton: React.FC<{
   entityType: string;
   entityId: string;
-  entityData: any;
+  entityData: unknown;
   size?: 'sm' | 'md';
   variant?: 'primary' | 'secondary';
   className?: string;
-}> = ({ entityType, entityId, entityData, size = 'sm', variant = 'primary', className = '' }) => {
+}> = ({ _entityType, _entityId, _entityData, size = 'sm', _variant = 'primary', className = '' }) => {
   return (
     <button
       className={`
@@ -195,8 +195,8 @@ export const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
   size,
   showCustomizeButton = true
 }) => {
-  const [showCustomizeModal, setShowCustomizeModal] = useState(false);
-  const [customQuickActions, setCustomQuickActions] = useState(defaultQuickActions);
+  const [_showCustomizeModal, setShowCustomizeModal] = useState(false);
+  const [customQuickActions, _setCustomQuickActions] = useState(defaultQuickActions);
 
   return (
     <div className="space-y-3">

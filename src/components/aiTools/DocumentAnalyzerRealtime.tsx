@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useOpenAIVision } from '../../services/openaiVisionService';
 import { useDropzone } from 'react-dropzone';
-import { FileText, Upload, RefreshCw, Check, ArrowDown, Eye, X, Plus, Download, Copy, Zap } from 'lucide-react';
+import { Upload, Check, ArrowDown, Eye, X, Download, Copy, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface DocumentAnalyzerRealtimeProps {
-  onAnalysisComplete?: (analysis: any) => void;
+  onAnalysisComplete?: (analysis: unknown) => void;
   analysisType?: 'document' | 'competitor' | 'contract';
 }
 
@@ -13,7 +13,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
   onAnalysisComplete,
   analysisType = 'document'
 }) => {
-  const vision = useOpenAIVision();
+  const _vision = useOpenAIVision();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);

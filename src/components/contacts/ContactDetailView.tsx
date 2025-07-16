@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Contact } from '../../types/contact';
-import { useContactStore } from '../../store/contactStore';
+
 import { AIInsightsPanel } from './AIInsightsPanel';
 import { ContactJourneyTimeline } from './ContactJourneyTimeline';
 import { CommunicationHub } from './CommunicationHub';
@@ -45,7 +45,7 @@ interface ContactDetailViewProps {
   contact: Contact;
   isOpen: boolean;
   onClose: () => void;
-  onUpdate: (id: string, updates: Partial<Contact>) => Promise<any>;
+  onUpdate: (id: string, updates: Partial<Contact>) => Promise<unknown>;
 }
 
 export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
@@ -59,7 +59,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'insights' | 'journey' | 'communication' | 'analytics' | 'automation'>('overview');
   const [showTeamStats, setShowTeamStats] = useState(false);
-  const { addTeamMember, removeTeamMember, isTeamMember } = useGamification();
+  const { addTeamMember, removeTeamMember, _isTeamMember } = useGamification();
 
   const handleAddToTeam = async () => {
     try {
@@ -110,7 +110,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
     }));
   };
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: unknown) => {
     setFormData(prev => ({
       ...prev,
       [field]: value

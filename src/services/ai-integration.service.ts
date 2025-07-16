@@ -7,10 +7,10 @@ import { httpClient } from './http-client.service';
 import { validationService } from './validation.service';
 import { cacheService } from './cache.service';
 import { logger } from './logger.service';
-import { rateLimiter } from './rate-limiter.service';
+
 import { Contact } from '../types/contact';
 import { ContactEnrichmentData } from './aiEnrichmentService';
-import apiConfig, { getDefaultModel, getBestModelForTask } from '../config/api.config';
+
 
 export interface AIAnalysisRequest {
   contactId: string;
@@ -374,7 +374,7 @@ class AIIntegrationService {
   // Utility methods
   async getProviderStatus(): Promise<Array<{ name: string; status: 'available' | 'rate_limited' | 'error'; remaining?: number }>> {
     try {
-      const response = await httpClient.get<any>(
+      const response = await httpClient.get<unknown>(
         `${this.apiUrl}/ai/providers/status`,
         undefined,
         {

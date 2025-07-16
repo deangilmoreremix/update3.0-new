@@ -86,7 +86,7 @@ class ContactAPIService {
       if (import.meta.env.DEV || import.meta.env.VITE_ENV === 'development') {
         logger.warn('Using fallback contact creation in development mode');
         const fallbackContact: Contact = {
-          ...sanitized as any,
+          ...sanitized as unknown,
           id: `local-${Date.now()}`,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString()
@@ -199,8 +199,8 @@ class ContactAPIService {
               email: 'fallback@example.com',
               title: 'Unknown',
               company: 'Unknown Company',
-              status: 'lead' as any,
-              interestLevel: 'medium' as any,
+              status: 'lead' as unknown,
+              interestLevel: 'medium' as unknown,
               sources: [],
               avatarSrc: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
               createdAt: new Date().toISOString(),
@@ -211,7 +211,7 @@ class ContactAPIService {
           // Apply updates
           const updatedContact: Contact = {
             ...contact,
-            ...sanitized as any,
+            ...sanitized as unknown,
             updatedAt: new Date().toISOString()
           };
           
@@ -376,7 +376,7 @@ class ContactAPIService {
           
           // Apply sorting
           if (filters.sortBy) {
-            filteredContacts.sort((a: any, b: any) => {
+            filteredContacts.sort((a: unknown, b: unknown) => {
               const aValue = a[filters.sortBy!];
               const bValue = b[filters.sortBy!];
               
@@ -432,7 +432,7 @@ class ContactAPIService {
     }
     
     // Validate all contacts
-    const validatedContacts: any[] = [];
+    const validatedContacts: unknown[] = [];
     const validationErrors: string[] = [];
     
     contacts.forEach((contact, index) => {

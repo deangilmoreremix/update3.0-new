@@ -47,7 +47,7 @@ export const AIResearchButton: React.FC<AIResearchButtonProps> = ({
   const [searchResult, setSearchResult] = useState<any | null>(null);
   const [searchFailed, setSearchFailed] = useState(false);
 
-  const aiResearch = useAIResearch();
+  const _aiResearch = useAIResearch();
 
   const handleResearch = async () => {
     if (isSearching) return;
@@ -57,7 +57,7 @@ export const AIResearchButton: React.FC<AIResearchButtonProps> = ({
     setSearchResult(null);
 
     try {
-      let result: any;
+      let result: unknown;
 
       if (searchType === 'contact' || (searchType === 'auto' && (searchQuery.firstName || searchQuery.lastName || searchQuery.email))) {
         // Contact research

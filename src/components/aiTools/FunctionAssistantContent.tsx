@@ -17,8 +17,8 @@ interface Message {
 
 interface FunctionExecutionInfo {
   name: string;
-  arguments: any;
-  result: any;
+  arguments: unknown;
+  result: unknown;
 }
 
 const FunctionAssistantContent: React.FC = () => {
@@ -26,7 +26,7 @@ const FunctionAssistantContent: React.FC = () => {
   const [input, setInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [functionLogs, setFunctionLogs] = useState<FunctionExecutionInfo[]>([]);
+  const [functionLogs, _setFunctionLogs] = useState<FunctionExecutionInfo[]>([]);
   const [showFunctionLogs, setShowFunctionLogs] = useState(false);
   const [enabledFunctions, setEnabledFunctions] = useState<string[]>([
     'searchDeals',

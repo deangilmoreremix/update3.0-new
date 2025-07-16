@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useGemini } from '../../services/geminiService';
-import { Send, RefreshCw, CheckCircle, AlertCircle, Sparkles, Copy, Check, Mail, Hash } from 'lucide-react';
+import { Send, RefreshCw, CheckCircle, Sparkles, Copy, Check, Mail, Hash } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface EmailSuggestion {
@@ -130,7 +130,7 @@ const RealTimeEmailComposer: React.FC = () => {
         break;
       case 'body':
         // Replace a portion of the body or append
-        setEmailBody(prevBody => {
+        setEmailBody(_prevBody => {
           return suggestion.text;
         });
         break;

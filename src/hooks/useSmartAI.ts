@@ -5,9 +5,9 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { enhancedGeminiService } from '../services/enhancedGeminiService';
-import { supabaseAIService } from '../services/supabaseAIService';
+
 import { aiOrchestratorService } from '../services/aiOrchestratorService';
-import { openAIService } from '../services/openAIService';
+
 import { Contact } from '../types/contact';
 
 // Define types for task optimization
@@ -40,16 +40,16 @@ export interface SmartAIState {
   results: Record<string, any>;
   errors: Record<string, string>;
   recommendations: Record<string, any>;
-  performance: any;
+  performance: unknown;
 }
 
 interface EnhancedAIAnalysisRequest {
   contactId: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface SmartBulkRequest {
-  contacts: Array<{ contactId: string; contact: any }>;
+  contacts: Array<{ contactId: string; contact: unknown }>;
   analysisType: 'contact_scoring' | 'categorization' | 'tagging' | 'lead_qualification';
   urgency?: 'low' | 'medium' | 'high';
   costLimit?: number;
@@ -58,7 +58,7 @@ interface SmartBulkRequest {
 
 // Enhanced AI integration service mock (to be replaced with actual implementation)
 const enhancedAI = {
-  scoreContact: async (contactId: string, contact: any, urgency: string = 'medium') => {
+  scoreContact: async (contactId: string, contact: unknown, urgency: string = 'medium') => {
     console.log('Scoring contact with enhancedAI', { contactId, urgency });
     
     // Use aiOrchestratorService to select the right model
@@ -76,7 +76,7 @@ const enhancedAI = {
     };
   },
   
-  enrichContact: async (contactId: string, contact: any, priority: 'standard' | 'premium' = 'standard') => {
+  enrichContact: async (contactId: string, contact: unknown, priority: 'standard' | 'premium' = 'standard') => {
     console.log('Enriching contact with enhancedAI', { contactId, priority });
     
     // Simulate enrichment with aiOrchestratorService
@@ -93,7 +93,7 @@ const enhancedAI = {
     };
   },
   
-  categorizeAndTag: async (contactId: string, contact: any) => {
+  categorizeAndTag: async (contactId: string, contact: unknown) => {
     console.log('Categorizing contact', contactId);
     
     // Use Gemma for categorization (typically faster)
@@ -113,7 +113,7 @@ const enhancedAI = {
     };
   },
   
-  qualifyLead: async (contactId: string, contact: any, businessContext?: string) => {
+  qualifyLead: async (contactId: string, contact: unknown, businessContext?: string) => {
     console.log('Qualifying lead', contactId);
     
     // Use more advanced models for qualification
@@ -290,7 +290,7 @@ class TaskOptimizationHelper {
     return recommendations[taskType] || null;
   }
   
-  getInsights(data: any, customerId?: string) {
+  getInsights(data: unknown, customerId?: string) {
     return aiOrchestratorService.analyzePipelineHealth(data, {
       customerId,
       priority: 'quality'
@@ -631,7 +631,7 @@ export const useSmartEnrichment = () => {
 
 // Hook for task-optimized AI model selection
 export const useTaskOptimization = () => {
-  const { getTaskRecommendations, getPerformanceInsights } = useSmartAI();
+  const { _getTaskRecommendations, _getPerformanceInsights } = useSmartAI();
   const [performance, setPerformance] = useState<TaskOptimizationMetrics | null>(null);
   
   const helper = new TaskOptimizationHelper();
@@ -647,7 +647,7 @@ export const useTaskOptimization = () => {
     return helper.getRecommendations(mappedType);
   }, []);
   
-  const getInsights = useCallback(async (data: any, customerId?: string) => {
+  const getInsights = useCallback(async (data: unknown, customerId?: string) => {
     try {
       const result = await helper.getInsights(data, customerId);
       return result.content;

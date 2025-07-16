@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useTaskStore } from '../store/taskStore';
 import { Task } from '../types';
 import { 
@@ -48,7 +48,7 @@ const Tasks: React.FC = () => {
     dateRange: 'all'
   });
   
-  const [sortBy, setSortBy] = useState<{
+  const [sortBy, _setSortBy] = useState<{
     field: 'dueDate' | 'priority' | 'title';
     direction: 'asc' | 'desc';
   }>({
@@ -775,7 +775,7 @@ const Tasks: React.FC = () => {
 };
 
 // Helper components for the task list
-const PriorityBadge = ({ priority }: { priority: string }) => {
+const _PriorityBadge = ({ priority }: { priority: string }) => {
   const colors = {
     high: 'bg-red-100 text-red-800',
     medium: 'bg-yellow-100 text-yellow-800',

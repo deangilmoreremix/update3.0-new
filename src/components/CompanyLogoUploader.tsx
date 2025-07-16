@@ -124,7 +124,7 @@ const CompanyLogoUploader: React.FC<CompanyLogoUploaderProps> = ({
         });
 
       uploadTask
-        .then(({ data, error }) => {
+        .then(({ _data, error }) => {
           if (error) {
             throw error;
           }

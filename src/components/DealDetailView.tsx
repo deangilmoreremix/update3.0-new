@@ -57,7 +57,7 @@ interface DealDetailViewProps {
   deal: Deal;
   isOpen: boolean;
   onClose: () => void;
-  onUpdate: (id: string, updates: Partial<Deal>) => Promise<any>;
+  onUpdate: (id: string, updates: Partial<Deal>) => Promise<unknown>;
   contactData?: Contact | null;
 }
 
@@ -82,9 +82,9 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
   const [newTag, setNewTag] = useState('');
   const [newCustomField, setNewCustomField] = useState({ name: '', value: '' });
   const [isFavorite, setIsFavorite] = useState(deal.isFavorite || false);
-  const [showAIInsights, setShowAIInsights] = useState(false);
-  const [showAddField, setShowAddField] = useState(false);
-  const [lastEnrichment, setLastEnrichment] = useState<any>(
+  const [_showAIInsights, _setShowAIInsights] = useState(false);
+  const [_showAddField, setShowAddField] = useState(false);
+  const [lastEnrichment, setLastEnrichment] = useState<unknown>(
     deal.lastEnrichment || (deal.probability > 75 ? { confidence: deal.probability } : null)
   );
   
@@ -94,14 +94,14 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
   );
   const [isEditing, setIsEditing] = useState(false);
   const [editingField, setEditingField] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [_isLoading, setIsLoading] = useState(false);
   const [showAddSocial, setShowAddSocial] = useState(false);
   const [selectedSocialPlatform, setSelectedSocialPlatform] = useState('');
   const [socialFieldValue, setSocialFieldValue] = useState('');
   
   // Create refs for file inputs
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const dealCardRef = useRef<HTMLDivElement>(null);
+  const _dealCardRef = useRef<HTMLDivElement>(null);
   
   // Get the AI research service
   const aiResearch = useAIResearch();
@@ -134,7 +134,7 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
     }));
   };
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: unknown) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -215,7 +215,7 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
     }
   };
   
-  const handleAIEnrichment = (enrichmentData: any) => {
+  const handleAIEnrichment = (enrichmentData: unknown) => {
     setIsLoading(true);
     setTimeout(() => {
       // Update the contact with enrichment data

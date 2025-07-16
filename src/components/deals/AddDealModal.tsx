@@ -121,12 +121,12 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
   const [showContactSelector, setShowContactSelector] = useState(false);
   const [showAddContactModal, setShowAddContactModal] = useState(false);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
-  const { contacts, fetchContacts } = useContactStore();
+  const { _contacts, _fetchContacts } = useContactStore();
 
   // AI state
   const [isResearching, setIsResearching] = useState(false);
   const [aiInsights, setAiInsights] = useState<string[]>([]);
-  const [researchResults, setResearchResults] = useState<any>(null);
+  const [researchResults, setResearchResults] = useState<unknown>(null);
   const [aiProvider, setAiProvider] = useState<string>('');
   
   // UI state

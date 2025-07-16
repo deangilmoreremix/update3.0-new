@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase';
+
 import { supabaseAIService } from './supabaseAIService';
 
 interface ChatMessage {
@@ -18,7 +18,7 @@ interface GenerateRequest {
   maxTokens?: number;
   customerId?: string;
   featureUsed?: string;
-  functions?: any[];
+  functions?: unknown[];
   functionCall?: 'auto' | 'none' | { name: string };
 }
 
@@ -32,7 +32,7 @@ interface GenerateResponse {
   };
   finishReason: string;
   responseTime: number;
-  functionCalls?: any[];
+  functionCalls?: unknown[];
 }
 
 class OpenAIService {
@@ -196,7 +196,7 @@ class OpenAIService {
   /**
    * Calculate cost based on model and tokens
    */
-  private calculateCost(model: string, tokens: number, modelConfig: any): number {
+  private calculateCost(model: string, tokens: number, modelConfig: unknown): number {
     if (modelConfig?.pricing) {
       // Use pricing from database if available
       const inputTokens = Math.floor(tokens * 0.7);
@@ -288,7 +288,7 @@ class OpenAIService {
   /**
    * Generate deal insights
    */
-  async generateDealInsights(dealData: any, customerId?: string, model?: string): Promise<any> {
+  async generateDealInsights(dealData: unknown, customerId?: string, model?: string): Promise<unknown> {
     if (!this.isValidApiKey()) {
       console.warn('OpenAI API key not configured, returning fallback insights');
       return {
@@ -353,7 +353,7 @@ class OpenAIService {
   /**
    * Generate pipeline health analysis
    */
-  async analyzePipelineHealth(pipelineData: any, customerId?: string, model?: string): Promise<any> {
+  async analyzePipelineHealth(pipelineData: unknown, customerId?: string, model?: string): Promise<unknown> {
     if (!this.isValidApiKey()) {
       console.warn('OpenAI API key not configured, returning fallback analysis');
       return {
@@ -424,7 +424,7 @@ class OpenAIService {
     purpose: string;
     duration: number;
     previousNotes?: string;
-  }, customerId?: string, model?: string): Promise<any> {
+  }, customerId?: string, model?: string): Promise<unknown> {
     if (!this.isValidApiKey()) {
       console.warn('OpenAI API key not configured, returning fallback agenda');
       return {

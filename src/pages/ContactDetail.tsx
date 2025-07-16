@@ -405,7 +405,7 @@ const ContactDetail: React.FC = () => {
                         <a 
                           href={`tel:${contact.phone?.replace(/\D/g, '')}`}
                           className="text-sm font-medium text-gray-900 hover:text-blue-600"
-                          onClick={(e) => {
+                          onClick={(_e) => {
                             // Let the default tel: behavior handle the call
                           }}
                         >

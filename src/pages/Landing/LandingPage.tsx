@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { HashLink } from 'react-router-hash-link';
+
 import { 
   Brain, 
   Mail, 

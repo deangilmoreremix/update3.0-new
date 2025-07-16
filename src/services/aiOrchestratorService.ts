@@ -23,7 +23,7 @@ interface TaskContext {
 }
 
 interface ServiceResponse {
-  content: any;
+  content: unknown;
   model: string;
   provider: string;
   responseTime: number;
@@ -83,7 +83,7 @@ class AIOrchestratorService {
   /**
    * Parse JSON safely from AI response
    */
-  private parseJsonSafely(content: string): any {
+  private parseJsonSafely(content: string): unknown {
     // First strip any markdown code blocks
     const cleaned = this.stripMarkdownCodeBlocks(content);
     
@@ -165,7 +165,7 @@ class AIOrchestratorService {
     }
 
     // Get model recommendations
-    const modelType = 
+    const _modelType = 
       feature === 'email_generation' ? 'email_generation' :
       feature === 'pipeline_analysis' ? 'business_analysis' :
       feature === 'deal_insights' ? 'business_analysis' :
@@ -240,7 +240,7 @@ class AIOrchestratorService {
   /**
    * Get the appropriate service for a model
    */
-  private getServiceForModel(modelId: string): any {
+  private getServiceForModel(modelId: string): unknown {
     return this.isGoogleModel(modelId) ? enhancedGeminiService : openAIService;
   }
 
@@ -313,7 +313,7 @@ class AIOrchestratorService {
    * Analyze pipeline health with the optimal model
    */
   async analyzePipelineHealth(
-    pipelineData: any,
+    pipelineData: unknown,
     taskContext: TaskContext = {}
   ): Promise<ServiceResponse> {
     // Check if any provider is available
@@ -549,7 +549,7 @@ class AIOrchestratorService {
    * Generate deal insights with the optimal model
    */
   async analyzeDeal(
-    dealData: any,
+    dealData: unknown,
     taskContext: TaskContext = {}
   ): Promise<ServiceResponse> {
     // Check if any provider is available
@@ -571,7 +571,7 @@ class AIOrchestratorService {
     }
     
     // For complex analytical tasks like deal analysis, prefer more capable models
-    const useGPT4 = dealData.deals && dealData.deals.some((deal: any) => deal.value > 100000) || 
+    const useGPT4 = dealData.deals && dealData.deals.some((deal: unknown) => deal.value > 100000) || 
                    taskContext.complexity === 'high';
     const defaultModelId = useGPT4 ? 'gpt-4o-mini' : 'gemini-2.5-flash';
     
@@ -659,7 +659,7 @@ class AIOrchestratorService {
    * Generate insights for contacts
    */
   async generateContactInsights(
-    contacts: any[],
+    contacts: unknown[],
     taskContext: TaskContext = {}
   ): Promise<ServiceResponse> {
     // Check if any provider is available
@@ -788,7 +788,7 @@ class AIOrchestratorService {
   /**
    * Get usage statistics
    */
-  getUsageStatistics(): any {
+  getUsageStatistics(): unknown {
     return {
       modelStats: this.usageStats,
       totalCalls: Object.values(this.usageStats).reduce((sum, stat) => sum + stat.callCount, 0),

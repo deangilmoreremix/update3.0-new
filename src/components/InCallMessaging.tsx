@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, MessageSquare, X, Smile } from 'lucide-react';
+import { Send, MessageSquare, X } from 'lucide-react';
 import { useVideoCall } from '../contexts/VideoCallContext';
 import { useTheme } from '../contexts/ThemeContext';
 

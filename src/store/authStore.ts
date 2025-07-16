@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { supabase, getCurrentUser } from '../services/supabaseClient';
+
 
 interface AuthState {
-  user: any | null;
-  session: any | null;
+  user: unknown | null;
+  session: unknown | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -19,7 +19,7 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set, _get) => ({
       // Default user for development
       user: { id: 'demo-user-123', email: 'demo@example.com' },
       session: { user: { id: 'demo-user-123' } },
@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthState>()(
         });
       },
       
-      login: async (email, password) => {
+      login: async (email, _password) => {
         set({ isLoading: true, error: null });
         try {
           // In a real app, we'd verify credentials
@@ -58,7 +58,7 @@ export const useAuthStore = create<AuthState>()(
         }
       },
       
-      register: async (email, password) => {
+      register: async (email, _password) => {
         set({ isLoading: true, error: null });
         try {
           // Skip actual registration

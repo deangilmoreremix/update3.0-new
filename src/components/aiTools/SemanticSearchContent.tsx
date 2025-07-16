@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useOpenAIEmbeddings } from '../../services/openaiEmbeddingsService';
 import { useDealStore } from '../../store/dealStore';
 import AIToolContent from '../shared/AIToolContent';
@@ -82,14 +82,7 @@ const SemanticSearchContent: React.FC = () => {
   const [isGeneratingEmbeddings, setIsGeneratingEmbeddings] = useState(false);
   const [searchType, setSearchType] = useState<'all' | 'contacts' | 'deals'>('all');
   
-  // Initialize embeddings
-  useEffect(() => {
-    if (!isEmbeddingCreated && !isGeneratingEmbeddings) {
-      generateEmbeddings();
-    }
-  }, [isEmbeddingCreated, isGeneratingEmbeddings]);
-  
-  const generateEmbeddings = async () => {
+  const generateEmbeddings = useCallback(async () => {
     setIsGeneratingEmbeddings(true);
     setError(null);
     
@@ -110,9 +103,16 @@ const SemanticSearchContent: React.FC = () => {
     } finally {
       setIsGeneratingEmbeddings(false);
     }
-  };
+  }, [embeddings, deals]);
+
+  // Initialize embeddings
+  useEffect(() => {
+    if (!isEmbeddingCreated && !isGeneratingEmbeddings) {
+      generateEmbeddings();
+    }
+  }, [isEmbeddingCreated, isGeneratingEmbeddings, generateEmbeddings]);
   
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     if (!searchQuery) {
       setError('Please enter a search query');
       return;
@@ -164,7 +164,7 @@ const SemanticSearchContent: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [searchQuery, isEmbeddingCreated, searchType, embeddings, contactEmbeddings, dealEmbeddings, deals]);
   
   return (
     <div className="space-y-6">

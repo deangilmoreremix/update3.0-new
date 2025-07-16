@@ -4,7 +4,7 @@ import { AIAutoFillButton } from '../ui/AIAutoFillButton';
 import { AIResearchButton } from '../ui/AIResearchButton';
 import { useContactStore } from '../../store/contactStore';
 import { ContactEnrichmentData } from '../../services/aiEnrichmentService';
-import { Contact } from '../../types/contact';
+
 import { 
   X, 
   User, 
@@ -233,7 +233,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
     setLastEnrichmentData(enrichmentData);
     
     // Apply enrichment data to form
-    const updates: any = {};
+    const updates: unknown = {};
     
     if (enrichmentData.firstName && !formData.firstName) {
       updates.firstName = enrichmentData.firstName;
@@ -275,7 +275,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
     
     // Social profiles
     if (enrichmentData.socialProfiles) {
-      const socialUpdates: any = {};
+      const socialUpdates: unknown = {};
       Object.entries(enrichmentData.socialProfiles).forEach(([key, value]) => {
         if (value && !formData.socialProfiles[key as keyof typeof formData.socialProfiles]) {
           socialUpdates[key] = value;

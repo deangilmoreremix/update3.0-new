@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useGemini } from '../../services/geminiService';
 import { Mic, MicOff, Play, Pause, RefreshCw, AlertCircle, BarChart3, Volume2, Save, FileText, Wand } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface VoiceAnalysisRealtimeProps {
-  onAnalysisComplete?: (analysis: any) => void;
+  onAnalysisComplete?: (analysis: unknown) => void;
   simulationMode?: boolean;
 }
 
@@ -131,7 +131,7 @@ const VoiceAnalysisRealtime: React.FC<VoiceAnalysisRealtimeProps> = ({
     }
   };
   
-  const transcribeAudio = async (blob: Blob) => {
+  const transcribeAudio = async (_blob: Blob) => {
     setIsAnalyzing(true);
     
     try {

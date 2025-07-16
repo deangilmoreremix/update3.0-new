@@ -205,7 +205,7 @@ const ComposioIntegrationsModal: React.FC<ComposioIntegrationsModalProps> = ({
 
   useEffect(() => {
     setIntegrations(availableIntegrations);
-  }, []);
+  }, [availableIntegrations]);
 
   // Filter integrations
   const filteredIntegrations = integrations.filter(integration => {

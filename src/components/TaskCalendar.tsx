@@ -4,7 +4,7 @@ import moment from 'moment';
 import { Task } from '../types';
 import { useTaskStore } from '../store/taskStore';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { CheckCircle, AlertCircle, Clock, Calendar as CalendarIcon, Flag } from 'lucide-react';
+import { Calendar as } from 'lucide-react';
 
 // Setup localizer for react-big-calendar
 const localizer = momentLocalizer(moment);
@@ -34,7 +34,7 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ onTaskSelect }) => {
   }, [tasks, showAll]);
   
   // Custom styling for events based on task status and priority
-  const eventStyleGetter = (event: any) => {
+  const eventStyleGetter = (event: unknown) => {
     const task = event.resource as Task;
     const isOverdue = task.dueDate && !task.completed && task.dueDate < new Date();
     
@@ -63,7 +63,7 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ onTaskSelect }) => {
   };
   
   // Custom component for the toolbar
-  const CustomToolbar = (toolbar: any) => {
+  const CustomToolbar = (toolbar: unknown) => {
     const goToBack = () => {
       const newDate = new Date(toolbar.date);
       
@@ -186,7 +186,7 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ onTaskSelect }) => {
   const calendarComponents = {
     toolbar: CustomToolbar,
     // @ts-ignore - the types don't include 'event' but it works
-    event: ({ event }: any) => {
+    event: ({ event }: unknown) => {
       const task = event.resource as Task;
       return (
         <div className="truncate">
@@ -196,7 +196,7 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ onTaskSelect }) => {
       );
     },
     // @ts-ignore - the types don't include 'eventWrapper' but it works
-    eventWrapper: ({ children, event }: any) => {
+    eventWrapper: ({ children, event }: unknown) => {
       const task = event.resource as Task;
       return (
         <div title={`${event.title} - ${task.priority} priority`}>
@@ -221,11 +221,11 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ onTaskSelect }) => {
         }}
         view={view}
         date={date}
-        onView={(newView: any) => setView(newView)}
+        onView={(newView: unknown) => setView(newView)}
         onNavigate={(newDate: Date) => setDate(newDate)}
         components={calendarComponents}
         eventPropGetter={eventStyleGetter}
-        onSelectEvent={(event: any) => {
+        onSelectEvent={(event: unknown) => {
           const task = event.resource as Task;
           if (onTaskSelect) {
             onTaskSelect(task);

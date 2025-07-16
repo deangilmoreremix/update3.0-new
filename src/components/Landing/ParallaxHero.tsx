@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
 import { Brain, Users, BarChart3, Zap, Search, Image, Mail, ArrowRight } from 'lucide-react';
@@ -13,29 +13,29 @@ const ParallaxHero: React.FC = () => {
   useEffect(() => {
     console.log("ParallaxHero component mounted");
     setHasRendered(true);
+  }, [setHasRendered]);
+
+  const handleScroll = useCallback(() => {
+    if (containerRef.current) {
+      const { top } = containerRef.current.getBoundingClientRect();
+      
+      // Only update if the element is in view
+      if (top < window.innerHeight && top > -containerRef.current.clientHeight) {
+        setScrollY(window.scrollY);
+        console.log("Updating parallax scroll position:", window.scrollY);
+      }
+    }
   }, []);
 
   // Track scroll position
   useEffect(() => {
-    const handleScroll = () => {
-      if (containerRef.current) {
-        const { top } = containerRef.current.getBoundingClientRect();
-        
-        // Only update if the element is in view
-        if (top < window.innerHeight && top > -containerRef.current.clientHeight) {
-          setScrollY(window.scrollY);
-          console.log("Updating parallax scroll position:", window.scrollY);
-        }
-      }
-    };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
     
     // Force an initial call to properly position elements
     handleScroll();
     
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [hasRendered]);
+  }, [handleScroll]);
   
   const parallaxItems = [
     { 
@@ -108,7 +108,7 @@ const ParallaxHero: React.FC = () => {
       console.log("Parallax items count:", parallaxItems.length);
       console.log("Parallax icons rendered:", iconsRef.current.querySelectorAll('.absolute').length);
     }
-  }, [hasRendered]);
+  }, [hasRendered, parallaxItems.length]);
 
   return (
     <div 

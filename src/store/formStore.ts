@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
-import { supabase } from '../services/supabaseClient';
+
 
 export type FormField = {
   id: string;
@@ -194,7 +194,7 @@ export const useFormStore = create<FormState>((set, get) => ({
     }
   },
   
-  fetchSubmissions: async (formId: string) => {
+  fetchSubmissions: async (_formId: string) => {
     set({ isLoading: true, error: null });
     
     try {
@@ -323,7 +323,7 @@ export const useFormStore = create<FormState>((set, get) => ({
       
       // Update local state
       const { forms } = get();
-      const { [id]: deletedForm, ...remainingForms } = forms;
+      const { [id]: _deletedForm, ...remainingForms } = forms;
       
       set({ 
         forms: remainingForms,

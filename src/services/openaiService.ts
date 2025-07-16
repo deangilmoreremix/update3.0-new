@@ -461,7 +461,7 @@ export const useOpenAI = () => {
   };
   
   // Deal Analysis
-  const analyzeDeal = async (dealData: any) => {
+  const analyzeDeal = async (dealData: unknown) => {
     const client = getClient();
 
     // Format deal data

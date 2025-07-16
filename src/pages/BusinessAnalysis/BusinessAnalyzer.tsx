@@ -21,7 +21,7 @@ const BusinessAnalyzer: React.FC = () => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm<BusinessAnalysisForm>();
   const { user } = useAuthStore();
   
-  const [businessAnalyses, setBusinessAnalyses] = useState<any[]>([]);
+  const [businessAnalyses, setBusinessAnalyses] = useState<unknown[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResults, setAnalysisResults] = useState<string | null>(null);

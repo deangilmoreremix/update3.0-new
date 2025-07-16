@@ -63,15 +63,15 @@ const Dashboard: React.FC = () => {
   
   const { tasks, fetchTasks } = useTaskStore();
   const { fetchAppointments } = useAppointmentStore();
-  const { openTool } = useAITools();
+  const { _openTool } = useAITools();
   
-  const gemini = useGemini();
+  const _gemini = useGemini();
   
   const [pipelineInsight, setPipelineInsight] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [timeframe, setTimeframe] = useState('month'); // 'week', 'month', 'quarter', 'year'
-  const [aiRecommendations, setAiRecommendations] = useState<any[]>([]);
-  const [aiMetrics, setAiMetrics] = useState({
+  const [aiRecommendations, setAiRecommendations] = useState<unknown[]>([]);
+  const [aiMetrics, _setAiMetrics] = useState({
     activeSuggestions: 12,
     acceptedSuggestions: 8,
     efficiency: 32,
@@ -93,7 +93,7 @@ const Dashboard: React.FC = () => {
     }, 300000); // refresh every 5 minutes
     
     return () => clearInterval(intervalId);
-  }, []);
+  }, [fetchDeals, fetchTasks, fetchAppointments]);
   
   const generateRecommendations = async () => {
     // Generate sample recommendations (in production this would call Gemini API)
@@ -232,7 +232,7 @@ const Dashboard: React.FC = () => {
     return { pipelineByStage, dealProbability, monthlyTrend };
   };
   
-  const chartData = prepareChartData();
+  const _chartData = prepareChartData();
 
   // Get upcoming deals (sorting by dueDate)
   const getUpcomingDeals = () => {
@@ -273,7 +273,7 @@ const Dashboard: React.FC = () => {
     }).slice(0, 5);
   };
 
-  const upcomingDeals = getUpcomingDeals();
+  const _upcomingDeals = getUpcomingDeals();
   const importantTasks = getImportantTasks();
   
   // Format currency values

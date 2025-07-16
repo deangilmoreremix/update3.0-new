@@ -11,8 +11,8 @@ export interface ValidationRule {
   min?: number;
   max?: number;
   pattern?: RegExp;
-  enum?: any[];
-  custom?: (value: any) => boolean | string;
+  enum?: unknown[];
+  custom?: (value: unknown) => boolean | string;
 }
 
 export interface ValidationSchema {
@@ -29,7 +29,7 @@ class ValidationService {
   private emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   private urlRegex = /^https?:\/\/.+/;
   
-  private validateField(value: any, rule: ValidationRule, fieldPath: string): string[] {
+  private validateField(value: unknown, rule: ValidationRule, fieldPath: string): string[] {
     const errors: string[] = [];
     
     // Required check
@@ -131,7 +131,7 @@ class ValidationService {
     return errors;
   }
   
-  private validateObject(obj: any, schema: ValidationSchema, basePath = ''): ValidationResult {
+  private validateObject(obj: unknown, schema: ValidationSchema, basePath = ''): ValidationResult {
     const errors: { [field: string]: string[] } = {};
     
     // Validate each field in the schema
@@ -158,7 +158,7 @@ class ValidationService {
     };
   }
   
-  validate(data: any, schema: ValidationSchema): ValidationResult {
+  validate(data: unknown, schema: ValidationSchema): ValidationResult {
     return this.validateObject(data, schema);
   }
   
@@ -207,34 +207,34 @@ class ValidationService {
   };
   
   // Utility methods
-  validateContact(contact: any): ValidationResult {
+  validateContact(contact: unknown): ValidationResult {
     return this.validate(contact, this.contactSchema);
   }
   
-  validateAIAnalysis(analysis: any): ValidationResult {
+  validateAIAnalysis(analysis: unknown): ValidationResult {
     return this.validate(analysis, this.aiAnalysisSchema);
   }
   
-  validateEnrichmentRequest(request: any): ValidationResult {
+  validateEnrichmentRequest(request: unknown): ValidationResult {
     return this.validate(request, this.enrichmentRequestSchema);
   }
   
   // Sanitization methods
-  sanitizeString(value: any): string {
+  sanitizeString(value: unknown): string {
     if (typeof value !== 'string') return '';
     return value.trim().replace(/[<>]/g, ''); // Basic XSS prevention
   }
   
-  sanitizeEmail(email: any): string {
+  sanitizeEmail(email: unknown): string {
     return this.sanitizeString(email).toLowerCase();
   }
   
-  sanitizePhone(phone: any): string {
+  sanitizePhone(phone: unknown): string {
     const cleaned = this.sanitizeString(phone).replace(/[^\d+]/g, '');
     return cleaned.startsWith('+') ? cleaned : `+${cleaned}`;
   }
   
-  sanitizeContact(contact: any): any {
+  sanitizeContact(contact: unknown): unknown {
     return {
       ...contact,
       firstName: this.sanitizeString(contact.firstName),

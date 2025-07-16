@@ -23,14 +23,14 @@ const sampleDeal: Deal = {
 
 interface LiveDealAnalysisProps {
   deal?: Deal;
-  onAnalysisComplete?: (analysis: any) => void;
+  onAnalysisComplete?: (analysis: unknown) => void;
 }
 
 const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({ 
   deal = sampleDeal,
   onAnalysisComplete 
 }) => {
-  const gemini = useGemini();
+  const _gemini = useGemini();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [progressText, setProgressText] = useState('');
   const [progress, setProgress] = useState(0);

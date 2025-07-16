@@ -23,7 +23,7 @@ import {
 interface SmartAIControlsProps {
   contact?: Contact;
   contacts?: Contact[];
-  onAnalysisComplete?: (results: any) => void;
+  onAnalysisComplete?: (results: unknown) => void;
 }
 
 export const SmartAIControls: React.FC<SmartAIControlsProps> = ({
@@ -43,7 +43,7 @@ export const SmartAIControls: React.FC<SmartAIControlsProps> = ({
     errors
   } = useSmartAI();
 
-  const { getRecommendations, getInsights, performance } = useTaskOptimization();
+  const { getRecommendations, _getInsights, performance } = useTaskOptimization();
 
   const [selectedOperation, setSelectedOperation] = useState<string>('score');
   const [urgency, setUrgency] = useState<'low' | 'medium' | 'high'>('medium');
@@ -404,7 +404,7 @@ export const SmartAIControls: React.FC<SmartAIControlsProps> = ({
           </h3>
           
           <div className="space-y-3">
-            {performance.modelPerformance.slice(0, 5).map((model: any, index: number) => (
+            {performance.modelPerformance.slice(0, 5).map((model: unknown, index: number) => (
               <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
                   <div className="font-medium text-gray-900">{model.model}</div>

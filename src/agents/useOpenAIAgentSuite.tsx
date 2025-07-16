@@ -1,12 +1,12 @@
 import React from "react";
 import OpenAI from "openai";
-import { callGemini } from "../services/callGemini";
-import { runAgentWithTools } from "./runAgentWithTools";
-import { speakText } from "../lib/elevenlabs";
-import { generateVoiceover } from "../lib/audioTools";
-import { mixAudioWithVideo } from "../lib/ffmpegTools";
+
+
+
+
+
 import { composioAuth, sendEmailViaComposio } from "../services/composioService";
-import { getUserToolsFromSupabase } from "../services/supabaseTools";
+
 import { useApiStore } from "../store/apiStore";
 
 // Function to get OpenAI client with API key from store
@@ -73,7 +73,7 @@ export async function getComposioToolset(actions: string[] | null = null, app: s
   return { toolset, tools };
 }
 
-export async function handleComposioExecution(response: any, toolset: any) {
+export async function handleComposioExecution(response: unknown, toolset: unknown) {
   const responseMessage = response.choices[0].message;
   if (responseMessage.tool_calls) {
     console.log("LLM requested tool use. Executing via Composio...");
@@ -146,7 +146,7 @@ export function wireAgentsIntoSmartCRM() {
 }
 
 // Enhanced function to better format different types of agent responses
-function embedAgentResponseUI(toolsUsed: any, output: any) {
+function embedAgentResponseUI(toolsUsed: unknown, output: unknown) {
   const container = document.querySelector("#agent-response-container");
   if (!container) return;
   container.innerHTML = "";
@@ -249,7 +249,7 @@ function embedAgentResponseUI(toolsUsed: any, output: any) {
 }
 
 // Helper function to create a structured output for JSON data
-function createStructuredOutput(data: any) {
+function createStructuredOutput(data: unknown) {
   const container = document.createElement("div");
   container.className = "bg-gray-50 p-4 rounded-lg border border-gray-100";
   
@@ -449,7 +449,7 @@ function createMarkdownOutput(markdownText: string) {
 }
 
 // Helper function for email sequence output
-function createEmailSequenceOutput(data: any) {
+function createEmailSequenceOutput(data: unknown) {
   const container = document.createElement("div");
   container.className = "space-y-4";
   
@@ -508,7 +508,7 @@ function createEmailSequenceOutput(data: any) {
 }
 
 // Helper function for lead enrichment output
-function createLeadEnrichmentOutput(data: any) {
+function createLeadEnrichmentOutput(data: unknown) {
   const container = document.createElement("div");
   container.className = "space-y-4";
   
@@ -573,7 +573,7 @@ function createLeadEnrichmentOutput(data: any) {
 }
 
 // Helper function for proposal output
-function createProposalOutput(data: any) {
+function createProposalOutput(data: unknown) {
   const container = document.createElement("div");
   container.className = "space-y-4";
   

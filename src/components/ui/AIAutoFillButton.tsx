@@ -12,7 +12,7 @@ import {
 import { aiEnrichmentService, ContactEnrichmentData } from '../../services/aiEnrichmentService';
 
 interface AIAutoFillButtonProps {
-  formData: any;
+  formData: unknown;
   onAutoFill: (enrichmentData: ContactEnrichmentData) => void;
   variant?: 'primary' | 'secondary' | 'outline';
   size?: 'sm' | 'md' | 'lg';

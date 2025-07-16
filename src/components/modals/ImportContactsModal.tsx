@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { ModernButton } from '../ui/ModernButton';
 import { useContactStore } from '../../store/contactStore';
-import { Contact } from '../../types/contact';
+
 import { 
   X, 
   Upload, 
@@ -127,8 +127,8 @@ const validateContact = (data: Record<string, string>): string[] => {
 export const ImportContactsModal: React.FC<ImportContactsModalProps> = ({ isOpen, onClose }) => {
   const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const [csvData, setCsvData] = useState<string[][]>([]);
-  const [parsedContacts, setParsedContacts] = useState<any[]>([]);
+  const [_csvData, setCsvData] = useState<string[][]>([]);
+  const [parsedContacts, setParsedContacts] = useState<unknown[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [importResults, setImportResults] = useState<{ success: number; failed: number } | null>(null);
@@ -206,10 +206,10 @@ export const ImportContactsModal: React.FC<ImportContactsModalProps> = ({ isOpen
     const headers = data[0].map(h => h.toLowerCase().trim());
     const rows = data.slice(1);
     const newErrors: string[] = [];
-    const contacts: any[] = [];
+    const contacts: unknown[] = [];
     
     rows.forEach((row, index) => {
-      const contact: any = {};
+      const contact: unknown = {};
       
       headers.forEach((header, colIndex) => {
         if (row[colIndex]) {

@@ -27,9 +27,9 @@ export interface AIState {
 }
 
 export interface SystemState {
-  health: any;
-  metrics: any;
-  providerStatus: any[];
+  health: unknown;
+  metrics: unknown;
+  providerStatus: unknown[];
 }
 
 export const useIntegration = () => {

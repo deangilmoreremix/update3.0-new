@@ -70,7 +70,7 @@ describe('HTTP Client Service', () => {
 });
 
 describe('Cache Service', () => {
-  let cacheService: any;
+  let cacheService: unknown;
 
   beforeEach(() => {
     // Mock cache service
@@ -123,7 +123,7 @@ describe('Cache Service', () => {
 
 describe('Validation Service', () => {
   test('should validate contact data successfully', () => {
-    const validContact = {
+    const _validContact = {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@example.com',
@@ -144,7 +144,7 @@ describe('Validation Service', () => {
   });
 
   test('should fail validation for invalid email', () => {
-    const invalidContact = {
+    const _invalidContact = {
       firstName: 'John',
       lastName: 'Doe',
       email: 'invalid-email',
@@ -167,7 +167,7 @@ describe('Validation Service', () => {
   });
 
   test('should sanitize input data', () => {
-    const unsanitizedContact = {
+    const _unsanitizedContact = {
       firstName: '  John  ',
       lastName: '  Doe  ',
       email: '  JOHN.DOE@EXAMPLE.COM  ',
@@ -524,7 +524,7 @@ export const testUtilities = {
     ...overrides,
   }),
   
-  createMockHttpResponse: (data: any, status = 200) => ({
+  createMockHttpResponse: (data: unknown, status = 200) => ({
     data,
     status,
     statusText: status === 200 ? 'OK' : 'Error',

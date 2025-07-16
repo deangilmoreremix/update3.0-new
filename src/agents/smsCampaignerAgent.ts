@@ -1,6 +1,6 @@
-import { callGemini } from "../services/callGemini";
 
-export async function smsCampaignerAgent(input: any, setSteps?: (steps: any) => void) {
+
+export async function smsCampaignerAgent(input: unknown, setSteps?: (steps: unknown) => void) {
   const name = input.name || "there";
   const company = input.company || "your company";
   const campaignType = input.campaignType || "follow-up";

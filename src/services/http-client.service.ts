@@ -3,7 +3,7 @@
  * Centralized HTTP client with interceptors, rate limiting, error handling, and retries
  */
 
-import apiConfig, { ApiEndpoint } from '../config/api.config';
+
 import { logger } from './logger.service';
 import { rateLimiter } from './rate-limiter.service';
 import { cacheService } from './cache.service';
@@ -11,7 +11,7 @@ import { cacheService } from './cache.service';
 export interface RequestConfig {
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   url: string;
-  data?: any;
+  data?: unknown;
   headers?: Record<string, string>;
   params?: Record<string, any>;
   timeout?: number;
@@ -39,7 +39,7 @@ export interface ApiError extends Error {
   status?: number;
   statusText?: string;
   response?: {
-    data?: any;
+    data?: unknown;
     status: number;
     statusText: string;
   };
@@ -52,8 +52,8 @@ class HttpClientService {
   private refreshToken: string | null = null;
   private isRefreshing = false;
   private failedQueue: Array<{
-    resolve: (value?: any) => void;
-    reject: (reason?: any) => void;
+    resolve: (value?: unknown) => void;
+    reject: (reason?: unknown) => void;
   }> = [];
   
   constructor() {
@@ -308,7 +308,7 @@ class HttpClientService {
   
   async post<T>(
     url: string,
-    data?: any,
+    data?: unknown,
     options?: Partial<RequestConfig>
   ): Promise<ApiResponse<T>> {
     return this.makeRequest({
@@ -321,7 +321,7 @@ class HttpClientService {
   
   async put<T>(
     url: string,
-    data?: any,
+    data?: unknown,
     options?: Partial<RequestConfig>
   ): Promise<ApiResponse<T>> {
     return this.makeRequest({
@@ -334,7 +334,7 @@ class HttpClientService {
   
   async patch<T>(
     url: string,
-    data?: any,
+    data?: unknown,
     options?: Partial<RequestConfig>
   ): Promise<ApiResponse<T>> {
     return this.makeRequest({

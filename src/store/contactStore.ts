@@ -14,7 +14,7 @@ interface ContactStore {
 }
 
 // Create sample contacts with data from both branches
-export const useContactStore = create<ContactStore>((set, get) => ({
+export const useContactStore = create<ContactStore>((set, _get) => ({
   contacts: {
     '1': {
       id: '1',
@@ -259,7 +259,7 @@ export const useContactStore = create<ContactStore>((set, get) => ({
 
   deleteContact: (id) => {
     set(state => {
-      const { [id]: deleted, ...rest } = state.contacts;
+      const { [id]: _deleted, ...rest } = state.contacts;
       return { contacts: rest };
     });
     logger.info('Contact deleted successfully', { contactId: id });

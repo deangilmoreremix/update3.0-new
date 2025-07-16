@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAITools } from '../components/AIToolsProvider';
 import { 
   Brain, 
@@ -36,7 +36,7 @@ import {
   Calendar,
   X
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+
 import StreamingChat from '../components/aiTools/StreamingChat';
 import RealTimeFormValidation from '../components/aiTools/RealTimeFormValidation';
 import LiveDealAnalysis from '../components/aiTools/LiveDealAnalysis';

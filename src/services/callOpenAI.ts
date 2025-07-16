@@ -1,4 +1,4 @@
-import { useOpenAI } from './openaiService';
+
 
 export async function callOpenAI(prompt: string) {
   try {

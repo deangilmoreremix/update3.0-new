@@ -164,7 +164,7 @@ export const useOpenAIStream = () => {
   
   // Stream live deal analysis
   const streamDealAnalysis = async (
-    dealData: any,
+    dealData: unknown,
     onToken: (token: string) => void,
     model: string = 'gemini-pro'  // Use proper model name
   ) => {

@@ -25,7 +25,7 @@ const AIUsageDashboard: React.FC<AIUsageDashboardProps> = ({
   className = ''
 }) => {
   const { isDark } = useTheme();
-  const [usageStats, setUsageStats] = useState<any[]>([]);
+  const [usageStats, setUsageStats] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

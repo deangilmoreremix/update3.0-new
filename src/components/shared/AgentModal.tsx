@@ -5,14 +5,14 @@ import { X, Copy, CheckCircle, Send, Check } from 'lucide-react';
 
 interface AgentModalProps {
   agentId: string;
-  data: any;
+  data: unknown;
   onClose: () => void;
 }
 
 const AgentModal: React.FC<AgentModalProps> = ({ agentId, data, onClose }) => {
-  const [steps, setSteps] = useState<any[]>([]);
+  const [steps, setSteps] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(true);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<unknown>(null);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
 
@@ -52,7 +52,7 @@ const AgentModal: React.FC<AgentModalProps> = ({ agentId, data, onClose }) => {
   };
 
   // Render JSON output
-  const renderJsonOutput = (data: any) => {
+  const renderJsonOutput = (data: unknown) => {
     // Handle email sequence output (SDR agent)
     if (data.first_email && data.follow_up && data.final_bump) {
       return (

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useOpenAI } from '../services/openaiService';
 import { useGemini } from '../services/geminiService';
 import * as edgeFunctionService from '../services/edgeFunctionService';
@@ -94,7 +94,7 @@ const VideoEmail: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingProgress, setProcessingProgress] = useState(0);
   const [selectedFilter, setSelectedFilter] = useState('none');
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, _setIsMuted] = useState(false);
   const [volume, setVolume] = useState(1);
   const [playbackRate, setPlaybackRate] = useState(1);
   
@@ -103,7 +103,7 @@ const VideoEmail: React.FC = () => {
   const [emailSubject, setEmailSubject] = useState('');
   const [emailBody, setEmailBody] = useState('');
   const [showEmailComposer, setShowEmailComposer] = useState(false);
-  const [emailDraft, setEmailDraft] = useState<string | null>(null);
+  const [_emailDraft, setEmailDraft] = useState<string | null>(null);
   
   // Talking Points States
   const [talkingPoints, setTalkingPoints] = useState<TalkingPoint[]>([]);
@@ -117,17 +117,17 @@ const VideoEmail: React.FC = () => {
   // Trim States
   const [trimStart, setTrimStart] = useState(0);
   const [trimEnd, setTrimEnd] = useState(0);
-  const [isTrimming, setIsTrimming] = useState(false);
+  const [_isTrimming, setIsTrimming] = useState(false);
   const [showTrimControls, setShowTrimControls] = useState(false);
   
   // AI Enhancement States
   const [transcription, setTranscription] = useState<string | null>(null);
-  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [_isTranscribing, setIsTranscribing] = useState(false);
   const [videoFeedback, setVideoFeedback] = useState<VideoFeedback | null>(null);
-  const [isAnalyzingVideo, setIsAnalyzingVideo] = useState(false);
+  const [_isAnalyzingVideo, setIsAnalyzingVideo] = useState(false);
   const [showRecipientPersona, setShowRecipientPersona] = useState(false);
   const [recipientPersona, setRecipientPersona] = useState<RecipientPersona | null>(null);
-  const [isLoadingPersona, setIsLoadingPersona] = useState(false);
+  const [_isLoadingPersona, setIsLoadingPersona] = useState(false);
   const [selectedRecipient, setSelectedRecipient] = useState<string | null>(null);
   const [aiSuggestedFilters, setAiSuggestedFilters] = useState<string[]>([]);
   
@@ -163,7 +163,7 @@ const VideoEmail: React.FC = () => {
       // Convert the parsed data to VideoRecordingData objects with proper Blobs
       const loadedRecordings: VideoRecordingData[] = [];
       
-      parsedRecordings.forEach((recording: any) => {
+      parsedRecordings.forEach((recording: unknown) => {
         // Skip loading if url is not available
         if (!recording.url) return;
         
@@ -645,7 +645,7 @@ const VideoEmail: React.FC = () => {
   };
   
   // Simulate video transcription (in a real app, use OpenAI Whisper API)
-  const simulateTranscription = async (recording: VideoRecordingData) => {
+  const simulateTranscription = async (_recording: VideoRecordingData) => {
     setIsTranscribing(true);
     
     try {

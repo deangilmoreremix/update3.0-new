@@ -262,7 +262,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
     setLastEnrichmentData(enrichmentData);
     
     // Apply enrichment data to form
-    const updates: any = {};
+    const updates: unknown = {};
     
     if (enrichmentData.firstName && !formData.firstName) {
       updates.firstName = enrichmentData.firstName;
@@ -315,7 +315,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
     
     // Social profiles
     if (enrichmentData.socialProfiles) {
-      const socialUpdates: any = {};
+      const socialUpdates: unknown = {};
       Object.entries(enrichmentData.socialProfiles).forEach(([key, value]) => {
         if (value && !formData.socialProfiles[key as keyof typeof formData.socialProfiles]) {
           socialUpdates[key] = value;

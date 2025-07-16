@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useGemini } from '../../services/geminiService';
 import { useOpenAIEmbeddings } from '../../services/openaiEmbeddingsService';
-import { Search, FileText, User, Briefcase, Clock, ArrowRight, RefreshCw, X, Sparkles, Filter, CheckCircle } from 'lucide-react';
+import { Search, User, Briefcase, Clock, ArrowRight, RefreshCw, X, Sparkles, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Contact, Deal } from '../../types';
 
@@ -110,7 +110,7 @@ interface SmartSearchRealtimeProps {
 }
 
 const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResult }) => {
-  const gemini = useGemini();
+  const _gemini = useGemini();
   const embeddings = useOpenAIEmbeddings();
   
   const [searchQuery, setSearchQuery] = useState('');
@@ -208,7 +208,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
     
     try {
       // Create an embedding for the search query
-      const queryEmbedding = await embeddings.createEmbedding(query);
+      const _queryEmbedding = await embeddings.createEmbedding(query);
       
       const results: SearchResult[] = [];
       

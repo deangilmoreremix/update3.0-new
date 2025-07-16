@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { useTenant } from './TenantProvider';
 
 interface User {
@@ -44,11 +44,7 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { tenant } = useTenant();
 
-  useEffect(() => {
-    fetchUserRole();
-  }, [tenant]);
-
-  const fetchUserRole = async () => {
+  const fetchUserRole = useCallback(async () => {
     try {
       setIsLoading(true);
       
@@ -70,7 +66,11 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [tenant]);
+
+  useEffect(() => {
+    fetchUserRole();
+  }, [fetchUserRole]);
 
   const hasPermission = (permission: string): boolean => {
     if (!user) return false;

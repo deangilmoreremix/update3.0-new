@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Goal } from '../types/goals';
-import { composioService } from '../services/composioService';
+
 import { 
   Play, 
   Pause, 
@@ -38,7 +38,7 @@ interface ExecutionStep {
   status: 'pending' | 'running' | 'completed' | 'error';
   startTime?: Date;
   completionTime?: Date;
-  result?: any;
+  result?: unknown;
   thinking?: string;
   toolsUsed?: string[];
   crmImpact?: string;
@@ -47,7 +47,7 @@ interface ExecutionStep {
 interface LiveGoalExecutionProps {
   goal: Goal;
   realMode?: boolean;
-  onComplete?: (result: any) => void;
+  onComplete?: (result: unknown) => void;
   onCancel?: () => void;
 }
 
@@ -71,7 +71,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
   });
   const [liveActivity, setLiveActivity] = useState<string[]>([]);
   const [showCRMView, setShowCRMView] = useState(true);
-  const [goalResults, setGoalResults] = useState<any>(null);
+  const [goalResults, setGoalResults] = useState<unknown>(null);
   const [showHelp, setShowHelp] = useState(false);
 
   // Generate execution steps based on goal and required agents
@@ -502,7 +502,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
             </div>
 
             <div className="space-y-4 max-h-96 overflow-y-auto custom-scrollbar">
-              {executionSteps.map((step, index) => (
+              {executionSteps.map((step, _index) => (
                 <div
                   key={step.id}
                   className={`p-4 rounded-xl border transition-all duration-500 ${

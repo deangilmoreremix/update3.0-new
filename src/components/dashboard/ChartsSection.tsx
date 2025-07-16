@@ -5,7 +5,7 @@ import { useDealStore } from '../../store/dealStore';
 import { useContactStore } from '../../store/contactStore';
 import Avatar from '../ui/Avatar';
 import { getInitials } from '../../utils/avatars';
-import { BarChart3, LineChart, PieChart as PieChartIcon, TrendingUp, Filter } from 'lucide-react';
+import { BarChart3, LineChart, PieChart as PieChartIcon, TrendingUp } from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -24,7 +24,7 @@ import {
 
 const ChartsSection: React.FC = () => {
   const { isDark } = useTheme();
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'performance' | 'pipeline' | 'breakdown'>('performance');
   const [timeframe, setTimeframe] = useState<'week' | 'month' | 'quarter'>('month');
   const { deals } = useDealStore();
@@ -239,7 +239,7 @@ const ChartsSection: React.FC = () => {
                   borderRadius: '8px'
                 }}
                 labelStyle={{ color: isDark ? '#F3F4F6' : '#374151' }}
-                formatter={(value: any, name: string) => [
+                formatter={(value: unknown, name: string) => [
                   name === 'revenue' ? `$${value.toLocaleString()}` : value,
                   name === 'revenue' ? 'Revenue' : 'Deals Closed'
                 ]}
@@ -289,7 +289,7 @@ const ChartsSection: React.FC = () => {
                   borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e5e7eb',
                   borderRadius: '8px'
                 }}
-                formatter={(value: any) => [`${value} deals`, 'Count']}
+                formatter={(value: unknown) => [`${value} deals`, 'Count']}
               />
               <Bar dataKey="value" fill="#4F46E5" radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -314,7 +314,7 @@ const ChartsSection: React.FC = () => {
                 ))}
               </Pie>
               <Tooltip 
-                formatter={(value: any) => [`${value} deals`, 'Count']}
+                formatter={(value: unknown) => [`${value} deals`, 'Count']}
                 contentStyle={{ 
                   backgroundColor: isDark ? 'rgba(17, 24, 39, 0.9)' : '#ffffff',
                   borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e5e7eb',
