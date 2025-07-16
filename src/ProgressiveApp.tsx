@@ -1,5 +1,10 @@
 import { Routes, Route } from 'react-router-dom';
 
+// Import context providers
+import { ThemeProvider } from './contexts/ThemeContext';
+import { DashboardLayoutProvider } from './contexts/DashboardLayoutContext';
+import { AIToolsProvider } from './components/AIToolsProvider';
+
 // Use the complete redesigned Dashboard from smartcrmdash integration
 import Dashboard from './components/Dashboard';
 
@@ -28,18 +33,24 @@ function SimpleNavbar() {
 
 function ProgressiveApp() {
   return (
-    <div className="min-h-screen h-full w-full flex flex-col">
-      <SimpleNavbar />
-      <div className="flex-1 w-full overflow-hidden">
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/pipeline" element={<PipelineEnhanced />} />
-          <Route path="/contacts" element={<ContactsEnhanced />} />
-          <Route path="*" element={<Dashboard />} />
-        </Routes>
-      </div>
-    </div>
+    <ThemeProvider>
+      <DashboardLayoutProvider>
+        <AIToolsProvider>
+          <div className="min-h-screen h-full w-full flex flex-col">
+            <SimpleNavbar />
+            <div className="flex-1 w-full overflow-hidden">
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/pipeline" element={<PipelineEnhanced />} />
+                <Route path="/contacts" element={<ContactsEnhanced />} />
+                <Route path="*" element={<Dashboard />} />
+              </Routes>
+            </div>
+          </div>
+        </AIToolsProvider>
+      </DashboardLayoutProvider>
+    </ThemeProvider>
   );
 }
 
