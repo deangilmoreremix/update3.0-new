@@ -1,9 +1,9 @@
 import { Routes, Route } from 'react-router-dom';
 
-// Import real page components
-import DashboardPage from './pages/Dashboard';
-import PipelinePage from './pages/Pipeline';
-import ContactsPage from './pages/Contacts';
+// Import redesigned Enhanced page components
+import DashboardEnhanced from '../pages/DashboardEnhanced';
+import PipelineEnhanced from '../pages/PipelineEnhanced';
+import ContactsEnhanced from '../pages/ContactsEnhanced';
 
 function SimpleNavbar() {
   return (
@@ -30,11 +30,11 @@ function ProgressiveApp() {
       <SimpleNavbar />
       <div className="flex-1 w-full overflow-hidden">
         <Routes>
-          <Route path="/" element={<DashboardPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/pipeline" element={<PipelinePage />} />
-          <Route path="/contacts" element={<ContactsPage />} />
-          <Route path="*" element={<DashboardPage />} />
+          <Route path="/" element={<DashboardEnhanced />} />
+          <Route path="/dashboard" element={<DashboardEnhanced />} />
+          <Route path="/pipeline" element={<PipelineEnhanced />} />
+          <Route path="/contacts" element={<ContactsEnhanced />} />
+          <Route path="*" element={<DashboardEnhanced />} />
         </Routes>
       </div>
     </div>
