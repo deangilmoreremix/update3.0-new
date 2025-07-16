@@ -1,7 +1,9 @@
 import { Routes, Route } from 'react-router-dom';
 
-// Import redesigned Enhanced page components
+// For now, use DashboardEnhanced which was working, then gradually add smartcrmdash features
 import DashboardEnhanced from '../pages/DashboardEnhanced';
+
+// Import redesigned Enhanced page components for other pages
 import PipelineEnhanced from '../pages/PipelineEnhanced';
 import ContactsEnhanced from '../pages/ContactsEnhanced';
 

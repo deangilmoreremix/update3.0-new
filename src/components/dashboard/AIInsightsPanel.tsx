@@ -4,7 +4,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { useAITools } from '../../components/AIToolsProvider';
 import { useDealStore } from '../../store/dealStore';
 import { useContactStore } from '../../store/contactStore';
-import { geminiService } from '../../services/geminiService';
+import { useGemini } from '../../services/geminiService';
 import Avatar from '../ui/Avatar';
 import { getInitials } from '../../utils/avatars';
 
