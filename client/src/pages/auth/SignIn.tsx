@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, Shield, Brain, Sparkles, User, CheckCircle, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Shield, Brain, Sparkles, ArrowRight } from 'lucide-react';
 
 interface SignInFormData {
   email: string;

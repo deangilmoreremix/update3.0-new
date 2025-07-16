@@ -305,7 +305,7 @@ const Appointments: React.FC = () => {
     }
   };
   
-  const handleContactSelect = (option: any) => {
+  const handleContactSelect = (option: unknown) => {
     if (option) {
       const contact = contacts.find(c => c.value === option.value);
       setFormData({

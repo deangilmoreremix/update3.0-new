@@ -330,7 +330,7 @@ export const BulkUserUpload: React.FC<BulkUserUploadProps> = ({ onUsersUploaded 
                       <td className="px-6 py-4 whitespace-nowrap">
                         <select
                           value={user.role}
-                          onChange={(e) => updateUserRole(index, e.target.value as any)}
+                          onChange={(e) => updateUserRole(index, e.target.value as unknown)}
                           disabled={user.status !== 'pending'}
                           className="text-sm border border-gray-300 rounded px-2 py-1 disabled:bg-gray-100"
                         >
@@ -342,7 +342,7 @@ export const BulkUserUpload: React.FC<BulkUserUploadProps> = ({ onUsersUploaded 
                       <td className="px-6 py-4 whitespace-nowrap">
                         <select
                           value={user.subscriptionPlan}
-                          onChange={(e) => updateUserPlan(index, e.target.value as any)}
+                          onChange={(e) => updateUserPlan(index, e.target.value as unknown)}
                           disabled={user.status !== 'pending'}
                           className="text-sm border border-gray-300 rounded px-2 py-1 disabled:bg-gray-100"
                         >

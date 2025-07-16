@@ -74,14 +74,14 @@ export const AIMeetingAssistant: React.FC<MeetingAssistantProps> = ({
   useEffect(() => {
     // Initialize speech recognition
     if ('webkitSpeechRecognition' in window) {
-      recognitionRef.current = new (window as any).webkitSpeechRecognition();
+      recognitionRef.current = new (window as unknown).webkitSpeechRecognition();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
       recognitionRef.current.lang = 'en-US';
 
-      recognitionRef.current.onresult = (event: any) => {
-        let interimTranscript = '';
-        let finalTranscript = '';
+      recognitionRef.current.onresult = (event: unknown) => {
+        const interimTranscript = '';;
+        const finalTranscript = '';;
 
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
@@ -100,7 +100,7 @@ export const AIMeetingAssistant: React.FC<MeetingAssistantProps> = ({
         }
       };
 
-      recognitionRef.current.onerror = (event: any) => {
+      recognitionRef.current.onerror = (event: unknown) => {
         console.error('Speech recognition error:', event.error);
         toast({
           title: "Speech Recognition Error",
@@ -552,6 +552,5 @@ export const AIMeetingAssistant: React.FC<MeetingAssistantProps> = ({
 };
 
 // Import ArrowRight icon
-import { ArrowRight } from 'lucide-react';
 
 export default AIMeetingAssistant;

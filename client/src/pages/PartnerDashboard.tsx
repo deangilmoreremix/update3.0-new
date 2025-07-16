@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { Building2, Users, DollarSign, TrendingUp, Calendar, Settings, Plus, Eye, Edit } from 'lucide-react';
+import { Building2, Users, DollarSign, TrendingUp, Settings, Plus, Eye, Edit } from 'lucide-react';
 
 interface PartnerStats {
   totalCustomers: number;

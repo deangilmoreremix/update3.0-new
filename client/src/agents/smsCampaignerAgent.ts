@@ -1,6 +1,6 @@
 import { callOpenAI } from "../services/callOpenAI";
 
-export async function smsCampaignerAgent(input: any, setSteps?: (steps: any) => void) {
+export async function smsCampaignerAgent(input: any, setSteps?: (steps: unknown) => void) {
   const campaignGoal = input.goal || "Schedule a meeting";
   const contactName = input.name || "";
   const context = input.context || "";

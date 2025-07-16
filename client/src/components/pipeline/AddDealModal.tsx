@@ -3,7 +3,7 @@ import { X, Save, Building, User, DollarSign, Calendar, Target, AlertCircle } fr
 
 interface AddDealModalProps {
   onClose: () => void;
-  onSave: (deal: any) => Promise<void>;
+  onSave: (deal: unknown) => Promise<void>;
 }
 
 const AddDealModal: React.FC<AddDealModalProps> = ({ onClose, onSave }) => {

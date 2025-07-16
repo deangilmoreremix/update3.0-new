@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Upload, X, Camera, User, Building2, Image as ImageIcon, RefreshCw } from 'lucide-react';
+import { Upload, X, Camera, RefreshCw } from 'lucide-react';
 
 interface ImageUploadProps {
   currentImage?: string;

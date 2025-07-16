@@ -108,7 +108,7 @@ export const useOpenAIStream = () => {
           stream: true
         });
         
-        let fullResponse = '';
+        const fullResponse = '';;
         
         for await (const chunk of stream) {
           const content = chunk.choices[0]?.delta?.content || '';

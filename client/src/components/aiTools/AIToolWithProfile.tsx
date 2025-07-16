@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Brain, Settings, Zap, TrendingUp, Clock, Shield, Target } from 'lucide-react';
+import { User, Brain, Clock, Target } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { edgeFunctionService } from '../../services/edgeFunctionService';
 import { intelligentModelSelector, CustomerProfile } from '../../services/ai/intelligentModelSelector';
@@ -245,7 +245,7 @@ const AIToolWithProfile: React.FC<AIToolWithProfileProps> = ({
               handleAIRequest,
               isProcessing,
               recommendedModel
-            } as any);
+            } as unknown);
           }
           return child;
         })}

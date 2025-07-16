@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PieChart, TrendingUp, DollarSign, Calculator, User, Calendar, Target, Award, Filter, Download, Eye } from 'lucide-react';
+import { PieChart, TrendingUp, DollarSign, Calculator, Target, Award, Filter, Download } from 'lucide-react';
 import { useDealStore } from '../store/dealStore';
 
 const CommissionTracker = () => {

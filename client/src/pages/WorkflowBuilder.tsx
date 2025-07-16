@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { Repeat, Plus, ArrowRight, Settings, Play, Pause, Trash2, Edit } from 'lucide-react';
+import { Repeat, Plus, ArrowRight, Settings, Play, Pause, Trash2 } from 'lucide-react';
 
 interface WorkflowStep {
   id: string;

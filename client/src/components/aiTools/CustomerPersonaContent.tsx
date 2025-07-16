@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { edgeFunctionService } from '../../services/edgeFunctionService';
 import AIToolContent from '../shared/AIToolContent';
-import { User, Users, Building, RefreshCw, Copy, Plus, Trash2, Check, Download } from 'lucide-react';
+import { User, Users, RefreshCw, Copy, Plus, Trash2, Check, Download } from 'lucide-react';
 
 const CustomerPersonaContent: React.FC = () => {
   const [formData, setFormData] = useState({

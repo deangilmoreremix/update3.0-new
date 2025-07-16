@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as edgeFunctionService from '../../services/edgeFunctionService';
 import StructuredAIResult from '../shared/StructuredAIResult';
-import { Brain, BarChart3, TrendingUp, ChevronDown, ChevronUp, Play, Loader2 } from 'lucide-react';
+import { Brain, BarChart3, ChevronDown, ChevronUp } from 'lucide-react';
 
 const SalesInsightsContent: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);

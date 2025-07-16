@@ -203,7 +203,7 @@ export class IntelligentModelSelector {
     if (!customerProfile) return scoredModels;
     
     return scoredModels.map(({ model, score }) => {
-      let adjustedScore = score;
+      const adjustedScore = score;;
       
       // Customer model preferences
       if (customerProfile.history.preferredModels.includes(model.model)) {

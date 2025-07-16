@@ -1,6 +1,6 @@
 import { callOpenAI } from "../services/callOpenAI";
 
-export async function whatsappNurturerAgent(input: any, setSteps?: (steps: any) => void) {
+export async function whatsappNurturerAgent(input: any, setSteps?: (steps: unknown) => void) {
   const contactName = input.name || "there";
   const lastInteraction = input.lastInteraction || "No previous interaction";
   const interests = input.interests || "General business topics";

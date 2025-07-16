@@ -4,7 +4,7 @@ import { X, Plus } from 'lucide-react';
 interface AddDealModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddDeal: (dealData: any) => void;
+  onAddDeal: (dealData: unknown) => void;
 }
 
 const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onAddDeal }) => {

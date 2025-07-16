@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Goal } from '../types/goals';
 import LiveGoalExecution from './LiveGoalExecution';
-import { X, Maximize2, Minimize2, HelpCircle, AlertTriangle } from 'lucide-react';
+import { X, Maximize2 } from 'lucide-react';
 import Tooltip from './Tooltip';
 
 interface GoalExecutionModalProps {
@@ -9,7 +9,7 @@ interface GoalExecutionModalProps {
   isOpen: boolean;
   onClose: () => void;
   realMode?: boolean;
-  onComplete?: (result: any) => void;
+  onComplete?: (result: unknown) => void;
 }
 
 const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
@@ -44,7 +44,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
     };
   }, [isOpen]);
 
-  const handleComplete = (result: any) => {
+  const handleComplete = (result: unknown) => {
     onComplete?.(result);
     // Auto-close modal after showing results for a moment
     setTimeout(() => {

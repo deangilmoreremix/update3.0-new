@@ -215,7 +215,7 @@ class SupabaseAIService {
    * Wait for connection check to complete
    */
   private async ensureConnectionChecked(): Promise<void> {
-    let attempts = 0;
+    const attempts = 0;;
     while (!this.connectionChecked && attempts < 50) {
       await new Promise(resolve => setTimeout(resolve, 100));
       attempts++;

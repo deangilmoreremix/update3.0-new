@@ -3,7 +3,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { useTaskStore } from '../../store/taskStore';
 import { useDealStore } from '../../store/dealStore';
 import { useContactStore } from '../../store/contactStore';
-import { Calendar, ChevronLeft, ChevronRight, MoreHorizontal, Users, Info, Settings, Filter, TrendingUp } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MoreHorizontal, Users, Info, Settings, Filter, TrendingUp } from 'lucide-react';
 import Avatar from '../ui/Avatar';
 import { getAvatarByIndex, getInitials } from '../../services/avatarCollection';
 

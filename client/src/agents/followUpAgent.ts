@@ -1,6 +1,6 @@
 import { callOpenAI } from "../services/callOpenAI";
 
-export async function followUpAgent(input: any, setSteps?: (steps: any) => void) {
+export async function followUpAgent(input: any, setSteps?: (steps: unknown) => void) {
   const taskDescription = input.description || "Follow up on previous conversation";
   const contact = input.contact || "Contact";
   const context = input.context || "";

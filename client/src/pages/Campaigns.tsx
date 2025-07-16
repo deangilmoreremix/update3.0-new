@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Megaphone, Plus, Play, Pause, Eye, Edit, Trash2, Users, Mail, MessageSquare, TrendingUp, Calendar, Target } from 'lucide-react';
+import { Megaphone, Plus, Play, Pause, Eye, Trash2, Mail, TrendingUp, Calendar, Target } from 'lucide-react';
 
 const Campaigns = () => {
   const [campaigns, setCampaigns] = useState([

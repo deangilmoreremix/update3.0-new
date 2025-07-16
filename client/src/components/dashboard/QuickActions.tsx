@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAITools } from '../AIToolsProvider';
-import { Plus, Phone, Mail, Calendar, Search, Zap, MessageSquare, FileText } from 'lucide-react';
+import { Search } from 'lucide-react';
 import Avatar from '../ui/Avatar';
 import { getAvatarByIndex, getInitials } from '../../services/avatarCollection';
 

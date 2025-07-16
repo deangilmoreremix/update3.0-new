@@ -58,7 +58,7 @@ const SMSWhatsAppMessaging: React.FC = () => {
       const response = await fetch('/api/contacts');
       const contactsData = await response.json();
       
-      const formattedContacts: Contact[] = contactsData.map((contact: any) => ({
+      const formattedContacts: Contact[] = contactsData.map((contact: unknown) => ({
         id: contact.id,
         name: contact.name,
         phone: contact.phone || '+1234567890',

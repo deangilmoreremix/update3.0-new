@@ -1,6 +1,6 @@
 import { callOpenAI } from "../services/callOpenAI";
 
-export async function proposalGeneratorAgent(input: any, setSteps?: (steps: any) => void) {
+export async function proposalGeneratorAgent(input: any, setSteps?: (steps: unknown) => void) {
   const company = input.company || "Unknown";
   const value = input.value || 0;
   const title = input.title || "Unknown";

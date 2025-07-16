@@ -176,7 +176,7 @@ const ContentLibrary: React.FC = () => {
               <select
                 required
                 value={newItemType}
-                onChange={(e) => setNewItemType(e.target.value as any)}
+                onChange={(e) => setNewItemType(e.target.value as unknown)}
                 className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="podcast">Podcast</option>

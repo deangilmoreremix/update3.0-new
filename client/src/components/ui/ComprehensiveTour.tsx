@@ -186,7 +186,7 @@ export const ComprehensiveTour: React.FC<{
     onAfterOpen: config.onStart,
     onBeforeClose: config.onComplete,
     styles: {
-      popover: (base: any) => ({
+      popover: (base: unknown) => ({
         ...base,
         '--reactour-accent': '#3b82f6',
         borderRadius: '12px',
@@ -196,20 +196,20 @@ export const ComprehensiveTour: React.FC<{
         border: '1px solid #e5e7eb',
         maxWidth: '400px',
       }),
-      maskArea: (base: any) => ({
+      maskArea: (base: unknown) => ({
         ...base,
         rx: 8,
       }),
-      badge: (base: any) => ({
+      badge: (base: unknown) => ({
         ...base,
         backgroundColor: '#3b82f6',
         fontSize: '0.875rem',
       }),
-      controls: (base: any) => ({
+      controls: (base: unknown) => ({
         ...base,
         marginTop: '16px',
       }),
-      navigation: (base: any) => ({
+      navigation: (base: unknown) => ({
         ...base,
         display: 'flex',
         justifyContent: 'space-between',

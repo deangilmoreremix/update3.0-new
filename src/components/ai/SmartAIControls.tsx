@@ -251,7 +251,7 @@ export const SmartAIControls: React.FC<SmartAIControlsProps> = ({
               ].map((option) => (
                 <button
                   key={option.value}
-                  onClick={() => setUrgency(option.value as any)}
+                  onClick={() => setUrgency(option.value as unknown)}
                   className={`flex-1 p-3 rounded-lg border text-center transition-colors ${
                     urgency === option.value
                       ? 'border-blue-500 bg-blue-50 text-blue-700'

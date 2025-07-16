@@ -364,6 +364,5 @@ export const SmartCalendarTile: React.FC<SmartCalendarTileProps> = ({
 };
 
 // Import Phone icon
-import { Phone } from 'lucide-react';
 
 export default SmartCalendarTile;

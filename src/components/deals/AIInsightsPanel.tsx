@@ -342,7 +342,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
         ].map((category) => (
           <button
             key={category.id}
-            onClick={() => setActiveCategory(category.id as any)}
+            onClick={() => setActiveCategory(category.id as unknown)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               activeCategory === category.id 
                 ? 'border-purple-600 text-purple-600' 

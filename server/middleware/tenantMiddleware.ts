@@ -116,8 +116,8 @@ export const extractTenant = async (req: TenantRequest, res: Response, next: Nex
     }
 
     // Method 5: Extract from user context if authenticated
-    if (!tenant && (req as any).user) {
-      const userId = (req as any).user.id;
+    if (!tenant && (req as unknown).user) {
+      const userId = (req as unknown).user.id;
       if (userId) {
         // This would require a user lookup to get tenant - implement if needed
         // For now we'll continue with fallback logic

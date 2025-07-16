@@ -1,7 +1,7 @@
 import { callGemini } from "../services/callGemini";
 import { callOpenAI } from "../services/callOpenAI";
 
-export async function aiJourneysAgent(input: any, setSteps?: (steps: any) => void) {
+export async function aiJourneysAgent(input: any, setSteps?: (steps: unknown) => void) {
   const customerType = input.customerType || "B2B SaaS";
   const journeyStage = input.stage || "Awareness";
   const persona = input.persona || "Decision Maker";

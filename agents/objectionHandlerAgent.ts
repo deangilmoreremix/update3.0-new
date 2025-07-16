@@ -1,6 +1,6 @@
 import { callGemini } from "../services/callGemini";
 
-export async function objectionHandlerAgent(input: any, setSteps?: (steps: any) => void) {
+export async function objectionHandlerAgent(input: any, setSteps?: (steps: unknown) => void) {
   const name = input.name || "the prospect";
   const company = input.company || "the company";
   const objection = input.objection || "It's too expensive";

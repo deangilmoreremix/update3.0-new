@@ -1,6 +1,6 @@
 import { callOpenAI } from "../services/callOpenAI";
 
-export async function aiDialerAgent(input: any, setSteps?: (steps: any) => void) {
+export async function aiDialerAgent(input: any, setSteps?: (steps: unknown) => void) {
   const callList = input.contacts || [];
   const campaign = input.campaign || "General outreach";
   const timezone = input.timezone || "EST";

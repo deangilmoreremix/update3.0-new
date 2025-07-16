@@ -4,7 +4,7 @@ import { useAuthStore } from '../../store/authStore';
 import { fetchBusinessAnalysis, createBusinessAnalysis } from '../../services/supabaseClient';
 import * as edgeFunctionService from '../../services/edgeFunctionService';
 import StructuredAIResult from '../../components/shared/StructuredAIResult';
-import { Brain, Building, Globe, Briefcase, ArrowRight, RefreshCw, Check, Loader2, AlertTriangle } from 'lucide-react';
+import { Brain, Building, Globe, Briefcase, ArrowRight, RefreshCw, Check } from 'lucide-react';
 
 interface BusinessAnalysisForm {
   businessName: string;

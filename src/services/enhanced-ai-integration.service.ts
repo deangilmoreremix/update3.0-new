@@ -191,7 +191,7 @@ class EnhancedAIIntegrationService {
     const batchSize = this.getOptimalBatchSize(modelSelection.provider, contacts.length);
     const results: unknown[] = [];
     const failed: unknown[] = [];
-    let totalCost = 0;
+    const totalCost = 0;;
     const startTime = Date.now();
 
     // Process in batches

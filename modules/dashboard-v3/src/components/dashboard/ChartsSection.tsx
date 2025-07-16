@@ -5,7 +5,7 @@ import { useDealStore } from '../../store/dealStore';
 import { useContactStore } from '../../store/contactStore';
 import Avatar from '../ui/Avatar';
 import { getInitials } from '../../utils/avatars';
-import { BarChart3, LineChart, PieChart as PieChartIcon, TrendingUp, Filter } from 'lucide-react';
+import { BarChart3, LineChart, TrendingUp } from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -188,7 +188,7 @@ const ChartsSection: React.FC = () => {
             {['week', 'month', 'quarter'].map((period) => (
               <button
                 key={period}
-                onClick={() => setTimeframe(period as any)}
+                onClick={() => setTimeframe(period as unknown)}
                 className={`px-3 py-1.5 text-sm ${
                   timeframe === period 
                     ? isDark 
@@ -289,7 +289,7 @@ const ChartsSection: React.FC = () => {
                   borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e5e7eb',
                   borderRadius: '8px'
                 }}
-                formatter={(value: any) => [`${value} deals`, 'Count']}
+                formatter={(value: unknown) => [`${value} deals`, 'Count']}
               />
               <Bar dataKey="value" fill="#4F46E5" radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -314,7 +314,7 @@ const ChartsSection: React.FC = () => {
                 ))}
               </Pie>
               <Tooltip 
-                formatter={(value: any) => [`${value} deals`, 'Count']}
+                formatter={(value: unknown) => [`${value} deals`, 'Count']}
                 contentStyle={{ 
                   backgroundColor: isDark ? 'rgba(17, 24, 39, 0.9)' : '#ffffff',
                   borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e5e7eb',

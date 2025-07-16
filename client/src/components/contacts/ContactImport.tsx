@@ -41,7 +41,7 @@ const ContactImport: React.FC = () => {
         const json = utils.sheet_to_json(worksheet);
         
         // Map to Contact structure
-        const contacts = json.map((row: any) => ({
+        const contacts = json.map((row: unknown) => ({
           name: row.Name || row.name,
           email: row.Email || row.email,
           phone: row.Phone || row.phone,

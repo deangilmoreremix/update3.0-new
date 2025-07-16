@@ -157,7 +157,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
     setExecutingGoal(null);
   };
 
-  const handleExecutionComplete = (result: any) => {
+  const handleExecutionComplete = (result: unknown) => {
     console.log('Goal execution completed:', result);
     setCompletedGoals(prev => new Set([...Array.from(prev), result.goalId]));
   };
@@ -167,7 +167,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
     return allGoals.filter(g => g.category.toLowerCase() === categoryId.toLowerCase()).length;
   };
 
-  const getIconComponent = (icon: any) => {
+  const getIconComponent = (icon: unknown) => {
     // If it's already a React component, return it directly
     if (typeof icon === 'function') {
       return icon;

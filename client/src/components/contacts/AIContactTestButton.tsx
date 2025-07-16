@@ -15,7 +15,7 @@ interface Contact {
 
 interface AIContactTestButtonProps {
   contact: Contact;
-  onResult?: (result: any) => void;
+  onResult?: (result: unknown) => void;
 }
 
 export const AIContactTestButton: React.FC<AIContactTestButtonProps> = ({ 

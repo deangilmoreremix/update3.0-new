@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { X, Search, Settings, Target, Check, RotateCcw, Download, Upload, Sparkles, Brain, Palette } from 'lucide-react';
+import { X, Search, Target, RotateCcw, Download, Upload, Sparkles, Palette } from 'lucide-react';
 import { useCustomizationStore, CustomizationLocation } from '../../store/customizationStore';
 import { AI_GOALS, AI_GOAL_CATEGORIES, getGoalById, getRecommendedGoals } from '../../data/aiGoals';
 import { Card, CardContent, CardHeader } from '../ui/card';

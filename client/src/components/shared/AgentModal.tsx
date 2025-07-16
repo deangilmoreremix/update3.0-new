@@ -52,7 +52,7 @@ const AgentModal: React.FC<AgentModalProps> = ({ agentId, data, onClose }) => {
   };
 
   // Render JSON output
-  const renderJsonOutput = (data: any) => {
+  const renderJsonOutput = (data: unknown) => {
     // Handle email sequence output (SDR agent)
     if (data.first_email && data.follow_up && data.final_bump) {
       return (

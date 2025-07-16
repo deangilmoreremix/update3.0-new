@@ -1,7 +1,7 @@
 import { callGemini } from "../services/callGemini";
 import { callOpenAI } from "../services/callOpenAI";
 
-export async function aiAeAgent(input: any, setSteps?: (steps: any) => void) {
+export async function aiAeAgent(input: any, setSteps?: (steps: unknown) => void) {
   const dealTitle = input.title || "Product Demo";
   const company = input.company || "Company";
   const contact = input.contact || "Stakeholder";

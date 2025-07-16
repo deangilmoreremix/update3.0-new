@@ -1,7 +1,7 @@
 import { callGemini } from "../services/callGemini";
 import { callOpenAI } from "../services/callOpenAI";
 
-export async function proposalGeneratorAgent(input: any, setSteps?: (steps: any) => void) {
+export async function proposalGeneratorAgent(input: any, setSteps?: (steps: unknown) => void) {
   const dealTitle = input.title || "Business Proposal";
   const company = input.company || "Your Company";
   const value = input.value || 0;

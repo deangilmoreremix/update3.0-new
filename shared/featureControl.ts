@@ -384,8 +384,8 @@ export function canUpgradeFeature(
   const currentPermissions = getFeaturePermissions(currentPlan);
   const targetPermissions = getFeaturePermissions(targetPlan);
   
-  const currentFeature = (currentPermissions[featureCategory] as any)[featureName];
-  const targetFeature = (targetPermissions[featureCategory] as any)[featureName];
+  const currentFeature = (currentPermissions[featureCategory] as unknown)[featureName];
+  const targetFeature = (targetPermissions[featureCategory] as unknown)[featureName];
   
   return !currentFeature && targetFeature;
 }

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { TrendingUp, Users, DollarSign, Target } from 'lucide-react';
 import Avatar from '../ui/Avatar';
 import { getAvatarByIndex } from '../../services/avatarCollection';
 

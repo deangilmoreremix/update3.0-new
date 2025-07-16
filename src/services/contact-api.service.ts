@@ -611,7 +611,7 @@ class ContactAPIService {
           
           const rows = result.contacts.map(contact => {
             return headers.map(header => {
-              const value = (contact as any)[header];
+              const value = (contact as unknown)[header];
               // Handle values that might contain commas or quotes
               if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
                 return `"${value.replace(/"/g, '""')}"`;

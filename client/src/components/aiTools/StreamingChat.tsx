@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 // import { useOpenAIStream } from '../../services/openaiStreamingService';
-import { Send, User, Bot, RefreshCw, Clock, Copy, Check, X, Zap, Settings } from 'lucide-react';
+import { Send, User, Bot, RefreshCw, Clock, Copy, Check, Zap, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Message {

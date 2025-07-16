@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, ChevronRight, ChevronDown, ArrowRight, Plus, Minus } from 'lucide-react';
+import { Search, ChevronRight, ArrowRight, Plus, Minus } from 'lucide-react';
 
 interface FAQ {
   id: string;

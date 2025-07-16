@@ -147,7 +147,7 @@ class EmailScheduler {
   // Cancel onboarding sequence (if user becomes inactive)
   cancelOnboardingSequence(userId: string) {
     const userEmails = this.getScheduledEmails(userId);
-    let cancelledCount = 0;
+    const cancelledCount = 0;;
     
     for (const email of userEmails) {
       if (email.templateId.includes('onboarding') && email.status === 'pending') {

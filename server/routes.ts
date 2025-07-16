@@ -41,13 +41,13 @@ const handleWebhook = async (req: Request, res: Response) => {
 
 const whiteLabelClient = {
   getTenant: async (tenantId: string) => ({ id: tenantId, name: 'Mock Tenant' }),
-  createTenant: async (data: any) => ({ id: 'new-tenant', ...data }),
+  createTenant: async (data: unknown) => ({ id: 'new-tenant', ...data }),
   updateTenant: async (tenantId: string, data: any) => ({ id: tenantId, ...data }),
   reportUsage: async (tenantId: string, usage: any) => ({ success: true })
 };
 
 const partnerService = {
-  createPartner: async (data: any) => ({ id: 'new-partner', ...data }),
+  createPartner: async (data: unknown) => ({ id: 'new-partner', ...data }),
   getPendingPartners: async () => [],
   getActivePartners: async () => [],
   approvePartner: async (partnerId: string) => ({ id: partnerId, status: 'approved' }),
@@ -56,7 +56,7 @@ const partnerService = {
   createCustomerForPartner: async (partnerId: string, data: any) => ({ id: 'new-customer', partnerId, ...data })
 };
 
-const createWhitelabelUserConfig = (userData: any) => ({
+const createWhitelabelUserConfig = (userData: unknown) => ({
   role: 'partner_admin',
   isWhitelabelPartner: true,
   password: 'vr2025',
@@ -69,7 +69,7 @@ const createWhitelabelUserConfig = (userData: any) => ({
 
 // Mock services for now - implement properly later
 const authService = {
-  register: async (data: any) => {
+  register: async (data: unknown) => {
     console.log('Mock: User registration with whitelabel config:', {
       email: data.email,
       role: data.role,
@@ -111,7 +111,7 @@ const storage = {
     console.log('Mock: Getting user by email:', email);
     return { id: 'demo-user-id', email, fullName: 'Demo User' };
   },
-  createUser: async (userData: any) => {
+  createUser: async (userData: unknown) => {
     console.log('Mock: Creating user:', userData);
     return { id: `user_${Date.now()}`, ...userData };
   },
@@ -131,7 +131,7 @@ const storage = {
     console.log('Mock: Getting contact:', id);
     return { id, name: 'Mock Contact' };
   },
-  createContact: async (contactData: any) => {
+  createContact: async (contactData: unknown) => {
     console.log('Mock: Creating contact:', contactData);
     return { id: `contact_${Date.now()}`, ...contactData };
   },
@@ -150,7 +150,7 @@ const storage = {
     console.log('Mock: Getting deal:', id);
     return { id, title: 'Mock Deal' };
   },
-  createDeal: async (dealData: any) => {
+  createDeal: async (dealData: unknown) => {
     console.log('Mock: Creating deal:', dealData);
     return { id: `deal_${Date.now()}`, ...dealData };
   },
@@ -169,7 +169,7 @@ const storage = {
     console.log('Mock: Getting task:', id);
     return { id, title: 'Mock Task' };
   },
-  createTask: async (taskData: any) => {
+  createTask: async (taskData: unknown) => {
     console.log('Mock: Creating task:', taskData);
     return { id: `task_${Date.now()}`, ...taskData };
   },
@@ -184,7 +184,7 @@ const storage = {
     console.log('Mock: Getting business analyses for user:', userId);
     return [];
   },
-  createBusinessAnalysis: async (analysisData: any) => {
+  createBusinessAnalysis: async (analysisData: unknown) => {
     console.log('Mock: Creating business analysis:', analysisData);
     return { id: `analysis_${Date.now()}`, ...analysisData };
   },
@@ -195,7 +195,7 @@ const storage = {
     console.log('Mock: Getting content items for user:', userId);
     return [];
   },
-  createContentItem: async (itemData: any) => {
+  createContentItem: async (itemData: unknown) => {
     console.log('Mock: Creating content item:', itemData);
     return { id: `item_${Date.now()}`, ...itemData };
   },
@@ -206,7 +206,7 @@ const storage = {
     console.log('Mock: Getting voice profiles for user:', userId);
     return [];
   },
-  createVoiceProfile: async (profileData: any) => {
+  createVoiceProfile: async (profileData: unknown) => {
     console.log('Mock: Creating voice profile:', profileData);
     return { id: `profile_${Date.now()}`, ...profileData };
   },

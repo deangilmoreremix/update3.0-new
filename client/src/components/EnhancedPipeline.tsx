@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { Deal, PipelineColumn } from '../types';
 import { AIEnhancedDealCard } from './deals/AIEnhancedDealCard';
-import { Filter, Search, Plus, BarChart3, TrendingUp, Target, DollarSign, Calendar, Users, Star, Heart, Briefcase, Building, Phone, Mail, Globe, Zap, MoreHorizontal, ArrowUpDown, SlidersHorizontal, Eye, EyeOff, RefreshCw, Bot, Sparkles, Layers, Activity, TrendingDown, AlertCircle, CheckCircle, Clock, UserPlus, FileText, PieChart, Settings, Download, Upload, FilterX, Grid3X3, List, BarChart, LineChart, Target as TargetIcon } from 'lucide-react';
+import { Search, Plus, BarChart3, TrendingUp, Target, DollarSign, Briefcase, ArrowUpDown, SlidersHorizontal, RefreshCw, Bot, Layers, AlertCircle, Clock, PieChart, Download, FilterX, List } from 'lucide-react';
 import { ModernButton } from './ui/ModernButton';
 import { usePersonalization } from '../contexts/PersonalizationContext';
 import { useContactStore } from '../store/contactStore';
@@ -742,7 +742,7 @@ export const EnhancedPipeline: React.FC = () => {
               </select>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
+                onChange={(e) => setSortBy(e.target.value as unknown)}
                 className="px-4 py-2 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-gray-200/20 dark:border-gray-700/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="value">Sort by Value</option>

@@ -178,7 +178,7 @@ export const MassRoleAssignment: React.FC<MassRoleAssignmentProps> = ({
     }
   };
 
-  const validateBusinessLogic = async (rowData: any) => {
+  const validateBusinessLogic = async (rowData: unknown) => {
     // Simulate AI business logic validation
     const suspiciousPatterns = [
       { pattern: /admin.*temp|temp.*admin/i, message: 'Temporary admin roles detected' },
@@ -415,7 +415,7 @@ export const MassRoleAssignment: React.FC<MassRoleAssignmentProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <select
             value={bulkRole}
-            onChange={(e) => setBulkRole(e.target.value as any)}
+            onChange={(e) => setBulkRole(e.target.value as unknown)}
             className="border border-gray-300 rounded-lg px-3 py-2"
           >
             <option value="user">User Role</option>
@@ -425,7 +425,7 @@ export const MassRoleAssignment: React.FC<MassRoleAssignmentProps> = ({
           
           <select
             value={bulkPlan}
-            onChange={(e) => setBulkPlan(e.target.value as any)}
+            onChange={(e) => setBulkPlan(e.target.value as unknown)}
             className="border border-gray-300 rounded-lg px-3 py-2"
           >
             <option value="free">Free Plan</option>

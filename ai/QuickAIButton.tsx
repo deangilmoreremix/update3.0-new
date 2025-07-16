@@ -12,7 +12,7 @@ interface QuickAIButtonProps {
   size?: 'sm' | 'md';
   variant?: 'default' | 'analysis' | 'generation' | 'research' | 'automation';
   className?: string;
-  onResult?: (result: any) => void;
+  onResult?: (result: unknown) => void;
 }
 
 const QuickAIButton: React.FC<QuickAIButtonProps> = ({
@@ -56,7 +56,7 @@ const QuickAIButton: React.FC<QuickAIButtonProps> = ({
       };
       
       const mappedTool = toolMapping[toolName] || toolName;
-      openTool(mappedTool as any);
+      openTool(mappedTool as unknown);
       
       if (onResult) {
         onResult({ status: 'opened', tool: mappedTool });

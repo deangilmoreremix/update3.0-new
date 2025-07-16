@@ -215,7 +215,7 @@ export class AICalendarService {
       });
 
       if (!hasConflict) {
-        let score = 80; // Base score
+        const score = 80; // Base score;
         let reasoning = 'Available time slot';
         
         // Prefer mid-morning and early afternoon

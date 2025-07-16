@@ -57,7 +57,7 @@ function App() {
                   <div className="min-h-screen h-full w-full flex flex-col transition-all duration-300 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 bg-gradient-to-br from-gray-50 via-white to-gray-100">
                     <DevicePermissionChecker />
                     <Navbar onOpenPipelineModal={() => {
-                      const modalsContext = (document.getElementById('root') as any)?.__MODALS_CONTEXT;
+                      const modalsContext = (document.getElementById('root') as unknown)?.__MODALS_CONTEXT;
                       if (modalsContext && modalsContext.openPipelineModal) {
                         modalsContext.openPipelineModal();
                       }

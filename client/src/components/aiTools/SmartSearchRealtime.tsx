@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
 import { useDealStore } from '../../store/dealStore';
-import { Search, User, Building, DollarSign, Calendar } from 'lucide-react';
+import { Search, DollarSign } from 'lucide-react';
 
 const SmartSearchRealtime: React.FC = () => {
   const { isDark } = useTheme();
@@ -29,7 +29,7 @@ const SmartSearchRealtime: React.FC = () => {
 
   const performSearch = (query: string) => {
     const lowercaseQuery = query.toLowerCase();
-    const results: any[] = [];
+    const results: unknown[] = [];
 
     // Search contacts
     Object.values(contacts).forEach(contact => {
@@ -85,7 +85,7 @@ const SmartSearchRealtime: React.FC = () => {
     if (textLower.includes(queryLower)) return 60;
     
     // Fuzzy matching for partial matches
-    let score = 0;
+    const score = 0;;
     const queryWords = queryLower.split(' ');
     queryWords.forEach(word => {
       if (textLower.includes(word)) score += 20;

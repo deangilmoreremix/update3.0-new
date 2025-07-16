@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, Users, Eye, MousePointer, Globe, Clock, ChevronDown, ChevronUp } from 'lucide-react';
+import { Users, Eye, MousePointer, Clock, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface DomainAnalyticsProps {
   domainId: string;

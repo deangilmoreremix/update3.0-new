@@ -1,6 +1,6 @@
 import React from 'react';
 import { useVideoCall } from '../contexts/VideoCallContext';
-import { Phone, PhoneOff, Mic, MicOff, Video, VideoOff, MoreHorizontal, Maximize2 } from 'lucide-react';
+import { PhoneOff, Mic, MicOff, Video, VideoOff, MoreHorizontal, Maximize2 } from 'lucide-react';
 
 const VideoCallOverlay: React.FC = () => {
   const videoCall = useVideoCall();

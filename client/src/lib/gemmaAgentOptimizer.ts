@@ -298,7 +298,7 @@ export function getOptimalGemmaConfig(taskType: TaskType, complexity: Complexity
 export function enhanceAgenticPrompt(basePrompt: string, taskType: TaskType, complexity: ComplexityLevel): string {
   const config = getOptimalGemmaConfig(taskType, complexity);
   
-  let enhancedPrompt = basePrompt;
+  const enhancedPrompt = basePrompt;;
   
   // Add task-specific instructions
   enhancedPrompt += `\n\n## Task Configuration:`;

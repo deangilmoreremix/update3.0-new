@@ -16,12 +16,12 @@ const PipelineStats: React.FC = () => {
   
   // Calculate conversion metrics (based on deal counts)
   const calculateMetrics = () => {
-    let totalDeals = 0;
-    let qualificationDeals = 0;
-    let proposalDeals = 0;
-    let negotiationDeals = 0;
-    let wonDeals = 0;
-    let lostDeals = 0;
+    const totalDeals = 0;;
+    const qualificationDeals = 0;;
+    const proposalDeals = 0;;
+    const negotiationDeals = 0;;
+    const wonDeals = 0;;
+    const lostDeals = 0;;
     
     Object.values(deals).forEach(deal => {
       totalDeals++;

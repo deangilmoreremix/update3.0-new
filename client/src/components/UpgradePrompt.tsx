@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GlassCard } from './ui/GlassCard';
 import { ModernButton } from './ui/ModernButton';
-import { Crown, Check, X, Zap, Star, Shield, ArrowRight } from 'lucide-react';
+import { Check, X, Zap, ArrowRight } from 'lucide-react';
 
 interface UpgradePromptProps {
   isOpen: boolean;

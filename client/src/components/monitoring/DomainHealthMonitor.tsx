@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, AlertTriangle, CheckCircle, XCircle, Globe, Clock, Zap, Database, RefreshCw } from 'lucide-react';
+import { Activity, AlertTriangle, CheckCircle, XCircle, Globe, Zap, Database, RefreshCw } from 'lucide-react';
 
 interface DomainHealth {
   id: string;

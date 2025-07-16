@@ -5,7 +5,7 @@ import InteractiveGoalCard from '../../components/InteractiveGoalCardComplete';
 import GoalExecutionModal from '../../components/GoalExecutionModalComplete';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Brain, Info, Lightbulb, ArrowLeft, Sparkles, Zap, Target, Users, BarChart3, Bot, Activity, Search, Filter, Grid3X3, List, Play, Eye, Clock, TrendingUp, ChevronDown } from 'lucide-react';
+import { Brain, Info, ArrowLeft, Target, BarChart3, Bot, Search, Filter, Grid3X3, List, TrendingUp, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 // Define context type
@@ -77,7 +77,7 @@ const AIGoalsPageFixed: React.FC = () => {
     setSelectedGoal(null);
   };
 
-  const handleGoalComplete = (results: any) => {
+  const handleGoalComplete = (results: unknown) => {
     console.log('Goal completed:', selectedGoal?.title, results);
     if (selectedGoal) {
       setExecutingGoals(prev => {

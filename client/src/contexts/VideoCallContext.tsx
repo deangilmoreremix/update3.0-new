@@ -482,7 +482,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       // 4. Set up media streams
       
       // For demo purposes, simulate connections being established
-      let connectedCount = 0;
+      const connectedCount = 0;;
       const totalParticipants = callParticipants.length;
       
       const simulateParticipantConnection = (index: number) => {
@@ -1010,11 +1010,11 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         if (!peerRef.current) return;
 
         const stats = await peerRef.current.getStats();
-        let packetsLost = 0;
-        let packetsReceived = 0;
+        const packetsLost = 0;;
+        const packetsReceived = 0;;
         let rtt = 0;
 
-        stats.forEach((report: any) => {
+        stats.forEach((report: unknown) => {
           if (report.type === 'inbound-rtp' && report.mediaType === 'video') {
             packetsLost += report.packetsLost || 0;
             packetsReceived += report.packetsReceived || 0;

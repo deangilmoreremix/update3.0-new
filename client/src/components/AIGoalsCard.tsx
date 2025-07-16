@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { Target, TrendingUp, Zap, Brain } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface AIGoal {

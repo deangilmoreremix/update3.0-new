@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Brain, Zap, RefreshCw, TrendingUp, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Brain, Zap, RefreshCw } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
 const AIInsightsPanel = () => {

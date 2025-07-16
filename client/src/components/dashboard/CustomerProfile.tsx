@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
-import { Star, MapPin, Phone, Mail, Calendar, TrendingUp } from 'lucide-react';
+import { Star, Phone, Mail, TrendingUp } from 'lucide-react';
 import Avatar from '../ui/Avatar';
 import { getAvatarByIndex, getInitials } from '../../services/avatarCollection';
 import { ContactDetailView } from '../modals/ContactDetailView';

@@ -206,7 +206,7 @@ export const ImportContactsModal: React.FC<ImportContactsModalProps> = ({ isOpen
     const headers = data[0].map(h => h.toLowerCase().trim());
     const rows = data.slice(1);
     const newErrors: string[] = [];
-    const contacts: any[] = [];
+    const contacts: unknown[] = [];
     
     rows.forEach((row, index) => {
       const contact: any = {};

@@ -418,7 +418,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                 {['all', 'active', 'coming-soon'].map((status) => (
                   <button
                     key={status}
-                    onClick={() => setStatusFilter(status as any)}
+                    onClick={() => setStatusFilter(status as unknown)}
                     className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${
                       statusFilter === status
                         ? 'bg-blue-600 text-white'

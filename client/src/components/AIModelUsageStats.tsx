@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, Activity, Zap, DollarSign, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { BarChart3, Activity, DollarSign, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { aiOrchestratorService } from '../services/aiOrchestratorService';
 

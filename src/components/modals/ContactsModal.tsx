@@ -124,7 +124,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
               {['all', 'hot', 'warm', 'cold'].map((filter) => (
                 <button
                   key={filter}
-                  onClick={() => setSelectedFilter(filter as any)}
+                  onClick={() => setSelectedFilter(filter as unknown)}
                   className={`px-3 py-2 rounded-lg text-sm ${
                     selectedFilter === filter 
                       ? isDark 

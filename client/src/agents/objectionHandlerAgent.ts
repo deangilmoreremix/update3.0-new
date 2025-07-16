@@ -1,6 +1,6 @@
 import { callOpenAI } from "../services/callOpenAI";
 
-export async function objectionHandlerAgent(input: any, setSteps?: (steps: any) => void) {
+export async function objectionHandlerAgent(input: any, setSteps?: (steps: unknown) => void) {
   const objection = input.objection || "I need to think about it";
   const context = input.context || "";
   const dealValue = input.value || 0;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, Video, Mail, Phone, Send, Users, Calendar, Megaphone, Clock, CheckCircle } from 'lucide-react';
+import { MessageSquare, Video, Mail, Phone, Send, Users, Megaphone, Clock, CheckCircle } from 'lucide-react';
 import VideoCallPreviewWidget from '../components/VideoCallPreviewWidget';
 import { useVideoCall } from '../contexts/VideoCallContext';
 

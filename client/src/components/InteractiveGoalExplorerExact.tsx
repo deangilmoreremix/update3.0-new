@@ -108,7 +108,7 @@ const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({
   };
 
   // Handle goal completion from modal
-  const handleExecutionComplete = (result: any) => {
+  const handleExecutionComplete = (result: unknown) => {
     console.log('Goal execution completed:', result);
     setCompletedGoals(prev => new Set(Array.from(prev).concat(result.goalId)));
   };

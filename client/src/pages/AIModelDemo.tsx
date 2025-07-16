@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Brain, Zap, Star, Settings, Send, User, Clock, Shield } from 'lucide-react';
+import { Brain, Zap, Star, Send } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { intelligentModelSelector, AITask, CustomerProfile } from '../services/ai/intelligentModelSelector';
 import AIModelSelector from '../components/shared/AIModelSelector';

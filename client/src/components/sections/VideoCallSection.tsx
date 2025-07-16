@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Video, Phone, History, Settings, Play } from 'lucide-react';
+import { Video, History } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useVideoCall } from '../../contexts/VideoCallContext';
 import CallButton from '../video/CallButton';

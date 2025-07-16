@@ -47,7 +47,7 @@ interface ExecutionStep {
 interface LiveGoalExecutionProps {
   goal: Goal;
   realMode?: boolean;
-  onComplete?: (result: any) => void;
+  onComplete?: (result: unknown) => void;
   onCancel?: () => void;
 }
 

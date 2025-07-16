@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TestTube, Users, TrendingUp, Target, Play, Pause, BarChart3, Eye } from 'lucide-react';
+import { TestTube, TrendingUp, Target, Play, Pause, BarChart3 } from 'lucide-react';
 
 interface ABTest {
   id: string;

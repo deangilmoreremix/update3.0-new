@@ -209,11 +209,11 @@ const Dashboard: React.FC = () => {
   // Calculate metrics from deal data
   const calculateMetrics = () => {
     const now = new Date();
-    let totalActiveDeals = 0;
-    let totalClosingThisMonth = 0;
-    let totalAtRisk = 0;
-    let totalValue = 0;
-    let wonValue = 0;
+    const totalActiveDeals = 0;;
+    const totalClosingThisMonth = 0;;
+    const totalAtRisk = 0;;
+    const totalValue = 0;;
+    const wonValue = 0;;
     
     Object.values(deals).forEach(deal => {
       // Count active deals (not closed)

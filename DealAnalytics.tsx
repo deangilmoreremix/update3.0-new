@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useDealStore } from '../store/dealStore';
 import { useContactStore } from '../store/contactStore';
-import { DollarSign, Calendar, ArrowUp, ArrowDown, TrendingUp, Activity, ZapOff, Users, Target, TrendingDown } from 'lucide-react';
+import { DollarSign, Calendar, ArrowUp, TrendingUp, Activity, ZapOff } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
@@ -361,7 +361,7 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: any) => [`$${(value / 1000).toFixed(1)}k`, 'Value']} />
+                <Tooltip formatter={(value: unknown) => [`$${(value / 1000).toFixed(1)}k`, 'Value']} />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
@@ -442,7 +442,7 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({
                 <XAxis type="number" />
                 <YAxis dataKey="stage" type="category" />
                 <Tooltip 
-                  formatter={(value: any) => [`${value} deals`, 'Count']}
+                  formatter={(value: unknown) => [`${value} deals`, 'Count']}
                   contentStyle={{ borderRadius: '6px' }}
                 />
                 <Bar 
@@ -481,7 +481,7 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({
                   tickFormatter={(value) => `$${value / 1000}k`}
                 />
                 <Tooltip 
-                  formatter={(value: any) => [`$${(value / 1000).toFixed(1)}k`, 'Pipeline Value']}
+                  formatter={(value: unknown) => [`$${(value / 1000).toFixed(1)}k`, 'Pipeline Value']}
                   contentStyle={{ borderRadius: '6px' }}
                 />
                 <Line 

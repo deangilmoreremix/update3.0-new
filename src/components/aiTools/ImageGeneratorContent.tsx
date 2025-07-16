@@ -132,7 +132,7 @@ const ImageGeneratorContent: React.FC = () => {
               </label>
               <select
                 value={imageSize}
-                onChange={(e) => setImageSize(e.target.value as any)}
+                onChange={(e) => setImageSize(e.target.value as unknown)}
                 className="w-full p-2 border rounded-md focus:ring-emerald-500 focus:border-emerald-500"
               >
                 <option value="1024x1024">Square (1:1)</option>
@@ -148,7 +148,7 @@ const ImageGeneratorContent: React.FC = () => {
               </label>
               <select
                 value={imageStyle}
-                onChange={(e) => setImageStyle(e.target.value as any)}
+                onChange={(e) => setImageStyle(e.target.value as unknown)}
                 className="w-full p-2 border rounded-md focus:ring-emerald-500 focus:border-emerald-500"
               >
                 <option value="natural">Natural</option>
@@ -163,7 +163,7 @@ const ImageGeneratorContent: React.FC = () => {
               </label>
               <select
                 value={imageQuality}
-                onChange={(e) => setImageQuality(e.target.value as any)}
+                onChange={(e) => setImageQuality(e.target.value as unknown)}
                 className="w-full p-2 border rounded-md focus:ring-emerald-500 focus:border-emerald-500"
               >
                 <option value="standard">Standard</option>

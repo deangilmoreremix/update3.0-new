@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, Calendar, Clock, User, CheckCircle, AlertCircle, Plus, Filter, Search, Trash2, Edit } from 'lucide-react';
+import { Bell, Calendar, Clock, User, CheckCircle, AlertCircle, Plus, Filter, Search, Trash2 } from 'lucide-react';
 import { useContactStore } from '../store/contactStore';
 import { useDealStore } from '../store/dealStore';
 

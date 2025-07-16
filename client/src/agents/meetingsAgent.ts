@@ -1,6 +1,6 @@
 import { callOpenAI } from "../services/callOpenAI";
 
-export async function meetingsAgent(input: any, setSteps?: (steps: any) => void) {
+export async function meetingsAgent(input: any, setSteps?: (steps: unknown) => void) {
   const meetingType = input.type || "Discovery call";
   const attendees = input.attendees || ["Prospect"];
   const duration = input.duration || "30 minutes";

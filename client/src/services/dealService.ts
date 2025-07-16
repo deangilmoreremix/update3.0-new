@@ -302,7 +302,7 @@ export const fetchDealsFromSupabase = async (userId?: string) => {
 };
 
 // Create a new deal in Supabase
-export const createDealInSupabase = async (dealData: any) => {
+export const createDealInSupabase = async (dealData: unknown) => {
   try {
     // In a real implementation, we would insert into Supabase
     // For now, we'll simulate a successful response

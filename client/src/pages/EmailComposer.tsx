@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Send, Save, Paperclip, Users, Eye, Wand2, Clock, CheckCircle } from 'lucide-react';
+import { Mail, Send, Save, Paperclip, Users, Eye, Wand2, CheckCircle } from 'lucide-react';
 
 const EmailComposer = () => {
   const [email, setEmail] = useState({

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Send, Sparkles, User, Building, MessageSquare, Zap, Copy, Check } from 'lucide-react';
+import { Mail, Sparkles, User, Building, MessageSquare, Zap, Copy, Check } from 'lucide-react';
 
 interface EmailComposerProps {
   onClose?: () => void;

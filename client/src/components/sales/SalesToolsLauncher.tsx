@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Target, Camera, Phone, Mail, Video, Settings, X, Zap } from 'lucide-react';
+import { Target, Video, X } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { SalesToolsPanel } from './SalesToolsPanel';
 import DevicePermissionChecker from '../DevicePermissionChecker';

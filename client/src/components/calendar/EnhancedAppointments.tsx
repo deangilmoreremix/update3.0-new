@@ -87,7 +87,7 @@ export const EnhancedAppointments: React.FC<EnhancedAppointmentsProps> = ({ clas
     }
   };
 
-  const handleAppointmentClick = (appointment: any) => {
+  const handleAppointmentClick = (appointment: unknown) => {
     setSelectedAppointment(appointment);
     setShowMeetingAssistant(true);
   };
@@ -437,6 +437,5 @@ export const EnhancedAppointments: React.FC<EnhancedAppointmentsProps> = ({ clas
 };
 
 // Import X icon
-import { X } from 'lucide-react';
 
 export default EnhancedAppointments;

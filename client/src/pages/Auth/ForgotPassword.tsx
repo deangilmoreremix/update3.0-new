@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { resetPassword } from '../../services/supabaseClient';
-import { Mail, ArrowLeft, AlertCircle, CheckCircle } from 'lucide-react';
+import { Mail, AlertCircle, CheckCircle } from 'lucide-react';
 import LandingHeader from '../Landing/components/LandingHeader';
 
 const ForgotPassword: React.FC = () => {

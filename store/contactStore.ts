@@ -46,7 +46,7 @@ export const useContactStore = create<ContactState>((set, get) => ({
       const contactsRecord: Record<string, Contact> = {};
       
       if (data && Array.isArray(data)) {
-        data.forEach((item: any) => {
+        data.forEach((item: unknown) => {
           const contact: Contact = {
             id: item.id,
             name: item.name,

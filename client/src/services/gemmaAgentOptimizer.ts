@@ -131,7 +131,7 @@ Focus on efficiency and clear outcomes.`
 
   // Enhanced prompt engineering for agentic behaviors
   static enhancePromptForAgentic(basePrompt: string, capabilities: AgenticCapability[]): string {
-    let enhancedPrompt = basePrompt;
+    const enhancedPrompt = basePrompt;;
 
     if (capabilities.includes('planning')) {
       enhancedPrompt += `\n\nPLANNING INSTRUCTION: Before executing any task, first outline your step-by-step plan. Think through the logical sequence of actions needed to achieve the goal.`;

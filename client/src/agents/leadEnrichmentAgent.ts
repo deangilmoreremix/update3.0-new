@@ -1,7 +1,7 @@
 import { callGemini } from "../services/callGemini";
 import { callOpenAI } from "../services/callOpenAI";
 
-export async function leadEnrichmentAgent(input: any, setSteps?: (steps: any) => void) {
+export async function leadEnrichmentAgent(input: any, setSteps?: (steps: unknown) => void) {
   const name = input.name || "Unknown";
   const company = input.company || "Unknown Company";
   const email = input.email || "";

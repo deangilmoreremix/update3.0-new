@@ -151,7 +151,7 @@ const FormPublicView: React.FC = () => {
     );
   }
   
-  const renderField = (field: any) => {
+  const renderField = (field: unknown) => {
     const { id, type, label, required, options, placeholder } = field;
     
     switch (type) {

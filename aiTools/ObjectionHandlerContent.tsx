@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useGemini } from '../../services/geminiService';
 import AIToolContent from '../shared/AIToolContent';
-import { Shield, User, Building, RefreshCw, Copy, FileText, List, Check } from 'lucide-react';
+import { Shield, RefreshCw, Copy, List, Check } from 'lucide-react';
 
 const ObjectionHandlerContent: React.FC = () => {
   const [formData, setFormData] = useState({

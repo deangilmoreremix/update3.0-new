@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, TrendingDown, Target, DollarSign, Calendar, Award } from 'lucide-react';
+import { TrendingUp, Target, DollarSign, Calendar, Award } from 'lucide-react';
 
 interface PipelineStatsProps {
   stats: {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { Search, Filter, Plus, BarChart3, Users, Grid, List, Settings, Zap, Eye, EyeOff, TrendingUp } from 'lucide-react';
+import { Search, Filter, Plus, BarChart3, Grid, List, Settings, Zap, TrendingUp } from 'lucide-react';
 import { useDealStore } from '../store/dealStore';
 // import { useGemini } from '../hooks/useGemini';
 

@@ -127,7 +127,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
           ].map(option => (
             <button
               key={option.id}
-              onClick={() => setTimeframe(option.id as any)}
+              onClick={() => setTimeframe(option.id as unknown)}
               className={`px-3 py-1 text-xs rounded-md transition-colors ${
                 timeframe === option.id 
                   ? 'bg-white text-blue-600 shadow-sm' 

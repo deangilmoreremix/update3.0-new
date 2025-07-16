@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { BarChart3, TrendingUp, Calendar, Search, Bell, User } from 'lucide-react';
+import { BarChart3, TrendingUp, Calendar, Search, User } from 'lucide-react';
 
 interface DashboardHeaderProps {
   title?: string;

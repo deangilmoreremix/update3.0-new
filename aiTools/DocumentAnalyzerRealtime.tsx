@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useOpenAIVision } from '../../services/openaiVisionService';
 import { useDropzone } from 'react-dropzone';
-import { FileText, Upload, RefreshCw, Check, ArrowDown, Eye, X, Plus, Download, Copy, Zap } from 'lucide-react';
+import { Upload, Check, ArrowDown, Eye, X, Download, Copy, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface DocumentAnalyzerRealtimeProps {
-  onAnalysisComplete?: (analysis: any) => void;
+  onAnalysisComplete?: (analysis: unknown) => void;
   analysisType?: 'document' | 'competitor' | 'contract';
 }
 
@@ -191,7 +191,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
   const copyToClipboard = () => {
     if (!analysisResult) return;
     
-    let textToCopy = `Analysis Summary:\n${analysisResult.summary}\n\nKey Points:\n`;
+    const textToCopy = `Analysis Summary:\n${analysisResult.summary}\n\nKey Points:\n`;;
     analysisResult.keyPoints.forEach((point, index) => {
       textToCopy += `${index + 1}. ${point}\n`;
     });

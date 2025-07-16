@@ -27,7 +27,7 @@ const crmFunctions: CrmFunctions = {
       }
       
       const deals = await response.json();
-      return deals.map((deal: any) => ({
+      return deals.map((deal: unknown) => ({
         ...deal,
         dueDate: deal.dueDate ? new Date(deal.dueDate) : null,
         createdAt: new Date(deal.createdAt),
@@ -53,7 +53,7 @@ const crmFunctions: CrmFunctions = {
       }
       
       const contacts = await response.json();
-      return contacts.map((contact: any) => ({
+      return contacts.map((contact: unknown) => ({
         ...contact,
         lastContact: contact.lastContact ? new Date(contact.lastContact) : null,
         createdAt: contact.createdAt ? new Date(contact.createdAt) : new Date(),
@@ -319,7 +319,7 @@ export class OpenAIFunctionService {
         // Execute the function
         let functionResult;
         try {
-          functionResult = await (crmFunctions as any)[functionName](functionArgs);
+          functionResult = await (crmFunctions as unknown)[functionName](functionArgs);
         } catch (error) {
           functionResult = { error: 'Function execution failed' };
         }

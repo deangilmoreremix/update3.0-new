@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, BarChart3, PieChart, LineChart, DollarSign, Target, Users, Calendar, ArrowUpRight, ArrowDownRight, Filter, Download, RefreshCw } from 'lucide-react';
+import { TrendingUp, BarChart3, PieChart, LineChart, DollarSign, Target, ArrowUpRight, Filter, Download, RefreshCw } from 'lucide-react';
 import { useDealStore } from '../store/dealStore';
 import { useContactStore } from '../store/contactStore';
 

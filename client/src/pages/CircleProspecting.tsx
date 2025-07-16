@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Target, TrendingUp, Users, Phone, Mail, Calendar, CheckCircle, Clock, AlertCircle, Star, ArrowRight, Filter, Search, Plus, BarChart3, DollarSign, Eye, MessageCircle, Settings, User, MapPin, Building, Briefcase, Link2, UserPlus, PhoneCall, Send, Edit, Trash2, Download, Upload, RefreshCw, Zap, Activity, Award, ChevronRight, ChevronDown, Flag, Globe, Heart, Home, Info, Lock, Minus, MoreHorizontal, Move, Navigation, Package, Percent, PlayCircle, PlusCircle, Power, Save, Share2, ShoppingBag, ShoppingCart, Smartphone, Sunrise, Sunset, Tablet, ThumbsUp, ToggleLeft, ToggleRight, Tv, Umbrella, Video, Volume2, VolumeX, Watch, Wifi, WifiOff, Wind, Zap as ZapIcon, ArrowUpRight, ArrowDownRight, Bot, MousePointer, Play, Pause } from 'lucide-react';
+import { Target, Users, Phone, Mail, Clock, Star, BarChart3, Settings, User, Send, Edit, Activity } from 'lucide-react';
 
 interface ProspectLog {
   id: string;

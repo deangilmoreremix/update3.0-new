@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Calendar, DollarSign, TrendingUp, User, Building } from 'lucide-react';
+import { X, Calendar, DollarSign, TrendingUp, User } from 'lucide-react';
 
 interface DealDetailProps {
   dealId: string;

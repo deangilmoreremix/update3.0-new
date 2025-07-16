@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Check, Calendar, Mail, Phone, Plus, FileText, Users, Target } from 'lucide-react';
+import { ArrowRight, Users } from 'lucide-react';
 
 interface DemoFeature {
   id: string;

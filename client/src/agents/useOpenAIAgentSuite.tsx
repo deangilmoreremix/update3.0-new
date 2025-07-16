@@ -183,7 +183,7 @@ export function useOpenAIAgentSuite() {
       const result = await realApiService.getIntegratedTools(entityId);
       if (result.success) {
         // Update local connections state with real data
-        const realConnections: ComposioConnection[] = result.data.map((conn: any) => ({
+        const realConnections: ComposioConnection[] = result.data.map((conn: unknown) => ({
           id: conn.id,
           appName: conn.appName,
           entityId: conn.entityId,

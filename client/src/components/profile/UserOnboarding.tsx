@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, ChevronRight, User, Building, Settings, Sparkles, Target, ArrowRight } from 'lucide-react';
+import { Check, User, Building, Sparkles, Target, ArrowRight } from 'lucide-react';
 
 interface OnboardingStep {
   id: string;

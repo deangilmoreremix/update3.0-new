@@ -4,7 +4,7 @@ import { Mic, MicOff, Play, Pause, RefreshCw, AlertCircle, BarChart3, Volume2, S
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface VoiceAnalysisRealtimeProps {
-  onAnalysisComplete?: (analysis: any) => void;
+  onAnalysisComplete?: (analysis: unknown) => void;
   simulationMode?: boolean;
 }
 

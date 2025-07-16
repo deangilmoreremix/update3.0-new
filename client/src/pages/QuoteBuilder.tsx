@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, Plus, Trash2, Save, Send, Eye, Calculator, DollarSign, Package, User, Building, Calendar } from 'lucide-react';
+import { FileText, Plus, Trash2, Save, Send, Eye, Calculator, Package, User } from 'lucide-react';
 
 const QuoteBuilder = () => {
   const [quote, setQuote] = useState({

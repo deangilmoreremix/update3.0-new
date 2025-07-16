@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Brain, Zap, Settings, BarChart3, Search, Video } from 'lucide-react';
+import { Brain, Zap, Search, Video } from 'lucide-react';
 import AIInsightsPanel from '../dashboard/AIInsightsPanel';
 
 const AISmartFeaturesHub: React.FC = () => {
@@ -39,7 +39,7 @@ const AISmartFeaturesHub: React.FC = () => {
           return (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as unknown)}
               className={`flex items-center space-x-2 px-4 py-2 ${
                 isActive 
                   ? (isDark ? 'border-b-2 border-purple-500 text-purple-400' : 'border-b-2 border-purple-600 text-purple-600')

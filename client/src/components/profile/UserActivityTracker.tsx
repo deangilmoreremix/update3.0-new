@@ -191,7 +191,7 @@ export const UserActivityTracker: React.FC<UserActivityTrackerProps> = ({ userId
           <div className="flex items-center space-x-2">
             <select
               value={filter}
-              onChange={(e) => setFilter(e.target.value as any)}
+              onChange={(e) => setFilter(e.target.value as unknown)}
               className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Activities</option>

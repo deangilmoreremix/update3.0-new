@@ -233,7 +233,7 @@ const Contacts: React.FC = () => {
     }
     
     // Convert imported data to Contact format
-    const newContacts: Partial<Contact>[] = importedData.map((row: any) => {
+    const newContacts: Partial<Contact>[] = importedData.map((row: unknown) => {
       // Map the imported data to our Contact type
       return {
         name: row.name || row.Name || '',
@@ -268,7 +268,7 @@ const Contacts: React.FC = () => {
   // Submit form for creating a new contact
   const { register, handleSubmit, reset, formState: { errors } } = useForm<Contact>();
   
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: unknown) => {
     // Add new contact through Supabase
     createContact({
       ...data,

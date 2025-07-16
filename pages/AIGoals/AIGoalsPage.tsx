@@ -4,7 +4,7 @@ import InteractiveGoalExplorer from '../../components/InteractiveGoalExplorer';
 import GoalExecutionModal from '../../components/GoalExecutionModal';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardHeader } from '../../components/ui/card';
-import { Brain, Info, Lightbulb, ArrowLeft, Sparkles, Zap, Target, Users, BarChart3, Bot, Activity } from 'lucide-react';
+import { Brain, Zap, Target, Users, Bot, Activity } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAITools } from '../../components/AIToolsProvider';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, Star, Target, Medal, Crown, Sparkles, TrendingUp, Users, Award, Calendar } from 'lucide-react';
+import { Trophy, Star, Target, Medal, Crown, TrendingUp, Award } from 'lucide-react';
 import { GlassCard } from './GlassCard';
 import { useContactStore } from '../../store/contactStore';
 import { Contact } from '../../types/contact';

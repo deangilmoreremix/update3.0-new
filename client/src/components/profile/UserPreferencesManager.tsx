@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Bell, Globe, Clock, Shield, Palette, Save, RefreshCw } from 'lucide-react';
+import { Settings, Save } from 'lucide-react';
 
 interface UserPreferences {
   notifications: {
@@ -196,7 +196,7 @@ export const UserPreferencesManager: React.FC<UserPreferencesManagerProps> = ({
             {tabs.map(tab => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id as unknown)}
                 className={`flex items-center space-x-2 py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === tab.id
                     ? 'border-blue-500 text-blue-600'

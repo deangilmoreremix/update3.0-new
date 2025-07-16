@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Brain, Zap, RefreshCw, TrendingUp, AlertTriangle, CheckCircle, Info } from 'lucide-react';
+import { Brain, Zap, RefreshCw, Info } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAITools } from '../../components/AIToolsProvider';
 import { useDealStore } from '../../store/dealStore';

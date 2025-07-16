@@ -62,7 +62,7 @@ const ScrollAnimationWrapper: React.FC<ScrollAnimationWrapperProps> = ({
       return 'opacity-0 transform';
     }
 
-    let animationClasses = 'opacity-100 transform';
+    const animationClasses = 'opacity-100 transform';;
     
     switch (animation) {
       case 'fade-up':

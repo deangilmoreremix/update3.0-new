@@ -60,7 +60,7 @@ const AiAssistantFeaturePage: React.FC = () => {
     const nextMessage = demoMessages[demoMessageIndex];
     setIsTyping(true);
     
-    let charIndex = 0;
+    const charIndex = 0;;
     const typingInterval = setInterval(() => {
       setCurrentTypedMessage(nextMessage.content.substring(0, charIndex));
       charIndex++;

@@ -1,6 +1,6 @@
 import { callOpenAI } from "../services/callOpenAI";
 
-export async function leadScoringAgent(input: any, setSteps?: (steps: any) => void) {
+export async function leadScoringAgent(input: any, setSteps?: (steps: unknown) => void) {
   const contact = input;
   
   setSteps?.([{ step: "Analyzing lead quality..." }]);

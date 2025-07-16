@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Users, Plus, Edit, Trash2, Shield, Mail, Calendar, Search, Filter, UserCheck, UserX } from 'lucide-react';
+import { Users, Plus, Edit, Trash2, Shield, Mail, Calendar, Search, UserCheck, UserX } from 'lucide-react';
 import { RoleBadge, ConditionalRender, useRole } from '../components/RoleBasedAccess';
 
 interface User {

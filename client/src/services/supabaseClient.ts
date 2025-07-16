@@ -98,7 +98,7 @@ export const fetchBusinessAnalysis = async (userId?: string) => {
   }
 };
 
-export const createBusinessAnalysis = async (analysisData: any) => {
+export const createBusinessAnalysis = async (analysisData: unknown) => {
   try {
     const { data, error } = await supabase
       .from('business_analyzer')
@@ -144,7 +144,7 @@ export const fetchContentItems = async (userId?: string) => {
   return { data, error };
 };
 
-export const createContentItem = async (contentData: any) => {
+export const createContentItem = async (contentData: unknown) => {
   const { data, error } = await supabase
     .from('content_items')
     .insert([contentData]);
@@ -184,7 +184,7 @@ export const fetchVoiceProfiles = async (userId?: string) => {
   return { data, error };
 };
 
-export const createVoiceProfile = async (profileData: any) => {
+export const createVoiceProfile = async (profileData: unknown) => {
   const { data, error } = await supabase
     .from('voice_profiles')
     .insert([profileData]);
@@ -236,7 +236,7 @@ const fetchImageAssets = async (userId?: string) => {
   }
 };
 
-const createImageAsset = async (assetData: any) => {
+const createImageAsset = async (assetData: unknown) => {
   try {
     // Check if user_id is a valid UUID
     if (assetData.user_id && !isValidUUID(assetData.user_id)) {
@@ -333,7 +333,7 @@ export const fetchContacts = async (userId: string) => {
   }
 };
 
-export const createContact = async (contactData: any) => {
+export const createContact = async (contactData: unknown) => {
   try {
     const { data, error } = await supabase
       .from('contacts')

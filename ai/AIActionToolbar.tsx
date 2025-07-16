@@ -1,5 +1,4 @@
 import React from 'react';
-import { Brain, Search, Mail, TrendingUp, FileText, Zap, Users, BarChart3 } from 'lucide-react';
 import AIGoalsButton from './AIGoalsButton';
 import QuickAIButton from './QuickAIButton';
 

@@ -1,6 +1,6 @@
 import { callGemini } from "../services/callGemini";
 
-export async function leadScoringAgent(input: any, setSteps?: (steps: any) => void) {
+export async function leadScoringAgent(input: any, setSteps?: (steps: unknown) => void) {
   const name = input.name || "Unknown";
   const company = input.company || "Unknown";
   const email = input.email || "";
@@ -28,7 +28,7 @@ export async function leadScoringAgent(input: any, setSteps?: (steps: any) => vo
   const baseScore = Math.floor(Math.random() * 40) + 40; // 40-80 range
   
   // Adjust score based on available data
-  let adjustedScore = baseScore;
+  const adjustedScore = baseScore;;
   if (position.toLowerCase().includes('cto') || position.toLowerCase().includes('ceo')) adjustedScore += 10;
   if (industry === 'Technology' || industry === 'Financial Services') adjustedScore += 5;
   if (!email) adjustedScore -= 15;

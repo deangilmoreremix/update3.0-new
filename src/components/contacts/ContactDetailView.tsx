@@ -764,7 +764,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
               ].map(tab => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
+                  onClick={() => setActiveTab(tab.id as unknown)}
                   className={`px-4 py-2 text-sm font-medium rounded-md transition-colors flex items-center space-x-1 ${
                     activeTab === tab.id 
                       ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300' 

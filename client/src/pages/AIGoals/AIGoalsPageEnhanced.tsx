@@ -6,7 +6,7 @@ import CustomizeButtonsModal from '../../components/ai/CustomizeButtonsModal';
 import { aiGoalsData } from '../../data/goalsData';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardHeader } from '../../components/ui/card';
-import { Brain, Info, Lightbulb, ArrowLeft, Sparkles, Zap, Target, Users, BarChart3, Bot, Activity, Settings } from 'lucide-react';
+import { Brain, Info, Lightbulb, ArrowLeft, Target, Users, BarChart3, Activity, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAITools } from '../../components/AIToolsProvider';
 
@@ -52,7 +52,7 @@ const AIGoalsPageEnhanced: React.FC = () => {
     setSelectedGoal(null);
   };
 
-  const handleGoalComplete = (results: any) => {
+  const handleGoalComplete = (results: unknown) => {
     console.log('Goal completed:', selectedGoal?.title, results);
     setShowExecutionModal(false);
     setSelectedGoal(null);

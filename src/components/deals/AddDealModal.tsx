@@ -398,7 +398,7 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id as unknown)}
                 className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 text-sm font-medium transition-colors ${
                   activeTab === tab.id
                     ? 'text-blue-600 border-b-2 border-blue-600 bg-white'
@@ -999,7 +999,7 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
                         <button
                           key={option.id}
                           type="button"
-                          onClick={() => setResearchPriority(option.id as any)}
+                          onClick={() => setResearchPriority(option.id as unknown)}
                           className={`flex-1 p-3 border rounded-lg text-center transition-all duration-200 ${
                             researchPriority === option.id
                               ? 'border-blue-500 bg-blue-50 text-blue-700'

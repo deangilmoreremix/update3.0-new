@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useVideoCall } from '../contexts/VideoCallContext';
 import { useDashboardLayout } from '../contexts/DashboardLayoutContext';
-import { Sun, Moon, Camera, Phone, Layout, User, Mail, Calendar, BarChart3, Settings } from 'lucide-react';
+import { Sun, Moon, Phone, Layout, User } from 'lucide-react';
 
 const DesignShowcase: React.FC = () => {
   const { theme, toggleTheme } = useTheme();

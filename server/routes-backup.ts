@@ -966,7 +966,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // For development, return the imported contacts with generated IDs
       const { contacts } = req.body;
-      const importedContacts = contacts.map((contact: any) => ({
+      const importedContacts = contacts.map((contact: unknown) => ({
         ...contact,
         id: contact.id || Date.now().toString() + Math.random().toString(36).substr(2, 9),
         createdAt: new Date().toISOString(),
@@ -1850,13 +1850,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         totalContacts: contacts?.length || 0,
         totalDeals: Object.keys(deals || {}).length,
         totalTasks: Object.keys(tasks || {}).length,
-        activeDeals: Object.values(deals || {}).filter((deal: any) => 
+        activeDeals: Object.values(deals || {}).filter((deal: unknown) => 
           deal.stage !== 'closed-won' && deal.stage !== 'closed-lost'
         ).length,
         pipelineValue: Object.values(deals || {}).reduce((sum: number, deal: any) => 
           sum + (deal.value || 0), 0
         ),
-        completedTasks: Object.values(tasks || {}).filter((task: any) => task.completed).length
+        completedTasks: Object.values(tasks || {}).filter((task: unknown) => task.completed).length
       };
 
       const prompt = `Analyze this CRM business data and provide strategic recommendations:

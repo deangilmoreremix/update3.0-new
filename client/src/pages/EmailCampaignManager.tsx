@@ -293,7 +293,7 @@ export const EmailCampaignManager: React.FC = () => {
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setSelectedTab(tab.id as any)}
+                onClick={() => setSelectedTab(tab.id as unknown)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
                   selectedTab === tab.id
                     ? 'bg-blue-500 text-white shadow-lg'
@@ -329,7 +329,7 @@ export const EmailCampaignManager: React.FC = () => {
                   <Filter className="w-4 h-4 text-gray-400" />
                   <select
                     value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value as any)}
+                    onChange={(e) => setFilterStatus(e.target.value as unknown)}
                     className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                   >
                     <option value="all">All Status</option>

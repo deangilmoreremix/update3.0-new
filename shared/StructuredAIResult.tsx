@@ -22,7 +22,7 @@ interface StructuredAIResultProps {
 const StructuredAIResult: React.FC<StructuredAIResultProps> = ({ result, title = "AI Analysis Results" }) => {
   // Parse the markdown-like result into structured sections
   const parseResult = (text: string) => {
-    const sections: any[] = [];
+    const sections: unknown[] = [];
     const lines = text.split('\n').filter(line => line.trim());
     
     let currentSection: any = null;

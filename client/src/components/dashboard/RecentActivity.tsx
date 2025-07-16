@@ -2,7 +2,7 @@ import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
 import { useDealStore } from '../../store/dealStore';
-import { TrendingUp, Mail, Phone, MessageSquare, Calendar, DollarSign } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import Avatar from '../ui/Avatar';
 import { getAvatarByIndex, getInitials } from '../../services/avatarCollection';
 

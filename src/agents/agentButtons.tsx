@@ -1,5 +1,5 @@
 import React from 'react';
-import { Brain, Target, FileText, MessageSquare, Shield, Zap, Video, Phone, Calendar, Mail, RefreshCw, Volume as Send, Headphones } from 'lucide-react';
+import { Brain, Target, FileText, MessageSquare, Shield, Zap, Video, Phone, Calendar, Mail, RefreshCw, Headphones } from 'lucide-react';
 
 const agentIconMap: Record<string, { label: string; icon: React.ReactNode }> = {
   // Contact Module Agents

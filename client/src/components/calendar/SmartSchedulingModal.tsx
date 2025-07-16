@@ -87,7 +87,7 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
 
   const startListening = () => {
     if ('webkitSpeechRecognition' in window) {
-      const recognition = new (window as any).webkitSpeechRecognition();
+      const recognition = new (window as unknown).webkitSpeechRecognition();
       recognition.continuous = false;
       recognition.interimResults = false;
       recognition.lang = 'en-US';
@@ -100,14 +100,14 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
         });
       };
 
-      recognition.onresult = (event: any) => {
+      recognition.onresult = (event: unknown) => {
         const transcript = event.results[0][0].transcript;
         setNaturalLanguageInput(transcript);
         setIsListening(false);
         processNaturalLanguage(transcript);
       };
 
-      recognition.onerror = (event: any) => {
+      recognition.onerror = (event: unknown) => {
         console.error('Speech recognition error:', event.error);
         setIsListening(false);
         toast({
@@ -384,7 +384,7 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
 
               <div className="space-y-2">
                 <Label htmlFor="type">Meeting Type</Label>
-                <Select value={formData.type} onValueChange={(value: any) => setFormData(prev => ({ ...prev, type: value }))}>
+                <Select value={formData.type} onValueChange={(value: unknown) => setFormData(prev => ({ ...prev, type: value }))}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
@@ -410,7 +410,7 @@ export const SmartSchedulingModal: React.FC<SmartSchedulingModalProps> = ({
 
               <div className="space-y-2">
                 <Label htmlFor="priority">Priority</Label>
-                <Select value={formData.priority} onValueChange={(value: any) => setFormData(prev => ({ ...prev, priority: value }))}>
+                <Select value={formData.priority} onValueChange={(value: unknown) => setFormData(prev => ({ ...prev, priority: value }))}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select priority" />
                   </SelectTrigger>

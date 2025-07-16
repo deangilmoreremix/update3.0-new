@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, Target, TrendingUp, BarChart3, Users, Phone, FileText, Calendar, Bot, Zap } from 'lucide-react';
+import { Target, TrendingUp, BarChart3, Users, Phone, FileText, Calendar, Bot } from 'lucide-react';
 
 const SalesTools: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');

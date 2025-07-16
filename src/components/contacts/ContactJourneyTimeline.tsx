@@ -1,6 +1,6 @@
 import React from 'react';
 import { Contact } from '../../types/contact';
-import { ArrowRight, Calendar, CheckCircle, Clock, PhoneCall, Mail, Target } from 'lucide-react';
+import { Clock, Mail, Target } from 'lucide-react';
 
 interface ContactJourneyTimelineProps {
   contact: Contact;

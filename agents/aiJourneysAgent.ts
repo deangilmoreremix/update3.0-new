@@ -1,6 +1,6 @@
 import { callOpenAI } from "../services/callOpenAI";
 
-export async function aiJourneysAgent(input: any, setSteps?: (steps: any) => void) {
+export async function aiJourneysAgent(input: any, setSteps?: (steps: unknown) => void) {
   const name = input.name || "there";
   const company = input.company || "your company";
   const journeyType = input.journeyType || "onboarding";

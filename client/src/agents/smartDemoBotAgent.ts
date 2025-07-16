@@ -1,6 +1,6 @@
 import { callOpenAI } from "../services/callOpenAI";
 
-export async function smartDemoBotAgent(input: any, setSteps?: (steps: any) => void) {
+export async function smartDemoBotAgent(input: any, setSteps?: (steps: unknown) => void) {
   const question = input.question || "";
   const productContext = input.productContext || "Our product is a comprehensive CRM solution";
   const askedBy = input.contact || "Prospect";

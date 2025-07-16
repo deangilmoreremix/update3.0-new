@@ -489,7 +489,7 @@ describe('Integration Manager Service', () => {
 describe('Error Handling', () => {
   test('should handle network errors gracefully', async () => {
     const networkError = new Error('Network error');
-    (networkError as any).isRetryable = true;
+    (networkError as unknown).isRetryable = true;
 
     mockHttpClient.get.mockRejectedValue(networkError);
 
@@ -511,7 +511,7 @@ describe('Error Handling', () => {
 
   test('should handle rate limiting', async () => {
     const rateLimitError = new Error('Rate limit exceeded');
-    (rateLimitError as any).status = 429;
+    (rateLimitError as unknown).status = 429;
 
     await expect(Promise.reject(rateLimitError)).rejects.toThrow('Rate limit exceeded');
   });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, User, Mail, Phone, Building, Calendar, Globe, Camera, Save, Settings, Shield, Bell } from 'lucide-react';
+import { X, User, Phone, Building, Globe, Camera, Save, Settings } from 'lucide-react';
 
 interface UserProfile {
   id: string;
@@ -141,7 +141,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             ].map(tab => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id as unknown)}
                 className={`flex items-center space-x-2 py-4 px-2 border-b-2 font-medium text-sm ${
                   activeTab === tab.id
                     ? 'border-blue-500 text-blue-600'
