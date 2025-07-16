@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 
-// For now, use DashboardEnhanced which was working, then gradually add smartcrmdash features
-import DashboardEnhanced from '../pages/DashboardEnhanced';
+// Use the complete redesigned Dashboard from smartcrmdash integration
+import Dashboard from './components/Dashboard';
 
 // Import redesigned Enhanced page components for other pages
 import PipelineEnhanced from '../pages/PipelineEnhanced';
@@ -32,11 +32,11 @@ function ProgressiveApp() {
       <SimpleNavbar />
       <div className="flex-1 w-full overflow-hidden">
         <Routes>
-          <Route path="/" element={<DashboardEnhanced />} />
-          <Route path="/dashboard" element={<DashboardEnhanced />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/pipeline" element={<PipelineEnhanced />} />
           <Route path="/contacts" element={<ContactsEnhanced />} />
-          <Route path="*" element={<DashboardEnhanced />} />
+          <Route path="*" element={<Dashboard />} />
         </Routes>
       </div>
     </div>

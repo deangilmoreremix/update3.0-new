@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Brain, Zap, RefreshCw, Info } from 'lucide-react';
+import { Brain, Zap, RefreshCw, Info, CheckCircle, AlertTriangle, TrendingUp } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAITools } from '../../components/AIToolsProvider';
 import { useDealStore } from '../../store/dealStore';
@@ -23,6 +23,7 @@ const AIInsightsPanel = () => {
   const { openTool } = useAITools();
   const { deals } = useDealStore();
   const { contacts } = useContactStore();
+  const { generateContentWithReasoning } = useGemini();
   
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -137,8 +138,13 @@ const AIInsightsPanel = () => {
     };
     
     try {
-      // Use geminiService to analyze pipeline health
-      const response = await geminiService.generatePersonalizedMessage(pipelineData, 'email');
+      // Use generateContentWithReasoning hook to analyze pipeline health
+      const response = await generateContentWithReasoning(
+        "business analysis",
+        "CRM pipeline insights and recommendations",
+        "sales team and management",
+        JSON.stringify(pipelineData, null, 2)
+      );
       
       // Reset API keys configured flag if we got a successful result
       setApiKeysConfigured(true);
@@ -291,13 +297,13 @@ const AIInsightsPanel = () => {
             } rounded-xl p-4 hover:${isDark ? 'bg-white/10' : 'bg-gray-50'} transition-all group cursor-pointer`}
             onClick={() => {
               // Open the corresponding AI tool based on insight type
-              const toolMap: Record<string, string> = {
-                'success': 'pipeline-analysis',
-                'warning': 'deal-alerts',
-                'insight': 'smart-insights'
+              const toolMap: Record<string, 'sales-insights' | 'live-deal-analysis' | 'ai-assistant'> = {
+                'success': 'sales-insights',
+                'warning': 'live-deal-analysis',
+                'insight': 'ai-assistant'
               };
               
-              const toolName = toolMap[insight.type] || 'ai-insights';
+              const toolName = toolMap[insight.type] || 'sales-insights';
               openTool(toolName);
             }}
           >

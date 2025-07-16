@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, Target, DollarSign, Award, BarChart3 } from 'lucide-react';
 import { useNavigation } from '../../contexts/NavigationContext';
 import { useDealStore } from '../../store/dealStore';
 import { useContactStore } from '../../store/contactStore';
@@ -53,9 +53,9 @@ const KPICards: React.FC = () => {
   // Calculate metrics
   const calculateMetrics = () => {
     const dealsArray = Object.values(deals);
-    const totalActiveDeals = 0;;
-    const totalValue = 0;;
-    const _wonValue = 0;;
+    let totalActiveDeals = 0;
+    let totalValue = 0;
+    let wonValue = 0;
     
     dealsArray.forEach(deal => {
       if (deal.stage !== 'closed-won' && deal.stage !== 'closed-lost') {
@@ -89,24 +89,27 @@ const KPICards: React.FC = () => {
   };
 
   // Render avatar stack component
-  const renderAvatarStack = (deals: unknown[], maxAvatars: number = 3) => {
-    const displayDeals = deals.slice(0, maxAvatars);
-    const extraCount = Math.max(0, deals.length - maxAvatars);
+  const renderAvatarStack = (dealArray: any[], maxAvatars: number = 3) => {
+    const displayDeals = dealArray.slice(0, maxAvatars);
+    const extraCount = Math.max(0, dealArray.length - maxAvatars);
 
     return (
       <div className="flex items-center space-x-1">
         <div className="flex -space-x-2">
-          {displayDeals.map((deal, index) => (
-            <div key={deal.id} className="relative" style={{ zIndex: maxAvatars - index }}>
-              <Avatar
-                src={deal.contact.avatarSrc || deal.contact.avatar}
-                alt={deal.contact.name}
-                size="sm"
-                fallback={getInitials(deal.contact.name)}
-                className="border-2 border-white dark:border-gray-900"
-              />
-            </div>
-          ))}
+          {displayDeals.map((deal, index) => {
+            const contact = contacts[deal.contactId];
+            return (
+              <div key={deal.id} className="relative" style={{ zIndex: maxAvatars - index }}>
+                <Avatar
+                  src={contact?.avatar}
+                  alt={contact?.name || deal.contact}
+                  size="sm"
+                  fallback={getInitials(contact?.name || deal.contact)}
+                  className="border-2 border-white dark:border-gray-900"
+                />
+              </div>
+            );
+          })}
           {extraCount > 0 && (
             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold border-2 border-white dark:border-gray-900 ${
               isDark ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700'
@@ -116,7 +119,7 @@ const KPICards: React.FC = () => {
           )}
         </div>
         <span className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-          {deals.length}
+          {dealArray.length}
         </span>
       </div>
     );
