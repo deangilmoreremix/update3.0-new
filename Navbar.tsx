@@ -82,9 +82,6 @@ const Navbar: React.FC = () => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleAiMenu = () => setAiMenuOpen(!aiMenuOpen);
-  const toggleSalesMenu = () => setSalesMenuOpen(!salesMenuOpen);
-  const toggleMarketingMenu = () => setMarketingMenuOpen(!marketingMenuOpen);
-  const toggleContentMenu = () => setContentMenuOpen(!contentMenuOpen);
   
   const handleLogout = async () => {
     // await signOut(); // Temporary disabled for development

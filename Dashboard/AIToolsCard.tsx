@@ -9,19 +9,8 @@ import {
   Target, 
   FileSearch, 
   TrendingUp, 
-  BarChart3, 
-  PieChart,
   ChevronRight,
-  CheckCheck,
-  ArrowRight,
-  Play,
-  User,
-  Clock,
-  Star,
-  ExternalLink,
-  BarChart,
   Users,
-  Briefcase,
   Eye,
   Image,
   Mic,
@@ -70,10 +59,7 @@ const AIToolsCard: React.FC = () => {
       name: "Customer Persona",
       icon: <Users className="h-5 w-5 text-emerald-600" />,
       id: "customer-persona" as const,
-    }
-  ];
-
-  const additionalTools = [
+    },
     {
       name: "Subject Line Optimizer",
       icon: <Target className="h-5 w-5 text-rose-600" />,

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useDealStore } from '../store/dealStore';
-import { useGemini } from '../services/geminiService';
 import CustomizableAIToolbar from './ai/CustomizableAIToolbar';
 import { 
   X, 
@@ -11,8 +10,6 @@ import {
   User, 
   Building, 
   Tag, 
-  Clock, 
-  Zap, 
   Brain,
   MessageSquare,
   Mail,
@@ -28,7 +25,6 @@ interface DealDetailProps {
 
 const DealDetail: React.FC<DealDetailProps> = ({ dealId, onClose }) => {
   const { deals, updateDeal, deleteDeal } = useDealStore();
-  const gemini = useGemini();
   const deal = deals[dealId];
   
   const [isEditing, setIsEditing] = useState(false);

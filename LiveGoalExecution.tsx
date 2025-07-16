@@ -71,7 +71,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
   });
   const [liveActivity, setLiveActivity] = useState<string[]>([]);
   const [showCRMView, setShowCRMView] = useState(true);
-  const [goalResults, setGoalResults] = useState<any>(null);
+  const [goalResults, setGoalResults] = useState<unknown>(null);
   const [showHelp, setShowHelp] = useState(false);
 
   // Generate execution steps based on goal and required agents

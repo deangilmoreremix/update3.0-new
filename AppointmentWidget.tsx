@@ -15,13 +15,13 @@ const AppointmentWidget: React.FC<AppointmentWidgetProps> = ({
   className = ''
 }) => {
   const { appointments, getUpcomingAppointments, selectAppointment } = useAppointmentStore();
-  const [upcomingAppointments, setUpcomingAppointments] = useState<any[]>([]);
+  const [upcomingAppointments, setUpcomingAppointments] = useState<unknown[]>([]);
   
   useEffect(() => {
     // Get the upcoming appointments
     const upcoming = getUpcomingAppointments(limit);
     setUpcomingAppointments(upcoming);
-  }, [appointments, limit]);
+  }, [appointments, limit, getUpcomingAppointments]);
   
   // Format date for display
   const formatDate = (date: Date) => {

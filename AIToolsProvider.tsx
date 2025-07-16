@@ -11,17 +11,7 @@ import {
   TrendingUp, 
   BarChart3, 
   PieChart,
-  ChevronRight,
-  CheckCheck,
-  ArrowRight,
-  Play,
-  User,
-  Clock,
-  Star,
-  ExternalLink,
-  BarChart,
   Users,
-  Briefcase,
   Eye,
   Image,
   Mic,
@@ -34,12 +24,10 @@ import {
   Volume2,
   Reply,
   Calendar,
-  FileCode,
   FileJson,
-  X,
   Hash
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+
 import StreamingChat from '../components/aiTools/StreamingChat';
 import RealTimeFormValidation from '../components/aiTools/RealTimeFormValidation';
 import LiveDealAnalysis from '../components/aiTools/LiveDealAnalysis';
