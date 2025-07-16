@@ -1,18 +1,7 @@
 import React, { useState } from 'react';
 import { useAIResearch } from '../../services/aiResearchService';
 import { aiEnrichmentService, ContactEnrichmentData, CompanyEnrichmentData } from '../../services/aiEnrichmentService';
-import { 
-  Search, 
-  User, 
-  Building2, 
-  Sparkles, 
-  Brain, 
-  Loader2, 
-  Bot,
-  Mail,
-  Check,
-  XCircle
-} from 'lucide-react';
+import { User, Building2, Sparkles, Brain, Loader2, XCircle } from 'lucide-react';
 import { ModernButton } from './ModernButton';
 
 interface AIResearchButtonProps {
@@ -57,7 +46,7 @@ export const AIResearchButton: React.FC<AIResearchButtonProps> = ({
     setSearchResult(null);
 
     try {
-      let result: any;
+      let result: unknown;
 
       if (searchType === 'contact' || (searchType === 'auto' && (searchQuery.firstName || searchQuery.lastName || searchQuery.email))) {
         // Contact research

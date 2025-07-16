@@ -3,24 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Textarea } from '../ui/textarea';
-import { 
-  Mic, 
-  MicOff, 
-  Brain, 
-  Lightbulb, 
-  FileText, 
-  CheckCircle,
-  Users,
-  Clock,
-  Target,
-  TrendingUp,
-  AlertCircle,
-  Play,
-  Pause,
-  Square,
-  Download,
-  Share2
-} from 'lucide-react';
+import { Mic, Brain, Lightbulb, FileText, CheckCircle, Users, Clock, Target, TrendingUp, Square, Download } from 'lucide-react';
 import { aiCalendarService } from '../../services/aiCalendarService';
 import { useToast } from '../../hooks/use-toast';
 
@@ -34,8 +17,8 @@ interface MeetingAssistantProps {
     endTime: string;
     description?: string;
   };
-  contactData?: any;
-  dealData?: any;
+  contactData?: unknown;
+  dealData?: unknown;
   onClose?: () => void;
 }
 

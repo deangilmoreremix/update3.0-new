@@ -3090,7 +3090,7 @@ Format as actionable insights with priorities.`;
       const deals = await storage.getDeals(req.userId!);
       const tasks = await storage.getTasks(req.userId!);
       
-      let result: any = {};
+      let result: unknown = {};
       
       switch (functionName) {
         case 'analyzeLeadScore':
@@ -3243,7 +3243,7 @@ Format as actionable insights with priorities.`;
         Based on this real CRM data, provide specific actionable insights and recommendations for: ${action}
         Focus on business impact and practical next steps.`;
       
-      let result: any = {};
+      let result: unknown = {};
       
       // Use the configured AI model for the agent
       if (agentConfig && (agentConfig.aiModel === 'OpenAI' || agentConfig.aiModel === 'Both')) {

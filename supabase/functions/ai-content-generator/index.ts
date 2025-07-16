@@ -3,7 +3,7 @@ import { corsHeaders } from '../_shared/cors.ts';
 interface RequestPayload {
   contentType: string;
   purpose: string;
-  data: any;
+  data: unknown;
   apiKey?: string;
 }
 

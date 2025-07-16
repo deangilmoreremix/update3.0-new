@@ -48,7 +48,7 @@ export const BulkUserUpload: React.FC<BulkUserUploadProps> = ({ onUsersUploaded 
         continue;
       }
 
-      const userData: any = {};
+      const userData: unknown = {};
       headers.forEach((header, index) => {
         userData[header] = values[index];
       });

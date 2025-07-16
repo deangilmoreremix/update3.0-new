@@ -11,7 +11,7 @@ interface ActivityEvent {
   ipAddress?: string;
   userAgent?: string;
   success: boolean;
-  details?: any;
+  details?: unknown;
 }
 
 interface UserActivityTrackerProps {

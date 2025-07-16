@@ -150,7 +150,7 @@ class AIEnrichmentService {
     
     const results: ContactEnrichmentData[] = [];
     
-    for (let i = 0; i < contacts.length; i++) {
+    for (const i = 0; i < contacts.length; i++) {
       const contact = contacts[i];
       
       // Simulate processing time

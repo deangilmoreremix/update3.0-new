@@ -8,7 +8,7 @@ interface ContentItem {
   title: string;
   type: 'podcast' | 'audiobook' | 'video' | 'voice_over';
   url: string;
-  metadata?: any;
+  metadata?: unknown;
   created_at?: string;
   updated_at?: string;
   user_id?: string;

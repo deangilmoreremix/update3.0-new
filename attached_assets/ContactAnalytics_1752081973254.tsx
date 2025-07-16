@@ -4,24 +4,7 @@ import {
   BarChart, LineChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   Cell, PieChart, Pie 
 } from 'recharts';
-import { 
-  BarChart2, 
-  TrendingUp, 
-  Calendar, 
-  Clock, 
-  Mail, 
-  Phone, 
-  MessageSquare,
-  ArrowUp,
-  ArrowDown,
-  Target,
-  Activity,
-  Eye,
-  Star,
-  DollarSign,
-  Clock as ClockIcon,
-  BarChart as BarChartIcon
-} from 'lucide-react';
+import { BarChart2, TrendingUp, Calendar, Clock, Mail, MessageSquare, ArrowUp, ArrowDown, Target, Activity, Eye, Star, DollarSign } from 'lucide-react';
 
 interface ContactAnalyticsProps {
   contact: Contact;

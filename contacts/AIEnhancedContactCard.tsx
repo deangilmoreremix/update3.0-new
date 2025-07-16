@@ -2,24 +2,7 @@ import React, { useState } from 'react';
 import { Contact } from '../../types';
 import { useOpenAI } from '../../services/openaiService';
 import CustomizableAIToolbar from '../ai/CustomizableAIToolbar';
-import { 
-  Mail, 
-  Phone, 
-  Building, 
-  User, 
-  BarChart, 
-  Zap, 
-  Clock, 
-  ThumbsUp,
-  ThumbsDown,
-  ArrowUp,
-  ArrowDown,
-  Minus,
-  CheckCircle,
-  AlertTriangle,
-  RefreshCw,
-  Tag
-} from 'lucide-react';
+import { Mail, Phone, Building, User, BarChart, Clock, ThumbsUp, ThumbsDown, ArrowUp, ArrowDown, Minus, CheckCircle, AlertTriangle, Tag } from 'lucide-react';
 
 interface AIEnhancedContactCardProps {
   contact: Contact;

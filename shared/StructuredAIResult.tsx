@@ -25,8 +25,8 @@ const StructuredAIResult: React.FC<StructuredAIResultProps> = ({ result, title =
     const sections: unknown[] = [];
     const lines = text.split('\n').filter(line => line.trim());
     
-    let currentSection: any = null;
-    let currentSubsection: any = null;
+    let currentSection: unknown = null;
+    let currentSubsection: unknown = null;
     
     for (const line of lines) {
       const trimmed = line.trim();

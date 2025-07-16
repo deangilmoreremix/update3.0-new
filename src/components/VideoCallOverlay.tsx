@@ -1,22 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { 
-  Video, 
-  Mic, 
-  MicOff, 
-  VideoOff, 
-  Phone, 
-  PhoneOff, 
-  Minimize2, 
-  Maximize2, 
-  MessageSquare, 
-  Users,
-  Monitor,
-  MonitorOff,
-  Volume2,
-  VolumeX,
-  Settings,
-  MoreVertical
-} from 'lucide-react';
+import { Video, Mic, MicOff, VideoOff, Phone, PhoneOff, Minimize2, Maximize2, MessageSquare, Monitor, MonitorOff, MoreVertical } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useVideoCall } from '../contexts/VideoCallContext';
 import Avatar from './ui/Avatar';

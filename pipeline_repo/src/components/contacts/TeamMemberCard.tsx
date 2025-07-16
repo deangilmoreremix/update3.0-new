@@ -1,19 +1,6 @@
 import React from 'react';
 import { Contact } from '../../types/contact';
-import {
-  User,
-  Star,
-  Award,
-  Trophy,
-  Zap,
-  BarChart3,
-  TrendingUp,
-  UserMinus,
-  Edit,
-  Mail,
-  Phone,
-  Crown
-} from 'lucide-react';
+import { User, Star, Award, Trophy, TrendingUp, UserMinus, Edit, Mail, Phone, Crown } from 'lucide-react';
 
 interface TeamMemberCardProps {
   member: Contact;

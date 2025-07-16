@@ -1,17 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Circle, 
-  Square, 
-  Download, 
-  Play, 
-  Pause, 
-  RotateCcw,
-  Clock,
-  FileText,
-  Video,
-  Mic,
-  Monitor
-} from 'lucide-react';
+import { Circle, Square, Video, Mic, Monitor } from 'lucide-react';
 import { useVideoCall } from '../contexts/VideoCallContext';
 import { useTheme } from '../contexts/ThemeContext';
 

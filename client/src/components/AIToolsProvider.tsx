@@ -1,45 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import AIToolModal from './shared/AIToolModal';
-import { 
-  Brain, 
-  Mail, 
-  MessageSquare, 
-  FileText, 
-  Phone, 
-  Target, 
-  FileSearch, 
-  TrendingUp, 
-  BarChart3, 
-  PieChart,
-  ChevronRight,
-  CheckCheck,
-  ArrowRight,
-  Play,
-  User,
-  Clock,
-  Star,
-  ExternalLink,
-  BarChart,
-  Users,
-  Briefcase,
-  Eye,
-  Image,
-  Mic,
-  Search,
-  Zap,
-  MessagesSquare,
-  CheckCircle,
-  Sparkles,
-  Shield,
-  Volume2,
-  Reply,
-  Calendar,
-  FileCode,
-  FileJson,
-  X,
-  Hash
-} from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Brain, Mail, MessageSquare, FileText, Phone, Target, FileSearch, TrendingUp, BarChart3, PieChart, User, BarChart, Users, Eye, Image, Mic, Search, Zap, MessagesSquare, CheckCircle, Sparkles, Shield, Volume2, Reply, Calendar, FileJson, Hash } from 'lucide-react';
 import StreamingChat from '../components/aiTools/StreamingChat';
 import RealTimeFormValidation from '../components/aiTools/RealTimeFormValidation';
 import LiveDealAnalysis from '../components/aiTools/LiveDealAnalysis';

@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Brain, 
-  Zap, 
-  DollarSign, 
-  Clock, 
-  Info, 
-  ChevronDown,
-  CheckCircle,
-  Loader2
-} from 'lucide-react';
+import { Brain, DollarSign, Clock, Info, ChevronDown, CheckCircle, Loader2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { supabaseAIService, type AIModelConfig } from '../services/supabaseAIService';
 

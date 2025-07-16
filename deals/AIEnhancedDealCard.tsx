@@ -4,25 +4,7 @@ import { supabase } from '../../services/supabaseClient';
 import React, { useState } from 'react';
 import { Deal } from '../../types';
 import CustomizableAIToolbar from '../ai/CustomizableAIToolbar';
-import { 
-  DollarSign, 
-  Calendar, 
-  User, 
-  Building, 
-  PieChart, 
-  RefreshCw, 
-  Zap,
-  BarChart3,
-  ArrowUp,
-  ArrowDown,
-  Milestone,
-  Flag,
-  MessageSquare,
-  Tag,
-  CheckCircle,
-  AlertCircle,
-  Clock
-} from 'lucide-react';
+import { DollarSign, Calendar, User, Building, PieChart, RefreshCw, Zap, BarChart3, Flag, MessageSquare } from 'lucide-react';
 
 interface AIEnhancedDealCardProps {
   deal: Deal;

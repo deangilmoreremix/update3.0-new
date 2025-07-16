@@ -5,15 +5,7 @@ import { useDealStore } from '../../store/dealStore';
 import { useTaskStore } from '../../store/taskStore';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import { AvatarWithStatus } from '../modern-ui/AvatarWithStatus';
-import { 
-  Users, 
-  Target, 
-  Calendar, 
-  DollarSign, 
-  TrendingUp, 
-  ArrowUpRight, 
-  ArrowDownRight 
-} from 'lucide-react';
+import { Users, Target, Calendar, DollarSign, ArrowUpRight } from 'lucide-react';
 
 export const KPICards: React.FC = () => {
   const { isDark } = useTheme();

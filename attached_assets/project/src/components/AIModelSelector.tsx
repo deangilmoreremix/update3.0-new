@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  Brain, 
-  Zap, 
-  DollarSign, 
-  Clock, 
-  Info, 
-  ChevronDown,
-  CheckCircle
-} from 'lucide-react';
+import { Brain, DollarSign, Clock, Info, ChevronDown, CheckCircle } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { 
   AI_MODELS, 

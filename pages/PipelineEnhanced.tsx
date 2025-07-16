@@ -1,21 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
-import {
-  Plus,
-  Search,
-  Filter,
-  BarChart3,
-  Eye,
-  Calendar,
-  DollarSign,
-  User,
-  Phone,
-  Mail,
-  MessageSquare,
-  Target,
-  Clock,
-  TrendingUp
-} from 'lucide-react';
+import { Plus, Search, Filter, BarChart3, Calendar, DollarSign, User, Phone, Mail, MessageSquare, Target, Clock, TrendingUp } from 'lucide-react';
 
 // Mock data
 const mockColumns = {
@@ -172,7 +157,7 @@ const PipelineEnhanced: React.FC = () => {
     }
   };
 
-  const DealCard = ({ deal, index }: { deal: any; index: number }) => (
+  const DealCard = ({ deal, index }: { deal: unknown; index: number }) => (
     <Draggable draggableId={deal.id} index={index}>
       {(provided, snapshot) => (
         <div

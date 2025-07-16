@@ -2,28 +2,7 @@ import React, { useState } from 'react';
 import { GlassCard } from '../ui/GlassCard';
 import { ModernButton } from '../ui/ModernButton';
 import { Contact } from '../../types/contact';
-import { 
-  Mail, 
-  Phone, 
-  MessageSquare, 
-  Video, 
-  Calendar, 
-  Send, 
-  Paperclip, 
-  Smile, 
-  MoreHorizontal,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  Filter,
-  Search,
-  Download,
-  Settings,
-  Linkedin,
-  Twitter,
-  Facebook,
-  Smartphone
-} from 'lucide-react';
+import { Mail, Phone, MessageSquare, Video, Calendar, Send, Paperclip, MoreHorizontal, Clock, Filter, Search } from 'lucide-react';
 
 interface CommunicationRecord {
   id: string;

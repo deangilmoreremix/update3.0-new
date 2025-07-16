@@ -1,32 +1,6 @@
 import React, { useState } from 'react';
 import { useAITools } from '../components/AIToolsProvider';
-import { 
-  Brain, 
-  Mail, 
-  MessageSquare, 
-  FileText, 
-  Phone, 
-  Target, 
-  FileSearch, 
-  TrendingUp, 
-  BarChart3,
-  PieChart, 
-  ChevronRight,
-  Search,
-  Users,
-  Eye,
-  Image,
-  Mic,
-  Zap,
-  MessagesSquare,
-  CheckCircle,
-  Sparkles,
-  Shield,
-  Volume2,
-  Reply,
-  Calendar,
-  X
-} from 'lucide-react';
+import { Brain, Mail, MessageSquare, FileText, Phone, Target, FileSearch, TrendingUp, BarChart3, PieChart, ChevronRight, Search, Users, Eye, Image, Mic, Zap, MessagesSquare, CheckCircle, Sparkles, Shield, Volume2, Reply, Calendar } from 'lucide-react';
 
 
 const AITools: React.FC = () => {

@@ -11,52 +11,7 @@ import { DealCommunicationHub } from './deals/DealCommunicationHub';
 import { DealAnalyticsDashboard } from './deals/DealAnalyticsDashboard';
 import { DealAutomationPanel } from './deals/DealAutomationPanel';
 import { useAIResearch } from '../services/aiResearchService';
-import { 
-  X, 
-  Edit, 
-  Mail, 
-  Phone, 
-  Plus, 
-  MessageSquare,
-  FileText,
-  Calendar,
-  MoreHorizontal,
-  User,
-  Building2,
-  Clock,
-  Tag,
-  Star,
-  Save,
-  Brain,
-  Zap,
-  Target,
-  TrendingUp,
-  AlertCircle,
-  CheckCircle,
-  Upload,
-  Trash2,
-  DollarSign,
-  Settings,
-  BarChart3,
-  Search,
-  Loader2,
-  UserPlus,
-  Users,
-  Sparkles,
-  Wand2,
-  RefreshCw,
-  Briefcase,
-  PenTool,
-  ChevronRight,
-  ChevronDown,
-  Workflow,
-  Layers,
-  Shield,
-  Paperclip,
-  Link2,
-  FileSpreadsheet,
-  BarChart2
-} from 'lucide-react';
+import { X, Edit, Mail, Phone, Plus, MessageSquare, FileText, Calendar, MoreHorizontal, User, Building2, Clock, Star, Save, Brain, Zap, Target, TrendingUp, DollarSign, BarChart3, Search, Loader2, UserPlus, Users, Sparkles, BarChart2 } from 'lucide-react';
 
 interface DealDetailViewProps {
   deal: Deal;
@@ -311,11 +266,11 @@ Communication Style: ${contactData.communicationStyle}
   const EditableField: React.FC<{
     field: string;
     label: string;
-    value: any;
+    value: unknown;
     icon: React.ComponentType<any>;
     iconColor: string;
     type?: 'text' | 'number' | 'textarea' | 'select';
-    options?: { value: any; label: string }[];
+    options?: { value: unknown; label: string }[];
   }> = ({ field, label, value, icon: Icon, iconColor, type = 'text', options }) => {
     const isEditing = editingField === field;
     const [localValue, setLocalValue] = useState(value);
@@ -720,7 +675,7 @@ Communication Style: ${contactData.communicationStyle}
               ].map(tab => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
+                  onClick={() => setActiveTab(tab.id as unknown)}
                   className={`px-4 py-2 text-sm font-medium rounded-md transition-colors flex items-center space-x-1 ${
                     activeTab === tab.id 
                       ? 'bg-blue-100 text-blue-700' 

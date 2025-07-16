@@ -1,28 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useOpenAI } from '../services/openaiService';
-import { 
-  MessageSquare, 
-  Send, 
-  Clock, 
-  Check, 
-  AlertCircle, 
-  RefreshCw, 
-  Trash2, 
-  Brain, 
-  Settings, 
-  Calendar, 
-  Plus, 
-  User, 
-  X, 
-  Copy, 
-  Search,
-  Filter,
-  SlidersHorizontal,
-  Upload,
-  ExternalLink,
-  Image,
-  Phone
-} from 'lucide-react';
+import { MessageSquare, Send, Clock, Check, AlertCircle, RefreshCw, Trash2, Brain, Settings, Calendar, Plus, User, X, Search, Upload, ExternalLink, Phone } from 'lucide-react';
 import Select from 'react-select';
 
 interface Message {

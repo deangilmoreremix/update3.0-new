@@ -17,20 +17,7 @@ import {
   Pie, 
   Cell 
 } from 'recharts';
-import {
-  DollarSign,
-  Target,
-  Users,
-  TrendingUp,
-  TrendingDown,
-  Activity,
-  Calendar,
-  ArrowUp,
-  ArrowDown,
-  BarChart3,
-  PieChart as PieChartIcon,
-  ZapOff
-} from 'lucide-react';
+import { DollarSign, Target, Users, TrendingUp, Activity, Calendar, ArrowUp, ZapOff } from 'lucide-react';
 import Avatar from './ui/Avatar';
 import { getInitials } from '../utils/avatars';
 

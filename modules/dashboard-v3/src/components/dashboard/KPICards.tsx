@@ -89,7 +89,7 @@ const KPICards: React.FC = () => {
   };
 
   // Render avatar stack component
-  const renderAvatarStack = (deals: any[], maxAvatars: number = 3) => {
+  const renderAvatarStack = (deals: unknown[], maxAvatars: number = 3) => {
     const displayDeals = deals.slice(0, maxAvatars);
     const extraCount = Math.max(0, deals.length - maxAvatars);
 

@@ -6,16 +6,7 @@ import { BulkUserUpload } from '../components/admin/BulkUserUpload';
 import { MassRoleAssignment } from '../components/admin/MassRoleAssignment';
 import { GlassCard } from '../components/ui/GlassCard';
 import { ModernButton } from '../components/ui/ModernButton';
-import {
-  Crown, Users, Settings, Shield, BarChart3, Database, 
-  Toggle, CheckCircle, XCircle, AlertTriangle, Plus,
-  Search, Filter, Download, Upload, Mail, Eye, EyeOff,
-  Zap, Target, Brain, Phone, MessageSquare, Calendar,
-  FileText, TrendingUp, DollarSign, Globe, Lock, Power,
-  PowerOff, ToggleLeft, ToggleRight, Image, Video, Mic,
-  Headphones, Play, Pause, RefreshCw, CheckSquare,
-  Square, Filter as FilterIcon, ArrowUpDown, MoreHorizontal
-} from 'lucide-react';
+import { Crown, Users, Settings, Shield, BarChart3, CheckCircle, XCircle, Plus, Search, Download, Upload, Mail, Eye, Brain, Phone, MessageSquare, TrendingUp, Globe, Lock, Power, PowerOff } from 'lucide-react';
 
 interface User {
   id: string;

@@ -9,33 +9,7 @@ import { useOpenAI } from '../../services/openaiService';
 import { Contact } from '../../types';
 import { AIEnhancedContactCard } from '../contacts/AIEnhancedContactCard';
 import Fuse from 'fuse.js';
-import { 
-  X, 
-  Search, 
-  Filter, 
-  MoreHorizontal, 
-  Edit,
-  Plus,
-  Users,
-  ChevronDown,
-  Brain,
-  Download,
-  Upload,
-  Zap,
-  CheckCheck,
-  Grid3X3,
-  List,
-  ArrowUp,
-  ArrowDown,
-  Settings,
-  Target,
-  BarChart3,
-  RefreshCw,
-  Sparkles,
-  AlertCircle,
-  CheckCircle,
-  Loader2
-} from 'lucide-react';
+import { X, Search, Filter, Plus, Users, ChevronDown, Brain, Download, Upload, Zap, CheckCheck, Grid3X3, List, Target, Sparkles, CheckCircle, Loader2 } from 'lucide-react';
 
 interface ContactsModalProps {
   isOpen: boolean;
@@ -167,7 +141,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({ isOpen, onClose })
 
     // Apply sorting
     result.sort((a, b) => {
-      let aValue: any, bValue: any;
+      let aValue: any, bValue: unknown;
       
       switch (sortBy) {
         case 'name':

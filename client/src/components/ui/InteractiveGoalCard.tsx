@@ -1,25 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Goal } from '../../types/goals';
-import { 
-  Clock, 
-  TrendingUp, 
-  Users, 
-  Zap, 
-  Play,
-  Eye,
-  CheckCircle,
-  Loader,
-  Star,
-  Target,
-  Shield,
-  Brain,
-  Activity,
-  Bot,
-  Settings,
-  Sparkles,
-  FileText,
-  BarChart3
-} from 'lucide-react';
+import { Clock, TrendingUp, Users, Zap, Play, Star, Target, Shield, Activity, Bot, Settings, Sparkles, FileText, BarChart3 } from 'lucide-react';
 
 interface InteractiveGoalCardProps {
   goal: Goal;

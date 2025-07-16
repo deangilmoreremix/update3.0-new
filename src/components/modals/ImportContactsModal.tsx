@@ -2,18 +2,7 @@ import React, { useState, useRef } from 'react';
 import { ModernButton } from '../ui/ModernButton';
 import { useContactStore } from '../../store/contactStore';
 
-import { 
-  X, 
-  Upload, 
-  Download, 
-  FileText, 
-  AlertCircle, 
-  CheckCircle, 
-  Info,
-  Users,
-  Database,
-  FileSpreadsheet
-} from 'lucide-react';
+import { X, Upload, Download, AlertCircle, CheckCircle, Info, Users, Database, FileSpreadsheet } from 'lucide-react';
 
 interface ImportContactsModalProps {
   isOpen: boolean;
@@ -76,7 +65,7 @@ const parseCSV = (text: string): string[][] => {
     let current = '';
     let inQuotes = false;
     
-    for (let i = 0; i < line.length; i++) {
+    for (const i = 0; i < line.length; i++) {
       const char = line[i];
       
       if (char === '"' && (i === 0 || line[i-1] === ',')) {

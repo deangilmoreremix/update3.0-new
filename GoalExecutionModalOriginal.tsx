@@ -5,35 +5,7 @@ import { composioService } from '../services/composioService';
 import { callMCP } from '../utils/llm/mcpClient';
 import { runAgentWorkflow, getAgentForGoal, AVAILABLE_AGENTS, type AgentType } from '../agents/AgentOrchestrator';
 import { getOptimalGemmaConfig, enhanceAgenticPrompt, addChainOfThought } from '../services/gemmaAgentOptimizer';
-import { 
-  X, 
-  Maximize2,
-  Play, 
-  Pause, 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
-  Zap, 
-  Users, 
-  Bot,
-  Activity,
-  Network,
-  GitBranch,
-  Settings,
-  BarChart3,
-  Target,
-  ArrowRight,
-  Sparkles,
-  Brain,
-  Eye,
-  Volume2,
-  Database,
-  Presentation,
-  MessageSquare,
-  TrendingUp,
-  Award,
-  Lightbulb
-} from 'lucide-react';
+import { X, Play, CheckCircle, XCircle, Clock, Activity, GitBranch, BarChart3, Target, Brain, Award } from 'lucide-react';
 
 interface ExecutionStep {
   id: string;
@@ -42,7 +14,7 @@ interface ExecutionStep {
   status: 'pending' | 'running' | 'completed' | 'error';
   startTime?: Date;
   completionTime?: Date;
-  result?: any;
+  result?: unknown;
   thinking?: string;
   toolsUsed?: string[];
   crmImpact?: string;
@@ -54,7 +26,7 @@ interface GoalExecutionModalProps {
   onClose: () => void;
   realMode: boolean;
   onComplete: (result: unknown) => void;
-  contextData?: any;
+  contextData?: unknown;
 }
 
 const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
@@ -95,7 +67,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
     to: string;
     message: string;
     timestamp: Date;
-    data?: any;
+    data?: unknown;
   }>>([]);
 
   // Generate execution steps based on goal and required agents
@@ -217,7 +189,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
       addActivity('✅ Planning phase completed - Execution strategy optimized');
       
       // Phase 2: Agent Execution Loop
-      for (let i = 1; i < executionSteps.length - 2; i++) {
+      for (const i = 1; i < executionSteps.length - 2; i++) {
         const step = executionSteps[i];
         addActivity(`🤖 Activating ${step.agentName}...`);
         addChainOfThoughtStep(`Agent Coordination: ${step.agentName} beginning ${step.action}`);

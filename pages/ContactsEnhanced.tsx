@@ -1,22 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Search,
-  Filter,
-  Plus,
-  Phone,
-  Mail,
-  MessageSquare,
-  User,
-  Building,
-  MapPin,
-  Calendar,
-  Star,
-  MoreVertical,
-  Edit,
-  Trash2,
-  Eye,
-  Download
-} from 'lucide-react';
+import { Search, Filter, Plus, Phone, Mail, MessageSquare, User, Building, MapPin, Calendar, Star, MoreVertical, Edit, Download } from 'lucide-react';
 
 // Mock data
 const mockContacts = [

@@ -1,29 +1,6 @@
 import React, { useState } from 'react';
 import { Contact } from '../../types/contact';
-import { 
-  Zap, 
-  Mail, 
-  Plus, 
-  Settings, 
-  Clock, 
-  Calendar, 
-  Play,
-  Pause,
-  Check,
-  Edit,
-  Trash2,
-  AlertCircle,
-  ChevronDown,
-  ChevronRight,
-  MoreHorizontal,
-  Info,
-  PlusCircle,
-  Copy,
-  Eye,
-  ArrowRight,
-  SlidersHorizontal,
-  Brain
-} from 'lucide-react';
+import { Zap, Mail, Plus, Settings, Clock, Calendar, Play, Pause, Edit, Trash2, ChevronDown, ChevronRight, Info, PlusCircle, ArrowRight, SlidersHorizontal, Brain } from 'lucide-react';
 
 interface AutomationPanelProps {
   contact: Contact;

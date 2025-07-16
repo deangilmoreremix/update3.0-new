@@ -17,8 +17,8 @@ interface Message {
 
 interface FunctionExecutionInfo {
   name: string;
-  arguments: any;
-  result: any;
+  arguments: unknown;
+  result: unknown;
 }
 
 const FunctionAssistantContent: React.FC = () => {

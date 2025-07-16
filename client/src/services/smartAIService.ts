@@ -111,7 +111,7 @@ class SmartAIService {
     
     console.log(`Starting bulk analysis of ${contacts.length} contacts using ${selectedModel}`);
     
-    for (let i = 0; i < contacts.length; i++) {
+    for (const i = 0; i < contacts.length; i++) {
       const contact = contacts[i];
       
       try {

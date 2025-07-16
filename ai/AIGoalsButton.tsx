@@ -5,7 +5,7 @@ import { useAITools } from '../AIToolsProvider';
 interface AIGoalsButtonProps {
   entityType: 'contact' | 'deal' | 'company';
   entityId: string;
-  entityData: any;
+  entityData: unknown;
   size?: 'sm' | 'md' | 'lg';
   variant?: 'primary' | 'secondary';
   className?: string;

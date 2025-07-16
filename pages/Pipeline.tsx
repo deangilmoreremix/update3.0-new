@@ -1,29 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useDealStore } from '../store/dealStore';
 import { useGemini } from '../services/geminiService';
-import { 
-  BarChart3, 
-  Briefcase, 
-  ChevronRight, 
-  Plus, 
-  RefreshCw, 
-  Filter, 
-  ArrowUp, 
-  ArrowDown, 
-  Brain, 
-  X,
-  Move,
-  Calendar,
-  DollarSign,
-  User,
-  CheckCircle,
-  AlertCircle,
-  Clock,
-  Search,
-  MessageSquare,
-  Zap
-} from 'lucide-react';
+import { Briefcase, Plus, RefreshCw, Filter, ArrowUp, ArrowDown, X, Calendar, User, AlertCircle, Search, MessageSquare, Zap } from 'lucide-react';
 import { Deal } from '../types';
 import AIEnhancedDealCard from '../components/deals/AIEnhancedDealCard';
 import DealDetail from '../components/DealDetail';

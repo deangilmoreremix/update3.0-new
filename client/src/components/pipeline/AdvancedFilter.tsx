@@ -4,7 +4,7 @@ import { Filter, X, Plus, ChevronDown } from 'lucide-react';
 interface FilterRule {
   field: string;
   operator: string;
-  value: any;
+  value: unknown;
 }
 
 interface AdvancedFilterProps {

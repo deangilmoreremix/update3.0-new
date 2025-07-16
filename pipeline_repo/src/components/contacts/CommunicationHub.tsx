@@ -1,29 +1,6 @@
 import React, { useState } from 'react';
 import { Contact } from '../../types/contact';
-import { 
-  Mail, 
-  Phone, 
-  Calendar, 
-  MessageSquare, 
-  Video, 
-  FileText, 
-  Send, 
-  MicOff,
-  Mic,
-  Video as VideoIcon,
-  VideoOff,
-  Phone as PhoneIcon,
-  PhoneOff,
-  Loader2,
-  Brain,
-  Sparkles,
-  Zap,
-  CheckCircle,
-  AlertCircle,
-  RefreshCw,
-  Clock,
-  MoreHorizontal
-} from 'lucide-react';
+import { Mail, Phone, Calendar, MessageSquare, Video, FileText, Send, MicOff, Mic, VideoOff, PhoneOff, Loader2, Brain, Sparkles, Zap, CheckCircle, AlertCircle, RefreshCw, Clock, MoreHorizontal } from 'lucide-react';
 
 interface CommunicationHubProps {
   contact: Contact;

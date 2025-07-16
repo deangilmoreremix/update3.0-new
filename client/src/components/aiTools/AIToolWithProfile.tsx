@@ -102,7 +102,7 @@ const AIToolWithProfile: React.FC<AIToolWithProfileProps> = ({
     return reasons.join(', ') || 'Best overall match for task requirements';
   };
 
-  const handleAIRequest = async (prompt: string, data: any = {}) => {
+  const handleAIRequest = async (prompt: string, data: unknown = {}) => {
     if (!customerProfile) return null;
     
     setIsProcessing(true);

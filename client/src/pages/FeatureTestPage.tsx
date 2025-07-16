@@ -2,10 +2,7 @@ import React from 'react';
 import { UserManagementDashboard } from '@/components/admin/UserManagementDashboard';
 import { FeatureAccessBadge, FeatureGuard, FeatureUsageBadge } from '@/components/features/FeatureAccessBadge';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess';
-import { 
-  Crown, Users, Mail, MessageSquare, BarChart3, Brain, 
-  Phone, Video, FileText, Zap, Settings, Shield 
-} from 'lucide-react';
+import { Crown, Users, Mail, Brain, Phone, Video, Settings } from 'lucide-react';
 
 export const FeatureTestPage: React.FC = () => {
   const featureAccess = useFeatureAccess();

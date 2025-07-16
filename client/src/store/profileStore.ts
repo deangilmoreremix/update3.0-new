@@ -11,8 +11,8 @@ interface UserProfile {
   company?: string;
   phone?: string;
   timezone?: string;
-  preferences?: any;
-  socialLinks?: any;
+  preferences?: unknown;
+  socialLinks?: unknown;
 }
 
 interface ProfileState {

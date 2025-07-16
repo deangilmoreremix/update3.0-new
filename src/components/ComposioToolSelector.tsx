@@ -1,22 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  X, 
-  Search, 
-  Check, 
-  ExternalLink, 
-  Star, 
-  Filter,
-  Clock,
-  ArrowRight,
-  Globe,
-  Zap,
-  ShieldCheck,
-  Key,
-  RefreshCw,
-  AlertTriangle,
-  Link as LinkIcon,
-  HelpCircle
-} from 'lucide-react';
+import { X, Search, Check, ExternalLink, Star, Clock, ArrowRight, Globe, Zap, ShieldCheck, Key, RefreshCw, AlertTriangle, HelpCircle } from 'lucide-react';
 import { composioTools, composioToolCategories, getToolsByCategory, searchTools, ComposioTool } from '../data/composioToolsData';
 import { apiConfig } from '../config/apiConfig';
 

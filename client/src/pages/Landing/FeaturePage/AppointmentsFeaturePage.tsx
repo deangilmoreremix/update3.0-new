@@ -1,27 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { 
-  Calendar, 
-  Clock, 
-  Users, 
-  Globe, 
-  Zap, 
-  MessageSquare, 
-  Video, 
-  Mail, 
-  Bell, 
-  Shield,
-  CheckCheck,
-  ChevronRight,
-  ArrowRight,
-  Star,
-  Play,
-  Smartphone,
-  Link2,
-  Settings,
-  BarChart3
-} from 'lucide-react';
+import { Calendar, Clock, Users, Zap, Video, Bell, CheckCheck, ChevronRight, Star, Play, Link2, Settings, BarChart3 } from 'lucide-react';
 
 import LandingHeader from '../components/LandingHeader';
 import LandingFooter from '../components/LandingFooter';

@@ -4,28 +4,7 @@ import { ModernButton } from '../ui/ModernButton';
 import { Contact } from '../../types';
 import VideoCallPreviewWidget from '../VideoCallPreviewWidget';
 import { useVideoCall } from '../../contexts/VideoCallContext';
-import { 
-  Mail, 
-  Phone, 
-  MessageSquare, 
-  Video, 
-  Calendar, 
-  Send, 
-  Paperclip, 
-  Smile, 
-  MoreHorizontal,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  Filter,
-  Search,
-  Download,
-  Settings,
-  Linkedin,
-  Twitter,
-  Facebook,
-  Smartphone
-} from 'lucide-react';
+import { Mail, Phone, MessageSquare, Video, Calendar, Send, Paperclip, Filter, Search } from 'lucide-react';
 
 interface CommunicationRecord {
   id: string;

@@ -3,7 +3,7 @@
  * Provides easy access to enhanced AI capabilities with automatic model selection
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { enhancedGeminiService } from '../services/enhancedGeminiService';
 import { supabaseAIService } from '../services/supabaseAIService';
 import { aiOrchestratorService } from '../services/aiOrchestratorService';
@@ -40,12 +40,12 @@ export interface SmartAIState {
   results: Record<string, any>;
   errors: Record<string, string>;
   recommendations: Record<string, any>;
-  performance: any;
+  performance: unknown;
 }
 
 interface EnhancedAIAnalysisRequest {
   contactId: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface SmartBulkRequest {
@@ -64,7 +64,7 @@ const enhancedAI = {
     // Use aiOrchestratorService to select the right model
     const result = await aiOrchestratorService.analyzeDeal(
       { contact, priority: urgency },
-      { priority: urgency as any }
+      { priority: urgency as unknown }
     );
     
     return {
@@ -139,7 +139,7 @@ const enhancedAI = {
           // Use orchestrator to select models
           const result = await aiOrchestratorService.analyzeDeal(
             { contact },
-            { priority: request.urgency as any || 'balanced' }
+            { priority: request.urgency as unknown || 'balanced' }
           );
           
           return {

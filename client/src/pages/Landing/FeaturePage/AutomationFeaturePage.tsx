@@ -1,27 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { 
-  Zap, 
-  Clock, 
-  Target, 
-  BarChart3, 
-  Mail, 
-  MessageSquare, 
-  Calendar, 
-  Settings, 
-  Users, 
-  Shield,
-  CheckCheck,
-  ChevronRight,
-  ArrowRight,
-  Star,
-  Play,
-  Brain,
-  Workflow,
-  Filter,
-  TrendingUp
-} from 'lucide-react';
+import { Zap, Clock, Target, Mail, MessageSquare, Calendar, CheckCheck, ChevronRight, Star, Play, Brain, Workflow, Filter, TrendingUp } from 'lucide-react';
 
 import LandingHeader from '../components/LandingHeader';
 import LandingFooter from '../components/LandingFooter';

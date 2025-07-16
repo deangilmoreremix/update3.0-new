@@ -12,19 +12,7 @@ import DealDetail from './DealDetail';
 import AddContactModal from './deals/AddContactModal';
 import { mockDeals, mockColumns, columnOrder, calculateStageValues } from '../data/mockDeals';
 import { Deal, PipelineColumn } from '../types';
-import { 
-  Search, 
-  Filter, 
-  Plus, 
-  BarChart3, 
-  Users, 
-  Grid, 
-  List, 
-  Settings,
-  Zap,
-  Eye,
-  EyeOff
-} from 'lucide-react';
+import { Search, Plus, Grid, List, Settings, Zap, Eye, EyeOff } from 'lucide-react';
 
 const Pipeline: React.FC = () => {
   const [deals, setDeals] = useState<Record<string, Deal>>(mockDeals);
@@ -174,7 +162,7 @@ const Pipeline: React.FC = () => {
     setSelectedDealId(dealId);
   };
 
-  const handleApplyFilters = (filters: any[]) => {
+  const handleApplyFilters = (filters: unknown[]) => {
     setActiveFilters(filters);
   };
 

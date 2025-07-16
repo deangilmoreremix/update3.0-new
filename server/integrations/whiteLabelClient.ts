@@ -37,7 +37,7 @@ export class WhiteLabelClient {
     this.apiKey = process.env.WHITE_LABEL_API_KEY || '';
   }
 
-  private async makeRequest(endpoint: string, options: any = {}) {
+  private async makeRequest(endpoint: string, options: unknown = {}) {
     const url = `${this.baseUrl}${endpoint}`;
     const response = await fetch(url, {
       ...options,

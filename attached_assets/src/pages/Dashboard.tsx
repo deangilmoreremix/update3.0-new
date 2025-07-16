@@ -8,29 +8,7 @@ import { useAITools } from '../components/AIToolsProvider';
 import AppointmentWidget from '../components/AppointmentWidget';
 import AIToolsCard from '../components/Dashboard/AIToolsCard';
 import DealAnalytics from '../components/DealAnalytics';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  DollarSign,
-  Calendar, 
-  Clock,
-  Zap, 
-  ChevronRight, 
-  AlertCircle,
-  ArrowUpRight,
-  ArrowDownRight,
-  Brain,
-  CheckCircle,
-  Users,
-  Briefcase,
-  Tag,
-  PieChart,
-  Building,
-  Mail,
-  CheckSquare,
-  Plus,
-  Search
-} from 'lucide-react';
+import { BarChart3, DollarSign, Calendar, Clock, Zap, ChevronRight, AlertCircle, ArrowUpRight, ArrowDownRight, Brain, Users, Briefcase, Mail, CheckSquare, Plus, Search } from 'lucide-react';
 
 // Import AI tools components
 import StreamingChat from '../components/aiTools/StreamingChat';
@@ -150,11 +128,11 @@ const Dashboard: React.FC = () => {
   // Calculate metrics from deal data
   const calculateMetrics = () => {
     const now = new Date();
-    let totalActiveDeals = 0;
-    let totalClosingThisMonth = 0;
-    let totalAtRisk = 0;
-    let totalValue = 0;
-    let wonValue = 0;
+    const totalActiveDeals = 0;
+    const totalClosingThisMonth = 0;
+    const totalAtRisk = 0;
+    const totalValue = 0;
+    const wonValue = 0;
     
     Object.values(deals).forEach(deal => {
       // Count active deals (not closed)

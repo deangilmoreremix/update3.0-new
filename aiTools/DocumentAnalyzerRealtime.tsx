@@ -85,7 +85,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
     
     // Simulate progressive analysis with steps
     const totalSteps = analysisSteps[analysisType].length;
-    for (let i = 0; i < totalSteps; i++) {
+    for (const i = 0; i < totalSteps; i++) {
       setCurrentAnalysisStep(analysisSteps[analysisType][i]);
       setAnalysisProgress(Math.round((i / (totalSteps - 1)) * 100));
       // Add a delay between steps to simulate processing

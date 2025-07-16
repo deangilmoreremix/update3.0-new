@@ -1,21 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Contact } from '../types';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  MoreHorizontal, 
-  Brain, 
-  Download, 
-  Upload, 
-  FileInput,
-  X,
-  ArrowUp,
-  ArrowDown,
-  CheckCheck,
-  Zap
-} from 'lucide-react';
+import { Plus, Search, MoreHorizontal, Brain, Download, Upload, X, ArrowUp, ArrowDown, Zap } from 'lucide-react';
 import { useOpenAI } from '../services/openaiService';
 import { useForm } from 'react-hook-form';
 import Avatar from 'react-avatar';

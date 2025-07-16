@@ -8,7 +8,7 @@ interface QuickAIButtonProps {
   toolName: string;
   entityType: 'contact' | 'deal' | 'company';
   entityId: string;
-  entityData: any;
+  entityData: unknown;
   size?: 'sm' | 'md';
   variant?: 'default' | 'analysis' | 'generation' | 'research' | 'automation';
   className?: string;

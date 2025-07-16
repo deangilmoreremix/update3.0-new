@@ -1,33 +1,7 @@
 // Complete Interactive Goal Card Code
 import React, { useState, useEffect } from 'react';
 import { Goal } from '../types/goals';
-import { 
-  Clock, 
-  TrendingUp, 
-  Users, 
-  Zap, 
-  Play,
-  Eye,
-  CheckCircle,
-  Loader,
-  Star,
-  Target,
-  Shield,
-  Brain,
-  Activity,
-  Bot,
-  Settings,
-  Sparkles,
-  FileText,
-  BarChart3,
-  ArrowRight,
-  Rocket,
-  Globe,
-  Award,
-  AlertCircle,
-  Calendar,
-  Timer
-} from 'lucide-react';
+import { TrendingUp, Users, Zap, Play, Eye, CheckCircle, Loader, Star, Target, Shield, Brain, Activity, Bot, Settings, FileText, BarChart3, ArrowRight, Rocket, Globe, Award, Timer } from 'lucide-react';
 
 interface InteractiveGoalCardProps {
   goal: Goal;

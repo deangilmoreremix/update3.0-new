@@ -122,7 +122,7 @@ export const EnhancedAIInsightsPanel: React.FC = () => {
               return (
                 <button
                   key={view.id}
-                  onClick={() => setSelectedView(view.id as any)}
+                  onClick={() => setSelectedView(view.id as unknown)}
                   className={`px-3 py-2 text-sm font-medium transition-colors flex items-center space-x-1 ${
                     selectedView === view.id
                       ? 'bg-blue-600 text-white'

@@ -1,27 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  Camera, 
-  Phone, 
-  Mail, 
-  Calendar, 
-  MessageSquare, 
-  FileText,
-  TrendingUp,
-  Users,
-  Target,
-  BarChart3,
-  Zap,
-  Play,
-  Video,
-  Mic,
-  Send,
-  Star,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  Settings,
-  X
-} from 'lucide-react';
+import { Camera, Phone, Mail, MessageSquare, FileText, TrendingUp, Target, BarChart3, Zap, Video, Star, Clock, CheckCircle, AlertCircle, Settings } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { SalesVideoRecorder } from './SalesVideoRecorder';
 

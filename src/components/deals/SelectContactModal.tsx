@@ -1,18 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useContactStore } from '../../store/contactStore';
 import { Contact } from '../../types/contact';
-import { 
-  X, 
-  Search, 
-  User, 
-  Building2, 
-  Mail, 
-  Phone,
-  Check,
-  Plus,
-  MailCheck,
-  UserCircle
-} from 'lucide-react';
+import { X, Search, User, Building2, Mail, Phone, Check, Plus, UserCircle } from 'lucide-react';
 import AddContactForm from './AddContactForm';
 
 interface SelectContactModalProps {

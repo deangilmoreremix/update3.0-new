@@ -1,26 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Video, 
-  Play, 
-  Pause, 
-  Square, 
-  Send, 
-  Download, 
-  Trash2, 
-  Settings, 
-  Sliders, 
-  Mail, 
-  Users, 
-  List, 
-  Clock, 
-  CheckCircle, 
-  X, 
-  Mic, 
-  MicOff, 
-  Camera, 
-  CameraOff,
-  RefreshCw
-} from 'lucide-react';
+import { Video, Play, Pause, Square, Send, Download, Trash2, Settings, List, Clock, CheckCircle, X, Mic, MicOff, Camera, CameraOff, RefreshCw } from 'lucide-react';
 import './VideoEmail.css';
 
 const VideoEmail: React.FC = () => {

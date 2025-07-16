@@ -10,15 +10,7 @@ import { CommunicationHub } from '../contacts/CommunicationHub';
 import { AutomationPanel } from '../contacts/AutomationPanel';
 import { ContactAnalytics } from '../contacts/ContactAnalytics';
 import { Contact } from '../../types/contact';
-import { 
-  X, Edit, Mail, Phone, Plus, MessageSquare, FileText, Calendar, MoreHorizontal, 
-  User, Globe, Clock, Building, Tag, Star, ExternalLink, Brain, TrendingUp, 
-  BarChart3, Zap, Users, Activity, Settings, Database, Shield, Target, 
-  Smartphone, Video, Linkedin, Twitter, Facebook, Instagram, Save, 
-  Ambulance as Cancel, Heart, HeartOff, MapPin, Briefcase, Award, 
-  CheckCircle, AlertCircle, Wifi, WifiOff, Search, DollarSign, RefreshCw,
-  Sparkles, Camera, Wand2
-} from 'lucide-react';
+import { X, Edit, Mail, Phone, Plus, MessageSquare, FileText, Calendar, User, Globe, Clock, Building, Tag, ExternalLink, Brain, TrendingUp, BarChart3, Zap, Activity, Database, Target, Linkedin, Twitter, Facebook, Instagram, Save, Heart, HeartOff, Search, Sparkles, Camera, Wand2 } from 'lucide-react';
 
 interface Contact {
   id: string;
@@ -200,7 +192,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
     
     try {
       // Apply enrichment data to contact
-      const updates: any = {};
+      const updates: unknown = {};
       
       if (enrichmentData.phone && !editedContact.phone) {
         updates.phone = enrichmentData.phone;
@@ -219,7 +211,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
       
       // Social profiles
       if (enrichmentData.socialProfiles) {
-        const socialUpdates: any = {};
+        const socialUpdates: unknown = {};
         Object.entries(enrichmentData.socialProfiles).forEach(([key, value]) => {
           if (value && !editedContact.socialProfiles?.[key as keyof typeof editedContact.socialProfiles]) {
             socialUpdates[key] = value;

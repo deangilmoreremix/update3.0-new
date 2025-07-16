@@ -6,43 +6,7 @@ import { useOpenAI } from '../../services/openaiService';
 import { useGeminiAI } from '../../services/geminiService';
 import { Deal } from '../../types';
 import { Contact } from '../../types/contact';
-import { 
-  X, 
-  Save, 
-  Bot, 
-  Search, 
-  Users, 
-  Building2, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Calendar, 
-  DollarSign, 
-  Target, 
-  AlertCircle, 
-  Sparkles, 
-  Zap, 
-  Brain, 
-  UserPlus, 
-  UserX,
-  Linkedin as LinkedinIcon,
-  Twitter as TwitterIcon,
-  Facebook as FacebookIcon,
-  Instagram as InstagramIcon,
-  MessageSquare,
-  Globe,
-  Plus,
-  Edit,
-  Trash2,
-  RefreshCw,
-  Camera,
-  Loader2,
-  User,
-  Heart,
-  Wand2,
-  Database,
-  ChevronDown
-} from 'lucide-react';
+import { X, Save, Bot, Search, Users, Building2, Mail, Phone, MapPin, Calendar, DollarSign, Target, AlertCircle, Sparkles, Zap, Brain, UserPlus, UserX, User } from 'lucide-react';
 import SelectContactModal from './SelectContactModal';
 import { useContactStore } from '../../store/contactStore';
 import AddContactModal from './AddContactModal';

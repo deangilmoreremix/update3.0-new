@@ -10,11 +10,11 @@ export interface ComposioAgentRequest {
   goal: Goal;
   entityId?: string;
   crmContext?: {
-    contacts: any[];
-    deals: any[];
-    tasks: any[];
+    contacts: unknown[];
+    deals: unknown[];
+    tasks: unknown[];
   };
-  userPreferences?: any;
+  userPreferences?: unknown;
 }
 
 export interface ComposioAgentResult {
@@ -289,7 +289,7 @@ Create a step-by-step execution plan with specific actions for each tool and age
     };
   }
   
-  private async updateCRMData(goal: Goal, toolActions: any[], crmContext?: any) {
+  private async updateCRMData(goal: Goal, toolActions: unknown[], crmContext?: any) {
     // Simulate CRM updates based on goal execution
     const updates = {
       contactsCreated: 0,
@@ -310,7 +310,7 @@ Create a step-by-step execution plan with specific actions for each tool and age
     return updates;
   }
   
-  private calculateBusinessImpact(goal: Goal, toolActions: any[]): string {
+  private calculateBusinessImpact(goal: Goal, toolActions: unknown[]): string {
     const baseImpact = goal.businessImpact;
     const toolsUsedCount = toolActions.length;
     const successfulActions = toolActions.filter(a => a.impact).length;

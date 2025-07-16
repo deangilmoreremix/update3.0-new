@@ -1,17 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Zap, 
-  Play, 
-  Pause, 
-  RotateCcw, 
-  Settings, 
-  BarChart3,
-  Users,
-  Target,
-  CheckCircle,
-  AlertCircle,
-  Clock
-} from 'lucide-react';
+import { Zap, Pause, RotateCcw, Settings, BarChart3, Users, Target, CheckCircle, AlertCircle } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
 import { useSmartAI } from '../../hooks/useSmartAI';

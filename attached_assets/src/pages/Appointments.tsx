@@ -1,26 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { 
-  Clock, 
-  User, 
-  Check, 
-  Video, 
-  Phone, 
-  MapPin, 
-  Plus, 
-  Calendar as CalendarIcon, 
-  AlertOctagon, 
-  ChevronRight, 
-  ChevronLeft, 
-  Mail, 
-  X,
-  RefreshCw,
-  Search,
-  AlertCircle,
-  Copy,
-  Link
-} from 'lucide-react';
+import { Clock, User, Check, Video, Phone, MapPin, Plus, ChevronRight, ChevronLeft, Mail, X, RefreshCw, Search, Copy, Link } from 'lucide-react';
 import { useAppointmentStore, Appointment, AppointmentType, AppointmentStatus } from '../store/appointmentStore';
 import Select from 'react-select';
 

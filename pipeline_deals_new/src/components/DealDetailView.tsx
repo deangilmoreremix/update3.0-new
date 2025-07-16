@@ -9,46 +9,7 @@ import { DealCommunicationHub } from './deals/DealCommunicationHub';
 import { DealAnalyticsDashboard } from './deals/DealAnalyticsDashboard';
 import { DealAutomationPanel } from './deals/DealAutomationPanel';
 import { ModernButton } from './ui/ModernButton';
-import {
-  X,
-  Edit,
-  Globe,
-  Mail, 
-  Phone,
-  Building2,
-  Tag,
-  Save,
-  Plus,
-  User,
-  DollarSign,
-  Calendar,
-  Clock,
-  CheckCircle,
-  Database,
-  BarChart2,
-  MessageSquare,
-  Zap,
-  FileText,
-  Target,
-  Sparkles,
-  Brain,
-  Crown,
-  Star,
-  Award,
-  Trophy,
-  Heart,
-  Briefcase,
-  FileUp,
-  Link,
-  ExternalLink,
-  Trash2,
-  Camera,
-  RefreshCw,
-  Loader2,
-  Search,
-  Wand2,
-  Users,
-} from 'lucide-react';
+import { X, Edit, Globe, Mail, Phone, Tag, Save, Plus, User, DollarSign, Calendar, Clock, Database, BarChart2, MessageSquare, Zap, FileText, Target, Sparkles, Brain, Heart, FileUp, Link, ExternalLink, Trash2, Camera, RefreshCw, Loader2, Search, Wand2,  } from 'lucide-react';
 
 interface DealDetailViewProps {
   deal: Deal;
@@ -1294,7 +1255,7 @@ Sales Approach: ${companyData.salesApproach}
               ].map(tab => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
+                  onClick={() => setActiveTab(tab.id as unknown)}
                   className={`px-4 py-2 text-sm font-medium rounded-md transition-colors flex items-center space-x-1 ${
                     activeTab === tab.id 
                       ? 'bg-blue-100 text-blue-700' 

@@ -22,7 +22,7 @@ interface Database {
           entity_type: 'contact' | 'deal';
           entity_id: string;
           description: string;
-          metadata: any;
+          metadata: unknown;
           created_at: string;
           user_id: string;
         };
@@ -164,7 +164,7 @@ class SupabaseService {
     entity_type: 'contact' | 'deal';
     entity_id: string;
     description: string;
-    metadata?: any;
+    metadata?: unknown;
     user_id: string;
   }): Promise<void> {
     const { error } = await this.supabase

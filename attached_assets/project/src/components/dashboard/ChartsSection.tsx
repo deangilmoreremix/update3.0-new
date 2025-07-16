@@ -5,7 +5,7 @@ import { useDealStore } from '../../store/dealStore';
 import { useContactStore } from '../../store/contactStore';
 import Avatar from '../ui/Avatar';
 import { getInitials } from '../../utils/avatars';
-import { BarChart3, LineChart, PieChart as PieChartIcon, TrendingUp, Filter } from 'lucide-react';
+import { BarChart3, LineChart, TrendingUp } from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -188,7 +188,7 @@ const ChartsSection: React.FC = () => {
             {['week', 'month', 'quarter'].map((period) => (
               <button
                 key={period}
-                onClick={() => setTimeframe(period as any)}
+                onClick={() => setTimeframe(period as unknown)}
                 className={`px-3 py-1.5 text-sm ${
                   timeframe === period 
                     ? isDark 

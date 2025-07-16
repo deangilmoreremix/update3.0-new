@@ -207,7 +207,7 @@ class ApiClient {
   async generateAIContent(params: {
     contentType: string;
     purpose: string;
-    data?: any;
+    data?: unknown;
     apiKey?: string;
   }): Promise<{ result: string; success: boolean }> {
     return this.request('/ai/generate-content', {

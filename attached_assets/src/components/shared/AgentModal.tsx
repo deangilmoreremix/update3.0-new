@@ -5,7 +5,7 @@ import { X, Copy, CheckCircle, Send, Check } from 'lucide-react';
 
 interface AgentModalProps {
   agentId: string;
-  data: any;
+  data: unknown;
   onClose: () => void;
 }
 

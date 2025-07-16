@@ -194,7 +194,7 @@ export class PartnerService {
       customDomain?: string;
       contactEmail: string;
       planType: 'basic' | 'professional' | 'enterprise';
-      brandingConfig?: any;
+      brandingConfig?: unknown;
     }
   ): Promise<Tenant> {
     const customerId = nanoid();

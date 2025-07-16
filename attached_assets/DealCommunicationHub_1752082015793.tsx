@@ -1,32 +1,7 @@
 import React, { useState } from 'react';
 import { Deal } from '../../types';
 import { Contact } from '../../types/contact';
-import { 
-  Mail, 
-  Phone, 
-  Calendar, 
-  MessageSquare, 
-  Video, 
-  FileText, 
-  Send, 
-  MicOff,
-  Mic,
-  Video as VideoIcon,
-  VideoOff,
-  Phone as PhoneIcon,
-  PhoneOff,
-  Loader2,
-  Brain,
-  Sparkles,
-  Zap,
-  CheckCircle,
-  AlertCircle,
-  RefreshCw,
-  Clock,
-  MoreHorizontal,
-  User,
-  Users
-} from 'lucide-react';
+import { Mail, Phone, Calendar, MessageSquare, Video, FileText, Send, MicOff, Mic, VideoOff, PhoneOff, Loader2, Brain, Sparkles, Zap, CheckCircle, AlertCircle, RefreshCw, Clock, MoreHorizontal, User, Users } from 'lucide-react';
 
 interface DealCommunicationHubProps {
   deal: Deal;

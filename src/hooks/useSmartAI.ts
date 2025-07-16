@@ -3,7 +3,7 @@
  * Provides easy access to enhanced AI capabilities with automatic model selection
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { enhancedGeminiService } from '../services/enhancedGeminiService';
 
 import { aiOrchestratorService } from '../services/aiOrchestratorService';

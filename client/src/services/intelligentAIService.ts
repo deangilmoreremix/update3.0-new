@@ -65,8 +65,8 @@ class IntelligentAIService {
     }
   };
 
-  private openaiService: any;
-  private geminiService: any;
+  private openaiService: unknown;
+  private geminiService: unknown;
 
   constructor(openaiService: any, geminiService: any) {
     this.openaiService = openaiService;
@@ -176,7 +176,7 @@ class IntelligentAIService {
     }
   }
 
-  private generateFallbackResponse(taskType: string, data: any): any {
+  private generateFallbackResponse(taskType: string, data: any): unknown {
     const fallbackResponses = {
       'contact-analysis': {
         score: 75,

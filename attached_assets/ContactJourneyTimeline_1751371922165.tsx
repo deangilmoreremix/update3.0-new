@@ -2,24 +2,7 @@ import React, { useState } from 'react';
 import { GlassCard } from '../ui/GlassCard';
 import { ModernButton } from '../ui/ModernButton';
 import { Contact } from '../../types/contact';
-import { 
-  Calendar, 
-  Mail, 
-  Phone, 
-  MessageSquare, 
-  FileText, 
-  User, 
-  Clock, 
-  TrendingUp, 
-  AlertCircle,
-  CheckCircle,
-  Video,
-  Coffee,
-  DollarSign,
-  Target,
-  Filter,
-  Download
-} from 'lucide-react';
+import { MessageSquare, FileText, Clock, TrendingUp, DollarSign, Download } from 'lucide-react';
 
 interface JourneyEvent {
   id: string;

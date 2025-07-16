@@ -1,28 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Goal } from '../types/goals';
 import InteractiveGoalCard from './InteractiveGoalCard';
-import { 
-  Search, 
-  Filter, 
-  Zap, 
-  Target, 
-  Star, 
-  TrendingUp, 
-  Clock, 
-  Users,
-  Brain,
-  Activity,
-  Play,
-  Sparkles,
-  BarChart3,
-  Settings,
-  Bot,
-  Rocket,
-  Globe,
-  FileText,
-  Calendar,
-  ArrowRight
-} from 'lucide-react';
+import { Search, Filter, Zap, Target, TrendingUp, Users, Brain, Activity, BarChart3, Settings, Bot, Rocket, Globe, FileText } from 'lucide-react';
 
 interface GoalCategory {
   id: string;
@@ -35,7 +14,7 @@ interface GoalCategory {
 interface InteractiveGoalExplorerProps {
   aiGoalsData: GoalCategory[];
   onGoalSelected: (goal: Goal) => void;
-  contextData?: any;
+  contextData?: unknown;
   realMode?: boolean;
   onModeToggle?: (mode: boolean) => void;
   onGoalSelect?: (goal: Goal) => void;

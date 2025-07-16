@@ -2,11 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { GlassCard } from '../ui/GlassCard';
 import { ModernButton } from '../ui/ModernButton';
 import { Contact } from '../../types';
-import {
-  Brain, Target, AlertTriangle, TrendingUp, Lightbulb, RefreshCw,
-  ThumbsUp, ThumbsDown, Filter, ArrowRight, Zap, CheckCircle,
-  MessageSquare, DollarSign, Calendar, BarChart3, Award
-} from 'lucide-react';
+import { Brain, Target, AlertTriangle, RefreshCw, ThumbsUp, ThumbsDown, Filter, ArrowRight, Zap } from 'lucide-react';
 
 interface AIInsight {
   id: string;

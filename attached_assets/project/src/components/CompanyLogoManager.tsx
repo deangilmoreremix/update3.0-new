@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Building2, Plus, Edit3, Settings } from 'lucide-react';
+import { Building2, Plus, Edit3 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useContactStore } from '../store/contactStore';
 import CompanyLogoUploader from './CompanyLogoUploader';

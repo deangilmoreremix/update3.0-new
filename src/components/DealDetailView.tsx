@@ -9,49 +9,7 @@ import { DealCommunicationHub } from './deals/DealCommunicationHub';
 import { DealAnalyticsDashboard } from './deals/DealAnalyticsDashboard';
 import { DealAutomationPanel } from './deals/DealAutomationPanel';
 import { ModernButton } from './ui/ModernButton';
-import {
-  Brain,
-  X,
-  Edit,
-  Globe,
-  Mail, 
-  Phone,
-  Building2,
-  Tag,
-  Save,
-  Plus,
-  User,
-  DollarSign,
-  Calendar,
-  Clock,
-  CheckCircle,
-  Database,
-  BarChart2,
-  MessageSquare,
-  Zap,
-  FileText,
-  Target,
-  Sparkles,
-  Crown,
-  Star,
-  Award,
-  Trophy,
-  Heart,
-  Briefcase,
-  FileUp,
-  Link,
-  ExternalLink,
-  Trash2,
-  Camera,
-  RefreshCw,
-  Loader2,
-  Search,
-  Wand2,
-  Users,
-  ZapOff,
-  BarChart3,
-  TrendingUp,
-} from 'lucide-react';
+import { Brain, X, Edit, Globe, Mail, Phone, Building2, Tag, Save, Plus, User, DollarSign, Calendar, Clock, Database, BarChart2, MessageSquare, Zap, FileText, Target, Sparkles, Heart, FileUp, Link, ExternalLink, Trash2, Camera, RefreshCw, Loader2, Search, Wand2, BarChart3, TrendingUp,  } from 'lucide-react';
 
 interface DealDetailViewProps {
   deal: Deal;

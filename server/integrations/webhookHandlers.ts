@@ -4,7 +4,7 @@ import { storage } from '../storage';
 
 export interface WebhookEvent {
   type: string;
-  data: any;
+  data: unknown;
   tenantId: string;
   timestamp: string;
 }

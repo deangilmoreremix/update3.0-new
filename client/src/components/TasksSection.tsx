@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useTaskStore } from '../store/taskStore';
-import { CheckSquare, Clock, AlertCircle, Plus } from 'lucide-react';
+import { CheckSquare, Clock, Plus } from 'lucide-react';
 import Avatar from './ui/Avatar';
 import { getAvatarByIndex, getInitials } from '../services/avatarCollection';
 

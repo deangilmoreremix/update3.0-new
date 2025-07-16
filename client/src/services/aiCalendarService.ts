@@ -190,7 +190,7 @@ export class AICalendarService {
     date: Date,
     duration: number,
     attendeeEmails: string[],
-    existingAppointments: any[]
+    existingAppointments: unknown[]
   ): Promise<Array<{ time: Date; score: number; reasoning: string }>> {
     // Mock implementation
     await new Promise(resolve => setTimeout(resolve, 800));
@@ -199,7 +199,7 @@ export class AICalendarService {
     const baseDate = new Date(date);
     
     // Generate time slots from 9 AM to 5 PM
-    for (let hour = 9; hour <= 17; hour += 0.5) {
+    for (const hour = 9; hour <= 17; hour += 0.5) {
       const timeSlot = new Date(baseDate);
       timeSlot.setHours(Math.floor(hour), (hour % 1) * 60, 0, 0);
       
@@ -262,7 +262,7 @@ export class AICalendarService {
    */
   async generateMeetingOptions(
     intent: SchedulingIntent,
-    existingAppointments: any[]
+    existingAppointments: unknown[]
   ): Promise<Array<{ time: Date; score: number; reasoning: string; conflicts: string[] }>> {
     try {
       // Mock implementation that generates smart time suggestions
@@ -274,7 +274,7 @@ export class AICalendarService {
       tomorrow.setDate(today.getDate() + 1);
       
       // Generate suggestions for next few days
-      for (let dayOffset = 1; dayOffset <= 7; dayOffset++) {
+      for (const dayOffset = 1; dayOffset <= 7; dayOffset++) {
         const targetDate = new Date(today);
         targetDate.setDate(today.getDate() + dayOffset);
         
@@ -317,7 +317,7 @@ export class AICalendarService {
   private analyzeConflicts(
     startTime: Date,
     duration: number,
-    existingAppointments: any[]
+    existingAppointments: unknown[]
   ): string[] {
     const conflicts = [];
     const endTime = new Date(startTime.getTime() + duration * 60000);
@@ -374,7 +374,7 @@ export class AICalendarService {
   /**
    * Analyze calendar for insights and recommendations
    */
-  async analyzeCalendar(appointments: any[]): Promise<CalendarInsight> {
+  async analyzeCalendar(appointments: unknown[]): Promise<CalendarInsight> {
     // Mock implementation
     await new Promise(resolve => setTimeout(resolve, 600));
 

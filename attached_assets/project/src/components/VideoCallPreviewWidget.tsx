@@ -1,28 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Video, 
-  Mic, 
-  MicOff, 
-  VideoOff, 
-  Phone, 
-  PhoneOff, 
-  Minimize2, 
-  Maximize2, 
-  MessageSquare, 
-  Users,
-  Monitor,
-  MonitorOff,
-  Volume2,
-  VolumeX,
-  Settings,
-  MoreVertical,
-  X,
-  Plus,
-  UserPlus,
-  Zap,
-  MoreHorizontal,
-  CheckCircle
-} from 'lucide-react';
+import { Video, Mic, MicOff, VideoOff, Phone, Minimize2, Maximize2, MessageSquare, Users, Monitor, MonitorOff, Volume2, Settings, MoreVertical, X, Plus, Zap, CheckCircle } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useVideoCall } from '../contexts/VideoCallContext';
 import { useContactStore } from '../store/contactStore';

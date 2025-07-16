@@ -9,36 +9,7 @@ import { AutomationPanel } from './AutomationPanel';
 import { useGamification } from '../../contexts/GamificationContext';
 import { AvatarWithStatus } from '../ui/AvatarWithStatus';
 import { ModernButton } from '../ui/ModernButton';
-import {
-  X,
-  Edit,
-  Mail,
-  Phone,
-  Building2,
-  Tag,
-  Save,
-  Plus,
-  UserPlus,
-  UserMinus,
-  Briefcase,
-  MapPin,
-  Globe,
-  Calendar,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  BarChart2,
-  MessageSquare,
-  Zap,
-  FileText,
-  Target,
-  Sparkles,
-  Brain,
-  Crown,
-  Star,
-  Award,
-  Trophy
-} from 'lucide-react';
+import { X, Edit, Mail, Phone, Building2, Tag, Save, Plus, UserPlus, UserMinus, Globe, Calendar, Clock, BarChart2, MessageSquare, Zap, FileText, Target, Sparkles, Brain, Crown, Star, Award, Trophy } from 'lucide-react';
 
 interface ContactDetailViewProps {
   contact: Contact;
@@ -763,7 +734,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
               ].map(tab => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
+                  onClick={() => setActiveTab(tab.id as unknown)}
                   className={`px-4 py-2 text-sm font-medium rounded-md transition-colors flex items-center space-x-1 ${
                     activeTab === tab.id 
                       ? 'bg-blue-100 text-blue-700' 

@@ -11,19 +11,7 @@ import AdvancedFilter from '../components/pipeline/AdvancedFilter';
 import AddDealModal from '../components/deals/AddDealModal';
 import DealDetail from '../components/DealDetail';
 import { Deal, PipelineColumn } from '../types';
-import { 
-  Search, 
-  Filter, 
-  Plus, 
-  BarChart3, 
-  Users, 
-  Grid3X3, 
-  List, 
-  Settings,
-  Zap,
-  Eye,
-  EyeOff
-} from 'lucide-react';
+import { Search, Plus, BarChart3, Grid3X3, List } from 'lucide-react';
 
 // Mock data based on repository structure
 const mockDeals: Record<string, Deal> = {

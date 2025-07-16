@@ -1,28 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { 
-  Brain, 
-  MessageSquare, 
-  Zap, 
-  Code, 
-  Database, 
-  ChevronRight, 
-  CheckCheck, 
-  ArrowRight, 
-  Play,
-  Star,
-  Sparkles,
-  PlusCircle,
-  Settings,
-  RefreshCw,
-  Check,
-  X,
-  FileText,
-  BarChart3,
-  Calendar,
-  Search
-} from 'lucide-react';
+import { Brain, MessageSquare, Zap, Code, Database, ChevronRight, CheckCheck, ArrowRight, Play, Star, Sparkles, PlusCircle, Settings, Check, X, FileText, BarChart3, Calendar, Search } from 'lucide-react';
 
 import LandingHeader from '../components/LandingHeader';
 import LandingFooter from '../components/LandingFooter';

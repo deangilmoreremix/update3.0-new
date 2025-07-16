@@ -361,7 +361,7 @@ export const EnhancedPipeline: React.FC = () => {
 
   // Sort deals
   const sortedDeals = [...filteredDeals].sort((a, b) => {
-    let aValue: any, bValue: any;
+    let aValue: any, bValue: unknown;
     
     switch (sortBy) {
       case 'value':

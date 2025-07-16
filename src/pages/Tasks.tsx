@@ -1,26 +1,7 @@
 import React, { useState } from 'react';
 import { useTaskStore } from '../store/taskStore';
 import { Task } from '../types';
-import { 
-  CheckSquare, 
-  Plus, 
-  Calendar, 
-  List, 
-  CheckCircle, 
-  Clock, 
-  AlertCircle, 
-  Search,
-  SortAsc,
-  SortDesc,
-  Filter,
-  Trash2,
-  Edit,
-  Flag,
-  MessageSquare,
-  X,
-  User,
-  Briefcase
-} from 'lucide-react';
+import { CheckSquare, Plus, Calendar, CheckCircle, Clock, AlertCircle, Search, Flag, X, User, Briefcase } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import SimpleMDE from 'react-simplemde-editor';

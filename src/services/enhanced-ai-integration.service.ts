@@ -195,7 +195,7 @@ class EnhancedAIIntegrationService {
     const startTime = Date.now();
 
     // Process in batches
-    for (let i = 0; i < contacts.length; i += batchSize) {
+    for (const i = 0; i < contacts.length; i += batchSize) {
       const batch = contacts.slice(i, i + batchSize);
       
       try {

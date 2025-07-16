@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 interface AIAutoFillButtonProps {
-  formData: any;
+  formData: unknown;
   onAutoFill: (data: ContactEnrichmentData) => void;
   className?: string;
   size?: 'sm' | 'md' | 'lg';

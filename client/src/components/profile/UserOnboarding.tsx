@@ -12,7 +12,7 @@ interface OnboardingStep {
 }
 
 interface UserOnboardingProps {
-  user: any;
+  user: unknown;
   onComplete: (step: string) => void;
   className?: string;
 }

@@ -1,14 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  Search, 
-  Sparkles, 
-  Loader2, 
-  Bot, 
-  Wand2, 
-  RefreshCw, 
-  CheckCircle,
-  AlertCircle
-} from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 interface ContactEnrichmentData {
   name?: string;
@@ -26,7 +17,7 @@ interface ContactEnrichmentData {
 }
 
 interface AIAutoFillButtonProps {
-  formData: any;
+  formData: unknown;
   onAutoFill: (enrichmentData: ContactEnrichmentData) => void;
   variant?: 'primary' | 'secondary' | 'outline';
   size?: 'sm' | 'md' | 'lg';

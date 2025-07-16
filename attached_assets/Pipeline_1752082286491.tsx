@@ -14,19 +14,7 @@ import AddDealModal from './deals/AddDealModal';
 import DealDetail from './DealDetail';
 import { mockDeals, mockColumns, columnOrder, calculateStageValues } from '../data/mockDeals';
 import { Deal, PipelineColumn } from '../types';
-import { 
-  Search, 
-  Filter, 
-  Plus, 
-  BarChart3, 
-  Users, 
-  Grid3X3, 
-  List, 
-  Settings,
-  Zap,
-  Eye,
-  EyeOff
-} from 'lucide-react';
+import { Search, Plus, Grid3X3, List, Settings, Zap, Eye, EyeOff } from 'lucide-react';
 
 const Pipeline: React.FC = () => {
   const [deals, setDeals] = useState<Record<string, Deal>>(mockDeals);
@@ -180,7 +168,7 @@ const Pipeline: React.FC = () => {
     setSelectedDealId(dealId);
   };
 
-  const handleApplyFilters = (filters: any[]) => {
+  const handleApplyFilters = (filters: unknown[]) => {
     setActiveFilters(filters);
   };
 
@@ -324,10 +312,10 @@ const Pipeline: React.FC = () => {
     setAnalysisProgress({ current: 0, total: dealsToAnalyze.length });
     setAiResults(null);
 
-    let successCount = 0;
-    let failedCount = 0;
+    const successCount = 0;
+    const failedCount = 0;
 
-    for (let i = 0; i < dealsToAnalyze.length; i++) {
+    for (const i = 0; i < dealsToAnalyze.length; i++) {
       const deal = dealsToAnalyze[i];
       setAnalysisProgress({ current: i + 1, total: dealsToAnalyze.length });
       

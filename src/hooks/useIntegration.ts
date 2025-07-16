@@ -3,7 +3,7 @@
  * Provides easy access to integration services from React components
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import { integrationManager } from '../services/integration-manager.service';
 import { contactAPI, ContactFilters } from '../services/contact-api.service';
 import { aiIntegration, AIAnalysisRequest } from '../services/ai-integration.service';

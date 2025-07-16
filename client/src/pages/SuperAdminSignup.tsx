@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GlassCard } from '../components/ui/GlassCard';
 import { ModernButton } from '../components/ui/ModernButton';
-import {
-  Crown, Shield, Eye, EyeOff, ArrowLeft, CheckCircle,
-  AlertCircle, Mail, User, Lock, Building, Phone
-} from 'lucide-react';
+import { Crown, Shield, Eye, EyeOff, ArrowLeft, CheckCircle, Mail, User, Lock, Building, Phone } from 'lucide-react';
 
 interface SuperAdminSignupForm {
   firstName: string;

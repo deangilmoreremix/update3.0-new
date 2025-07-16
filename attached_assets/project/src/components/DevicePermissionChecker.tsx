@@ -1,22 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Camera, 
-  Mic, 
-  Monitor, 
-  AlertTriangle, 
-  CheckCircle, 
-  Settings,
-  RefreshCw,
-  X,
-  Palette,
-  LayoutGrid,
-  RotateCcw, 
-  Move3D, 
-  Eye, 
-  EyeOff, 
-  ChevronDown,
-  Check
-} from 'lucide-react';
+import { Camera, Mic, Monitor, AlertTriangle, CheckCircle, Settings, RefreshCw, X, LayoutGrid, RotateCcw, Move3D, Eye, EyeOff, Check } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useDashboardLayout } from '../contexts/DashboardLayoutContext';
 

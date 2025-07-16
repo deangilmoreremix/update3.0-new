@@ -1,26 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { 
-  MessageSquare, 
-  Mail, 
-  Phone, 
-  Video,
-  Send,
-  Volume2,
-  Users,
-  Clock,
-  Target,
-  CheckCheck,
-  ChevronRight,
-  ArrowRight,
-  Star,
-  Mic,
-  FileText,
-  Settings,
-  BarChart3,
-  Zap
-} from 'lucide-react';
+import { MessageSquare, Mail, Phone, Video, Volume2, Users, Clock, Target, CheckCheck, ChevronRight, ArrowRight, FileText, Settings, BarChart3, Zap } from 'lucide-react';
 
 import LandingHeader from '../components/LandingHeader';
 import LandingFooter from '../components/LandingFooter';

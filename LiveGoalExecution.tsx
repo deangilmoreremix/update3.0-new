@@ -1,35 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Goal } from '../types/goals';
 import { composioService } from '../services/composioService';
-import { 
-  Play, 
-  Pause, 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
-  Zap, 
-  Users, 
-  Bot,
-  Activity,
-  Network,
-  GitBranch,
-  Settings,
-  BarChart3,
-  Target,
-  ArrowRight,
-  Sparkles,
-  Brain,
-  Eye,
-  Volume2,
-  Database,
-  Presentation,
-  TrendingUp,
-  Award,
-  Lightbulb,
-  Info,
-  AlertTriangle,
-  HelpCircle
-} from 'lucide-react';
+import { Play, Pause, CheckCircle, XCircle, Clock, Bot, Activity, GitBranch, BarChart3, Target, Brain, Volume2, Database, Presentation, Award, Lightbulb, HelpCircle } from 'lucide-react';
 
 interface ExecutionStep {
   id: string;
@@ -38,7 +10,7 @@ interface ExecutionStep {
   status: 'pending' | 'running' | 'completed' | 'error';
   startTime?: Date;
   completionTime?: Date;
-  result?: any;
+  result?: unknown;
   thinking?: string;
   toolsUsed?: string[];
   crmImpact?: string;
@@ -147,7 +119,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
     });
 
     try {
-      for (let i = 0; i < executionSteps.length; i++) {
+      for (const i = 0; i < executionSteps.length; i++) {
         const step = executionSteps[i];
         setCurrentStep(i);
 

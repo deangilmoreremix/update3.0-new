@@ -1,26 +1,7 @@
 import React, { useState } from 'react';
 import { Contact } from '../../types';
 import { useOpenAI } from '../../services/openaiService';
-import { 
-  Mail, 
-  Phone, 
-  Building, 
-  User, 
-  BarChart, 
-  Zap, 
-  Clock, 
-  ThumbsUp,
-  ThumbsDown,
-  ArrowUp,
-  ArrowDown,
-  Minus,
-  CheckCircle,
-  AlertCircle,
-  RefreshCw,
-  Tag,
-  Target,
-  Brain
-} from 'lucide-react';
+import { Mail, Phone, Building, BarChart, Zap, Clock, ThumbsUp, ThumbsDown, ArrowUp, ArrowDown, Minus, CheckCircle, AlertCircle, RefreshCw, Tag, Target, Brain } from 'lucide-react';
 import Avatar from 'react-avatar';
 import AgentModal from '../shared/AgentModal';
 

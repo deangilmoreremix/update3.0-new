@@ -10,15 +10,7 @@ import { CommunicationHub } from '../contacts/CommunicationHub';
 import { AutomationPanel } from '../contacts/AutomationPanel';
 import { ContactAnalytics } from '../contacts/ContactAnalytics';
 import { Contact } from '../../types/contact';
-import { 
-  X, Edit, Mail, Phone, Plus, MessageSquare, FileText, Calendar, MoreHorizontal, 
-  User, Globe, Clock, Building, Tag, Star, ExternalLink, Brain, TrendingUp, 
-  BarChart3, Zap, Users, Activity, Settings, Database, Shield, Target, 
-  Smartphone, Video, Linkedin, Twitter, Facebook, Instagram, Save, 
-  Ambulance as Cancel, Heart, HeartOff, MapPin, Briefcase, Award, 
-  CheckCircle, AlertCircle, Wifi, WifiOff, Search, DollarSign, RefreshCw,
-  Sparkles, Camera, Wand2
-} from 'lucide-react';
+import { X, Edit, Mail, Phone, Plus, MessageSquare, FileText, Calendar, User, Globe, Clock, Building, Tag, Brain, TrendingUp, BarChart3, Zap, Activity, Database, Target, Linkedin, Twitter, Facebook, Instagram, Save, Heart, HeartOff, Search, Sparkles, Camera, Wand2 } from 'lucide-react';
 
 interface ContactDetailViewProps {
   contact: Contact;

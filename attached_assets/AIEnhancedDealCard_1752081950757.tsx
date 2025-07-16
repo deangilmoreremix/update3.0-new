@@ -1,43 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Deal } from '../types';
 import { CustomizableAIToolbar } from './ui/CustomizableAIToolbar';
-import { 
-  Calendar, 
-  DollarSign, 
-  User, 
-  Building2, 
-  AlertTriangle, 
-  CheckCircle, 
-  Clock,
-  Zap,
-  TrendingUp,
-  Edit,
-  MoreHorizontal,
-  Mail,
-  Phone,
-  MessageSquare,
-  Star,
-  Target,
-  BarChart3,
-  ThumbsUp,
-  ThumbsDown,
-  Brain,
-  Loader2,
-  Sparkles,
-  Heart,
-  Wand2,
-  Camera,
-  Database,
-  Globe,
-  ExternalLink,
-  Plus,
-  Search,
-  Linkedin,
-  Twitter,
-  Facebook,
-  ArrowRight,
-  Activity
-} from 'lucide-react';
+import { Calendar, Edit, MoreHorizontal, Mail, Phone, Target, BarChart3, ThumbsUp, ThumbsDown, Brain, Loader2, Sparkles, Heart, Wand2, Camera, Database, Globe, Plus, Linkedin, Twitter, Facebook, ArrowRight, Activity } from 'lucide-react';
 
 interface AIEnhancedDealCardProps {
   deal: Deal;

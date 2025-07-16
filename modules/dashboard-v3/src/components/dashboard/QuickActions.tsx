@@ -31,7 +31,7 @@ const QuickActions = () => {
   const activeContacts = Object.values(contacts);
 
   // Render avatar stack for buttons
-  const renderAvatarStack = (items: any[], maxVisible: number = 3) => {
+  const renderAvatarStack = (items: unknown[], maxVisible: number = 3) => {
     const visibleItems = items.slice(0, maxVisible);
     const remainingCount = Math.max(0, items.length - maxVisible);
     

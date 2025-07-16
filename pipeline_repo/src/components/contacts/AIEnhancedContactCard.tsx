@@ -2,42 +2,7 @@ import React, { useState } from 'react';
 import { AvatarWithStatus } from '../ui/AvatarWithStatus';
 import { CustomizableAIToolbar } from '../ui/CustomizableAIToolbar';
 import { Contact } from '../../types/contact';
-import { 
-  Edit, 
-  MoreHorizontal, 
-  Mail, 
-  Phone, 
-  User, 
-  BarChart, 
-  ThumbsUp, 
-  ThumbsDown,
-  ExternalLink,
-  Star,
-  UserPlus,
-  Crown,
-  Target,
-  Zap,
-  Brain,
-  Loader2,
-  Sparkles,
-  Heart,
-  Camera,
-  Wand2,
-  Database,
-  Globe,
-  Plus,
-  Search,
-  Linkedin,
-  Twitter,
-  Facebook,
-  Instagram,
-  ArrowRight,
-  Activity,
-  Calendar,
-  CheckCircle,
-  AlertCircle,
-  MessageSquare
-} from 'lucide-react';
+import { Edit, MoreHorizontal, Mail, Phone, User, BarChart, ThumbsUp, ThumbsDown, UserPlus, Crown, Target, Brain, Loader2, Sparkles, Heart, Camera, Wand2, Database, Globe, Plus, Linkedin, Twitter, Facebook, Instagram, ArrowRight, Activity, MessageSquare } from 'lucide-react';
 
 interface AIEnhancedContactCardProps {
   contact: Contact;

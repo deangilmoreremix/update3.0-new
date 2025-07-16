@@ -267,7 +267,7 @@ export const useContactStore = create<ContactState>((set, get) => ({
       const BATCH_SIZE = 50;
       const results = [];
       
-      for (let i = 0; i < supabaseData.length; i += BATCH_SIZE) {
+      for (const i = 0; i < supabaseData.length; i += BATCH_SIZE) {
         const batch = supabaseData.slice(i, i + BATCH_SIZE);
         
         const { data, error } = await supabase

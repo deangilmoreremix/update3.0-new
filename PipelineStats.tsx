@@ -1,15 +1,6 @@
 import React from 'react';
 import { useDealStore } from '../store/dealStore';
-import { 
-  DollarSign, 
-  TrendingUp, 
-  Clock, 
-  BarChart4, 
-  PieChart, 
-  ArrowUpRight, 
-  ArrowDownRight, 
-  Calendar
-} from 'lucide-react';
+import { DollarSign, PieChart, ArrowUpRight, ArrowDownRight, Calendar } from 'lucide-react';
 
 const PipelineStats: React.FC = () => {
   const { stageValues, totalPipelineValue, deals } = useDealStore();

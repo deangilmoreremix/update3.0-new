@@ -2,24 +2,7 @@ import React, { useState } from 'react';
 import { GlassCard } from '../ui/GlassCard';
 import { ModernButton } from '../ui/ModernButton';
 import { Contact } from '../../types/contact';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  Clock, 
-  Target, 
-  DollarSign, 
-  Activity, 
-  Calendar,
-  Mail,
-  Phone,
-  MessageSquare,
-  Users,
-  Award,
-  AlertTriangle,
-  Filter,
-  Download,
-  RefreshCw
-} from 'lucide-react';
+import { BarChart3, TrendingUp, Clock, Target, DollarSign, Activity, Phone, MessageSquare, Download, RefreshCw } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, Area, AreaChart } from 'recharts';
 
 interface ContactAnalyticsProps {

@@ -5,7 +5,7 @@ import QuickAIButton from './QuickAIButton';
 interface AIActionToolbarProps {
   entityType: 'contact' | 'deal' | 'company';
   entityId: string;
-  entityData: any;
+  entityData: unknown;
   layout?: 'horizontal' | 'vertical' | 'grid';
   showGoalsButton?: boolean;
   size?: 'sm' | 'md';

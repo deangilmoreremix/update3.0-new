@@ -23,7 +23,7 @@ interface TaskContext {
 }
 
 interface ServiceResponse {
-  content: any;
+  content: unknown;
   model: string;
   provider: string;
   responseTime: number;
@@ -83,7 +83,7 @@ class AIOrchestratorService {
   /**
    * Parse JSON safely from AI response
    */
-  private parseJsonSafely(content: string): any {
+  private parseJsonSafely(content: string): unknown {
     // First strip any markdown code blocks
     const cleaned = this.stripMarkdownCodeBlocks(content);
     
@@ -240,7 +240,7 @@ class AIOrchestratorService {
   /**
    * Get the appropriate service for a model
    */
-  private getServiceForModel(modelId: string): any {
+  private getServiceForModel(modelId: string): unknown {
     return this.isGoogleModel(modelId) ? enhancedGeminiService : openAIService;
   }
 
@@ -659,7 +659,7 @@ class AIOrchestratorService {
    * Generate insights for contacts
    */
   async generateContactInsights(
-    contacts: any[],
+    contacts: unknown[],
     taskContext: TaskContext = {}
   ): Promise<ServiceResponse> {
     // Check if any provider is available
@@ -788,7 +788,7 @@ class AIOrchestratorService {
   /**
    * Get usage statistics
    */
-  getUsageStatistics(): any {
+  getUsageStatistics(): unknown {
     return {
       modelStats: this.usageStats,
       totalCalls: Object.values(this.usageStats).reduce((sum, stat) => sum + stat.callCount, 0),

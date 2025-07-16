@@ -42,7 +42,7 @@ export interface Deal {
   discountAmount?: number;
   discountPercentage?: number;
   nextSteps?: string[];
-  aiInsights?: any;
+  aiInsights?: unknown;
   daysInStage: number;
   createdAt: Date;
   updatedAt: Date;
@@ -73,8 +73,8 @@ export interface User {
   company?: string;
   phone?: string;
   timezone?: string;
-  preferences?: any;
-  socialLinks?: any;
+  preferences?: unknown;
+  socialLinks?: unknown;
   accountStatus: string;
   createdAt: Date;
 }
@@ -87,8 +87,8 @@ export interface Profile {
   company?: string;
   phone?: string;
   timezone?: string;
-  preferences?: any;
-  socialLinks?: any;
+  preferences?: unknown;
+  socialLinks?: unknown;
   userId: string;
 }
 
@@ -97,8 +97,8 @@ export interface BusinessAnalysis {
   businessName: string;
   industry: string;
   websiteUrl?: string;
-  socialLinks?: any;
-  analysisResults?: any;
+  socialLinks?: unknown;
+  analysisResults?: unknown;
   createdAt: Date;
   updatedAt: Date;
   userId: string;
@@ -109,7 +109,7 @@ export interface ContentItem {
   title: string;
   type: 'podcast' | 'audiobook' | 'video' | 'voice_over';
   url: string;
-  metadata?: any;
+  metadata?: unknown;
   createdAt: Date;
   updatedAt: Date;
   userId: string;
@@ -119,7 +119,7 @@ export interface VoiceProfile {
   id: string;
   name: string;
   voiceId: string;
-  settings?: any;
+  settings?: unknown;
   createdAt: Date;
   updatedAt: Date;
   userId: string;

@@ -1,21 +1,7 @@
 import React, { useState } from 'react';
 import { GlassCard } from '../components/ui/GlassCard';
 import { ModernButton } from '../components/ui/ModernButton';
-import { 
-  Shield, 
-  Globe, 
-  Github, 
-  Mail, 
-  Apple, 
-  Settings, 
-  Check, 
-  X, 
-  Key, 
-  Users, 
-  ExternalLink,
-  AlertCircle,
-  Info
-} from 'lucide-react';
+import { Shield, Globe, Github, Mail, Apple, Settings, Check, X, Key, Users, AlertCircle, Info } from 'lucide-react';
 
 interface AuthProvider {
   id: string;

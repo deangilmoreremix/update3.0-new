@@ -12,7 +12,7 @@ export interface AgentExecutionRequest {
   toolsNeeded: string[];
   entityId?: string;
   useComposio?: boolean;
-  context?: any;
+  context?: unknown;
 }
 
 export interface AgentExecutionResult {

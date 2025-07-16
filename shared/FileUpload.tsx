@@ -52,7 +52,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
     }
   };
 
-  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: any[]) => {
+  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: unknown[]) => {
     // Handle rejected files
     if (rejectedFiles.length > 0) {
       const firstRejection = rejectedFiles[0];

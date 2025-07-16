@@ -1,28 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { 
-  Camera, 
-  Mic, 
-  MicOff, 
-  Video, 
-  VideoOff, 
-  Play, 
-  Pause, 
-  Square, 
-  Circle,
-  Download,
-  RotateCcw,
-  Settings,
-  Monitor,
-  Volume2,
-  VolumeX,
-  X,
-  AlertCircle,
-  CheckCircle,
-  Clock,
-  Send,
-  Upload,
-  Trash2
-} from 'lucide-react';
+import { Camera, Mic, MicOff, Video, VideoOff, Play, Pause, Square, Circle, Download, RotateCcw, X, AlertCircle, CheckCircle, Send } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import DevicePermissionChecker from '../DevicePermissionChecker';
 

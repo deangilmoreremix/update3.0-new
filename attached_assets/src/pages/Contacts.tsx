@@ -1,21 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Contact } from '../types';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  MoreHorizontal, 
-  Brain, 
-  Download, 
-  Upload, 
-  FileInput,
-  X,
-  ArrowUp,
-  ArrowDown,
-  CheckCheck,
-  Zap
-} from 'lucide-react';
+import { Plus, Search, Brain, Download, Upload, FileInput, X, ArrowUp, ArrowDown, CheckCheck, Zap } from 'lucide-react';
 import { useOpenAI } from '../services/openaiService';
 import { useForm } from 'react-hook-form';
 import Avatar from 'react-avatar';
@@ -252,7 +238,7 @@ const Contacts: React.FC = () => {
             
             // Check for required fields
             const requiredFields = ['name', 'email'];
-            const firstRow = jsonData[0] as any;
+            const firstRow = jsonData[0] as unknown;
             const missingFields = requiredFields.filter(field => 
               !Object.keys(firstRow).some(key => 
                 key.toLowerCase() === field.toLowerCase()

@@ -7,34 +7,7 @@ import { useAppointmentStore } from '../store/appointmentStore';
 import { useAITools } from './AIToolsProvider';
 import { useTheme } from '../contexts/ThemeContext';
 import { useDashboardLayout } from '../contexts/DashboardLayoutContext';
-import { 
-  Calendar, 
-  TrendingUp, 
-  Users, 
-  UserPlus, 
-  Brain,
-  BarChart3,
-  DollarSign,
-  Target,
-  Star,
-  Plus,
-  Phone,
-  Mail,
-  MessageCircle,
-  FileText,
-  Settings,
-  Search,
-  Bell,
-  ChevronRight,
-  User,
-  Award,
-  Briefcase,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  Filter,
-  Eye
-} from 'lucide-react';
+import { Calendar, TrendingUp, Users, UserPlus, BarChart3, DollarSign, Target, Plus, Phone, Mail, MessageCircle, Settings, User, Award, Eye } from 'lucide-react';
 
 // Import section components
 import ExecutiveOverviewSection from './sections/ExecutiveOverviewSection';

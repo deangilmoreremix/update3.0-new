@@ -1,20 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Brain, 
-  Users, 
-  Briefcase, 
-  Mail, 
-  Calendar, 
-  BarChart3,
-  Eye, 
-  Image as ImageIcon,
-  Mic, 
-  Search,
-  Zap,
-  FileText,
-  ChevronRight
-} from 'lucide-react';
+import { Brain, Users, Briefcase, Eye, Mic, Search, Zap, ChevronRight } from 'lucide-react';
 
 interface Feature {
   id: string;

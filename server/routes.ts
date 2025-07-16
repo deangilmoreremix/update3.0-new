@@ -5,8 +5,8 @@ import { z } from "zod";
 // Temporary interfaces for missing dependencies
 interface TenantRequest extends Request {
   tenantId?: string;
-  tenant?: any;
-  tenantFeatures?: any;
+  tenant?: unknown;
+  tenantFeatures?: unknown;
   userId?: string;
 }
 

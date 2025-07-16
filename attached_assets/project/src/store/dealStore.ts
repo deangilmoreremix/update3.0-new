@@ -93,7 +93,7 @@ export const useDealStore = create<DealStore>((set, get) => ({
       
       const deals = get().deals;
       const stageValues: Record<string, number> = {};
-      let totalPipelineValue = 0;
+      const totalPipelineValue = 0;
 
       Object.values(deals).forEach(deal => {
         if (deal.stage !== 'closed-won' && deal.stage !== 'closed-lost') {

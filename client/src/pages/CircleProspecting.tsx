@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Target, Users, Phone, Mail, Clock, Star, BarChart3, Settings, User, Send, Edit, Activity } from 'lucide-react';
+import { Target, Users, Phone, Mail, Clock, Star, BarChart3, Settings, User } from 'lucide-react';
 
 interface ProspectLog {
   id: string;

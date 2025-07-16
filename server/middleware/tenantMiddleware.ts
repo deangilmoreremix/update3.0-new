@@ -6,7 +6,7 @@ import { type Tenant, type FeatureKey, type PermissionKey } from '../../shared/s
 export interface TenantRequest extends Request {
   tenantId?: string;
   tenant?: Tenant;
-  tenantFeatures?: any;
+  tenantFeatures?: unknown;
   userId?: string;
 }
 

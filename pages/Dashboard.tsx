@@ -12,35 +12,7 @@ import { useAppointmentStore } from '../store/appointmentStore';
 // import DealAnalytics from '../DealAnalytics';
 // import HelpTooltip from '../ui/HelpTooltip';
 import { useEnhancedHelp } from '../contexts/EnhancedHelpContext';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  DollarSign,
-  Calendar, 
-  Clock,
-  Zap, 
-  ChevronRight, 
-  AlertCircle,
-  ArrowUpRight,
-  ArrowDownRight,
-  Brain,
-  CheckCircle,
-  Users,
-  Briefcase,
-  Tag,
-  PieChart,
-  Building,
-  Mail,
-  CheckSquare,
-  Plus,
-  Search,
-  ExternalLink,
-  Grid3X3,
-  Megaphone,
-  FileText,
-  Settings,
-  Palette
-} from 'lucide-react';
+import { BarChart3, DollarSign, Calendar, Clock, Zap, ChevronRight, AlertCircle, ArrowUpRight, ArrowDownRight, Brain, Users, Briefcase, Mail, CheckSquare, Plus, Search, ExternalLink, Grid3X3, Megaphone, FileText, Palette } from 'lucide-react';
 
 // Import AI tools components - temporarily commented out
 // import StreamingChat from '../aiTools/StreamingChat';

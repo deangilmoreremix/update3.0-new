@@ -2,20 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { Deal, PipelineColumn } from '../types';
 import AIEnhancedDealCard from './deals/AIEnhancedDealCard';
-import { 
-  Search, 
-  Filter, 
-  Plus, 
-  BarChart3, 
-  Users, 
-  Grid3X3, 
-  List, 
-  Settings,
-  Zap,
-  Eye,
-  EyeOff,
-  Target
-} from 'lucide-react';
+import { Search, Filter, Plus, BarChart3, Grid3X3, List, Target } from 'lucide-react';
 
 // Mock data for the Bolt Pipeline
 const mockDeals: Record<string, Deal> = {

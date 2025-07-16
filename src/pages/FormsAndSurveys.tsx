@@ -1,27 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useFormStore, FormField } from '../store/formStore';
-import { 
-  FileText, 
-  Plus, 
-  PlusCircle, 
-  Trash2, 
-  Share2, 
-  Copy, 
-  Settings, 
-  MoveDown, 
-  MoveUp, 
-  Edit, 
-  Check, 
-  X,
-  Brain,
-  Eye,
-  Clipboard,
-  BarChart2,
-  Link as LinkIcon,
-  ToggleLeft,
-  ToggleRight,
-  Users
-} from 'lucide-react';
+import { FileText, Plus, PlusCircle, Trash2, Share2, MoveDown, MoveUp, Edit, Check, X, Brain, Eye, Clipboard, BarChart2, ToggleLeft, ToggleRight, Users } from 'lucide-react';
 import FormSubmissionsView from '../components/marketing/FormSubmissionsView';
 
 const FormsAndSurveys: React.FC = () => {

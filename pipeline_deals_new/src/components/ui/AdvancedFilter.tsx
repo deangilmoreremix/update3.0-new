@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Filter, X, Plus, Check } from 'lucide-react';
+import { Filter, X, Plus } from 'lucide-react';
 
 interface FilterCondition {
   field: string;

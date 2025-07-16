@@ -1,25 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Mail, 
-  Send, 
-  Users, 
-  Calendar, 
-  BarChart3, 
-  Plus,
-  Eye,
-  Edit,
-  Trash2,
-  Play,
-  Pause,
-  Clock,
-  CheckCircle,
-  XCircle,
-  AlertCircle,
-  Filter,
-  Search,
-  Download,
-  Upload
-} from 'lucide-react';
+import { Mail, Send, BarChart3, Plus, Eye, Edit, Trash2, Play, Pause, Clock, CheckCircle, XCircle, AlertCircle, Filter, Search } from 'lucide-react';
 
 interface EmailTemplate {
   id: string;

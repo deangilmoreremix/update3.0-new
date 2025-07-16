@@ -5,35 +5,7 @@ import { composioService } from '../services/composioService';
 import { callMCP } from '../utils/llm/mcpClient';
 import { runAgentWorkflow, getAgentForGoal, AVAILABLE_AGENTS, type AgentType } from '../agents/AgentOrchestrator';
 import { getOptimalGemmaConfig, enhanceAgenticPrompt, addChainOfThought } from '../services/gemmaAgentOptimizer';
-import { 
-  X, 
-  Maximize2,
-  Play, 
-  Pause, 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
-  Zap, 
-  Users, 
-  Bot,
-  Activity,
-  Network,
-  GitBranch,
-  Settings,
-  BarChart3,
-  Target,
-  ArrowRight,
-  Sparkles,
-  Brain,
-  Eye,
-  Volume2,
-  Database,
-  Presentation,
-  MessageSquare,
-  TrendingUp,
-  Award,
-  Lightbulb
-} from 'lucide-react';
+import { X, Maximize2, Play, Pause, CheckCircle, XCircle, Clock, Users, Bot, Activity, Network, GitBranch, BarChart3, Target, ArrowRight, TrendingUp, Award } from 'lucide-react';
 
 interface ExecutionStep {
   id: string;
@@ -42,7 +14,7 @@ interface ExecutionStep {
   status: 'pending' | 'running' | 'completed' | 'error';
   startTime?: Date;
   completionTime?: Date;
-  result?: any;
+  result?: unknown;
   thinking?: string;
   toolsUsed?: string[];
   crmImpact?: string;
@@ -74,7 +46,7 @@ interface GoalExecutionModalProps {
   onClose: () => void;
   realMode?: boolean;
   onComplete?: (result: unknown) => void;
-  contextData?: any;
+  contextData?: unknown;
 }
 
 const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({

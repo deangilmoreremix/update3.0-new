@@ -14,7 +14,7 @@ import { useAITools } from '../../components/AIToolsProvider';
 interface AIGoalContext {
   entityType: 'contact' | 'deal' | 'company';
   entityId: string;
-  entityData: any;
+  entityData: unknown;
   suggestedCategories: string[];
 }
 

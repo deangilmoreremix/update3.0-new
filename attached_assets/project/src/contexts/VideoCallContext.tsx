@@ -518,7 +518,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       // 4. Set up media streams
       
       // For demo purposes, simulate connections being established
-      let connectedCount = 0;
+      const connectedCount = 0;
       const totalParticipants = callParticipants.length;
       
       const simulateParticipantConnection = (index: number) => {
@@ -588,7 +588,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       };
       
       // Start simulating connections
-      for (let i = 0; i < totalParticipants; i++) {
+      for (const i = 0; i < totalParticipants; i++) {
         simulateParticipantConnection(i);
       }
       
@@ -793,7 +793,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           const videoTrack = screenStream.getVideoTracks()[0];
           
           // Get the peer connection
-          const pc = (peerRef.current as any)._pc;
+          const pc = (peerRef.current as unknown)._pc;
           if (pc) {
             const senders = pc.getSenders();
             const videoSender = senders.find((sender: RTCRtpSender) => 
@@ -845,7 +845,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           
           // Replace track back to camera in peer connection
           if (peerRef.current && videoTrack) {
-            const pc = (peerRef.current as any)._pc;
+            const pc = (peerRef.current as unknown)._pc;
             if (pc) {
               const senders = pc.getSenders();
               const videoSender = senders.find((sender: RTCRtpSender) => 
@@ -1048,12 +1048,12 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     const monitorConnection = async () => {
       try {
-        const pc = (peerRef.current as any)?._pc;
+        const pc = (peerRef.current as unknown)?._pc;
         if (!pc) return;
 
         const stats = await pc.getStats();
-        let packetsLost = 0;
-        let packetsReceived = 0;
+        const packetsLost = 0;
+        const packetsReceived = 0;
         let rtt = 0;
 
         stats.forEach((report: any) => {

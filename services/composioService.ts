@@ -8,7 +8,7 @@ export interface ComposioConfig {
 
 export interface ComposioExecutionResult {
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
   message?: string;
 }

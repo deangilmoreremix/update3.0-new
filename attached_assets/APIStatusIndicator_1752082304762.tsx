@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { validateAPIConfig } from '../../config/apiConfig';
-import { CheckCircle, XCircle, AlertCircle, Settings, Wifi, WifiOff, Brain, Sparkles, Zap, Bot } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, Wifi, WifiOff, Brain, Sparkles, Zap, Bot } from 'lucide-react';
 
 export const APIStatusIndicator: React.FC = () => {
   const [status, setStatus] = useState<{ configured: string[]; missing: string[] }>({ configured: [], missing: [] });

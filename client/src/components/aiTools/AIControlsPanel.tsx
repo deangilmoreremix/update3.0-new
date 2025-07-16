@@ -1,17 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { 
-  Settings, 
-  Brain, 
-  Zap, 
-  BarChart3, 
-  Toggle, 
-  Sliders, 
-  AlertCircle,
-  CheckCircle,
-  Play,
-  Pause
-} from 'lucide-react';
+import { Brain, BarChart3, Toggle, Sliders, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface AIControlsPanelProps {}
 

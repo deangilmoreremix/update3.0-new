@@ -94,13 +94,13 @@ export interface UserProfile {
     theme?: 'light' | 'dark' | 'system';
     emailNotifications?: boolean;
     defaultView?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
   socialLinks?: {
     linkedin?: string;
     twitter?: string;
     website?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
   createdAt?: Date;
   accountStatus?: 'active' | 'inactive' | 'suspended';

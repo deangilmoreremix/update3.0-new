@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useGemini } from '../../services/geminiService';
 import { useOpenAIEmbeddings } from '../../services/openaiEmbeddingsService';
-import { Search, FileText, User, Briefcase, Clock, ArrowRight, RefreshCw, X, Sparkles, Filter, CheckCircle } from 'lucide-react';
+import { Search, User, Briefcase, Clock, ArrowRight, RefreshCw, X, Sparkles, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Contact, Deal } from '../../types';
 

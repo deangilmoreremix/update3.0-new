@@ -18,7 +18,7 @@ interface GenerateRequest {
   maxTokens?: number;
   customerId?: string;
   featureUsed?: string;
-  functions?: any[];
+  functions?: unknown[];
   functionCall?: 'auto' | 'none' | { name: string };
 }
 
@@ -32,7 +32,7 @@ interface GenerateResponse {
   };
   finishReason: string;
   responseTime: number;
-  functionCalls?: any[];
+  functionCalls?: unknown[];
 }
 
 class OpenAIService {

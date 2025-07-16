@@ -1,19 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  DollarSign,
-  Users,
-  ArrowUpRight,
-  Calendar,
-  Plus,
-  Search,
-  Settings,
-  Bell,
-  Mail,
-  Phone
-} from 'lucide-react';
+import { BarChart3, TrendingUp, DollarSign, Users, ArrowUpRight, Calendar, Plus, Settings, Bell, Mail, Phone } from 'lucide-react';
 import { GlassCard } from './GlassCard';
 import { ModernButton } from './ModernButton';
 import { AvatarWithStatus } from './AvatarWithStatus';

@@ -4,22 +4,7 @@ import { ModernButton } from '../components/ui/ModernButton';
 import { UpgradePrompt } from '../components/UpgradePrompt';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
 import { useAuth } from '../hooks/useAuth';
-import { 
-  Bot, 
-  Plug, 
-  Crown, 
-  Zap, 
-  Shield, 
-  Phone, 
-  Mail, 
-  MessageSquare,
-  Target,
-  BarChart3,
-  Users,
-  Settings,
-  Globe,
-  Palette
-} from 'lucide-react';
+import { Bot, Plug, Crown, Zap, Shield, MessageSquare, Target, BarChart3 } from 'lucide-react';
 
 const FeatureAccessDemo: React.FC = () => {
   const { user } = useAuth();

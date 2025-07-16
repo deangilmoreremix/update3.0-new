@@ -1,27 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Deal } from '../../types';
-import { 
-  DollarSign, 
-  Edit3, 
-  Save, 
-  X,
-  Trash2, 
-  User, 
-  UserPlus, 
-  Target, 
-  AlertCircle, 
-  CheckCircle, 
-  Calendar, 
-  Clock, 
-  Star, 
-  FileText,
-  Upload,
-  Brain,
-  Loader2,
-  Mail,
-  Phone,
-  UserX
-} from 'lucide-react';
+import { DollarSign, Edit3, Save, X, Trash2, User, Target, AlertCircle, CheckCircle, Clock, Brain, Loader2 } from 'lucide-react';
 
 interface DealCardProps {
   deal: Deal;

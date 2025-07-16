@@ -1,19 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { 
-  Users, 
-  DollarSign, 
-  TrendingUp, 
-  Settings, 
-  BarChart3, 
-  Plus,
-  Search,
-  Filter,
-  Download,
-  Bell,
-  Calendar,
-  Mail
-} from 'lucide-react';
+import { Users, DollarSign, TrendingUp, Settings, BarChart3, Plus, Search, Download, Calendar, Mail } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';

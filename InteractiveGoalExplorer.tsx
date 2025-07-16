@@ -3,41 +3,14 @@ import { Goal } from '../types/goals';
 import { aiGoalsData, goalCategories, allGoals } from '../data/goalsData';
 import InteractiveGoalCard from './InteractiveGoalCard';
 import GoalExecutionModal from './GoalExecutionModal';
-import { 
-  Target, 
-  Filter, 
-  Search, 
-  Zap, 
-  Star, 
-  TrendingUp,
-  ArrowRight,
-  Play,
-  Eye,
-  Sparkles,
-  Brain,
-  Users,
-  Activity,
-  BarChart3,
-  Network,
-  Bot,
-  Award,
-  Lightbulb,
-  HelpCircle,
-  Settings,
-  Info,
-  Timer,
-  Gauge,
-  Cpu,
-  Rocket,
-  FileText
-} from 'lucide-react';
+import { Target, Search, Zap, Star, TrendingUp, Eye, Sparkles, Brain, Users, Activity, BarChart3, Network, Bot, Award, Settings, Gauge, Cpu, Rocket, FileText } from 'lucide-react';
 
 interface InteractiveGoalExplorerProps {
   realMode?: boolean;
   onModeToggle?: (mode: boolean) => void;
   onOpenApiSetup?: () => void;
   onGoalSelected?: (goal: Goal) => void;
-  contextData?: any;
+  contextData?: unknown;
 }
 
 const InteractiveGoalExplorer: React.FC<InteractiveGoalExplorerProps> = ({

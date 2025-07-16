@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { User, Settings, Shield, CreditCard, LogOut, Edit3, Camera, Bell, Globe } from 'lucide-react';
 
 interface ProfileQuickActionsProps {
-  user: any;
+  user: unknown;
   onEditProfile: () => void;
   onSignOut: () => void;
 }

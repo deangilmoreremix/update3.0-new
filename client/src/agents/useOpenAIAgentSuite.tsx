@@ -16,7 +16,7 @@ export interface ComposioConnection {
 
 export interface AgentExecutionResult {
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
   executionTime: number;
 }

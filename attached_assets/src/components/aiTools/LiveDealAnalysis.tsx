@@ -57,7 +57,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
   const runProgressSimulation = () => {
-    let step = 0;
+    const step = 0;
     setProgressText(progressSteps[0]);
     setProgress(0);
     

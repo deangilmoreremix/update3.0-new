@@ -294,7 +294,7 @@ export const useGemini = () => {
       }
     },
 
-    analyzeDeal: async (dealData: any, options: any = {}) => {
+    analyzeDeal: async (dealData: any, options: unknown = {}) => {
       try {
         const content = await geminiService.generatePersonalizedMessage(
           { ...dealData, analysisType: 'deal' },
@@ -325,7 +325,7 @@ export const useGemini = () => {
       }
     },
 
-    analyzePipelineHealth: async (pipelineData: any, options: any = {}) => {
+    analyzePipelineHealth: async (pipelineData: any, options: unknown = {}) => {
       try {
         const content = await geminiService.generatePersonalizedMessage(
           { ...pipelineData, analysisType: 'pipeline' },

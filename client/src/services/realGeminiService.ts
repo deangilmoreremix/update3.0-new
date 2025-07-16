@@ -24,8 +24,8 @@ interface Contact {
 
 class RealGeminiService {
   private genAI: GoogleGenerativeAI;
-  private geminiModel: any;
-  private gemmaModel: any;
+  private geminiModel: unknown;
+  private gemmaModel: unknown;
 
   constructor() {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;

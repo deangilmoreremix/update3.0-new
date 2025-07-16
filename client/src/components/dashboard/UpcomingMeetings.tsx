@@ -2,16 +2,7 @@ import React from 'react';
 import { GlassCard } from '../modern-ui/GlassCard';
 import { AvatarWithStatus } from '../modern-ui/AvatarWithStatus';
 import { ModernButton } from '../modern-ui/ModernButton';
-import { 
-  Calendar, 
-  Clock, 
-  Video, 
-  MapPin, 
-  Phone,
-  Users,
-  ArrowRight,
-  Plus
-} from 'lucide-react';
+import { Calendar, Clock, Video, MapPin, Users, ArrowRight, Plus } from 'lucide-react';
 import { useContactStore } from '../../store/contactStore';
 import { useAppointmentStore } from '../../store/appointmentStore';
 

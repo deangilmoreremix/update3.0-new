@@ -5,39 +5,7 @@ import { AIResearchButton } from '../ui/AIResearchButton';
 import { useContactStore } from '../../store/contactStore';
 import { ContactEnrichmentData } from '../../services/aiEnrichmentService';
 import { Contact } from '../../types/contact';
-import { 
-  X, 
-  User, 
-  Mail, 
-  Phone, 
-  Building, 
-  Tag, 
-  Globe, 
-  Target,
-  Save,
-  UserPlus,
-  AlertCircle,
-  CheckCircle,
-  Heart,
-  MessageSquare,
-  Linkedin,
-  Twitter,
-  Facebook,
-  Instagram,
-  Plus,
-  Database,
-  Smartphone,
-  Clock,
-  Star,
-  Briefcase,
-  MapPin,
-  Calendar,
-  Brain,
-  Sparkles,
-  Wand2,
-  RefreshCw,
-  Camera
-} from 'lucide-react';
+import { X, User, Building, Tag, Globe, Target, Save, UserPlus, AlertCircle, CheckCircle, Heart, MessageSquare, Linkedin, Twitter, Facebook, Instagram, Plus, Database, Briefcase, MapPin, Brain, Sparkles, RefreshCw } from 'lucide-react';
 
 interface NewContactModalProps {
   isOpen: boolean;
@@ -233,7 +201,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
     setLastEnrichmentData(enrichmentData);
     
     // Apply enrichment data to form
-    const updates: any = {};
+    const updates: unknown = {};
     
     if (enrichmentData.firstName && !formData.firstName) {
       updates.firstName = enrichmentData.firstName;
@@ -275,7 +243,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
     
     // Social profiles
     if (enrichmentData.socialProfiles) {
-      const socialUpdates: any = {};
+      const socialUpdates: unknown = {};
       Object.entries(enrichmentData.socialProfiles).forEach(([key, value]) => {
         if (value && !formData.socialProfiles[key as keyof typeof formData.socialProfiles]) {
           socialUpdates[key] = value;

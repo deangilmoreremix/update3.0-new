@@ -1,37 +1,7 @@
 import React, { useState } from 'react';
 import { useContactStore } from '../../store/contactStore';
 import { Contact } from '../../types/contact';
-import { 
-  X, 
-  Save, 
-  User, 
-  Building2, 
-  Mail, 
-  Phone, 
-  Tag, 
-  Globe, 
-  Briefcase, 
-  UserPlus,
-  AlertCircle,
-  CheckCircle,
-  Heart,
-  MessageSquare,
-  Linkedin,
-  Twitter,
-  Facebook,
-  Instagram,
-  Plus,
-  Database,
-  Clock,
-  Star,
-  MapPin,
-  Calendar,
-  Brain,
-  Sparkles,
-  Wand2,
-  RefreshCw,
-  Camera
-} from 'lucide-react';
+import { X, Save, User, Building2, Tag, Globe, UserPlus, AlertCircle, CheckCircle, Heart, MessageSquare, Linkedin, Twitter, Facebook, Instagram, Plus, Database, MapPin, Brain, Sparkles, RefreshCw } from 'lucide-react';
 import { ModernButton } from '../ui/ModernButton';
 import { AIAutoFillButton } from '../ui/AIAutoFillButton';
 import { AIResearchButton } from '../ui/AIResearchButton';
@@ -262,7 +232,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
     setLastEnrichmentData(enrichmentData);
     
     // Apply enrichment data to form
-    const updates: any = {};
+    const updates: unknown = {};
     
     if (enrichmentData.firstName && !formData.firstName) {
       updates.firstName = enrichmentData.firstName;
@@ -292,7 +262,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
     // Location data
     if (enrichmentData.location) {
       if (typeof enrichmentData.location === 'object') {
-        const location = enrichmentData.location as any;
+        const location = enrichmentData.location as unknown;
         if (location.city && !formData.city) {
           updates.city = location.city;
         }
@@ -315,7 +285,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
     
     // Social profiles
     if (enrichmentData.socialProfiles) {
-      const socialUpdates: any = {};
+      const socialUpdates: unknown = {};
       Object.entries(enrichmentData.socialProfiles).forEach(([key, value]) => {
         if (value && !formData.socialProfiles[key as keyof typeof formData.socialProfiles]) {
           socialUpdates[key] = value;

@@ -2,39 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { useAITools } from '../components/AIToolsProvider';
-import { 
-  Home, 
-  Users, 
-  Briefcase, 
-  CheckSquare, 
-  Settings, 
-  Menu, 
-  X,
-  Brain,
-  Mail,
-  MessageSquare,
-  FileText,
-  Phone,
-  Target,
-  FileSearch,
-  TrendingUp,
-  BarChart3,
-  PieChart,
-  ChevronDown,
-  ChevronRight,
-  Video,
-  MessageCircle,
-  CalendarDays,
-  Map,
-  FileSpreadsheet,
-  Package,
-  Receipt,
-  Building,
-  Music,
-  Headphones,
-  Image,
-  HelpCircle
-} from 'lucide-react';
+import { Home, Users, Briefcase, CheckSquare, Settings, Menu, X, Brain, Mail, MessageSquare, FileText, Phone, Target, FileSearch, TrendingUp, BarChart3, PieChart, ChevronDown, ChevronRight, Video, MessageCircle, CalendarDays, Map, FileSpreadsheet, Receipt, Building, Music, Headphones, Image, HelpCircle } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,10 +1,6 @@
 import React from 'react';
 import { Deal } from '../../types';
-import { 
-  ArrowRight, Calendar, CheckCircle, Clock, Phone, Mail, 
-  FileText, Target, AlertCircle, DollarSign, Plus, User, 
-  Briefcase, Award, MessageSquare, Building2
-} from 'lucide-react';
+import { Calendar, CheckCircle, Clock, FileText, Target, AlertCircle, DollarSign, Plus, Briefcase, Award, MessageSquare } from 'lucide-react';
 
 interface DealJourneyTimelineProps {
   deal: Deal;

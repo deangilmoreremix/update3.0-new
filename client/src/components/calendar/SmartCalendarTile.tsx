@@ -2,17 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Avatar } from '../ui/avatar';
 import { Badge } from '../ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
-import { 
-  Calendar, 
-  Clock, 
-  AlertTriangle, 
-  Star, 
-  Users, 
-  Zap,
-  Brain,
-  Target,
-  TrendingUp
-} from 'lucide-react';
+import { Calendar, AlertTriangle, Star, Users, Brain, Target, TrendingUp } from 'lucide-react';
 import { aiCalendarService } from '../../services/aiCalendarService';
 
 interface Appointment {
@@ -100,7 +90,7 @@ export const SmartCalendarTile: React.FC<SmartCalendarTileProps> = ({
   };
 
   const checkForConflicts = (appointments: Appointment[]): boolean => {
-    for (let i = 0; i < appointments.length; i++) {
+    for (const i = 0; i < appointments.length; i++) {
       for (let j = i + 1; j < appointments.length; j++) {
         const apt1Start = new Date(appointments[i].startTime);
         const apt1End = new Date(appointments[i].endTime);

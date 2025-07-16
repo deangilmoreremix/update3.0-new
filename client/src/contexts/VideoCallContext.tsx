@@ -552,7 +552,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       };
       
       // Start simulating connections
-      for (let i = 0; i < totalParticipants; i++) {
+      for (const i = 0; i < totalParticipants; i++) {
         simulateParticipantConnection(i);
       }
       

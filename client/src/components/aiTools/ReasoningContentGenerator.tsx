@@ -1,20 +1,7 @@
 import React, { useState } from 'react';
 import { edgeFunctionService } from '../../services/edgeFunctionService';
 import StructuredAIResult from '../shared/StructuredAIResult';
-import { 
-  Brain, 
-  FileText, 
-  RefreshCw, 
-  Copy, 
-  Check, 
-  Target, 
-  Users, 
-  MessageSquare,
-  Sparkles,
-  Zap,
-  Loader2,
-  AlertTriangle
-} from 'lucide-react';
+import { Brain, FileText, RefreshCw, Copy, Check, Target, Users, MessageSquare, Sparkles } from 'lucide-react';
 
 interface ReasoningContentGeneratorProps {
   contentType?: 'email' | 'proposal' | 'script' | 'objection' | 'social';

@@ -1,29 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useFormStore, FormTemplate, FormField } from '../store/formStore';
-import { 
-  FileText, 
-  Plus, 
-  BarChart3, 
-  Eye, 
-  Copy, 
-  Settings, 
-  Trash2, 
-  Edit, 
-  Search, 
-  Filter, 
-  ChevronDown, 
-  X, 
-  Save, 
-  CheckCircle, 
-  AlertCircle, 
-  ArrowRight, 
-  Calendar, 
-  Users, 
-  RefreshCw, 
-  ToggleLeft, 
-  ToggleRight
-} from 'lucide-react';
+import { FileText, Plus, BarChart3, Eye, Copy, Trash2, Edit, Search, Filter, ChevronDown, X, Save, CheckCircle, AlertCircle, ArrowRight, RefreshCw } from 'lucide-react';
 import FormSubmissionsView from '../components/marketing/FormSubmissionsView';
 
 const FormsAndSurveys: React.FC = () => {

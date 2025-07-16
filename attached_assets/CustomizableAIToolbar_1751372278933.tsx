@@ -1,31 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  BarChart3, 
-  Mail, 
-  TrendingUp, 
-  AlertTriangle, 
-  Navigation, 
-  FileText, 
-  Send, 
-  Calendar, 
-  DollarSign, 
-  Heart, 
-  UserPlus, 
-  Search, 
-  BarChart, 
-  Zap, 
-  Clock, 
-  GitBranch, 
-  PenTool, 
-  Video, 
-  FileSearch, 
-  Package, 
-  Settings, 
-  Plus,
-  Brain,
-  Target,
-  Phone
-} from 'lucide-react';
+import { BarChart3, Mail, TrendingUp, Search, Settings, Plus, Target } from 'lucide-react';
 
 interface QuickAIButtonProps {
   icon: React.ComponentType<any>;
@@ -33,7 +7,7 @@ interface QuickAIButtonProps {
   toolName: string;
   entityType: string;
   entityId: string;
-  entityData: any;
+  entityData: unknown;
   size?: 'sm' | 'md';
   variant?: 'primary' | 'secondary';
   className?: string;
@@ -43,7 +17,7 @@ interface QuickAIButtonProps {
 interface CustomizableAIToolbarProps {
   entityType: string;
   entityId: string;
-  entityData: any;
+  entityData: unknown;
   location: string;
   layout: 'grid' | 'row';
   size: 'sm' | 'md';
@@ -142,7 +116,7 @@ const QuickAIButton: React.FC<QuickAIButtonProps> = ({
 export const AIGoalsButton: React.FC<{
   entityType: string;
   entityId: string;
-  entityData: any;
+  entityData: unknown;
   size?: 'sm' | 'md';
   variant?: 'primary' | 'secondary';
   className?: string;

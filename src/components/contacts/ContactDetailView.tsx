@@ -9,37 +9,7 @@ import { AutomationPanel } from './AutomationPanel';
 import { useGamification } from '../../contexts/GamificationContext';
 import { AvatarWithStatus } from '../ui/AvatarWithStatus';
 import { ModernButton } from '../ui/ModernButton';
-import {
-  X,
-  Edit,
-  Mail,
-  Phone,
-  Building2,
-  Tag,
-  Save,
-  Plus,
-  UserPlus,
-  UserMinus,
-  Briefcase,
-  MapPin,
-  Globe,
-  Calendar,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  BarChart2,
-  MessageSquare,
-  Zap,
-  FileText,
-  Target,
-  Sparkles,
-  Brain,
-  Crown,
-  Star,
-  Award,
-  Trophy,
-  User
-} from 'lucide-react';
+import { X, Edit, Mail, Phone, Building2, Tag, Save, Plus, UserPlus, UserMinus, Globe, Calendar, Clock, BarChart2, MessageSquare, Zap, FileText, Target, Sparkles, Brain, Crown, Star, Award, Trophy, User } from 'lucide-react';
 
 interface ContactDetailViewProps {
   contact: Contact;

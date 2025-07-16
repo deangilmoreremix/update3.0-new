@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { TrendingUp, TrendingDown, DollarSign, Target, Award, BarChart3, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { DollarSign, Target, Award, BarChart3, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { useNavigation } from '../../contexts/NavigationContext';
 import { useDealStore } from '../../store/dealStore';
 import { useContactStore } from '../../store/contactStore';
@@ -53,9 +53,9 @@ const KPICards: React.FC = () => {
   // Calculate metrics
   const calculateMetrics = () => {
     const dealsArray = Object.values(deals);
-    let totalActiveDeals = 0;
-    let totalValue = 0;
-    let wonValue = 0;
+    const totalActiveDeals = 0;
+    const totalValue = 0;
+    const wonValue = 0;
     
     dealsArray.forEach(deal => {
       if (deal.stage !== 'closed-won' && deal.stage !== 'closed-lost') {
@@ -89,7 +89,7 @@ const KPICards: React.FC = () => {
   };
 
   // Render avatar stack component
-  const renderAvatarStack = (deals: any[], maxAvatars: number = 3) => {
+  const renderAvatarStack = (deals: unknown[], maxAvatars: number = 3) => {
     const displayDeals = deals.slice(0, maxAvatars);
     const extraCount = Math.max(0, deals.length - maxAvatars);
 

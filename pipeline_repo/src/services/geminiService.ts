@@ -385,7 +385,7 @@ class RealGeminiService implements GeminiService {
 
   // Fallback methods for when API is unavailable
   private generateBasicAnalysis(contact: Contact): AIContactAnalysis {
-    let score = 50;
+    const score = 50;
     const insights: string[] = [];
     const recommendations: string[] = [];
     const riskFactors: string[] = [];
@@ -460,7 +460,7 @@ Best regards,
     return actions;
   }
 
-  private generateBasicCompanyInfo(companyName: string, domain?: string): any {
+  private generateBasicCompanyInfo(companyName: string, domain?: string): unknown {
     return {
       name: companyName,
       industry: 'Technology',
@@ -472,7 +472,7 @@ Best regards,
     };
   }
 
-  private generateBasicContactInfo(personName: string, companyName?: string): any {
+  private generateBasicContactInfo(personName: string, companyName?: string): unknown {
     return {
       name: personName,
       likelyRole: 'Business professional',

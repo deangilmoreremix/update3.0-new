@@ -7,7 +7,7 @@ interface VoiceProfile {
   id: string;
   name: string;
   voice_id: string;
-  settings?: any;
+  settings?: unknown;
   created_at?: string;
   user_id?: string;
 }

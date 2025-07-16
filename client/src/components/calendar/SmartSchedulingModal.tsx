@@ -8,21 +8,7 @@ import { Textarea } from '../ui/textarea';
 import { Badge } from '../ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Avatar } from '../ui/avatar';
-import { 
-  Calendar, 
-  Clock, 
-  Users, 
-  Brain, 
-  Sparkles, 
-  Target,
-  TrendingUp,
-  AlertCircle,
-  CheckCircle,
-  Mic,
-  Plus,
-  X,
-  Loader2
-} from 'lucide-react';
+import { Calendar, Brain, Sparkles, Target, AlertCircle, CheckCircle, Mic, Loader2 } from 'lucide-react';
 import { aiCalendarService } from '../../services/aiCalendarService';
 import { useToast } from '../../hooks/use-toast';
 import { useAppointmentStore } from '../../store/appointmentStore';

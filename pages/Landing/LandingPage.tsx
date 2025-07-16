@@ -2,35 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { HashLink } from 'react-router-hash-link';
-import { 
-  Brain, 
-  Mail, 
-  MessageSquare, 
-  FileText, 
-  Phone, 
-  Target, 
-  FileSearch, 
-  TrendingUp, 
-  BarChart3, 
-  PieChart, 
-  ChevronRight,
-  CheckCheck,
-  ArrowRight,
-  Play,
-  User,
-  Clock,
-  Star,
-  ExternalLink,
-  BarChart,
-  Users,
-  Briefcase,
-  Eye,
-  Image,
-  Mic,
-  Search,
-  Zap,
-  Calendar
-} from 'lucide-react';
+import { Brain, TrendingUp, BarChart3, PieChart, ChevronRight, User, Clock, ExternalLink, BarChart, Users, Briefcase, Eye, Image, Mic, Search, Zap } from 'lucide-react';
 
 import LandingHeader from './components/LandingHeader';
 import LandingFooter from './components/LandingFooter';

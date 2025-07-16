@@ -3,22 +3,7 @@ import { useSmartAI, useTaskOptimization } from '../../hooks/useSmartAI';
 import { ModernButton } from '../ui/ModernButton';
 import { GlassCard } from '../ui/GlassCard';
 import { Contact } from '../../types/contact';
-import {
-  Brain,
-  Zap,
-  Target,
-  BarChart3,
-  Settings,
-  Sparkles,
-  TrendingUp,
-  Clock,
-  DollarSign,
-  CheckCircle,
-  AlertCircle,
-  Info,
-  Layers,
-  RefreshCw
-} from 'lucide-react';
+import { Brain, Zap, Target, BarChart3, Sparkles, TrendingUp, Clock, DollarSign, CheckCircle, AlertCircle, Layers } from 'lucide-react';
 
 interface SmartAIControlsProps {
   contact?: Contact;

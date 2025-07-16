@@ -378,8 +378,8 @@ const Pipeline: React.FC = () => {
 
   // Advanced Filter Component
   const AdvancedFilterComponent: React.FC<{
-    filters: any[];
-    onFiltersChange: (filters: any[]) => void;
+    filters: unknown[];
+    onFiltersChange: (filters: unknown[]) => void;
   }> = ({ filters, onFiltersChange }) => {
     const [isOpen, setIsOpen] = useState(false);
 

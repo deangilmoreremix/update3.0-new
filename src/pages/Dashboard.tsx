@@ -8,29 +8,7 @@ import { useAITools } from '../components/AIToolsProvider';
 import AppointmentWidget from '../components/AppointmentWidget';
 import AIToolsCard from '../components/Dashboard/AIToolsCard';
 import DealAnalytics from '../components/DealAnalytics';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  DollarSign,
-  Calendar, 
-  Clock,
-  Zap, 
-  ChevronRight, 
-  AlertCircle,
-  ArrowUpRight,
-  ArrowDownRight,
-  Brain,
-  CheckCircle,
-  Users,
-  Briefcase,
-  Tag,
-  PieChart,
-  Building,
-  Mail,
-  CheckSquare,
-  Plus,
-  Search
-} from 'lucide-react';
+import { BarChart3, DollarSign, Calendar, Clock, Zap, ChevronRight, AlertCircle, ArrowUpRight, ArrowDownRight, Brain, Users, Briefcase, Mail, CheckSquare, Plus, Search } from 'lucide-react';
 
 // Import AI tools components
 import StreamingChat from '../components/aiTools/StreamingChat';

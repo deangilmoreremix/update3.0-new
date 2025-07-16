@@ -1,35 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { 
-  Brain, 
-  Mail, 
-  MessageSquare, 
-  FileText, 
-  Phone, 
-  Target, 
-  FileSearch, 
-  TrendingUp, 
-  BarChart3, 
-  PieChart, 
-  ChevronRight,
-  CheckCheck,
-  ArrowRight,
-  Play,
-  User,
-  Clock,
-  Star,
-  ExternalLink,
-  BarChart,
-  Users,
-  Briefcase,
-  Eye,
-  Image,
-  Mic,
-  Search,
-  Zap,
-  Calendar
-} from 'lucide-react';
+import { Brain, TrendingUp, BarChart3, PieChart, ChevronRight, User, Clock, ExternalLink, BarChart, Users, Briefcase, Eye, Image, Mic, Search, Zap } from 'lucide-react';
 
 import LandingHeader from './components/LandingHeader';
 import LandingFooter from './components/LandingFooter';

@@ -2,16 +2,7 @@ import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useDealStore } from '../../store/dealStore';
 import { useContactStore } from '../../store/contactStore';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  Brain, 
-  Zap, 
-  Target,
-  Users,
-  DollarSign,
-  Clock
-} from 'lucide-react';
+import { TrendingUp, Brain, Zap, Target, Users, DollarSign, Clock } from 'lucide-react';
 
 interface AIPerformancePanelProps {}
 

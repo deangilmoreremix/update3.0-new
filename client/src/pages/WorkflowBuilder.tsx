@@ -7,7 +7,7 @@ interface WorkflowStep {
   type: 'trigger' | 'action' | 'condition';
   name: string;
   description: string;
-  config: any;
+  config: unknown;
 }
 
 interface Workflow {
@@ -308,7 +308,7 @@ export const WorkflowBuilder: React.FC = () => {
                       onChange={(e) => {
                         const stepData = availableSteps[stepType.type as keyof typeof availableSteps].find(s => s.name === e.target.value);
                         if (stepData) {
-                          addStep(stepType.type as any, stepData);
+                          addStep(stepType.type as unknown, stepData);
                         }
                       }}
                       className={`px-3 py-2 border ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'} rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}

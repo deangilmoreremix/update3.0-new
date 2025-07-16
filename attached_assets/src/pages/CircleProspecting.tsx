@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useGemini } from '../services/geminiService';
-import { Target, Search, Download, User, Home, MapPin, CreditCard, Database, Brain } from 'lucide-react';
+import { Target, Search, Download, User, MapPin, Database, Brain } from 'lucide-react';
 import { MapContainer, TileLayer, Circle, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { icon } from 'leaflet';

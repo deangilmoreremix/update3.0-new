@@ -1,32 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Deal } from '../../types';
-import {
-  Brain,
-  Sparkles,
-  Zap,
-  Target,
-  Calendar,
-  Clock,
-  AlertCircle,
-  CheckCircle,
-  TrendingUp,
-  BarChart3,
-  Mail,
-  PhoneCall,
-  MessageSquare,
-  RefreshCw,
-  ThumbsUp,
-  ThumbsDown,
-  HelpCircle,
-  Bell,
-  DollarSign,
-  Building2,
-  FileText,
-  Award,
-  User,
-  Briefcase,
-  Search
-} from 'lucide-react';
+import { Brain, Sparkles, Zap, Target, Calendar, Clock, AlertCircle, CheckCircle, TrendingUp, Mail, RefreshCw, ThumbsUp, ThumbsDown, HelpCircle, Bell, DollarSign, Building2, Award, User, Search } from 'lucide-react';
 
 interface AIInsightsPanelProps {
   deal: Deal;

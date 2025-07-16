@@ -3,22 +3,7 @@ import { useSmartAI, useTaskOptimization } from '../../hooks/useSmartAI';
 import { ModernButton } from '../ui/ModernButton';
 import { GlassCard } from '../ui/GlassCard';
 import { Contact } from '../../types/contact';
-import {
-  Brain,
-  Zap,
-  Target,
-  BarChart3,
-  Settings,
-  Sparkles,
-  TrendingUp,
-  Clock,
-  DollarSign,
-  CheckCircle,
-  AlertCircle,
-  Info,
-  Layers,
-  RefreshCw
-} from 'lucide-react';
+import { Brain, Zap, Target, BarChart3, Sparkles, TrendingUp, Clock, DollarSign, CheckCircle, AlertCircle, Layers } from 'lucide-react';
 
 interface SmartAIControlsProps {
   contact?: Contact;
@@ -251,7 +236,7 @@ export const SmartAIControls: React.FC<SmartAIControlsProps> = ({
               ].map((option) => (
                 <button
                   key={option.value}
-                  onClick={() => setUrgency(option.value as any)}
+                  onClick={() => setUrgency(option.value as unknown)}
                   className={`flex-1 p-3 rounded-lg border text-center transition-colors ${
                     urgency === option.value
                       ? 'border-blue-500 bg-blue-50 text-blue-700'
@@ -335,7 +320,7 @@ export const SmartAIControls: React.FC<SmartAIControlsProps> = ({
               </label>
               <select
                 value={bulkSettings.analysisType}
-                onChange={(e) => setBulkSettings(prev => ({ ...prev, analysisType: e.target.value as any }))}
+                onChange={(e) => setBulkSettings(prev => ({ ...prev, analysisType: e.target.value as unknown }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="contact_scoring">Contact Scoring</option>

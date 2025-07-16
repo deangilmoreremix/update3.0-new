@@ -1,17 +1,7 @@
 import React, { useState } from 'react';
 import { useDashboardLayout } from '../contexts/DashboardLayoutContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { 
-  Settings, 
-  RotateCcw, 
-  Move3D, 
-  Eye, 
-  EyeOff, 
-  ChevronDown,
-  Check,
-  X,
-  Palette
-} from 'lucide-react';
+import { Settings, RotateCcw, Move3D, Eye, EyeOff, Check, X, Palette } from 'lucide-react';
 
 const DashboardLayoutControls: React.FC = () => {
   const { 

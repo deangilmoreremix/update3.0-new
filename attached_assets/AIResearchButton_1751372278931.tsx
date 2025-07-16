@@ -1,22 +1,7 @@
 import React, { useState } from 'react';
 import { ModernButton } from './ModernButton';
 import { ContactEnrichmentData, aiEnrichmentService } from '../../services/aiEnrichmentService';
-import { 
-  Brain, 
-  Search, 
-  Loader2, 
-  CheckCircle, 
-  AlertCircle, 
-  Sparkles,
-  Globe,
-  User,
-  Building,
-  Mail,
-  Phone,
-  MapPin,
-  Camera,
-  RefreshCw
-} from 'lucide-react';
+import { Brain, CheckCircle, AlertCircle, Sparkles, Globe, User, Building, Mail, Phone, MapPin, Camera } from 'lucide-react';
 
 interface AIResearchButtonProps {
   searchType: 'email' | 'name' | 'linkedin' | 'auto';

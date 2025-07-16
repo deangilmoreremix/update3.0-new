@@ -31,8 +31,8 @@ interface SalesPageConfig {
   ctaText: string;
   ctaColor: string;
   features: string[];
-  testimonials: any[];
-  pricing: any[];
+  testimonials: unknown[];
+  pricing: unknown[];
   isActive: boolean;
 }
 
@@ -821,7 +821,7 @@ export default function WhiteLabelCustomization() {
                             </label>
                             <select
                               value={domain.type}
-                              onChange={(e) => updateDomain(domain.id, { type: e.target.value as any })}
+                              onChange={(e) => updateDomain(domain.id, { type: e.target.value as unknown })}
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                             >
                               <option value="primary">Primary</option>
@@ -1129,7 +1129,7 @@ export default function WhiteLabelCustomization() {
                   tenantId={tenant?.id || 'demo'} 
                   domains={config.domains} 
                   onSSLUpdate={(domainId, sslStatus) => {
-                    updateDomain(domainId, { sslStatus: sslStatus as any });
+                    updateDomain(domainId, { sslStatus: sslStatus as unknown });
                   }}
                 />
               </div>

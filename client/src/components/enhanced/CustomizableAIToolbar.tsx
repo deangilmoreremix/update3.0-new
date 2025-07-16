@@ -1,71 +1,10 @@
 import React, { useState } from 'react';
-import {
-  Brain,
-  Sparkles,
-  Mail,
-  Phone,
-  MessageSquare,
-  FileText,
-  BarChart3,
-  Search,
-  Target,
-  Zap,
-  Settings,
-  Plus,
-  ChevronDown,
-  ChevronRight,
-  User,
-  Building,
-  DollarSign,
-  Calendar,
-  Globe,
-  Linkedin,
-  Twitter,
-  Facebook,
-  Instagram,
-  Youtube,
-  TrendingUp,
-  Clock,
-  Star,
-  Eye,
-  Edit,
-  Share,
-  Download,
-  Copy,
-  ExternalLink,
-  Briefcase,
-  Users,
-  Database,
-  Shield,
-  Layers,
-  Mic,
-  Video,
-  Camera,
-  Headphones,
-  Activity,
-  AlertCircle,
-  CheckCircle,
-  Info,
-  HelpCircle,
-  ArrowRight,
-  Filter,
-  SortAsc,
-  Refresh,
-  Bookmark,
-  Tag,
-  Hash,
-  AtSign,
-  Link,
-  Folder,
-  Archive,
-  Trash,
-  MoreHorizontal
-} from 'lucide-react';
+import { Brain, Sparkles, Mail, Phone, MessageSquare, FileText, BarChart3, Search, Zap, ChevronDown, Globe, TrendingUp, Clock, Shield, Layers, MoreHorizontal } from 'lucide-react';
 
 interface CustomizableAIToolbarProps {
   entityId: string;
   entityType: 'contact' | 'deal' | 'company' | 'task';
-  entity?: any;
+  entity?: unknown;
   size?: 'sm' | 'md' | 'lg';
   variant?: 'compact' | 'expanded' | 'grid';
   showLabels?: boolean;

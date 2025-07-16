@@ -5,14 +5,14 @@ import { authService } from '../services/authService';
 declare global {
   namespace Express {
     interface Request {
-      user?: any;
+      user?: unknown;
       userId?: string;
     }
   }
 }
 
 export interface AuthenticatedRequest extends Request {
-  user: any;
+  user: unknown;
   userId: string;
 }
 

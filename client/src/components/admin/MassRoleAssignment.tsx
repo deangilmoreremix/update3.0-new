@@ -1,20 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { 
-  Users, 
-  CheckCircle, 
-  XCircle, 
-  AlertTriangle, 
-  Zap, 
-  Shield, 
-  Crown, 
-  User,
-  Eye,
-  EyeOff,
-  Download,
-  Upload,
-  RefreshCw,
-  Target
-} from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle, Zap, Shield, Crown, User, Eye, EyeOff, Download, Upload, RefreshCw, Target } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 
 interface RoleAssignmentData {
@@ -38,7 +23,7 @@ interface ValidationError {
 }
 
 interface MassRoleAssignmentProps {
-  users: any[];
+  users: unknown[];
   onRolesAssigned?: (assignments: RoleAssignmentData[]) => void;
 }
 
@@ -73,9 +58,9 @@ export const MassRoleAssignment: React.FC<MassRoleAssignmentProps> = ({
     const assignments: RoleAssignmentData[] = [];
     const errors: ValidationError[] = [];
 
-    for (let i = 1; i < lines.length; i++) {
+    for (const i = 1; i < lines.length; i++) {
       const values = lines[i].split(',').map(v => v.trim());
-      const rowData: any = {};
+      const rowData: unknown = {};
       
       headers.forEach((header, index) => {
         rowData[header] = values[index];

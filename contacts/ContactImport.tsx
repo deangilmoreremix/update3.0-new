@@ -3,14 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { read, utils } from 'xlsx';
 import { useContactStore } from '../../store/contactStore';
 import { Contact } from '../../types';
-import {
-  Upload, 
-  FileSpreadsheet,
-  CheckCircle, 
-  AlertCircle, 
-  RefreshCw,
-  FileText
-} from 'lucide-react';
+import { Upload, CheckCircle, AlertCircle, RefreshCw, FileText } from 'lucide-react';
 
 const ContactImport: React.FC = () => {
   const [importedData, setImportedData] = useState<Partial<Contact>[]>([]);

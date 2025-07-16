@@ -1,17 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Phone, 
-  Video, 
-  Clock, 
-  Calendar, 
-  User, 
-  PhoneCall, 
-  PhoneIncoming, 
-  PhoneOutgoing,
-  MoreHorizontal,
-  Trash2,
-  Download
-} from 'lucide-react';
+import { Phone, Video, PhoneCall, PhoneIncoming, PhoneOutgoing, Trash2, Download } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import Avatar from './ui/Avatar';
 import { getInitials } from '../utils/avatars';

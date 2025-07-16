@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useFormStore, FormTemplate } from '../../store/formStore';
-import { 
-  CheckIcon, 
-  ChevronLeftIcon, 
-  ChevronRightIcon, 
-  LockIcon,
-  AlertCircleIcon,
-  LoaderIcon
-} from 'lucide-react';
+import { CheckIcon, LockIcon, AlertCircleIcon, LoaderIcon } from 'lucide-react';
 
 const FormPublicView: React.FC = () => {
   const { formId } = useParams<{ formId: string }>();

@@ -34,7 +34,7 @@ export const sendEmailViaComposio = async (params: {
   to?: string; 
   cc?: string[]; 
   bcc?: string[];
-  attachments?: any[];
+  attachments?: unknown[];
 }): Promise<{ success: boolean; messageId?: string }> => {
   try {
     console.log('Sending email via Composio:', params);

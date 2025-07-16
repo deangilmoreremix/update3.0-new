@@ -2,20 +2,7 @@ import React from 'react';
 import { AvatarWithStatus } from '../modern-ui/AvatarWithStatus';
 import { ModernButton } from '../modern-ui/ModernButton';
 import { GlassCard } from '../modern-ui/GlassCard';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Building, 
-  Star, 
-  TrendingUp, 
-  Eye,
-  Edit,
-  MoreHorizontal,
-  Calendar,
-  MessageSquare,
-  Target
-} from 'lucide-react';
+import { Mail, Phone, Building, Star, TrendingUp, Eye, Edit, MoreHorizontal, Calendar, Target } from 'lucide-react';
 import { Contact } from '../../types/contact';
 
 interface ContactCardProps {

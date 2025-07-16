@@ -1,14 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  Search, 
-  Sparkles, 
-  Loader2, 
-  Bot, 
-  Wand2, 
-  RefreshCw, 
-  CheckCircle,
-  AlertCircle
-} from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { aiEnrichmentService, ContactEnrichmentData } from '../../services/aiEnrichmentService';
 
 interface AIAutoFillButtonProps {

@@ -1,18 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useFormStore, FormSubmission } from '../../store/formStore';
-import { 
-  Download, 
-  Mail, 
-  Phone, 
-  Calendar, 
-  Search, 
-  Filter, 
-  User, 
-  Eye, 
-  X, 
-  ArrowDown, 
-  ArrowUp 
-} from 'lucide-react';
+import { Download, Mail, Phone, Calendar, Search, User, Eye, X, ArrowDown, ArrowUp } from 'lucide-react';
 import { CSVLink } from 'react-csv';
 
 interface FormSubmissionsViewProps {

@@ -1,15 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  BarChart3, 
-  DollarSign, 
-  Zap, 
-  Clock, 
-  TrendingUp,
-  Brain,
-  Activity,
-  Target,
-  Loader2
-} from 'lucide-react';
+import { DollarSign, Zap, Clock, Brain, Activity, Loader2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { supabaseAIService } from '../services/supabaseAIService';
 

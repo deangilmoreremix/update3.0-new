@@ -1,20 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { 
-  Package, 
-  Users, 
-  Settings, 
-  Plus,
-  Edit,
-  Trash2,
-  Copy,
-  DollarSign,
-  Check,
-  X,
-  Zap,
-  Shield,
-  Crown
-} from 'lucide-react';
+import { Package, Plus, Edit, Trash2, Copy, Check, Zap, Shield, Crown } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';

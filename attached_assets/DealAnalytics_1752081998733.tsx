@@ -14,23 +14,12 @@ import {
   Pie, 
   Cell 
 } from 'recharts';
-import { 
-  DollarSign, 
-  Target, 
-  Users, 
-  TrendingUp, 
-  Activity, 
-  ZapOff, 
-  Calendar,
-  ArrowUp,
-  BarChart3,
-  ChevronDown
-} from 'lucide-react';
+import { DollarSign, Target, Users, TrendingUp, Activity, ZapOff, Calendar, ArrowUp } from 'lucide-react';
 import { Deal } from '../types';
 
 interface DealAnalyticsProps {
   deals: Record<string, Deal>;
-  contacts?: any[];
+  contacts?: unknown[];
 }
 
 interface KPIMetric {

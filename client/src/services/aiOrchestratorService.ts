@@ -20,7 +20,7 @@ interface TaskContext {
 }
 
 interface ServiceResponse {
-  content: any;
+  content: unknown;
   model: string;
   provider: string;
   responseTime: number;
@@ -80,7 +80,7 @@ class AIOrchestratorService {
   /**
    * Parse JSON safely from AI response
    */
-  private parseJsonSafely(content: string): any {
+  private parseJsonSafely(content: string): unknown {
     // First strip any markdown code blocks
     const cleaned = this.stripMarkdownCodeBlocks(content);
     
@@ -255,7 +255,7 @@ class AIOrchestratorService {
   /**
    * Generate contact insights
    */
-  async generateContactInsights(contacts: any[], context: TaskContext): Promise<ServiceResponse> {
+  async generateContactInsights(contacts: unknown[], context: TaskContext): Promise<ServiceResponse> {
     const prompt = `Generate insights for contacts: ${JSON.stringify(contacts)}`;
     return this.executeTask('contact_scoring', prompt, context);
   }

@@ -1,5 +1,5 @@
 import React, { useState, useRef, ReactNode } from 'react';
-import { X, Maximize2, Minimize2, Copy, Download, Upload, RefreshCw } from 'lucide-react';
+import { X, Maximize2, Minimize2 } from 'lucide-react';
 
 interface AIToolModalProps {
   isOpen: boolean;

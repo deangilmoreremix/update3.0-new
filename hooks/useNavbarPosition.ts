@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 export type NavbarPosition = 'top' | 'left' | 'right';
 

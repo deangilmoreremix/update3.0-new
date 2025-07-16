@@ -2,28 +2,7 @@ import React, { useState } from 'react';
 import { GlassCard } from '../ui/GlassCard';
 import { ModernButton } from '../ui/ModernButton';
 import { Contact } from '../../types/contact';
-import { 
-  Zap, 
-  Play, 
-  Pause, 
-  Calendar, 
-  Mail, 
-  Phone, 
-  MessageSquare, 
-  Clock, 
-  Target, 
-  AlertCircle,
-  CheckCircle,
-  Settings,
-  Plus,
-  Edit,
-  Trash2,
-  BarChart3,
-  Filter,
-  ArrowRight,
-  Bell,
-  RefreshCw
-} from 'lucide-react';
+import { Zap, Play, Pause, Clock, Target, Settings, Plus, Edit, Trash2, BarChart3, Filter, ArrowRight, RefreshCw } from 'lucide-react';
 
 interface AutomationRule {
   id: string;

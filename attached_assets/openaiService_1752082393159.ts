@@ -20,7 +20,7 @@ class MockOpenAIService implements OpenAIService {
     console.log('🤖 OpenAI: Analyzing contact (Mock Mode)');
     
     // Mock analysis based on contact data
-    let score = 50;
+    const score = 50;
     const insights: string[] = [];
     const recommendations: string[] = [];
     const riskFactors: string[] = [];

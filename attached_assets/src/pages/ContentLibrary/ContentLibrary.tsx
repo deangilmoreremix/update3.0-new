@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { fetchContentItems, createContentItem, deleteContentItem } from '../../services/supabaseClient';
-import { FileText, Video, Headphones, Trash2, Plus, Search, Filter, RefreshCw, X, Music } from 'lucide-react';
+import { FileText, Video, Headphones, Trash2, Plus, Search, RefreshCw, X, Music } from 'lucide-react';
 
 interface ContentItem {
   id: string;
   title: string;
   type: 'podcast' | 'audiobook' | 'video' | 'voice_over';
   url: string;
-  metadata?: any;
+  metadata?: unknown;
   created_at?: string;
   updated_at?: string;
   user_id?: string;
@@ -176,7 +176,7 @@ const ContentLibrary: React.FC = () => {
               <select
                 required
                 value={newItemType}
-                onChange={(e) => setNewItemType(e.target.value as any)}
+                onChange={(e) => setNewItemType(e.target.value as unknown)}
                 className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="podcast">Podcast</option>

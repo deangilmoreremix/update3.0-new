@@ -1,29 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { 
-  Mic, 
-  Play, 
-  FileText, 
-  Download, 
-  Globe,
-  Clock,
-  Shield,
-  Zap,
-  CheckCheck,
-  ChevronRight,
-  ArrowRight,
-  Star,
-  Languages,
-  Volume2,
-  FileAudio,
-  Search,
-  Users,
-  BarChart3,
-  Brain,
-  MessageSquare,
-  Phone
-} from 'lucide-react';
+import { Mic, Play, FileText, Clock, Shield, Zap, CheckCheck, ChevronRight, Star, FileAudio, Search, Users, Brain, MessageSquare, Phone } from 'lucide-react';
 
 import LandingHeader from '../components/LandingHeader';
 import LandingFooter from '../components/LandingFooter';

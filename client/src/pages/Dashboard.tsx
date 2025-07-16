@@ -11,35 +11,7 @@ import AIToolsCard from '../components/Dashboard/AIToolsCard';
 import DealAnalytics from '../components/DealAnalytics';
 import HelpTooltip from '../components/ui/HelpTooltip';
 import { useEnhancedHelp } from '../contexts/EnhancedHelpContext';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  DollarSign,
-  Calendar, 
-  Clock,
-  Zap, 
-  ChevronRight, 
-  AlertCircle,
-  ArrowUpRight,
-  ArrowDownRight,
-  Brain,
-  CheckCircle,
-  Users,
-  Briefcase,
-  Tag,
-  PieChart,
-  Building,
-  Mail,
-  CheckSquare,
-  Plus,
-  Search,
-  ExternalLink,
-  Grid3X3,
-  Megaphone,
-  FileText,
-  Settings,
-  Palette
-} from 'lucide-react';
+import { BarChart3, DollarSign, Calendar, Clock, Zap, ChevronRight, AlertCircle, ArrowUpRight, ArrowDownRight, Brain, Users, Briefcase, Mail, CheckSquare, Plus, Search, ExternalLink, Grid3X3, Megaphone, FileText, Palette } from 'lucide-react';
 
 // Import AI tools components
 import StreamingChat from '../components/aiTools/StreamingChat';

@@ -56,7 +56,7 @@ export class AuthService {
   }
 
   // Verify JWT token
-  public verifyToken(token: string): any {
+  public verifyToken(token: string): unknown {
     try {
       return jwt.verify(token, JWT_SECRET);
     } catch (error) {

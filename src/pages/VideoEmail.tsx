@@ -2,41 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useOpenAI } from '../services/openaiService';
 import { useGemini } from '../services/geminiService';
 import * as edgeFunctionService from '../services/edgeFunctionService';
-import { 
-  Video, 
-  Download, 
-  Trash, 
-  Play, 
-  Pause, 
-  RefreshCw, 
-  Camera, 
-  X, 
-  Check, 
-  Clock, 
-  Scissors, 
-  FileVideo, 
-  Copy, 
-  Mail, 
-  Sliders, 
-  PenTool, 
-  List, 
-  Brain, 
-  Settings, 
-  ChevronRight, 
-  ChevronLeft,
-  Upload as UploadIcon, 
-  Edit,
-  Link,
-  AlertCircle,
-  MessageSquare,
-  Share2,
-  Send,
-  UserCircle,
-  BarChart3,
-  Lightbulb,
-  Eye,
-  Mic
-} from 'lucide-react';
+import { Video, Download, Trash, Play, Pause, RefreshCw, Camera, X, Check, Clock, Scissors, FileVideo, Mail, Sliders, List, Brain, Settings, ChevronRight, ChevronLeft, Edit, AlertCircle, MessageSquare, Share2, Send, UserCircle, BarChart3, Lightbulb, Eye, Mic } from 'lucide-react';
 
 import './VideoEmail.css';
 

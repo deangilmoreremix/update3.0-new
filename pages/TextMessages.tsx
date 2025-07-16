@@ -1,26 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  MessageSquare, 
-  Send, 
-  Search, 
-  Phone, 
-  User, 
-  Clock, 
-  CheckCheck, 
-  Plus, 
-  ChevronDown, 
-  ChevronRight, 
-  Filter, 
-  MoreHorizontal, 
-  RefreshCw, 
-  X, 
-  Calendar, 
-  Smile, 
-  Paperclip, 
-  Image, 
-  Mic, 
-  Settings
-} from 'lucide-react';
+import { MessageSquare, Send, Search, Phone, User, Clock, CheckCheck, Plus, MoreHorizontal, RefreshCw, X, Smile, Paperclip } from 'lucide-react';
 
 interface Contact {
   id: string;

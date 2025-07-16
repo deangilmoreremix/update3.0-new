@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useAuth } from './useAuth';
 
 export interface FeatureAccessResult {

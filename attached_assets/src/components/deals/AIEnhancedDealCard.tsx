@@ -1,27 +1,6 @@
 import React, { useState } from 'react';
 import { Deal } from '../../types';
-import { 
-  DollarSign, 
-  Calendar, 
-  User, 
-  Building, 
-  PieChart, 
-  RefreshCw, 
-  Zap,
-  BarChart3,
-  ArrowUp,
-  ArrowDown,
-  Milestone,
-  Flag,
-  MessageSquare,
-  Tag,
-  CheckCircle,
-  AlertCircle,
-  Clock,
-  Brain,
-  Target,
-  FileText
-} from 'lucide-react';
+import { DollarSign, Calendar, User, Building, RefreshCw, Zap, BarChart3, Flag, MessageSquare, Brain, Target, FileText } from 'lucide-react';
 import AgentModal from '../shared/AgentModal';
 
 interface AIEnhancedDealCardProps {

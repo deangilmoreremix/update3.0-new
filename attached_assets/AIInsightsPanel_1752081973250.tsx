@@ -1,26 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Contact } from '../../types/contact';
-import {
-  Brain,
-  Sparkles,
-  Zap,
-  Target,
-  Calendar,
-  Clock,
-  AlertCircle,
-  CheckCircle,
-  TrendingUp,
-  BarChart3,
-  Mail,
-  PhoneCall,
-  MessageSquare,
-  RefreshCw,
-  ThumbsUp,
-  ThumbsDown,
-  HelpCircle,
-  Bell,
-  DollarSign
-} from 'lucide-react';
+import { Brain, Sparkles, Zap, Target, Calendar, Clock, AlertCircle, CheckCircle, TrendingUp, BarChart3, Mail, PhoneCall, RefreshCw, ThumbsUp, ThumbsDown, HelpCircle, Bell, DollarSign } from 'lucide-react';
 
 interface AIInsightsPanelProps {
   contact: Contact;

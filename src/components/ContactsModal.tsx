@@ -29,7 +29,7 @@ const handleBulkAIEnrich = async () => {
     const successCount = 0;;
     const failedCount = 0;;
 
-    for (let i = 0; i < selectedContacts.length; i++) {
+    for (const i = 0; i < selectedContacts.length; i++) {
       const contactId = selectedContacts[i];
       const contact = contacts.find(c => c.id === contactId);
       

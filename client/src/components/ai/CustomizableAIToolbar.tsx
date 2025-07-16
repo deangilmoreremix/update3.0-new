@@ -1,29 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  Settings, 
-  Plus, 
-  BarChart3, 
-  Mail, 
-  TrendingUp, 
-  AlertTriangle, 
-  Navigation, 
-  FileText,
-  Send,
-  Calendar,
-  DollarSign,
-  Heart,
-  UserPlus,
-  Search,
-  BarChart,
-  Zap,
-  Clock,
-  GitBranch,
-  PenTool,
-  Video,
-  FileSearch,
-  Package,
-  LucideIcon
-} from 'lucide-react';
+import { Settings, Plus, LucideIcon } from 'lucide-react';
 import { useCustomizationStore, CustomizationLocation } from '../../store/customizationStore';
 import { getGoalById } from '../../data/aiGoals';
 import AIGoalsButton from './AIGoalsButton';
@@ -33,7 +9,7 @@ import CustomizeButtonsModal from './CustomizeButtonsModal';
 interface CustomizableAIToolbarProps {
   entityType: 'contact' | 'deal' | 'company';
   entityId: string;
-  entityData: any;
+  entityData: unknown;
   location: CustomizationLocation;
   layout?: 'horizontal' | 'vertical' | 'grid';
   size?: 'sm' | 'md';
@@ -130,7 +106,7 @@ const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
                   entityId={entityId}
                   entityData={entityData}
                   size={size}
-                  variant={action.variant as any}
+                  variant={action.variant as unknown}
                   className="w-full justify-center text-center"
                 />
               ))}
@@ -210,7 +186,7 @@ const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
           entityId={entityId}
           entityData={entityData}
           size={size}
-          variant={action.variant as any}
+          variant={action.variant as unknown}
           className={layout === 'vertical' ? 'w-full' : ''}
         />
       ))}

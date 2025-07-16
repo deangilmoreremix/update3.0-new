@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppointmentStore } from '../store/appointmentStore';
-import { Calendar, Clock, Video, Phone, MoreHorizontal, Plus } from 'lucide-react';
+import { Calendar, Clock, MoreHorizontal, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 

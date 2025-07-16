@@ -19,7 +19,7 @@ export interface GenerateRequest {
   prompt: string;
   systemPrompt?: string;
   options?: GenerateOptions;
-  tools?: any[];
+  tools?: unknown[];
   modelId?: string;
 }
 

@@ -1,27 +1,18 @@
 import React from 'react';
 import { useDealStore } from '../store/dealStore';
-import { 
-  DollarSign, 
-  TrendingUp, 
-  Clock, 
-  BarChart4, 
-  PieChart, 
-  ArrowUpRight, 
-  ArrowDownRight, 
-  Calendar
-} from 'lucide-react';
+import { DollarSign, PieChart, ArrowUpRight, ArrowDownRight, Calendar } from 'lucide-react';
 
 const PipelineStats: React.FC = () => {
   const { stageValues, totalPipelineValue, deals } = useDealStore();
   
   // Calculate conversion metrics (based on deal counts)
   const calculateMetrics = () => {
-    let totalDeals = 0;
-    let qualificationDeals = 0;
-    let proposalDeals = 0;
-    let negotiationDeals = 0;
-    let wonDeals = 0;
-    let lostDeals = 0;
+    const totalDeals = 0;
+    const qualificationDeals = 0;
+    const proposalDeals = 0;
+    const negotiationDeals = 0;
+    const wonDeals = 0;
+    const lostDeals = 0;
     
     Object.values(deals).forEach(deal => {
       totalDeals++;

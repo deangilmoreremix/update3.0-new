@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User as UserIcon, Loader2 } from 'lucide-react';
+import { Send, Bot, Loader2 } from 'lucide-react';
 import { geminiService } from '../../services/geminiService';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useDealStore } from '../../store/dealStore';

@@ -5,39 +5,7 @@ import { AIResearchButton } from '../ui/AIResearchButton';
 import { useContactStore } from '../../store/contactStore';
 import { ContactEnrichmentData } from '../../services/aiEnrichmentService';
 
-import { 
-  X, 
-  User, 
-  Mail, 
-  Phone, 
-  Building, 
-  Tag, 
-  Globe, 
-  Target,
-  Save,
-  UserPlus,
-  AlertCircle,
-  CheckCircle,
-  Heart,
-  MessageSquare,
-  Linkedin,
-  Twitter,
-  Facebook,
-  Instagram,
-  Plus,
-  Database,
-  Smartphone,
-  Clock,
-  Star,
-  Briefcase,
-  MapPin,
-  Calendar,
-  Brain,
-  Sparkles,
-  Wand2,
-  RefreshCw,
-  Camera
-} from 'lucide-react';
+import { X, User, Building, Tag, Globe, Target, Save, UserPlus, AlertCircle, CheckCircle, Heart, MessageSquare, Linkedin, Twitter, Facebook, Instagram, Plus, Database, Briefcase, MapPin, Brain, Sparkles, RefreshCw } from 'lucide-react';
 
 interface NewContactModalProps {
   isOpen: boolean;
