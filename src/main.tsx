@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import MinimalApp from './MinimalApp.tsx';
+import ProgressiveApp from './ProgressiveApp.tsx';
 import './index.css';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
@@ -9,7 +9,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <BrowserRouter>
-        <MinimalApp />
+        <ProgressiveApp />
       </BrowserRouter>
     </ErrorBoundary>
   </StrictMode>
