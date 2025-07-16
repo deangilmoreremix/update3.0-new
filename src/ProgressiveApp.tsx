@@ -1,34 +1,9 @@
 import { Routes, Route } from 'react-router-dom';
 
-// Import real Dashboard component
+// Import real page components
 import DashboardPage from './pages/Dashboard';
-
-// Simple placeholder components for other pages
-function PipelinePage() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Sales Pipeline</h1>
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <p className="text-gray-600">Pipeline management coming soon...</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ContactsPage() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-violet-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Contacts</h1>
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <p className="text-gray-600">Contact management coming soon...</p>
-        </div>
-      </div>
-    </div>
-  );
-}
+import PipelinePage from './pages/Pipeline';
+import ContactsPage from './pages/Contacts';
 
 function SimpleNavbar() {
   return (
