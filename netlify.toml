@@ -6,9 +6,15 @@
   NODE_VERSION = "20"
 
 [template.environment]
+  VITE_SUPABASE_URL = "Required Supabase project URL"
+  VITE_SUPABASE_ANON_KEY = "Required Supabase anonymous key"
+  DATABASE_URL = "Required PostgreSQL database connection string"
   VITE_GOOGLE_AI_API_KEY = "Required Google AI API key for Gemini models"
+  VITE_GEMINI_API_KEY = "Required Gemini API key"
   VITE_OPENAI_API_KEY = "Optional OpenAI API key"
   VITE_ANTHROPIC_API_KEY = "Optional Anthropic API key"
+  VITE_ELEVENLABS_API_KEY = "Optional ElevenLabs API key"
+  VITE_COMPOSIO_API_KEY = "Optional Composio API key"
 
 [context.production.processing.html]
   # Add placeholder replacement for environment variables

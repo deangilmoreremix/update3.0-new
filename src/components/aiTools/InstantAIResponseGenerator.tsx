@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useGemini } from '../../services/geminiService';
 import { MessageSquare, Copy, RefreshCw, Sparkles, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLoading } from '../../contexts/LoadingContext';
+import { useNotifications } from '../../contexts/NotificationContext';
 
 interface ResponseTemplate {
   id: string;
@@ -45,6 +47,8 @@ const RESPONSE_TEMPLATES: ResponseTemplate[] = [
 
 const InstantAIResponseGenerator: React.FC = () => {
   const gemini = useGemini();
+  const { setLoading } = useLoading();
+  const { addNotification } = useNotifications();
   const [selectedTemplate, setSelectedTemplate] = useState<ResponseTemplate | null>(null);
   const [contactName, setContactName] = useState('');
   const [topic, setTopic] = useState('');
@@ -53,10 +57,19 @@ const InstantAIResponseGenerator: React.FC = () => {
   const [isCopied, setIsCopied] = useState(false);
   
   // Generate response using Gemini 2.5 Flash for instant results
-  const generateResponse = async () => {
-    if (!selectedTemplate || !contactName || !topic) return;
+  const generateResponse = useCallback(async () => {
+    if (!selectedTemplate || !contactName || !topic) {
+      addNotification({
+        type: 'warning',
+        title: 'Missing Information',
+        message: 'Please fill in all required fields: template, contact name, and topic.',
+        duration: 3000
+      });
+      return;
+    }
     
     setIsGenerating(true);
+    setLoading(true, 'ai');
     
     try {
       // Replace template variables with actual values
@@ -74,20 +87,47 @@ const InstantAIResponseGenerator: React.FC = () => {
       - Sound natural and conversational
       - Limit to 3-4 sentences maximum`;
       
-      const result = await gemini.generateQuickContent('email', fullPrompt, 'short');
-      setGeneratedResponse(result);
+      const result = await gemini.generateContentWithReasoning('email', fullPrompt, 'professional sales context');
+      
+      // Extract the content from the structured response
+      const responseContent = typeof result === 'object' && result.content 
+        ? result.content.body || result.content.title || JSON.stringify(result)
+        : result;
+      
+      setGeneratedResponse(responseContent);
+      
+      addNotification({
+        type: 'success',
+        title: 'Response Generated',
+        message: `AI response for ${contactName} has been generated successfully!`,
+        duration: 3000
+      });
     } catch (error) {
       console.error("Error generating response:", error);
+      addNotification({
+        type: 'error',
+        title: 'Generation Failed',
+        message: 'Failed to generate AI response. Please try again.',
+        duration: 5000
+      });
     } finally {
       setIsGenerating(false);
+      setLoading(false, 'ai');
     }
-  };
+  }, [selectedTemplate, contactName, topic, gemini, addNotification, setLoading]);
   
-  const copyToClipboard = () => {
+  const copyToClipboard = useCallback(() => {
     navigator.clipboard.writeText(generatedResponse);
     setIsCopied(true);
+    
+    addNotification({
+      type: 'success',
+      title: 'Copied!',
+      message: 'Response copied to clipboard',
+      duration: 2000
+    });
     setTimeout(() => setIsCopied(false), 2000);
-  };
+  }, [generatedResponse, addNotification]);
   
   // Generate response when inputs change (with debounce)
   useEffect(() => {
@@ -99,6 +139,27 @@ const InstantAIResponseGenerator: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [selectedTemplate, contactName, topic]);
+
+  // Memoize template selection for performance optimization
+  const templateButtons = useMemo(() => 
+    RESPONSE_TEMPLATES.map((template) => (
+      <button
+        key={template.id}
+        onClick={() => setSelectedTemplate(template)}
+        className={`text-sm p-2 rounded-md flex flex-col items-center justify-center h-24 transition-colors ${
+          selectedTemplate?.id === template.id 
+            ? 'bg-teal-50 border-2 border-teal-500 text-teal-700' 
+            : 'border border-gray-200 bg-white hover:bg-gray-50'
+        }`}
+      >
+        <MessageSquare size={18} className={`mb-2 ${
+          selectedTemplate?.id === template.id ? 'text-teal-600' : 'text-gray-400'
+        }`} />
+        <span className={`font-medium ${selectedTemplate?.id === template.id ? 'text-teal-700' : 'text-gray-700'}`}>{template.title}</span>
+        <span className="text-xs text-gray-500 mt-1">{template.purpose}</span>
+      </button>
+    )), [selectedTemplate?.id]
+  );
   
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
@@ -117,27 +178,11 @@ const InstantAIResponseGenerator: React.FC = () => {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Response Type</label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {RESPONSE_TEMPLATES.map((template) => (
-              <button
-                key={template.id}
-                onClick={() => setSelectedTemplate(template)}
-                className={`text-sm p-2 rounded-md flex flex-col items-center justify-center h-24 transition-colors ${
-                  selectedTemplate?.id === template.id 
-                    ? 'bg-teal-50 border-2 border-teal-500 text-teal-700' 
-                    : 'border border-gray-200 bg-white hover:bg-gray-50'
-                }`}
-              >
-                <MessageSquare size={18} className={`mb-2 ${
-                  selectedTemplate?.id === template.id ? 'text-teal-600' : 'text-gray-400'
-                }`} />
-                <span className={`font-medium ${selectedTemplate?.id === template.id ? 'text-teal-700' : 'text-gray-700'}`}>{template.title}</span>
-                <span className="text-xs text-gray-500 mt-1">{template.purpose}</span>
-              </button>
-            ))}
+            {templateButtons}
           </div>
         </div>
         
-        {/* Variables */}
+        {/* Variables Section */}
         <AnimatePresence>
           {selectedTemplate && (
             <motion.div

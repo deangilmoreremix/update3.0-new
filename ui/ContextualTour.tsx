@@ -40,11 +40,6 @@ const ContextualTour: React.FC<ContextualTourProps> = ({
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
 
-  // Don't render if tours are disabled or already completed
-  if (!showTours || isTourCompleted(tourId)) {
-    return null;
-  }
-
   const currentStep = steps[currentStepIndex];
 
   // Find the target element for the current step
@@ -309,6 +304,13 @@ const ContextualTour: React.FC<ContextualTourProps> = ({
       </div>
     </>
   );
+
+  // Don't render if tours are disabled or already completed
+  if (!showTours || isTourCompleted(tourId)) {
+    return null;
+  }
+
+  return renderTour();
 };
 
 export default ContextualTour;

@@ -630,7 +630,7 @@ router.post('/contact-enrichment', async (req, res) => {
     }
 
     let prompt = '';
-    let contactInfo = {};
+    const contactInfo = {};
 
     if (enrichmentType === 'email' && email) {
       prompt = `You are a contact research expert. Based on the email address "${email}", provide detailed professional information about this person. 

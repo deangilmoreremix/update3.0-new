@@ -140,7 +140,7 @@ Deno.serve(async (req: Request) => {
 function generateSalesForecastPrompt(data: any): string {
   const { deals, timeframe } = data;
   
-  let dealsText = deals.map((deal: any) => 
+  const dealsText = deals.map((deal: any) => 
     `- ${deal.title}: $${deal.value?.toLocaleString() || 0} (${deal.stage || 'unknown'}, ${Math.round((deal.probability || 0) * 100)}% probability)`
   ).join('\n');
 

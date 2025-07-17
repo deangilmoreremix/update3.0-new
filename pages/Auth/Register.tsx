@@ -1,48 +1,73 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Crown, Lock, Eye, EyeOff, Mail, User } from 'lucide-react';
+import { useFormValidation, commonValidations } from '../../src/hooks/useFormValidation';
+import { useLoading } from '../../src/contexts/LoadingContext';
+import { useNotifications } from '../../src/contexts/NotificationContext';
+
+interface RegisterFormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 const Register = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const { setLoading } = useLoading();
+  const { addNotification } = useNotifications();
+  
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const initialValues: RegisterFormData = {
     firstName: '',
     lastName: '',
     email: '',
     password: 'vr2025', // Pre-fill default password
     confirmPassword: 'vr2025',
-  });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (error) setError('');
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
-    // Basic validation
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      setIsLoading(false);
-      return;
+  const validationSchema = {
+    firstName: commonValidations.name,
+    lastName: commonValidations.name,
+    email: commonValidations.email,
+    password: commonValidations.password,
+    confirmPassword: {
+      required: true,
+      custom: (value: string) => {
+        if (value !== values.password) {
+          return 'Passwords do not match';
+        }
+        return null;
+      }
     }
+  };
 
+  const {
+    values,
+    errors,
+    touched,
+    isSubmitting,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isValid
+  } = useFormValidation(initialValues, validationSchema);
+
+  const onSubmit = async (formValues: RegisterFormData) => {
+    setLoading(true, 'data');
+    
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          password: formData.password || 'vr2025' // Use default if empty
+          firstName: formValues.firstName,
+          lastName: formValues.lastName,
+          email: formValues.email,
+          password: formValues.password || 'vr2025' // Use default if empty
         })
       });
 
@@ -54,20 +79,35 @@ const Register = () => {
         localStorage.setItem('user', JSON.stringify(data.user));
         
         // Show success message
-        alert('Whitelabel partner account created successfully! Redirecting to dashboard...');
+        addNotification({
+          type: 'success',
+          title: 'Account Created',
+          message: 'Whitelabel partner account created successfully! Redirecting to dashboard...',
+          duration: 3000
+        });
         
         // Redirect to dashboard after short delay
         setTimeout(() => {
           navigate('/dashboard');
         }, 1500);
       } else {
-        setError(data.error || data.message || 'Failed to create account');
+        addNotification({
+          type: 'error',
+          title: 'Registration Failed',
+          message: data.error || data.message || 'Failed to create account',
+          duration: 5000
+        });
       }
     } catch (error) {
-      setError('Network error. Please try again.');
+      addNotification({
+        type: 'error',
+        title: 'Network Error',
+        message: 'Network error. Please try again.',
+        duration: 5000
+      });
       console.error('Registration error:', error);
     } finally {
-      setIsLoading(false);
+      setLoading(false, 'data');
     }
   };
 
@@ -106,10 +146,18 @@ const Register = () => {
           </div>
         </div>
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          {error && (
+        <form className="space-y-6" onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit(onSubmit);
+        }}>
+          {/* Display form-level errors */}
+          {Object.keys(errors).length > 0 && (
             <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-              <p className="text-red-600 text-sm">{error}</p>
+              <ul className="text-red-600 text-sm space-y-1">
+                {Object.entries(errors).map(([field, error]) => (
+                  <li key={field}>• {error}</li>
+                ))}
+              </ul>
             </div>
           )}
 
@@ -125,12 +173,18 @@ const Register = () => {
                   id="firstName"
                   name="firstName"
                   type="text"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200"
+                  value={values.firstName}
+                  onChange={(e) => handleChange('firstName', e.target.value)}
+                  onBlur={() => handleBlur('firstName')}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200 ${
+                    touched.firstName && errors.firstName ? 'border-red-300' : 'border-gray-300'
+                  }`}
                   placeholder="John"
                   required
                 />
+                {touched.firstName && errors.firstName && (
+                  <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
+                )}
               </div>
             </div>
             <div>
@@ -143,12 +197,18 @@ const Register = () => {
                   id="lastName"
                   name="lastName"
                   type="text"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200"
+                  value={values.lastName}
+                  onChange={(e) => handleChange('lastName', e.target.value)}
+                  onBlur={() => handleBlur('lastName')}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200 ${
+                    touched.lastName && errors.lastName ? 'border-red-300' : 'border-gray-300'
+                  }`}
                   placeholder="Doe"
                   required
                 />
+                {touched.lastName && errors.lastName && (
+                  <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+                )}
               </div>
             </div>
           </div>
@@ -164,12 +224,18 @@ const Register = () => {
                 id="email"
                 name="email"
                 type="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200"
+                value={values.email}
+                onChange={(e) => handleChange('email', e.target.value)}
+                onBlur={() => handleBlur('email')}
+                className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200 ${
+                  touched.email && errors.email ? 'border-red-300' : 'border-gray-300'
+                }`}
                 placeholder="john@company.com"
                 required
               />
+              {touched.email && errors.email && (
+                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+              )}
             </div>
           </div>
 
@@ -184,9 +250,12 @@ const Register = () => {
                 id="password"
                 name="password"
                 type={showPassword ? 'text' : 'password'}
-                value={formData.password}
-                onChange={handleInputChange}
-                className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200"
+                value={values.password}
+                onChange={(e) => handleChange('password', e.target.value)}
+                onBlur={() => handleBlur('password')}
+                className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-200 ${
+                  touched.password && errors.password ? 'border-red-300' : 'border-gray-300'
+                }`}
                 placeholder="vr2025 (default partner password)"
                 required
               />

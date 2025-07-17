@@ -40,9 +40,9 @@ let memoryState: {
   toasts: [],
 }
 
-let listeners: Array<(state: typeof memoryState) => void> = []
+const listeners: Array<(state: typeof memoryState) => void> = []
 
-let toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
+const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
 
 const addToRemoveQueue = (toastId: string) => {
   if (toastTimeouts.has(toastId)) {
