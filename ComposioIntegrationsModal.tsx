@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Link, import { Link } from 'react-router-dom';
-import { AlertCircle, Calendar, CheckCircle, Database, FileText, Globe, Info, Mail, MessageSquare, Pause, Phone, Play, Plus, RefreshCw, Settings, Shield, X } from 'lucide-react';
-  X, 
-  CheckCircle, 
+import { Link } from 'react-router-dom';
+import { 
   AlertCircle, 
+  Calendar, 
+  CheckCircle, 
+  Database, 
+  FileText, 
+  Globe, 
+  Info, 
+  Mail, 
+  MessageSquare, 
+  Pause, 
+  Phone, 
+  Play, 
+  Plus, 
+  RefreshCw, 
   Settings, 
-  Play,
-  Pause,
-  RefreshCw,
-  Shield,
-  Mail,
-  MessageSquare,
-  Calendar,
+  Shield, 
   Share2,
-  Phone,
-  FileText,
-  Database,
-  Globe,
-  Link,
-  Plus,
-  Info
+  X,
+  Link as LinkIcon
 } from 'lucide-react';
 
 interface Integration {
@@ -288,7 +288,7 @@ const ComposioIntegrationsModal: React.FC<ComposioIntegrationsModalProps> = ({
           <div className="relative z-20 flex items-center justify-between p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-200">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500">
-                <Link className="h-6 w-6 text-white" />
+                <LinkIcon className="h-6 w-6 text-white" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Composio Integrations</h1>

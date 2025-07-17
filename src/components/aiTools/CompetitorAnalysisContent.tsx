@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import * as edgeFunctionService from '../../services/edgeFunctionService';
 import FileUpload from '../shared/FileUpload';
 import AIToolContent from '../shared/AIToolContent';
-import { FileSearch, PlusCircle, Search, Trash } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { FileSearch, PlusCircle, Search, Trash, Link } from 'lucide-react';
 
 const CompetitorAnalysisContent: React.FC = () => {
   const [formData, setFormData] = useState({

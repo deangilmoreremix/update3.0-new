@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route, Navigate, BrowserRouter as Router } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { Settings } from 'lucide-react';
+import { Settings as SettingsIcon } from 'lucide-react';
 
 
 import { AIToolsProvider } from './AIToolsProvider';
@@ -10,55 +10,62 @@ import { RoleProvider } from './RoleBasedAccess';
 import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
 import { queryClient } from './lib/queryClient';
 import { ProtectedRoute, SuperAdminRoute, ResellerRoute, UserRoute } from './auth/ProtectedRoute';
-import { ThemeProvider } from './src/contexts/ThemeContext';
-import { NavigationProvider } from './src/contexts/NavigationContext';
-import { VideoCallProvider } from './src/contexts/VideoCallContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { NavigationProvider } from './contexts/NavigationContext';
+import { VideoCallProvider } from './contexts/VideoCallContext';
 
-// Landing Pages
+// Loading Component
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+  </div>
+);
+
+// Landing Pages (keep these non-lazy as they're likely to be used immediately)
 import LandingPage from './pages/Landing/LandingPage';
 
-// Auth Pages (preserved for future Clerk integration)
+// Auth Pages (keep these non-lazy as they're critical for first load)
 import Login from './pages/Auth/Login';
-import Register from './pages/Auth/Register'; // Your updated Register component
+import Register from './pages/Auth/Register'; 
 import ForgotPassword from './pages/Auth/ForgotPassword';
 
-// Main pages
-import Dashboard from './pages/DashboardEnhanced';
-import Contacts from './pages/ContactsEnhanced';
-import ContactDetail from './pages/ContactDetail';
-import Pipeline from './pages/PipelineEnhanced';
-import Tasks from './pages/TasksSimple';
-import TaskCalendarView from './pages/TaskCalendarView';
-import Appointments from './pages/Appointments';
-import PhoneSystem from './pages/PhoneSystem';
-import TextMessages from './pages/TextMessages';
-import VideoEmail from './pages/VideoEmail';
-import Invoicing from './pages/Invoicing';
-import Settings from './pages/Settings';
-import AITools from './pages/AITools';
-import SalesTools from './pages/SalesTools';
-import LeadAutomation from './pages/LeadAutomation';
-import CircleProspecting from './pages/CircleProspecting';
-import FormsAndSurveys from './pages/FormsAndSurveys';
-import FormPublic from './pages/FormPublic';
-import FAQ from './pages/FAQ';
+// Lazy load heavy components to reduce initial bundle size
+const Dashboard = React.lazy(() => import('./pages/DashboardEnhanced'));
+const Contacts = React.lazy(() => import('./pages/ContactsEnhanced'));
+const ContactDetail = React.lazy(() => import('./pages/ContactDetail'));
+const Pipeline = React.lazy(() => import('./pages/PipelineEnhanced'));
+const Tasks = React.lazy(() => import('./pages/TasksSimple'));
+const TaskCalendarView = React.lazy(() => import('./pages/TaskCalendarView'));
+const Appointments = React.lazy(() => import('./pages/Appointments'));
+const PhoneSystem = React.lazy(() => import('./pages/PhoneSystem'));
+const TextMessages = React.lazy(() => import('./pages/TextMessages'));
+const VideoEmail = React.lazy(() => import('./pages/VideoEmail'));
+const Invoicing = React.lazy(() => import('./pages/Invoicing'));
+const SettingsPage = React.lazy(() => import('./pages/Settings'));
+const AITools = React.lazy(() => import('./pages/AITools'));
+const SalesTools = React.lazy(() => import('./pages/SalesTools'));
+const LeadAutomation = React.lazy(() => import('./pages/LeadAutomation'));
+const CircleProspecting = React.lazy(() => import('./pages/CircleProspecting'));
+const FormsAndSurveys = React.lazy(() => import('./pages/FormsAndSurveys'));
+const FormPublic = React.lazy(() => import('./pages/FormPublic'));
+const FAQ = React.lazy(() => import('./pages/FAQ'));
 
 // Business Analysis
-import BusinessAnalyzer from './pages/BusinessAnalysis/BusinessAnalyzer';
+const BusinessAnalyzer = React.lazy(() => import('./pages/BusinessAnalysis/BusinessAnalyzer'));
 
 // Content Library
-import ContentLibrary from './pages/ContentLibrary/ContentLibrary';
+const ContentLibrary = React.lazy(() => import('./pages/ContentLibrary/ContentLibrary'));
 
 // Voice Profiles
-import VoiceProfiles from './pages/VoiceProfiles/VoiceProfiles';
+const VoiceProfiles = React.lazy(() => import('./pages/VoiceProfiles/VoiceProfiles'));
 
 // New Feature Pages
-import CommunicationHub from './pages/CommunicationHub';
-import DocumentCenter from './pages/DocumentCenter';
-import AnalyticsDashboard from './pages/AnalyticsDashboard';
-import LeadCapture from './pages/LeadCapture';
+const CommunicationHub = React.lazy(() => import('./pages/CommunicationHub'));
+const DocumentCenter = React.lazy(() => import('./pages/DocumentCenter'));
+const AnalyticsDashboard = React.lazy(() => import('./pages/AnalyticsDashboard'));
+const LeadCapture = React.lazy(() => import('./pages/LeadCapture'));
 
-// Feature Pages
+// Feature Pages (keep non-lazy for landing page performance)
 import AiToolsFeaturePage from './pages/Landing/FeaturePage/AiToolsFeaturePage';
 import ContactsFeaturePage from './pages/Landing/FeaturePage/ContactsFeaturePage';
 import PipelineFeaturePage from './pages/Landing/FeaturePage/PipelineFeaturePage';
@@ -68,20 +75,23 @@ import ImageGeneratorFeaturePage from './pages/Landing/FeaturePage/ImageGenerato
 import SemanticSearchFeaturePage from './pages/Landing/FeaturePage/SemanticSearchFeaturePage';
 import FunctionAssistantFeaturePage from './pages/Landing/FeaturePage/FunctionAssistantFeaturePage';
 import CommunicationsFeaturePage from './pages/Landing/FeaturePage/CommunicationsFeaturePage';
-import GoalCardDemo from './pages/GoalCardDemo';
-import AIGoalsPage from './pages/AIGoals/AIGoalsPageEnhanced';
-import PartnerOnboardingPage from './pages/PartnerOnboardingPage';
-import PartnerDashboard from './pages/PartnerDashboard';
-import SuperAdminDashboard from './pages/SuperAdminDashboard';
-import UserManagement from './pages/UserManagement';
-import WhiteLabelCustomization from './pages/WhiteLabelCustomization';
-import PartnerManagementPage from './pages/PartnerManagementPage';
+
+// Admin and specialized pages
+const GoalCardDemo = React.lazy(() => import('./pages/GoalCardDemo'));
+const AIGoalsPage = React.lazy(() => import('./pages/AIGoals/AIGoalsPageEnhanced'));
+const PartnerOnboardingPage = React.lazy(() => import('./pages/PartnerOnboardingPage'));
+const PartnerDashboard = React.lazy(() => import('./pages/PartnerDashboard'));
+const SuperAdminDashboard = React.lazy(() => import('./pages/SuperAdminDashboard'));
+const UserManagement = React.lazy(() => import('./pages/UserManagement'));
+const WhiteLabelCustomization = React.lazy(() => import('./pages/WhiteLabelCustomization'));
+const PartnerManagementPage = React.lazy(() => import('./pages/PartnerManagementPage'));
 import RevenueSharingPage from './pages/RevenueSharingPage';
 import FeaturePackageManagementPage from './pages/FeaturePackageManagementPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 
 // Layout Components
 import Navbar from './Navbar';
+import ErrorBoundary from './src/components/common/ErrorBoundary';
 
 // Layout wrapper for authenticated pages
 const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
@@ -97,8 +107,9 @@ const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
         <TenantProvider>
           <RoleProvider>
             <EnhancedHelpProvider>
@@ -122,157 +133,209 @@ function App() {
                       {/* Protected routes with role-based access */}
                       <Route path="/dashboard" element={
                         <AuthenticatedLayout>
-                          <Dashboard />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <Dashboard />
+                          </Suspense>
                         </AuthenticatedLayout>
                       } />
 
                       <Route path="/contacts" element={
                         <AuthenticatedLayout>
-                          <Contacts />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <Contacts />
+                          </Suspense>
                         </AuthenticatedLayout>
                       } />
 
                       <Route path="/contacts/:id" element={
                         <AuthenticatedLayout>
-                          <ContactDetail />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <ContactDetail />
+                          </Suspense>
                         </AuthenticatedLayout>
                       } />
 
                       <Route path="/pipeline" element={
                         <AuthenticatedLayout>
-                          <Pipeline />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <Pipeline />
+                          </Suspense>
                         </AuthenticatedLayout>
                       } />
 
                       <Route path="/tasks" element={
                         <AuthenticatedLayout>
-                          <Tasks />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <Tasks />
+                          </Suspense>
                         </AuthenticatedLayout>
                       } />
 
                       <Route path="/tasks/calendar" element={
                         <ProtectedRoute>
-                          <TaskCalendarView />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <TaskCalendarView />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/calendar" element={
                         <ProtectedRoute>
-                          <TaskCalendarView />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <TaskCalendarView />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/appointments" element={
                         <ProtectedRoute>
-                          <Appointments />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <Appointments />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/phone-system" element={
                         <ProtectedRoute>
-                          <PhoneSystem />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <PhoneSystem />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/text-messages" element={
                         <ProtectedRoute>
-                          <TextMessages />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <TextMessages />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/video-email" element={
                         <ProtectedRoute>
-                          <VideoEmail />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <VideoEmail />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/invoicing" element={
                         <ProtectedRoute>
-                          <Invoicing />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <Invoicing />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/ai-tools" element={
                         <ProtectedRoute>
-                          <AITools />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <AITools />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/sales-tools" element={
                         <ProtectedRoute>
-                          <SalesTools />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <SalesTools />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/lead-automation" element={
                         <ProtectedRoute>
-                          <LeadAutomation />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <LeadAutomation />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/circle-prospecting" element={
                         <ProtectedRoute>
-                          <CircleProspecting />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <CircleProspecting />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/forms" element={
                         <ProtectedRoute>
-                          <FormsAndSurveys />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <FormsAndSurveys />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/business-analysis" element={
                         <ProtectedRoute>
-                          <BusinessAnalyzer />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <BusinessAnalyzer />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/content-library" element={
                         <ProtectedRoute>
-                          <ContentLibrary />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <ContentLibrary />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/voice-profiles" element={
                         <ProtectedRoute>
-                          <VoiceProfiles />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <VoiceProfiles />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/campaigns" element={
                         <ProtectedRoute>
-                          <CommunicationHub />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <CommunicationHub />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/communication-hub" element={
                         <ProtectedRoute>
-                          <CommunicationHub />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <CommunicationHub />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/document-center" element={
                         <ProtectedRoute>
-                          <DocumentCenter />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <DocumentCenter />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/analytics-dashboard" element={
                         <ProtectedRoute>
-                          <AnalyticsDashboard />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <AnalyticsDashboard />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/lead-capture" element={
                         <ProtectedRoute>
-                          <LeadCapture />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <LeadCapture />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
                       <Route path="/settings" element={
                         <ProtectedRoute>
-                          <Settings />
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <SettingsPage />
+                          </Suspense>
                         </ProtectedRoute>
                       } />
 
@@ -413,7 +476,9 @@ function App() {
                       <Route path="/feature-access-demo" element={
                         <ProtectedRoute>
                           <AuthenticatedLayout>
-                            <Settings />
+                            <Suspense fallback={<LoadingSpinner />}>
+                              <SettingsPage />
+                            </Suspense>
                           </AuthenticatedLayout>
                         </ProtectedRoute>
                       } />
@@ -421,7 +486,9 @@ function App() {
                       <Route path="/sso-config" element={
                         <SuperAdminRoute>
                           <AuthenticatedLayout>
-                            <Settings />
+                            <Suspense fallback={<LoadingSpinner />}>
+                              <SettingsPage />
+                            </Suspense>
                           </AuthenticatedLayout>
                         </SuperAdminRoute>
                       } />
@@ -446,6 +513,7 @@ function App() {
         </TenantProvider>
       </ThemeProvider>
     </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

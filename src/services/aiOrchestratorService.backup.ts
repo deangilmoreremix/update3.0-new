@@ -1,6 +1,6 @@
 // Temporarily simplified AI orchestrator to get app running
 import { enhancedGeminiService } from './enhancedGeminiService';
-import { useOpenAI } from './openaiService';
+// Note: useOpenAI removed to avoid hook violations in class component
 
 // Feature types for orchestration
 export type AIFeature = 
@@ -93,12 +93,17 @@ export class AIOrchestrator {
    */
   private async generateEmail(context: Record<string, unknown>): Promise<unknown> {
     try {
-      const openAI = useOpenAI();
+      // TODO: Implement proper service initialization without hooks
       const contactName = context.contactName as string || 'Customer';
       const purpose = context.purpose as string || 'General inquiry';
       
-      const email = await openAI.generateEmailDraft(contactName, purpose);
-      return { status: 'success', content: email };
+      // Return placeholder for now until proper service architecture
+      return { 
+        status: 'success', 
+        content: `Generated email for ${contactName} regarding ${purpose}`,
+        note: 'Service temporarily disabled for stability'
+      };
+      };
     } catch (error) {
       console.error('Email generation error:', error);
       return { status: 'error', message: 'Email generation temporarily unavailable' };

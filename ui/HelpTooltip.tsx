@@ -33,6 +33,27 @@ const HelpTooltip: React.FC<HelpTooltipProps> = ({
   const triggerRef = useRef<HTMLDivElement>(null);
   const { showTours } = useEnhancedHelp();
 
+  // Close tooltip when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        trigger === 'click' &&
+        tooltipRef.current &&
+        triggerRef.current &&
+        !tooltipRef.current.contains(event.target as Node) &&
+        !triggerRef.current.contains(event.target as Node)
+      ) {
+        setIsVisible(false);
+        setShouldAnimate(false);
+      }
+    };
+
+    if (trigger === 'click') {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [trigger]);
+
   // Don't render if help system is disabled
   if (!showTours) {
     return children ? <>{children}</> : null;

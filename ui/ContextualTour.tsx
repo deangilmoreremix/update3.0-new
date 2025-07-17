@@ -40,11 +40,6 @@ const ContextualTour: React.FC<ContextualTourProps> = ({
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
 
-  // Don't render if tours are disabled or already completed
-  if (!showTours || isTourCompleted(tourId)) {
-    return null;
-  }
-
   const currentStep = steps[currentStepIndex];
 
   // Find the target element for the current step
@@ -53,6 +48,61 @@ const ContextualTour: React.FC<ContextualTourProps> = ({
 
     const findTarget = () => {
       const target = document.querySelector(currentStep.target);
+      if (target) {
+        setCurrentTarget(target);
+        
+        // Add highlight class if specified
+        if (currentStep.highlight) {
+          target.classList.add('tour-highlight');
+        }
+        
+        // Scroll target into view
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    };
+
+    // Try to find target immediately
+    findTarget();
+
+    // If not found, retry after a short delay (for dynamic content)
+    if (!currentTarget) {
+      const retryTimeout = setTimeout(findTarget, 100);
+      return () => clearTimeout(retryTimeout);
+    }
+  }, [currentStep, isOpen, currentTarget]);
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (isPlaying && isOpen && currentStepIndex < steps.length - 1) {
+      intervalRef.current = setTimeout(() => {
+        nextStep();
+      }, 4000); // 4 seconds per step
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearTimeout(intervalRef.current);
+      }
+    };
+  }, [isPlaying, isOpen, currentStepIndex, steps.length]);
+
+  // Cleanup highlights when tour closes or step changes
+  useEffect(() => {
+    return () => {
+      // Remove highlight from previous target
+      if (currentTarget && currentStep?.highlight) {
+        currentTarget.classList.remove('tour-highlight');
+      }
+    };
+  }, [currentStepIndex, isOpen, currentTarget, currentStep?.highlight]);
+
+  // Don't render if tours are disabled or already completed
+  if (!showTours || isTourCompleted(tourId)) {
+    return null;
+  }
       if (target) {
         setCurrentTarget(target);
         

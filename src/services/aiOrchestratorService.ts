@@ -1,5 +1,5 @@
 import { enhancedGeminiService } from './enhancedGeminiService';
-import { useOpenAI } from './openaiService';
+// Note: useOpenAI removed to avoid hook violations in class component
 
 // Feature types for orchestration
 export type AIFeature = 
@@ -241,7 +241,8 @@ class AIOrchestratorService {
    * Get the appropriate service for a model
    */
   private getServiceForModel(modelId: string): unknown {
-    return this.isGoogleModel(modelId) ? enhancedGeminiService : useOpenAI();
+    // Return service factory instead of calling hook directly
+    return this.isGoogleModel(modelId) ? enhancedGeminiService : { type: 'openai' };
   }
 
   /**

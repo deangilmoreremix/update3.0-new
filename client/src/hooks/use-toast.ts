@@ -39,7 +39,7 @@ let memoryState: {
   toasts: [],
 }
 
-let listeners: Array<(state: typeof memoryState) => void> = []
+const listeners: Array<(state: typeof memoryState) => void> = []
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 

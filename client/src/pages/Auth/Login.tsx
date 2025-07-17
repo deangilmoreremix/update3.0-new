@@ -23,12 +23,12 @@ const Login: React.FC = () => {
 
   const handleReplitLogin = () => {
     window.addEventListener("message", authComplete);
-    var h = 500;
-    var w = 350;
-    var left = screen.width / 2 - w / 2;
-    var top = screen.height / 2 - h / 2;
+    const h = 500;
+    const w = 350;
+    const left = screen.width / 2 - w / 2;
+    const top = screen.height / 2 - h / 2;
 
-    var authWindow = window.open(
+    const authWindow = window.open(
       "https://replit.com/auth_with_repl_site?domain=" + location.host,
       "_blank",
       "modal=yes, toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=" +
