@@ -1,6 +1,8 @@
 import React from 'react';
 import { Routes, Route, Navigate, BrowserRouter as Router } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { Settings } from 'lucide-react';
+
 
 import { AIToolsProvider } from './AIToolsProvider';
 import { TenantProvider } from './TenantProvider';

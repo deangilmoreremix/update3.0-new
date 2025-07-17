@@ -4,7 +4,7 @@ import {
   BarChart, LineChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   Cell, PieChart, Pie, AreaChart, Area
 } from 'recharts';
-import { BarChart2, TrendingUp, Calendar, Clock, Mail, MessageSquare, ArrowUp, ArrowDown, Target, DollarSign, CheckCircle, AlertTriangle, Users, Layers, PieChart as PieChartIcon } from 'lucide-react';
+import { BarChart2, TrendingUp, Calendar, Clock, Mail, MessageSquare, ArrowUp, ArrowDown, Target, DollarSign, CheckCircle, AlertTriangle, Users, Layers, PieChart as PieChartIcon, X as XIcon, User as UserIcon } from 'lucide-react';
 
 interface DealAnalyticsDashboardProps {
   deal: Deal;

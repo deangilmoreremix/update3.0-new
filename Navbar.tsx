@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 // import { useUser, useClerk } from '@clerk/clerk-react';
 import { useAITools } from '../components/AIToolsProvider';
 import { Home, Users, Briefcase, CheckSquare, Settings, Menu, X, Brain, Mail, MessageSquare, FileText, Phone, Target, TrendingUp, BarChart3, PieChart, ChevronDown, ChevronRight, Video, MessageCircle, CalendarDays, Map, FileSpreadsheet, Package, Receipt, Building, Music, Headphones, Image, User, LogOut, Star, Shield, Reply, Volume2, Calendar, Eye, Search, FileCode, MessagesSquare, CheckCircle, Zap, ArrowRight, Mic, Sparkles, ExternalLink, Grid3X3, Megaphone, Palette } from 'lucide-react';

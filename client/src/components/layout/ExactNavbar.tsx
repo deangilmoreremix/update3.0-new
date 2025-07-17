@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { ChevronDown, User, Bell, Search, Settings, LogOut, Video, Calendar, Phone, Sun, Moon, Home, Sparkles, UserPlus, Shield, Image, ExternalLink, Menu, X, Key } from 'lucide-react';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Bell, Calendar, ChevronDown, ExternalLink, Home, Image, Key, LogOut, Menu, Moon, Phone, Plus, Search, Settings, Shield, Sparkles, Sun, User, UserPlus, Video, X } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigation } from '../../contexts/NavigationContext';
 import { useDealStore } from '../../store/dealStore';

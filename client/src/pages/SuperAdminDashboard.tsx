@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { ArrowLeft, BarChart3, Brain, CheckCircle, Download, Eye, MessageSquare, Plus, Search, TrendingUp, Users, XCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { BulkUserUpload } from '../components/admin/BulkUserUpload';
 import { MassRoleAssignment } from '../components/admin/MassRoleAssignment';
