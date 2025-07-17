@@ -10,13 +10,14 @@ import { queryClient } from './lib/queryClient';
 import { ProtectedRoute, SuperAdminRoute, ResellerRoute, UserRoute } from './auth/ProtectedRoute';
 import { ThemeProvider } from './src/contexts/ThemeContext';
 import { NavigationProvider } from './src/contexts/NavigationContext';
+import { VideoCallProvider } from './src/contexts/VideoCallContext';
 
 // Landing Pages
 import LandingPage from './pages/Landing/LandingPage';
 
 // Auth Pages (preserved for future Clerk integration)
 import Login from './pages/Auth/Login';
-import Register from './pages/Auth/Register'; // Your updated Register component
+import Register from './pages/Auth/Register';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 
 // Main pages
@@ -100,343 +101,314 @@ function App() {
           <RoleProvider>
             <EnhancedHelpProvider>
               <AIToolsProvider>
-                <Router>
-                  <NavigationProvider>
-                    <Routes>
-                      {/* Auth routes (available for future Clerk integration) */}
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/register" element={<Register />} />
-                      <Route path="/signup" element={<Register />} />
-                      <Route path="/forgot-password" element={<ForgotPassword />} />
+                <VideoCallProvider>
+                  <Router>
+                    <NavigationProvider>
+                      <Routes>
+                        {/* Auth routes */}
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/signup" element={<Register />} />
+                        <Route path="/forgot-password" element={<ForgotPassword />} />
 
-                      {/* Public routes */}
-                      <Route path="/" element={<LandingPage />} />
-                      <Route path="/form/:formId" element={<FormPublic />} />
-                      <Route path="/faq" element={<FAQ />} />
+                        {/* Public routes */}
+                        <Route path="/" element={<LandingPage />} />
+                        <Route path="/form/:formId" element={<FormPublic />} />
+                        <Route path="/faq" element={<FAQ />} />
 
-                      {/* Protected routes with role-based access */}
-                      <Route path="/dashboard" element={
-                        <UserRoute>
-                          <AuthenticatedLayout>
-                            <Dashboard />
-                          </AuthenticatedLayout>
-                        </UserRoute>
-                      } />
+                        {/* Feature pages */}
+                        <Route path="/ai-tools-feature" element={<AiToolsFeaturePage />} />
+                        <Route path="/contacts-feature" element={<ContactsFeaturePage />} />
+                        <Route path="/pipeline-feature" element={<PipelineFeaturePage />} />
+                        <Route path="/ai-assistant-feature" element={<AiAssistantFeaturePage />} />
+                        <Route path="/vision-analyzer-feature" element={<VisionAnalyzerFeaturePage />} />
+                        <Route path="/image-generator-feature" element={<ImageGeneratorFeaturePage />} />
+                        <Route path="/semantic-search-feature" element={<SemanticSearchFeaturePage />} />
+                        <Route path="/function-assistant-feature" element={<FunctionAssistantFeaturePage />} />
+                        <Route path="/communications-feature" element={<CommunicationsFeaturePage />} />
 
-                      <Route path="/contacts" element={
-                        <UserRoute>
-                          <AuthenticatedLayout>
-                            <Contacts />
-                          </AuthenticatedLayout>
-                        </UserRoute>
-                      } />
+                        {/* Protected routes with role-based access */}
+                        <Route path="/dashboard" element={
+                          <UserRoute>
+                            <AuthenticatedLayout>
+                              <Dashboard />
+                            </AuthenticatedLayout>
+                          </UserRoute>
+                        } />
 
-                      <Route path="/contacts/:id" element={
-                        <UserRoute>
-                          <AuthenticatedLayout>
-                            <ContactDetail />
-                          </AuthenticatedLayout>
-                        </UserRoute>
-                      } />
+                        <Route path="/contacts" element={
+                          <UserRoute>
+                            <AuthenticatedLayout>
+                              <Contacts />
+                            </AuthenticatedLayout>
+                          </UserRoute>
+                        } />
 
-                      <Route path="/pipeline" element={
-                        <UserRoute>
-                          <AuthenticatedLayout>
-                            <Pipeline />
-                          </AuthenticatedLayout>
-                        </UserRoute>
-                      } />
+                        <Route path="/contacts/:id" element={
+                          <UserRoute>
+                            <AuthenticatedLayout>
+                              <ContactDetail />
+                            </AuthenticatedLayout>
+                          </UserRoute>
+                        } />
 
-                      <Route path="/tasks" element={
-                        <UserRoute>
-                          <AuthenticatedLayout>
-                            <Tasks />
-                          </AuthenticatedLayout>
-                        </UserRoute>
-                      } />
+                        <Route path="/pipeline" element={
+                          <UserRoute>
+                            <AuthenticatedLayout>
+                              <Pipeline />
+                            </AuthenticatedLayout>
+                          </UserRoute>
+                        } />
 
-                      <Route path="/tasks/calendar" element={
-                        <ProtectedRoute>
-                          <TaskCalendarView />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/tasks" element={
+                          <UserRoute>
+                            <AuthenticatedLayout>
+                              <Tasks />
+                            </AuthenticatedLayout>
+                          </UserRoute>
+                        } />
 
-                      <Route path="/calendar" element={
-                        <ProtectedRoute>
-                          <TaskCalendarView />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/tasks/calendar" element={
+                          <ProtectedRoute>
+                            <TaskCalendarView />
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/appointments" element={
-                        <ProtectedRoute>
-                          <Appointments />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/calendar" element={
+                          <ProtectedRoute>
+                            <TaskCalendarView />
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/phone-system" element={
-                        <ProtectedRoute>
-                          <PhoneSystem />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/appointments" element={
+                          <ProtectedRoute>
+                            <Appointments />
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/text-messages" element={
-                        <ProtectedRoute>
-                          <TextMessages />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/phone-system" element={
+                          <ProtectedRoute>
+                            <PhoneSystem />
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/video-email" element={
-                        <ProtectedRoute>
-                          <VideoEmail />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/text-messages" element={
+                          <ProtectedRoute>
+                            <TextMessages />
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/invoicing" element={
-                        <ProtectedRoute>
-                          <Invoicing />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/video-email" element={
+                          <ProtectedRoute>
+                            <VideoEmail />
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/ai-tools" element={
-                        <ProtectedRoute>
-                          <AITools />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/invoicing" element={
+                          <ProtectedRoute>
+                            <Invoicing />
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/sales-tools" element={
-                        <ProtectedRoute>
-                          <SalesTools />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/ai-tools" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <AITools />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/lead-automation" element={
-                        <ProtectedRoute>
-                          <LeadAutomation />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/sales-tools" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <SalesTools />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/circle-prospecting" element={
-                        <ProtectedRoute>
-                          <CircleProspecting />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/lead-automation" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <LeadAutomation />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/forms" element={
-                        <ProtectedRoute>
-                          <FormsAndSurveys />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/circle-prospecting" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <CircleProspecting />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/business-analysis" element={
-                        <ProtectedRoute>
-                          <BusinessAnalyzer />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/forms-and-surveys" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <FormsAndSurveys />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/content-library" element={
-                        <ProtectedRoute>
-                          <ContentLibrary />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/settings" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <Settings />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/voice-profiles" element={
-                        <ProtectedRoute>
-                          <VoiceProfiles />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/business-analyzer" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <BusinessAnalyzer />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/campaigns" element={
-                        <ProtectedRoute>
-                          <CommunicationHub />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/content-library" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <ContentLibrary />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/communication-hub" element={
-                        <ProtectedRoute>
-                          <CommunicationHub />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/voice-profiles" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <VoiceProfiles />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/document-center" element={
-                        <ProtectedRoute>
-                          <DocumentCenter />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/communication-hub" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <CommunicationHub />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/analytics-dashboard" element={
-                        <ProtectedRoute>
-                          <AnalyticsDashboard />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/document-center" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <DocumentCenter />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/lead-capture" element={
-                        <ProtectedRoute>
-                          <LeadCapture />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/analytics-dashboard" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <AnalyticsDashboard />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/settings" element={
-                        <ProtectedRoute>
-                          <Settings />
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/lead-capture" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <LeadCapture />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      {/* Feature Pages */}
-                      <Route path="/features/ai-tools" element={<AiToolsFeaturePage />} />
-                      <Route path="/features/contacts" element={<ContactsFeaturePage />} />
-                      <Route path="/features/pipeline" element={<PipelineFeaturePage />} />
-                      <Route path="/features/ai-assistant" element={<AiAssistantFeaturePage />} />
-                      <Route path="/features/vision-analyzer" element={<VisionAnalyzerFeaturePage />} />
-                      <Route path="/features/image-generator" element={<ImageGeneratorFeaturePage />} />
-                      <Route path="/features/semantic-search" element={<SemanticSearchFeaturePage />} />
-                      <Route path="/features/function-assistant" element={<FunctionAssistantFeaturePage />} />
-                      <Route path="/features/communications" element={<CommunicationsFeaturePage />} />
-                      <Route path="/demo/goal-cards" element={<GoalCardDemo />} />
-                      <Route path="/ai-goals" element={
-                        <UserRoute>
-                          <AuthenticatedLayout>
-                            <AIGoalsPage />
-                          </AuthenticatedLayout>
-                        </UserRoute>
-                      } />
-                      <Route path="/partner/onboard" element={<PartnerOnboardingPage />} />
-                      <Route path="/partner/dashboard" element={
-                        <ResellerRoute>
-                          <AuthenticatedLayout>
-                            <PartnerDashboard />
-                          </AuthenticatedLayout>
-                        </ResellerRoute>
-                      } />
-                      <Route path="/admin/dashboard" element={
-                        <SuperAdminRoute>
-                          <AuthenticatedLayout>
-                            <SuperAdminDashboard />
-                          </AuthenticatedLayout>
-                        </SuperAdminRoute>
-                      } />
-                      <Route path="/admin/users" element={
-                        <SuperAdminRoute>
-                          <AuthenticatedLayout>
-                            <UserManagement />
-                          </AuthenticatedLayout>
-                        </SuperAdminRoute>
-                      } />
-                      <Route path="/admin/white-label" element={
-                        <SuperAdminRoute>
-                          <AuthenticatedLayout>
-                            <WhiteLabelCustomization />
-                          </AuthenticatedLayout>
-                        </SuperAdminRoute>
-                      } />
-                      <Route path="/admin/partner-management" element={
-                        <SuperAdminRoute>
-                          <AuthenticatedLayout>
-                            <PartnerManagementPage />
-                          </AuthenticatedLayout>
-                        </SuperAdminRoute>
-                      } />
-                      <Route path="/admin/revenue-sharing" element={
-                        <SuperAdminRoute>
-                          <AuthenticatedLayout>
-                            <RevenueSharingPage />
-                          </AuthenticatedLayout>
-                        </SuperAdminRoute>
-                      } />
-                      <Route path="/admin/feature-packages" element={
-                        <SuperAdminRoute>
-                          <AuthenticatedLayout>
-                            <FeaturePackageManagementPage />
-                          </AuthenticatedLayout>
-                        </SuperAdminRoute>
-                      } />
+                        <Route path="/ai-goals" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <AIGoalsPage />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      {/* Additional routes for advanced navbar tools */}
-                      <Route path="/task-management" element={
-                        <ProtectedRoute>
-                          <AuthenticatedLayout>
-                            <Tasks />
-                          </AuthenticatedLayout>
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/goals" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <AIGoalsPage />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/task-automation" element={
-                        <ProtectedRoute>
-                          <AuthenticatedLayout>
-                            <LeadAutomation />
-                          </AuthenticatedLayout>
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/goal-demo" element={
+                          <ProtectedRoute>
+                            <AuthenticatedLayout>
+                              <GoalCardDemo />
+                            </AuthenticatedLayout>
+                          </ProtectedRoute>
+                        } />
 
-                      <Route path="/project-tracker" element={
-                        <ProtectedRoute>
-                          <AuthenticatedLayout>
-                            <Tasks />
-                          </AuthenticatedLayout>
-                        </ProtectedRoute>
-                      } />
+                        {/* Partner and Admin routes */}
+                        <Route path="/partner-onboarding" element={
+                          <ResellerRoute>
+                            <AuthenticatedLayout>
+                              <PartnerOnboardingPage />
+                            </AuthenticatedLayout>
+                          </ResellerRoute>
+                        } />
 
-                      <Route path="/time-tracking" element={
-                        <ProtectedRoute>
-                          <AuthenticatedLayout>
-                            <Tasks />
-                          </AuthenticatedLayout>
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/partner-dashboard" element={
+                          <ResellerRoute>
+                            <AuthenticatedLayout>
+                              <PartnerDashboard />
+                            </AuthenticatedLayout>
+                          </ResellerRoute>
+                        } />
 
-                      <Route path="/workflow-builder" element={
-                        <ProtectedRoute>
-                          <AuthenticatedLayout>
-                            <LeadAutomation />
-                          </AuthenticatedLayout>
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/super-admin" element={
+                          <SuperAdminRoute>
+                            <AuthenticatedLayout>
+                              <SuperAdminDashboard />
+                            </AuthenticatedLayout>
+                          </SuperAdminRoute>
+                        } />
 
-                      <Route path="/deadline-manager" element={
-                      <Route path="/image-generator" element={
-                        <ProtectedRoute>
-                          <AuthenticatedLayout>
-                            <AITools />
-                          </AuthenticatedLayout>
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/user-management" element={
+                          <SuperAdminRoute>
+                            <AuthenticatedLayout>
+                              <UserManagement />
+                            </AuthenticatedLayout>
+                          </SuperAdminRoute>
+                        } />
 
-                      <Route path="/ai-model-demo" element={
-                        <ProtectedRoute>
-                          <AuthenticatedLayout>
-                            <AITools />
-                          </AuthenticatedLayout>
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/partner-management" element={
+                          <SuperAdminRoute>
+                            <AuthenticatedLayout>
+                              <PartnerManagementPage />
+                            </AuthenticatedLayout>
+                          </SuperAdminRoute>
+                        } />
 
-                      <Route path="/feature-access-demo" element={
-                        <ProtectedRoute>
-                          <AuthenticatedLayout>
-                            <Settings />
-                          </AuthenticatedLayout>
-                        </ProtectedRoute>
-                      } />
+                        <Route path="/revenue-sharing" element={
+                          <SuperAdminRoute>
+                            <AuthenticatedLayout>
+                              <RevenueSharingPage />
+                            </AuthenticatedLayout>
+                          </SuperAdminRoute>
+                        } />
 
-                      <Route path="/sso-config" element={
-                        <SuperAdminRoute>
-                          <AuthenticatedLayout>
-                            <Settings />
-                          </AuthenticatedLayout>
-                        </SuperAdminRoute>
-                      } />
+                        <Route path="/feature-packages" element={
+                          <SuperAdminRoute>
+                            <AuthenticatedLayout>
+                              <FeaturePackageManagementPage />
+                            </AuthenticatedLayout>
+                          </SuperAdminRoute>
+                        } />
 
-                      <Route path="/white-label" element={
-                        <SuperAdminRoute>
-                          <AuthenticatedLayout>
-                            <WhiteLabelCustomization />
-                          </AuthenticatedLayout>
-                        </SuperAdminRoute>
-                      } />
+                        <Route path="/white-label" element={
+                          <SuperAdminRoute>
+                            <AuthenticatedLayout>
+                              <WhiteLabelCustomization />
+                            </AuthenticatedLayout>
+                          </SuperAdminRoute>
+                        } />
 
-                      {/* Unauthorized route */}
-                      <Route path="/unauthorized" element={<UnauthorizedPage />} />
-                    </Routes>
-                  </NavigationProvider>
-                </Router>
+                        {/* Unauthorized route */}
+                        <Route path="/unauthorized" element={<UnauthorizedPage />} />
+                      </Routes>
+                    </NavigationProvider>
+                  </Router>
+                </VideoCallProvider>
               </AIToolsProvider>
             </EnhancedHelpProvider>
           </RoleProvider>
