@@ -4,6 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  NPM_FLAGS = "--include=dev"
 
 [template.environment]
   VITE_GOOGLE_AI_API_KEY = "Required Google AI API key for Gemini models"
@@ -13,8 +14,13 @@
 [context.production.processing.html]
   # Add placeholder replacement for environment variables
   pretty_urls = true
-  transformers = ["./netlify/transforms/html.js"]
 
 [context.production]
   # Production environment settings
-  environment = { NODE_ENV = "production", NPM_FLAGS = "" }
+  environment = { NODE_ENV = "production" }
+
+# Redirects for SPA
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
