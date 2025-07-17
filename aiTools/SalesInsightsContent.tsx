@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import * as edgeFunctionService from '../../services/edgeFunctionService';
+import * as edgeFunctionService from '../services/edgeFunctionService';
 import AIToolContent from '../shared/AIToolContent';
 import { Brain, BarChart3, TrendingUp, ChevronDown, ChevronUp } from 'lucide-react';
 

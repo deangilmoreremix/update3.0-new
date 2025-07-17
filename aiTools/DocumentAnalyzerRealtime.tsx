@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useOpenAIVision } from '../../services/openaiVisionService';
+import { useOpenAIVision } from '../services/openaiVisionService';
 import { useDropzone } from 'react-dropzone';
 import { FileText, Upload, RefreshCw, Check, ArrowDown, Eye, X, Plus, Download, Copy, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';

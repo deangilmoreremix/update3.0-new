@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import * as edgeFunctionService from '../../services/edgeFunctionService';
+import * as edgeFunctionService from '../services/edgeFunctionService';
 import StructuredAIResult from '../shared/StructuredAIResult';
 import { Brain, BarChart3, TrendingUp, ChevronDown, ChevronUp, Play, Loader2 } from 'lucide-react';
 

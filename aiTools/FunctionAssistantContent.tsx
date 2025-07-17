@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useOpenAIFunctions } from '../../services/openAiFunctionService';
+import { useOpenAIFunctions } from '../services/openAiFunctionService';
 import AIToolContent from '../shared/AIToolContent';
 import { Bot, User, Send, RefreshCw, Zap, Database, Calendar, CheckSquare, Settings, X } from 'lucide-react';
 

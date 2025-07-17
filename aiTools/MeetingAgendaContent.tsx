@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useGemini } from '../../services/geminiService';
+import { useGemini } from '../services/geminiService';
 import AIToolContent from '../shared/AIToolContent';
 import { Calendar, Users, FileText, RefreshCw, Copy, Check, Plus, Trash2, Clock } from 'lucide-react';
 import ReasoningToggle from '../shared/ReasoningToggle';

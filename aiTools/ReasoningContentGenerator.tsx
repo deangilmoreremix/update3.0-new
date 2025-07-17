@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useGemini } from '../../services/geminiService';
+import { useGemini } from '../services/geminiService';
 import AIToolContent from '../shared/AIToolContent';
 import { 
   Brain, 

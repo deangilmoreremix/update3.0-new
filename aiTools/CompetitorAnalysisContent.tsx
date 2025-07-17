@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import * as edgeFunctionService from '../../services/edgeFunctionService';
+import * as edgeFunctionService from '../services/edgeFunctionService';
 import FileUpload from '../shared/FileUpload';
 import AIToolContent from '../shared/AIToolContent';
 import { FileSearch, PlusCircle, Trash, Link } from 'lucide-react';

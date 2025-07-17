@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useOpenAIVision } from '../../services/openaiVisionService';
+import { useOpenAIVision } from '../services/openaiVisionService';
 import AIToolContent from '../shared/AIToolContent';
 import { useDropzone } from 'react-dropzone';
 import { File, Image, AlertCircle, RefreshCw, Upload, ExternalLink } from 'lucide-react';

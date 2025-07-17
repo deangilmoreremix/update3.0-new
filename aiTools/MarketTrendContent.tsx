@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import * as edgeFunctionService from '../../services/edgeFunctionService';
+import * as edgeFunctionService from '../services/edgeFunctionService';
 import AIToolContent from '../shared/AIToolContent';
 import FileUpload from '../shared/FileUpload';
 import { TrendingUp, ChevronRight } from 'lucide-react';
