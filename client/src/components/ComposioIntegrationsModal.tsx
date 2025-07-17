@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, CheckCircle, AlertCircle, Settings, Play, Pause, RefreshCw, Shield, Mail, MessageSquare, Calendar, Share2, Phone, FileText, Database, Globe, Link, Plus, Info } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface Integration {
   id: string;

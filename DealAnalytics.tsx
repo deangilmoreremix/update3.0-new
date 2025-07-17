@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useDealStore } from '../store/dealStore';
 import { useContactStore } from '../store/contactStore';
-import { DollarSign, Calendar, ArrowUp, TrendingUp, Activity, ZapOff } from 'lucide-react';
+import { Activity, ArrowUp, Calendar, DollarSign, PieChart, TrendingUp, ZapOff } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
