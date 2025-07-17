@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import * as edgeFunctionService from '../../services/edgeFunctionService';
 import FileUpload from '../shared/FileUpload';
 import AIToolContent from '../shared/AIToolContent';
-import { FileSearch, Link, PlusCircle, Search, Trash } from 'lucide-react';
+import { FileSearch, PlusCircle, Search, Trash } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const CompetitorAnalysisContent: React.FC = () => {
