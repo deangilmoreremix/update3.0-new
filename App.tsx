@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, BrowserRouter as Router } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 
 import { AIToolsProvider } from './AIToolsProvider';
@@ -10,6 +10,7 @@ import { queryClient } from './lib/queryClient';
 import { ProtectedRoute, SuperAdminRoute, ResellerRoute, UserRoute } from './auth/ProtectedRoute';
 import { ThemeProvider } from './src/contexts/ThemeContext';
 import { NavigationProvider } from './src/contexts/NavigationContext';
+import { VideoCallProvider } from './src/contexts/VideoCallContext';
 
 // Landing Pages
 import LandingPage from './pages/Landing/LandingPage';
@@ -100,8 +101,9 @@ function App() {
           <RoleProvider>
             <EnhancedHelpProvider>
               <AIToolsProvider>
-                <Router>
-                  <NavigationProvider>
+                <VideoCallProvider>
+                  <Router>
+                    <NavigationProvider>
                     <Routes>
                       {/* Auth routes (available for future Clerk integration) */}
                       <Route path="/login" element={<Login />} />
@@ -435,6 +437,7 @@ function App() {
                     </Routes>
                   </NavigationProvider>
                 </Router>
+                </VideoCallProvider>
               </AIToolsProvider>
             </EnhancedHelpProvider>
           </RoleProvider>

@@ -25,7 +25,10 @@ import {
   Reply,
   Calendar,
   FileJson,
-  Hash
+  Hash,
+  Plus,
+  Settings,
+  Video
 } from 'lucide-react';
 
 import StreamingChat from './aiTools/StreamingChat';
