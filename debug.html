@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Test</title>
+</head>
+<body>
+    <h1>Testing React Application</h1>
+    
+    <script>
+        // Test if we can access the main application
+        fetch('/')
+            .then(response => response.text())
+            .then(html => {
+                console.log('Main page loaded:', html.slice(0, 200));
+                
+                // Try to find React elements
+                if (html.includes('react')) {
+                    document.body.innerHTML += '<p style="color: green;">✅ React found in HTML</p>';
+                } else {
+                    document.body.innerHTML += '<p style="color: orange;">⚠️ React not found in HTML</p>';
+                }
+                
+                // Try to access the main.tsx
+                return fetch('/main.tsx');
+            })
+            .then(response => response.text())
+            .then(js => {
+                console.log('Main.tsx loaded:', js.slice(0, 200));
+                document.body.innerHTML += '<p style="color: green;">✅ main.tsx is accessible</p>';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.body.innerHTML += '<p style="color: red;">❌ Error loading files: ' + error.message + '</p>';
+            });
+            
+        // Test if the app loads in an iframe
+        const iframe = document.createElement('iframe');
+        iframe.src = '/';
+        iframe.style.width = '100%';
+        iframe.style.height = '400px';
+        iframe.style.border = '1px solid #ccc';
+        iframe.style.marginTop = '20px';
+        
+        iframe.onload = function() {
+            document.body.innerHTML += '<p style="color: green;">✅ App loaded in iframe</p>';
+        };
+        
+        iframe.onerror = function() {
+            document.body.innerHTML += '<p style="color: red;">❌ Error loading app in iframe</p>';
+        };
+        
+        document.body.appendChild(iframe);
+    </script>
+</body>
+</html>
