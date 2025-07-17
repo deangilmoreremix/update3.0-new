@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { X, Search, User, UserPlus, Filter, MoreHorizontal, Check, Trash, Mail } from 'lucide-react';
+import { Check, Filter, Mail, MoreHorizontal, Plus, Search, Trash, User, UserPlus, X } from 'lucide-react';
 import Avatar from '../ui/Avatar';
 import { useContactStore } from '../../store/contactStore';
 import { getInitials } from '../../utils/avatars';

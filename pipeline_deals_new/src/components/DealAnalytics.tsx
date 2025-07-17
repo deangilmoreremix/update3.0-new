@@ -14,7 +14,7 @@ import {
   Pie, 
   Cell 
 } from 'recharts';
-import { DollarSign, Target, Users, TrendingUp, Activity, ZapOff, Calendar, ArrowUp } from 'lucide-react';
+import { Activity, ArrowUp, Calendar, DollarSign, PieChart, Target, TrendingUp, Users, ZapOff } from 'lucide-react';
 import { Deal } from '../types';
 
 interface DealAnalyticsProps {

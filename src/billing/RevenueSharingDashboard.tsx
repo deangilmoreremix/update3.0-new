@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { DollarSign, TrendingUp, Download, CheckCircle, Clock, Wallet } from 'lucide-react';
+import { CheckCircle, Clock, DollarSign, Download, PieChart, TrendingUp, Wallet } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';

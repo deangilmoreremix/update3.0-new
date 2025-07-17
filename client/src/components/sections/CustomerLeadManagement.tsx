@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAITools } from '../AIToolsProvider';
-import { Users, UserPlus, Brain } from 'lucide-react';
+import { Brain, Plus, UserPlus, Users } from 'lucide-react';
 import { useContacts } from '../../hooks/useContacts';
 import { AIContactTestButton } from '../contacts/AIContactTestButton';
 

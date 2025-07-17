@@ -8,7 +8,7 @@ import { Input } from '../ui/input';
 import { SmartCalendarTile } from './SmartCalendarTile';
 import { AIMeetingAssistant } from './AIMeetingAssistant';
 import { SmartSchedulingModal } from './SmartSchedulingModal';
-import { Clock, Users, Brain, Sparkles, Plus, Search, Phone, MapPin, Target, TrendingUp, AlertCircle, CheckCircle, Settings } from 'lucide-react';
+import { AlertCircle, Brain, Calendar, CheckCircle, Clock, MapPin, Phone, Plus, Search, Settings, Sparkles, Target, TrendingUp, Users, X } from 'lucide-react';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import { useToast } from '../../hooks/use-toast';
 

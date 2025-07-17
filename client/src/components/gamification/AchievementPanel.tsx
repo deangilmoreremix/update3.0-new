@@ -1,7 +1,7 @@
 import React from 'react';
 import { useGamification } from '../../contexts/GamificationContext';
 import { Contact } from '../../types/contact';
-import { Trophy, Award, Star, Zap, TrendingUp, DollarSign, Crown, BarChart3, UserPlus, User, Target, ChevronRight, Clock } from 'lucide-react';
+import { Award, BarChart3, ChevronRight, Clock, Crown, DollarSign, Plus, Star, Target, TrendingUp, Trophy, User, UserPlus, Zap } from 'lucide-react';
 
 export const AchievementPanel: React.FC = () => {
   const { leaderboard, teamMembers, challenges } = useGamification();

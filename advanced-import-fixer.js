@@ -9,16 +9,17 @@ const projectRoot = '/workspaces/update3.0-new';
 const importPatterns = {
   'lucide-react': {
     common: ['Plus', 'Settings', 'Video', 'X', 'User', 'Users', 'Search', 'Mail', 'Phone'],
-    ui: ['Calendar', 'Clock', 'Home', 'Menu', 'Bell', 'Star', 'Heart'],
-    navigation: ['ChevronDown', 'ChevronUp', 'ChevronLeft', 'ChevronRight', 'ArrowRight', 'ArrowLeft'],
-    actions: ['Edit', 'Delete', 'Trash2', 'Save', 'Upload', 'Download', 'Copy', 'Share'],
-    data: ['BarChart3', 'PieChart', 'TrendingUp', 'TrendingDown', 'Target'],
-    media: ['Play', 'Pause', 'Stop', 'Volume2', 'VolumeX', 'Mic', 'MicOff', 'VideoOff'],
-    files: ['FileText', 'Image', 'Folder', 'FolderPlus'],
-    feedback: ['CheckCircle', 'AlertTriangle', 'Info', 'XCircle', 'Eye', 'EyeOff'],
-    advanced: ['Brain', 'Zap', 'MessageSquare', 'RefreshCw', 'RotateCcw', 'Maximize2', 'Minimize2']
+    ui: ['Calendar', 'Clock', 'Home', 'Menu', 'Bell', 'Star', 'Heart', 'Grid3X3', 'Layout'],
+    navigation: ['ChevronDown', 'ChevronUp', 'ChevronLeft', 'ChevronRight', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'],
+    actions: ['Edit', 'Delete', 'Trash2', 'Save', 'Upload', 'Download', 'Copy', 'Share', 'Send', 'Filter'],
+    data: ['BarChart3', 'PieChart', 'TrendingUp', 'TrendingDown', 'Target', 'Activity', 'Database'],
+    media: ['Play', 'Pause', 'Stop', 'Volume2', 'VolumeX', 'Mic', 'MicOff', 'VideoOff', 'Camera'],
+    files: ['FileText', 'Image', 'Folder', 'FolderPlus', 'File', 'Files', 'Paperclip'],
+    feedback: ['CheckCircle', 'AlertTriangle', 'Info', 'XCircle', 'Eye', 'EyeOff', 'AlertCircle', 'Check'],
+    advanced: ['Brain', 'Zap', 'MessageSquare', 'RefreshCw', 'RotateCcw', 'Maximize2', 'Minimize2', 'Loader2', 'Spinner'],
+    system: ['Power', 'Wifi', 'WifiOff', 'Lock', 'Unlock', 'Shield', 'Key', 'Globe', 'Monitor', 'Smartphone']
   },
-  'react-router-dom': ['useNavigate', 'useLocation', 'useParams', 'Link', 'Navigate', 'Outlet', 'NavLink']
+  'react-router-dom': ['useNavigate', 'useLocation', 'useParams', 'Link', 'Navigate', 'Outlet', 'NavLink', 'useSearchParams']
 };
 
 function getAllIcons() {
@@ -174,8 +175,9 @@ function addImportLine(content, importLine) {
   return lines.join('\n');
 }
 
-function findReactFiles(dir, maxFiles = 100) {
+function findReactFiles(dir, maxFiles = 300) {
   const files = [];
+  const priorityPaths = ['/src/', '/client/src/', '/components/', '/pages/', '/Dashboard/', '/modules/'];
   
   function searchDir(currentDir, depth = 0) {
     if (depth > 10 || files.length >= maxFiles) return; // Prevent infinite recursion
@@ -215,21 +217,46 @@ function findReactFiles(dir, maxFiles = 100) {
 }
 
 function main() {
-  console.log('🔧 Advanced Import Fixer - Processing React components...\n');
+  console.log('🔧 Advanced Import Fixer - BATCH MODE for App Loading Issues...\n');
   
-  const files = findReactFiles(projectRoot, 100); // Process more files in this batch
+  const files = findReactFiles(projectRoot, 300); // Process 300 files in this aggressive batch
   console.log(`Found ${files.length} React component files to process\n`);
+  
+  // Prioritize critical files that affect app loading
+  const criticalFiles = files.filter(file => {
+    const fileName = file.toLowerCase();
+    return fileName.includes('app.tsx') || 
+           fileName.includes('main.tsx') || 
+           fileName.includes('index.tsx') ||
+           fileName.includes('navbar') ||
+           fileName.includes('router') ||
+           fileName.includes('provider') ||
+           fileName.includes('dashboard') ||
+           fileName.includes('layout');
+  });
+  
+  const regularFiles = files.filter(file => !criticalFiles.includes(file));
+  const processingOrder = [...criticalFiles, ...regularFiles];
+  
+  console.log(`🔥 Processing ${criticalFiles.length} critical files first, then ${regularFiles.length} regular files\n`);
   
   let totalFixed = 0;
   let totalIcons = 0;
   let totalRouter = 0;
+  let criticalFixed = 0;
   
-  for (const file of files) {
+  for (const file of processingOrder) {
     const relativePath = file.replace(projectRoot, '');
     const result = fixFileImports(file);
     
     if (result.modified) {
-      console.log(`✅ Fixed ${relativePath}:`);
+      const isCritical = criticalFiles.includes(file);
+      if (isCritical) {
+        console.log(`🔥 CRITICAL Fixed ${relativePath}:`);
+        criticalFixed++;
+      } else {
+        console.log(`✅ Fixed ${relativePath}:`);
+      }
       
       if (result.changes.icons.length > 0) {
         console.log(`   🎨 Icons: ${result.changes.icons.join(', ')}`);
@@ -245,11 +272,12 @@ function main() {
     }
   }
   
-  console.log(`\n📊 Summary:`);
-  console.log(`   ✨ Fixed ${totalFixed} files`);
-  console.log(`   🎨 Added ${totalIcons} icon imports`);
-  console.log(`   🛣️  Added ${totalRouter} router imports`);
-  console.log(`\n🚀 Ready for build and deployment!`);
+  console.log(`\n📊 Batch Processing Summary:`);
+  console.log(`   🔥 Critical files fixed: ${criticalFixed}`);
+  console.log(`   ✨ Total files fixed: ${totalFixed}`);
+  console.log(`   🎨 Icon imports added: ${totalIcons}`);
+  console.log(`   🛣️  Router imports added: ${totalRouter}`);
+  console.log(`\n🚀 App loading issues should be resolved! Run build to test.`);
 }
 
 main();

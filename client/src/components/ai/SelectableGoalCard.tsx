@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AIGoal } from '../../data/aiGoals';
-import { Check } from 'lucide-react';
+import { Check, Shield, Star, Target, Zap } from 'lucide-react';
 
 interface SelectableGoalCardProps {
   goal: AIGoal;

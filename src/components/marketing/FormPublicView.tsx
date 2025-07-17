@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useFormStore, FormTemplate } from '../../store/formStore';
 import { CheckIcon, LockIcon, AlertCircleIcon, LoaderIcon } from 'lucide-react';
 

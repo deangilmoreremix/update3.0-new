@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Avatar } from '../ui/avatar';
 import { Badge } from '../ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
-import { Calendar, AlertTriangle, Star, Users, Brain, Target, TrendingUp } from 'lucide-react';
+import { AlertTriangle, Brain, Calendar, Phone, Star, Target, TrendingUp, Users } from 'lucide-react';
 import { aiCalendarService } from '../../services/aiCalendarService';
 
 interface Appointment {

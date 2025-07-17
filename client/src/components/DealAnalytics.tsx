@@ -1,6 +1,6 @@
 import React from 'react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { TrendingUp, DollarSign, Calendar, Target } from 'lucide-react';
+import { Calendar, DollarSign, PieChart, Target, TrendingUp } from 'lucide-react';
 
 interface Deal {
   id: string;

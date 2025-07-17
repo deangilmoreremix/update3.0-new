@@ -5,7 +5,7 @@ import { useOpenAI } from '../../services/openaiService';
 import { useGeminiAI } from '../../services/geminiService';
 import { Deal } from '../../types';
 import { Contact } from '../../types/contact';
-import { X, Save, Bot, Search, Users, Building2, Mail, Phone, MapPin, Calendar, DollarSign, Target, AlertCircle, Sparkles, Zap, Brain, UserPlus, UserX, User } from 'lucide-react';
+import { AlertCircle, Bot, Brain, Building2, Calendar, DollarSign, Mail, MapPin, Phone, Plus, Save, Search, Sparkles, Target, User, UserPlus, UserX, Users, X, Zap } from 'lucide-react';
 import SelectContactModal from './SelectContactModal';
 import { useContactStore } from '../../store/contactStore';
 import AddContactModal from './AddContactModal';

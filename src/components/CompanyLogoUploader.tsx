@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Upload, Check, AlertCircle, Loader2, Eye, Trash2 } from 'lucide-react';
+import { AlertCircle, Check, Eye, File, Loader2, Trash2, Upload } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { supabase, STORAGE_BUCKETS } from '../lib/supabase';
 

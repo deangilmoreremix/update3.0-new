@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { Deal, PipelineColumn } from '../types';
 import { AIEnhancedDealCard } from './deals/AIEnhancedDealCard';
-import { Search, Plus, BarChart3, TrendingUp, Target, DollarSign, Briefcase, ArrowUpDown, SlidersHorizontal, RefreshCw, Bot, Layers, AlertCircle, Clock, PieChart, Download, FilterX, List } from 'lucide-react';
+import { AlertCircle, ArrowUpDown, BarChart3, Bot, Briefcase, Clock, DollarSign, Download, FilterX, Layers, List, PieChart, Plus, RefreshCw, Search, SlidersHorizontal, Target, TrendingUp, X } from 'lucide-react';
 import { ModernButton } from './ui/ModernButton';
 import { usePersonalization } from '../contexts/PersonalizationContext';
 import { useContactStore } from '../store/contactStore';

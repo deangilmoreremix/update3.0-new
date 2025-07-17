@@ -8,7 +8,7 @@ import { Contact } from '../../types/contact';
 import { AIEnhancedContactCard } from './AIEnhancedContactCard';
 import AddContactModal from '../deals/AddContactModal';
 import Fuse from 'fuse.js';
-import { X, Search, Filter, Plus, Users, ChevronDown, Brain, Download, Upload, Zap, CheckCheck, Grid, List, UserPlus, Crown, Loader2 } from 'lucide-react';
+import { Brain, Check, CheckCheck, ChevronDown, Crown, Download, Filter, Grid, List, Loader2, Plus, Search, Upload, UserPlus, Users, X, Zap } from 'lucide-react';
 
 interface ContactsModalProps {
   isOpen: boolean;

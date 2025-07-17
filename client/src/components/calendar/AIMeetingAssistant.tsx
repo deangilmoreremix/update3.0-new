@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Textarea } from '../ui/textarea';
-import { Mic, Brain, Lightbulb, FileText, CheckCircle, Users, Clock, Target, TrendingUp, Square, Download } from 'lucide-react';
+import { ArrowRight, Brain, CheckCircle, Clock, Download, FileText, Lightbulb, Mic, Square, Target, TrendingUp, Users } from 'lucide-react';
 import { aiCalendarService } from '../../services/aiCalendarService';
 import { useToast } from '../../hooks/use-toast';
 

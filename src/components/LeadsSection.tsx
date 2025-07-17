@@ -1,6 +1,6 @@
 
 import { useContactStore } from '../store/contactStore';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import ContactCard from './ContactCard';
 import { Plus } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';

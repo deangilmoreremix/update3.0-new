@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useGemini } from '../../services/geminiService';
 import AIToolContent from '../shared/AIToolContent';
-import { Brain, Check, Copy, FileText, Mail, MessageSquare, RefreshCw, Sparkles, Target, Users } from 'lucide-react';
+import { Brain, Check, Copy, FileText, Mail, MessageSquare, RefreshCw, Shield, Sparkles, Target, Users } from 'lucide-react';
 
 interface ReasoningContentGeneratorProps {
   contentType?: 'email' | 'proposal' | 'script' | 'objection' | 'social';

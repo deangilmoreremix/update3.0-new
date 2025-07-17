@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { MoreHorizontal, Mail, MapPin, Building } from 'lucide-react';
 import Avatar from './ui/Avatar';
 import CallButton from './CallButton';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { getInitials } from '../utils/avatars';
 import { useTheme } from '../contexts/ThemeContext';
 import { Contact } from '../types/contact';

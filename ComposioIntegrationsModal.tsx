@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, import { Link } from 'react-router-dom';
-import { Calendar, CheckCircle, FileText, Info, Mail, MessageSquare, Pause, Phone, Play, Plus, RefreshCw, Settings, X } from 'lucide-react';
+import { AlertCircle, Calendar, CheckCircle, Database, FileText, Globe, Info, Mail, MessageSquare, Pause, Phone, Play, Plus, RefreshCw, Settings, Shield, X } from 'lucide-react';
   X, 
   CheckCircle, 
   AlertCircle, 

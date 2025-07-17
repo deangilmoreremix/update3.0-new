@@ -9,7 +9,7 @@ import { useOpenAI } from '../../services/openaiService';
 import { Contact } from '../../types';
 import { AIEnhancedContactCard } from '../contacts/AIEnhancedContactCard';
 import Fuse from 'fuse.js';
-import { X, Search, Filter, Plus, Users, ChevronDown, Brain, Download, Upload, Zap, CheckCheck, Grid3X3, List, Target, Sparkles, CheckCircle, Loader2 } from 'lucide-react';
+import { Brain, Check, CheckCheck, CheckCircle, ChevronDown, Download, Filter, Grid3X3, List, Loader2, Plus, Search, Sparkles, Target, Upload, Users, X, Zap } from 'lucide-react';
 
 interface ContactsModalProps {
   isOpen: boolean;

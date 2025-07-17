@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Task } from '../types';
 import { useTaskStore } from '../store/taskStore';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { Calendar } from 'lucide-react';
 
 // Setup localizer for react-big-calendar
 const localizer = momentLocalizer(moment);

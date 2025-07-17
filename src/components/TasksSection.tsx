@@ -1,6 +1,6 @@
 
 import TaskCard from './TaskCard';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import { Plus } from 'lucide-react';
 

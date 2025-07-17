@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { ModernButton } from '../ui/ModernButton';
 import { useContactStore } from '../../store/contactStore';
 
-import { X, Upload, Download, AlertCircle, CheckCircle, Info, Users, Database, FileSpreadsheet } from 'lucide-react';
+import { AlertCircle, CheckCircle, Database, Download, File, FileSpreadsheet, Info, Upload, Users, X } from 'lucide-react';
 
 interface ImportContactsModalProps {
   isOpen: boolean;

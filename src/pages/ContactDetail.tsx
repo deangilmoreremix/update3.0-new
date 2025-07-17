@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useOpenAI } from '../services/openaiService';
 import { useGemini } from '../services/geminiService';
 import { Contact } from '../types';

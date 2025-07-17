@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { Search, Database, Zap, ChevronRight, CheckCheck, Play, Star, Users, BarChart3, RefreshCw, Filter, ArrowUp, MousePointer } from 'lucide-react';
+import { ArrowUp, BarChart3, Check, CheckCheck, ChevronRight, Database, Filter, MousePointer, Play, RefreshCw, Search, Star, Users, Zap } from 'lucide-react';
 
 import LandingHeader from '../components/LandingHeader';
 import LandingFooter from '../components/LandingFooter';
