@@ -3,27 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useOpenAI } from '../services/openaiService';
 import { useGemini } from '../services/geminiService';
 import { Contact } from '../types';
-import { 
-  Mail, 
-  Phone, 
-  Building, 
-  User, 
-  Calendar, 
-  RefreshCw, 
-  AlertOctagon, 
-  FileText, 
-  MessageSquare, 
-  BarChart3, 
-  Brain,
-  Edit,
-  Trash2,
-  Flag,
-  Tag,
-  MapPin,
-  ArrowLeft,
-  Check,
-  X
-} from 'lucide-react';
+import { Mail, Phone, Building, User, Calendar, RefreshCw, AlertOctagon, FileText, MessageSquare, BarChart3, Brain, Edit, Trash2, Flag, Tag, MapPin, ArrowLeft, Check, X } from 'lucide-react';
 import Avatar from 'react-avatar';
 import ContactAgentButtons from '../components/contacts/ContactAgentButtons';
 

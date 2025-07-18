@@ -1,14 +1,5 @@
 import { Goal, GoalCategory } from '../types/goals';
-import { 
-  Target, 
-  Users, 
-  MessageSquare, 
-  Zap, 
-  BarChart3, 
-  FileText, 
-  Shield, 
-  Brain 
-} from 'lucide-react';
+import { Target, Users, MessageSquare, Zap, BarChart3, FileText, Shield, Brain } from 'lucide-react';
 
 export const goalCategories: GoalCategory[] = [
   {

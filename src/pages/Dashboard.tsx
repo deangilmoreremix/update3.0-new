@@ -8,7 +8,7 @@ import { useAITools } from '../components/AIToolsProvider';
 import AppointmentWidget from '../components/AppointmentWidget';
 import AIToolsCard from '../components/Dashboard/AIToolsCard';
 import DealAnalytics from '../components/DealAnalytics';
-import { BarChart3, DollarSign, Calendar, Clock, Zap, ChevronRight, AlertCircle, ArrowUpRight, ArrowDownRight, Brain, Users, Briefcase, Mail, CheckSquare, Plus, Search } from 'lucide-react';
+import { AlertCircle, ArrowDownRight, ArrowUpRight, BarChart3, Brain, Briefcase, Calendar, CheckSquare, ChevronRight, Clock, DollarSign, Link, Mail, Plus, Search, Users, Zap } from 'lucide-react';
 
 // Import AI tools components
 import StreamingChat from '../components/aiTools/StreamingChat';

@@ -1,20 +1,7 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { GlassCard } from '../ui/GlassCard';
-import { 
-  Home, 
-  Users, 
-  Calendar, 
-  Settings, 
-  TrendingUp,
-  Phone,
-  Mail,
-  FileBarChart,
-  Target,
-  MessageSquare,
-  ClipboardList,
-  Bot
-} from 'lucide-react';
+import { Home, Users, Calendar, Settings, TrendingUp, Phone, Mail, FileBarChart, Target, MessageSquare, ClipboardList, Bot } from 'lucide-react';
 
 interface SidebarProps {
   // Remove the callback props since we'll use React Router

@@ -5,7 +5,7 @@ import { useDealStore } from '../../store/dealStore';
 import { useContactStore } from '../../store/contactStore';
 import Avatar from '../ui/Avatar';
 import { getInitials } from '../../utils/avatars';
-import { BarChart3, LineChart, TrendingUp, PieChart as PieChartIcon } from 'lucide-react';
+import { BarChart as BarChartIcon, BarChart3, LineChart as LineChartIcon, PieChart as PieChartIcon, TrendingUp } from 'lucide-react';
 import {
   BarChart,
   Bar,

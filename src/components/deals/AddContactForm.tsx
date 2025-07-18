@@ -1,16 +1,6 @@
 import React, { useState } from 'react';
 import { Contact } from '../../types/contact';
-import { 
-  User, 
-  Building2, 
-  Mail, 
-  Phone, 
-  Tag, 
-  Globe, 
-  Briefcase, 
-  Save,
-  XCircle
-} from 'lucide-react';
+import { User, Building2, Mail, Phone, Tag, Globe, Briefcase, Save, XCircle } from 'lucide-react';
 
 interface AddContactFormProps {
   onSubmit: (contactData: Omit<Contact, 'id' | 'createdAt' | 'updatedAt'>) => Promise<Contact>;

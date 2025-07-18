@@ -1,22 +1,5 @@
 import React from 'react';
-import { 
-  Brain, 
-  Mail, 
-  MessageSquare, 
-  FileText, 
-  Phone, 
-  Target, 
-  FileSearch, 
-  TrendingUp, 
-  BarChart3,
-  PieChart, 
-  Users,
-  Briefcase,
-  Eye,
-  Image,
-  Search,
-  Zap
-} from 'lucide-react';
+import { Brain, Mail, MessageSquare, FileText, Phone, Target, FileSearch, TrendingUp, BarChart3, PieChart, Users, Briefcase, Eye, Image, Search, Zap } from 'lucide-react';
 
 interface FloatingIconsProps {
   count?: number;

@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useDealStore } from '../store/dealStore';
-import { DollarSign, Calendar, ArrowUp, TrendingUp, Activity, ZapOff } from 'lucide-react';
+import { Activity, ArrowUp, BarChart as BarChartIcon, Calendar, DollarSign, LineChart as LineChartIcon, TrendingUp, ZapOff } from 'lucide-react';
 
 interface DealAnalyticsProps {
   title?: string;

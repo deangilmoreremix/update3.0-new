@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { ChevronDown, Link, Menu, X } from 'lucide-react';
 
 const LandingHeader: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

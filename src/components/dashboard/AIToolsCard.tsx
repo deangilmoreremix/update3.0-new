@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAITools } from '../AIToolsProvider';
-import { Brain } from 'lucide-react';
+import { Brain, Calendar, FileText, Mail, Zap } from 'lucide-react';
 
 const AIToolsCard: React.FC = () => {
   const { openTool } = useAITools();

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { Plus, UserPlus, Calendar, Mail } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useDealStore } from '../../store/dealStore';
 import { useContactStore } from '../../store/contactStore';

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { Brain, Users, BarChart3, Zap, Search, Image, Mail, ArrowRight } from 'lucide-react';
+import { ArrowRight, BarChart3, Brain, Image, Link, Mail, Search, Users, Zap } from 'lucide-react';
 
 const ParallaxHero: React.FC = () => {
   const [scrollY, setScrollY] = useState(0);

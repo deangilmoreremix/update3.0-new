@@ -1,17 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Twitter, 
-  Linkedin, 
-  Facebook, 
-  Instagram, 
-  Youtube, 
-  ArrowRight 
-} from 'lucide-react';
+import { Mail, Phone, MapPin, Twitter, Linkedin, Facebook, Instagram, Youtube, ArrowRight, Link } from 'lucide-react';
 
 const LandingFooter: React.FC = () => {
   const currentYear = new Date().getFullYear();

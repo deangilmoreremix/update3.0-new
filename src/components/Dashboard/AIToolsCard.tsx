@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAITools } from '../AIToolsProvider';
-import { Brain, Mail, MessageSquare, FileText, Phone, Target, FileSearch, TrendingUp, ChevronRight, User, Users, Eye, Image, Search, Zap, Shield, Reply, Calendar, Volume2 } from 'lucide-react';
+import { Brain, Calendar, ChevronRight, Eye, FileSearch, FileText, Image, Link, Mail, MessageSquare, Phone, Reply, Search, Shield, Target, TrendingUp, User, Users, Volume2, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const AIToolsCard: React.FC = () => {

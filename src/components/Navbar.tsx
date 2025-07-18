@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { ChevronDown, User, Bell, Search, Video, Calendar, Phone, Sun, Moon, Sparkles, Image, ExternalLink, Menu, X } from 'lucide-react';
+import { Activity, BarChart3, Bell, Brain, Briefcase, Calendar, Camera, ChevronDown, Clock, DollarSign, ExternalLink, Eye, FileText, Globe, Image, LineChart, Mail, Menu, MessageSquare, Mic, Moon, Phone, PieChart, Search, Shield, Sparkles, Sun, Target, TrendingUp, User, Users, Video, Volume2, X, Zap } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useNavigation } from '../contexts/NavigationContext';
 import { useCallback } from 'react';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { ArrowRight, Bot, Briefcase, Calendar, Check, CheckCheck, ChevronRight, Code, Database, HelpCircle, Play, Search, Shield, Star, Users, Zap } from 'lucide-react';
+import { ArrowRight, Bot, Briefcase, Calendar, Check, CheckCheck, ChevronRight, Code, Database, HelpCircle, Link, Play, Search, Shield, Star, Users, Zap } from 'lucide-react';
 
 import LandingHeader from '../components/LandingHeader';
 import LandingFooter from '../components/LandingFooter';

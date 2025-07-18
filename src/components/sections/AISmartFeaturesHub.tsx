@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Brain, Search, Zap } from 'lucide-react';
+import { BarChart3, Brain, Search, Settings, Zap } from 'lucide-react';
 import { useAITools } from '../../components/AIToolsProvider';
 import AIInsightsPanel from '../dashboard/AIInsightsPanel';
 import { SmartAIControls } from '../ai/SmartAIControls';

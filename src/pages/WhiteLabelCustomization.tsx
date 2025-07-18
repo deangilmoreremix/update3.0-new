@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Palette, Upload, Eye, Save, RotateCcw, Code, Monitor, Mail } from 'lucide-react';
+import { Code, Eye, Globe, Mail, Monitor, Palette, RotateCcw, Save, Sparkles, Upload } from 'lucide-react';
 import { useTenant } from '../components/TenantProvider';
 import { ConditionalRender } from '../components/RoleBasedAccess';
 

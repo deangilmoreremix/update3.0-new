@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  Brain,
-  Users,
-  BarChart3,
-  Search,
-  PieChart,
-  ArrowRight,
-  Check
-} from 'lucide-react';
+import { Brain, Users, BarChart3, Search, PieChart, ArrowRight, Check } from 'lucide-react';
 import AnimatedFeatureIcon from './AnimatedFeatureIcon';
 
 interface Feature {

@@ -3,21 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTaskStore } from '../store/taskStore';
 import TaskCalendar from '../components/TaskCalendar';
 import { Task } from '../types';
-import { 
-  Plus, 
-  List, 
-  CheckSquare, 
-  Calendar,
-  Users,
-  Briefcase,
-  Flag,
-  Clock,
-  X,
-  Edit,
-  Trash2,
-  Save,
-  MessageSquare
-} from 'lucide-react';
+import { Plus, List, CheckSquare, Calendar, Users, Briefcase, Flag, Clock, X, Edit, Trash2, Save, MessageSquare, Link } from 'lucide-react';
 import Select from 'react-select';
 import ReactMarkdown from 'react-markdown';
 

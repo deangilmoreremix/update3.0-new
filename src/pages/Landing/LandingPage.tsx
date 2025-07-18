@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Brain, TrendingUp, BarChart3, PieChart, ChevronRight, User, Clock, ExternalLink, BarChart, Users, Briefcase, Eye, Image, Mic, Search, Zap } from 'lucide-react';
+import { BarChart, BarChart3, Brain, Briefcase, ChevronRight, Clock, ExternalLink, Eye, Image, Link, Mic, PieChart, Search, TrendingUp, User, Users, Zap } from 'lucide-react';
 
 import LandingHeader from './components/LandingHeader';
 import LandingFooter from './components/LandingFooter';

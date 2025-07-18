@@ -3,26 +3,7 @@ import { GlassCard } from '../ui/GlassCard';
 import { ModernButton } from '../ui/ModernButton';
 import { SmartAIControls } from '../ai/SmartAIControls';
 import { useTaskOptimization } from '../../hooks/';
-import { 
-  Brain, 
-  TrendingUp, 
-  AlertTriangle, 
-  Target, 
-  Clock, 
-  DollarSign, 
-  Zap,
-  BarChart3,
-  Lightbulb,
-  RefreshCw,
-  ThumbsUp,
-  ThumbsDown,
-  Star,
-  Settings,
-  Layers,
-  Sparkles,
-  CheckCircle,
-  Activity
-} from 'lucide-react';
+import { Brain, TrendingUp, AlertTriangle, Target, Clock, DollarSign, Zap, BarChart3, Lightbulb, RefreshCw, ThumbsUp, ThumbsDown, Star, Settings, Layers, Sparkles, CheckCircle, Activity } from 'lucide-react';
 
 export const EnhancedAIInsightsPanel: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);

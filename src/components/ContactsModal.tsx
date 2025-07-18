@@ -6,7 +6,7 @@ import { aiEnrichmentService, ContactEnrichmentData } from '../../services/aiEnr
 import { Contact } from '../../types/contact';
 import { AIEnhancedContactCard } from '../contacts/AIEnhancedContactCard';
 import Fuse from 'fuse.js';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Sparkles } from 'lucide-react';
 
 const [analysisProgress, setAnalysisProgress] = useState<{current: number, total: number} | null>(null);
 const [aiResults, setAiResults] = useState<{success: number, failed: number} | null>(null);

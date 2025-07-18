@@ -1,26 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { 
-  Eye, 
-  Image, 
-  FileText, 
-  FileSearch, 
-  ChevronRight, 
-  CheckCheck, 
-  ArrowRight, 
-  Play,
-  Star,
-  Zap,
-  PieChart,
-  BarChart3,
-  CheckSquare,
-  Search,
-  Code,
-  User,
-  Check,
-  PlusCircle
-} from 'lucide-react';
+import { Eye, Image, FileText, FileSearch, ChevronRight, CheckCheck, ArrowRight, Play, Star, Zap, PieChart, BarChart3, CheckSquare, Search, Code, User, Check, PlusCircle, Link } from 'lucide-react';
 
 import LandingHeader from '../components/LandingHeader';
 import LandingFooter from '../components/LandingFooter';

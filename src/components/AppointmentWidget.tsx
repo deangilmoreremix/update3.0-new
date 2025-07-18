@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useAppointmentStore } from '../store/appointmentStore';
-import { Calendar, Clock, Video, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAppointmentStore } from '../store/appointmentStore';
+import { ArrowRight, Calendar, Clock, MapPin, Phone, Video } from 'lucide-react';
 
 interface AppointmentWidgetProps {
   limit?: number;
