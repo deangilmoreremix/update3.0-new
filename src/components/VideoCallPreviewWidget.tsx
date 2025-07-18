@@ -3,8 +3,7 @@ import { Video, Mic, MicOff, VideoOff, Phone, Minimize2, Maximize2, MessageSquar
 import { useTheme } from '../contexts/ThemeContext';
 import { useVideoCall } from '../contexts/VideoCallContext';
 import { useContactStore } from '../store/contactStore';
-// Memoize Avatar to prevent unnecessary re-renders
-const Avatar = React.memo(require('./ui/Avatar').default);
+import Avatar from './ui/Avatar';
 import { getInitials } from '../utils/avatars';
 
 // Convert to React.memo to prevent unnecessary re-renders of the entire component
