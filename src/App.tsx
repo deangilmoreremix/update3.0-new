@@ -19,9 +19,12 @@ import PhoneSystemPage from './pages/PhoneSystem';
 import InvoicingPage from './pages/Invoicing';
 import FormsAndSurveysPage from './pages/FormsAndSurveys';
 import WhiteLabelCustomization from './pages/WhiteLabelCustomization';
-const VideoCallOverlay = React.lazy(() => import('./components/VideoCallOverlay'));
-const VideoCallPreviewWidget = React.lazy(() => import('./components/VideoCallPreviewWidget'));
+
+// Import video components directly to avoid lazy loading context issues
+import VideoCallOverlay from './components/VideoCallOverlay';
+import VideoCallPreviewWidget from './components/VideoCallPreviewWidget';
 import DevicePermissionChecker from './components/DevicePermissionChecker';
+
 import { AIToolsProvider } from './components/AIToolsProvider';
 import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -36,13 +39,13 @@ import './components/styles/design-system.css';
 function App() {
   // Prevent unnecessary re-renders with useState instead of using a boolean directly
   const [isContactsModalOpen, setIsContactsModalOpen] = useState(false);
-  const [shouldRenderVideoComponents, setShouldRenderVideoComponents] = useState(false);
+  const [providersReady, setProvidersReady] = useState(false);
   
-  // Delay loading video components to improve initial render performance
+  // Ensure providers are fully initialized before rendering video components
   useEffect(() => {
     const timer = setTimeout(() => {
-      setShouldRenderVideoComponents(true);
-    }, 1000);
+      setProvidersReady(true);
+    }, 100); // Small delay to ensure providers are ready
     
     return () => clearTimeout(timer);
   }, []);
@@ -120,12 +123,12 @@ function App() {
                       </Routes>
                     </div>
                   
-                  {/* Lazy load video components with suspense to prevent layout shifts */}
-                  {shouldRenderVideoComponents && (
-                    <React.Suspense fallback={null}>
+                  {/* Only render video components after providers are ready */}
+                  {providersReady && (
+                    <>
                       <VideoCallOverlay />
                       <VideoCallPreviewWidget />
-                    </React.Suspense>
+                    </>
                   )}
                     
                     {/* ContactsModal rendered at the root level */}

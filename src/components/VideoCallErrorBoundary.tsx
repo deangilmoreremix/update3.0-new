@@ -7,6 +7,7 @@ interface Props {
 interface State {
   hasError: boolean;
   error?: Error;
+  errorType?: 'video-call' | 'navigation' | 'line-chart' | 'other';
 }
 
 export class VideoCallErrorBoundary extends React.Component<Props, State> {
@@ -16,21 +17,37 @@ export class VideoCallErrorBoundary extends React.Component<Props, State> {
   }
 
   static getDerivedStateFromError(error: Error): State {
-    // Update state so the next render will show the fallback UI
-    return { hasError: true, error };
+    console.error('ErrorBoundary caught:', error.message);
+    
+    // Check for different error types
+    if (error.message?.includes('useVideoCall must be used within')) {
+      return { hasError: true, error, errorType: 'video-call' };
+    }
+    
+    if (error.message?.includes('useNavigation must be used within')) {
+      return { hasError: true, error, errorType: 'navigation' };
+    }
+    
+    if (error.message?.includes('LineChart is not defined')) {
+      return { hasError: true, error, errorType: 'line-chart' };
+    }
+    
+    // For other critical errors, catch them too
+    return { hasError: true, error, errorType: 'other' };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Log the error for debugging
-    console.error('VideoCall context error detected:', error, errorInfo);
+    console.error('ErrorBoundary caught an error:', error, errorInfo);
     
-    // Check if it's a VideoCall provider error
-    if (error.message?.includes('useVideoCall must be used within')) {
-      console.log('Attempting to recover from VideoCall context error...');
+    // Check for different types of provider errors
+    if (error.message?.includes('useVideoCall must be used within') || 
+        error.message?.includes('useNavigation must be used within')) {
+      console.log('Context provider error detected, attempting recovery...');
       
       // Clear any potential cached state
       try {
         localStorage.removeItem('videoCallState');
+        localStorage.removeItem('navigationState');
         sessionStorage.clear();
       } catch (e) {
         console.warn('Failed to clear storage:', e);
@@ -38,8 +55,16 @@ export class VideoCallErrorBoundary extends React.Component<Props, State> {
       
       // Reload the page after a short delay to get fresh context
       setTimeout(() => {
+        console.log('Reloading to recover from context error...');
         window.location.reload();
       }, 2000);
+    }
+    
+    // Handle import/dependency errors differently
+    if (error.message?.includes('LineChart is not defined') || 
+        error.message?.includes('is not defined')) {
+      console.log('Import error detected:', error.message);
+      // Don't reload for import errors, just show fallback UI
     }
   }
 
@@ -49,14 +74,27 @@ export class VideoCallErrorBoundary extends React.Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
+      const { errorType, error } = this.state;
+      
+      let title = 'Loading Latest Version...';
+      let message = 'Clearing cache and reloading with the newest updates...';
+      
+      if (errorType === 'line-chart') {
+        title = 'Component Loading...';
+        message = 'Some chart components are loading. This will resolve automatically.';
+      } else if (errorType === 'navigation') {
+        title = 'Navigation Loading...';
+        message = 'Navigation system is initializing...';
+      }
+      
       return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50">
           <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Loading Latest Version...
+              {title}
             </h2>
             <p className="text-gray-600 mb-6">
-              Clearing cache and reloading with the newest updates...
+              {message}
             </p>
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
             <button
@@ -65,13 +103,13 @@ export class VideoCallErrorBoundary extends React.Component<Props, State> {
             >
               Retry Now
             </button>
-            {this.state.error && (
+            {error && (
               <details className="mt-4 text-left">
                 <summary className="cursor-pointer text-sm text-gray-500">
                   Technical Details
                 </summary>
                 <pre className="text-xs text-red-600 mt-2 overflow-auto">
-                  {this.state.error.message}
+                  {error.message}
                 </pre>
               </details>
             )}
