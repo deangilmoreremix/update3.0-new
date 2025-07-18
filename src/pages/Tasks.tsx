@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTaskStore } from '../store/taskStore';
 import { Task } from '../types';
-import { AlertCircle, Briefcase, Calendar, CheckCircle, CheckSquare, Clock, Flag, Link, Plus, Search, User, X } from 'lucide-react';
+import { AlertCircle, Briefcase, Calendar, CheckCircle, CheckSquare, Clock, Flag, Link, Plus, Search, User, X, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import SimpleMDE from 'react-simplemde-editor';

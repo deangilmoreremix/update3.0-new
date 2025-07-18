@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { fetchVoiceProfiles, createVoiceProfile, updateVoiceProfile, deleteVoiceProfile } from '../../services/supabaseClient';
-import { Music, Mic, RefreshCw, Trash2, Edit, Plus, Save, Volume2, X } from 'lucide-react';
+import { Music, Mic, RefreshCw, Trash2, Edit, Plus, Save, Volume2, X, Settings } from 'lucide-react';
 
 interface VoiceProfile {
   id: string;

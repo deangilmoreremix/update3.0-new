@@ -1,3 +1,4 @@
+import React from 'react';
 import { Contact } from '../types/contact';
 import { AIContactAnalysis } from '../types/contact';
 
@@ -225,7 +226,7 @@ class RealOpenAIService implements OpenAIService {
 
   // Fallback methods for when API is unavailable
   private generateBasicAnalysis(contact: Contact): AIContactAnalysis {
-    const score = 50;;
+    const score = 50;
     const insights: string[] = [];
     const recommendations: string[] = [];
     const riskFactors: string[] = [];

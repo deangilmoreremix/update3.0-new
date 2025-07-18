@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useGemini } from '../../services/geminiService';
-import { CheckCircle, XCircle, AlertCircle, RefreshCw } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, RefreshCw, Phone, Check } from 'lucide-react';
 
 interface FormField {
   name: string;

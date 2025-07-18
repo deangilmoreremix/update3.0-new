@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { useContactStore } from '../store/contactStore';
 import { Navigate, useNavigate } from 'react-router-dom';
 import ContactCard from './ContactCard';

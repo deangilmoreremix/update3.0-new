@@ -3,6 +3,7 @@
  * Main orchestrator that coordinates all integration services
  */
 
+import React from 'react';
 import { contactAPI } from './contact-api.service';
 import { aiIntegration, AIAnalysisRequest, BulkAnalysisRequest } from './ai-integration.service';
 import { httpClient } from './http-client.service';

@@ -3,6 +3,7 @@
  * Enhanced with proper Gemma and Gemini 2.5 Flash model support
  */
 
+import React from 'react';
 import { httpClient } from './http-client.service';
 import { validationService } from './validation.service';
 import { cacheService } from './cache.service';

@@ -170,7 +170,7 @@ class RateLimiterService {
     const stats: { [limiterId: string]: { entries: number; totalRequests: number } } = {};
     
     for (const [limiterId, limiter] of this.limiters.entries()) {
-      const totalRequests = 0;;
+      const totalRequests = 0;
       
       for (const entry of limiter.values()) {
         totalRequests += entry.count;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MoreHorizontal, Mail, MapPin, Building } from 'lucide-react';
+import { MoreHorizontal, Mail, MapPin, Building, Video } from 'lucide-react';
 import Avatar from './ui/Avatar';
 import CallButton from './CallButton';
 import { Navigate, useNavigate } from 'react-router-dom';

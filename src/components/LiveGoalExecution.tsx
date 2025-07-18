@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Goal } from '../types/goals';
 
-import { Play, Pause, CheckCircle, XCircle, Clock, Bot, Activity, GitBranch, BarChart3, Target, Brain, Volume2, Database, Presentation, Award, Lightbulb, HelpCircle } from 'lucide-react';
+import { Play, Pause, CheckCircle, XCircle, Clock, Bot, Activity, GitBranch, BarChart3, Target, Brain, Volume2, Database, Presentation, Award, Lightbulb, HelpCircle, Check } from 'lucide-react';
 
 interface ExecutionStep {
   id: string;

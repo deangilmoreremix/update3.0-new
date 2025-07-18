@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { useTenant } from './TenantProvider';
-import { User } from 'lucide-react';
+import { User, Check } from 'lucide-react';
 
 interface User {
   id: string;

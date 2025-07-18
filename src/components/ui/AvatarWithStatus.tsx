@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { StatusIndicator } from './StatusIndicator';
 
 interface AvatarWithStatusProps {

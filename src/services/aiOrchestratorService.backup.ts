@@ -1,4 +1,5 @@
 // Temporarily simplified AI orchestrator to get app running
+import React from 'react';
 import { enhancedGeminiService } from './enhancedGeminiService';
 // Note: useOpenAI removed to avoid hook violations in class component
 

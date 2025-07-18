@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Grid3X3, Settings, Cpu } from 'lucide-react';
+import { Grid3X3, Settings, Cpu, Check } from 'lucide-react';
 import ConnectedApps from '../dashboard/ConnectedApps';
 import AIModelSelector from '../AIModelSelector';
 

@@ -1,3 +1,4 @@
+import React from 'react';
 import { create } from 'zustand';
 import { Task } from '../types';
 import { v4 as uuidv4 } from 'uuid';

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Deal, PipelineColumn } from '../types';
 import { mockContacts } from './mockContacts';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { GlassCard } from '../ui/GlassCard';
 import { AvatarWithStatus } from '../ui/AvatarWithStatus';
 
-import { Search, Bell, Settings, ChevronDown } from 'lucide-react';
+import { Search, Bell, Settings, ChevronDown, User } from 'lucide-react';
 
 const navigationTabs = [
   { label: 'Book Summaries', active: false },

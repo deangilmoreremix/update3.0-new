@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart3, Mail, TrendingUp, Search, Settings, Plus, Target } from 'lucide-react';
+import { BarChart3, Mail, TrendingUp, Search, Settings, Plus, Target, Video, Phone, Calendar } from 'lucide-react';
 
 interface QuickAIButtonProps {
   icon: React.ComponentType<unknown>;

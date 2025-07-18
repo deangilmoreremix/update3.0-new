@@ -135,7 +135,7 @@ class CacheService {
   }
   
   deleteByTag(tag: string): number {
-    const deletedCount = 0;;
+    const deletedCount = 0;
     
     for (const [key, entry] of this.cache.entries()) {
       if (entry.tags?.includes(tag)) {

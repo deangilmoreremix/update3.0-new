@@ -1,3 +1,4 @@
+import React from 'react';
 import { supabaseAIService, type AIModelConfig } from './supabaseAIService';
 
 interface GenerateContentRequest {

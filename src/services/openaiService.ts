@@ -1,3 +1,4 @@
+import React from 'react';
 import OpenAI from 'openai';
 import { useApiStore } from '../store/apiStore';
 import { Contact, Deal } from '../types';

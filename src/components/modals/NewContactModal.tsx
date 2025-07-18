@@ -5,7 +5,7 @@ import { AIResearchButton } from '../ui/AIResearchButton';
 import { useContactStore } from '../../store/contactStore';
 import { ContactEnrichmentData } from '../../services/aiEnrichmentService';
 
-import { X, User, Building, Tag, Globe, Target, Save, UserPlus, AlertCircle, CheckCircle, Heart, MessageSquare, Linkedin, Twitter, Facebook, Instagram, Plus, Database, Briefcase, MapPin, Brain, Sparkles, RefreshCw } from 'lucide-react';
+import { X, User, Building, Tag, Globe, Target, Save, UserPlus, AlertCircle, CheckCircle, Heart, MessageSquare, Linkedin, Twitter, Facebook, Instagram, Plus, Database, Briefcase, MapPin, Brain, Sparkles, RefreshCw, Phone } from 'lucide-react';
 
 interface NewContactModalProps {
   isOpen: boolean;

@@ -1,6 +1,7 @@
 // Real Agent Executor - Orchestrates agent execution in Live Mode
 // Determines which LLM provider to use and calls appropriate services
 
+import React from 'react';
 import realApiService from '../services/realApiService';
 import apiConfig from '../config/apiConfig';
 import { composioToolsData } from '../data/composioToolsData';

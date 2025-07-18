@@ -1,3 +1,4 @@
+import React from 'react';
 import { TourStep } from '../components/ui/ComprehensiveTour';
 
 // Header tour steps

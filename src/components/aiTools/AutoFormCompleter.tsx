@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useGemini } from '../../services/geminiService';
-import { CheckCircle, AlertCircle, FileText, RefreshCw, Sparkles, User, Building, Mail, Phone } from 'lucide-react';
+import { CheckCircle, AlertCircle, FileText, RefreshCw, Sparkles, User, Building, Mail, Phone, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface FormField {

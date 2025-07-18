@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
-import { MoreHorizontal, ArrowRight, UserPlus, Users, Plus } from 'lucide-react';
+import { MoreHorizontal, ArrowRight, UserPlus, Users, Plus, Calendar } from 'lucide-react';
 import Avatar from '../ui/Avatar';
 
 

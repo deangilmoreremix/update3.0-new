@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart2, Clock, MessageSquare, Mic, MicOff, MousePointer, Pause, Phone, PhoneOff, Play, RefreshCw, Send, User, Volume2, VolumeX, X } from 'lucide-react';
+import { BarChart2, Clock, MessageSquare, Mic, MicOff, MousePointer, Pause, Phone, PhoneOff, Play, RefreshCw, Send, User, Volume2, VolumeX, X, Settings } from 'lucide-react';
 
 interface CallLog {
   id: string;

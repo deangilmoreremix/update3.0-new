@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, BarChart2, Users, Settings, Menu, ChevronRight, UserPlus, X, PlusCircle, Brain,  } from 'lucide-react';
+import { Plus, BarChart2, Users, Settings, Menu, ChevronRight, UserPlus, X, PlusCircle, Brain } from 'lucide-react';
 
 interface FloatingActionPanelProps {
   onNewDeal?: () => void;

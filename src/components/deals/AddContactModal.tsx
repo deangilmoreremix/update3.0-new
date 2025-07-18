@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useContactStore } from '../../store/contactStore';
 import { Contact } from '../../types/contact';
-import { AlertCircle, Brain, Building2, CheckCircle, Database, Facebook, Globe, Heart, Instagram, Linkedin, MapPin, MessageSquare, Plus, RefreshCw, Save, Sparkles, Tag, Target, Twitter, User, UserPlus, X } from 'lucide-react';
+import { AlertCircle, Brain, Building2, CheckCircle, Database, Facebook, Globe, Heart, Instagram, Linkedin, MapPin, MessageSquare, Plus, RefreshCw, Save, Sparkles, Tag, Target, Twitter, User, UserPlus, X, Phone } from 'lucide-react';
 import { ModernButton } from '../ui/ModernButton';
 import { AIAutoFillButton } from '../ui/AIAutoFillButton';
 import { AIResearchButton } from '../ui/AIResearchButton';

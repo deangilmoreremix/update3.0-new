@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useOpenAIAssistants } from '../../services/openaiAssistantsService';
-import { User, Bot, Send, RefreshCw, Plus, Settings, X, Save, MessagesSquare, Clock, Sparkles } from 'lucide-react';
+import { User, Bot, Send, RefreshCw, Plus, Settings, X, Save, MessagesSquare, Clock, Sparkles, Check } from 'lucide-react';
 
 interface Message {
   id: string;

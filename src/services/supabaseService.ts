@@ -1,3 +1,4 @@
+import React from 'react';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Contact } from '../types/contact';
 import { Deal } from '../types';

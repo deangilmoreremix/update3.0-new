@@ -1,3 +1,4 @@
+import React from 'react';
 import { callEdgeFunction } from './supabaseClient';
 import { Contact, Deal } from '../types';
 

@@ -3,6 +3,7 @@
  * Intelligent routing between Gemma and OpenAI models based on task requirements
  */
 
+import React from 'react';
 import { logger } from './logger.service';
 import { rateLimiter } from './rate-limiter.service';
 
@@ -266,7 +267,7 @@ class TaskRouterService {
   }
 
   private adjustScoreForRequirements(baseScore: number, modelConfig: AIModel, requirements: TaskRequirements): number {
-    const score = baseScore;;
+    const score = baseScore;
 
     // Accuracy requirement adjustment
     if (requirements.accuracy === 'critical' && modelConfig.id.includes('gpt-4o')) {
@@ -426,7 +427,7 @@ class TaskRouterService {
       'gpt-4o': 4000
     };
 
-    const latency = baseLatencies[modelConfig.id] || 2500;;
+    const latency = baseLatencies[modelConfig.id] || 2500;
 
     // Adjust for complexity
     switch (requirements.complexity) {

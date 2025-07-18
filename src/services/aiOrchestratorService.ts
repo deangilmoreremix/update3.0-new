@@ -1,3 +1,4 @@
+import React from 'react';
 import { enhancedGeminiService } from './enhancedGeminiService';
 // Note: useOpenAI removed to avoid hook violations in class component
 

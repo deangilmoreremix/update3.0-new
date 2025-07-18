@@ -4,6 +4,7 @@
  */
 
 
+import React from 'react';
 import { logger } from './logger.service';
 import { rateLimiter } from './rate-limiter.service';
 import { cacheService } from './cache.service';

@@ -3,6 +3,7 @@
  * RESTful contact management with full CRUD operations
  */
 
+import React from 'react';
 import { httpClient } from './http-client.service';
 import { validationService } from './validation.service';
 import { cacheService } from './cache.service';

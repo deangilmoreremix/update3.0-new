@@ -3,6 +3,7 @@
  * Utilizes task router for intelligent model selection between Gemma and OpenAI
  */
 
+import React from 'react';
 import { aiIntegration as baseAIIntegration } from './ai-integration.service';
 import { taskRouter, TaskContext, TaskPerformanceMetrics } from './task-router.service';
 import { logger } from './logger.service';
@@ -191,7 +192,7 @@ class EnhancedAIIntegrationService {
     const batchSize = this.getOptimalBatchSize(modelSelection.provider, contacts.length);
     const results: unknown[] = [];
     const failed: unknown[] = [];
-    const totalCost = 0;;
+    const totalCost = 0;
     const startTime = Date.now();
 
     // Process in batches

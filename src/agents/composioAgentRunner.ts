@@ -1,6 +1,7 @@
 // Composio Agent Runner - Handles tool interactions and CRM data management
 // Orchestrates actions through Composio API for external business tools
 
+import React from 'react';
 import realApiService from '../services/realApiService';
 
 import { realAgentExecutor } from './realAgentExecutor';

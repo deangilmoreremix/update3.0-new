@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { supabaseAIService } from './supabaseAIService';
 
 interface ChatMessage {

@@ -1,5 +1,6 @@
 
 
+import React from 'react';
 import { IntelligentAIService } from './intelligentAIService';
 
 interface CompanyResearchData {

@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useOpenAIVision } from '../../services/openaiVisionService';
 import AIToolContent from '../shared/AIToolContent';
 import { useDropzone } from 'react-dropzone';
-import { File, Image, RefreshCw, Upload, ExternalLink } from 'lucide-react';
+import { File, Image, RefreshCw, Upload, ExternalLink, Check } from 'lucide-react';
 
 interface VisionAnalyzerContentProps {
   type?: 'competitor' | 'document' | 'general';
