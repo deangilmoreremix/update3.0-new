@@ -8,9 +8,9 @@ import { AIToolsProvider } from './components/AIToolsProvider';
 // Use the complete redesigned Dashboard from smartcrmdash integration
 import Dashboard from './components/Dashboard';
 
-// Import redesigned Enhanced page components for other pages
-import PipelineEnhanced from '../pages/PipelineEnhanced';
-import ContactsEnhanced from '../pages/ContactsEnhanced';
+// Import page components from src directory
+import Pipeline from './pages/Pipeline';
+import Contacts from './pages/Contacts';
 
 function SimpleNavbar() {
   return (
@@ -42,8 +42,8 @@ function ProgressiveApp() {
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/pipeline" element={<PipelineEnhanced />} />
-                <Route path="/contacts" element={<ContactsEnhanced />} />
+                <Route path="/pipeline" element={<Pipeline />} />
+                <Route path="/contacts" element={<Contacts />} />
                 <Route path="*" element={<Dashboard />} />
               </Routes>
             </div>
