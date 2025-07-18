@@ -17,6 +17,10 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
+        // Force new chunk names with timestamp for cache busting
+        chunkFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+        entryFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+        assetFileNames: `assets/[name]-[hash]-${Date.now()}.[ext]`,
         manualChunks: {
           // Vendor chunks
           vendor: ['react', 'react-dom', 'react-router-dom'],
@@ -33,5 +37,7 @@ export default defineConfig({
       },
     },
     chunkSizeWarningLimit: 1000,
+    // Clear output directory
+    emptyOutDir: true,
   },
 });

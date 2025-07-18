@@ -1,11 +1,14 @@
 {
   "name": "vite-react-typescript-starter",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "rm -rf dist && vite build",
+    "build:clean": "npm run clean && vite build",
+    "clean": "rm -rf dist node_modules/.vite",
+    "deploy": "npm run build:clean && echo 'Build complete for deployment'",
     "lint": "eslint .",
     "preview": "vite preview",
     "clean-cache": "npm cache clean --force && rm -rf node_modules/.vite && rm -rf dist",
