@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Deal } from '../../types';
-import { Zap, Mail, Plus, Settings, Clock, Calendar, Play, Pause, Edit, Trash2, ChevronDown, ChevronRight, Info, PlusCircle, ArrowRight, SlidersHorizontal, Brain, Target, X, Sparkles, Phone } from 'lucide-react';
+import { ArrowRight, Brain, Calendar, Check, ChevronDown, ChevronRight, Clock, Edit, Info, Mail, Pause, Phone, Play, Plus, PlusCircle, Settings, SlidersHorizontal, Sparkles, Target, Trash2, X, Zap } from 'lucide-react';
 
 interface DealAutomationPanelProps {
   deal: Deal;

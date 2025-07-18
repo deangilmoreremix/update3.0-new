@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Contact } from '../../types/contact';
-import { ArrowRight, Brain, Calendar, ChevronDown, ChevronRight, Clock, Edit, Info, Mail, Pause, Play, Plus, PlusCircle, Settings, SlidersHorizontal, Sparkles, Trash2, X, Zap } from 'lucide-react';
+import { ArrowRight, Brain, Calendar, Check, ChevronDown, ChevronRight, Clock, Edit, Info, Mail, Pause, Phone, Play, Plus, PlusCircle, Settings, SlidersHorizontal, Sparkles, Trash2, X, Zap } from 'lucide-react';
 
 interface AutomationPanelProps {
   contact: Contact;
