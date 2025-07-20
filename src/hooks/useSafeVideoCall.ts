@@ -1,131 +1,98 @@
-import React, { useContext } from 'react';
-
 import { useContext } from 'react';
+import { VideoCallContext } from '../contexts/VideoCallContext';
 
-// Define the VideoCall context type to avoid import issues
-interface VideoCallContextType {
-  activeCall: any;
-  isInCall: boolean;
-  isCalling: boolean;
-  callError: string | null;
-  startCall: () => Promise<void>;
-  endCall: () => void;
-  joinCall: () => Promise<void>;
-  acceptCall: () => void;
-  rejectCall: () => void;
-  toggleMute: () => void;
-  toggleVideo: () => void;
-  isMuted: boolean;
-  isVideoOn: boolean;
-  localStream: any;
-  remoteStream: any;
-  connectionQuality: 'excellent' | 'good' | 'fair' | 'poor';
-  callDuration: number;
-  participants: any[];
-  isRecording: boolean;
-  startRecording: () => void;
-  stopRecording: () => void;
-  sendMessage: () => void;
-  messages: any[];
-  shareScreen: () => Promise<void>;
-  stopScreenShare: () => void;
-  isScreenSharing: boolean;
-}
-
-// Fallback implementation for when context is not available
-const fallbackVideoCall: VideoCallContextType = {
-  activeCall: null,
+// Fallback implementation for when VideoCallProvider is not available
+const fallbackVideoCall = {
+  // Call State
+  currentCall: null,
+  callStatus: 'idle' as const,
   isInCall: false,
-  isCalling: false,
-  callError: null,
-  startCall: () => Promise.resolve(),
-  endCall: () => {},
-  joinCall: () => Promise.resolve(),
-  acceptCall: () => {},
-  rejectCall: () => {},
-  toggleMute: () => {},
-  toggleVideo: () => {},
-  isMuted: false,
-  isVideoOn: true,
+  callDuration: 0,
+  
+  // Stream Management
   localStream: null,
   remoteStream: null,
-  connectionQuality: 'good' as const,
-  callDuration: 0,
+  isVideoEnabled: true,
+  isAudioEnabled: true,
+  
+  // Call Actions
+  startCall: async () => {
+    console.warn('VideoCall: Provider not available - using fallback');
+    return Promise.resolve();
+  },
+  endCall: async () => {
+    console.warn('VideoCall: Provider not available - using fallback');
+    return Promise.resolve();
+  },
+  acceptCall: async () => {
+    console.warn('VideoCall: Provider not available - using fallback');
+    return Promise.resolve();
+  },
+  rejectCall: async () => {
+    console.warn('VideoCall: Provider not available - using fallback');
+    return Promise.resolve();
+  },
+  
+  // Media Controls
+  toggleVideo: () => {
+    console.warn('VideoCall: Provider not available - using fallback');
+  },
+  toggleAudio: () => {
+    console.warn('VideoCall: Provider not available - using fallback');
+  },
+  
+  // Group Calls
   participants: [],
+  addParticipantToCall: async () => {
+    console.warn('VideoCall: Provider not available - using fallback');
+    return Promise.resolve();
+  },
+  
+  // Chat/Data Channel
+  sendMessage: () => {
+    console.warn('VideoCall: Provider not available - using fallback');
+  },
+  onMessageReceived: () => {
+    console.warn('VideoCall: Provider not available - using fallback');
+  },
+  
+  // Recording
+  startRecording: async () => {
+    console.warn('VideoCall: Provider not available - using fallback');
+    return Promise.resolve();
+  },
+  stopRecording: () => {
+    console.warn('VideoCall: Provider not available - using fallback');
+  },
   isRecording: false,
-  startRecording: () => {},
-  stopRecording: () => {},
-  sendMessage: () => {},
-  messages: [],
-  shareScreen: () => Promise.resolve(),
-  stopScreenShare: () => {},
-  isScreenSharing: false,
 };
 
-// Safe hook that handles context errors gracefully
-export const useSafeVideoCall = (): VideoCallContextType => {
+/**
+ * Safe hook that never throws context errors
+ * Always returns a valid VideoCall interface, with fallback implementation when provider is missing
+ */
+export const useSafeVideoCall = () => {
   try {
-    // Try to dynamically import and use the VideoCall context
-    const { VideoCallContext } = require('../../contexts/VideoCallContext');
     const context = useContext(VideoCallContext);
-    
     if (!context) {
-      console.warn('VideoCall context not available, using fallback implementation');
+      console.warn('VideoCall context not found, using fallback implementation');
       return fallbackVideoCall;
     }
-    
-    return context as VideoCallContextType;
+    return context;
   } catch (error) {
-    console.warn('VideoCall context could not be loaded, using fallback implementation');
+    console.warn('Error accessing VideoCall context, using fallback:', error);
     return fallbackVideoCall;
   }
 };
 
-// Fallback implementation for when context is not available
-const fallbackVideoCall: VideoCallContextType = {
-  activeCall: null,
-  isInCall: false,
-  isCalling: false,
-  callError: null,
-  startCall: () => Promise.resolve(),
-  endCall: () => {},
-  joinCall: () => Promise.resolve(),
-  acceptCall: () => {},
-  rejectCall: () => {},
-  toggleMute: () => {},
-  toggleVideo: () => {},
-  isMuted: false,
-  isVideoOn: true,
-  localStream: null,
-  remoteStream: null,
-  connectionQuality: 'good' as const,
-  callDuration: 0,
-  participants: [],
-  isRecording: false,
-  startRecording: () => {},
-  stopRecording: () => {},
-  sendMessage: () => {},
-  messages: [],
-  shareScreen: () => Promise.resolve(),
-  stopScreenShare: () => {},
-  isScreenSharing: false,
-};
-
-// Safe hook that handles context errors gracefully
-export const useSafeVideoCall = (): VideoCallContextType => {
+/**
+ * Hook to check if VideoCall functionality is available
+ */
+export const useVideoCallAvailable = () => {
   try {
-    // Try to dynamically import and use the VideoCall context
-    const { VideoCallContext } = require('../../contexts/VideoCallContext');
     const context = useContext(VideoCallContext);
-    
-    if (!context) {
-      console.warn('VideoCall context not available, using fallback implementation');
-      return fallbackVideoCall;
-    }
-    
-    return context;
-  } catch (error) {
-    console.warn('VideoCall context could not be loaded, using fallback implementation');
-    return fallbackVideoCall;
+    return !!context;
+  } catch {
+    return false;
   }
 };

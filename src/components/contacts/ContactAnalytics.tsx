@@ -3,7 +3,7 @@ import { Contact } from '../../types/contact';
 import { 
   BarChart, LineChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   Cell, PieChart, Pie 
-} from 'recharts';
+} from '../charts/SafeCharts';
 import { Activity, ArrowDown, ArrowUp, BarChart, BarChart2, Calendar, Clock, DollarSign, Eye, LineChart, Mail, MessageSquare, PieChart, Star, Target, TrendingUp } from 'lucide-react';
 
 interface ContactAnalyticsProps {

@@ -20,7 +20,7 @@ import {
   PieChart,
   Pie,
   Cell
-} from 'recharts';
+} from '../charts/SafeCharts';
 
 const ChartsSection: React.FC = () => {
   const { isDark } = useTheme();

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Maximize2, MessageSquare, Mic, MicOff, Minimize2, Monitor, MonitorOff, Phone, Plus, UserPlus, Users, Video, VideoOff } from 'lucide-react';
-import { useVideoCall } from '../contexts/VideoCallContext';
+import { useSafeVideoCall as useVideoCall } from '../hooks/useSafeVideoCall';
 import { useTheme } from '../contexts/ThemeContext';
 import Avatar from './ui/Avatar';
 import { getInitials } from '../utils/avatars';

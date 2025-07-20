@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BarChart, DollarSign, LineChart, PieChart, Target, TrendingDown, TrendingUp, Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from '../charts/SafeCharts';
 import { useContactStore } from '@/store/contactStore';
 import { useDealStore } from '@/store/dealStore';
 

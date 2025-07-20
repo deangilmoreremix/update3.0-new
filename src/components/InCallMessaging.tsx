@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, MessageSquare, X, Check } from 'lucide-react';
-import { useVideoCall } from '../contexts/VideoCallContext';
+import { useSafeVideoCall as useVideoCall } from '../hooks/useSafeVideoCall';
 import { useTheme } from '../contexts/ThemeContext';
 
 interface ChatMessage {

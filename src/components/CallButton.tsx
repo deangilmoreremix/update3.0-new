@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Video, Phone } from 'lucide-react';
-import { useVideoCall } from '../contexts/VideoCallContext';
+import { useSafeVideoCall as useVideoCall } from '../hooks/useSafeVideoCall';
 import { useTheme } from '../contexts/ThemeContext';
-import type { CallParticipant } from '../contexts/VideoCallContext';
+import type { CallParticipant } from '../hooks/useSafeVideoCall';
 import { Contact } from '../types/contact';
 
 interface CallButtonProps {

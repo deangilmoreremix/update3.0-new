@@ -70,7 +70,7 @@ interface VideoCallContextType {
   isRecording: boolean;
 }
 
-const VideoCallContext = createContext<VideoCallContextType | undefined>(undefined);
+export const VideoCallContext = createContext<VideoCallContextType | undefined>(undefined);
 
 // Memoize hook to improve performance
 export const useVideoCall = (): VideoCallContextType => {

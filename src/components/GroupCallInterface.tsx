@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Mic, MicOff, Video, VideoOff, Phone, MessageSquare, Users, Monitor, MonitorOff, MoreVertical, Share2, X } from 'lucide-react';
-import { useVideoCall } from '../contexts/VideoCallContext';
+import { useSafeVideoCall as useVideoCall } from '../hooks/useSafeVideoCall';
 import { useTheme } from '../contexts/ThemeContext';
 import { useContactStore } from '../store/contactStore';
 import Avatar from './ui/Avatar';

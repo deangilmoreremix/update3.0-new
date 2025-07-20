@@ -1,5 +1,15 @@
 import React, { useRef } from 'react';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { 
+  SafeLineChart, 
+  SafeBarChart, 
+  SafeLine, 
+  SafeBar, 
+  SafeXAxis, 
+  SafeYAxis, 
+  SafeCartesianGrid, 
+  SafeTooltip, 
+  SafeResponsiveContainer 
+} from './charts/SafeCharts';
 import { useDealStore } from '../store/dealStore';
 import { Activity, ArrowUp, BarChart as BarChartIcon, Calendar, DollarSign, LineChart as LineChartIcon, TrendingUp, ZapOff } from 'lucide-react';
 
