@@ -3,7 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '../../contexts/ThemeContext';
 import { NavigationProvider } from '../../contexts/NavigationContext';
 import { DashboardLayoutProvider } from '../../contexts/DashboardLayoutContext';
-import { VideoCallProvider } from '../../hooks/useSafeVideoCall';
+import { VideoCallProvider } from '../../contexts/VideoCallContext';
 import { AIToolsProvider } from '../AIToolsProvider';
 import { ModalsProvider } from '../ModalsProvider';
 import { VideoCallErrorBoundary } from '../VideoCallErrorBoundary';
