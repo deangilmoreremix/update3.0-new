@@ -1,34 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useDealStore } from '../store/dealStore';
-import { useGemini } from '../services/geminiService';
-import { useTaskStore } from '../store/taskStore';
-import { useAppointmentStore } from '../store/appointmentStore';
-import { useAITools } from '../components/AIToolsProvider';
-import AppointmentWidget from '../components/AppointmentWidget';
-import AIToolsCard from '../components/Dashboard/AIToolsCard';
-import DealAnalytics from '../components/DealAnalytics';
-import { AlertCircle, ArrowDownRight, ArrowUpRight, BarChart3, Brain, Briefcase, Calendar, CheckSquare, ChevronRight, Clock, DollarSign, Link, Mail, Plus, Search, Users, Zap } from 'lucide-react';
+import React from 'react'
+import { DollarSign, Users, Target, Percent } from 'lucide-react'
+import MetricCard from '../components/MetricCard'
 
-// Import AI tools components
-import StreamingChat from '../components/aiTools/StreamingChat';
-import SmartSearchRealtime from '../components/aiTools/SmartSearchRealtime';
-import LiveDealAnalysis from '../components/aiTools/LiveDealAnalysis';
+import React from 'react'
+import { DollarSign, Users, Target, Percent } from 'lucide-react'
+import MetricCard from '../components/MetricCard'
 
-// Import recharts components for data visualization
-import { 
-  AreaChart, 
-  Area, 
-  BarChart, 
-  Bar, 
-  LineChart, 
-  Line,
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer 
-} from 'recharts';
+const Dashboard: React.FC = () => {
+  return (
+    <div className="p-6 max-w-7xl mx-auto">
+      <h1 className="text-3xl font-bold mb-8 text-gray-900">Smart CRM Dashboard</h1>
+      
+      {/* Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <MetricCard 
+          title="Total Revenue" 
+          value="$48,394" 
+          change="+12%" 
+          icon={<DollarSign />}
+        />
+        <MetricCard 
+          title="Active Deals" 
+          value="23" 
+          change="+3%" 
+          icon={<Target />}
+        />
+        <MetricCard 
+          title="New Contacts" 
+          value="127" 
+          change="+8%" 
+          icon={<Users />}
+        />
+        <MetricCard 
+          title="Conversion Rate" 
+          value="3.2%" 
+          change="+0.5%" 
+          icon={<Percent />}
+        />
+      </div>
+
+      {/* Welcome Section */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Welcome to Smart CRM!</h2>
+        <p className="text-gray-600">
+          This is your modern dashboard with beautiful metrics cards. Each step we add will be tested systematically.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+export default Dashboard
 
 const Dashboard: React.FC = () => {
   const { 
