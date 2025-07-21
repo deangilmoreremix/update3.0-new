@@ -1,4 +1,21 @@
-import React, { Suspense, lazy, ComponentType, ReactNode } from 'react';
+import React, { Suspense, ComponentType, ReactNode } from 'react';
+import { 
+  LineChart, 
+  BarChart, 
+  PieChart, 
+  AreaChart,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+  Line,
+  Bar,
+  Pie,
+  Cell,
+  Area
+} from 'recharts';
 
 // Chart loading fallback component
 const ChartLoader = ({ height = 200 }: { height?: number }) => (
@@ -36,44 +53,6 @@ class ChartErrorBoundary extends React.Component<
   }
 }
 
-// Lazy load recharts components with proper error handling
-const createLazyChart = (componentName: string) => 
-  lazy(async () => {
-    try {
-      const module = await import('recharts');
-      return { default: (module as any)[componentName] };
-    } catch (error) {
-      console.warn(`Failed to load ${componentName}:`, error);
-      // Return a fallback component
-      return {
-        default: (props: any) => (
-          <div className="w-full h-48 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg">
-            <span className="text-gray-500">Chart unavailable</span>
-          </div>
-        )
-      };
-    }
-  });
-
-// Safe chart components with lazy loading
-export const SafeLineChart = createLazyChart('LineChart');
-export const SafeBarChart = createLazyChart('BarChart');
-export const SafePieChart = createLazyChart('PieChart');
-export const SafeAreaChart = createLazyChart('AreaChart');
-
-// Utility components
-export const SafeXAxis = createLazyChart('XAxis');
-export const SafeYAxis = createLazyChart('YAxis');
-export const SafeCartesianGrid = createLazyChart('CartesianGrid');
-export const SafeTooltip = createLazyChart('Tooltip');
-export const SafeResponsiveContainer = createLazyChart('ResponsiveContainer');
-export const SafeLegend = createLazyChart('Legend');
-export const SafeLine = createLazyChart('Line');
-export const SafeBar = createLazyChart('Bar');
-export const SafePie = createLazyChart('Pie');
-export const SafeCell = createLazyChart('Cell');
-export const SafeArea = createLazyChart('Area');
-
 // High-order component to wrap any chart with error boundary and suspense
 export const withChartWrapper = <P extends object>(
   ChartComponent: ComponentType<P>,
@@ -91,11 +70,38 @@ export const withChartWrapper = <P extends object>(
   return WrappedChart;
 };
 
-// Pre-wrapped common chart combinations
-export const SafeChart = {
-  LineChart: withChartWrapper(SafeLineChart),
-  BarChart: withChartWrapper(SafeBarChart),
-  PieChart: withChartWrapper(SafePieChart),
-  AreaChart: withChartWrapper(SafeAreaChart),
-  ResponsiveContainer: withChartWrapper(SafeResponsiveContainer),
-};
+// Export safe chart components (directly from recharts, wrapped in error boundaries)
+export const SafeLineChart = withChartWrapper(LineChart);
+export const SafeBarChart = withChartWrapper(BarChart);
+export const SafePieChart = withChartWrapper(PieChart);
+export const SafeAreaChart = withChartWrapper(AreaChart);
+
+// Utility components
+export const SafeXAxis = withChartWrapper(XAxis);
+export const SafeYAxis = withChartWrapper(YAxis);
+export const SafeCartesianGrid = withChartWrapper(CartesianGrid);
+export const SafeTooltip = withChartWrapper(Tooltip);
+export const SafeResponsiveContainer = withChartWrapper(ResponsiveContainer);
+export const SafeLegend = withChartWrapper(Legend);
+export const SafeLine = withChartWrapper(Line);
+export const SafeBar = withChartWrapper(Bar);
+export const SafePie = withChartWrapper(Pie);
+export const SafeCell = withChartWrapper(Cell);
+export const SafeArea = withChartWrapper(Area);
+
+// Also export with original names for compatibility
+export { SafeLineChart as LineChart };
+export { SafeBarChart as BarChart };
+export { SafePieChart as PieChart };
+export { SafeAreaChart as AreaChart };
+export { SafeXAxis as XAxis };
+export { SafeYAxis as YAxis };
+export { SafeCartesianGrid as CartesianGrid };
+export { SafeTooltip as Tooltip };
+export { SafeResponsiveContainer as ResponsiveContainer };
+export { SafeLegend as Legend };
+export { SafeLine as Line };
+export { SafeBar as Bar };
+export { SafePie as Pie };
+export { SafeCell as Cell };
+export { SafeArea as Area };
