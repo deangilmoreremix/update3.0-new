@@ -3,6 +3,145 @@ import { getSupabaseService } from '../services/supabaseService';
 import { Contact } from '../types/contact';
 import { Deal } from '../types';
 
+export interface ActivityLog {
+  id: string;
+  type: 'deal_created' | 'deal_moved' | 'contact_added' | 'meeting_scheduled' | 'email_sent' | 'call_completed';
+  title: string;
+  description: string;
+  user_name: string;
+  timestamp: Date;
+  relatedId?: string;
+}
+
+export interface DashboardMetrics {
+  totalDeals: number;
+  totalDealValue: number;
+  avgDealSize: number;
+  winRate: number;
+  conversionRate: number;
+  activeContacts: number;
+  totalContacts: number;
+  recentActivity: number;
+  monthlyGrowth: number;
+  quarterlyGrowth: number;
+}
+
+// Enhanced real-time dashboard data hook
+export const useRealTimeDashboard = () => {
+  const [metrics, setMetrics] = useState<DashboardMetrics>({
+    totalDeals: 0,
+    totalDealValue: 0,
+    avgDealSize: 0,
+    winRate: 0,
+    conversionRate: 0,
+    activeContacts: 0,
+    totalContacts: 0,
+    recentActivity: 0,
+    monthlyGrowth: 12.5,
+    quarterlyGrowth: 28.3
+  });
+
+  const [activities, setActivities] = useState<ActivityLog[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchDashboardData = async () => {
+    try {
+      const supabase = getSupabaseService();
+      
+      // Fetch deals and contacts data
+      const [dealsData, contactsData] = await Promise.all([
+        supabase.getDeals(),
+        supabase.getContacts()
+      ]);
+
+      // Calculate metrics
+      const wonDeals = dealsData.filter(deal => deal.stage === 'closed-won');
+      const lostDeals = dealsData.filter(deal => deal.stage === 'closed-lost');
+      const totalDealValue = dealsData.reduce((sum, deal) => sum + (deal.value || 0), 0);
+      const winRate = (wonDeals.length + lostDeals.length) > 0 ? 
+        Math.round((wonDeals.length / (wonDeals.length + lostDeals.length)) * 100) : 0;
+
+      setMetrics({
+        totalDeals: dealsData.length,
+        totalDealValue,
+        avgDealSize: dealsData.length > 0 ? Math.round(totalDealValue / dealsData.length) : 0,
+        winRate,
+        conversionRate: contactsData.length > 0 ? 
+          Math.round((dealsData.length / contactsData.length) * 100) : 0,
+        activeContacts: contactsData.filter(c => 
+          ['lead', 'prospect', 'customer'].includes(c.status || 'lead')
+        ).length,
+        totalContacts: contactsData.length,
+        recentActivity: activities.length,
+        monthlyGrowth: 12.5, // TODO: Calculate from historical data
+        quarterlyGrowth: 28.3 // TODO: Calculate from historical data
+      });
+
+      // Mock recent activities for now
+      const mockActivities: ActivityLog[] = [
+        {
+          id: '1',
+          type: 'deal_created',
+          title: 'New deal created',
+          description: `Enterprise CRM Solution - $${Math.floor(Math.random() * 100000 + 10000).toLocaleString()}`,
+          timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+          user_name: 'Sarah Johnson'
+        },
+        {
+          id: '2',
+          type: 'deal_moved',
+          title: 'Deal moved to Negotiation',
+          description: 'TechCorp Implementation moved from Proposal',
+          timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000),
+          user_name: 'Mike Chen'
+        },
+        {
+          id: '3',
+          type: 'contact_added',
+          title: 'New contact added',
+          description: 'John Smith from GlobalTech',
+          timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000),
+          user_name: 'Lisa Wong'
+        },
+        {
+          id: '4',
+          type: 'meeting_scheduled',
+          title: 'Demo scheduled',
+          description: 'Product demo with DataCorp - Tomorrow 2:00 PM',
+          timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000),
+          user_name: 'Sarah Johnson'
+        }
+      ];
+      
+      setActivities(mockActivities);
+      setError(null);
+    } catch (err) {
+      console.error('Dashboard data fetch error:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch dashboard data');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
+    
+    // Set up polling for real-time updates every 30 seconds
+    const interval = setInterval(fetchDashboardData, 30000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  return {
+    metrics,
+    activities,
+    isLoading,
+    error,
+    refreshData: fetchDashboardData
+  };
+};
+
 export const useRealTimeContacts = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [isLoading, setIsLoading] = useState(true);

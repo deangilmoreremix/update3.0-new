@@ -125,7 +125,7 @@ function App() {
                       <Route path="/forgot-password" element={<ForgotPassword />} />
 
                       {/* Public routes */}
-                      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                      <Route path="/" element={<LandingPage />} />
                       <Route path="/landing" element={<LandingPage />} />
                       <Route path="/form/:formId" element={<FormPublic />} />
                       <Route path="/faq" element={<FAQ />} />
