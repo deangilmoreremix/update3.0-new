@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, FC } from 'react';
 import { useGemini } from '../../services/geminiService';
 import { CheckCircle, AlertCircle, FileText, RefreshCw, Sparkles, User, Building, Mail, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';

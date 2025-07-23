@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { BarChart3, TrendingUp, Calendar, Search, User } from 'lucide-react';
 

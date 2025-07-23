@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { Check, Filter, Mail, MoreHorizontal, Search, Trash, User, UserPlus, X } from 'lucide-react';
 import Avatar from '../ui/Avatar';

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, FC } from 'react';
 import { useTenant } from './TenantProvider';
 import { User } from 'lucide-react';
 

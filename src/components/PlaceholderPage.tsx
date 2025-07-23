@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Construction } from 'lucide-react';
 

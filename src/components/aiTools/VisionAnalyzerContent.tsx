@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, FC } from 'react';
 import { useOpenAIVision } from '../../services/openaiVisionService';
 import AIToolContent from '../shared/AIToolContent';
 import { useDropzone } from 'react-dropzone';

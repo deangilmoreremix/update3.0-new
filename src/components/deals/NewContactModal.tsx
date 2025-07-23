@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { ModernButton } from '../ui/ModernButton';
 import { AIAutoFillButton } from '../ui/AIAutoFillButton';
 import { AIResearchButton } from '../ui/AIResearchButton';

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, FC } from 'react';
 import { useContactStore } from '../store/contactStore';
 import { Contact } from '../types/contact';
 

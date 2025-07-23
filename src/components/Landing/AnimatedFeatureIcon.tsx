@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, FC } from 'react';
 
 const AnimatedFeatureIcon: FC<AnimatedFeatureIconProps> = ({ 
   icon, 

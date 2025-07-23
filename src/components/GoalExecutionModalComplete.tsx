@@ -1,5 +1,5 @@
 // COMPLETE GoalExecutionModal.tsx - Your Original Comprehensive Design
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { Goal } from '../types/goals';
 import { composioService } from '../services/composioService';
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { useSmartAI, useTaskOptimization } from '../../hooks/useSmartAI';
 import { ModernButton } from '../ui/ModernButton';
 import { GlassCard } from '../ui/GlassCard';

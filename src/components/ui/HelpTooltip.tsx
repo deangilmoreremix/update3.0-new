@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { HelpCircle } from 'lucide-react';
 
 const HelpTooltip: FC<HelpTooltipProps> = ({ content, placement = 'top', children }) => {

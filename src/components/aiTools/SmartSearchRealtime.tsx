@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, FC } from 'react';
 import { useGemini } from '../../services/geminiService';
 import { useOpenAIEmbeddings } from '../../services/openaiEmbeddingsService';
 import { Search, User, Briefcase, Clock, ArrowRight, RefreshCw, X, Sparkles, CheckCircle } from 'lucide-react';

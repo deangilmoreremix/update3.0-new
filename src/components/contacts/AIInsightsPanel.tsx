@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { Contact } from '../../types/contact';
 import { Brain, Sparkles, Target, Calendar, AlertCircle, CheckCircle, RefreshCw, ThumbsUp, ThumbsDown, HelpCircle, Bell } from 'lucide-react';
 

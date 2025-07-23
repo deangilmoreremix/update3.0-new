@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import AnimatedCounter from './AnimatedCounter';
 
 const StatCounter: FC<StatCounterProps> = ({

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { MoreHorizontal, Mail, MapPin, Building } from 'lucide-react';
 import Avatar from './ui/Avatar';
 import CallButton from './CallButton';

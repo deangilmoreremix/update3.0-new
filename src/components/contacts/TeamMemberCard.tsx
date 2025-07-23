@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Contact } from '../../types/contact';
 import { User, Star, Award, Trophy, TrendingUp, UserMinus, Edit, Mail, Phone, Crown } from 'lucide-react';
 

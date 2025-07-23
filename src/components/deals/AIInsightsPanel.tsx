@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { Deal } from '../../types';
 import { Brain, Sparkles, Target, Calendar, AlertCircle, CheckCircle, TrendingUp, RefreshCw, ThumbsUp, ThumbsDown, HelpCircle, Bell, DollarSign, Search } from 'lucide-react';
 

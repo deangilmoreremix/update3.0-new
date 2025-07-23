@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, FC } from 'react';
 import AIToolModal from './shared/AIToolModal';
 import { Brain, Mail, MessageSquare, FileText, Phone, Target, FileSearch, TrendingUp, BarChart3, PieChart, Users, Eye, Image, Mic, Search, Zap, MessagesSquare, CheckCircle, Sparkles, Shield, Volume2, Reply, Calendar, FileJson, Hash } from 'lucide-react';
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppointmentStore } from '../store/appointmentStore';
 import { ArrowRight, Calendar, Clock, MapPin, Phone, Video } from 'lucide-react';

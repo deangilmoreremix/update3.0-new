@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Deal } from '../../types';
 import { Clock, FileText, Target, Plus, Award } from 'lucide-react';
 

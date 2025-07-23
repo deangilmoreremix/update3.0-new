@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Contact } from '../../types/contact';
 import { Clock, Plus, Target } from 'lucide-react';
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, ReactNode } from 'react';
+import React, { useEffect, useRef, useState, ReactNode, FC } from 'react';
 
 const ScrollAnimationWrapper: FC<ScrollAnimationWrapperProps> = ({
   children,

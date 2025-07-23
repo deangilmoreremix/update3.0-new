@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { Deal } from '../../types';
 import { DollarSign, Calendar, User, Building, RefreshCw, Zap, BarChart3, Flag, MessageSquare, Brain, Target, FileText } from 'lucide-react';
 import AgentModal from '../shared/AgentModal';

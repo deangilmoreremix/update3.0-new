@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, FC } from 'react';
 import { CheckSquare, Square, MoreHorizontal, Trash2, Edit3, Mail, Tag, Users, Archive, Download, AlertTriangle, Loader2, Move, UserPlus } from 'lucide-react';
 
 export const BulkOperations: FC<BulkOperationsProps> = ({

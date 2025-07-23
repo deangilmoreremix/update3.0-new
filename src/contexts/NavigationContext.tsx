@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, FC } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAITools } from '../components/AIToolsProvider';
 

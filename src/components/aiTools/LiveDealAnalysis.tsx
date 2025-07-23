@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, FC } from 'react';
 import { useGemini } from '../../services/geminiService';
 import { Deal } from '../../types';
 import { BarChart3, DollarSign, TrendingUp, AlertCircle, CheckCircle, Shield, RefreshCw, ArrowUpRight, ArrowDownRight } from 'lucide-react';

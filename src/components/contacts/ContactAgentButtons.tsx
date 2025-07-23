@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { Contact } from '../../types';
 import { Brain, Target, Mail, Zap } from 'lucide-react';
 import AgentModal from '../shared/AgentModal';

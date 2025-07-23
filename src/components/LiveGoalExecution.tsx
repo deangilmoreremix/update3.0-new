@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { Goal } from '../types/goals';
 
 import { Play, Pause, CheckCircle, XCircle, Clock, Bot, Activity, GitBranch, BarChart3, Target, Brain, Volume2, Database, Presentation, Award, Lightbulb, HelpCircle } from 'lucide-react';

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, FC } from 'react';
 import { useDealStore } from '../store/dealStore';
 import { Activity, ArrowUp, Calendar, DollarSign, TrendingUp, ZapOff } from 'lucide-react';
 

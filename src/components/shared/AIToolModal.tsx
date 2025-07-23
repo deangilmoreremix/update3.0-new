@@ -1,4 +1,4 @@
-import React, { useState, useRef, ReactNode } from 'react';
+import React, { useState, useRef, ReactNode, FC } from 'react';
 import { X, Maximize2, Minimize2 } from 'lucide-react';
 
 const AIToolModal: FC<AIToolModalProps> = ({

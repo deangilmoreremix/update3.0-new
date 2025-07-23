@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 // Safe LineChart component that handles import issues
 const SafeLineChart: FC<any> = (props) => {

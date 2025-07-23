@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, FC } from 'react';
 import { ContactDetailView } from './ContactDetailView';
 import { TeamMemberCard } from './TeamMemberCard';
 import { useContactStore } from '../../store/contactStore';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { Deal } from '../../types';
 import { Contact } from '../../types/contact';
 import { Mail, Phone, Calendar, MessageSquare, Video, FileText, Send, MicOff, Mic, VideoOff, PhoneOff, Loader2, Brain, Sparkles, Zap, CheckCircle, AlertCircle, RefreshCw, Clock, MoreHorizontal, Users } from 'lucide-react';

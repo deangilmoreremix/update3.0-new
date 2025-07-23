@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { Filter, X, Plus } from 'lucide-react';
 
 export const AdvancedFilter: FC<AdvancedFilterProps> = ({ 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { Sparkles } from 'lucide-react';
 import { aiEnrichmentService, ContactEnrichmentData } from '../../services/aiEnrichmentService';
 

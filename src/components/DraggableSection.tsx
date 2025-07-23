@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, FC } from 'react';
 import { useDashboardLayout } from '../contexts/DashboardLayoutContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { GripVertical, EyeOff } from 'lucide-react';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { GlassCard } from '../ui/GlassCard';
 import { AvatarWithStatus } from '../ui/AvatarWithStatus';
 import { Edit, MoreHorizontal } from 'lucide-react';

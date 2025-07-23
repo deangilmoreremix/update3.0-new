@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { GlassCard } from '../ui/GlassCard';
 

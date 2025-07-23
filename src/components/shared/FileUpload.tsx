@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, FC } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Upload, X, File, FileText, Image, FileSpreadsheet, RefreshCw } from 'lucide-react';
 

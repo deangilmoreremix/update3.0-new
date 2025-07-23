@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { BarChart2, Users, Settings, Menu, ChevronRight, UserPlus, X, PlusCircle, Brain } from 'lucide-react';
 
 export const FloatingActionPanel: FC<FloatingActionPanelProps> = ({

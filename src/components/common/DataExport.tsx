@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, FC } from 'react';
 import { Download, FileText, FileSpreadsheet, Database, Check, X, Loader2, Info } from 'lucide-react';
 
 interface ExportOptions {

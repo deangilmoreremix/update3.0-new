@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, FC } from 'react';
 import FocusTrap from 'focus-trap-react';
 import { X } from 'lucide-react';
 

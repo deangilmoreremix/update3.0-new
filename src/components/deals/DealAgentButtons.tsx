@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { Deal } from '../../types';
 import { FileText, Video, Shield, Send } from 'lucide-react';
 import AgentModal from '../shared/AgentModal';

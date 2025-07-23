@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { Brain, Sparkles } from 'lucide-react';
 
 const ReasoningToggle: FC<ReasoningToggleProps> = ({ reasoning }) => {

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, FC } from 'react';
 import { useGemini } from '../../services/geminiService';
 import { Mic, MicOff, Play, Pause, RefreshCw, AlertCircle, BarChart3, Volume2, Save, FileText, Wand } from 'lucide-react';
 import { motion } from 'framer-motion';

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, FC } from 'react';
 import { useOpenAIStream } from '../../services/openaiStreamingService';
 import { Send, User, Bot, RefreshCw, Clock, Copy, Check, Zap, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';

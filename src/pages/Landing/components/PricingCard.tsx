@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Link, Zap } from 'lucide-react';
 

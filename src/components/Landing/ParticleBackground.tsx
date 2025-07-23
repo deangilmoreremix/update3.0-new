@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, FC } from 'react';
 
 const ParticleBackground: FC<ParticleBackgroundProps> = ({
   color = '#4f46e5',

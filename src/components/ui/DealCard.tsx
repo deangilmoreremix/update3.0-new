@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, FC } from 'react';
 import { Deal } from '../../types';
 import { DollarSign, Edit3, Save, X, Trash2, User, Target, AlertCircle, CheckCircle, Clock, Brain, Loader2 } from 'lucide-react';
 

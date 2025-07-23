@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { Video, Phone } from 'lucide-react';
 import { useSafeVideoCall as useVideoCall } from '../hooks/useSafeVideoCall';
 import { useTheme } from '../contexts/ThemeContext';

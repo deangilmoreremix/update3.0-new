@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, FC } from 'react';
 import { Deal } from '../types';
 import { CustomizableAIToolbar } from './ui/CustomizableAIToolbar';
 import { Calendar, Edit, Camera, Database, ArrowRight, Activity, Plus, MoreHorizontal, Heart, Loader2, Brain, Sparkles, Target, Mail, Wand2, Phone, BarChart3, ThumbsUp, ThumbsDown } from 'lucide-react';

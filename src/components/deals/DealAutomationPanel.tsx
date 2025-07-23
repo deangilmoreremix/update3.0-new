@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { Deal } from '../../types';
 import { ArrowRight, Brain, Calendar, ChevronDown, ChevronRight, Clock, Edit, Info, Mail, Pause, Phone, Play, Plus, PlusCircle, Settings, SlidersHorizontal, Sparkles, Target, Trash2, X, Zap } from 'lucide-react';
 

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, FC } from 'react';
 import { Maximize2, MessageSquare, Mic, MicOff, Minimize2, Monitor, MonitorOff, Phone, UserPlus, Users, Video, VideoOff } from 'lucide-react';
 import { useSafeVideoCall as useVideoCall } from '../hooks/useSafeVideoCall';
 import { useTheme } from '../contexts/ThemeContext';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import { runAgentWorkflow } from '../../agents/AgentOrchestrator';
 import agentButtonMap from '../../agents/agentButtons';
 import { X, Copy, CheckCircle, Send, Check } from 'lucide-react';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import { X } from 'lucide-react';
 
 export type ToastType = 'info' | 'success' | 'warning' | 'error';

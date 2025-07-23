@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { useDealStore } from '../store/dealStore';
 import { useGemini } from '../services/geminiService';
 import { 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
 import { MoreHorizontal, ArrowRight, UserPlus, Users, Plus } from 'lucide-react';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { useFormStore, FormSubmission } from '../../store/formStore';
 import { ArrowDown, ArrowUp, Calendar, Download, Eye, Globe, Mail, Phone, Search, Shield, User, X } from 'lucide-react';
 import { CSVLink } from 'react-csv';

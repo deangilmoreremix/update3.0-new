@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, FC } from 'react';
 
 // Lazy load modal components to prevent initial load performance issues
 const PipelineModal = React.lazy(() => import('./PipelineModal'));

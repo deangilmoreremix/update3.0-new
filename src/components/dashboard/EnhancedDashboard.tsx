@@ -5,8 +5,6 @@ import { useRealTimeDashboard } from '../../hooks/useRealTimeData';
 import { TrendingUp, Users, Target, DollarSign, Calendar, Phone, Mail, AlertCircle, CheckCircle, Download, RefreshCw, Settings, ChevronDown, BarChart3, Activity, Zap, Brain, Star, ArrowUp, ArrowDown, Plus, MoreHorizontal } from 'lucide-react';
 import * as SafeCharts from '../charts/SafeCharts';
 
-}
-
 export default function EnhancedDashboard() {
   const { deals, stageValues, totalPipelineValue, fetchDeals, isLoading: dealsLoading } = useDealStore();
   const { contacts, fetchContacts, isLoading: contactsLoading } = useContactStore();

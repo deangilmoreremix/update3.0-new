@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useRef, useCallback, useEffect } from 'react';
+import React, { createContext, useContext, useState, useRef, useCallback, useEffect, FC } from 'react';
 import SimplePeer from 'simple-peer';
 
 interface VideoCallContextType {

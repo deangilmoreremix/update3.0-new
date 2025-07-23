@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { Settings, Plus, Target } from 'lucide-react';
 
 const iconMap: Record<string, React.ComponentType<unknown>> = {

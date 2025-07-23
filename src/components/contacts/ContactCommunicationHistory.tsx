@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { Contact } from '../../types/contact';
 import { MessageSquare, Phone, Mail, Calendar, Video, Search, Download, Clock, CheckCircle, AlertCircle, User, Paperclip, Edit, Trash2, Send, Mic, FileText, Star, ArrowRight, TrendingUp, Target, Zap } from 'lucide-react';
 

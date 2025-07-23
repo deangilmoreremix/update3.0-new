@@ -1,5 +1,5 @@
 // COMPLETE InteractiveGoalCard.tsx - Your Original Comprehensive Design
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { Goal } from '../types/goals';
 import { Clock, TrendingUp, Users, Zap, Play, Eye, CheckCircle, Loader, Star, Target, Shield, Brain, Activity, Bot, Settings, Sparkles, FileText, BarChart3, ArrowRight, DollarSign, Database, MessageSquare, Phone, Mail, Calendar, Gauge } from 'lucide-react';
 

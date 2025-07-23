@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { DollarSign, Zap, Clock, Brain, Activity, Loader2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { supabaseAIService } from '../services/supabaseAIService';

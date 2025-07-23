@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, FC } from 'react';
 import { Video, VideoOff, Mic, MicOff, Phone, Camera, Speaker, CheckCircle, AlertCircle } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import Avatar from './ui/Avatar';

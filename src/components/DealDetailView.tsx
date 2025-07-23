@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, FC } from 'react';
 import { Deal } from '../types';
 import { Contact } from '../types/contact';
 import { useAIResearch } from '../services/aiResearchService';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { useContactStore } from '../../store/contactStore';
 import { Contact } from '../../types/contact';
 import { AlertCircle, Brain, Building2, CheckCircle, Database, Globe, Heart, MapPin, Plus, RefreshCw, Save, Sparkles, Tag, Target, User, UserPlus, X } from 'lucide-react';

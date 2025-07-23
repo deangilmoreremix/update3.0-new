@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { Deal } from '../../types';
 import { X, Edit, Save, Trash2, Upload, FileText, Calendar, DollarSign, Building2, User, Phone, Mail, Clock, AlertCircle, CheckCircle, BarChart3, MessageSquare, Download, Eye, Activity, Target, TrendingUp, Zap, Brain, Heart, Share2 } from 'lucide-react';
 

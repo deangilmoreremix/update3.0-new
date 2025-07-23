@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { useAIResearch } from '../../services/aiResearchService';
 import { IntelligentAIService } from '../../services/intelligentAIService';
 import { useOpenAI } from '../../services/openaiService';

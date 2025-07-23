@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, FC } from 'react';
 import { useContactStore } from '../../store/contactStore';
 import { Contact } from '../../types/contact';
 import { X, Search, User, Building2, Mail, Phone, Check, Plus, UserCircle } from 'lucide-react';

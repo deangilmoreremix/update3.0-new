@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { useAIResearch } from '../../services/aiResearchService';
 import { aiEnrichmentService, ContactEnrichmentData, CompanyEnrichmentData } from '../../services/aiEnrichmentService';
 import { User, Building2, Sparkles, Brain, Loader2, XCircle } from 'lucide-react';

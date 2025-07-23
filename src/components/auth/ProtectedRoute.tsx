@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 // Simple fallback protected route component
 export const ProtectedRoute: FC<ProtectedRouteProps> = ({ children }) => {

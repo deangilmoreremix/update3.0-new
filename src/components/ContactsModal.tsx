@@ -1,7 +1,7 @@
 
 // ContactsModal.tsx - Properly structured stub component
 
-import React from 'react';
+import React, { FC } from 'react';
 
 // Properly structured component that accepts the expected props
 export const ContactsModal: FC<ContactsModalProps> = ({ 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { useGamification } from '../../contexts/GamificationContext';
 import { Contact } from '../../types/contact';
 import { Award, BarChart3, ChevronRight, Clock, Crown, DollarSign, Star, Target, TrendingUp, Trophy, User, UserPlus, Zap } from 'lucide-react';

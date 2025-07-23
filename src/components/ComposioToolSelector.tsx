@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, FC } from 'react';
 import { X, Search, Check, ExternalLink, Star, Clock, ArrowRight, Globe, Zap, ShieldCheck, Key, RefreshCw, AlertTriangle, HelpCircle } from 'lucide-react';
 import { composioTools, composioToolCategories, getToolsByCategory, searchTools, ComposioTool } from '../data/composioToolsData';
 import { apiConfig } from '../config/apiConfig';

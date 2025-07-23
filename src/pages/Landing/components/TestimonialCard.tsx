@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Star } from 'lucide-react';
 
 const TestimonialCard: FC<TestimonialCardProps> = ({

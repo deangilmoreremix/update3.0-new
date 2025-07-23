@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { useOpenAIVision } from '../../services/openaiVisionService';
 import { useDropzone } from 'react-dropzone';
 import { Upload, Check, ArrowDown, Eye, X, Download, Copy, Zap } from 'lucide-react';

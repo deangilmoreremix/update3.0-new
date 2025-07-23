@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, FC } from 'react';
 
 const EnhancedHelpContext = createContext<EnhancedHelpContextType | undefined>(undefined);
 

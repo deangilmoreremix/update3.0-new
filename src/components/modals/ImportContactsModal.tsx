@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, FC } from 'react';
 import { ModernButton } from '../ui/ModernButton';
 import { useContactStore } from '../../store/contactStore';
 

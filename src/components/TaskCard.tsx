@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Calendar, Mail, FileText, CheckCircle, Check, MoreVertical } from 'lucide-react';
 import Avatar from './ui/Avatar';
 import { useTaskStore } from '../store/taskStore';

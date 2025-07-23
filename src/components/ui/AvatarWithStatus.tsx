@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { FC } from 'react';
 import { StatusIndicator } from './StatusIndicator';
 
 export const AvatarWithStatus: FC<AvatarWithStatusProps> = ({

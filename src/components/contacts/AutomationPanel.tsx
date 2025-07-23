@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { Contact } from '../../types/contact';
 import { ArrowRight, Brain, Calendar, ChevronDown, ChevronRight, Clock, Edit, Info, Mail, Pause, Play, Plus, PlusCircle, Settings, SlidersHorizontal, Sparkles, Trash2, X, Zap } from 'lucide-react';
 

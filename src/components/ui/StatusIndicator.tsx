@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 export const StatusIndicator: FC<StatusIndicatorProps> = ({
   status = 'active',
