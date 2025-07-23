@@ -22,7 +22,7 @@ const LoadingSpinner = () => (
 );
 
 // Landing Pages (keep these non-lazy as they're likely to be used immediately)
-import LandingPage from './src/pages/Landing/LandingPage';
+import LandingPage from './src/pages/Landing/LandingPageSimple';
 
 // Auth Pages (keep these non-lazy as they're critical for first load)
 import Login from './src/pages/Auth/Login';
