@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CalendarDays, Video, MessageCircle, Phone, Receipt, CheckSquare, ArrowRight, Link } from 'lucide-react';
+import { CalendarDays, Video, MessageCircle, Phone, Receipt, CheckSquare, ArrowRight, Link as LinkIcon } from 'lucide-react';
 
 const SalesTools: React.FC = () => {
   const tools = [

@@ -53,6 +53,7 @@ const SubjectLineContent: React.FC = () => {
 
     try {
       // Using the market trends function to simulate subject line generation
+      const marketResponse = await edgeFunctionService.analyzeMarketTrends(
         formData.keyMessage,
         formData.audience,
         formData.purpose
