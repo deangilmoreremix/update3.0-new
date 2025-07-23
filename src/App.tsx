@@ -8,6 +8,7 @@ import Pipeline from './pages/Pipeline';
 import AITools from './pages/AITools';
 import Settings from './pages/Settings';
 import AIGoals from './pages/AIGoals';
+import LandingPage from './pages/Landing/LandingPage';
 
 // Import existing pages
 import Appointments from './pages/Appointments';
@@ -25,7 +26,7 @@ function App() {
           <div className="max-w-7xl mx-auto">
             <Routes>
                         {/* Primary Navigation */}
-                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/" element={<LandingPage />} />
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/contacts" element={<Contacts />} />
                         <Route path="/pipeline" element={<Pipeline />} />

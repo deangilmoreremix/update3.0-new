@@ -1,9 +1,2 @@
-# SPA redirect for React Router
+# SPA redirect for React Router - this handles all client-side routing
 /*    /index.html   200
-
-# API proxy (if needed for future backend integration)
-/api/*  https://api.example.com/:splat  200
-
-# Redirect old URLs (add as needed)
-/dashboard  /  301
-/app  /  301
