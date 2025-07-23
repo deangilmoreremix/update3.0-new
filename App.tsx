@@ -89,7 +89,7 @@ import FeaturePackageManagementPage from './pages/FeaturePackageManagementPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 
 // Layout Components
-import Navbar from './Navbar';
+import Navbar from './src/components/Navbar';
 import ErrorBoundary from './src/components/common/ErrorBoundary';
 
 // Layout wrapper for authenticated pages

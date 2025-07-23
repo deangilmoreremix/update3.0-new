@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Brain, 
@@ -25,11 +25,8 @@ import FeatureCard from './components/FeatureCard';
 import TestimonialCard from './components/TestimonialCard';
 
 const LandingPage = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  
   useEffect(() => {
     console.log("LandingPage component mounted");
-    setIsLoaded(true);
   }, []);
   
   return (
