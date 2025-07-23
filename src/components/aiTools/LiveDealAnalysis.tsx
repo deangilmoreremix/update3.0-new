@@ -25,7 +25,6 @@ const LiveDealAnalysis: FC<LiveDealAnalysisProps> = ({
   deal = sampleDeal,
   onAnalysisComplete 
 }) => {
-  const _gemini = useGemini();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [progressText, setProgressText] = useState('');
   const [progress, setProgress] = useState(0);

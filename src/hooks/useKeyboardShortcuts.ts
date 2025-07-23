@@ -6,7 +6,7 @@ export const globalShortcuts: KeyboardShortcut[] = [
     ctrl: true,
     action: () => {
       // Quick search functionality
-      console.log('Quick search activated');
+
     },
     description: 'Quick search'
   },
@@ -15,7 +15,7 @@ export const globalShortcuts: KeyboardShortcut[] = [
     ctrl: true,
     action: () => {
       // New deal/contact
-      console.log('New item activated');
+
     },
     description: 'New item'
   },
@@ -25,7 +25,7 @@ export const globalShortcuts: KeyboardShortcut[] = [
     shift: true,
     action: () => {
       // Toggle dark mode
-      console.log('Dark mode toggle activated');
+
     },
     description: 'Toggle dark mode'
   },
@@ -33,7 +33,7 @@ export const globalShortcuts: KeyboardShortcut[] = [
     key: '/',
     action: () => {
       // Focus search
-      console.log('Focus search activated');
+
     },
     description: 'Focus search'
   }

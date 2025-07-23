@@ -2,7 +2,6 @@ import { supabase } from './supabaseClient';
 import { Deal } from '../types';
 
 // Fetch all deals for the current user
-const _fetchDeals = async (userId: string) => {
   try {
     const { data, error } = await supabase
       .from('deals')
@@ -36,7 +35,6 @@ const _fetchDeals = async (userId: string) => {
 };
 
 // Update an existing deal
-const _updateDeal = async (id: string, dealData: Partial<Deal>) => {
   try {
     // Add updated_at timestamp
     const updatedDealData = {

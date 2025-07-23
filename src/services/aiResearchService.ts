@@ -43,7 +43,6 @@ class EnhancedAIResearchService implements AIResearchService {
 
   async researchCompany(companyName: string, domain?: string, priority: 'speed' | 'quality' | 'cost' = 'quality'): Promise<CompanyResearchData> {
     try {
-      console.log(`🔍 Company Research: ${companyName} (Priority: ${priority})`);
 
       // Use intelligent AI routing for company research
       const geminiResearch = await this.intelligentAI.researchCompany(companyName, domain, priority);
@@ -84,7 +83,6 @@ class EnhancedAIResearchService implements AIResearchService {
 
   async findContactPerson(personName: string, companyName?: string, priority: 'speed' | 'quality' | 'cost' = 'speed'): Promise<ContactPersonData> {
     try {
-      console.log(`👤 Contact Research: ${personName} at ${companyName || 'Unknown Company'} (Priority: ${priority})`);
 
       // Use intelligent AI routing for contact research (optimized for speed)
       const geminiData = await this.intelligentAI.researchContact(personName, companyName, priority);
@@ -117,7 +115,6 @@ class EnhancedAIResearchService implements AIResearchService {
 
   async findCompanyLogo(companyName: string, domain?: string): Promise<string> {
     // Generate company logo using DiceBear API with company initials
-    const _initials = companyName
       .split(' ')
       .map(word => word[0])
       .join('')
@@ -135,7 +132,6 @@ class EnhancedAIResearchService implements AIResearchService {
 
   async enhanceWithAI(data: unknown, query: string, priority: 'speed' | 'quality' | 'cost' = 'quality'): Promise<unknown> {
     try {
-      console.log(`✨ AI Enhancement: ${query} (Priority: ${priority})`);
 
       // Use intelligent routing for insights (OpenAI preferred for creative insights)
       const insights = await this.intelligentAI.getInsights(data, priority);

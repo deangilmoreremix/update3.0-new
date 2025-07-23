@@ -159,7 +159,7 @@ class CacheService {
     this.updateStats();
 
     if (expiredKeys.length > 0) {
-      console.log(`Cache cleanup: removed ${expiredKeys.length} expired entries`);
+
     }
   }
 

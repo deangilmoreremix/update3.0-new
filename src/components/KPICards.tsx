@@ -1,3 +1,4 @@
+import React from 'react';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 
 const KPICards = () => {

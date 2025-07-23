@@ -74,7 +74,7 @@ const QuickAIButton: FC<QuickAIButtonProps> = ({
       onClick();
     } else {
       // Handle AI tool execution
-      console.log(`Executing ${toolName} for ${entityType} ${entityId}`, entityData);
+
     }
   };
 

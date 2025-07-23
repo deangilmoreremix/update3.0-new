@@ -36,8 +36,6 @@ export const AIResearchButton: FC<AIResearchButtonProps> = ({
   const [searchResult, setSearchResult] = useState<any | null>(null);
   const [searchFailed, setSearchFailed] = useState(false);
 
-  const _aiResearch = useAIResearch();
-
   const handleResearch = async () => {
     if (isSearching) return;
 

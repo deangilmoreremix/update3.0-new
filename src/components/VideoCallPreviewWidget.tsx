@@ -31,7 +31,6 @@ const VideoCallPreviewWidget = React.memo(() => {
   const [showDropdownMenu, setShowDropdownMenu] = useState(false);
 
   const [_localVideoStream, _setLocalVideoStream] = useState<MediaStream | null>(null);
-  const _localVideoRef = useRef<HTMLVideoElement>(null);
 
   // Show preview widget only when not in an actual call
   if (currentCall || callStatus !== 'idle') return null;

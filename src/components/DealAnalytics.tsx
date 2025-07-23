@@ -25,7 +25,7 @@ const DealAnalytics: FC<DealAnalyticsProps> = ({
 
   Object.values(deals).forEach(deal => {
     // Count by stage
-    if (dealCounts.hasOwnProperty(deal.stage)) {
+    if (Object.prototype.hasOwnProperty.call(dealCounts, deal.stage)) {
       dealCounts[deal.stage as keyof typeof dealCounts]++;
     }
 

@@ -53,8 +53,6 @@ const Dashboard: React.FC = React.memo(() => {
   const { isDark } = useTheme();
   const { sectionOrder } = useDashboardLayout();
 
-  const _gemini = useGemini();
-
   const [pipelineInsight, setPipelineInsight] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiRecommendations, setAiRecommendations] = useState<unknown[]>([]);

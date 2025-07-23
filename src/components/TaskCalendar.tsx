@@ -181,7 +181,7 @@ const TaskCalendar: FC<TaskCalendarProps> = ({ onTaskSelect }) => {
   // Define all needed components in one object
   const calendarComponents = {
     toolbar: CustomToolbar,
-    // @ts-ignore - the types don't include 'event' but it works
+    // @ts-expect-error - the types don't include 'event' but it works
     event: ({ event }: unknown) => {
       const task = event.resource as Task;
       return (
@@ -191,7 +191,7 @@ const TaskCalendar: FC<TaskCalendarProps> = ({ onTaskSelect }) => {
         </div>
       );
     },
-    // @ts-ignore - the types don't include 'eventWrapper' but it works
+    // @ts-expect-error - the types don't include 'eventWrapper' but it works
     eventWrapper: ({ children, event }: unknown) => {
       const task = event.resource as Task;
       return (

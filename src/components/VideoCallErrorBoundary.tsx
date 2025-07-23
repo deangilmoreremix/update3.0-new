@@ -32,7 +32,6 @@ export class VideoCallErrorBoundary extends React.Component<Props, State> {
     // Check for different types of provider errors
     if (error.message?.includes('useVideoCall must be used within') || 
         error.message?.includes('useNavigation must be used within')) {
-      console.log('Context provider error detected, attempting recovery...');
 
       // Clear any potential cached state
       try {
@@ -45,7 +44,7 @@ export class VideoCallErrorBoundary extends React.Component<Props, State> {
 
       // Reload the page after a short delay to get fresh context
       setTimeout(() => {
-        console.log('Reloading to recover from context error...');
+
         window.location.reload();
       }, 2000);
     }
@@ -53,7 +52,7 @@ export class VideoCallErrorBoundary extends React.Component<Props, State> {
     // Handle import/dependency errors differently
     if (error.message?.includes('LineChart is not defined') || 
         error.message?.includes('is not defined')) {
-      console.log('Import error detected:', error.message);
+
       // Don't reload for import errors, just show fallback UI
     }
   }

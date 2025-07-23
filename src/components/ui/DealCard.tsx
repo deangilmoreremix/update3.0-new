@@ -12,7 +12,6 @@ export const DealCard: FC<DealCardProps> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const _fileInputRef = useRef<HTMLInputElement>(null);
 
   const [editForm, setEditForm] = useState({
     company: deal.company,
@@ -82,7 +81,6 @@ export const DealCard: FC<DealCardProps> = ({
     }
   };
 
-  const _handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && onUpdate) {
       // In a real app, you'd upload the file to a server
@@ -103,7 +101,6 @@ export const DealCard: FC<DealCardProps> = ({
     }
   };
 
-  const _removeAttachment = (attachmentId: string) => {
     if (!onUpdate) return;
 
     const updatedAttachments = (deal.attachments || []).filter(
@@ -116,7 +113,6 @@ export const DealCard: FC<DealCardProps> = ({
     });
   };
 
-  const _addTag = (tag: string) => {
     if (!tag.trim() || editForm.tags.includes(tag.trim())) return;
 
     setEditForm(prev => ({
@@ -125,7 +121,6 @@ export const DealCard: FC<DealCardProps> = ({
     }));
   };
 
-  const _removeTag = (tagToRemove: string) => {
     setEditForm(prev => ({
       ...prev,
       tags: prev.tags.filter(tag => tag !== tagToRemove)
@@ -190,7 +185,6 @@ export const DealCard: FC<DealCardProps> = ({
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(companyName)}&background=3b82f6&color=ffffff&size=40`;
   };
 
-  const _getContactAvatar = (contactName: string) => {
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(contactName)}&background=10b981&color=ffffff&size=32`;
   };
 

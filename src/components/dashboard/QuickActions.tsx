@@ -1,3 +1,4 @@
+import React from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useDealStore } from '../../store/dealStore';
@@ -73,26 +74,26 @@ const QuickActions = () => {
     switch(action) {
       case 'newDeal':
         // Open a modal or navigate to new deal page
-        console.log('Creating new deal...');
+
         navigate('/deals/new');
         break;
       case 'addContact':
         // Open a modal or navigate to new contact page
-        console.log('Adding new contact...');
+
         navigate('/contacts/new');
         break;
       case 'scheduleMeeting':
         // Open meeting scheduler
-        console.log('Scheduling meeting...');
+
         openTool('meeting-scheduler');
         break;
       case 'sendEmail':
         // Open email composer
-        console.log('Composing email...');
+
         openTool('email-composer');
         break;
       default:
-        console.log('Action not implemented yet');
+
     }
   };
 

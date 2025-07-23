@@ -218,7 +218,6 @@ export const ContactsModal: FC<ContactsModalProps> = ({
     setSelectedContact(null);
   };
 
-  const _handleSort = (field: typeof sortBy) => {
     if (sortBy === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {

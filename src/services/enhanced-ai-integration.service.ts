@@ -114,7 +114,6 @@ class EnhancedAIIntegrationService {
 
   async smartBulkAnalysis(request: SmartBulkRequest): Promise<unknown> {
     const { contacts, analysisType, urgency = 'medium', costLimit, timeLimit } = request;
-    const _startTime = Date.now();
 
     logger.info(`Starting smart bulk analysis`, {
       contactCount: contacts.length,

@@ -145,7 +145,6 @@ class AIOrchestratorService {
     }
 
     // Get model recommendations
-    const _modelType = 
       feature === 'email_generation' ? 'email_generation' :
       feature === 'pipeline_analysis' ? 'business_analysis' :
       feature === 'deal_insights' ? 'business_analysis' :

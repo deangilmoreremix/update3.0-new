@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -26,7 +27,7 @@ import TestimonialCard from './components/TestimonialCard';
 
 const LandingPage = () => {
   useEffect(() => {
-    console.log("LandingPage component mounted");
+
   }, []);
 
   return (

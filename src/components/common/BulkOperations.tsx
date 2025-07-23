@@ -60,7 +60,7 @@ export const BulkOperations: FC<BulkOperationsProps> = ({
         icon: <Tag className="w-4 h-4" />,
         action: async (items) => {
           // Mock tag addition
-          console.log('Adding tags to items:', items.map(i => i.id));
+
         }
       },
       {
@@ -82,7 +82,7 @@ export const BulkOperations: FC<BulkOperationsProps> = ({
           icon: <Move className="w-4 h-4" />,
           action: async (items) => {
             // Mock stage movement
-            console.log('Moving deals to stage:', items.map(i => i.id));
+
           }
         },
         {
@@ -91,7 +91,7 @@ export const BulkOperations: FC<BulkOperationsProps> = ({
           icon: <Edit3 className="w-4 h-4" />,
           action: async (items) => {
             // Mock value update
-            console.log('Updating deal values:', items.map(i => i.id));
+
           }
         }
       );
@@ -105,7 +105,7 @@ export const BulkOperations: FC<BulkOperationsProps> = ({
           icon: <Mail className="w-4 h-4" />,
           action: async (items) => {
             // Mock email sending
-            console.log('Sending email to contacts:', items.map(i => i.id));
+
           }
         },
         {
@@ -114,7 +114,7 @@ export const BulkOperations: FC<BulkOperationsProps> = ({
           icon: <Users className="w-4 h-4" />,
           action: async (items) => {
             // Mock list addition
-            console.log('Adding contacts to list:', items.map(i => i.id));
+
           }
         }
       );
@@ -128,7 +128,7 @@ export const BulkOperations: FC<BulkOperationsProps> = ({
         icon: <Archive className="w-4 h-4" />,
         action: async (items) => {
           // Mock archiving
-          console.log('Archiving items:', items.map(i => i.id));
+
           if (onItemsUpdate) {
             const updatedItems = items.map(item => ({
               ...item,
@@ -147,7 +147,7 @@ export const BulkOperations: FC<BulkOperationsProps> = ({
         icon: <Trash2 className="w-4 h-4" />,
         action: async (items) => {
           // Mock deletion
-          console.log('Deleting items:', items.map(i => i.id));
+
           if (onItemsUpdate) {
             onItemsUpdate([]);
           }
@@ -253,8 +253,6 @@ export const BulkOperations: FC<BulkOperationsProps> = ({
     setIsLoading(true);
     try {
       // Mock bulk edit
-      console.log('Bulk editing fields:', bulkEditFields);
-      console.log('For items:', selectedItemsData.map(i => i.id));
 
       if (onItemsUpdate) {
         const updatedItems = selectedItemsData.map(item => ({
@@ -279,8 +277,6 @@ export const BulkOperations: FC<BulkOperationsProps> = ({
     setIsLoading(true);
     try {
       // Mock assignment
-      console.log('Assigning to:', selectedAssignee);
-      console.log('Items:', selectedItemsData.map(i => i.id));
 
       if (onItemsUpdate) {
         const updatedItems = selectedItemsData.map(item => ({

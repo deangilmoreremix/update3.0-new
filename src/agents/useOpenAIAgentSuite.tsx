@@ -29,7 +29,7 @@ export const composioAuthMap = Object.fromEntries(
     async () => {
       try {
         await composioAuth(app);
-        console.log(`${app} connected via Composio.`);
+
       } catch (err) {
         console.error(`Composio ${app} Auth failed:`, err);
       }
@@ -72,13 +72,13 @@ export async function getComposioToolset(actions: string[] | null = null, app: s
 export async function handleComposioExecution(response: unknown, toolset: unknown) {
   const responseMessage = response.choices[0].message;
   if (responseMessage.tool_calls) {
-    console.log("LLM requested tool use. Executing via Composio...");
+
     const executionResult = await toolset.handleToolCall(response);
-    console.log("Execution Result from Composio:", executionResult);
+
     embedAgentResponseUI(responseMessage.tool_calls, executionResult);
     return executionResult;
   } else {
-    console.log("LLM responded directly:", responseMessage.content);
+
     embedAgentResponseUI(null, responseMessage.content);
     return responseMessage.content;
   }
@@ -112,13 +112,13 @@ export const runAllAgents = async (task: string, actionsOrApp: string[] | string
   ];
 
   for (const agent of agents) {
-    console.log(`\nRunning ${agent} with tools...`);
+
     await executeAgentWithTools(agent, task, actionsOrApp);
   }
 };
 
 export async function runAgentForModule(agentName: string, task: string, app: string) {
-  console.log(`\n[CRM UI Trigger] ${agentName} for task:`, task);
+
   return await executeAgentWithTools(agentName, task, app);
 }
 

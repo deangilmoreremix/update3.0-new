@@ -22,7 +22,6 @@ export async function proposalGeneratorAgent(input: unknown, setSteps?: (steps: 
   await new Promise(resolve => setTimeout(resolve, 1000));
 
   // Call OpenAI API (simulated)
-  const _proposalContent = await callOpenAI(
     `Generate a proposal for ${company} for the "${title}" deal worth ${value}. Include executive summary, understanding of needs, solution details, and pricing.`
   );
 

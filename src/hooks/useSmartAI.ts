@@ -37,7 +37,6 @@ interface SmartBulkRequest {
 // Enhanced AI integration service mock (to be replaced with actual implementation)
 const enhancedAI = {
   scoreContact: async (contactId: string, contact: unknown, urgency: string = 'medium') => {
-    console.log('Scoring contact with enhancedAI', { contactId, urgency });
 
     // Use aiOrchestratorService to select the right model
     const result = await aiOrchestratorService.analyzeDeal(
@@ -55,7 +54,6 @@ const enhancedAI = {
   },
 
   enrichContact: async (contactId: string, contact: unknown, priority: 'standard' | 'premium' = 'standard') => {
-    console.log('Enriching contact with enhancedAI', { contactId, priority });
 
     // Simulate enrichment with aiOrchestratorService
     const result = await aiOrchestratorService.generateContactInsights(
@@ -72,7 +70,6 @@ const enhancedAI = {
   },
 
   categorizeAndTag: async (contactId: string, contact: unknown) => {
-    console.log('Categorizing contact', contactId);
 
     // Use Gemma for categorization (typically faster)
     const result = await enhancedGeminiService.generateContent({
@@ -92,7 +89,6 @@ const enhancedAI = {
   },
 
   qualifyLead: async (contactId: string, contact: unknown, businessContext?: string) => {
-    console.log('Qualifying lead', contactId);
 
     // Use more advanced models for qualification
     const result = await aiOrchestratorService.analyzeDeal(
@@ -108,7 +104,6 @@ const enhancedAI = {
   },
 
   smartBulkAnalysis: async (request: SmartBulkRequest) => {
-    console.log('Running bulk analysis', request);
 
     // Simulate batch processing
     const results = await Promise.all(
@@ -150,7 +145,6 @@ const enhancedAI = {
   },
 
   smartAnalyzeContact: async (request: EnhancedAIAnalysisRequest) => {
-    console.log('Smart analyzing contact', request);
 
     // Custom analysis
     const result = await enhancedGeminiService.generateContent({

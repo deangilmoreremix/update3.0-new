@@ -77,7 +77,7 @@ const InteractionHistory: React.FC = () => {
 
   const handleInteractionClick = (interactionId: number) => {
     // Navigate to the detailed view of the interaction
-    console.log(`Opening interaction ${interactionId}`);
+
     navigate(`/interactions/${interactionId}`);
   };
 

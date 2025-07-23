@@ -41,7 +41,7 @@ export function AIGoalsPage() {
   };
 
   const handleGoalComplete = (result: unknown) => {
-    console.log('Goal execution completed:', result);
+
   };
 
   return (

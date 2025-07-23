@@ -438,7 +438,7 @@ export const NewContactModal: FC<NewContactModalProps> = ({ isOpen, onClose }) =
                         // Trigger new image search
                         if (formData.firstName || formData.lastName) {
                           // Find new image logic would go here
-                          console.log('Finding new image...');
+
                         }
                       }}
                       className="absolute -bottom-1 -right-1 p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors shadow-lg"

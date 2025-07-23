@@ -38,7 +38,6 @@ export const ThemeProvider: FC<{ children: React.ReactNode }> = ({ children }) =
   }, [isDark]);
 
   // Helper to handle theme transition state
-  const _handleThemeChange = useCallback(() => {
     setIsThemeChanging(true);
     setIsDark(prev => !prev);
 

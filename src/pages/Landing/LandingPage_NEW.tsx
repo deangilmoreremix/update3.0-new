@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
@@ -25,7 +26,6 @@ const LandingPage = () => {
 
   // Function to handle page initialization only once
   useEffect(() => {
-    console.log("LandingPage component mounted");
 
     const preloadHighPriorityAssets = () => {
       // Preload critical images
@@ -48,11 +48,10 @@ const LandingPage = () => {
 
     // Check animations.css is loaded
     const animationsStylesheet = document.querySelector('link[href*="animations.css"]');
-    console.log("Animations CSS loaded:", !!animationsStylesheet);
 
     // Add a small delay to ensure everything is ready
     const timer = setTimeout(() => {
-      console.log("Setting isLoaded to true");
+
       setIsLoaded(true);
     }, 100);
 
@@ -62,15 +61,12 @@ const LandingPage = () => {
   // Debug CSS classes for background elements
   useEffect(() => {
     if (isLoaded) {
-      console.log("Landing page marked as loaded");
 
       // Check animation classes
       const animatedElements = document.querySelectorAll('.animate-float, .animate-pulse, .animate-spin');
-      console.log(`Found ${animatedElements.length} animated elements`);
 
       // Check background classes
       const bgElements = document.querySelectorAll('.bg-gradient-to-r, .bg-gradient-to-b, .parallax-bg');
-      console.log(`Found ${bgElements.length} background elements`);
 
       if (bgElements.length > 0) {
         Array.from(bgElements).forEach((el, i) => {

@@ -39,7 +39,6 @@ const AIToolsCard: React.FC = () => {
     }
   ];
 
-  const _additionalTools = [
     {
       name: "Subject Line Optimizer",
       icon: <Target className="h-5 w-5 text-rose-600" />,

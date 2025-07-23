@@ -2,7 +2,6 @@
 export async function callOpenAI(prompt: string) {
   try {
     // For demo purposes, we'll simulate a response
-    console.log('Calling OpenAI with prompt:', prompt);
 
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 2500));

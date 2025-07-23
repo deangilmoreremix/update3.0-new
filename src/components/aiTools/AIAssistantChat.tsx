@@ -34,7 +34,6 @@ const AIAssistantChat: FC<AIAssistantChatProps> = ({ assistantId: propAssistantI
       if (!threadId) {
         const thread = await assistants.createThread();
         setThreadId(thread.id);
-        console.log('New thread created:', thread.id);
 
         // Add welcome message
         setMessages(prev => [

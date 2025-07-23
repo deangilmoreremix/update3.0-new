@@ -5,7 +5,7 @@ const TestLandingPage: React.FC = () => {
   const bgRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log("Test Landing Page loaded");
+
     if (bgRef.current) {
       const computedStyle = window.getComputedStyle(bgRef.current);
       console.log("Background computed style:", {

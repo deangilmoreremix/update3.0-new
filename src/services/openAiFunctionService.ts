@@ -14,7 +14,7 @@ interface CrmFunctions {
 // Mock implementation of CRM functions for the demo
 const crmFunctions: CrmFunctions = {
   searchDeals: async (params) => {
-    console.log('Searching deals with params:', params);
+
     // Mock implementation - would connect to actual API in production
     await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -61,7 +61,7 @@ const crmFunctions: CrmFunctions = {
   },
 
   searchContacts: async (params) => {
-    console.log('Searching contacts with params:', params);
+
     // Mock implementation - would connect to actual API in production
     await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -105,7 +105,7 @@ const crmFunctions: CrmFunctions = {
   },
 
   createTask: async (params) => {
-    console.log('Creating task with params:', params);
+
     // Mock implementation - would connect to actual API in production
     await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -117,7 +117,7 @@ const crmFunctions: CrmFunctions = {
   },
 
   scheduleFollowUp: async (params) => {
-    console.log('Scheduling follow-up with params:', params);
+
     // Mock implementation - would connect to actual API in production
     await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -129,7 +129,7 @@ const crmFunctions: CrmFunctions = {
   },
 
   getContactInfo: async (params) => {
-    console.log('Getting contact info with ID:', params.contactId);
+
     // Mock implementation - would connect to actual API in production
     await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -169,7 +169,7 @@ const crmFunctions: CrmFunctions = {
   },
 
   getDealInfo: async (params) => {
-    console.log('Getting deal info with ID:', params.dealId);
+
     // Mock implementation - would connect to actual API in production
     await new Promise(resolve => setTimeout(resolve, 500));
 

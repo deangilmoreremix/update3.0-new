@@ -2,7 +2,6 @@
 export async function callGemini(prompt: string) {
   try {
     // For demo purposes, we'll simulate a response
-    console.log('Calling Gemini with prompt:', prompt);
 
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 2000));

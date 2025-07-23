@@ -123,7 +123,6 @@ describe('Cache Service', () => {
 
 describe('Validation Service', () => {
   test('should validate contact data successfully', () => {
-    const _validContact = {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@example.com',
@@ -144,7 +143,6 @@ describe('Validation Service', () => {
   });
 
   test('should fail validation for invalid email', () => {
-    const _invalidContact = {
       firstName: 'John',
       lastName: 'Doe',
       email: 'invalid-email',
@@ -167,7 +165,6 @@ describe('Validation Service', () => {
   });
 
   test('should sanitize input data', () => {
-    const _unsanitizedContact = {
       firstName: '  John  ',
       lastName: '  Doe  ',
       email: '  JOHN.DOE@EXAMPLE.COM  ',

@@ -69,7 +69,7 @@ export default function RevenueSharingDashboard() {
 
   const handleRequestPayout = () => {
     // Request manual payout
-    console.log('Requesting manual payout');
+
   };
 
   // Calculate payout status

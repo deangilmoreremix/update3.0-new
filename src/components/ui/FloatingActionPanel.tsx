@@ -21,7 +21,7 @@ export const FloatingActionPanel: FC<FloatingActionPanelProps> = ({
 
   // Function to handle deal click
   const handleNewDeal = () => {
-    console.log("New Deal clicked");
+
     if (onNewDeal) {
       onNewDeal();
     }
@@ -30,7 +30,7 @@ export const FloatingActionPanel: FC<FloatingActionPanelProps> = ({
 
   // Function to handle contact add click
   const handleAddContact = () => {
-    console.log("Add Contact clicked");
+
     if (onAddContact) {
       onAddContact();
     }

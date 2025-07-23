@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { Eye, Mail, Monitor, Palette, RotateCcw, Save, Upload } from 'lucide-react';
 import { useTenant } from '../components/TenantProvider';

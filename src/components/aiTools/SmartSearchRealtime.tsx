@@ -100,7 +100,6 @@ const mockDeals: Deal[] = [
 ];
 
 const SmartSearchRealtime: FC<SmartSearchRealtimeProps> = ({ onSearchResult }) => {
-  const _gemini = useGemini();
   const embeddings = useOpenAIEmbeddings();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -198,7 +197,6 @@ const SmartSearchRealtime: FC<SmartSearchRealtimeProps> = ({ onSearchResult }) =
 
     try {
       // Create an embedding for the search query
-      const _queryEmbedding = await embeddings.createEmbedding(query);
 
       const results: SearchResult[] = [];
 

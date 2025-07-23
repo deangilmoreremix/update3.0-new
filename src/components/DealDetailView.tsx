@@ -52,7 +52,6 @@ export const DealDetailView: FC<DealDetailViewProps> = ({
 
   // Create refs for file inputs
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const _dealCardRef = useRef<HTMLDivElement>(null);
 
   // Get the AI research service
   const aiResearch = useAIResearch();
@@ -1148,7 +1147,7 @@ Sales Approach: ${companyData.salesApproach}
                     variant="outline"
                     onClick={() => {
                       // In a real app, this would open a share dialog
-                      console.log('Share deal', deal.id);
+
                     }}
                     size="sm"
                     className="border-blue-200 text-blue-700 hover:bg-blue-50"
@@ -1398,7 +1397,7 @@ Sales Approach: ${companyData.salesApproach}
                           <button
                             onClick={() => {
                               // This would open a contact selector in a real app
-                              console.log('Link contact');
+
                               toggleEditMode('contact');
                             }}
                             className="mt-2 text-xs text-blue-600 hover:text-blue-800"

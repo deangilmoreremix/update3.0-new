@@ -1,3 +1,4 @@
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AppProviders } from './components/providers/AppProviders';
 import Navbar from './components/Navbar';

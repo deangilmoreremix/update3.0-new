@@ -11,7 +11,7 @@ const ParallaxHero: React.FC = () => {
 
   // Track when component has rendered
   useEffect(() => {
-    console.log("ParallaxHero component mounted");
+
     setHasRendered(true);
   }, [setHasRendered]);
 
@@ -22,7 +22,7 @@ const ParallaxHero: React.FC = () => {
       // Only update if the element is in view
       if (top < window.innerHeight && top > -containerRef.current.clientHeight) {
         setScrollY(window.scrollY);
-        console.log("Updating parallax scroll position:", window.scrollY);
+
       }
     }
   }, []);
@@ -92,7 +92,7 @@ const ParallaxHero: React.FC = () => {
   // Log the rendering state and elements
   useEffect(() => {
     if (containerRef.current) {
-      console.log("ParallaxHero container element:", containerRef.current);
+
       const styles = window.getComputedStyle(containerRef.current);
       console.log("Container styles:", {
         position: styles.position,
@@ -104,9 +104,7 @@ const ParallaxHero: React.FC = () => {
     }
 
     if (iconsRef.current) {
-      console.log("Icons container:", iconsRef.current);
-      console.log("Parallax items count:", parallaxItems.length);
-      console.log("Parallax icons rendered:", iconsRef.current.querySelectorAll('.absolute').length);
+
     }
   }, [hasRendered, parallaxItems.length]);
 

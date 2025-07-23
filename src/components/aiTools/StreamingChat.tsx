@@ -133,7 +133,6 @@ const StreamingChat: FC<StreamingChatProps> = ({
     }
   };
 
-  const _getSpeedDelay = () => {
     switch (typingSpeed) {
       case 'faster': return 10;
       case 'instant': return 0;

@@ -67,12 +67,12 @@ export default function PartnerManagement() {
 
   const handleInviteCustomer = () => {
     // Open customer invitation modal
-    console.log('Opening customer invitation modal');
+
   };
 
   const handleExportData = () => {
     // Export customer data to CSV
-    console.log('Exporting customer data');
+
   };
 
   if (partnersLoading || packagesLoading) {

@@ -168,7 +168,7 @@ export const ContactCommunicationHistory: FC<ContactCommunicationHistoryProps> =
 
   const handleAddCommunication = () => {
     // Implementation for adding new communication
-    console.log('Adding communication:', newComm);
+
     setNewComm({
       type: 'email',
       direction: 'outbound',

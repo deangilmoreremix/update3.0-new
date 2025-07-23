@@ -8,7 +8,6 @@ const DocumentAnalyzerRealtime: FC<DocumentAnalyzerRealtimeProps> = ({
   onAnalysisComplete,
   analysisType = 'document'
 }) => {
-  const _vision = useOpenAIVision();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);

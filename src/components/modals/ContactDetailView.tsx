@@ -142,13 +142,11 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
         let updates: Partial<Contact> = {};
 
         if (editingField.startsWith('social_')) {
-          const _platform = editingField.replace('social_', '');
           const socialProfiles = {
             ...(editedContact.socialProfiles || {}),
           };
           updates = { socialProfiles };
         } else if (editingField.startsWith('custom_')) {
-          const _fieldName = editingField.replace('custom_', '');
           const customFields = {
             ...(editedContact.customFields || {}),
           };
@@ -232,7 +230,6 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
     }
   };
 
-  const _handleRemoveSocialProfile = async (platform: string) => {
     if (!editedContact.socialProfiles) return;
 
     const socialProfiles = { ...editedContact.socialProfiles };

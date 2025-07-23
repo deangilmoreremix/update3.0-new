@@ -2,7 +2,6 @@
 export async function smartDemoBotAgent(input: unknown, setSteps?: (steps: unknown) => void) {
   const name = input.name || "there";
   const company = input.company || "your company";
-  const _dealTitle = input.title || "our solution";
 
   setSteps?.([{ step: "Creating demo script..." }]);
 

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react';
 import { Copy, Download, RefreshCw } from 'lucide-react';
 
@@ -132,8 +133,8 @@ const AIToolContent: FC<AIToolContentProps> = ({
                 }
 
                 // Format bulleted lists
-                if (line.match(/^[\*\-]\s/)) {
-                  const content = line.replace(/^[\*\-]\s/, '');
+                if (line.match(/^[*-]\s/)) {
+                  const content = line.replace(/^[*-]\s/, '');
                   return (
                     <div key={index} className="flex items-start my-1.5">
                       <div className="h-2 w-2 rounded-full bg-indigo-500 mt-2 mr-2 flex-shrink-0"></div>

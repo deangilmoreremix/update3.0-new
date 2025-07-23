@@ -1,3 +1,4 @@
+import React from 'react';
 import { Activity, ArrowRight, Calendar, CheckCircle, Download, Edit, FileText, Mail, Phone, Plus, Trash2, Upload, User, X, XCircle } from 'lucide-react';
 return (
     <>

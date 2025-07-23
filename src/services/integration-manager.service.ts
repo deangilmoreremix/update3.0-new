@@ -518,7 +518,6 @@ class IntegrationManagerService {
       }
 
       // Calculate requests per minute
-      const _oneMinuteAgo = Date.now() - 60000;
       healthCheck.metrics.requestsPerMinute = this.metrics.requestCount; // Simplified
 
       // Determine overall status

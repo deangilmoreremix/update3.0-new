@@ -104,8 +104,6 @@ class IntelligentAIService {
   async executeTask(taskType: string, data: unknown, options: { priority?: 'speed' | 'quality' | 'cost' } = {}): Promise<unknown> {
     const modelPref = this.getOptimalModel(taskType, options.priority);
 
-    console.log(`🤖 AI Task: ${taskType} → Using ${modelPref.primary} (${modelPref.model}) - ${modelPref.reason}`);
-
     try {
       // Try primary model first
       if (modelPref.primary === 'openai') {

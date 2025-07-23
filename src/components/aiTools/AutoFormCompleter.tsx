@@ -318,7 +318,7 @@ const AutoFormCompleter: FC<AutoFormCompleterProps> = ({
     }
 
     // In a real app, you'd submit the form data here
-    console.log('Form submitted:', formData);
+
   };
 
   return (

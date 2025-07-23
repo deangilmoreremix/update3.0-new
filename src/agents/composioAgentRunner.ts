@@ -47,10 +47,8 @@ export class ComposioAgentRunner {
 
     try {
       // Phase 1: Agent Analysis and Planning
-      const _planningResult = await this.planExecution(goal, crmContext);
 
       // Phase 2: Tool Authentication and Setup
-      const _toolsSetup = await this.setupRequiredTools(goal.toolsNeeded, entityId);
 
       // Phase 3: Execute Primary Agent Action
       const executionResult = await realAgentExecutor.executeAgent({

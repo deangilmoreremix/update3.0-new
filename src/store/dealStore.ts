@@ -204,8 +204,6 @@ export const useDealStore = create<DealState>((set, get) => ({
         stageValues[columnId] = totalValue;
       });
 
-      const _totalPipelineValue = Object.values(stageValues).reduce((a, b) => a + b, 0);
-
       // Use the mock data for now instead of the API response
       // In a real implementation, we would use the transformed data from the API
       // set({ deals: dealsRecord, columns: columnsRecord, isLoading: false });

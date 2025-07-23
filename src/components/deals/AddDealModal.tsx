@@ -141,7 +141,6 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
 
     setIsResearching(true);
     try {
-      console.log(`🚀 Starting AI research for ${formData.company} (Priority: ${researchPriority})`);
 
       // Use intelligent AI routing for company research
       const companyData = await aiResearch.researchCompany(formData.company, undefined, researchPriority);
@@ -214,7 +213,6 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
 
     setIsResearching(true);
     try {
-      console.log(`👤 Starting contact research for ${contactDetails.name}`);
 
       const contactData = await aiResearch.findContactPerson(contactDetails.name, formData.company, 'speed');
 

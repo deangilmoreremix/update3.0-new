@@ -184,14 +184,14 @@ const TasksAndFunnel: React.FC = () => {
   });
 
   const handleAssigneeClick = (id: string) => {
-    console.log(`Clicked on assignee: ${id}`);
+
     // In a real implementation, this would open the contact details modal
     // You could call the onContactsClick function from props here
   };
 
   const handleDayClick = (day: number) => {
     setSelectedDay(day);
-    console.log(`Clicked on day: ${day}`);
+
     // In a real implementation, this might open a modal to create/view tasks for this day
   };
 

@@ -69,7 +69,7 @@ export const NavigationProvider: FC<{ children: React.ReactNode }> = ({ children
         navigate(feature);
         break;
       default:
-        console.log(`Navigation to ${feature} not implemented`);
+
     }
   };
 

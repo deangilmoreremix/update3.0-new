@@ -24,7 +24,6 @@ import {
 
 const ChartsSection: React.FC = () => {
   const { isDark } = useTheme();
-  const _navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'performance' | 'pipeline' | 'breakdown'>('performance');
   const [timeframe, setTimeframe] = useState<'week' | 'month' | 'quarter'>('month');
   const { deals } = useDealStore();

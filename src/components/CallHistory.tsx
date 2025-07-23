@@ -78,7 +78,6 @@ const CallHistory: React.FC = () => {
   };
 
   // Add new call to history (this would be called from the video call context)
-  const _addCallToHistory = (callData: Omit<CallRecord, 'id'>) => {
     const newCall: CallRecord = {
       ...callData,
       id: Date.now().toString()

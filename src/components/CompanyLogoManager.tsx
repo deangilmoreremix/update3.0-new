@@ -45,7 +45,7 @@ const CompanyLogoManager: React.FC = () => {
       setShowUploader(false);
 
       // You could also update a companies store here if you had one
-      console.log(`Logo updated for ${selectedCompany.name}: ${logoUrl}`);
+
     }
   };
 
