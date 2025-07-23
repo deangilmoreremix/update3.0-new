@@ -22,42 +22,42 @@ const LoadingSpinner = () => (
 );
 
 // Landing Pages (keep these non-lazy as they're likely to be used immediately)
-import LandingPage from './pages/Landing/LandingPage';
+import LandingPage from './src/pages/Landing/LandingPage';
 
 // Auth Pages (keep these non-lazy as they're critical for first load)
-import Login from './pages/Auth/Login';
-import Register from './pages/Auth/Register'; 
-import ForgotPassword from './pages/Auth/ForgotPassword';
+import Login from './src/pages/Auth/Login';
+import Register from './src/pages/Auth/Register'; 
+import ForgotPassword from './src/pages/Auth/ForgotPassword';
 
 // Lazy load heavy components to reduce initial bundle size
-const Dashboard = React.lazy(() => import('./pages/DashboardEnhanced'));
-const Contacts = React.lazy(() => import('./pages/ContactsEnhanced'));
-const ContactDetail = React.lazy(() => import('./pages/ContactDetail'));
-const Pipeline = React.lazy(() => import('./pages/PipelineEnhanced'));
-const Tasks = React.lazy(() => import('./pages/TasksSimple'));
-const TaskCalendarView = React.lazy(() => import('./pages/TaskCalendarView'));
-const Appointments = React.lazy(() => import('./pages/Appointments'));
-const PhoneSystem = React.lazy(() => import('./pages/PhoneSystem'));
-const TextMessages = React.lazy(() => import('./pages/TextMessages'));
-const VideoEmail = React.lazy(() => import('./pages/VideoEmail'));
-const Invoicing = React.lazy(() => import('./pages/Invoicing'));
-const SettingsPage = React.lazy(() => import('./pages/Settings'));
-const AITools = React.lazy(() => import('./pages/AITools'));
-const SalesTools = React.lazy(() => import('./pages/SalesTools'));
-const LeadAutomation = React.lazy(() => import('./pages/LeadAutomation'));
-const CircleProspecting = React.lazy(() => import('./pages/CircleProspecting'));
-const FormsAndSurveys = React.lazy(() => import('./pages/FormsAndSurveys'));
-const FormPublic = React.lazy(() => import('./pages/FormPublic'));
-const FAQ = React.lazy(() => import('./pages/FAQ'));
+const Dashboard = React.lazy(() => import('./src/pages/Dashboard'));
+const Contacts = React.lazy(() => import('./src/pages/Contacts'));
+const ContactDetail = React.lazy(() => import('./src/pages/ContactDetail'));
+const Pipeline = React.lazy(() => import('./src/pages/Pipeline'));
+const Tasks = React.lazy(() => import('./src/pages/Tasks'));
+const TaskCalendarView = React.lazy(() => import('./src/pages/TaskCalendarView'));
+const Appointments = React.lazy(() => import('./src/pages/Appointments'));
+const PhoneSystem = React.lazy(() => import('./src/pages/PhoneSystem'));
+const TextMessages = React.lazy(() => import('./src/pages/TextMessages'));
+const VideoEmail = React.lazy(() => import('./src/pages/VideoEmail'));
+const Invoicing = React.lazy(() => import('./src/pages/Invoicing'));
+const SettingsPage = React.lazy(() => import('./src/pages/Settings'));
+const AITools = React.lazy(() => import('./src/pages/AITools'));
+const SalesTools = React.lazy(() => import('./src/pages/SalesTools'));
+const LeadAutomation = React.lazy(() => import('./src/pages/LeadAutomation'));
+const CircleProspecting = React.lazy(() => import('./src/pages/CircleProspecting'));
+const FormsAndSurveys = React.lazy(() => import('./src/pages/FormsAndSurveys'));
+const FormPublic = React.lazy(() => import('./src/pages/FormPublic'));
+const FAQ = React.lazy(() => import('./src/pages/FAQ'));
 
 // Business Analysis
-const BusinessAnalyzer = React.lazy(() => import('./pages/BusinessAnalysis/BusinessAnalyzer'));
+const BusinessAnalyzer = React.lazy(() => import('./src/pages/BusinessAnalysis/BusinessAnalyzer'));
 
 // Content Library
-const ContentLibrary = React.lazy(() => import('./pages/ContentLibrary/ContentLibrary'));
+const ContentLibrary = React.lazy(() => import('./src/pages/ContentLibrary/ContentLibrary'));
 
 // Voice Profiles
-const VoiceProfiles = React.lazy(() => import('./pages/VoiceProfiles/VoiceProfiles'));
+const VoiceProfiles = React.lazy(() => import('./src/pages/VoiceProfiles/VoiceProfiles'));
 
 // New Feature Pages
 const CommunicationHub = React.lazy(() => import('./pages/CommunicationHub'));
@@ -66,15 +66,14 @@ const AnalyticsDashboard = React.lazy(() => import('./pages/AnalyticsDashboard')
 const LeadCapture = React.lazy(() => import('./pages/LeadCapture'));
 
 // Feature Pages (keep non-lazy for landing page performance)
-import AiToolsFeaturePage from './pages/Landing/FeaturePage/AiToolsFeaturePage';
-import ContactsFeaturePage from './pages/Landing/FeaturePage/ContactsFeaturePage';
-import PipelineFeaturePage from './pages/Landing/FeaturePage/PipelineFeaturePage';
-import AiAssistantFeaturePage from './pages/Landing/FeaturePage/AiAssistantFeaturePage';
-import VisionAnalyzerFeaturePage from './pages/Landing/FeaturePage/VisionAnalyzerFeaturePage';
-import ImageGeneratorFeaturePage from './pages/Landing/FeaturePage/ImageGeneratorFeaturePage';
-import SemanticSearchFeaturePage from './pages/Landing/FeaturePage/SemanticSearchFeaturePage';
-import FunctionAssistantFeaturePage from './pages/Landing/FeaturePage/FunctionAssistantFeaturePage';
-import CommunicationsFeaturePage from './pages/Landing/FeaturePage/CommunicationsFeaturePage';
+import AiToolsFeaturePage from './src/pages/Landing/FeaturePage/AiToolsFeaturePage';
+import ContactsFeaturePage from './src/pages/Landing/FeaturePage/ContactsFeaturePage';
+import PipelineFeaturePage from './src/pages/Landing/FeaturePage/PipelineFeaturePage';
+import AiAssistantFeaturePage from './src/pages/Landing/FeaturePage/AiAssistantFeaturePage';
+import VisionAnalyzerFeaturePage from './src/pages/Landing/FeaturePage/VisionAnalyzerFeaturePage';
+import ImageGeneratorFeaturePage from './src/pages/Landing/FeaturePage/ImageGeneratorFeaturePage';
+import SemanticSearchFeaturePage from './src/pages/Landing/FeaturePage/SemanticSearchFeaturePage';
+import FunctionAssistantFeaturePage from './src/pages/Landing/FeaturePage/FunctionAssistantFeaturePage';
 
 // Admin and specialized pages
 const GoalCardDemo = React.lazy(() => import('./pages/GoalCardDemo'));
@@ -348,7 +347,6 @@ function App() {
                       <Route path="/features/image-generator" element={<ImageGeneratorFeaturePage />} />
                       <Route path="/features/semantic-search" element={<SemanticSearchFeaturePage />} />
                       <Route path="/features/function-assistant" element={<FunctionAssistantFeaturePage />} />
-                      <Route path="/features/communications" element={<CommunicationsFeaturePage />} />
                       <Route path="/demo/goal-cards" element={<GoalCardDemo />} />
                       <Route path="/ai-goals" element={
                         <UserRoute>
