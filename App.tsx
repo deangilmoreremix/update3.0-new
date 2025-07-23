@@ -24,10 +24,10 @@ const LoadingSpinner = () => (
 // Landing Pages (keep these non-lazy as they're likely to be used immediately)
 import LandingPage from './src/pages/Landing/LandingPageSimple';
 
-// Auth Pages (keep these non-lazy as they're critical for first load)
-import Login from './src/pages/Auth/Login';
-import Register from './src/pages/Auth/Register'; 
-import ForgotPassword from './src/pages/Auth/ForgotPassword';
+// Auth Pages (using modern auth components)
+import { SignIn } from './client/src/pages/auth/SignIn';
+import { SignUp } from './client/src/pages/auth/SignUp';
+import ForgotPassword from './client/src/pages/auth/ForgotPassword';
 
 // Lazy load heavy components to reduce initial bundle size
 const Dashboard = React.lazy(() => import('./src/pages/Dashboard'));
@@ -117,10 +117,11 @@ function App() {
                   <Router>
                     <NavigationProvider>
                     <Routes>
-                      {/* Auth routes (available for future Clerk integration) */}
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/register" element={<Register />} />
-                      <Route path="/signup" element={<Register />} />
+                      {/* Auth routes */}
+                      <Route path="/login" element={<SignIn />} />
+                      <Route path="/signin" element={<SignIn />} />
+                      <Route path="/register" element={<SignUp />} />
+                      <Route path="/signup" element={<SignUp />} />
                       <Route path="/forgot-password" element={<ForgotPassword />} />
 
                       {/* Public routes */}

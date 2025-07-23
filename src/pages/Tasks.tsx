@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTaskStore } from '../store/taskStore';
 import { Task } from '../types';
-import { AlertCircle, Briefcase, Calendar, CheckCircle, CheckSquare, Clock, Flag, Link, Plus, Search, User, X } from 'lucide-react';
+import { AlertCircle, Briefcase, Calendar, CheckCircle, CheckSquare, Clock, Flag, Plus, Search, User, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import SimpleMDE from 'react-simplemde-editor';
@@ -50,7 +50,7 @@ const Tasks: React.FC = () => {
   });
 
   // Filter tasks based on selected filters and search term
-  const filteredTasks = Object.values(tasks).filter(task => {
+  const filteredTasks = (Object.values(tasks) as Task[]).filter((task: Task) => {
     // Check search term
     if (searchTerm && !task.title.toLowerCase().includes(searchTerm.toLowerCase())) {
       return false;
@@ -97,7 +97,7 @@ const Tasks: React.FC = () => {
   });
 
   // Sort the filtered tasks
-  const sortedTasks = [...filteredTasks].sort((a, b) => {
+  const sortedTasks = [...filteredTasks].sort((a: Task, b: Task) => {
     if (sortBy.field === 'dueDate') {
       if (!a.dueDate && !b.dueDate) return 0;
       if (!a.dueDate) return sortBy.direction === 'asc' ? 1 : -1;
@@ -108,7 +108,7 @@ const Tasks: React.FC = () => {
     }
 
     if (sortBy.field === 'priority') {
-      const priorityOrder = { high: 2, medium: 1, low: 0 };
+      const priorityOrder: Record<string, number> = { high: 2, medium: 1, low: 0 };
       const aValue = priorityOrder[a.priority] || 0;
       const bValue = priorityOrder[b.priority] || 0;
       return sortBy.direction === 'asc' ? aValue - bValue : bValue - aValue;
@@ -122,10 +122,10 @@ const Tasks: React.FC = () => {
 
   // Group tasks for display
   const groupedTasks = {
-    overdue: sortedTasks.filter(
-      task => !task.completed && task.dueDate && task.dueDate < new Date()
+    overdue: sortedTasks.filter((task: Task) => 
+      !task.completed && task.dueDate && task.dueDate < new Date()
     ),
-    today: sortedTasks.filter(task => {
+    today: sortedTasks.filter((task: Task) => {
       if (task.completed || !task.dueDate) return false;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -133,7 +133,7 @@ const Tasks: React.FC = () => {
       tomorrow.setDate(tomorrow.getDate() + 1);
       return task.dueDate >= today && task.dueDate < tomorrow;
     }),
-    upcoming: sortedTasks.filter(task => {
+    upcoming: sortedTasks.filter((task: Task) => {
       if (task.completed || !task.dueDate) return false;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -141,8 +141,8 @@ const Tasks: React.FC = () => {
       tomorrow.setDate(tomorrow.getDate() + 1);
       return task.dueDate >= tomorrow;
     }),
-    completed: sortedTasks.filter(task => task.completed),
-    noDueDate: sortedTasks.filter(task => !task.completed && !task.dueDate)
+    completed: sortedTasks.filter((task: Task) => task.completed),
+    noDueDate: sortedTasks.filter((task: Task) => !task.completed && !task.dueDate)
   };
 
   // Open task detail or create form
@@ -352,8 +352,8 @@ const Tasks: React.FC = () => {
           <div>
             <p className="text-sm text-gray-500">Overdue</p>
             <p className="text-xl font-semibold">
-              {Object.values(tasks).filter(
-                task => !task.completed && task.dueDate && task.dueDate < new Date()
+              {(Object.values(tasks) as Task[]).filter((task: Task) => 
+                !task.completed && task.dueDate && task.dueDate < new Date()
               ).length}
             </p>
           </div>
@@ -366,7 +366,7 @@ const Tasks: React.FC = () => {
           <div>
             <p className="text-sm text-gray-500">Completed</p>
             <p className="text-xl font-semibold">
-              {Object.values(tasks).filter(task => task.completed).length}
+              {(Object.values(tasks) as Task[]).filter((task: Task) => task.completed).length}
             </p>
           </div>
         </div>
@@ -752,18 +752,6 @@ const Tasks: React.FC = () => {
         </div>
       )}
     </div>
-  );
-};
-
-// Helper components for the task list
-
-  return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-      colors[priority as keyof typeof colors] || colors.medium
-    }`}>
-      <Flag size={10} className="mr-1" />
-      {priority}
-    </span>
   );
 };
 

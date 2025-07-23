@@ -1,5 +1,15 @@
 import React, { useEffect, useRef, useState, ReactNode, FC } from 'react';
 
+interface ScrollAnimationWrapperProps {
+  children: ReactNode;
+  animation?: 'fade-up' | 'fade-in' | 'slide-in' | 'zoom-in' | 'bounce';
+  duration?: number;
+  delay?: number;
+  threshold?: number;
+  once?: boolean;
+  className?: string;
+}
+
 const ScrollAnimationWrapper: FC<ScrollAnimationWrapperProps> = ({
   children,
   animation = 'fade-up',
@@ -52,7 +62,7 @@ const ScrollAnimationWrapper: FC<ScrollAnimationWrapperProps> = ({
       return 'opacity-0 transform';
     }
 
-    const animationClasses = 'opacity-100 transform';
+    let animationClasses = 'opacity-100 transform';
 
     switch (animation) {
       case 'fade-up':

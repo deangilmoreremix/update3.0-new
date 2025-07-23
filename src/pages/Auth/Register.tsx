@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
-import { AlertCircle, Eye, EyeOff, Link, Lock, Mail } from 'lucide-react';
+import { AlertCircle, Eye, EyeOff, Lock, Mail } from 'lucide-react';
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState('');

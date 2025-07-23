@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, FC } from 'react';
+import React, { createContext, useContext, useState, useEffect, FC } from 'react';
+
+interface ThemeContextType {
+  isDark: boolean;
+  toggleTheme: () => void;
+  isThemeChanging: boolean;
+}
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
@@ -37,16 +43,12 @@ export const ThemeProvider: FC<{ children: React.ReactNode }> = ({ children }) =
     }, 0);
   }, [isDark]);
 
-  // Helper to handle theme transition state
+  const toggleTheme = () => {
     setIsThemeChanging(true);
     setIsDark(prev => !prev);
 
     // Reset the transition state after animation completes
     setTimeout(() => setIsThemeChanging(false), 300);
-  }, []);
-
-  const toggleTheme = () => {
-    setIsDark(prev => !prev);
   };
 
   return (

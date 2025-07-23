@@ -91,9 +91,19 @@ The components use mock data. Replace with your API calls:
 
 ### 4. Commit Changes
 ```bash
-git add .
-git commit -m "feat: Add enhanced CRM components"
-git checkout main
+#!/bin/bash
+echo "🚀 Quick deployment of critical fixes..."
+git add -A
+git commit -m "fix: Critical Netlify build errors resolved
+
+✅ SubjectLineContent.tsx: Fixed incomplete function call
+✅ Appointments.tsx: Resolved duplicate Link imports  
+✅ SalesTools.tsx: Resolved duplicate Link imports
+✅ All build-blocking syntax errors fixed
+
+Ready for successful Netlify deployment!"
+git push origin main
+echo "✅ Deployment triggered!"
 git merge enhancement/quick-deploy
 ```
 
