@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { ArrowRight, ArrowUpRight, BarChart3, Briefcase, Check, CheckCheck, CheckCircle, ChevronRight, DollarSign, Filter, Link, PieChart, Play, TrendingUp, Zap } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, BarChart3, Briefcase, CheckCheck, CheckCircle, ChevronRight, DollarSign, Filter, Link, PieChart, Play, TrendingUp, Zap } from 'lucide-react';
 
 import LandingHeader from '../components/LandingHeader';
 import LandingFooter from '../components/LandingFooter';
@@ -10,7 +10,7 @@ const PipelineFeaturePage: React.FC = () => {
   return (
     <div className="bg-white">
       <LandingHeader />
-      
+
       {/* Hero Section */}
       <section className="relative pt-20 bg-gradient-to-b from-white to-blue-50">
         <div className="container mx-auto px-4 py-20">
@@ -48,7 +48,7 @@ const PipelineFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Key Benefits Section */}
       <section id="features" className="py-20">
         <div className="container mx-auto px-4">
@@ -58,7 +58,7 @@ const PipelineFeaturePage: React.FC = () => {
               Our visual pipeline management tools help you track deals, forecast revenue, and close more business.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-blue-100 rounded-full w-min mb-4">
@@ -69,7 +69,7 @@ const PipelineFeaturePage: React.FC = () => {
                 Drag-and-drop interface for moving deals through customized sales stages with complete visibility.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-green-100 rounded-full w-min mb-4">
                 <TrendingUp className="h-6 w-6 text-green-600" />
@@ -79,7 +79,7 @@ const PipelineFeaturePage: React.FC = () => {
                 AI-enhanced forecasting helps you predict revenue with greater accuracy for better planning.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-purple-100 rounded-full w-min mb-4">
                 <DollarSign className="h-6 w-6 text-purple-600" />
@@ -92,7 +92,7 @@ const PipelineFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Visual Pipeline Management */}
       <section className="py-20 bg-gradient-to-b from-blue-50 to-white">
         <div className="container mx-auto px-4">
@@ -104,13 +104,13 @@ const PipelineFeaturePage: React.FC = () => {
                 </div>
                 <h3 className="text-2xl font-bold ml-3">Visual Pipeline Management</h3>
               </div>
-              
+
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Get a Clear View of Your Entire Sales Process</h2>
-              
+
               <p className="text-xl text-gray-600 mb-6 leading-relaxed">
                 Our customizable Kanban-style pipeline gives you complete visibility into your sales funnel, with powerful tools to track and manage deals at every stage.
               </p>
-              
+
               <div className="space-y-4 mb-8">
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
@@ -119,7 +119,7 @@ const PipelineFeaturePage: React.FC = () => {
                     <p className="text-gray-600">Create pipelines that match your unique sales process and workflow.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
                   <div>
@@ -127,7 +127,7 @@ const PipelineFeaturePage: React.FC = () => {
                     <p className="text-gray-600">Move deals between stages with simple drag-and-drop actions.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
                   <div>
@@ -135,7 +135,7 @@ const PipelineFeaturePage: React.FC = () => {
                     <p className="text-gray-600">See changes and updates from your team instantly as they happen.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
                   <div>
@@ -144,7 +144,7 @@ const PipelineFeaturePage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex items-center">
                 <Link to="/features/pipeline/visual-management" className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors mr-4">
                   Learn More
@@ -155,7 +155,7 @@ const PipelineFeaturePage: React.FC = () => {
                 </button>
               </div>
             </div>
-            
+
             <div className="w-full lg:w-1/2">
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-indigo-600/10 rounded-xl blur-xl opacity-30"></div>
@@ -169,7 +169,7 @@ const PipelineFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* AI Sales Forecasting Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -195,7 +195,7 @@ const PipelineFeaturePage: React.FC = () => {
                       <button className="px-3 py-1.5 bg-gray-200 text-gray-700 text-sm">Quarterly</button>
                     </div>
                   </div>
-                  
+
                   <div className="mb-8">
                     <div className="grid grid-cols-3 gap-4">
                       <div className="bg-purple-50 rounded-lg p-3 border border-purple-100">
@@ -212,7 +212,7 @@ const PipelineFeaturePage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 mb-6">
                     <h4 className="font-medium text-gray-900 mb-3">AI Forecast Analysis</h4>
                     <div className="space-y-3 text-sm">
@@ -230,14 +230,14 @@ const PipelineFeaturePage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <button className="w-full py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
                     Generate Detailed Report
                   </button>
                 </div>
               </div>
             </div>
-            
+
             <div className="w-full lg:w-1/2 order-1 lg:order-2">
               <div className="flex items-center mb-4">
                 <div className="p-3 bg-purple-100 rounded-full">
@@ -245,13 +245,13 @@ const PipelineFeaturePage: React.FC = () => {
                 </div>
                 <h3 className="text-2xl font-bold ml-3">AI Sales Forecasting</h3>
               </div>
-              
+
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Predict Revenue with Confidence</h2>
-              
+
               <p className="text-xl text-gray-600 mb-6 leading-relaxed">
                 Our AI-powered forecasting helps you predict future revenue with greater accuracy, so you can plan and make better business decisions.
               </p>
-              
+
               <div className="space-y-4 mb-8">
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
@@ -260,7 +260,7 @@ const PipelineFeaturePage: React.FC = () => {
                     <p className="text-gray-600">AI algorithms analyze historical data to predict future sales with high accuracy.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
                   <div>
@@ -268,7 +268,7 @@ const PipelineFeaturePage: React.FC = () => {
                     <p className="text-gray-600">Get realistic forecasts based on each deal's probability of closing.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
                   <div>
@@ -276,7 +276,7 @@ const PipelineFeaturePage: React.FC = () => {
                     <p className="text-gray-600">Model different scenarios to understand potential outcomes and risks.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
                   <div>
@@ -285,7 +285,7 @@ const PipelineFeaturePage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex items-center">
                 <Link to="/features/pipeline/forecasting" className="px-8 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors mr-4">
                   Learn More
@@ -299,7 +299,7 @@ const PipelineFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Deal Analytics Section */}
       <section className="py-20 bg-gradient-to-b from-blue-50 to-white">
         <div className="container mx-auto px-4">
@@ -309,7 +309,7 @@ const PipelineFeaturePage: React.FC = () => {
               Get deeper insights into your deals and sales performance to continuously improve your results.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
               <div className="flex items-center mb-4">
@@ -341,7 +341,7 @@ const PipelineFeaturePage: React.FC = () => {
                 Learn More <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
               <div className="flex items-center mb-4">
                 <div className="p-2 bg-amber-100 rounded-full">
@@ -376,7 +376,7 @@ const PipelineFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Testimonials Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -445,7 +445,7 @@ const PipelineFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="container mx-auto px-4">
@@ -461,7 +461,7 @@ const PipelineFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       <LandingFooter />
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Video, Mic, MicOff, VideoOff, Phone, PhoneOff, Minimize2, Maximize2, MessageSquare, Monitor, MonitorOff, MoreVertical, Check } from 'lucide-react';
+import { Video, Mic, MicOff, VideoOff, Phone, PhoneOff, Minimize2, Maximize2, MessageSquare, Monitor, MonitorOff, MoreVertical } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useSafeVideoCall as useVideoCall } from '../hooks/useSafeVideoCall';
 import Avatar from './ui/Avatar';
@@ -9,7 +9,7 @@ import InCallMessaging from './InCallMessaging';
 import CallRecording from './CallRecording';
 
 // Extract call duration into a separate component to prevent full component re-renders
-const CallDurationDisplay: React.FC<{ duration: number }> = React.memo(({ duration }) => {
+const CallDurationDisplay: FC<{ duration: number }> = React.memo(({ duration }) => {
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -39,7 +39,7 @@ const VideoCallOverlay = () => {
     rejectCall,
     connectionQuality
   } = useVideoCall();
-  
+
   const { isDark } = useTheme();
   const [isMinimized, setIsMinimized] = useState(false);
   const [showControls, setShowControls] = useState(true);
@@ -47,7 +47,7 @@ const VideoCallOverlay = () => {
   const [showMessaging, setShowMessaging] = useState(false);
   const [showRecording, setShowRecording] = useState(false);
   const [_showSettings, _setShowSettings] = useState(false);
-  
+
   // Use refs with useRef to avoid re-renders when updating refs
   const localVideoRef = useRef<HTMLVideoElement>(null); 
   const controlsTimerRef = useRef<NodeJS.Timeout | null>(null); 
@@ -76,7 +76,7 @@ const VideoCallOverlay = () => {
   // Throttled call duration timer to prevent excessive renders
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    
+
     if (isInCall) {
       interval = setInterval(() => {
         // Throttle updates to once per second maximum
@@ -89,7 +89,7 @@ const VideoCallOverlay = () => {
     } else {
       setCallDuration(0);
     }
-    
+
     return () => {
       if (interval) clearInterval(interval);
     };
@@ -98,19 +98,19 @@ const VideoCallOverlay = () => {
   // Optimized auto-hide controls with cleanup
   useEffect(() => {
     if (!isInCall) return;
-    
+
     // Clear any existing timer
     if (controlsTimerRef.current) {
       clearTimeout(controlsTimerRef.current);
     }
-    
+
     // Set new timer
     controlsTimerRef.current = setTimeout(() => {
       if (isInCall) {
         setShowControls(false);
       }
     }, 5000);
-    
+
     return () => {
       if (controlsTimerRef.current) {
         clearTimeout(controlsTimerRef.current);
@@ -144,7 +144,7 @@ const VideoCallOverlay = () => {
                 className="mx-auto"
               />
             </div>
-            
+
             <h2 className={`text-2xl font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
               {currentCall.recipient.name}
             </h2>
@@ -154,7 +154,7 @@ const VideoCallOverlay = () => {
             <p className={`text-sm ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
               Incoming {currentCall.type} call...
             </p>
-            
+
             {/* Animated rings */}
             <div className="relative mt-6">
               <div className="absolute inset-0 animate-ping">
@@ -176,7 +176,7 @@ const VideoCallOverlay = () => {
             >
               <PhoneOff size={24} className="text-white" />
             </button>
-            
+
             <button
               onClick={acceptCall}
               className="w-16 h-16 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center transition-colors"
@@ -219,11 +219,11 @@ const VideoCallOverlay = () => {
                   />
                 </div>
               )}
-              
+
               <div className="absolute inset-0 bg-black/20 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                 <Maximize2 size={16} className="text-white" />
               </div>
-              
+
               {/* Call status indicator */}
               <div className="absolute top-2 right-2 flex items-center space-x-1">
                 <div className={`w-2 h-2 rounded-full ${
@@ -308,7 +308,7 @@ const VideoCallOverlay = () => {
                       </div>
                     )}
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => setIsMinimized(true)}
@@ -335,7 +335,7 @@ const VideoCallOverlay = () => {
                   </div>
                 )}
               </div>
-              
+
               {/* Controls Panel */}
               <div className={`p-4 ${isDark ? 'bg-gray-800/50' : 'bg-gray-50/50'} transition-opacity duration-300 ${
                 showControls ? 'opacity-100' : 'opacity-50'
@@ -354,7 +354,7 @@ const VideoCallOverlay = () => {
                     >
                       {isAudioEnabled ? <Mic size={16} /> : <MicOff size={16} />}
                     </button>
-                    
+
                     <button
                       onClick={toggleVideo}
                       className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
@@ -400,7 +400,7 @@ const VideoCallOverlay = () => {
                     >
                       <MessageSquare size={16} />
                     </button>
-                    
+
                     <button 
                       onClick={() => setShowRecording(!showRecording)}
                       className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isDark ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-200 hover:bg-gray-300 text-gray-600'}`}
@@ -408,7 +408,7 @@ const VideoCallOverlay = () => {
                     >
                       <MoreVertical size={16} />
                     </button>
-                    
+
                     <button 
                       onClick={endCall}
                       className="w-10 h-10 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors"

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Code, Eye, Globe, Mail, Monitor, Palette, RotateCcw, Save, Sparkles, Upload } from 'lucide-react';
+import { Eye, Mail, Monitor, Palette, RotateCcw, Save, Upload } from 'lucide-react';
 import { useTenant } from '../components/TenantProvider';
 import { ConditionalRender } from '../components/RoleBasedAccess';
 
@@ -365,7 +365,7 @@ export default function WhiteLabelCustomization() {
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                     Color Scheme
                   </h3>
-                  
+
                   {/* Preset Themes */}
                   <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
@@ -702,14 +702,14 @@ export default function WhiteLabelCustomization() {
                       {config.tagline && (
                         <p className="text-gray-600">{config.tagline}</p>
                       )}
-                      
+
                       <button 
                         className="px-4 py-2 rounded-lg text-white font-medium"
                         style={{ backgroundColor: config.accentColor }}
                       >
                         Get Started
                       </button>
-                      
+
                       <button 
                         className="px-4 py-2 rounded-lg font-medium ml-2"
                         style={{ 

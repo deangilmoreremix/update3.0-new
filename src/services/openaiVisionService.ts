@@ -3,22 +3,22 @@ import { useApiStore } from '../store/apiStore';
 
 export const useOpenAIVision = () => {
   const { apiKeys } = useApiStore();
-  
+
   const getClient = () => {
     if (!apiKeys.openai) {
       throw new Error('OpenAI API key is not set');
     }
-    
+
     return new OpenAI({
       apiKey: apiKeys.openai,
       dangerouslyAllowBrowser: true // Note: In production, proxy requests through a backend
     });
   };
-  
+
   // Analyze an image with GPT-4 Vision
   const analyzeImage = async (imageUrl: string, prompt: string) => {
     const client = getClient();
-    
+
     try {
       const response = await client.chat.completions.create({
         model: "gpt-4o", // Updated from gpt-4-vision-preview
@@ -38,7 +38,7 @@ export const useOpenAIVision = () => {
         ],
         max_tokens: 1000
       });
-      
+
       return response.choices[0].message.content || 'No analysis generated';
     } catch (error) {
       console.error('Error analyzing image:', error);
@@ -67,7 +67,7 @@ export const useOpenAIVision = () => {
     5. Recommended approach for engaging with this client based on the document
     `);
   };
-  
+
   return {
     analyzeImage,
     analyzeCompetitorVisuals,

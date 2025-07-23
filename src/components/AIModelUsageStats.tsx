@@ -3,21 +3,7 @@ import { BarChart3, DollarSign, Zap, Clock } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { AI_MODELS } from '../services/aiModels';
 
-interface ModelUsage {
-  modelId: string;
-  requests: number;
-  tokensUsed: number;
-  cost: number;
-  avgResponseTime: number;
-}
-
-interface AIModelUsageStatsProps {
-  usage?: ModelUsage[];
-  timeframe?: 'today' | 'week' | 'month';
-  className?: string;
-}
-
-const AIModelUsageStats: React.FC<AIModelUsageStatsProps> = ({
+const AIModelUsageStats: FC<AIModelUsageStatsProps> = ({
   usage = [],
   timeframe = 'month',
   className = ''
@@ -166,7 +152,7 @@ const AIModelUsageStats: React.FC<AIModelUsageStatsProps> = ({
             Model Usage Breakdown
           </h3>
         </div>
-        
+
         <div className="divide-y divide-white/10">
           {stats.map((stat) => {
             const model = AI_MODELS[stat.modelId];
@@ -195,7 +181,7 @@ const AIModelUsageStats: React.FC<AIModelUsageStatsProps> = ({
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="text-right">
                     <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                       {formatCurrency(stat.cost)}

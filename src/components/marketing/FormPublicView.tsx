@@ -7,23 +7,23 @@ const FormPublicView: React.FC = () => {
   const { formId } = useParams<{ formId: string }>();
   const navigate = useNavigate();
   const { forms, submitFormResponse } = useFormStore();
-  
+
   const [currentForm, setCurrentForm] = useState<FormTemplate | null>(null);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  
+
   useEffect(() => {
     if (formId && forms[formId]) {
       setCurrentForm(forms[formId]);
     }
   }, [formId, forms]);
-  
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     let isValid = true;
-    
+
     if (currentForm) {
       currentForm.fields.forEach(field => {
         if (field.required && (!formData[field.label] || 
@@ -31,13 +31,13 @@ const FormPublicView: React.FC = () => {
           newErrors[field.label] = 'This field is required';
           isValid = false;
         }
-        
+
         if (field.type === 'email' && formData[field.label] && 
             !/^\S+@\S+\.\S+$/.test(formData[field.label])) {
           newErrors[field.label] = 'Please enter a valid email address';
           isValid = false;
         }
-        
+
         if (field.type === 'phone' && formData[field.label] && 
             !/^[+\s0-9()-]{7,20}$/.test(formData[field.label])) {
           newErrors[field.label] = 'Please enter a valid phone number';
@@ -45,20 +45,20 @@ const FormPublicView: React.FC = () => {
         }
       });
     }
-    
+
     setErrors(newErrors);
     return isValid;
   };
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!currentForm || !validateForm()) {
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       await submitFormResponse(currentForm.id, formData);
       setSubmitted(true);
@@ -71,20 +71,20 @@ const FormPublicView: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-  
+
   const handleInputChange = (
     field: string, 
     value: string | string[] | boolean
   ) => {
     setFormData({ ...formData, [field]: value });
-    
+
     // Clear error for this field if it exists
     if (errors[field]) {
       const { [field]: _removedError, ...restErrors } = errors;
       setErrors(restErrors);
     }
   };
-  
+
   if (!currentForm) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
@@ -102,7 +102,7 @@ const FormPublicView: React.FC = () => {
       </div>
     );
   }
-  
+
   if (!currentForm.isActive) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
@@ -120,7 +120,7 @@ const FormPublicView: React.FC = () => {
       </div>
     );
   }
-  
+
   if (submitted) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
@@ -143,10 +143,10 @@ const FormPublicView: React.FC = () => {
       </div>
     );
   }
-  
+
   const renderField = (field: unknown) => {
     const { id, type, label, required, options, placeholder } = field;
-    
+
     switch (type) {
       case 'text':
       case 'email':
@@ -171,7 +171,7 @@ const FormPublicView: React.FC = () => {
             )}
           </div>
         );
-      
+
       case 'textarea':
         return (
           <div key={id} className="mb-4">
@@ -192,7 +192,7 @@ const FormPublicView: React.FC = () => {
             )}
           </div>
         );
-      
+
       case 'select':
         return (
           <div key={id} className="mb-4">
@@ -216,7 +216,7 @@ const FormPublicView: React.FC = () => {
             )}
           </div>
         );
-      
+
       case 'checkbox':
         return (
           <div key={id} className="mb-4">
@@ -251,7 +251,7 @@ const FormPublicView: React.FC = () => {
             )}
           </div>
         );
-      
+
       case 'radio':
         return (
           <div key={id} className="mb-4">
@@ -281,31 +281,31 @@ const FormPublicView: React.FC = () => {
             )}
           </div>
         );
-      
+
       default:
         return null;
     }
   };
-  
+
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full bg-white rounded-lg shadow-md overflow-hidden">
         <div className="px-6 py-8">
           <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">{currentForm.name}</h2>
-          
+
           {currentForm.description && (
             <p className="mb-6 text-gray-600 text-center">{currentForm.description}</p>
           )}
-          
+
           <form onSubmit={handleSubmit}>
             {currentForm.fields.map(field => renderField(field))}
-            
+
             {errors.form && (
               <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
                 <p>{errors.form}</p>
               </div>
             )}
-            
+
             <div className="flex justify-center mt-6">
               <button
                 type="submit"
@@ -324,7 +324,7 @@ const FormPublicView: React.FC = () => {
             </div>
           </form>
         </div>
-        
+
         <div className="px-6 py-3 bg-gray-50 text-xs text-center text-gray-500 border-t">
           Powered by Smart CRM Forms
         </div>

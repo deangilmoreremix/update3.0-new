@@ -4,7 +4,7 @@ import { DollarSign, PieChart, ArrowUpRight, ArrowDownRight, Calendar } from 'lu
 
 const PipelineStats: React.FC = () => {
   const { stageValues, totalPipelineValue, deals } = useDealStore();
-  
+
   // Calculate conversion metrics (based on deal counts)
   const calculateMetrics = () => {
     let totalDeals = 0;
@@ -13,7 +13,7 @@ const PipelineStats: React.FC = () => {
     let negotiationDeals = 0;
     let wonDeals = 0;
     let lostDeals = 0;
-    
+
     Object.values(deals).forEach(deal => {
       totalDeals++;
       switch(deal.stage) {
@@ -34,25 +34,25 @@ const PipelineStats: React.FC = () => {
           break;
       }
     });
-    
+
     // Calculate average deal size
     const avgDealSize = totalDeals > 0 ? 
       Object.values(deals).reduce((sum, deal) => sum + deal.value, 0) / totalDeals : 0;
-      
+
     // Calculate win rate
     const closedDeals = wonDeals + lostDeals;
     const winRate = closedDeals > 0 ? (wonDeals / closedDeals) * 100 : 0;
-    
+
     // Calculate conversion rates
     const qualToProposalRate = qualificationDeals > 0 ? 
       (proposalDeals / qualificationDeals) * 100 : 0;
-      
+
     const proposalToNegotiationRate = proposalDeals > 0 ?
       (negotiationDeals / proposalDeals) * 100 : 0;
-      
+
     const negotiationToWonRate = negotiationDeals > 0 ?
       (wonDeals / negotiationDeals) * 100 : 0;
-    
+
     return {
       totalDeals,
       avgDealSize,
@@ -62,16 +62,16 @@ const PipelineStats: React.FC = () => {
       negotiationToWonRate
     };
   };
-  
+
   const metrics = calculateMetrics();
-  
+
   // Get a color class for percentage changes
   const getTrendColor = (value: number) => {
     if (value > 0) return 'text-green-500';
     if (value < 0) return 'text-red-500';
     return 'text-gray-500';
   };
-  
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -80,14 +80,14 @@ const PipelineStats: React.FC = () => {
       maximumFractionDigits: 0
     }).format(amount);
   };
-  
+
   // Get the trend arrow for percentage changes
   const TrendArrow = ({ value }: { value: number }) => {
     if (value > 0) return <ArrowUpRight size={16} className="text-green-500" />;
     if (value < 0) return <ArrowDownRight size={16} className="text-red-500" />;
     return null;
   };
-  
+
   // Calculate the column widths for the pipeline visualization
   const columnWidths = Object.keys(stageValues).reduce<Record<string, number>>((acc, columnId) => {
     acc[columnId] = totalPipelineValue > 0 
@@ -95,7 +95,7 @@ const PipelineStats: React.FC = () => {
       : 0;
     return acc;
   }, {});
-  
+
   // Get color class for stage
   const getStageColorClass = (stageId: string) => {
     switch(stageId) {
@@ -107,7 +107,7 @@ const PipelineStats: React.FC = () => {
       default: return 'bg-gray-500';
     }
   };
-  
+
   return (
     <div className="bg-white rounded-xl shadow-sm p-6">
       <div className="flex items-center justify-between mb-6">
@@ -117,14 +117,14 @@ const PipelineStats: React.FC = () => {
           <span>Current Period</span>
         </div>
       </div>
-      
+
       {/* Pipeline value visualization */}
       <div className="mb-6">
         <div className="flex justify-between items-end mb-2">
           <p className="text-sm font-medium text-gray-500">Pipeline Distribution</p>
           <p className="text-xl font-bold">{formatCurrency(totalPipelineValue)}</p>
         </div>
-        
+
         <div className="h-8 w-full flex rounded-md overflow-hidden">
           {Object.keys(stageValues)
             .filter(stageId => stageId !== 'closed-lost') // Exclude lost deals from visualization
@@ -145,7 +145,7 @@ const PipelineStats: React.FC = () => {
               </div>
             ))}
         </div>
-        
+
         <div className="mt-2 flex justify-between">
           <div className="flex items-center text-xs text-gray-500">
             <div className="w-2 h-2 rounded-full bg-blue-500 mr-1"></div>
@@ -165,7 +165,7 @@ const PipelineStats: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Key metrics */}
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
@@ -185,7 +185,7 @@ const PipelineStats: React.FC = () => {
             </span>
           </div>
         </div>
-        
+
         <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 p-4 rounded-lg">
           <div className="flex justify-between items-start">
             <div>
@@ -204,11 +204,11 @@ const PipelineStats: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Conversion metrics */}
       <div className="border-t border-gray-200 pt-4">
         <h3 className="text-sm font-medium text-gray-500 mb-4">Conversion Rates</h3>
-        
+
         <div className="space-y-4">
           <div>
             <div className="flex justify-between text-sm mb-1">
@@ -222,7 +222,7 @@ const PipelineStats: React.FC = () => {
               ></div>
             </div>
           </div>
-          
+
           <div>
             <div className="flex justify-between text-sm mb-1">
               <span className="text-gray-600">Proposal → Negotiation</span>
@@ -235,7 +235,7 @@ const PipelineStats: React.FC = () => {
               ></div>
             </div>
           </div>
-          
+
           <div>
             <div className="flex justify-between text-sm mb-1">
               <span className="text-gray-600">Negotiation → Closed Won</span>

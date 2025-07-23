@@ -7,7 +7,7 @@ const SalesForecastContent: React.FC = () => {
   const [formData, setFormData] = useState({
     timeframe: 'Q3 2023',
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +25,7 @@ const SalesForecastContent: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // Sample deals data for the demo
       const deals = [
@@ -60,7 +60,7 @@ const SalesForecastContent: React.FC = () => {
           probability: 0.6 
         }
       ];
-      
+
       const result = await edgeFunctionService.generateSalesForecast(
         deals,
         formData.timeframe
@@ -100,7 +100,7 @@ const SalesForecastContent: React.FC = () => {
           <p className="text-gray-600 mb-6">
             Use AI to analyze your deals pipeline and generate accurate revenue projections, probability-weighted forecasts, and recommendations.
           </p>
-          
+
           <div className="bg-gray-50 p-4 rounded-md mb-6">
             <h4 className="font-medium text-gray-700 mb-2">Sample Pipeline Data (For Demonstration)</h4>
             <p className="text-sm text-gray-600 mb-2">This forecast will analyze:</p>
@@ -113,7 +113,7 @@ const SalesForecastContent: React.FC = () => {
             </ul>
             <p className="text-sm text-gray-600 italic">Total pipeline: $290,000 (Weighted: $164,000)</p>
           </div>
-          
+
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label htmlFor="timeframe" className="block text-sm font-medium text-gray-700 mb-1">
@@ -132,7 +132,7 @@ const SalesForecastContent: React.FC = () => {
                 <option value="First Half 2024">First Half 2024</option>
               </select>
             </div>
-            
+
             <button
               type="submit"
               disabled={isLoading}

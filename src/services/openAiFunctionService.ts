@@ -1,4 +1,3 @@
-import React from 'react';
 import OpenAI from 'openai';
 import { useApiStore } from '../store/apiStore';
 import { Deal, Contact } from '../types';
@@ -18,7 +17,7 @@ const crmFunctions: CrmFunctions = {
     console.log('Searching deals with params:', params);
     // Mock implementation - would connect to actual API in production
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     // Return mock deals
     return [
       {
@@ -60,12 +59,12 @@ const crmFunctions: CrmFunctions = {
       return true;
     });
   },
-  
+
   searchContacts: async (params) => {
     console.log('Searching contacts with params:', params);
     // Mock implementation - would connect to actual API in production
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     // Return mock contacts
     return [
       {
@@ -104,36 +103,36 @@ const crmFunctions: CrmFunctions = {
       return true;
     });
   },
-  
+
   createTask: async (params) => {
     console.log('Creating task with params:', params);
     // Mock implementation - would connect to actual API in production
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     // Return mock response
     return {
       id: `task-${Date.now()}`,
       success: true
     };
   },
-  
+
   scheduleFollowUp: async (params) => {
     console.log('Scheduling follow-up with params:', params);
     // Mock implementation - would connect to actual API in production
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     // Return mock response
     return {
       id: `appointment-${Date.now()}`,
       success: true
     };
   },
-  
+
   getContactInfo: async (params) => {
     console.log('Getting contact info with ID:', params.contactId);
     // Mock implementation - would connect to actual API in production
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     // Return mock contact or null if not found
     const contacts = {
       '1': {
@@ -165,15 +164,15 @@ const crmFunctions: CrmFunctions = {
         location: 'Chicago, IL'
       }
     };
-    
+
     return contacts[params.contactId] || null;
   },
-  
+
   getDealInfo: async (params) => {
     console.log('Getting deal info with ID:', params.dealId);
     // Mock implementation - would connect to actual API in production
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     // Return mock deal or null if not found
     const deals = {
       'deal-1': {
@@ -207,7 +206,7 @@ const crmFunctions: CrmFunctions = {
         priority: 'medium'
       }
     };
-    
+
     return deals[params.dealId] || null;
   }
 };
@@ -359,18 +358,18 @@ const functionSchemas = [
 
 export const useOpenAIFunctions = () => {
   const { apiKeys } = useApiStore();
-  
+
   const getClient = () => {
     if (!apiKeys.openai) {
       throw new Error('OpenAI API key is not set');
     }
-    
+
     return new OpenAI({
       apiKey: apiKeys.openai,
       dangerouslyAllowBrowser: true // Note: In production, proxy requests through a backend
     });
   };
-  
+
   // Execute function calls from OpenAI
   const executeFunction = async (functionName: string, args: unknown) => {
     if (typeof crmFunctions[functionName as keyof CrmFunctions] === 'function') {
@@ -385,20 +384,20 @@ export const useOpenAIFunctions = () => {
       throw new Error(`Function ${functionName} not implemented`);
     }
   };
-  
+
   // Chat with function calling capabilities
   const chatWithFunctions = async (
     messages: { role: 'system' | 'user' | 'assistant' | 'function'; content: string; name?: string }[],
     availableFunctions: string[] = []
   ) => {
     const client = getClient();
-    
+
     try {
       // Filter function schemas based on available functions
       const selectedFunctionSchemas = functionSchemas.filter(
         schema => availableFunctions.includes(schema.name)
       );
-      
+
       // Initial API call with functions
       const response = await client.chat.completions.create({
         model: "gpt-4o", // Updated from gpt-4-turbo-preview
@@ -406,24 +405,24 @@ export const useOpenAIFunctions = () => {
         functions: selectedFunctionSchemas.length > 0 ? selectedFunctionSchemas : undefined,
         function_call: selectedFunctionSchemas.length > 0 ? 'auto' : undefined,
       });
-      
+
       const responseMessage = response.choices[0].message;
-      
+
       // Check if the model wants to call a function
       if (responseMessage.function_call) {
         const functionName = responseMessage.function_call.name;
         let functionArgs = {};
-        
+
         try {
           functionArgs = JSON.parse(responseMessage.function_call.arguments);
         } catch (error) {
           console.error('Error parsing function arguments:', error);
           throw new Error('Invalid function arguments');
         }
-        
+
         // Execute the function
         const functionResult = await executeFunction(functionName, functionArgs);
-        
+
         // Append the function call and result to messages
         const newMessages = [
           ...messages,
@@ -441,18 +440,18 @@ export const useOpenAIFunctions = () => {
             content: JSON.stringify(functionResult),
           },
         ];
-        
+
         // Call the API again with the updated messages
         return chatWithFunctions(newMessages, availableFunctions);
       }
-      
+
       return responseMessage;
     } catch (error) {
       console.error('Error in chat with functions:', error);
       throw error;
     }
   };
-  
+
   // Simplified helper for sales assistant with functions
   const salesAssistantWithFunctions = async (
     userMessage: string,
@@ -471,7 +470,7 @@ ${context}
 
 Always be helpful, professional, and focused on helping the user achieve their sales goals.`
     };
-    
+
     const messages = [
       systemMessage,
       ...previousMessages,
@@ -480,7 +479,7 @@ Always be helpful, professional, and focused on helping the user achieve their s
         content: userMessage
       }
     ];
-    
+
     // These are all the functions this assistant can use
     const availableFunctions = [
       'searchDeals',
@@ -490,10 +489,10 @@ Always be helpful, professional, and focused on helping the user achieve their s
       'getContactInfo',
       'getDealInfo'
     ];
-    
+
     return chatWithFunctions(messages, availableFunctions);
   };
-  
+
   return {
     chatWithFunctions,
     salesAssistantWithFunctions,

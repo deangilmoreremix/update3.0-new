@@ -2,16 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Deal } from '../../types';
 import { DollarSign, Edit3, Save, X, Trash2, User, Target, AlertCircle, CheckCircle, Clock, Brain, Loader2 } from 'lucide-react';
 
-interface DealCardProps {
-  deal: Deal;
-  onUpdate?: (id: string, updates: Partial<Deal>) => void;
-  onDelete?: (id: string) => void;
-  onAIResearch?: (deal: Deal) => void;
-  isResearching?: boolean;
-  onClick?: () => void;
-}
-
-export const DealCard: React.FC<DealCardProps> = ({ 
+export const DealCard: FC<DealCardProps> = ({ 
   deal, 
   onUpdate, 
   onDelete, 
@@ -22,7 +13,7 @@ export const DealCard: React.FC<DealCardProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const _fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const [editForm, setEditForm] = useState({
     company: deal.company,
     value: deal.value,
@@ -37,7 +28,7 @@ export const DealCard: React.FC<DealCardProps> = ({
 
   const handleSave = async () => {
     if (!onUpdate) return;
-    
+
     setIsSaving(true);
     try {
       const updates: Partial<Deal> = {
@@ -52,7 +43,7 @@ export const DealCard: React.FC<DealCardProps> = ({
         tags: editForm.tags,
         updatedAt: new Date().toISOString()
       };
-      
+
       await onUpdate(deal.id, updates);
       setIsEditing(false);
     } catch (error) {
@@ -85,7 +76,7 @@ export const DealCard: React.FC<DealCardProps> = ({
     ) {
       return;
     }
-    
+
     if (onClick) {
       onClick();
     }
@@ -103,7 +94,7 @@ export const DealCard: React.FC<DealCardProps> = ({
         type: file.type,
         uploadedAt: new Date().toISOString()
       };
-      
+
       const currentAttachments = deal.attachments || [];
       onUpdate(deal.id, {
         attachments: [...currentAttachments, attachment],
@@ -114,11 +105,11 @@ export const DealCard: React.FC<DealCardProps> = ({
 
   const _removeAttachment = (attachmentId: string) => {
     if (!onUpdate) return;
-    
+
     const updatedAttachments = (deal.attachments || []).filter(
       att => att.id !== attachmentId
     );
-    
+
     onUpdate(deal.id, {
       attachments: updatedAttachments,
       updatedAt: new Date().toISOString()
@@ -127,7 +118,7 @@ export const DealCard: React.FC<DealCardProps> = ({
 
   const _addTag = (tag: string) => {
     if (!tag.trim() || editForm.tags.includes(tag.trim())) return;
-    
+
     setEditForm(prev => ({
       ...prev,
       tags: [...prev.tags, tag.trim()]
@@ -238,7 +229,7 @@ export const DealCard: React.FC<DealCardProps> = ({
             </div>
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           {onAIResearch && (
             <button
@@ -262,7 +253,7 @@ export const DealCard: React.FC<DealCardProps> = ({
               )}
             </button>
           )}
-          
+
           {isEditing ? (
             <div className="flex items-center space-x-2">
               <button

@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Mail, Briefcase, Users, CheckCircle, BarChart3 } from 'lucide-react';
 
-interface DemoSlide {
-  title: string;
-  description: string;
-  image: string;
-  icon: React.ReactNode;
-}
-
 const ProductDemo: React.FC = () => {
   const [activeSlide, setActiveSlide] = useState(0);
-  
+
   const slides: DemoSlide[] = [
     {
       title: "AI-Powered CRM Dashboard",
@@ -37,15 +30,15 @@ const ProductDemo: React.FC = () => {
       icon: <Mail className="h-6 w-6 text-rose-600" />
     }
   ];
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
-    
+
     return () => clearInterval(interval);
   }, [slides.length]);
-  
+
   return (
     <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100 relative">
       <div className="absolute top-0 left-0 w-full p-4 bg-gradient-to-r from-white/90 to-white/80 backdrop-blur z-20">
@@ -61,7 +54,7 @@ const ProductDemo: React.FC = () => {
           ))}
         </div>
       </div>
-      
+
       <div className="overflow-hidden h-[400px] md:h-[500px] w-full relative">
         {slides.map((slide, index) => (
           <div
@@ -93,7 +86,7 @@ const ProductDemo: React.FC = () => {
           </div>
         ))}
       </div>
-      
+
       <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-t border-gray-100">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="flex items-center">

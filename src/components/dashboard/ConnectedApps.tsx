@@ -1,10 +1,10 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Grid3X3, ExternalLink, Megaphone, Users, FileText, Palette } from 'lucide-react';
+import { Grid3X3, ExternalLink } from 'lucide-react';
 
 const ConnectedApps: React.FC = () => {
   const { isDark } = useTheme();
-  
+
   // Connected apps
   const connectedApps = [
     { 
@@ -69,7 +69,7 @@ const ConnectedApps: React.FC = () => {
           View All <ExternalLink size={14} className="ml-1" />
         </button>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {connectedApps.map((app, index) => (
           <a 

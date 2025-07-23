@@ -1,25 +1,24 @@
 
-
 export async function aiJourneysAgent(input: unknown, setSteps?: (steps: unknown) => void) {
   const name = input.name || "there";
   const company = input.company || "your company";
   const journeyType = input.journeyType || "onboarding";
-  
+
   setSteps?.([{ step: "Creating customer journey..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1200));
-  
+
   setSteps?.(prev => [...prev, { step: "Mapping touchpoints..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1500));
-  
+
   setSteps?.(prev => [...prev, { step: "Generating content for each stage..." }]);
-  
+
   // Generate journey based on type
   let journey = [];
-  
+
   switch (journeyType) {
     case "onboarding":
       journey = [
@@ -160,7 +159,7 @@ Best regards,
         }
       ];
       break;
-      
+
     case "reactivation":
       journey = [
         {
@@ -248,7 +247,7 @@ Best regards,
         }
       ];
       break;
-      
+
     case "nurture":
       journey = [
         {
@@ -351,7 +350,7 @@ Best regards,
         }
       ];
       break;
-      
+
     default:
       journey = [
         {
@@ -404,9 +403,9 @@ Best regards,
         }
       ];
   }
-  
+
   setSteps?.(prev => [...prev, { step: "Customer journey created", result: "Complete" }]);
-  
+
   return {
     journeyType,
     journey,

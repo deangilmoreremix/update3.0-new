@@ -9,16 +9,12 @@ import { Calendar } from 'lucide-react';
 // Setup localizer for react-big-calendar
 const localizer = momentLocalizer(moment);
 
-interface TaskCalendarProps {
-  onTaskSelect?: (task: Task) => void;
-}
-
-const TaskCalendar: React.FC<TaskCalendarProps> = ({ onTaskSelect }) => {
+const TaskCalendar: FC<TaskCalendarProps> = ({ onTaskSelect }) => {
   const { tasks } = useTaskStore();
   const [view, setView] = useState<'month' | 'week' | 'day'>('month');
   const [date, setDate] = useState(new Date());
   const [showAll, setShowAll] = useState(false);
-  
+
   // Format tasks as events for the calendar
   const events = useMemo(() => {
     return Object.values(tasks)
@@ -32,14 +28,14 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ onTaskSelect }) => {
         resource: task
       }));
   }, [tasks, showAll]);
-  
+
   // Custom styling for events based on task status and priority
   const eventStyleGetter = (event: unknown) => {
     const task = event.resource as Task;
     const isOverdue = task.dueDate && !task.completed && task.dueDate < new Date();
-    
+
     let backgroundColor = '#3B82F6'; // Default blue
-    
+
     if (task.completed) {
       backgroundColor = '#10B981'; // Green for completed
     } else if (isOverdue) {
@@ -49,7 +45,7 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ onTaskSelect }) => {
     } else if (task.priority === 'low') {
       backgroundColor = '#14B8A6'; // Teal for low priority
     }
-    
+
     return {
       style: {
         backgroundColor,
@@ -61,12 +57,12 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ onTaskSelect }) => {
       }
     };
   };
-  
+
   // Custom component for the toolbar
   const CustomToolbar = (toolbar: unknown) => {
     const goToBack = () => {
       const newDate = new Date(toolbar.date);
-      
+
       if (toolbar.view === 'month') {
         newDate.setMonth(newDate.getMonth() - 1);
       } else if (toolbar.view === 'week') {
@@ -74,13 +70,13 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ onTaskSelect }) => {
       } else {
         newDate.setDate(newDate.getDate() - 1);
       }
-      
+
       toolbar.onNavigate('date', newDate);
     };
-    
+
     const goToNext = () => {
       const newDate = new Date(toolbar.date);
-      
+
       if (toolbar.view === 'month') {
         newDate.setMonth(newDate.getMonth() + 1);
       } else if (toolbar.view === 'week') {
@@ -88,14 +84,14 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ onTaskSelect }) => {
       } else {
         newDate.setDate(newDate.getDate() + 1);
       }
-      
+
       toolbar.onNavigate('date', newDate);
     };
-    
+
     const goToToday = () => {
       toolbar.onNavigate('date', new Date());
     };
-    
+
     return (
       <div className="flex flex-wrap justify-between items-center mb-4">
         <div className="flex items-center space-x-2">
@@ -125,7 +121,7 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ onTaskSelect }) => {
             {toolbar.label}
           </h3>
         </div>
-        
+
         <div className="flex items-center space-x-2 mt-2 sm:mt-0">
           <div>
             <button 
@@ -181,7 +177,7 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ onTaskSelect }) => {
       </div>
     );
   };
-  
+
   // Define all needed components in one object
   const calendarComponents = {
     toolbar: CustomToolbar,
@@ -205,7 +201,7 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ onTaskSelect }) => {
       );
     }
   };
-  
+
   return (
     <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
       <Calendar
@@ -235,7 +231,7 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ onTaskSelect }) => {
         popupOffset={{ x: 0, y: 10 }}
         tooltipAccessor={null} // Disable default tooltip
       />
-      
+
       {/* Legend */}
       <div className="mt-4 flex flex-wrap gap-4 pt-4 border-t border-gray-200">
         <div className="flex items-center">

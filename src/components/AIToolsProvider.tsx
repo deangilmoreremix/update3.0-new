@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import AIToolModal from './shared/AIToolModal';
-import { Brain, Mail, MessageSquare, FileText, Phone, Target, FileSearch, TrendingUp, BarChart3, PieChart, User, BarChart, Users, Eye, Image, Mic, Search, Zap, MessagesSquare, CheckCircle, Sparkles, Shield, Volume2, Reply, Calendar, FileJson, Hash } from 'lucide-react';
+import { Brain, Mail, MessageSquare, FileText, Phone, Target, FileSearch, TrendingUp, BarChart3, PieChart, Users, Eye, Image, Mic, Search, Zap, MessagesSquare, CheckCircle, Sparkles, Shield, Volume2, Reply, Calendar, FileJson, Hash } from 'lucide-react';
 
 import StreamingChat from '../components/aiTools/StreamingChat';
 import RealTimeFormValidation from '../components/aiTools/RealTimeFormValidation';
@@ -85,13 +85,6 @@ type AIToolType =
   | 'reasoning-objection'
   | 'reasoning-social';
 
-interface AIToolsContextProps {
-  openTool: (tool: AIToolType) => void;
-  closeTool: () => void;
-  isToolOpen: boolean;
-  currentTool: AIToolType | null;
-}
-
 const AIToolsContext = createContext<AIToolsContextProps>({
   openTool: () => {},
   closeTool: () => {},
@@ -101,11 +94,7 @@ const AIToolsContext = createContext<AIToolsContextProps>({
 
 export const useAITools = () => useContext(AIToolsContext);
 
-interface AIToolsProviderProps {
-  children: ReactNode;
-}
-
-export const AIToolsProvider: React.FC<AIToolsProviderProps> = ({ children }) => {
+export const AIToolsProvider: FC<AIToolsProviderProps> = ({ children }) => {
   const [isToolOpen, setIsToolOpen] = useState(false);
   const [currentTool, setCurrentTool] = useState<AIToolType | null>(null);
 

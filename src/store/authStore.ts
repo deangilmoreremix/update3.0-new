@@ -1,22 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-
-interface AuthState {
-  user: unknown | null;
-  session: unknown | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
-  
-  // Actions
-  initializeAuth: () => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-  clearError: () => void;
-}
-
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, _get) => ({
@@ -26,7 +10,7 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: true, // Auto-authenticate for development
       isLoading: false,
       error: null,
-      
+
       initializeAuth: async () => {
         // For development, we'll skip the actual auth check and just authenticate automatically
         set({ 
@@ -36,7 +20,7 @@ export const useAuthStore = create<AuthState>()(
           session: { user: { id: 'demo-user-123' } }
         });
       },
-      
+
       login: async (email, _password) => {
         set({ isLoading: true, error: null });
         try {
@@ -57,7 +41,7 @@ export const useAuthStore = create<AuthState>()(
           set({ isLoading: false });
         }
       },
-      
+
       register: async (email, _password) => {
         set({ isLoading: true, error: null });
         try {
@@ -77,13 +61,13 @@ export const useAuthStore = create<AuthState>()(
           set({ isLoading: false });
         }
       },
-      
+
       logout: async () => {
         set({ isLoading: true, error: null });
         try {
           // For development, we'll skip the actual logout
           // In production, we'd call supabase.auth.signOut()
-          
+
           // Redirect to dashboard instead of logging out
           set({
             isLoading: false,
@@ -99,7 +83,7 @@ export const useAuthStore = create<AuthState>()(
           set({ isLoading: false });
         }
       },
-      
+
       clearError: () => set({ error: null }),
     }),
     {

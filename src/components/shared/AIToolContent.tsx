@@ -1,16 +1,7 @@
-import React, { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { Copy, Download, RefreshCw } from 'lucide-react';
 
-interface AIToolContentProps {
-  isLoading: boolean;
-  error: string | null;
-  result: string | null;
-  loadingMessage?: string;
-  resultTitle?: string;
-  children?: ReactNode;
-}
-
-const AIToolContent: React.FC<AIToolContentProps> = ({
+const AIToolContent: FC<AIToolContentProps> = ({
   isLoading,
   error,
   result,
@@ -30,7 +21,7 @@ const AIToolContent: React.FC<AIToolContentProps> = ({
 
   const handleDownload = () => {
     if (!result) return;
-    
+
     const element = document.createElement('a');
     const file = new Blob([result], { type: 'text/plain' });
     element.href = URL.createObjectURL(file);
@@ -39,11 +30,11 @@ const AIToolContent: React.FC<AIToolContentProps> = ({
     element.click();
     document.body.removeChild(element);
   };
-  
+
   return (
     <div className="max-h-[65vh] overflow-y-auto pr-1">
       {children}
-      
+
       {isLoading && (
         <div className="my-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100 shadow-sm animate-pulse transition-all duration-300">
           <div className="flex items-center">
@@ -62,7 +53,7 @@ const AIToolContent: React.FC<AIToolContentProps> = ({
           </div>
         </div>
       )}
-      
+
       {error && (
         <div className="my-6 bg-red-50 border-l-4 border-red-500 rounded-lg p-6 shadow-sm">
           <h3 className="text-red-700 font-medium mb-2 flex items-center">
@@ -74,7 +65,7 @@ const AIToolContent: React.FC<AIToolContentProps> = ({
           <p className="text-red-600">{error}</p>
         </div>
       )}
-      
+
       {result && !isLoading && (
         <div className="my-6 overflow-hidden rounded-xl border border-indigo-100 shadow-sm">
           <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50">
@@ -113,7 +104,7 @@ const AIToolContent: React.FC<AIToolContentProps> = ({
                 </button>
               </div>
             </div>
-            
+
             {/* Content section with fancy styling */}
             <div className="p-6 prose prose-blue max-w-none bg-white/90 backdrop-blur-sm shadow-inner max-h-[40vh] overflow-y-auto">
               {result.split('\n').map((line, index) => {
@@ -127,7 +118,7 @@ const AIToolContent: React.FC<AIToolContentProps> = ({
                     return <h3 key={index} className="text-lg font-semibold text-gray-800 mt-4">{content}</h3>;
                   return <h4 key={index} className="text-base font-medium text-gray-800 mt-3">{content}</h4>;
                 }
-                
+
                 // Format lists with numbers
                 if (line.match(/^\d+\.\s/)) {
                   const number = line.match(/^\d+/)?.[0];
@@ -139,7 +130,7 @@ const AIToolContent: React.FC<AIToolContentProps> = ({
                     </div>
                   );
                 }
-                
+
                 // Format bulleted lists
                 if (line.match(/^[\*\-]\s/)) {
                   const content = line.replace(/^[\*\-]\s/, '');
@@ -150,15 +141,15 @@ const AIToolContent: React.FC<AIToolContentProps> = ({
                     </div>
                   );
                 }
-                
+
                 // Regular paragraphs with subtle highlights for important phrases
                 if (line.trim()) {
                   // Highlight text in backticks
                   const formattedText = line.replace(/`(.*?)`/g, '<span class="px-1 bg-indigo-50 text-indigo-700 rounded font-mono text-sm">$1</span>');
-                  
+
                   return <p key={index} className="my-1.5" dangerouslySetInnerHTML={{ __html: formattedText }}></p>;
                 }
-                
+
                 return <br key={index} />;
               })}
             </div>

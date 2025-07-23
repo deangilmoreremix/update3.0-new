@@ -2,18 +2,7 @@ import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { Loader2 } from 'lucide-react';
 
-interface ModernButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  loading?: boolean;
-  disabled?: boolean;
-  className?: string;
-  variant?: 'primary' | 'secondary' | 'outline' | 'danger' | 'glass' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  type?: 'button' | 'submit' | 'reset';
-}
-
-export const ModernButton: React.FC<ModernButtonProps> = ({
+export const ModernButton: FC<ModernButtonProps> = ({
   children,
   onClick,
   loading = false,

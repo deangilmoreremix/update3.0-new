@@ -1,11 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { GlassCard } from '../ui/GlassCard';
-import { Home, Users, Calendar, Settings, TrendingUp, Phone, Mail, FileBarChart, Target, MessageSquare, ClipboardList, Bot } from 'lucide-react';
-
-interface SidebarProps {
-  // Remove the callback props since we'll use React Router
-}
 
 const navigationItems = [
   { icon: Home, label: 'Dashboard', path: '/dashboard', key: 'dashboard' },
@@ -22,7 +17,7 @@ const navigationItems = [
   { icon: Settings, label: 'Settings', path: '/settings', key: 'settings' },
 ];
 
-export const Sidebar: React.FC<SidebarProps> = () => {
+export const Sidebar: FC<SidebarProps> = () => {
   const location = useLocation();
 
   return (
@@ -33,14 +28,14 @@ export const Sidebar: React.FC<SidebarProps> = () => {
           <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-sm">S</span>
           </div>
-          
+
           {/* Navigation */}
           <nav className="flex flex-col space-y-4">
             {navigationItems.map((item, index) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path || 
                              (item.path === '/dashboard' && location.pathname === '/');
-              
+
               return (
                 <NavLink
                   key={index}

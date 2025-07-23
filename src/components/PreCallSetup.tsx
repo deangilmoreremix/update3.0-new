@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Video, VideoOff, Mic, MicOff, Phone, Camera, Speaker, CheckCircle, AlertCircle, Settings } from 'lucide-react';
+import { Video, VideoOff, Mic, MicOff, Phone, Camera, Speaker, CheckCircle, AlertCircle } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import Avatar from './ui/Avatar';
 import { getInitials } from '../utils/avatars';
@@ -17,15 +17,7 @@ interface PreCallSetupProps {
   callType: 'video' | 'audio';
 }
 
-interface CallSettings {
-  videoEnabled: boolean;
-  audioEnabled: boolean;
-  selectedCamera?: string;
-  selectedMicrophone?: string;
-  selectedSpeaker?: string;
-}
-
-const PreCallSetup: React.FC<PreCallSetupProps> = ({
+const PreCallSetup: FC<PreCallSetupProps> = ({
   isVisible,
   onStartCall,
   onCancel,
@@ -76,7 +68,7 @@ const PreCallSetup: React.FC<PreCallSetupProps> = ({
         });
 
         const deviceList = await navigator.mediaDevices.enumerateDevices();
-        
+
         const cameras = deviceList.filter(device => device.kind === 'videoinput');
         const microphones = deviceList.filter(device => device.kind === 'audioinput');
         const speakers = deviceList.filter(device => device.kind === 'audiooutput');
@@ -174,19 +166,19 @@ const PreCallSetup: React.FC<PreCallSetupProps> = ({
           const audioContext = new AudioContext();
           const oscillator = audioContext.createOscillator();
           const gainNode = audioContext.createGain();
-          
+
           oscillator.connect(gainNode);
           gainNode.connect(audioContext.destination);
-          
+
           oscillator.frequency.value = 440;
           gainNode.gain.value = 0.1;
-          
+
           oscillator.start();
           setTimeout(() => {
             oscillator.stop();
             audioContext.close();
           }, 500);
-          
+
           setDeviceTests(prev => ({ ...prev, speaker: 'success' }));
           break;
       }
@@ -227,7 +219,7 @@ const PreCallSetup: React.FC<PreCallSetupProps> = ({
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
       <div className={`${isDark ? 'bg-gray-900/95' : 'bg-white/95'} backdrop-blur-2xl border ${isDark ? 'border-white/20' : 'border-gray-200'} rounded-3xl overflow-hidden shadow-2xl max-w-2xl w-full mx-4`}>
-        
+
         {/* Header */}
         <div className={`p-6 border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
           <div className="flex items-center space-x-4">
@@ -254,7 +246,7 @@ const PreCallSetup: React.FC<PreCallSetupProps> = ({
             <h3 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
               Preview
             </h3>
-            
+
             <div className="relative aspect-video bg-gray-900 rounded-xl overflow-hidden">
               {videoEnabled && previewStream ? (
                 <video
@@ -293,7 +285,7 @@ const PreCallSetup: React.FC<PreCallSetupProps> = ({
                 >
                   {videoEnabled ? <Video size={20} /> : <VideoOff size={20} />}
                 </button>
-                
+
                 <button
                   onClick={() => setAudioEnabled(!audioEnabled)}
                   className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${

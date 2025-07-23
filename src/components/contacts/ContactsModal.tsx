@@ -8,21 +8,16 @@ import { Contact } from '../../types/contact';
 import { AIEnhancedContactCard } from './AIEnhancedContactCard';
 import AddContactModal from '../deals/AddContactModal';
 import Fuse from 'fuse.js';
-import { Brain, Check, CheckCheck, ChevronDown, Crown, Download, Filter, Grid, List, Loader2, Plus, Search, Upload, UserPlus, Users, X, Zap } from 'lucide-react';
+import { Brain, CheckCheck, ChevronDown, Crown, Download, Filter, Grid, List, Loader2, Plus, Search, Upload, UserPlus, Users, X, Zap } from 'lucide-react';
 
-interface ContactsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export const ContactsModal: React.FC<ContactsModalProps> = ({ 
+export const ContactsModal: FC<ContactsModalProps> = ({ 
   isOpen, 
   onClose 
 }) => {
   const { contacts, isLoading, updateContact, _createContact, fetchContacts } = useContactStore();
   const { teamMembers, addTeamMember, removeTeamMember } = useGamification();
   const openai = useOpenAI();
-  
+
   // UI State
   const [activeTab, setActiveTab] = useState<'external' | 'team'>('external');
   const [activeFilter, setActiveFilter] = useState('all');
@@ -73,7 +68,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
         }
       }
     };
-    
+
     if (isOpen) {
       document.addEventListener('keydown', handleEsc, false);
       document.body.style.overflow = 'hidden';
@@ -108,7 +103,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
     // Apply sorting
     result.sort((a, b) => {
       let aValue: unknown, bValue: unknown;
-      
+
       switch (sortBy) {
         case 'name':
           aValue = a.name.toLowerCase();
@@ -302,7 +297,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-3">
               {/* Team/External Tab Toggle */}
               <div className="flex bg-gray-100 rounded-lg p-1">
@@ -353,7 +348,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                     <span>Actions</span>
                     <ChevronDown className="w-4 h-4" />
                   </button>
-                  
+
                   {bulkActionDropdown && (
                     <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-10">
                       <button
@@ -394,12 +389,12 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                 <Upload className="w-4 h-4" />
                 <span>Import</span>
               </button>
-              
+
               <button className="flex items-center space-x-2 px-4 py-2 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg hover:bg-indigo-100 transition-colors">
                 <Download className="w-4 h-4" />
                 <span>Export</span>
               </button>
-              
+
               <button 
                 onClick={() => setShowAddContactModal(true)}
                 className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -407,7 +402,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                 <Plus className="w-4 h-4" />
                 <span>New Contact</span>
               </button>
-              
+
               <button
                 onClick={onClose}
                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
@@ -431,7 +426,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                   className="pl-10 pr-4 py-2 w-full bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                 />
               </div>
-              
+
               {/* Interest Level Filter */}
               <div className="relative">
                 <button
@@ -442,7 +437,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                   <span>{activeFilterLabel}</span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${isFilterDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
-                
+
                 {isFilterDropdownOpen && (
                   <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-10">
                     {filterOptions.map((filter) => (
@@ -470,7 +465,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                   <span>{activeStatusLabel}</span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${isStatusDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
-                
+
                 {isStatusDropdownOpen && (
                   <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-10">
                     {statusOptions.map((option) => (

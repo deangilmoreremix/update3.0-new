@@ -34,13 +34,13 @@ const ActivitiesCommunications: React.FC = () => {
             </h3>
             <TasksSection />
           </div>
-          
+
           {/* Interaction History */}
           <div className="mb-6">
             <InteractionHistory />
           </div>
         </div>
-        
+
         {/* Right Side - Appointments and Activity */}
         <div className="space-y-6 lg:col-span-1">
           {/* Appointments Widget */}
@@ -53,7 +53,7 @@ const ActivitiesCommunications: React.FC = () => {
             </div>
             <AppointmentWidget limit={5} />
           </div>
-          
+
           {/* Quick Tasks Widget */}
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl overflow-hidden`}>
             <div className={`p-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'} flex justify-between items-center`}>
@@ -78,7 +78,7 @@ const ActivitiesCommunications: React.FC = () => {
                     <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Today</span>
                   </div>
                 </div>
-                
+
                 <div className={`p-3 rounded-lg ${isDark ? 'bg-white/5 hover:bg-white/10' : 'bg-gray-50 hover:bg-gray-100'} transition-colors cursor-pointer`}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
@@ -98,12 +98,12 @@ const ActivitiesCommunications: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Tasks and Funnel Section */}
       <div className="mb-6">
         <TasksAndFunnel />
       </div>
-      
+
       {/* Recent Activity */}
       <div className="mb-6">
         <RecentActivity />

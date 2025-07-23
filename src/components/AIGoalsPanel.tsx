@@ -3,16 +3,6 @@ import { Target, BarChart3, TrendingUp, Clock, Brain, Zap, Activity, Sparkles, C
 import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabase';
 
-interface Goal {
-  id: number;
-  goal_name: string;
-  category: string;
-  description: string;
-  progress: number;
-  status: 'active' | 'completed' | 'paused';
-  due_date?: Date;
-}
-
 const AIGoalsPanel: React.FC = () => {
   const { isDark } = useTheme();
   const [goals, setGoals] = useState<Goal[]>([]);
@@ -26,42 +16,42 @@ const AIGoalsPanel: React.FC = () => {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         // Try to fetch from Supabase
         const { data, error } = await supabase
           .from('user_goals')
           .select('*')
           .order('category');
-        
+
         if (error) {
           throw error;
         }
-        
+
         setGoals(data || []);
-        
+
       } catch (err) {
         console.error('Error fetching goals:', err);
-        
+
         // If we couldn't fetch from Supabase, use sample data
         setGoals(sampleGoals);
-        
+
         setError('Failed to fetch goals from database. Using sample data instead.');
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     fetchGoals();
   }, []);
 
   // Get unique categories
   const categories = [...new Set(goals.map(goal => goal.category))];
-  
+
   // Filter goals by selected category
   const filteredGoals = selectedCategory 
     ? goals.filter(goal => goal.category === selectedCategory) 
     : goals;
-  
+
   // Calculate overall progress
   const overallProgress = goals.length 
     ? goals.reduce((sum, goal) => sum + goal.progress, 0) / goals.length 
@@ -118,7 +108,7 @@ const AIGoalsPanel: React.FC = () => {
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <div className={`py-1 px-3 rounded-full ${isDark ? 'bg-gray-800' : 'bg-gray-100'} flex items-center space-x-1`}>
               <Brain className={`h-4 w-4 ${isDark ? 'text-purple-400' : 'text-purple-600'}`} />
@@ -126,7 +116,7 @@ const AIGoalsPanel: React.FC = () => {
                 {Math.round(overallProgress)}% complete
               </span>
             </div>
-            
+
             <div className={`py-1 px-3 rounded-full ${isDark ? 'bg-gray-800' : 'bg-gray-100'}`}>
               <span className={`text-xs font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
                 {goals.length} goals
@@ -134,7 +124,7 @@ const AIGoalsPanel: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Category Pills */}
         <div className="mt-4 flex flex-wrap gap-2">
           <button
@@ -147,7 +137,7 @@ const AIGoalsPanel: React.FC = () => {
           >
             All
           </button>
-          
+
           {categories.map((category) => (
             <button
               key={category}
@@ -164,14 +154,14 @@ const AIGoalsPanel: React.FC = () => {
           ))}
         </div>
       </div>
-      
+
       {/* Loading State */}
       {isLoading && (
         <div className="p-6 flex justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-t-2 border-purple-500"></div>
         </div>
       )}
-      
+
       {/* Error State */}
       {error && (
         <div className={`m-4 p-3 rounded-lg ${isDark ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-red-50 text-red-600 border border-red-100'}`}>
@@ -181,7 +171,7 @@ const AIGoalsPanel: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       {/* Goals List */}
       {!isLoading && filteredGoals.length > 0 ? (
         <div className={`divide-y ${isDark ? 'divide-gray-800' : 'divide-gray-200'}`}>
@@ -195,16 +185,16 @@ const AIGoalsPanel: React.FC = () => {
                     <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{goal.description}</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(goal.status)}`}>
                     {goal.status.charAt(0).toUpperCase() + goal.status.slice(1)}
                   </span>
-                  
+
                   <ChevronRight className={`h-4 w-4 ${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
                 </div>
               </div>
-              
+
               {/* Progress Bar */}
               <div className="flex items-center space-x-3">
                 <div className="flex-1">
@@ -219,12 +209,12 @@ const AIGoalsPanel: React.FC = () => {
                     ></div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
                     {goal.progress}%
                   </span>
-                  
+
                   {goal.due_date && (
                     <span className={`text-xs flex items-center space-x-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                       <Clock className="h-3 w-3" />

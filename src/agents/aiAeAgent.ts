@@ -1,22 +1,21 @@
 
-
 export async function aiAeAgent(input: unknown, setSteps?: (steps: unknown) => void) {
   const name = input.name || "there";
   const company = input.company || "your company";
   const dealTitle = input.title || "our solution";
-  
+
   setSteps?.([{ step: "Preparing demo script..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1200));
-  
+
   setSteps?.(prev => [...prev, { step: "Analyzing prospect needs..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
   setSteps?.(prev => [...prev, { step: "Generating personalized demo flow..." }]);
-  
+
   const demoScript = `
 # Demo Script for ${company}: ${dealTitle}
 
@@ -66,7 +65,7 @@ export async function aiAeAgent(input: unknown, setSteps?: (steps: unknown) => v
 `;
 
   setSteps?.(prev => [...prev, { step: "Demo script generated", result: "Complete" }]);
-  
+
   return {
     demoScript,
     keyTalkingPoints: [

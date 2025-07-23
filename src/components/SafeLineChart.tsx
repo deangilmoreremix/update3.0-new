@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Safe LineChart component that handles import issues
-const SafeLineChart: React.FC<any> = (props) => {
+const SafeLineChart: FC<any> = (props) => {
   try {
     // Dynamically import LineChart to avoid build-time issues
     const { LineChart } = require('recharts');

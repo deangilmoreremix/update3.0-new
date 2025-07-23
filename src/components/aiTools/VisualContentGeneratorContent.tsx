@@ -12,7 +12,7 @@ const VisualContentGeneratorContent: React.FC = () => {
     secondaryColor: '#6366f1',
     targetAudience: ''
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -65,17 +65,17 @@ const VisualContentGeneratorContent: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // Add color scheme and audience to the content type for better results
       const enhancedType = `${formData.contentType} with a ${formData.primaryColor}/${formData.secondaryColor} color scheme for ${formData.targetAudience || 'a general business audience'}`;
-      
+
       const visualContent = await openai.generateVisualContentIdea(
         enhancedType,
         formData.industry || 'general business',
         validKeyPoints
       );
-      
+
       setResult(visualContent);
       setCopied(false);
     } catch (err) {
@@ -142,7 +142,7 @@ const VisualContentGeneratorContent: React.FC = () => {
               ))}
             </select>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
@@ -158,7 +158,7 @@ const VisualContentGeneratorContent: React.FC = () => {
                 onChange={handleChange}
               />
             </div>
-            
+
             <div>
               <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                 <BarChart2 className="h-4 w-4 mr-1 text-gray-500" />
@@ -174,7 +174,7 @@ const VisualContentGeneratorContent: React.FC = () => {
               />
             </div>
           </div>
-          
+
           <div>
             <div className="flex justify-between items-center mb-1">
               <label className="block text-sm font-medium text-gray-700">
@@ -189,7 +189,7 @@ const VisualContentGeneratorContent: React.FC = () => {
                 Add Key Point
               </button>
             </div>
-            
+
             {formData.keyPoints.map((keyPoint, index) => (
               <div key={index} className="flex items-center mb-2">
                 <input
@@ -214,7 +214,7 @@ const VisualContentGeneratorContent: React.FC = () => {
               <p className="text-red-600 text-sm mt-1">Please add at least one key point</p>
             )}
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
               <Palette className="h-4 w-4 mr-1 text-gray-500" />
@@ -261,7 +261,7 @@ const VisualContentGeneratorContent: React.FC = () => {
               </div>
             </div>
           </div>
-            
+
           <div className="flex justify-end">
             <button
               type="submit"

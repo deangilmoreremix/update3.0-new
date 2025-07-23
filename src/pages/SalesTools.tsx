@@ -47,7 +47,7 @@ const SalesTools: React.FC = () => {
         <h1 className="text-3xl font-bold text-gray-900">Sales Tools</h1>
         <p className="text-gray-600 mt-1">Comprehensive tools to optimize your sales process</p>
       </header>
-      
+
       <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 p-8 rounded-xl shadow-sm mb-10 border border-blue-100">
         <div className="flex flex-col md:flex-row items-center gap-6">
           <div className="p-5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full text-white shadow-lg">
@@ -62,7 +62,7 @@ const SalesTools: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {tools.map((tool, index) => (
           <Link 

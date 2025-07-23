@@ -3,33 +3,27 @@ import { Link } from 'react-router-dom';
 import { useAppointmentStore } from '../store/appointmentStore';
 import { ArrowRight, Calendar, Clock, MapPin, Phone, Video } from 'lucide-react';
 
-interface AppointmentWidgetProps {
-  limit?: number;
-  showHeader?: boolean;
-  className?: string;
-}
-
-const AppointmentWidget: React.FC<AppointmentWidgetProps> = ({
+const AppointmentWidget: FC<AppointmentWidgetProps> = ({
   limit = 3,
   showHeader = true,
   className = ''
 }) => {
   const { appointments, getUpcomingAppointments, selectAppointment } = useAppointmentStore();
   const [upcomingAppointments, setUpcomingAppointments] = useState<unknown[]>([]);
-  
+
   useEffect(() => {
     // Get the upcoming appointments
     const upcoming = getUpcomingAppointments(limit);
     setUpcomingAppointments(upcoming);
   }, [appointments, limit, getUpcomingAppointments]);
-  
+
   // Format date for display
   const formatDate = (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    
+
     if (date.toDateString() === today.toDateString()) {
       return `Today, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
     } else if (date.toDateString() === tomorrow.toDateString()) {
@@ -43,7 +37,7 @@ const AppointmentWidget: React.FC<AppointmentWidgetProps> = ({
       });
     }
   };
-  
+
   // Get appointment type icon
   const getAppointmentTypeIcon = (type: string) => {
     switch (type) {
@@ -57,7 +51,7 @@ const AppointmentWidget: React.FC<AppointmentWidgetProps> = ({
         return <Calendar size={16} className="text-gray-500" />;
     }
   };
-  
+
   return (
     <div className={`bg-white rounded-lg shadow-sm p-4 ${className}`}>
       {showHeader && (
@@ -68,7 +62,7 @@ const AppointmentWidget: React.FC<AppointmentWidgetProps> = ({
           </Link>
         </div>
       )}
-      
+
       {upcomingAppointments.length > 0 ? (
         <div className="space-y-3">
           {upcomingAppointments.map(appointment => (
@@ -93,7 +87,7 @@ const AppointmentWidget: React.FC<AppointmentWidgetProps> = ({
                   <p className="text-xs text-gray-500 mt-1">{appointment.duration} min</p>
                 </div>
               </div>
-              
+
               <div className="mt-2 flex justify-between items-center">
                 {appointment.type === 'video' && (
                   <span className="text-xs px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded flex items-center">
@@ -113,7 +107,7 @@ const AppointmentWidget: React.FC<AppointmentWidgetProps> = ({
                     In Person
                   </span>
                 )}
-                
+
                 <button className="text-xs text-blue-600 hover:text-blue-800 flex items-center">
                   Details
                   <ArrowRight size={10} className="ml-1" />

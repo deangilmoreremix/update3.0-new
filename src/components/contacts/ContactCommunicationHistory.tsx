@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Contact } from '../../types/contact';
-import { 
-  MessageSquare, Phone, Mail, Calendar, Video, 
-  Plus, Filter, Search, Download, Upload,
-  Clock, CheckCircle, AlertCircle, User,
-  Paperclip, ExternalLink, Edit, Trash2,
-  Send, Mic, Camera, FileText, Star,
-  ArrowRight, TrendingUp, Target, Zap
-} from 'lucide-react';
+import { MessageSquare, Phone, Mail, Calendar, Video, Search, Download, Clock, CheckCircle, AlertCircle, User, Paperclip, Edit, Trash2, Send, Mic, FileText, Star, ArrowRight, TrendingUp, Target, Zap } from 'lucide-react';
 
 interface CommunicationRecord {
   id: string;
@@ -27,14 +20,7 @@ interface CommunicationRecord {
   tags?: string[];
 }
 
-interface ContactCommunicationHistoryProps {
-  contact: Contact;
-  isOpen: boolean;
-  onClose: () => void;
-  onUpdate?: (contactId: string, updates: Partial<Contact>) => Promise<void>;
-}
-
-export const ContactCommunicationHistory: React.FC<ContactCommunicationHistoryProps> = ({
+export const ContactCommunicationHistory: FC<ContactCommunicationHistoryProps> = ({
   contact,
   isOpen,
   onClose,
@@ -122,7 +108,7 @@ export const ContactCommunicationHistory: React.FC<ContactCommunicationHistoryPr
     const matchesType = filterType === 'all' || comm.type === filterType;
     const matchesDirection = filterDirection === 'all' || comm.direction === filterDirection;
     const matchesStatus = filterStatus === 'all' || comm.status === filterStatus;
-    
+
     return matchesSearch && matchesType && matchesDirection && matchesStatus;
   });
 
@@ -237,7 +223,7 @@ export const ContactCommunicationHistory: React.FC<ContactCommunicationHistoryPr
               </span>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <button
               onClick={() => handleQuickAction('call')}
@@ -604,7 +590,7 @@ export const ContactCommunicationHistory: React.FC<ContactCommunicationHistoryPr
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="bg-white border border-gray-200 rounded-xl p-6">
                   <div className="flex items-center justify-between">
                     <div>
@@ -616,7 +602,7 @@ export const ContactCommunicationHistory: React.FC<ContactCommunicationHistoryPr
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="bg-white border border-gray-200 rounded-xl p-6">
                   <div className="flex items-center justify-between">
                     <div>
@@ -628,7 +614,7 @@ export const ContactCommunicationHistory: React.FC<ContactCommunicationHistoryPr
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="bg-white border border-gray-200 rounded-xl p-6">
                   <div className="flex items-center justify-between">
                     <div>
@@ -700,7 +686,7 @@ export const ContactCommunicationHistory: React.FC<ContactCommunicationHistoryPr
           {activeTab === 'compose' && (
             <div className="max-w-4xl mx-auto space-y-6">
               <h3 className="text-lg font-semibold text-gray-900">Compose New Communication</h3>
-              
+
               <div className="bg-white border border-gray-200 rounded-xl p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
@@ -716,7 +702,7 @@ export const ContactCommunicationHistory: React.FC<ContactCommunicationHistoryPr
                       <option value="note">Note</option>
                     </select>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Direction</label>
                     <select
@@ -763,7 +749,7 @@ export const ContactCommunicationHistory: React.FC<ContactCommunicationHistoryPr
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Duration (minutes)</label>
                       <input
@@ -788,7 +774,7 @@ export const ContactCommunicationHistory: React.FC<ContactCommunicationHistoryPr
                       <span>Voice Note</span>
                     </button>
                   </div>
-                  
+
                   <div className="flex items-center space-x-3">
                     <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
                       Save Draft

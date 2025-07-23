@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAITools } from '../AIToolsProvider';
-import { Brain, Calendar, ChevronRight, Eye, FileSearch, FileText, Image, Link, Mail, MessageSquare, Phone, Reply, Search, Shield, Target, TrendingUp, User, Users, Volume2, Zap } from 'lucide-react';
+import { Brain, Calendar, ChevronRight, Eye, FileSearch, FileText, Image, Link, Mail, MessageSquare, Phone, Reply, Search, Shield, Target, TrendingUp, Users, Volume2, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const AIToolsCard: React.FC = () => {
@@ -136,7 +136,7 @@ const AIToolsCard: React.FC = () => {
           View all <ChevronRight className="h-4 w-4 ml-1" />
         </Link>
       </div>
-      
+
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {tools.map((tool) => (
           <button
@@ -157,7 +157,7 @@ const AIToolsCard: React.FC = () => {
           <span className="mt-2 text-xs text-yellow-700">Function Assistant</span>
           <span className="absolute top-0 right-0 -mt-2 -mr-2 px-1.5 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full">NEW</span>
         </button>
-        
+
         <button
           onClick={() => openTool('vision-analyzer')}
           className="flex flex-col items-center p-3 border border-fuchsia-200 rounded-lg bg-fuchsia-50 hover:bg-fuchsia-100 hover:border-fuchsia-300 transition-colors relative"

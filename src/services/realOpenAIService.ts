@@ -1,4 +1,3 @@
-import React from 'react';
 import { Contact } from '../types/contact';
 import { AIContactAnalysis } from '../types/contact';
 
@@ -10,14 +9,6 @@ interface OpenAIResponse {
   }>;
 }
 
-interface OpenAIService {
-  analyzeContact: (contact: Contact) => Promise<AIContactAnalysis>;
-  generateEmail: (contact: Contact, context?: string) => Promise<string>;
-  getInsights: (contact: Contact) => Promise<string[]>;
-  generateDealSummary: (dealData: unknown) => Promise<string>;
-  suggestNextActions: (dealData: unknown) => Promise<string[]>;
-}
-
 class RealOpenAIService implements OpenAIService {
   private apiKey: string;
   private baseUrl = 'https://api.openai.com/v1';
@@ -26,7 +17,7 @@ class RealOpenAIService implements OpenAIService {
   constructor() {
     this.apiKey = import.meta.env.VITE_OPENAI_API_KEY;
     this.model = import.meta.env.VITE_OPENAI_MODEL || 'gpt-4';
-    
+
     if (!this.apiKey) {
       console.warn('OpenAI API key not found. Using mock responses.');
     }
@@ -68,7 +59,7 @@ class RealOpenAIService implements OpenAIService {
     try {
       const prompt = `
         Analyze this sales contact and provide a detailed assessment:
-        
+
         Contact Information:
         - Name: ${contact.name}
         - Title: ${contact.title}
@@ -79,7 +70,7 @@ class RealOpenAIService implements OpenAIService {
         - Sources: ${contact.sources.join(', ')}
         - Custom Fields: ${JSON.stringify(contact.customFields || {})}
         - Notes: ${contact.notes || 'No notes'}
-        
+
         Provide a JSON response with the following structure:
         {
           "score": <number between 0-100>,
@@ -87,7 +78,7 @@ class RealOpenAIService implements OpenAIService {
           "recommendations": ["recommendation1", "recommendation2"],
           "riskFactors": ["risk1", "risk2"]
         }
-        
+
         Base the score on factors like company size, industry, contact seniority, engagement level, and data completeness.
       `;
 
@@ -115,19 +106,19 @@ class RealOpenAIService implements OpenAIService {
     try {
       const prompt = `
         Generate a professional sales email for this contact:
-        
+
         Contact: ${contact.name} (${contact.title} at ${contact.company})
         Context: ${context || 'General follow-up'}
         Industry: ${contact.industry || 'Unknown'}
         Previous notes: ${contact.notes || 'No previous notes'}
-        
+
         Create a personalized, professional email that:
         1. Addresses them by name
         2. References their company and role
         3. Provides value proposition
         4. Has a clear call-to-action
         5. Is concise and respectful
-        
+
         Format as a complete email with subject line.
       `;
 
@@ -147,12 +138,12 @@ class RealOpenAIService implements OpenAIService {
     try {
       const prompt = `
         Generate 3-5 quick insights about this sales contact:
-        
+
         ${contact.name} - ${contact.title} at ${contact.company}
         Status: ${contact.status}
         Interest: ${contact.interestLevel}
         Sources: ${(contact.sources || []).join(', ')}
-        
+
         Provide actionable insights as a JSON array of strings.
         Focus on sales strategy, timing, and approach recommendations.
       `;
@@ -173,14 +164,14 @@ class RealOpenAIService implements OpenAIService {
     try {
       const prompt = `
         Summarize this deal opportunity:
-        
+
         Deal: ${dealData.title}
         Company: ${dealData.company}
         Value: $${dealData.value?.toLocaleString()}
         Stage: ${dealData.stage}
         Probability: ${dealData.probability}%
         Notes: ${dealData.notes || 'No notes'}
-        
+
         Provide a concise summary highlighting key points, opportunities, and risks.
       `;
 
@@ -200,14 +191,14 @@ class RealOpenAIService implements OpenAIService {
     try {
       const prompt = `
         Suggest next actions for this deal:
-        
+
         Deal: ${dealData.title}
         Stage: ${dealData.stage}
         Probability: ${dealData.probability}%
         Value: $${dealData.value?.toLocaleString()}
         Due Date: ${dealData.dueDate ? new Date(dealData.dueDate).toLocaleDateString() : 'Not set'}
         Notes: ${dealData.notes || 'No notes'}
-        
+
         Provide 3-5 specific next actions as a JSON array of strings.
         Focus on actions that will move the deal forward.
       `;
@@ -234,7 +225,7 @@ class RealOpenAIService implements OpenAIService {
     // Basic scoring logic
     if (contact.interestLevel === 'hot') score += 30;
     else if (contact.interestLevel === 'medium') score += 15;
-    
+
     if (contact.status === 'customer') score += 20;
     else if (contact.status === 'prospect') score += 10;
 
@@ -270,15 +261,15 @@ Best regards,
 
   private generateBasicInsights(contact: Contact): string[] {
     const insights: string[] = [];
-    
+
     if (contact.interestLevel === 'hot') {
       insights.push('🔥 High interest level - priority follow-up');
     }
-    
+
     if (contact.sources.includes('Referral')) {
       insights.push('🤝 Referral source - higher trust level');
     }
-    
+
     if (contact.status === 'customer') {
       insights.push('✅ Existing customer - expansion opportunity');
     }
@@ -288,7 +279,7 @@ Best regards,
 
   private generateBasicNextActions(dealData: unknown): string[] {
     const actions: string[] = [];
-    
+
     switch (dealData.stage) {
       case 'qualification':
         actions.push('Schedule discovery call', 'Send qualification questionnaire');

@@ -10,14 +10,7 @@ import { CommunicationHub } from '../contacts/CommunicationHub';
 import { AutomationPanel } from '../contacts/AutomationPanel';
 import { ContactAnalytics } from '../contacts/ContactAnalytics';
 import { Contact } from '../../types/contact';
-import { X, Edit, Mail, Phone, Plus, MessageSquare, FileText, Calendar, User, Globe, Clock, Building, Tag, Brain, TrendingUp, BarChart3, Zap, Activity, Database, Target, Linkedin, Twitter, Facebook, Instagram, Save, Heart, HeartOff, Search, Sparkles, Camera, Wand2 } from 'lucide-react';
-
-interface ContactDetailViewProps {
-  contact: Contact;
-  isOpen: boolean;
-  onClose: () => void;
-  onUpdate?: (id: string, updates: Partial<Contact>) => Promise<Contact>;
-}
+import { X, Edit, Mail, Phone, Plus, FileText, Calendar, User, Globe, Clock, Building, Brain, TrendingUp, BarChart3, Zap, Database, Target, Save, Heart, HeartOff, Search, Sparkles, Camera, Wand2 } from 'lucide-react';
 
 const interestColors = {
   hot: 'bg-red-500',
@@ -52,7 +45,7 @@ const socialPlatforms = [
   { icon: Instagram, color: 'bg-pink-500', name: 'Instagram', key: 'instagram' },
 ];
 
-export const ContactDetailView: React.FC<ContactDetailViewProps> = ({ 
+export const ContactDetailView: FC<ContactDetailViewProps> = ({ 
   contact, 
   isOpen, 
   onClose, 
@@ -123,7 +116,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
   const handleToggleFavorite = async () => {
     const updatedContact = { ...editedContact, isFavorite: !editedContact.isFavorite };
     setEditedContact(updatedContact);
-    
+
     if (onUpdate) {
       try {
         await onUpdate(contact.id, { isFavorite: updatedContact.isFavorite });
@@ -147,7 +140,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
     if (onUpdate && editingField) {
       try {
         let updates: Partial<Contact> = {};
-        
+
         if (editingField.startsWith('social_')) {
           const _platform = editingField.replace('social_', '');
           const socialProfiles = {
@@ -164,7 +157,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
           const fieldValue = editedContact[editingField as keyof Contact];
           updates = { [editingField]: fieldValue };
         }
-        
+
         await onUpdate(contact.id, updates);
         setEditingField(null);
       } catch (error) {
@@ -179,17 +172,17 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
         ...(editedContact.customFields || {}),
         [newFieldName]: newFieldValue
       };
-      
+
       setEditedContact(prev => ({
         ...prev,
         customFields
       }));
-      
+
       if (onUpdate) {
         onUpdate(contact.id, { customFields })
           .catch(error => console.error('Failed to add custom field:', error));
       }
-      
+
       setNewFieldName('');
       setNewFieldValue('');
       setShowAddField(false);
@@ -199,14 +192,14 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
   const handleRemoveCustomField = async (fieldName: string) => {
     const customFields = { ...(editedContact.customFields || {}) };
     if (!customFields) return;
-    
+
     delete customFields[fieldName];
-    
+
     setEditedContact(prev => ({
       ...prev,
       customFields
     }));
-    
+
     if (onUpdate) {
       try {
         await onUpdate(contact.id, { customFields });
@@ -222,17 +215,17 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
         ...(editedContact.socialProfiles || {}),
         [selectedSocialPlatform]: socialFieldValue
       };
-      
+
       setEditedContact(prev => ({
         ...prev,
         socialProfiles
       }));
-      
+
       if (onUpdate) {
         onUpdate(contact.id, { socialProfiles })
           .catch(error => console.error('Failed to add social profile:', error));
       }
-      
+
       setShowAddSocial(false);
       setSelectedSocialPlatform('');
       setSocialFieldValue('');
@@ -241,15 +234,15 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
 
   const _handleRemoveSocialProfile = async (platform: string) => {
     if (!editedContact.socialProfiles) return;
-    
+
     const socialProfiles = { ...editedContact.socialProfiles };
     delete socialProfiles[platform];
-    
+
     setEditedContact(prev => ({
       ...prev,
       socialProfiles
     }));
-    
+
     if (onUpdate) {
       try {
         await onUpdate(contact.id, { socialProfiles });
@@ -262,17 +255,17 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
   const handleAddSourceToContact = () => {
     if (addSource && !editedContact.sources.includes(addSource)) {
       const sources = [...editedContact.sources, addSource];
-      
+
       setEditedContact(prev => ({
         ...prev,
         sources
       }));
-      
+
       if (onUpdate) {
         onUpdate(contact.id, { sources })
           .catch(error => console.error('Failed to add source:', error));
       }
-      
+
       setShowAddSource(false);
       setAddSource('');
     }
@@ -280,12 +273,12 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
 
   const handleRemoveSource = async (source: string) => {
     const sources = editedContact.sources.filter(s => s !== source);
-    
+
     setEditedContact(prev => ({
       ...prev,
       sources
     }));
-    
+
     if (onUpdate) {
       try {
         await onUpdate(contact.id, { sources });
@@ -300,7 +293,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
       ...prev,
       interestLevel: level
     }));
-    
+
     if (onUpdate) {
       try {
         await onUpdate(contact.id, { interestLevel: level });
@@ -320,7 +313,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
       const newScore = Math.floor(Math.random() * 40) + 60; // Random score between 60-100
       const updatedContact = { ...editedContact, aiScore: newScore };
       setEditedContact(updatedContact);
-      
+
       if (onUpdate) {
         await onUpdate(contact.id, { aiScore: newScore });
       }
@@ -334,11 +327,11 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
   const handleAIEnrichment = async (enrichmentData: ContactEnrichmentData) => {
     setLastEnrichment(enrichmentData);
     setIsEnriching(true);
-    
+
     try {
       // Apply enrichment data to contact
       const updates: unknown = {};
-      
+
       if (enrichmentData.phone && !editedContact.phone) {
         updates.phone = enrichmentData.phone;
       }
@@ -353,7 +346,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
           `${editedContact.notes}\n\nAI Research: ${enrichmentData.notes}` : 
           enrichmentData.notes;
       }
-      
+
       // Social profiles
       if (enrichmentData.socialProfiles) {
         const socialUpdates: unknown = {};
@@ -366,19 +359,19 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
           updates.socialProfiles = { ...editedContact.socialProfiles, ...socialUpdates };
         }
       }
-      
+
       // Update AI score if provided
       if (enrichmentData.confidence) {
         updates.aiScore = Math.round(enrichmentData.confidence);
       }
-      
+
       const updatedContact = { ...editedContact, ...updates };
       setEditedContact(updatedContact);
-      
+
       if (onUpdate && Object.keys(updates).length > 0) {
         await onUpdate(contact.id, updates);
       }
-      
+
     } catch (error) {
       console.error('Failed to apply enrichment:', error);
     } finally {
@@ -393,10 +386,10 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
         editedContact.name,
         editedContact.company
       );
-      
+
       const updatedContact = { ...editedContact, avatarSrc: newImageUrl };
       setEditedContact(updatedContact);
-      
+
       if (onUpdate) {
         await onUpdate(contact.id, { avatarSrc: newImageUrl });
       }
@@ -486,7 +479,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                   size="xl"
                   status={editedContact.status}
                 />
-                
+
                 {/* AI Score Badge */}
                 {editedContact.aiScore && (
                   <div className={`absolute -top-1 -right-1 h-7 w-7 rounded-full ${
@@ -497,21 +490,21 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                     {editedContact.aiScore}
                   </div>
                 )}
-                
+
                 {/* Favorite Badge */}
                 {editedContact.isFavorite && (
                   <div className="absolute -top-1 -left-1 h-6 w-6 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg ring-2 ring-white">
                     <Heart className="w-3 h-3" />
                   </div>
                 )}
-                
+
                 {/* AI Enhancement Indicator */}
                 {lastEnrichment && (
                   <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-purple-500 text-white flex items-center justify-center shadow-lg ring-2 ring-white">
                     <Sparkles className="w-2.5 h-2.5" />
                   </div>
                 )}
-                
+
                 {/* AI Image Search Button */}
                 <button 
                   onClick={handleFindNewImage}
@@ -525,7 +518,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                   )}
                 </button>
               </div>
-              
+
               {/* Name and Title */}
               <h3 className="text-xl font-bold text-gray-900 mb-2 leading-tight">{editedContact.name}</h3>
               <p className="text-gray-600 font-medium mb-1">{editedContact.title}</p>
@@ -535,7 +528,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                   {editedContact.industry}
                 </span>
               )}
-              
+
               {/* AI Enhancement Badge */}
               {lastEnrichment && (
                 <div className="mt-3 p-2 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg">
@@ -555,7 +548,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                 <Brain className="w-4 h-4 mr-2 text-purple-600" />
                 AI Assistant Tools
               </h4>
-              
+
               {/* AI Goals Button */}
               <div className="mb-3">
                 <button className="w-full flex items-center justify-center py-3 px-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg hover:from-indigo-600 hover:to-purple-600 text-sm font-medium transition-all duration-200 border border-indigo-300/50 shadow-sm hover:shadow-md hover:scale-105">
@@ -574,7 +567,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                   <BarChart3 className="w-4 h-4 mb-1" />
                   <span className="text-xs leading-tight text-center">Lead Score</span>
                 </button>
-                
+
                 {/* Email AI */}
                 <button 
                   onClick={handleSendEmail}
@@ -583,7 +576,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                   <Mail className="w-4 h-4 mb-1" />
                   <span className="text-xs leading-tight text-center">Email AI</span>
                 </button>
-                
+
                 {/* Enrich */}
                 <button 
                   onClick={() => {
@@ -593,7 +586,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                       lastName: editedContact.lastName,
                       company: editedContact.company
                     };
-                    
+
                     handleAIEnrichment({
                       email: searchQuery.email,
                       firstName: searchQuery.firstName,
@@ -607,7 +600,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                   <Search className="w-4 h-4 mb-1" />
                   <span className="text-xs leading-tight text-center">Enrich</span>
                 </button>
-                
+
                 {/* Insights */}
                 <button 
                   onClick={() => setActiveTab('ai-insights')}
@@ -934,7 +927,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                 <Target className="w-4 h-4 mr-2 text-orange-500" />
                 Lead Information
               </h4>
-              
+
               {/* Interest Level */}
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
@@ -976,7 +969,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                           (editedContact.interestLevel === 'medium' && i < 3) ||
                           (editedContact.interestLevel === 'low' && i < 2) ||
                           (editedContact.interestLevel === 'cold' && i < 1);
-                        
+
                         return (
                           <div
                             key={i}
@@ -1098,7 +1091,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                   );
                 })}
               </div>
-              
+
               <div className="flex items-center space-x-3">
                 <ModernButton 
                   variant={editedContact.isFavorite ? "primary" : "outline"} 
@@ -1109,7 +1102,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                   {editedContact.isFavorite ? <Heart className="w-4 h-4" /> : <HeartOff className="w-4 h-4" />}
                   <span>{editedContact.isFavorite ? 'Favorited' : 'Add to Favorites'}</span>
                 </ModernButton>
-                
+
                 {isEditing ? (
                   <div className="flex items-center space-x-2">
                     <ModernButton 
@@ -1182,7 +1175,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                       <Edit className="w-4 h-4" />
                     </button>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {[
                       { label: 'First Name', value: editedContact.firstName || editedContact.name.split(' ')[0], icon: User, field: 'firstName' },
@@ -1243,12 +1236,12 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                       <Plus className="w-4 h-4" />
                     </button>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {socialPlatforms.map((platform, index) => {
                       const Icon = platform.icon;
                       const profileUrl = editedContact.socialProfiles?.[platform.key];
-                      
+
                       return (
                         <div key={index} className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                           <div className={`${platform.color} p-2 rounded-lg`}>
@@ -1315,7 +1308,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                       <Plus className="w-4 h-4" />
                     </button>
                   </div>
-                  
+
                   {editedContact.customFields && Object.keys(editedContact.customFields).length > 0 ? (
                     <div className="space-y-3">
                       {Object.entries(editedContact.customFields).map(([key, value], index) => (
@@ -1361,7 +1354,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                   ) : (
                     <p className="text-gray-500 text-sm">No custom fields added</p>
                   )}
-                  
+
                   {showAddField && (
                     <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                       <div className="space-y-3">

@@ -3,11 +3,7 @@ import { useFormStore, FormSubmission } from '../../store/formStore';
 import { ArrowDown, ArrowUp, Calendar, Download, Eye, Globe, Mail, Phone, Search, Shield, User, X } from 'lucide-react';
 import { CSVLink } from 'react-csv';
 
-interface FormSubmissionsViewProps {
-  formId: string;
-}
-
-const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => {
+const FormSubmissionsView: FC<FormSubmissionsViewProps> = ({ formId }) => {
   const { forms, getFormSubmissions } = useFormStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<string>('submittedAt');
@@ -16,18 +12,18 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
   const [selectedSubmission, setSelectedSubmission] = useState<FormSubmission | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  
+
   const form = forms[formId];
   const submissions = getFormSubmissions(formId);
-  
+
   // Filter submissions by search term
   const filteredSubmissions = submissions.filter(submission => {
     if (!searchTerm) return true;
-    
+
     const searchLower = searchTerm.toLowerCase();
     const contactName = submission.contact?.name?.toLowerCase() || '';
     const contactEmail = submission.contact?.email?.toLowerCase() || '';
-    
+
     // Search in contact name, email, or any data field
     return (
       contactName.includes(searchLower) ||
@@ -37,7 +33,7 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
       )
     );
   });
-  
+
   // Sort submissions
   const sortedSubmissions = [...filteredSubmissions].sort((a, b) => {
     if (sortField === 'submittedAt') {
@@ -45,7 +41,7 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
         ? a.submittedAt.getTime() - b.submittedAt.getTime()
         : b.submittedAt.getTime() - a.submittedAt.getTime();
     }
-    
+
     if (sortField === 'contact.name') {
       const aName = a.contact?.name || '';
       const bName = b.contact?.name || '';
@@ -53,7 +49,7 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
         ? aName.localeCompare(bName)
         : bName.localeCompare(aName);
     }
-    
+
     if (sortField === 'contact.email') {
       const aEmail = a.contact?.email || '';
       const bEmail = b.contact?.email || '';
@@ -61,17 +57,17 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
         ? aEmail.localeCompare(bEmail)
         : bEmail.localeCompare(aEmail);
     }
-    
+
     return 0;
   });
-  
+
   // Pagination
   const totalPages = Math.ceil(sortedSubmissions.length / itemsPerPage);
   const paginatedSubmissions = sortedSubmissions.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-  
+
   // Format date and time
   const formatDateTime = (date: Date) => {
     return date.toLocaleString(undefined, {
@@ -82,7 +78,7 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
       minute: 'numeric'
     });
   };
-  
+
   // Toggle sort
   const toggleSort = (field: string) => {
     if (sortField === field) {
@@ -92,13 +88,13 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
       setSortDirection('asc');
     }
   };
-  
+
   // View submission details
   const viewSubmissionDetail = (submission: FormSubmission) => {
     setSelectedSubmission(submission);
     setShowDetailModal(true);
   };
-  
+
   // Prepare data for CSV export
   const exportData = sortedSubmissions.map(submission => {
     // Start with contact information
@@ -108,15 +104,15 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
       'Email': submission.contact?.email || '',
       'Phone': submission.contact?.phone || ''
     };
-    
+
     // Add all form fields
     Object.entries(submission.data).forEach(([key, value]) => {
       exportRow[key] = Array.isArray(value) ? value.join(', ') : value;
     });
-    
+
     return exportRow;
   });
-  
+
   if (!form) {
     return (
       <div className="p-4 bg-red-50 text-red-700 rounded-md">
@@ -124,13 +120,13 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
       </div>
     );
   }
-  
+
   return (
     <div className="bg-white rounded-lg shadow-sm overflow-hidden">
       <div className="p-4 border-b border-gray-200">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <h3 className="text-lg font-medium">Form Submissions ({submissions.length})</h3>
-          
+
           <div className="flex flex-wrap gap-2">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -144,7 +140,7 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
                 className="pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
+
             {filteredSubmissions.length > 0 && (
               <CSVLink
                 data={exportData}
@@ -158,7 +154,7 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
           </div>
         </div>
       </div>
-      
+
       <div className="overflow-x-auto">
         {filteredSubmissions.length > 0 ? (
           <table className="min-w-full divide-y divide-gray-200">
@@ -289,7 +285,7 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
           </div>
         )}
       </div>
-      
+
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="px-6 py-3 flex items-center justify-between border-t border-gray-200">
@@ -320,15 +316,15 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
           </div>
         </div>
       )}
-      
+
       {/* Submission Detail Modal */}
       {showDetailModal && selectedSubmission && (
         <div className="fixed z-10 inset-0 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-            
+
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-            
+
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="flex justify-between items-center px-6 py-4 border-b">
                 <h3 className="text-lg font-medium text-gray-900">Submission Details</h3>
@@ -339,7 +335,7 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
                   <X size={20} />
                 </button>
               </div>
-              
+
               <div className="px-6 py-4">
                 <div className="space-y-6">
                   <div>
@@ -372,7 +368,7 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
                       )}
                     </div>
                   </div>
-                  
+
                   <div>
                     <h4 className="text-sm font-medium text-gray-500 mb-2">Form Responses</h4>
                     <div className="bg-gray-50 rounded-lg p-3 space-y-2">
@@ -386,7 +382,7 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
                       ))}
                     </div>
                   </div>
-                  
+
                   <div>
                     <h4 className="text-sm font-medium text-gray-500 mb-2">Submission Details</h4>
                     <div className="bg-gray-50 rounded-lg p-3 space-y-2">
@@ -406,7 +402,7 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
                   </div>
                 </div>
               </div>
-              
+
               <div className="px-6 py-4 bg-gray-50 flex justify-end">
                 <button
                   onClick={() => setShowDetailModal(false)}
@@ -426,38 +422,4 @@ const FormSubmissionsView: React.FC<FormSubmissionsViewProps> = ({ formId }) => 
 export default FormSubmissionsView;
 
 // Helper components for icons
-const Globe = ({ size = 24, className = "" }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    className={className}
-  >
-    <circle cx="12" cy="12" r="10"/>
-    <line x1="2" y1="12" x2="22" y2="12"/>
-    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-  </svg>
-);
 
-const Shield = ({ size = 24, className = "" }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    className={className}
-  >
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-  </svg>
-);

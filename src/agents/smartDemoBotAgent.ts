@@ -1,22 +1,21 @@
 
-
 export async function smartDemoBotAgent(input: unknown, setSteps?: (steps: unknown) => void) {
   const name = input.name || "there";
   const company = input.company || "your company";
   const _dealTitle = input.title || "our solution";
-  
+
   setSteps?.([{ step: "Creating demo script..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1200));
-  
+
   setSteps?.(prev => [...prev, { step: "Generating voice narration..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1500));
-  
+
   setSteps?.(prev => [...prev, { step: "Assembling video walkthrough..." }]);
-  
+
   const demoScript = `
 # Personalized Demo for ${company}
 
@@ -40,7 +39,7 @@ export async function smartDemoBotAgent(input: unknown, setSteps?: (steps: unkno
 `;
 
   setSteps?.(prev => [...prev, { step: "Demo video created", result: "Complete" }]);
-  
+
   return {
     demoScript,
     videoUrl: "https://example.com/demo-videos/custom-demo-123456.mp4", // Simulated URL

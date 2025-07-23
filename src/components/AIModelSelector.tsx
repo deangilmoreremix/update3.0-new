@@ -10,16 +10,7 @@ import {
   type AIModelRecommendation 
 } from '../services/aiModels';
 
-interface AIModelSelectorProps {
-  selectedModel: string;
-  onModelChange: (modelId: string) => void;
-  useCase?: AIModelRecommendation;
-  showPricing?: boolean;
-  showCapabilities?: boolean;
-  className?: string;
-}
-
-const AIModelSelector: React.FC<AIModelSelectorProps> = ({
+const AIModelSelector: FC<AIModelSelectorProps> = ({
   selectedModel,
   onModelChange,
   useCase,
@@ -33,10 +24,10 @@ const AIModelSelector: React.FC<AIModelSelectorProps> = ({
 
   // Get recommended models for the use case
   const recommendedModels = useCase ? AI_MODEL_RECOMMENDATIONS[useCase] : [];
-  
+
   // Get models by category
   const categoryModels = getModelsByCategory(selectedCategory);
-  
+
   // Get currently selected model details
   const currentModel = AI_MODELS[selectedModel];
 
@@ -83,7 +74,7 @@ const AIModelSelector: React.FC<AIModelSelectorProps> = ({
             </p>
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           {showPricing && currentModel && (
             <div className="text-right">
@@ -106,7 +97,7 @@ const AIModelSelector: React.FC<AIModelSelectorProps> = ({
         } backdrop-blur-xl border ${
           isDark ? 'border-white/20' : 'border-gray-200'
         } rounded-xl shadow-2xl z-50 max-h-96 overflow-hidden`}>
-          
+
           {/* Category Tabs */}
           <div className={`p-3 border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
             <div className="flex space-x-2">
@@ -131,7 +122,7 @@ const AIModelSelector: React.FC<AIModelSelectorProps> = ({
             {categoryModels.map((model) => {
               const badge = getModelBadge(model);
               const isSelected = model.id === selectedModel;
-              
+
               return (
                 <button
                   key={model.id}
@@ -162,11 +153,11 @@ const AIModelSelector: React.FC<AIModelSelectorProps> = ({
                           </span>
                         )}
                       </div>
-                      
+
                       <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} mb-2`}>
                         {model.description}
                       </p>
-                      
+
                       {showCapabilities && (
                         <div className="flex flex-wrap gap-1 mb-2">
                           {model.capabilities.slice(0, 3).map((capability) => (
@@ -186,7 +177,7 @@ const AIModelSelector: React.FC<AIModelSelectorProps> = ({
                           )}
                         </div>
                       )}
-                      
+
                       <div className="flex items-center space-x-4 text-xs">
                         <div className="flex items-center space-x-1">
                           <DollarSign size={12} className={isDark ? 'text-gray-400' : 'text-gray-500'} />

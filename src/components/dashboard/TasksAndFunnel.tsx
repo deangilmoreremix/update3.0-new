@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
-import { MoreHorizontal, ArrowRight, UserPlus, Users, Plus, Calendar } from 'lucide-react';
+import { MoreHorizontal, ArrowRight, UserPlus, Users, Plus } from 'lucide-react';
 import Avatar from '../ui/Avatar';
-
 
 // Update taskData to include contactIds instead of direct assignee objects
 const taskData = [
@@ -52,7 +51,7 @@ const funnelData = [
 ];
 
 // Component to display assignee avatars
-const TaskAssignees: React.FC<{ 
+const TaskAssignees: FC<{ 
   assigneeIds: string[];
   maxVisible?: number;
   size?: 'sm' | 'md';
@@ -65,11 +64,11 @@ const TaskAssignees: React.FC<{
 }) => {
   const { isDark } = useTheme();
   const { contacts } = useContactStore();
-  
+
   // Filter out duplicate IDs and any IDs that don't correspond to contacts
   const uniqueAssigneeIds = [...new Set(assigneeIds)];
   const validAssignees = uniqueAssigneeIds.filter(id => contacts[id]);
-  
+
   if (!validAssignees.length) {
     return (
       <div className={`w-5 h-5 rounded-full ${isDark ? 'bg-gray-700 text-gray-400' : 'bg-gray-200 text-gray-500'} flex items-center justify-center text-xs`}>
@@ -80,7 +79,7 @@ const TaskAssignees: React.FC<{
 
   const visibleAssignees = validAssignees.slice(0, maxVisible);
   const remainingCount = validAssignees.length - maxVisible;
-  
+
   return (
     <div className="flex -space-x-2">
       {visibleAssignees.map((assigneeId) => {
@@ -89,7 +88,7 @@ const TaskAssignees: React.FC<{
         let status: 'online' | 'away' | 'offline' = 'offline';
         if (contact.interestLevel === 'hot') status = 'online';
         else if (contact.interestLevel === 'warm' || contact.interestLevel === 'medium') status = 'away';
-        
+
         return (
           <div 
             key={assigneeId} 
@@ -116,7 +115,7 @@ const TaskAssignees: React.FC<{
 };
 
 // Calendar day component with avatar support
-const CalendarDay: React.FC<{
+const CalendarDay: FC<{
   day: number;
   isToday?: boolean;
   assigneeIds?: string[];
@@ -129,7 +128,7 @@ const CalendarDay: React.FC<{
 }) => {
   const { isDark } = useTheme();
   const hasAssignees = assigneeIds.length > 0;
-  
+
   return (
     <div 
       className="p-1 flex flex-col items-center"
@@ -147,7 +146,7 @@ const CalendarDay: React.FC<{
       `}>
         {day}
       </div>
-      
+
       {hasAssignees && (
         <div className="flex justify-center -mt-1">
           <TaskAssignees 
@@ -172,12 +171,12 @@ const TasksAndFunnel: React.FC = () => {
     // Randomly determine if this day has assignees
     const hasAssignees = Math.random() > 0.65;
     if (!hasAssignees) return { day, assigneeIds: [] };
-    
+
     // Get 1-4 random assignee IDs from our contacts store
     const contactIds = Object.keys(contacts);
     const shuffled = [...contactIds].sort(() => 0.5 - Math.random());
     const count = Math.floor(Math.random() * 4) + 1;
-    
+
     return {
       day,
       assigneeIds: shuffled.slice(0, count)
@@ -338,12 +337,12 @@ const TasksAndFunnel: React.FC = () => {
               .map((assigneeId) => {
                 const contact = contacts[assigneeId];
                 const taskCount = taskData.filter(t => t.assigneeIds.includes(assigneeId)).length;
-                
+
                 // Map interestLevel to status
                 let status: 'online' | 'away' | 'offline' = 'offline';
                 if (contact.interestLevel === 'hot') status = 'online';
                 else if (contact.interestLevel === 'warm' || contact.interestLevel === 'medium') status = 'away';
-                
+
                 return (
                   <div key={assigneeId} className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">

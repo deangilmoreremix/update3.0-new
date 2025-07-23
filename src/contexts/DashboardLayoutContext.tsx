@@ -9,18 +9,6 @@ interface SectionConfig {
   color: string;
 }
 
-interface DashboardLayoutContextType {
-  sectionOrder: string[];
-  setSectionOrder: (order: string[]) => void;
-  isDragging: boolean;
-  setIsDragging: (dragging: boolean) => void;
-  draggedItem: string | null;
-  setDraggedItem: (item: string | null) => void;
-  getSectionConfig: (id: string) => SectionConfig | undefined;
-  reorderSections: (startIndex: number, endIndex: number) => void;
-  resetToDefault: () => void;
-}
-
 const DashboardLayoutContext = createContext<DashboardLayoutContextType | undefined>(undefined);
 
 export const useDashboardLayout = () => {
@@ -92,7 +80,7 @@ const sectionConfigs: Record<string, SectionConfig> = {
     component: null,
     color: 'from-gray-500 to-gray-700'
   },
-  
+
   // Original sections (kept for backward compatibility)
   'kpi-cards-section': {
     id: 'kpi-cards-section',
@@ -208,13 +196,13 @@ const sectionConfigs: Record<string, SectionConfig> = {
   }
 };
 
-export const DashboardLayoutProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const DashboardLayoutProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const [sectionOrder, setSectionOrder] = useState<string[]>(() => {
     // Load from localStorage first, then use default
     const saved = localStorage.getItem('dashboard-section-order');
     return saved ? JSON.parse(saved) : defaultSectionOrder;
   });
-  
+
   const [isDragging, setIsDragging] = useState(false);
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
 

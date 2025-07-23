@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Mail, FileText, CheckCircle, Check, MoreVertical, Video, User } from 'lucide-react';
+import { Calendar, Mail, FileText, CheckCircle, Check, MoreVertical } from 'lucide-react';
 import Avatar from './ui/Avatar';
 import { useTaskStore } from '../store/taskStore';
 import { getInitials, getAvatarByIndex } from '../utils/avatars';
@@ -25,7 +25,7 @@ interface TaskCardProps {
   index: number;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, index }) => {
+const TaskCard: FC<TaskCardProps> = ({ task, index }) => {
   const { isDark } = useTheme();
   const { updateTask } = useTaskStore();
   const [menuOpen, setMenuOpen] = React.useState(false);
@@ -101,7 +101,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, index }) => {
           }}
         >
           <MoreVertical className="h-4 w-4" />
-          
+
           {menuOpen && (
             <div className={`absolute right-0 mt-1 w-36 ${
               isDark ? 'bg-gray-800 border-white/10' : 'bg-white border-gray-200'
@@ -118,7 +118,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, index }) => {
                 <CheckCircle size={14} className={task.completed ? 'text-green-400' : 'text-gray-400'} />
                 <span>{task.completed ? 'Mark Incomplete' : 'Mark Complete'}</span>
               </button>
-              
+
               <button 
                 className={`w-full text-left px-3 py-2 text-sm ${
                   isDark ? 'hover:bg-white/5 text-white' : 'hover:bg-gray-100 text-gray-700'
@@ -135,7 +135,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, index }) => {
           )}
         </button>
       </div>
-      
+
       <div className="space-y-4">
         <div className="flex items-center space-x-3">
           <div className={`p-2 rounded-lg ${isDark ? 'bg-white/10' : 'bg-gray-100'} ${getIconColor(task.type)}`}>
@@ -150,7 +150,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, index }) => {
             )}
           </div>
         </div>
-        
+
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <span className={`px-3 py-1 rounded-full text-xs ${isDark ? 'bg-white/10' : 'bg-gray-100'} ${getIconColor(task.type)}`}>

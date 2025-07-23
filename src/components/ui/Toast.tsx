@@ -3,19 +3,10 @@ import { X } from 'lucide-react';
 
 export type ToastType = 'info' | 'success' | 'warning' | 'error';
 
-interface ToastProps {
-  id: string;
-  type?: ToastType;
-  title: string;
-  message?: string;
-  duration?: number;
-  onClose: (id: string) => void;
-}
-
 /**
  * Toast notification component with dark mode support and accessibility features
  */
-export const Toast: React.FC<ToastProps> = ({
+export const Toast: FC<ToastProps> = ({
   id,
   type = 'info',
   title,
@@ -31,15 +22,15 @@ export const Toast: React.FC<ToastProps> = ({
   useEffect(() => {
     // Fade in
     requestAnimationFrame(() => setIsVisible(true));
-    
+
     let progressInterval: NodeJS.Timeout;
     let closeTimeout: NodeJS.Timeout;
-    
+
     if (duration !== Infinity) {
       // Start progress bar animation
       const startTime = Date.now();
       const endTime = startTime + duration;
-      
+
       progressInterval = setInterval(() => {
         if (!paused) {
           const now = Date.now();
@@ -52,7 +43,7 @@ export const Toast: React.FC<ToastProps> = ({
           }
         }
       }, 10);
-      
+
       // Set timeout to close toast
       closeTimeout = setTimeout(() => {
         if (!paused) {
@@ -61,13 +52,13 @@ export const Toast: React.FC<ToastProps> = ({
         }
       }, duration);
     }
-    
+
     return () => {
       clearInterval(progressInterval);
       clearTimeout(closeTimeout);
     };
   }, [id, duration, paused, onClose]);
-  
+
   // Get icon based on type
   const Icon = {
     info: Info,
@@ -75,7 +66,7 @@ export const Toast: React.FC<ToastProps> = ({
     warning: AlertTriangle,
     error: AlertCircle
   }[type];
-  
+
   // Get color classes based on type
   const getTypeClasses = () => {
     switch (type) {
@@ -91,7 +82,7 @@ export const Toast: React.FC<ToastProps> = ({
         return 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700';
     }
   };
-  
+
   const getIconColor = () => {
     switch (type) {
       case 'info': return 'text-blue-500 dark:text-blue-400';
@@ -101,7 +92,7 @@ export const Toast: React.FC<ToastProps> = ({
       default: return 'text-gray-500 dark:text-gray-400';
     }
   };
-  
+
   const getTextColor = () => {
     switch (type) {
       case 'info': return 'text-blue-800 dark:text-blue-200';
@@ -111,7 +102,7 @@ export const Toast: React.FC<ToastProps> = ({
       default: return 'text-gray-900 dark:text-white';
     }
   };
-  
+
   return (
     <div
       role="alert"
@@ -130,7 +121,7 @@ export const Toast: React.FC<ToastProps> = ({
           <div className={`flex-shrink-0 ${getIconColor()}`}>
             <Icon className="h-5 w-5" aria-hidden="true" />
           </div>
-          
+
           {/* Content */}
           <div className="ml-3 flex-1">
             <p className={`text-sm font-medium ${getTextColor()}`}>
@@ -142,7 +133,7 @@ export const Toast: React.FC<ToastProps> = ({
               </p>
             )}
           </div>
-          
+
           {/* Close button */}
           <div className="ml-4 flex-shrink-0 flex">
             <button
@@ -158,7 +149,7 @@ export const Toast: React.FC<ToastProps> = ({
           </div>
         </div>
       </div>
-      
+
       {/* Progress bar */}
       {duration !== Infinity && (
         <div className="h-1 bg-gray-200 dark:bg-gray-700">

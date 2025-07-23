@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import * as edgeFunctionService from '../../services/edgeFunctionService';
 import FileUpload from '../shared/FileUpload';
 import AIToolContent from '../shared/AIToolContent';
-import { FileSearch, PlusCircle, Search, Trash, Link } from 'lucide-react';
+import { FileSearch, PlusCircle, Trash, Link } from 'lucide-react';
 
 const CompetitorAnalysisContent: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -10,7 +10,7 @@ const CompetitorAnalysisContent: React.FC = () => {
     industry: 'SaaS CRM',
     strengths: ['AI-powered lead scoring and insights', 'Seamless integration with marketing tools']
   });
-  
+
   const [competitorWebsite, setCompetitorWebsite] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
@@ -54,11 +54,11 @@ const CompetitorAnalysisContent: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // Filter out empty strengths
       const strengths = formData.strengths.filter(item => item.trim() !== '');
-      
+
       const analysisResult = await edgeFunctionService.analyzeCompetitor(
         formData.competitorName,
         formData.industry,
@@ -75,7 +75,7 @@ const CompetitorAnalysisContent: React.FC = () => {
 
   const handleFilesAdded = (newFiles: File[]) => {
     setFiles(newFiles);
-    
+
     // In a real app, we would extract info from the file
     // For demo purposes, just acknowledge
     if (newFiles.length > 0) {
@@ -137,7 +137,7 @@ const CompetitorAnalysisContent: React.FC = () => {
                 required
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Industry
@@ -156,7 +156,7 @@ const CompetitorAnalysisContent: React.FC = () => {
               </select>
             </div>
           </div>
-          
+
           <div>
             <label htmlFor="competitorWebsite" className="block text-sm font-medium text-gray-700 mb-1">
               Competitor Website (Optional)
@@ -194,7 +194,7 @@ const CompetitorAnalysisContent: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Your Key Strengths/Differentiators
             </label>
-            
+
             <div className="space-y-3">
               {formData.strengths.map((strength, index) => (
                 <div key={index} className="flex gap-2">
@@ -215,7 +215,7 @@ const CompetitorAnalysisContent: React.FC = () => {
                   </button>
                 </div>
               ))}
-              
+
               <button
                 type="button"
                 onClick={addStrength}
@@ -226,7 +226,7 @@ const CompetitorAnalysisContent: React.FC = () => {
               </button>
             </div>
           </div>
-            
+
           <div>
             <p className="block text-sm font-medium text-gray-700 mb-2">
               Upload Competitor Materials (Optional)
@@ -240,7 +240,7 @@ const CompetitorAnalysisContent: React.FC = () => {
               Add competitor marketing materials, pricing sheets, or product documentation for enhanced analysis.
             </p>
           </div>
-          
+
           <div className="flex justify-end">
             <button
               type="submit"

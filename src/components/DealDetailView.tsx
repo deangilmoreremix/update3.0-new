@@ -9,18 +9,10 @@ import { DealCommunicationHub } from './deals/DealCommunicationHub';
 import { DealAnalyticsDashboard } from './deals/DealAnalyticsDashboard';
 import { DealAutomationPanel } from './deals/DealAutomationPanel';
 import { ModernButton } from './ui/ModernButton';
-import { Brain, X, Edit, Globe, Mail, Phone, Building2, Tag, Save, Plus, User, DollarSign, Calendar, Clock, Database, BarChart2, MessageSquare, Zap, FileText, Target, Sparkles, Heart, FileUp, Link, ExternalLink, Trash2, Camera, RefreshCw, Loader2, Search, Wand2, BarChart3, TrendingUp } from 'lucide-react';
+import { Brain, X, Edit, Globe, Mail, Phone, Building2, Tag, Plus, User, DollarSign, Calendar, Clock, Database, Zap, FileText, Target, Sparkles, Heart, FileUp, Link, ExternalLink, Trash2, Camera, RefreshCw, Loader2, Search, Wand2, BarChart3, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-interface DealDetailViewProps {
-  deal: Deal;
-  isOpen: boolean;
-  onClose: () => void;
-  onUpdate: (id: string, updates: Partial<Deal>) => Promise<unknown>;
-  contactData?: Contact | null;
-}
-
-export const DealDetailView: React.FC<DealDetailViewProps> = ({
+export const DealDetailView: FC<DealDetailViewProps> = ({
   deal,
   isOpen,
   onClose,
@@ -46,7 +38,7 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
   const [lastEnrichment, setLastEnrichment] = useState<unknown>(
     deal.lastEnrichment || (deal.probability > 75 ? { confidence: deal.probability } : null)
   );
-  
+
   // Editing contact state
   const [editedContact, setEditedContact] = useState<Partial<Contact> | null>(
     contactData || null
@@ -57,11 +49,11 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
   const [showAddSocial, setShowAddSocial] = useState(false);
   const [selectedSocialPlatform, setSelectedSocialPlatform] = useState('');
   const [socialFieldValue, setSocialFieldValue] = useState('');
-  
+
   // Create refs for file inputs
   const fileInputRef = useRef<HTMLInputElement>(null);
   const _dealCardRef = useRef<HTMLDivElement>(null);
-  
+
   // Get the AI research service
   const aiResearch = useAIResearch();
 
@@ -153,7 +145,7 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
     setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1500));
     setIsLoading(false);
-    
+
     // Update AI score and enrichment data
     if (editedContact) {
       const updatedContact = {
@@ -166,14 +158,14 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
         }
       };
       setEditedContact(updatedContact);
-      
+
       // In a real app, you would call the API to update the contact
       if (onUpdate) {
         onUpdate(deal.id, { updatedAt: new Date() });
       }
     }
   };
-  
+
   const handleAIEnrichment = (enrichmentData: unknown) => {
     setIsLoading(true);
     setTimeout(() => {
@@ -191,7 +183,7 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
         };
         setEditedContact(updatedContact);
         setLastEnrichment(updatedContact.lastEnrichment);
-        
+
         // In a real app, you would call the API to update the contact
         if (onUpdate) {
           onUpdate(deal.id, { updatedAt: new Date() });
@@ -200,12 +192,12 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
       setIsLoading(false);
     }, 1200);
   };
-  
+
   const handleSendEmail = () => {
     // Functionality to send an email
     alert('Email functionality would open here');
   };
-  
+
   const handleMakeCall = () => {
     // Functionality to make a call
     if (editedContact?.phone) {
@@ -231,12 +223,12 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
 
   const handleAddCustomField = () => {
     if (!newCustomField.name || !newCustomField.value) return;
-    
+
     const updatedCustomFields = {
       ...(formData.customFields || {}),
       [newCustomField.name]: newCustomField.value
     };
-    
+
     setFormData(prev => ({ ...prev, customFields: updatedCustomFields }));
     onUpdate(deal.id, { customFields: updatedCustomFields });
     setNewCustomField({ name: '', value: '' });
@@ -245,20 +237,20 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
   const handleRemoveCustomField = (fieldName: string) => {
     const updatedCustomFields = { ...(formData.customFields || {}) };
     delete updatedCustomFields[fieldName];
-    
+
     setFormData(prev => ({ ...prev, customFields: updatedCustomFields }));
     onUpdate(deal.id, { customFields: updatedCustomFields });
   };
 
   const handleAddLink = () => {
     if (!newLink.url || !newLink.title) return;
-    
+
     const link = {
       title: newLink.title,
       url: newLink.url,
       createdAt: new Date().toISOString()
     };
-    
+
     const updatedLinks = [...(formData.links || []), link];
     setFormData(prev => ({ ...prev, links: updatedLinks }));
     onUpdate(deal.id, { links: updatedLinks });
@@ -284,7 +276,7 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
 
   const handleAddAttachment = () => {
     if (!newAttachment.file) return;
-    
+
     // In a real app, you'd upload the file to storage and get a URL
     // For now, we'll just add the file metadata
     const attachment = {
@@ -294,7 +286,7 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
       type: newAttachment.file.type,
       uploadedAt: new Date().toISOString()
     };
-    
+
     const updatedAttachments = [...(formData.attachments || []), attachment];
     setFormData(prev => ({ ...prev, attachments: updatedAttachments }));
     onUpdate(deal.id, { attachments: updatedAttachments });
@@ -311,7 +303,7 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
   const handleToggleFavorite = async () => {
     try {
       setIsFavorite(!isFavorite);
-      
+
       if (onUpdate) {
         await onUpdate(deal.id, {
           isFavorite: !isFavorite
@@ -322,7 +314,7 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
       setIsFavorite(isFavorite); // Revert on error
     }
   };
-  
+
   const handleFindNewImage = async () => {
     setIsFindingImage(true);
     try {
@@ -336,14 +328,14 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
       setIsFindingImage(false);
     }
   };
-  
+
   // AI Analysis functions
   const handleAIAnalysis = async () => {
     setIsAnalyzing(true);
     try {
       // Simulating AI analysis
       const analysis = await aiResearch.enhanceWithAI(deal, 'Analyze this deal', 'quality');
-      
+
       // Update deal with analysis results
       const newProbability = Math.min(deal.probability + 10, 95);
       await onUpdate(deal.id, {
@@ -358,7 +350,7 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
           timestamp: new Date()
         }
       });
-      
+
       return true;
     } catch (error) {
       console.error('AI analysis failed:', error);
@@ -367,13 +359,13 @@ export const DealDetailView: React.FC<DealDetailViewProps> = ({
       setIsAnalyzing(false);
     }
   };
-  
+
   const handleAIEnrich = async () => {
     setIsEnriching(true);
     try {
       // Use AI to research the company
       const companyData = await aiResearch.researchCompany(formData.company);
-      
+
       // Update deal with enriched company data
       const newProbability = Math.min(deal.probability + 15, 95);
       const enrichmentNotes = `
@@ -393,7 +385,7 @@ ${companyData.potentialNeeds.map(need => `- ${need}`).join('\n')}
 
 Sales Approach: ${companyData.salesApproach}
       `.trim();
-      
+
       // Update deal with company research
       await onUpdate(deal.id, {
         probability: newProbability,
@@ -407,7 +399,7 @@ Sales Approach: ${companyData.salesApproach}
           timestamp: new Date()
         }
       });
-      
+
       return true;
     } catch (error) {
       console.error('AI enrichment failed:', error);
@@ -484,7 +476,7 @@ Sales Approach: ${companyData.salesApproach}
                       <Building2 className="h-6 w-6" />
                     </div>
                   )}
-                  
+
                   {/* AI Enhanced Badge */}
                   {deal.lastEnrichment && (
                     <div className="absolute -top-1 -right-1 h-4 w-4 bg-purple-500 rounded-full flex items-center justify-center">
@@ -545,7 +537,7 @@ Sales Approach: ${companyData.salesApproach}
                 >
                   <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
                 </button>
-                
+
                 {/* AI Analysis Button */}
                 <ModernButton 
                   onClick={() => setActiveTab('insights')}
@@ -556,7 +548,7 @@ Sales Approach: ${companyData.salesApproach}
                 >
                   AI Insights
                 </ModernButton>
-                
+
                 <button
                   onClick={onClose}
                   className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
@@ -578,7 +570,7 @@ Sales Approach: ${companyData.salesApproach}
                   <Brain className="w-4 h-4 mr-2 text-purple-600" />
                   AI Assistant Tools
                 </h4>
-                
+
                 {/* AI Goals Button */}
                 <div className="mb-3">
                   <button className="w-full flex items-center justify-center py-3 px-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg hover:from-indigo-600 hover:to-purple-600 text-sm font-medium transition-all duration-200 border border-indigo-300/50 shadow-sm hover:shadow-md hover:scale-105">
@@ -597,7 +589,7 @@ Sales Approach: ${companyData.salesApproach}
                     <BarChart3 className="w-4 h-4 mb-1" />
                     <span className="text-xs leading-tight text-center">Lead Score</span>
                   </button>
-                  
+
                   {/* Email AI */}
                   <button 
                     onClick={handleSendEmail}
@@ -606,7 +598,7 @@ Sales Approach: ${companyData.salesApproach}
                     <Mail className="w-4 h-4 mb-1" />
                     <span className="text-xs leading-tight text-center">Email AI</span>
                   </button>
-                  
+
                   {/* Enrich */}
                   <button 
                     onClick={() => {
@@ -617,7 +609,7 @@ Sales Approach: ${companyData.salesApproach}
                           lastName: editedContact.lastName,
                           company: editedContact.company
                         };
-                        
+
                         handleAIEnrichment({
                           email: searchQuery.email,
                           firstName: searchQuery.firstName,
@@ -632,7 +624,7 @@ Sales Approach: ${companyData.salesApproach}
                     <Search className="w-4 h-4 mb-1" />
                     <span className="text-xs leading-tight text-center">Enrich</span>
                   </button>
-                  
+
                   {/* Insights */}
                   <button 
                     onClick={() => setActiveTab('insights')}
@@ -669,7 +661,7 @@ Sales Approach: ${companyData.salesApproach}
                   <Sparkles className="w-3 h-3 ml-2 text-yellow-300" />
                 </button>
               </div>
-              
+
               {/* Quick Action Buttons */}
               <div className="p-4 border-b border-gray-100 bg-white">
                 <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
@@ -841,7 +833,7 @@ Sales Approach: ${companyData.salesApproach}
                           {socialPlatforms.slice(0, 4).map((social, index) => {
                             const Icon = social.icon;
                             const profileUrl = editedContact?.socialProfiles?.[social.key];
-                            
+
                             return (
                               <div 
                                 key={index} 
@@ -990,14 +982,14 @@ Sales Approach: ${companyData.salesApproach}
                       alt={deal.company}
                       className="w-20 h-20 rounded-full object-cover border-4 border-gray-200 shadow-lg"
                     />
-                    
+
                     {/* Favorite Badge if applicable */}
                     {deal.isFavorite && (
                       <div className="absolute -top-2 -left-2 bg-red-500 text-white p-1 rounded-full shadow-lg">
                         <Heart className="w-4 h-4 fill-current" />
                       </div>
                     )}
-                    
+
                     <button 
                       onClick={handleFindNewImage}
                       disabled={isFindingImage}
@@ -1011,7 +1003,7 @@ Sales Approach: ${companyData.salesApproach}
                     </button>
                   </div>
                 </div>
-                
+
                 {/* Deal Title */}
                 {editMode.title ? (
                   <div className="mb-4">
@@ -1049,7 +1041,7 @@ Sales Approach: ${companyData.salesApproach}
                     </button>
                   </h4>
                 )}
-                
+
                 {/* Company Name */}
                 {editMode.company ? (
                   <div className="mb-4">
@@ -1087,7 +1079,7 @@ Sales Approach: ${companyData.salesApproach}
                     </button>
                   </p>
                 )}
-                
+
                 {/* Deal Stage and Priority */}
                 <div className="mt-3 flex justify-center space-x-2">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStageColor(deal.stage)}`}>
@@ -1119,7 +1111,7 @@ Sales Approach: ${companyData.salesApproach}
                       </>
                     )}
                   </ModernButton>
-                  
+
                   <ModernButton
                     variant="outline"
                     onClick={handleAIEnrich}
@@ -1139,7 +1131,7 @@ Sales Approach: ${companyData.salesApproach}
                       </>
                     )}
                   </ModernButton>
-                  
+
                   <ModernButton
                     variant="outline"
                     onClick={handleToggleFavorite}
@@ -1151,7 +1143,7 @@ Sales Approach: ${companyData.salesApproach}
                     <Heart className={`w-4 h-4 mr-2 ${deal.isFavorite ? 'fill-current' : ''}`} />
                     <span>{deal.isFavorite ? 'Favorited' : 'Add to Favorites'}</span>
                   </ModernButton>
-                  
+
                   <ModernButton
                     variant="outline"
                     onClick={() => {
@@ -1165,7 +1157,7 @@ Sales Approach: ${companyData.salesApproach}
                     <span>Share Deal</span>
                   </ModernButton>
                 </div>
-                
+
                 {/* AI Enhancement Notice - if applicable */}
                 {deal.lastEnrichment && (
                   <div className="mt-4 p-3 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200 shadow-sm">
@@ -1183,14 +1175,14 @@ Sales Approach: ${companyData.salesApproach}
                   </div>
                 )}
               </div>
-              
+
               {/* Deal Value and Probability */}
               <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
                 <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
                   <DollarSign className="w-4 h-4 mr-2 text-green-600" />
                   Deal Value & Probability
                 </h4>
-                
+
                 <div className="grid grid-cols-1 gap-4">
                   {/* Deal Value */}
                   {editMode.value ? (
@@ -1293,7 +1285,7 @@ Sales Approach: ${companyData.salesApproach}
                       </button>
                     </div>
                   )}
-                  
+
                   {/* Probability Bar */}
                   <div className="mt-2">
                     <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -1324,7 +1316,7 @@ Sales Approach: ${companyData.salesApproach}
                     <Edit className="w-4 h-4" />
                   </button>
                 </div>
-                
+
                 {editMode.contact ? (
                   <div className="space-y-3">
                     <input
@@ -1369,7 +1361,7 @@ Sales Approach: ${companyData.salesApproach}
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-gray-900 truncate">{contactData.name}</p>
                           <p className="text-sm text-gray-600 truncate">{contactData.title} at {contactData.company}</p>
-                          
+
                           <div className="mt-2 flex items-center space-x-3">
                             <a
                               href={`mailto:${contactData.email}`}
@@ -1402,7 +1394,7 @@ Sales Approach: ${companyData.salesApproach}
                         <div>
                           <p className="font-medium text-gray-900">{deal.contact}</p>
                           <p className="text-sm text-gray-600">Contact not linked</p>
-                          
+
                           <button
                             onClick={() => {
                               // This would open a contact selector in a real app
@@ -1437,7 +1429,7 @@ Sales Approach: ${companyData.salesApproach}
                   <Calendar className="w-4 h-4 mr-2 text-orange-600" />
                   Timeline
                 </h4>
-                
+
                 <div className="space-y-4">
                   {/* Created At */}
                   <div className="flex items-center justify-between">
@@ -1449,7 +1441,7 @@ Sales Approach: ${companyData.salesApproach}
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Due Date */}
                   {editMode.dueDate ? (
                     <div className="space-y-2">
@@ -1504,7 +1496,7 @@ Sales Approach: ${companyData.salesApproach}
                       </button>
                     </div>
                   )}
-                  
+
                   {/* Days Active */}
                   <div className="flex items-center">
                     <Clock className="w-4 h-4 text-gray-500 mr-2" />
@@ -1517,7 +1509,7 @@ Sales Approach: ${companyData.salesApproach}
                   </div>
                 </div>
               </div>
-              
+
               {/* Custom Fields */}
               <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
                 <div className="flex items-center justify-between mb-4">
@@ -1532,7 +1524,7 @@ Sales Approach: ${companyData.salesApproach}
                     <Plus className="w-4 h-4" />
                   </button>
                 </div>
-                
+
                 {newCustomField.name !== '' && (
                   <div className="mb-4 p-3 bg-blue-50 rounded-lg">
                     <div className="mb-2 grid grid-cols-2 gap-2">
@@ -1568,7 +1560,7 @@ Sales Approach: ${companyData.salesApproach}
                     </div>
                   </div>
                 )}
-                
+
                 {formData.customFields && Object.keys(formData.customFields).length > 0 ? (
                   <div className="space-y-2">
                     {Object.entries(formData.customFields).map(([key, value]) => (
@@ -1599,7 +1591,7 @@ Sales Approach: ${companyData.salesApproach}
                     Tags
                   </h4>
                 </div>
-                
+
                 <div className="mb-3">
                   <div className="flex space-x-2">
                     <input
@@ -1618,7 +1610,7 @@ Sales Approach: ${companyData.salesApproach}
                     </button>
                   </div>
                 </div>
-                
+
                 {formData.tags && formData.tags.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {formData.tags.map((tag) => (
@@ -1637,7 +1629,7 @@ Sales Approach: ${companyData.salesApproach}
                   <p className="text-center text-sm text-gray-500 italic">No tags</p>
                 )}
               </div>
-              
+
               {/* Files & Attachments */}
               <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
                 <div className="flex items-center justify-between mb-4">
@@ -1653,7 +1645,7 @@ Sales Approach: ${companyData.salesApproach}
                     Add File
                   </button>
                 </div>
-                
+
                 {showAttachmentForm && (
                   <div className="mb-4 p-3 bg-blue-50 rounded-lg">
                     <div className="mb-3">
@@ -1696,7 +1688,7 @@ Sales Approach: ${companyData.salesApproach}
                     </div>
                   </div>
                 )}
-                
+
                 {formData.attachments && formData.attachments.length > 0 ? (
                   <div className="space-y-2">
                     {formData.attachments.map((file) => (
@@ -1723,7 +1715,7 @@ Sales Approach: ${companyData.salesApproach}
                   <p className="text-center text-sm text-gray-500 italic">No files attached</p>
                 )}
               </div>
-              
+
               {/* External Links */}
               <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
                 <div className="flex items-center justify-between mb-4">
@@ -1739,7 +1731,7 @@ Sales Approach: ${companyData.salesApproach}
                     Add Link
                   </button>
                 </div>
-                
+
                 {showLinkForm && (
                   <div className="mb-4 p-3 bg-blue-50 rounded-lg">
                     <div className="mb-3">
@@ -1783,7 +1775,7 @@ Sales Approach: ${companyData.salesApproach}
                     </div>
                   </div>
                 )}
-                
+
                 {formData.links && formData.links.length > 0 ? (
                   <div className="space-y-2">
                     {formData.links.map((link) => (
@@ -1816,7 +1808,7 @@ Sales Approach: ${companyData.salesApproach}
                   <p className="text-center text-sm text-gray-500 italic">No links added</p>
                 )}
               </div>
-              
+
               {/* Notes */}
               <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
                 <div className="flex items-center justify-between mb-4">
@@ -1831,7 +1823,7 @@ Sales Approach: ${companyData.salesApproach}
                     <Edit className="w-4 h-4" />
                   </button>
                 </div>
-                
+
                 {editMode.notes ? (
                   <div className="space-y-3">
                     <textarea
@@ -1864,14 +1856,14 @@ Sales Approach: ${companyData.salesApproach}
                   </div>
                 )}
               </div>
-              
+
               {/* AI Tools Section */}
               <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
                 <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
                   <Brain className="w-4 h-4 mr-2 text-purple-600" />
                   AI Assistant Tools
                 </h4>
-                
+
                 <CustomizableAIToolbar
                   entityType="deal"
                   entityId={deal.id}
@@ -1914,7 +1906,7 @@ Sales Approach: ${companyData.salesApproach}
               ))}
             </div>
           </div>
-          
+
           {/* Tab Content */}
           <div className="p-8 flex-1 overflow-y-auto">
             {/* Overview Tab */}
@@ -1942,7 +1934,7 @@ Sales Approach: ${companyData.salesApproach}
                     )}
                   </ModernButton>
                 </div>
-                
+
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                   {/* Deal Details */}
@@ -1974,7 +1966,7 @@ Sales Approach: ${companyData.salesApproach}
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* AI Enrichment Insights */}
                   {deal.lastEnrichment ? (
                     <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl border border-purple-200 p-6 shadow-sm">
@@ -2055,7 +2047,7 @@ Sales Approach: ${companyData.salesApproach}
                       </div>
                     </div>
                   )}
-                  
+
                   {/* Timeline Summary */}
                   <div className="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl border border-green-200 p-6 shadow-sm">
                     <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -2087,7 +2079,7 @@ Sales Approach: ${companyData.salesApproach}
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Actions Card */}
                 <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 mb-6">
                   <h4 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h4>
@@ -2110,7 +2102,7 @@ Sales Approach: ${companyData.salesApproach}
                     </button>
                   </div>
                 </div>
-                
+
                 {/* Social Profiles */}
                 {formData.socialProfiles && Object.values(formData.socialProfiles).some(Boolean) && (
                   <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 mb-6">
@@ -2161,27 +2153,27 @@ Sales Approach: ${companyData.salesApproach}
                 )}
               </div>
             )}
-            
+
             {/* AI Insights Tab */}
             {activeTab === 'insights' && (
               <AIInsightsPanel deal={deal} />
             )}
-            
+
             {/* Journey Tab */}
             {activeTab === 'journey' && (
               <DealJourneyTimeline deal={deal} />
             )}
-            
+
             {/* Communication Tab */}
             {activeTab === 'communication' && (
               <DealCommunicationHub deal={deal} contact={contactData} />
             )}
-            
+
             {/* Analytics Tab */}
             {activeTab === 'analytics' && (
               <DealAnalyticsDashboard deal={deal} />
             )}
-            
+
             {/* Automation Tab */}
             {activeTab === 'automation' && (
               <DealAutomationPanel deal={deal} />

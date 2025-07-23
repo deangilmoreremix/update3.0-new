@@ -3,17 +3,7 @@ import { Brain, DollarSign, Clock, Info, ChevronDown, CheckCircle, Loader2 } fro
 import { useTheme } from '../contexts/ThemeContext';
 import { supabaseAIService, type AIModelConfig } from '../services/supabaseAIService';
 
-interface DatabaseAIModelSelectorProps {
-  selectedModel: string;
-  onModelChange: (modelId: string) => void;
-  provider?: 'anthropic' | 'gemini' | 'mistral' | 'openai' | 'other';
-  useCase?: string;
-  showPricing?: boolean;
-  showCapabilities?: boolean;
-  className?: string;
-}
-
-const DatabaseAIModelSelector: React.FC<DatabaseAIModelSelectorProps> = ({
+const DatabaseAIModelSelector: FC<DatabaseAIModelSelectorProps> = ({
   selectedModel,
   onModelChange,
   provider,
@@ -38,7 +28,7 @@ const DatabaseAIModelSelector: React.FC<DatabaseAIModelSelectorProps> = ({
       setLoading(true);
       try {
         let allModels: AIModelConfig[] = [];
-        
+
         if (provider) {
           allModels = await supabaseAIService.getModelsByProvider(provider);
         } else {
@@ -138,7 +128,7 @@ const DatabaseAIModelSelector: React.FC<DatabaseAIModelSelectorProps> = ({
             </p>
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           {showPricing && currentModel?.pricing && (
             <div className="text-right">
@@ -161,7 +151,7 @@ const DatabaseAIModelSelector: React.FC<DatabaseAIModelSelectorProps> = ({
         } backdrop-blur-xl border ${
           isDark ? 'border-white/20' : 'border-gray-200'
         } rounded-xl shadow-2xl z-50 max-h-96 overflow-hidden`}>
-          
+
           {/* Provider Filter */}
           {!provider && providers.length > 1 && (
             <div className={`p-3 border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
@@ -205,7 +195,7 @@ const DatabaseAIModelSelector: React.FC<DatabaseAIModelSelectorProps> = ({
               filteredModels.map((model) => {
                 const badge = getModelBadge(model);
                 const isSelected = model.id === selectedModel;
-                
+
                 return (
                   <button
                     key={model.id}
@@ -237,13 +227,13 @@ const DatabaseAIModelSelector: React.FC<DatabaseAIModelSelectorProps> = ({
                             </span>
                           )}
                         </div>
-                        
+
                         {model.description && (
                           <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} mb-2`}>
                             {model.description}
                           </p>
                         )}
-                        
+
                         {showCapabilities && model.capabilities.length > 0 && (
                           <div className="flex flex-wrap gap-1 mb-2">
                             {model.capabilities.slice(0, 3).map((capability) => (
@@ -263,7 +253,7 @@ const DatabaseAIModelSelector: React.FC<DatabaseAIModelSelectorProps> = ({
                             )}
                           </div>
                         )}
-                        
+
                         <div className="flex items-center space-x-4 text-xs">
                           {model.pricing && (
                             <div className="flex items-center space-x-1">

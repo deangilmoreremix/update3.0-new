@@ -9,30 +9,30 @@ const Register: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState('');
-  
+
   const { register, error, isLoading, isAuthenticated, clearError } = useAuthStore();
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (password !== confirmPassword) {
       setPasswordError('Passwords do not match');
       return;
     }
-    
+
     if (password.length < 6) {
       setPasswordError('Password must be at least 6 characters');
       return;
     }
-    
+
     setPasswordError('');
     await register(email, password);
   };
-  
+
   if (isAuthenticated) {
     return <Navigate to="/" />;
   }
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -45,7 +45,7 @@ const Register: React.FC = () => {
             </Link>
           </p>
         </div>
-        
+
         {(error || passwordError) && (
           <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
             <div className="flex items-center">
@@ -54,7 +54,7 @@ const Register: React.FC = () => {
             </div>
           </div>
         )}
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>

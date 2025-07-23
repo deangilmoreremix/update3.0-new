@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useFormStore, FormField } from '../store/formStore';
-import { FileText, Plus, PlusCircle, Trash2, Share2, MoveDown, MoveUp, Edit, Check, X, Brain, Eye, Clipboard, BarChart2, ToggleLeft, ToggleRight, Users, Phone, Settings } from 'lucide-react';
+import { FileText, Plus, PlusCircle, Trash2, Share2, MoveDown, MoveUp, Edit, Check, X, Brain, Eye, Clipboard, BarChart2, ToggleLeft, ToggleRight, Users } from 'lucide-react';
 import FormSubmissionsView from '../components/marketing/FormSubmissionsView';
 
 const FormsAndSurveys: React.FC = () => {
@@ -13,7 +13,7 @@ const FormsAndSurveys: React.FC = () => {
     getPublicFormUrl,
     toggleFormActive
   } = useFormStore();
-  
+
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showFormDetail, setShowFormDetail] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'builder' | 'preview' | 'submissions' | 'settings'>('builder');
@@ -22,7 +22,7 @@ const FormsAndSurveys: React.FC = () => {
   const [formPurpose, setFormPurpose] = useState('');
   const [aiSuggestion, setAiSuggestion] = useState<FormField[] | null>(null);
   const [copySuccess, setCopySuccess] = useState(false);
-  
+
   // Current form state
   const [currentForm, setCurrentForm] = useState({
     id: '',
@@ -33,14 +33,14 @@ const FormsAndSurveys: React.FC = () => {
     lastUpdated: new Date(),
     isActive: true
   });
-  
+
   // Form field being edited currently
   const [editingField, setEditingField] = useState<FormField | null>(null);
-  
+
   useEffect(() => {
     fetchForms();
   }, []);
-  
+
   // Handle opening an existing form for editing
   const openFormEditor = (formId: string) => {
     const form = forms[formId];
@@ -58,7 +58,7 @@ const FormsAndSurveys: React.FC = () => {
       setActiveTab('builder');
     }
   };
-  
+
   // Handle adding a new field to the form
   const addField = (type: FormField['type']) => {
     const newField: FormField = {
@@ -67,17 +67,17 @@ const FormsAndSurveys: React.FC = () => {
       label: `New ${type.charAt(0).toUpperCase() + type.slice(1)} Field`,
       required: false
     };
-    
+
     if (type === 'select' || type === 'checkbox' || type === 'radio') {
       newField.options = ['Option 1', 'Option 2', 'Option 3'];
     }
-    
+
     setCurrentForm({
       ...currentForm,
       fields: [...currentForm.fields, newField]
     });
   };
-  
+
   // Handle removing a field from the form
   const removeField = (id: string) => {
     setCurrentForm({
@@ -85,7 +85,7 @@ const FormsAndSurveys: React.FC = () => {
       fields: currentForm.fields.filter(field => field.id !== id)
     });
   };
-  
+
   // Handle moving a field up or down in the form
   const moveField = (id: string, direction: 'up' | 'down') => {
     const index = currentForm.fields.findIndex(field => field.id === id);
@@ -95,85 +95,85 @@ const FormsAndSurveys: React.FC = () => {
     ) {
       return;
     }
-    
+
     const newFields = [...currentForm.fields];
     const newIndex = direction === 'up' ? index - 1 : index + 1;
-    
+
     [newFields[index], newFields[newIndex]] = [newFields[newIndex], newFields[index]];
-    
+
     setCurrentForm({
       ...currentForm,
       fields: newFields
     });
   };
-  
+
   // Handle starting to edit a field
   const startEditing = (field: FormField) => {
     setEditingField({ ...field });
   };
-  
+
   // Handle saving an edited field
   const saveField = () => {
     if (!editingField) return;
-    
+
     setCurrentForm({
       ...currentForm,
       fields: currentForm.fields.map(field => 
         field.id === editingField.id ? editingField : field
       )
     });
-    
+
     setEditingField(null);
   };
-  
+
   // Handle canceling field editing
   const cancelEditing = () => {
     setEditingField(null);
   };
-  
+
   // Handle changes to the editing field
   const handleEditingChange = (key: string, value: unknown) => {
     if (!editingField) return;
-    
+
     setEditingField({
       ...editingField,
       [key]: value
     });
   };
-  
+
   // Handle adding an option to a select/checkbox/radio field
   const addOption = () => {
     if (!editingField || !editingField.options) return;
-    
+
     setEditingField({
       ...editingField,
       options: [...editingField.options, `Option ${editingField.options.length + 1}`]
     });
   };
-  
+
   // Handle updating an option value
   const updateOption = (index: number, value: string) => {
     if (!editingField || !editingField.options) return;
-    
+
     const newOptions = [...editingField.options];
     newOptions[index] = value;
-    
+
     setEditingField({
       ...editingField,
       options: newOptions
     });
   };
-  
+
   // Handle removing an option
   const removeOption = (index: number) => {
     if (!editingField || !editingField.options) return;
-    
+
     setEditingField({
       ...editingField,
       options: editingField.options.filter((_, i) => i !== index)
     });
   };
-  
+
   // Handle saving the form
   const saveForm = async () => {
     if (currentForm.id) {
@@ -183,11 +183,11 @@ const FormsAndSurveys: React.FC = () => {
       // Create new form
       await createForm(currentForm);
     }
-    
+
     setShowCreateForm(false);
     setShowFormDetail(null);
   };
-  
+
   // Handle deleting a form
   const handleDeleteForm = async (id: string) => {
     if (confirm('Are you sure you want to delete this form? This action cannot be undone.')) {
@@ -197,11 +197,11 @@ const FormsAndSurveys: React.FC = () => {
       }
     }
   };
-  
+
   // Handle toggling a form's active status
   const handleToggleFormActive = async (id: string, isActive: boolean) => {
     await toggleFormActive(id, isActive);
-    
+
     // If we're currently viewing this form, update the local state too
     if (showFormDetail === id) {
       setCurrentForm({
@@ -210,20 +210,20 @@ const FormsAndSurveys: React.FC = () => {
       });
     }
   };
-  
+
   // Generate field suggestions with AI
   const generateAIFormFields = async () => {
     if (!formPurpose.trim()) return;
-    
+
     setIsGenerating(true);
     setAiSuggestion(null);
-    
+
     try {
       // In a real implementation, we would use an AI service to generate form fields
       // For demo purposes, we'll simulate a response
-      
+
       let suggestedFields: FormField[] = [];
-      
+
       if (formPurpose.toLowerCase().includes('contact')) {
         suggestedFields = [
           { id: `ai-1-${Date.now()}`, type: 'text', label: 'Full Name', required: true },
@@ -267,10 +267,10 @@ const FormsAndSurveys: React.FC = () => {
           { id: `ai-3-${Date.now()}`, type: 'textarea', label: 'Additional Information', required: false }
         ];
       }
-      
+
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       setAiSuggestion(suggestedFields);
     } catch (error) {
       console.error("Failed to generate form fields:", error);
@@ -278,20 +278,20 @@ const FormsAndSurveys: React.FC = () => {
       setIsGenerating(false);
     }
   };
-  
+
   // Use AI suggestions in the form
   const useAiSuggestion = () => {
     if (!aiSuggestion) return;
-    
+
     setCurrentForm({
       ...currentForm,
       fields: [...currentForm.fields, ...aiSuggestion]
     });
-    
+
     setAiSuggestion(null);
     setFormPurpose('');
   };
-  
+
   // Copy form share URL to clipboard
   const copyShareUrl = (formId: string) => {
     const url = getPublicFormUrl(formId);
@@ -302,7 +302,7 @@ const FormsAndSurveys: React.FC = () => {
       })
       .catch(err => console.error('Failed to copy URL:', err));
   };
-  
+
   // Render a preview of the field
   const renderFieldPreview = (field: FormField) => {
     switch (field.type) {
@@ -362,7 +362,7 @@ const FormsAndSurveys: React.FC = () => {
         return null;
     }
   };
-  
+
   // Render a preview of the full form
   const renderFormPreview = () => {
     return (
@@ -372,7 +372,7 @@ const FormsAndSurveys: React.FC = () => {
           {currentForm.description && (
             <p className="text-gray-600 mb-6">{currentForm.description}</p>
           )}
-          
+
           <div className="space-y-6">
             {currentForm.fields.map((field) => (
               <div key={field.id} className="space-y-1">
@@ -383,7 +383,7 @@ const FormsAndSurveys: React.FC = () => {
                 {renderFieldPreview(field)}
               </div>
             ))}
-            
+
             <div className="pt-4">
               <button className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md">
                 Submit
@@ -394,13 +394,13 @@ const FormsAndSurveys: React.FC = () => {
       </div>
     );
   };
-  
+
   // Render form analytics
   const renderFormAnalytics = (form: unknown) => {
     const conversionRate = form.submissions > 0 && form.totalViews 
       ? ((form.submissions / form.totalViews) * 100).toFixed(1) 
       : '0.0';
-    
+
     return (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100">
@@ -439,7 +439,7 @@ const FormsAndSurveys: React.FC = () => {
       </div>
     );
   };
-  
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <header className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -482,7 +482,7 @@ const FormsAndSurveys: React.FC = () => {
               />
             </div>
           </div>
-          
+
           {Object.values(forms).length === 0 ? (
             <div className="p-8 text-center">
               <FileText size={48} className="mx-auto text-gray-300 mb-4" />
@@ -660,7 +660,7 @@ const FormsAndSurveys: React.FC = () => {
               </button>
             </div>
           </div>
-          
+
           {/* Tabs for form detail view */}
           {currentForm.id && (
             <div className="border-b border-gray-200 mb-6">
@@ -708,12 +708,12 @@ const FormsAndSurveys: React.FC = () => {
               </nav>
             </div>
           )}
-          
+
           {/* Form analytics */}
           {currentForm.id && activeTab !== 'preview' && forms[currentForm.id] && (
             renderFormAnalytics(forms[currentForm.id])
           )}
-          
+
           {/* Builder Tab */}
           {(activeTab === 'builder' || !currentForm.id) && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -731,7 +731,7 @@ const FormsAndSurveys: React.FC = () => {
                       placeholder="Enter form name"
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Description
@@ -745,10 +745,10 @@ const FormsAndSurveys: React.FC = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div>
                   <h3 className="text-md font-medium mb-2">Form Fields</h3>
-                  
+
                   {currentForm.fields.length === 0 ? (
                     <div className="bg-gray-50 p-8 rounded-md border-2 border-dashed border-gray-300 text-center">
                       <p className="text-gray-500 mb-2">No fields added yet</p>
@@ -780,7 +780,7 @@ const FormsAndSurveys: React.FC = () => {
                                   </button>
                                 </div>
                               </div>
-                              
+
                               <div>
                                 <label className="block text-xs font-medium text-gray-700 mb-1">
                                   Field Label
@@ -792,7 +792,7 @@ const FormsAndSurveys: React.FC = () => {
                                   className="w-full p-1.5 text-sm border rounded-md"
                                 />
                               </div>
-                              
+
                               {['text', 'email', 'phone', 'number', 'textarea'].includes(editingField.type) && (
                                 <div>
                                   <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -807,7 +807,7 @@ const FormsAndSurveys: React.FC = () => {
                                   />
                                 </div>
                               )}
-                              
+
                               {['select', 'checkbox', 'radio'].includes(editingField.type) && (
                                 <div>
                                   <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -840,7 +840,7 @@ const FormsAndSurveys: React.FC = () => {
                                   </div>
                                 </div>
                               )}
-                              
+
                               <div className="flex items-center">
                                 <input
                                   type="checkbox"
@@ -907,7 +907,7 @@ const FormsAndSurveys: React.FC = () => {
                       ))}
                     </div>
                   )}
-                  
+
                   <div className="mt-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Add Field
@@ -959,18 +959,18 @@ const FormsAndSurveys: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="md:col-span-1">
                 <div className="bg-gray-50 rounded-md p-4 border border-gray-200">
                   <div className="flex items-center mb-4">
                     <Brain size={20} className="text-blue-500 mr-2" />
                     <h3 className="text-md font-medium">AI Form Builder</h3>
                   </div>
-                  
+
                   <p className="text-sm text-gray-600 mb-3">
                     Let AI suggest fields based on your form's purpose. Describe what this form is for:
                   </p>
-                  
+
                   <div className="space-y-3">
                     <textarea
                       value={formPurpose}
@@ -979,7 +979,7 @@ const FormsAndSurveys: React.FC = () => {
                       className="w-full p-2 border rounded-md text-sm"
                       rows={3}
                     />
-                    
+
                     <button
                       onClick={generateAIFormFields}
                       disabled={isGenerating || !formPurpose.trim()}
@@ -1002,7 +1002,7 @@ const FormsAndSurveys: React.FC = () => {
                       )}
                     </button>
                   </div>
-                  
+
                   {aiSuggestion && aiSuggestion.length > 0 && (
                     <div className="mt-4 border-t border-gray-200 pt-4">
                       <h4 className="text-sm font-medium mb-2">AI Suggestions</h4>
@@ -1027,7 +1027,7 @@ const FormsAndSurveys: React.FC = () => {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="bg-gray-50 rounded-md p-4 border border-gray-200 mt-4">
                   <h3 className="text-md font-medium mb-3">Form Settings</h3>
                   <div className="space-y-3">
@@ -1105,7 +1105,7 @@ const FormsAndSurveys: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 {currentForm.id && (
                   <div className="bg-gray-50 rounded-md p-4 border border-gray-200 mt-4">
                     <h3 className="text-md font-medium mb-3 flex items-center">
@@ -1148,23 +1148,23 @@ const FormsAndSurveys: React.FC = () => {
               </div>
             </div>
           )}
-          
+
           {/* Preview Tab */}
           {activeTab === 'preview' && (
             renderFormPreview()
           )}
-          
+
           {/* Submissions Tab */}
           {activeTab === 'submissions' && currentForm.id && (
             <FormSubmissionsView formId={currentForm.id} />
           )}
-          
+
           {/* Settings Tab */}
           {activeTab === 'settings' && currentForm.id && (
             <div className="max-w-3xl mx-auto">
               <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
                 <h3 className="text-lg font-medium mb-4">Form Settings</h3>
-                
+
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -1192,10 +1192,10 @@ const FormsAndSurveys: React.FC = () => {
                       When inactive, your form cannot be viewed or submitted by anyone.
                     </p>
                   </div>
-                  
+
                   <div className="border-t border-gray-200 pt-6">
                     <h4 className="text-sm font-medium text-gray-700 mb-3">Notification Settings</h4>
-                    
+
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div className="flex flex-col">
@@ -1218,7 +1218,7 @@ const FormsAndSurveys: React.FC = () => {
                           </label>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <div className="flex flex-col">
                           <span className="text-sm text-gray-700">CRM integration</span>
@@ -1240,7 +1240,7 @@ const FormsAndSurveys: React.FC = () => {
                           </label>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <div className="flex flex-col">
                           <span className="text-sm text-gray-700">Spam protection</span>
@@ -1264,10 +1264,10 @@ const FormsAndSurveys: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="border-t border-gray-200 pt-6">
                     <h4 className="text-sm font-medium text-gray-700 mb-3">Confirmation Settings</h4>
-                    
+
                     <div className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -1281,10 +1281,10 @@ const FormsAndSurveys: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="border-t border-gray-200 pt-6">
                     <h4 className="text-sm font-medium text-gray-700 mb-3">Embed Code</h4>
-                    
+
                     <div className="bg-gray-50 p-4 rounded-md">
                       <pre className="text-xs text-gray-700 overflow-x-auto">
                         {`<iframe src="${getPublicFormUrl(currentForm.id)}" width="100%" height="500px" frameborder="0"></iframe>`}
@@ -1306,12 +1306,12 @@ const FormsAndSurveys: React.FC = () => {
           )}
         </div>
       )}
-      
+
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <div className="p-4 border-b border-gray-200">
           <h2 className="text-lg font-semibold">Analytics Overview</h2>
         </div>
-        
+
         <div className="p-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             <div className="bg-white rounded-lg p-4 border border-gray-200">
@@ -1325,7 +1325,7 @@ const FormsAndSurveys: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg p-4 border border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
@@ -1339,7 +1339,7 @@ const FormsAndSurveys: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg p-4 border border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
@@ -1356,9 +1356,9 @@ const FormsAndSurveys: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <h3 className="text-lg font-medium mb-4">Form Performance</h3>
-          
+
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">

@@ -1,11 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
-interface ThemeContextType {
-  isDark: boolean;
-  toggleTheme: () => void; 
-  isThemeChanging: boolean;
-}
-
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const useTheme = () => {
@@ -16,7 +10,7 @@ export const useTheme = () => {
   return context;
 };
 
-export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ThemeProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isDark, setIsDark] = useState(() => {
     // Try to get from local storage synchronously to avoid flash of wrong theme
     // Check localStorage first, then system preference
@@ -36,7 +30,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } else {
       document.documentElement.classList.remove('dark');
     }
-    
+
     // Use localStorage asynchronously to avoid blocking the main thread
     setTimeout(() => {
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -47,7 +41,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const _handleThemeChange = useCallback(() => {
     setIsThemeChanging(true);
     setIsDark(prev => !prev);
-    
+
     // Reset the transition state after animation completes
     setTimeout(() => setIsThemeChanging(false), 300);
   }, []);

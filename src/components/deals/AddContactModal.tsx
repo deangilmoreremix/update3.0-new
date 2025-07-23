@@ -1,18 +1,11 @@
 import React, { useState } from 'react';
 import { useContactStore } from '../../store/contactStore';
 import { Contact } from '../../types/contact';
-import { AlertCircle, Brain, Building2, CheckCircle, Database, Facebook, Globe, Heart, Instagram, Linkedin, MapPin, MessageSquare, Plus, RefreshCw, Save, Sparkles, Tag, Target, Twitter, User, UserPlus, X, Phone } from 'lucide-react';
+import { AlertCircle, Brain, Building2, CheckCircle, Database, Globe, Heart, MapPin, Plus, RefreshCw, Save, Sparkles, Tag, Target, User, UserPlus, X } from 'lucide-react';
 import { ModernButton } from '../ui/ModernButton';
 import { AIAutoFillButton } from '../ui/AIAutoFillButton';
 import { AIResearchButton } from '../ui/AIResearchButton';
 import { ContactEnrichmentData } from '../../services/aiEnrichmentService';
-
-interface AddContactModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave?: (contact: Contact) => void;
-  selectAfterCreate?: boolean;
-}
 
 const interestLevels = [
   { value: 'hot', label: 'Hot Client', color: 'bg-red-500' },
@@ -52,14 +45,14 @@ const socialPlatforms = [
   { key: 'website', name: 'Website', icon: Globe, color: 'bg-purple-500', placeholder: 'https://company.com' }
 ];
 
-export const AddContactModal: React.FC<AddContactModalProps> = ({
+export const AddContactModal: FC<AddContactModalProps> = ({
   isOpen,
   onClose,
   onSave,
   selectAfterCreate = false
 }) => {
   const { createContact } = useContactStore();
-  
+
   const [formData, setFormData] = useState({
     // Basic Information
     firstName: '',
@@ -67,30 +60,30 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
     email: '',
     phone: '',
     avatarSrc: '',
-    
+
     // Professional Information
     title: '',
     company: '',
     industry: '',
     department: '',
-    
+
     // Location Information
     address: '',
     city: '',
     state: '',
     country: '',
     zipCode: '',
-    
+
     // Lead Information
     interestLevel: 'medium' as const,
     status: 'lead' as const,
     sources: [] as string[],
-    
+
     // Personal Details
     birthday: '',
     timezone: '',
     preferredContact: 'email',
-    
+
     // Social & Contact
     socialProfiles: {
       whatsapp: '',
@@ -100,16 +93,16 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
       instagram: '',
       website: ''
     },
-    
+
     // Additional Information
     notes: '',
     tags: '',
     isFavorite: false,
-    
+
     // Custom Fields
     customFields: {} as Record<string, string>
   });
-  
+
   const [isSaving, setIsSaving] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -120,36 +113,36 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
 
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
-    
+
     if (!formData.email) {
       errors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       errors.email = 'Invalid email format';
     }
-    
+
     if (!formData.firstName) {
       errors.firstName = 'First name is required';
     }
-    
+
     if (!formData.lastName) {
       errors.lastName = 'Last name is required';
     }
-    
+
     if (!formData.company) {
       errors.company = 'Company is required';
     }
-    
+
     if (!formData.title) {
       errors.title = 'Title is required';
     }
-    
+
     // Validate social profile URLs
     Object.entries(formData.socialProfiles).forEach(([key, value]) => {
       if (value && key !== 'whatsapp' && !value.startsWith('http')) {
         errors[`social_${key}`] = `${key} must be a valid URL`;
       }
     });
-    
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -207,16 +200,16 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
 
   const handleFindNewImage = async () => {
     if (isFinding) return;
-    
+
     setIsFinding(true);
     try {
       // Simulate finding a new image
       await new Promise(resolve => setTimeout(resolve, 800));
-      
+
       // Generate a new seed for the avatar
       const newSeed = Date.now().toString();
       const newAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${newSeed}`;
-      
+
       setFormData(prev => ({
         ...prev,
         avatarSrc: newAvatar
@@ -230,10 +223,10 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
 
   const handleAIAutoFill = (enrichmentData: ContactEnrichmentData) => {
     setLastEnrichmentData(enrichmentData);
-    
+
     // Apply enrichment data to form
     const updates: unknown = {};
-    
+
     if (enrichmentData.firstName && !formData.firstName) {
       updates.firstName = enrichmentData.firstName;
     }
@@ -258,7 +251,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
     if (enrichmentData.avatar && !formData.avatarSrc) {
       updates.avatarSrc = enrichmentData.avatar;
     }
-    
+
     // Location data
     if (enrichmentData.location) {
       if (typeof enrichmentData.location === 'object') {
@@ -282,7 +275,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
         }
       }
     }
-    
+
     // Social profiles
     if (enrichmentData.socialProfiles) {
       const socialUpdates: unknown = {};
@@ -295,22 +288,22 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
         updates.socialProfiles = { ...formData.socialProfiles, ...socialUpdates };
       }
     }
-    
+
     // Notes
     if (enrichmentData.notes && !formData.notes) {
       updates.notes = enrichmentData.notes;
     } else if (enrichmentData.bio && !formData.notes) {
       updates.notes = enrichmentData.bio;
     }
-    
+
     setFormData(prev => ({ ...prev, ...updates }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsSaving(true);
     try {
       const contactData: Omit<Contact, 'id' | 'createdAt' | 'updatedAt'> = {
@@ -339,19 +332,19 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
           timestamp: new Date()
         } : undefined
       };
-      
+
       const createdContact = await createContact(contactData);
       setIsSuccess(true);
 
       if (onSave) {
         onSave(createdContact);
       }
-      
+
       // Auto-close after 2 seconds
       setTimeout(() => {
         handleClose();
       }, 2000);
-      
+
     } catch (error) {
       console.error('Failed to create contact:', error);
       setFormErrors({ submit: 'Failed to create contact. Please try again.' });
@@ -364,7 +357,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
     resetForm();
     onClose();
   };
-  
+
   const resetForm = () => {
     setFormData({
       firstName: '', lastName: '', email: '', phone: '', avatarSrc: '', title: '', company: '',
@@ -424,7 +417,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
               <p className="text-gray-600">Add a contact with AI-powered research and auto-fill</p>
             </div>
           </div>
-          
+
           {/* AI Quick Actions */}
           <div className="flex items-center space-x-3">
             <AIAutoFillButton
@@ -432,7 +425,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
               onAutoFill={handleAIAutoFill}
               size="sm"
             />
-            
+
             <button
               onClick={handleClose}
               className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
@@ -470,7 +463,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                   </div>
                 )}
               </div>
-              
+
               {/* Avatar Section with AI Image Search */}
               {formData.avatarSrc && (
                 <div className="flex items-center justify-center mb-6">
@@ -495,7 +488,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                   </div>
                 </div>
               )}
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -514,7 +507,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                     <p className="text-sm text-red-600 mt-1">{formErrors.firstName}</p>
                   )}
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Last Name *
@@ -544,7 +537,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-                
+
                 <div className="relative">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Email *
@@ -569,7 +562,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                     <p className="text-sm text-red-600 mt-1">{formErrors.email}</p>
                   )}
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Phone Number
@@ -636,7 +629,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                 <Building2 className="w-5 h-5 mr-2 text-green-500" />
                 Professional Information
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -655,7 +648,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                     <p className="text-sm text-red-600 mt-1">{formErrors.company}</p>
                   )}
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Job Title *
@@ -673,7 +666,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                     <p className="text-sm text-red-600 mt-1">{formErrors.title}</p>
                   )}
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Industry
@@ -711,7 +704,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                 <MapPin className="w-5 h-5 mr-2 text-red-500" />
                 Location Information
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -725,7 +718,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                     placeholder="Street address"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     City
@@ -786,7 +779,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                 <Target className="w-5 h-5 mr-2 text-orange-500" />
                 Lead Information
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -809,7 +802,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                     ))}
                   </div>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Status
@@ -867,7 +860,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                   />
                 )}
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {socialPlatforms.map((platform) => {
                   const Icon = platform.icon;
@@ -916,7 +909,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                   <span>Add Custom Field</span>
                 </button>
               </div>
-              
+
               {/* Existing Custom Fields */}
               {Object.keys(formData.customFields).length > 0 && (
                 <div className="space-y-3 mb-4">
@@ -943,7 +936,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                   ))}
                 </div>
               )}
-              
+
               {/* Add New Custom Field */}
               {showCustomFields && (
                 <div className="p-4 bg-gray-50 rounded-lg">
@@ -992,7 +985,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                 <Tag className="w-5 h-5 mr-2 text-yellow-500" />
                 Additional Information
               </h3>
-              
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1007,7 +1000,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
                   />
                   <p className="text-xs text-gray-500 mt-1">Separate tags with commas</p>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Notes
@@ -1041,7 +1034,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({
             <Brain className="w-4 h-4 text-purple-500" />
             <span>Powered by OpenAI & Gemini AI</span>
           </div>
-          
+
           <div className="flex items-center space-x-4">
             <button
               type="button"

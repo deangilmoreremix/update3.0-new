@@ -3,11 +3,6 @@ import React, { createContext, useState, useContext } from 'react';
 // Lazy load modal components to prevent initial load performance issues
 const PipelineModal = React.lazy(() => import('./PipelineModal'));
 
-interface ModalsContextType {
-  openPipelineModal: () => void;
-  closePipelineModal: () => void;
-}
-
 const ModalsContext = createContext<ModalsContextType | undefined>(undefined);
 
 export const useModals = () => {
@@ -18,7 +13,7 @@ export const useModals = () => {
   return context;
 };
 
-export const ModalsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ModalsProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isPipelineModalOpen, setIsPipelineModalOpen] = useState(false);
 
   const openPipelineModal = () => setIsPipelineModalOpen(true);

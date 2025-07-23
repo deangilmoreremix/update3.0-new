@@ -7,27 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import type { Partner, FeaturePackage } from '@shared/schema';
 
-interface PartnerMetrics {
-  totalCustomers: number;
-  monthlyRevenue: number;
-  commissionEarned: number;
-  growthRate: number;
-  activeSubscriptions: number;
-  churnRate: number;
-}
-
-interface CustomerAnalytics {
-  id: string;
-  name: string;
-  email: string;
-  package: string;
-  status: 'active' | 'suspended' | 'cancelled';
-  monthlyValue: number;
-  joinDate: string;
-  lastActive: string;
-  usageScore: number;
-}
-
 export default function PartnerManagement() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPackage, setSelectedPackage] = useState<string>('all');
@@ -82,7 +61,7 @@ export default function PartnerManagement() {
                          customer.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesPackage = selectedPackage === 'all' || customer.package === selectedPackage;
     const matchesStatus = statusFilter === 'all' || customer.status === statusFilter;
-    
+
     return matchesSearch && matchesPackage && matchesStatus;
   }) || [];
 

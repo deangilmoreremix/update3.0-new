@@ -13,7 +13,7 @@ import AddDealModal from './deals/AddDealModal';
 import DealDetail from './DealDetail';
 import { mockDeals, mockColumns, columnOrder, calculateStageValues } from '../data/mockDeals';
 import { Deal, PipelineColumn } from '../types';
-import { Search, Plus, Grid3X3, List, Settings, Zap, Eye, EyeOff } from 'lucide-react';
+import { Search, Plus, Grid3X3, List, Zap, Eye, EyeOff } from 'lucide-react';
 
 const Pipeline: React.FC = () => {
   const [deals, setDeals] = useState<Record<string, Deal>>(mockDeals);
@@ -85,14 +85,14 @@ const Pipeline: React.FC = () => {
   // Update columns with filtered deals
   const filteredColumns = useMemo(() => {
     const newColumns = { ...columns };
-    
+
     Object.keys(newColumns).forEach(columnId => {
       newColumns[columnId] = {
         ...newColumns[columnId],
         dealIds: newColumns[columnId].dealIds.filter(dealId => filteredDeals[dealId])
       };
     });
-    
+
     return newColumns;
   }, [columns, filteredDeals]);
 
@@ -202,7 +202,7 @@ const Pipeline: React.FC = () => {
     try {
       // Simulate AI analysis
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       // Update deal with enhanced probability
       const newProbability = Math.min(deal.probability + 15, 95);
       const updatedDeal = {
@@ -214,12 +214,12 @@ const Pipeline: React.FC = () => {
           timestamp: new Date()
         }
       };
-      
+
       setDeals(prev => ({
         ...prev,
         [deal.id]: updatedDeal
       }));
-      
+
       return true;
     } catch (error) {
       console.error('AI analysis failed:', error);
@@ -234,7 +234,7 @@ const Pipeline: React.FC = () => {
     try {
       // Use the AI Research service to get company information
       const companyData = await aiResearch.researchCompany(deal.company);
-      
+
       // Update the deal with enhanced data
       const updatedDeal = {
         ...deal,
@@ -245,12 +245,12 @@ const Pipeline: React.FC = () => {
           timestamp: new Date()
         }
       };
-      
+
       setDeals(prev => ({
         ...prev,
         [deal.id]: updatedDeal
       }));
-      
+
       return true;
     } catch (error) {
       console.error('AI enrichment failed:', error);
@@ -266,7 +266,7 @@ const Pipeline: React.FC = () => {
       isFavorite: !deal.isFavorite,
       updatedAt: new Date()
     };
-    
+
     setDeals(prev => ({
       ...prev,
       [deal.id]: updatedDeal
@@ -277,16 +277,16 @@ const Pipeline: React.FC = () => {
     try {
       // Simulate finding a new image
       await new Promise(resolve => setTimeout(resolve, 800));
-      
+
       // For demo, use a different seed for the avatar
       const newSeed = Date.now().toString();
       const newAvatar = `https://api.dicebear.com/7.x/initials/svg?seed=${newSeed}&backgroundColor=3b82f6,8b5cf6,f59e0b,10b981,ef4444&textColor=ffffff`;
-      
+
       const updatedDeal = {
         ...deal,
         companyAvatar: newAvatar
       };
-      
+
       setDeals(prev => ({
         ...prev,
         [deal.id]: updatedDeal
@@ -305,7 +305,7 @@ const Pipeline: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 space-y-4 lg:space-y-0">
           <div className="flex items-center space-x-4">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Sales Pipeline</h1>
-            
+
             {/* View Toggle */}
             <div className="flex rounded-lg border border-gray-300 overflow-hidden">
               <button
@@ -460,7 +460,7 @@ const Pipeline: React.FC = () => {
                           </p>
                         </div>
                       </div>
-                      
+
                       <Droppable droppableId={column.id}>
                         {(provided, snapshot) => (
                           <div
@@ -623,7 +623,7 @@ const Pipeline: React.FC = () => {
           />
         )}
       </div>
-      
+
       {/* AI Status Indicator */}
       <APIStatusIndicator />
     </div>

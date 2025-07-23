@@ -3,22 +3,10 @@
  * Utilizes task router for intelligent model selection between Gemma and OpenAI
  */
 
-import React from 'react';
 import { aiIntegration as baseAIIntegration } from './ai-integration.service';
 import { taskRouter, TaskContext, TaskPerformanceMetrics } from './task-router.service';
 import { logger } from './logger.service';
 import { Contact } from '../types/contact';
-
-export interface EnhancedAIAnalysisRequest {
-  contactId: string;
-  contact: Contact;
-  analysisTypes: Array<'contact_scoring' | 'contact_enrichment' | 'categorization' | 'tagging' | 
-                     'relationship_mapping' | 'sentiment_analysis' | 'lead_qualification' | 
-                     'opportunity_analysis' | 'risk_assessment' | 'engagement_prediction'>;
-  urgency?: 'low' | 'medium' | 'high' | 'critical';
-  requirements?: Partial<import('./task-router.service').TaskRequirements>;
-  businessContext?: string;
-}
 
 export interface SmartBulkRequest {
   contacts: Array<{ contactId: string; contact: Contact }>;
@@ -29,11 +17,11 @@ export interface SmartBulkRequest {
 }
 
 class EnhancedAIIntegrationService {
-  
+
   async smartAnalyzeContact(request: EnhancedAIAnalysisRequest): Promise<unknown> {
     const startTime = Date.now();
     const { contactId, contact, analysisTypes, urgency = 'medium', requirements, businessContext } = request;
-    
+
     logger.info(`Starting smart analysis for contact ${contactId}`, {
       analysisTypes,
       urgency,
@@ -41,7 +29,7 @@ class EnhancedAIIntegrationService {
     });
 
     const results: Record<string, any> = {};
-    
+
     // Process each analysis type with optimal model selection
     for (const analysisType of analysisTypes) {
       try {
@@ -55,7 +43,7 @@ class EnhancedAIIntegrationService {
 
         // Select optimal model for this specific task
         const modelSelection = await taskRouter.selectOptimalModel(taskContext);
-        
+
         logger.info(`Selected ${modelSelection.provider}/${modelSelection.model} for ${analysisType}`, {
           reasoning: modelSelection.reasoning,
           confidence: modelSelection.confidenceScore
@@ -84,12 +72,12 @@ class EnhancedAIIntegrationService {
           success: true,
           timestamp: new Date().toISOString()
         };
-        
+
         taskRouter.recordTaskPerformance(metrics);
 
       } catch (error) {
         logger.error(`Analysis failed for ${analysisType}`, error as Error, { contactId });
-        
+
         // Record failed performance
         taskRouter.recordTaskPerformance({
           taskType: analysisType,
@@ -109,7 +97,7 @@ class EnhancedAIIntegrationService {
     }
 
     const totalTime = Date.now() - startTime;
-    
+
     logger.info(`Smart analysis completed for contact ${contactId}`, {
       totalTime,
       completedTasks: Object.keys(results).filter(k => !results[k].failed).length,
@@ -127,7 +115,7 @@ class EnhancedAIIntegrationService {
   async smartBulkAnalysis(request: SmartBulkRequest): Promise<unknown> {
     const { contacts, analysisType, urgency = 'medium', costLimit, timeLimit } = request;
     const _startTime = Date.now();
-    
+
     logger.info(`Starting smart bulk analysis`, {
       contactCount: contacts.length,
       analysisType,
@@ -149,7 +137,7 @@ class EnhancedAIIntegrationService {
     };
 
     const modelSelection = await taskRouter.selectOptimalModel(taskContext);
-    
+
     logger.info(`Selected ${modelSelection.provider}/${modelSelection.model} for bulk ${analysisType}`, {
       contactCount: contacts.length,
       expectedCost: modelSelection.expectedCost * contacts.length,
@@ -159,12 +147,12 @@ class EnhancedAIIntegrationService {
     // Check cost and time constraints
     const estimatedCost = modelSelection.expectedCost * contacts.length;
     const estimatedTime = modelSelection.expectedLatency * Math.ceil(contacts.length / 10); // Batch processing
-    
+
     if (costLimit && estimatedCost > costLimit) {
       // Try to find a cheaper model
       const cheaperContext = { ...taskContext, requirements: { ...taskContext.requirements, cost: 'free' } };
       const cheaperSelection = await taskRouter.selectOptimalModel(cheaperContext);
-      
+
       if (cheaperSelection.expectedCost * contacts.length <= costLimit) {
         logger.info(`Switched to cheaper model due to cost constraint`, {
           original: `${modelSelection.provider}/${modelSelection.model}`,
@@ -198,18 +186,18 @@ class EnhancedAIIntegrationService {
     // Process in batches
     for (const i = 0; i < contacts.length; i += batchSize) {
       const batch = contacts.slice(i, i + batchSize);
-      
+
       try {
         const batchResults = await this.processBatch(batch, analysisType, modelSelection);
         results.push(...batchResults.successful);
         failed.push(...batchResults.failed);
         totalCost += batchResults.cost;
-        
+
         // Small delay between batches to respect rate limits
         if (i + batchSize < contacts.length) {
           await new Promise(resolve => setTimeout(resolve, 500));
         }
-        
+
       } catch (error) {
         logger.error('Batch processing failed', error as Error, { batchStart: i, batchSize });
         failed.push(...batch.map(c => ({ contactId: c.contactId, error: 'Batch processing failed' })));

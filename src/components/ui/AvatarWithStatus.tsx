@@ -2,15 +2,7 @@
 import React from 'react';
 import { StatusIndicator } from './StatusIndicator';
 
-interface AvatarWithStatusProps {
-  src: string;
-  alt: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  status?: 'active' | 'pending' | 'inactive' | 'success' | 'warning' | 'error';
-  showStatus?: boolean;
-}
-
-export const AvatarWithStatus: React.FC<AvatarWithStatusProps> = ({
+export const AvatarWithStatus: FC<AvatarWithStatusProps> = ({
   src,
   alt,
   size = 'md',

@@ -18,7 +18,7 @@ const VideoCallPreviewWidget = React.memo(() => {
     participants 
   } = useVideoCall();
   const { contacts } = useContactStore();
-  
+
   const [isMinimized, setIsMinimized] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
@@ -29,7 +29,7 @@ const VideoCallPreviewWidget = React.memo(() => {
   const [isGroupCallSetup, setIsGroupCallSetup] = useState(false);
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [showDropdownMenu, setShowDropdownMenu] = useState(false);
-  
+
   const [_localVideoStream, _setLocalVideoStream] = useState<MediaStream | null>(null);
   const _localVideoRef = useRef<HTMLVideoElement>(null);
 
@@ -72,11 +72,11 @@ const VideoCallPreviewWidget = React.memo(() => {
       console.error('Failed to start call:', error);
     }
   };
-  
+
   // Handle starting a group call
   const handleStartGroupCall = async (type: 'video' | 'audio') => {
     if (selectedContacts.length === 0) return;
-    
+
     // Get participant objects from selected contacts
     const participantList = selectedContacts.map(id => {
       const contact = contacts[id];
@@ -87,7 +87,7 @@ const VideoCallPreviewWidget = React.memo(() => {
         avatar: contact.avatarSrc || contact.avatar
       };
     });
-    
+
     try {
       await initiateGroupCall(participantList, type);
       setIsExpanded(false);
@@ -97,7 +97,7 @@ const VideoCallPreviewWidget = React.memo(() => {
       console.error('Failed to start group call:', error);
     }
   };
-  
+
   // Toggle contact selection for group calls
   const toggleContactSelection = (contactId: string) => {
     setSelectedContacts(prev => {
@@ -153,7 +153,7 @@ const VideoCallPreviewWidget = React.memo(() => {
                 <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
               </div>
             </div>
-            
+
             {contactList.length > 0 ? (
               <div className={`divide-y ${isDark ? 'divide-white/10' : 'divide-gray-200'}`}>
                 {contactList.map((contact) => (
@@ -174,14 +174,14 @@ const VideoCallPreviewWidget = React.memo(() => {
                           <CheckCircle size={12} className="text-white" />
                         )}
                       </div>
-                      
+
                       <Avatar
                         src={contact.avatarSrc || contact.avatar}
                         alt={contact.name}
                         size="md"
                         fallback={getInitials(contact.name)}
                       />
-                      
+
                       <div className="flex-1 min-w-0">
                         <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
                           {contact.name}
@@ -213,7 +213,7 @@ const VideoCallPreviewWidget = React.memo(() => {
               >
                 Cancel
               </button>
-              
+
               <div className="flex space-x-2">
                 <button
                   onClick={() => handleStartGroupCall('audio')}
@@ -225,7 +225,7 @@ const VideoCallPreviewWidget = React.memo(() => {
                   <Phone size={16} />
                   <span>Audio Call</span>
                 </button>
-                
+
                 <button
                   onClick={() => handleStartGroupCall('video')}
                   disabled={selectedContacts.length === 0}
@@ -287,7 +287,7 @@ const VideoCallPreviewWidget = React.memo(() => {
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex space-x-2">
                       <button
                         onClick={() => handleStartCall(contact.id, 'video')}
@@ -300,7 +300,7 @@ const VideoCallPreviewWidget = React.memo(() => {
                       >
                         <Video size={16} />
                       </button>
-                      
+
                       <button
                         onClick={() => handleStartCall(contact.id, 'audio')}
                         className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
@@ -365,11 +365,11 @@ const VideoCallPreviewWidget = React.memo(() => {
                 fallback={getInitials(sampleParticipant.name)}
               />
             </div>
-            
+
             <div className="absolute inset-0 bg-black/20 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
               <Maximize2 size={16} className="text-white" />
             </div>
-            
+
             {/* Call status indicator */}
             <div className="absolute top-2 right-2 flex items-center space-x-1">
               <div className="w-2 h-2 rounded-full bg-green-400"></div>
@@ -437,13 +437,13 @@ const VideoCallPreviewWidget = React.memo(() => {
                     <div className="w-2 h-2 rounded-full bg-green-400"></div>
                     <span className="text-white text-xs">Excellent</span>
                   </div>
-                  
+
                   {/* Call Duration */}
                   <div className="bg-black/50 rounded-full px-3 py-1">
                     <span className="text-white text-xs">{formatDuration(callDuration)}</span>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => setIsMinimized(true)}
@@ -451,7 +451,7 @@ const VideoCallPreviewWidget = React.memo(() => {
                   >
                     <Minimize2 size={14} className="text-white" />
                   </button>
-                  
+
                   {/* More options dropdown */}
                   <div className="relative">
                     <button
@@ -463,7 +463,7 @@ const VideoCallPreviewWidget = React.memo(() => {
                     >
                       <MoreVertical size={14} className="text-white" />
                     </button>
-                    
+
                     {showDropdownMenu && (
                       <div className={`absolute top-full right-0 mt-2 w-48 rounded-lg shadow-lg overflow-hidden z-10 ${
                         isDark ? 'bg-gray-800 border border-white/10' : 'bg-white border border-gray-200'
@@ -504,7 +504,7 @@ const VideoCallPreviewWidget = React.memo(() => {
                 </div>
               )}
             </div>
-            
+
             {/* Controls Panel */}
             <div className={`p-4 ${isDark ? 'bg-gray-800/50' : 'bg-gray-50/50'} transition-opacity duration-300`}>
               <div className="flex items-center justify-between">
@@ -521,7 +521,7 @@ const VideoCallPreviewWidget = React.memo(() => {
                   >
                     {isAudioEnabled ? <Mic size={16} /> : <MicOff size={16} />}
                   </button>
-                  
+
                   <button
                     onClick={() => setIsVideoEnabled(!isVideoEnabled)}
                     className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
@@ -565,7 +565,7 @@ const VideoCallPreviewWidget = React.memo(() => {
                   >
                     <MessageSquare size={16} />
                   </button>
-                  
+
                   <button 
                     onClick={() => {
                       setIsGroupCallSetup(true);
@@ -579,7 +579,7 @@ const VideoCallPreviewWidget = React.memo(() => {
                   >
                     <Users size={16} />
                   </button>
-                  
+
                   <button 
                     onClick={() => setIsExpanded(true)}
                     className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${

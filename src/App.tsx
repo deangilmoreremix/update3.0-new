@@ -20,7 +20,7 @@ function App() {
     <AppProviders>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         <Navbar />
-        
+
         {/* Main Content with padding for top navbar */}
         <main className="pt-20 px-4">
           <div className="max-w-7xl mx-auto">

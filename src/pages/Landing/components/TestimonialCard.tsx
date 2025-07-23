@@ -1,16 +1,7 @@
 import React from 'react';
 import { Star } from 'lucide-react';
 
-interface TestimonialCardProps {
-  quote: string;
-  name: string;
-  position: string;
-  company: string;
-  image: string;
-  stars: number;
-}
-
-const TestimonialCard: React.FC<TestimonialCardProps> = ({
+const TestimonialCard: FC<TestimonialCardProps> = ({
   quote,
   name,
   position,

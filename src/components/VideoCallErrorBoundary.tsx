@@ -1,15 +1,5 @@
 import React from 'react';
 
-interface Props {
-  children: React.ReactNode;
-}
-
-interface State {
-  hasError: boolean;
-  error?: Error;
-  errorType?: 'video-call' | 'navigation' | 'line-chart' | 'other';
-}
-
 export class VideoCallErrorBoundary extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -18,32 +8,32 @@ export class VideoCallErrorBoundary extends React.Component<Props, State> {
 
   static getDerivedStateFromError(error: Error): State {
     console.error('ErrorBoundary caught:', error.message);
-    
+
     // Check for different error types
     if (error.message?.includes('useVideoCall must be used within')) {
       return { hasError: true, error, errorType: 'video-call' };
     }
-    
+
     if (error.message?.includes('useNavigation must be used within')) {
       return { hasError: true, error, errorType: 'navigation' };
     }
-    
+
     if (error.message?.includes('LineChart is not defined')) {
       return { hasError: true, error, errorType: 'line-chart' };
     }
-    
+
     // For other critical errors, catch them too
     return { hasError: true, error, errorType: 'other' };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
-    
+
     // Check for different types of provider errors
     if (error.message?.includes('useVideoCall must be used within') || 
         error.message?.includes('useNavigation must be used within')) {
       console.log('Context provider error detected, attempting recovery...');
-      
+
       // Clear any potential cached state
       try {
         localStorage.removeItem('videoCallState');
@@ -52,14 +42,14 @@ export class VideoCallErrorBoundary extends React.Component<Props, State> {
       } catch (e) {
         console.warn('Failed to clear storage:', e);
       }
-      
+
       // Reload the page after a short delay to get fresh context
       setTimeout(() => {
         console.log('Reloading to recover from context error...');
         window.location.reload();
       }, 2000);
     }
-    
+
     // Handle import/dependency errors differently
     if (error.message?.includes('LineChart is not defined') || 
         error.message?.includes('is not defined')) {
@@ -75,10 +65,10 @@ export class VideoCallErrorBoundary extends React.Component<Props, State> {
   render() {
     if (this.state.hasError) {
       const { errorType, error } = this.state;
-      
+
       let title = 'Loading Latest Version...';
       let message = 'Clearing cache and reloading with the newest updates...';
-      
+
       if (errorType === 'line-chart') {
         title = 'Component Loading...';
         message = 'Some chart components are loading. This will resolve automatically.';
@@ -86,7 +76,7 @@ export class VideoCallErrorBoundary extends React.Component<Props, State> {
         title = 'Navigation Loading...';
         message = 'Navigation system is initializing...';
       }
-      
+
       return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50">
           <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md">

@@ -3,13 +3,7 @@ import { Deal } from '../../types';
 import { DollarSign, Calendar, User, Building, RefreshCw, Zap, BarChart3, Flag, MessageSquare, Brain, Target, FileText } from 'lucide-react';
 import AgentModal from '../shared/AgentModal';
 
-interface AIEnhancedDealCardProps {
-  deal: Deal;
-  onClick?: () => void;
-  showAnalyzeButton?: boolean;
-}
-
-const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
+const AIEnhancedDealCard: FC<AIEnhancedDealCardProps> = ({
   deal,
   onClick,
   showAnalyzeButton = true
@@ -25,17 +19,17 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
 
   // Add state for agent modal
   const [activeAgent, setActiveAgent] = useState<string | null>(null);
-  
+
   // Analyze deal with AI
   const handleAnalyzeDeal = async (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card click
     setIsAnalyzing(true);
-    
+
     try {
       // In a real implementation, this would call your AI service
       // For this demo, we'll simulate the analysis result
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       setAiInsights({
         winProbabilityAdjustment: Math.floor(Math.random() * 20) - 10, // -10 to +10
         riskFactors: [
@@ -65,7 +59,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
       setIsAnalyzing(false);
     }
   };
-  
+
   // Format currency
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -74,18 +68,18 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
       maximumFractionDigits: 0,
     }).format(amount);
   };
-  
+
   // Format date
   const formatDate = (date?: Date) => {
     if (!date) return 'No date set';
-    
+
     const today = new Date();
     const dueDate = new Date(date);
-    
+
     // Calculate days difference
     const diffTime = dueDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     // Return formatted string
     if (diffDays < 0) {
       return `Overdue by ${Math.abs(diffDays)} days`;
@@ -96,10 +90,10 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
     } else if (diffDays < 7) {
       return `Due in ${diffDays} days`;
     }
-    
+
     return date.toLocaleDateString();
   };
-  
+
   // Get stage badge color
   const getStageBadgeColor = (stage: string) => {
     switch(stage) {
@@ -111,7 +105,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
       default: return 'bg-gray-100 text-gray-700';
     }
   };
-  
+
   // Get priority badge color
   const getPriorityBadgeColor = (priority?: string) => {
     switch(priority) {
@@ -131,10 +125,10 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
       'closed-won': 'Closed Won',
       'closed-lost': 'Closed Lost'
     };
-    
+
     return names[stage] || stage;
   };
-  
+
   return (
     <div 
       className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 transition-all hover:border-blue-300 hover:shadow-md cursor-pointer"
@@ -143,12 +137,12 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
       <div className="flex justify-between items-start">
         <div>
           <h3 className="text-lg font-medium text-gray-900">{deal.title}</h3>
-          
+
           <div className="flex flex-wrap gap-2 mt-1">
             <span className={`text-xs px-2 py-0.5 rounded-full ${getStageBadgeColor(deal.stage)}`}>
               {getStageName(deal.stage)}
             </span>
-            
+
             {deal.priority && (
               <span className={`text-xs px-2 py-0.5 rounded-full flex items-center ${getPriorityBadgeColor(deal.priority)}`}>
                 <Flag size={10} className="mr-1" />
@@ -156,23 +150,23 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
               </span>
             )}
           </div>
-          
+
           <div className="mt-3 space-y-1">
             <div className="flex items-center text-sm">
               <Building size={16} className="text-gray-400 mr-2" />
               <span className="text-gray-600">{deal.company}</span>
             </div>
-            
+
             <div className="flex items-center text-sm">
               <User size={16} className="text-gray-400 mr-2" />
               <span className="text-gray-600">{deal.contact}</span>
             </div>
-            
+
             <div className="flex items-center text-sm">
               <DollarSign size={16} className="text-gray-400 mr-2" />
               <span className="text-gray-800 font-medium">{formatCurrency(deal.value)}</span>
             </div>
-            
+
             {deal.dueDate && (
               <div className="flex items-center text-sm">
                 <Calendar size={16} className="text-gray-400 mr-2" />
@@ -183,7 +177,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
             )}
           </div>
         </div>
-        
+
         {/* Probability Section */}
         <div className="flex flex-col items-end">
           <div className="flex items-center mb-1">
@@ -198,14 +192,14 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
               )}
             </span>
           </div>
-          
+
           <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
             <div 
               className={`h-full ${deal.stage === 'closed-won' ? 'bg-green-500' : 'bg-blue-500'}`} 
               style={{ width: `${deal.probability}%` }}
             ></div>
           </div>
-          
+
           {showAnalyzeButton && !aiInsights && (
             <button
               onClick={handleAnalyzeDeal}
@@ -227,7 +221,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
           )}
         </div>
       </div>
-      
+
       {/* AI Insights */}
       {aiInsights && (
         <div className="mt-4 pt-4 border-t border-gray-200">
@@ -237,7 +231,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
               AI Deal Insights
             </h4>
           </div>
-          
+
           <div className="text-xs space-y-3">
             {aiInsights.riskFactors && (
               <div className="bg-red-50 p-2 rounded-md border border-red-100">
@@ -250,7 +244,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
                 </ul>
               </div>
             )}
-            
+
             {aiInsights.opportunities && (
               <div className="bg-green-50 p-2 rounded-md border border-green-100">
                 <p className="font-medium text-green-800 mb-1">Opportunities:</p>
@@ -262,7 +256,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
                 </ul>
               </div>
             )}
-            
+
             {aiInsights.nextSteps && (
               <div className="bg-blue-50 p-2 rounded-md border border-blue-100">
                 <p className="font-medium text-blue-800 mb-1">Suggested Next Steps:</p>
@@ -277,7 +271,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
           </div>
         </div>
       )}
-      
+
       {/* Quick Actions */}
       <div className="mt-4 pt-2 border-t border-gray-100">
         <div className="flex flex-wrap gap-2">
@@ -290,7 +284,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
           >
             <Brain size={14} className="mr-1" /> Enrich Deal
           </button>
-          
+
           <button 
             className="flex items-center py-1 px-2 bg-purple-100 hover:bg-purple-200 rounded text-xs font-medium text-purple-700"
             onClick={(e) => {
@@ -300,7 +294,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
           >
             <Target size={14} className="mr-1" /> SDR Sequence
           </button>
-          
+
           <button 
             className="flex items-center py-1 px-2 bg-green-100 hover:bg-green-200 rounded text-xs font-medium text-green-700"
             onClick={(e) => {
@@ -310,7 +304,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
           >
             <MessageSquare size={14} className="mr-1" /> Notes
           </button>
-          
+
           <button 
             className="flex items-center py-1 px-2 bg-amber-100 hover:bg-amber-200 rounded text-xs font-medium text-amber-700"
             onClick={(e) => {
@@ -322,7 +316,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
           </button>
         </div>
       </div>
-      
+
       {/* Agent Modal */}
       {activeAgent && (
         <AgentModal

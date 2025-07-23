@@ -1,4 +1,3 @@
-import React from 'react';
 import { Activity, ArrowRight, Calendar, CheckCircle, Download, Edit, FileText, Mail, Phone, Plus, Trash2, Upload, User, X, XCircle } from 'lucide-react';
 return (
     <>
@@ -171,7 +170,7 @@ return (
                   </div>
                 </div>
               )}
-              
+
               {/* Notes */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
@@ -255,7 +254,7 @@ return (
                 {activeTab === 'summary' && (
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Deal Summary</h3>
-                    
+
                     <div className="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 mb-6">
                       <h4 className="font-medium text-gray-900 dark:text-white mb-2">Key Details</h4>
                       <div className="grid grid-cols-2 gap-4">
@@ -328,7 +327,7 @@ return (
                 {activeTab === 'communication' && (
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Communication History</h3>
-                    
+
                     {/* Communication log would go here */}
                     <div className="bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 divide-y divide-gray-200 dark:divide-gray-600">
                       {/* Sample communication items */}
@@ -373,7 +372,7 @@ return (
                 {activeTab === 'attachments' && (
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Documents & Attachments</h3>
-                    
+
                     {/* Attachments would go here */}
                     <div className="bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-4">
                       <div className="flex items-center justify-between mb-4">
@@ -386,7 +385,7 @@ return (
                           <input type="file" className="hidden" onChange={(_e) => {/* Handle file upload */}} />
                         </label>
                       </div>
-                      
+
                       <div className="divide-y divide-gray-200 dark:divide-gray-600">
                         {/* Sample attachments */}
                         {[
@@ -415,7 +414,7 @@ return (
                           </div>
                         ))}
                       </div>
-                      
+
                       {/* Empty state if no files */}
                       {/* <div className="text-center py-8">
                         <FileText className="mx-auto h-12 w-12 text-gray-400" />
@@ -429,7 +428,7 @@ return (
                 {activeTab === 'tasks' && (
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tasks & Follow-ups</h3>
-                    
+
                     <div className="bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-4">
                       {/* Task Form */}
                       <div className="mb-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
@@ -510,13 +509,13 @@ return (
                 {activeTab === 'edit' && (
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Edit Deal</h3>
-                  
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Left Column */}
                   <div className="space-y-6">
                     <div className="bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-4">
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Deal Information</h3>
-                      
+
                       <div className="space-y-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
@@ -527,7 +526,7 @@ return (
                             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           />
                         </div>
-                        
+
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Company</label>
@@ -538,7 +537,7 @@ return (
                               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                           </div>
-                          
+
                           <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Value</label>
                             <input
@@ -557,7 +556,7 @@ return (
                   <div className="space-y-6">
                     <div className="bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-4">
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Advanced Options</h3>
-                      
+
                       <div className="space-y-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tags</label>
@@ -638,7 +637,7 @@ return (
                 {activeTab === 'ai' && (
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">AI Insights & Analysis</h3>
-                    
+
                     {/* AI insights content would go here */}
                     <p>AI analysis content for this deal.</p>
                   </div>

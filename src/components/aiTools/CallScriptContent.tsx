@@ -13,7 +13,7 @@ const CallScriptContent: React.FC = () => {
     callPurpose: '',
     previousInteractions: ''
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -36,19 +36,19 @@ const CallScriptContent: React.FC = () => {
     setIsLoading(true);
     setError(null);
     setReasoning(null);
-    
+
     try {
       const contactInfo = {
         name: formData.contactName,
         position: formData.contactPosition,
         company: formData.companyName
       };
-      
+
       // Split the previous interactions by line breaks
       const interactions = formData.previousInteractions
         .split('\n')
         .filter(line => line.trim() !== '');
-      
+
       const scriptResult = await edgeFunctionService.generateCallScript(
         contactInfo,
         formData.callPurpose,
@@ -116,7 +116,7 @@ const CallScriptContent: React.FC = () => {
                 onChange={handleChange}
               />
             </div>
-            
+
             <div>
               <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                 <Tag className="h-4 w-4 mr-1 text-gray-500" />
@@ -132,7 +132,7 @@ const CallScriptContent: React.FC = () => {
               />
             </div>
           </div>
-          
+
           <div>
             <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
               <Building className="h-4 w-4 mr-1 text-gray-500" />
@@ -147,7 +147,7 @@ const CallScriptContent: React.FC = () => {
               onChange={handleChange}
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Call Purpose
@@ -172,7 +172,7 @@ const CallScriptContent: React.FC = () => {
                 </button>
               ))}
             </div>
-            
+
             <textarea
               name="callPurpose"
               rows={3}
@@ -183,7 +183,7 @@ const CallScriptContent: React.FC = () => {
               required
             ></textarea>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Previous Interactions (Optional)
@@ -200,7 +200,7 @@ const CallScriptContent: React.FC = () => {
               Example: "Initial call: Discussed pain points around legacy software integration."
             </p>
           </div>
-            
+
           <div className="flex justify-end">
             <button
               type="submit"

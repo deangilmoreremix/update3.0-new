@@ -1,13 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
 
-interface EnhancedHelpContextType {
-  showTours: boolean;
-  setShowTours: (show: boolean) => void;
-  currentTour: string | null;
-  startTour: (tourName: string) => void;
-  endTour: () => void;
-}
-
 const EnhancedHelpContext = createContext<EnhancedHelpContextType | undefined>(undefined);
 
 export const useEnhancedHelp = () => {
@@ -18,7 +10,7 @@ export const useEnhancedHelp = () => {
   return context;
 };
 
-export const EnhancedHelpProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const EnhancedHelpProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const [showTours, setShowTours] = useState(false);
   const [currentTour, setCurrentTour] = useState<string | null>(null);
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useGamification } from '../../contexts/GamificationContext';
 import { Contact } from '../../types/contact';
-import { Award, BarChart3, ChevronRight, Clock, Crown, DollarSign, Plus, Star, Target, TrendingUp, Trophy, User, UserPlus, Zap } from 'lucide-react';
+import { Award, BarChart3, ChevronRight, Clock, Crown, DollarSign, Star, Target, TrendingUp, Trophy, User, UserPlus, Zap } from 'lucide-react';
 
 export const AchievementPanel: React.FC = () => {
   const { leaderboard, teamMembers, challenges } = useGamification();
@@ -14,7 +14,7 @@ export const AchievementPanel: React.FC = () => {
           <Crown className="w-5 h-5 mr-2 text-yellow-500" />
           Team Members
         </h3>
-        
+
         {teamMembers.length === 0 ? (
           <div className="text-center py-10 bg-gray-50 rounded-lg border border-gray-200">
             <User className="w-12 h-12 text-gray-400 mx-auto mb-3" />
@@ -32,7 +32,7 @@ export const AchievementPanel: React.FC = () => {
             {teamMembers.slice(0, 5).map((member) => (
               <TeamMemberCard key={member.id} member={member} />
             ))}
-            
+
             {teamMembers.length > 5 && (
               <div className="text-center mt-2">
                 <button className="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
@@ -43,14 +43,14 @@ export const AchievementPanel: React.FC = () => {
           </div>
         )}
       </div>
-      
+
       {/* Leaderboard */}
       <div>
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <Trophy className="w-5 h-5 mr-2 text-indigo-500" />
           Leaderboard
         </h3>
-        
+
         {leaderboard.length === 0 ? (
           <div className="text-center py-10 bg-gray-50 rounded-lg border border-gray-200">
             <BarChart3 className="w-12 h-12 text-gray-400 mx-auto mb-3" />
@@ -66,7 +66,7 @@ export const AchievementPanel: React.FC = () => {
               <div className="flex-1">Team Member</div>
               <div className="w-16 text-center">Points</div>
             </div>
-            
+
             <div className="divide-y divide-indigo-100">
               {leaderboard.map((entry, index) => (
                 <div key={entry.contactId} className="px-4 py-3 flex items-center hover:bg-indigo-100 transition-colors">
@@ -77,7 +77,7 @@ export const AchievementPanel: React.FC = () => {
                       <span className="font-bold text-indigo-800">{index + 1}</span>
                     )}
                   </div>
-                  
+
                   <div className="flex-1 flex items-center">
                     {entry.avatarSrc ? (
                       <img 
@@ -98,7 +98,7 @@ export const AchievementPanel: React.FC = () => {
                       </span>
                     )}
                   </div>
-                  
+
                   <div className="w-16 text-center font-bold text-indigo-800">
                     {entry.score}
                   </div>
@@ -108,14 +108,14 @@ export const AchievementPanel: React.FC = () => {
           </div>
         )}
       </div>
-      
+
       {/* Challenges */}
       <div>
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <Target className="w-5 h-5 mr-2 text-green-500" />
           Team Challenges
         </h3>
-        
+
         {challenges.length === 0 ? (
           <div className="text-center py-10 bg-gray-50 rounded-lg border border-gray-200">
             <Target className="w-12 h-12 text-gray-400 mx-auto mb-3" />
@@ -138,7 +138,7 @@ export const AchievementPanel: React.FC = () => {
                   </span>
                 </h4>
                 <p className="text-sm text-gray-700 mb-3">{challenge.description}</p>
-                
+
                 {/* Progress Bar */}
                 <div className="mb-2">
                   <div className="flex justify-between text-xs text-gray-600 mb-1">
@@ -152,7 +152,7 @@ export const AchievementPanel: React.FC = () => {
                     ></div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center text-yellow-800 bg-yellow-100 px-2 py-1 rounded">
                     <Award className="w-3 h-3 mr-1 text-yellow-600" />
@@ -167,14 +167,14 @@ export const AchievementPanel: React.FC = () => {
             ))}
           </div>
         )}
-        
+
         {/* Recent Achievements */}
         <div className="mt-6">
           <h4 className="font-medium text-gray-900 mb-3 flex items-center">
             <Award className="w-4 h-4 mr-2 text-yellow-500" />
             Recent Team Achievements
           </h4>
-          
+
           <div className="bg-gray-50 rounded-lg border border-gray-200 p-3">
             <div className="flex items-center space-x-2 mb-2">
               <div className="p-1.5 bg-yellow-100 rounded-full">
@@ -185,7 +185,7 @@ export const AchievementPanel: React.FC = () => {
                 <p className="text-xs text-gray-500">2 days ago</p>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-2 mb-2">
               <div className="p-1.5 bg-green-100 rounded-full">
                 <DollarSign className="w-3 h-3 text-green-600" />
@@ -195,7 +195,7 @@ export const AchievementPanel: React.FC = () => {
                 <p className="text-xs text-gray-500">1 week ago</p>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <div className="p-1.5 bg-indigo-100 rounded-full">
                 <Zap className="w-3 h-3 text-indigo-600" />
@@ -213,11 +213,11 @@ export const AchievementPanel: React.FC = () => {
 };
 
 // Helper component for team member cards
-const TeamMemberCard: React.FC<{ member: Contact }> = ({ member }) => {
+const TeamMemberCard: FC<{ member: Contact }> = ({ member }) => {
   const { gamificationStats } = member;
-  
+
   if (!gamificationStats) return null;
-  
+
   return (
     <div className="flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-indigo-50 hover:border-indigo-200 transition-colors">
       <div className="relative flex-shrink-0 mr-3">
@@ -232,13 +232,13 @@ const TeamMemberCard: React.FC<{ member: Contact }> = ({ member }) => {
             <User className="w-5 h-5 text-indigo-600" />
           </div>
         )}
-        
+
         {/* Level Badge */}
         <div className="absolute -bottom-1 -right-1 bg-indigo-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold">
           {gamificationStats.level}
         </div>
       </div>
-      
+
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between">
           <p className="font-medium text-gray-900 truncate">{member.name}</p>
@@ -246,7 +246,7 @@ const TeamMemberCard: React.FC<{ member: Contact }> = ({ member }) => {
             {gamificationStats.points} pts
           </span>
         </div>
-        
+
         <div className="flex items-center text-xs text-gray-500 mt-0.5">
           <div className="flex items-center mr-3">
             <Trophy className="w-3 h-3 mr-1 text-yellow-500" />

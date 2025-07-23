@@ -9,7 +9,7 @@ const ForgotPassword: React.FC = () => {
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
           Forgot Password
         </h1>
-        
+
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -21,11 +21,11 @@ const ForgotPassword: React.FC = () => {
               placeholder="Enter your email"
             />
           </div>
-          
+
           <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">
             Reset Password
           </button>
-          
+
           <div className="text-center">
             <Link to="/login" className="text-blue-600 hover:text-blue-700 text-sm">
               Back to Login

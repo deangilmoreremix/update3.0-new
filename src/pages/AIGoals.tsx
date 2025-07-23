@@ -1,5 +1,5 @@
 import React from 'react';
-import { Target, TrendingUp, Users, BarChart3, Calendar, Star } from 'lucide-react';
+import { Target, TrendingUp, BarChart3, Star } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
 const AIGoals: React.FC = () => {
@@ -72,7 +72,7 @@ const AIGoals: React.FC = () => {
           <div className="lg:col-span-2">
             <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
               <h2 className="text-xl font-semibold mb-6">Active AI Goals</h2>
-              
+
               <div className="space-y-4">
                 {[
                   { title: 'Increase Sales Pipeline by 25%', progress: 68, priority: 'high' },
@@ -110,7 +110,7 @@ const AIGoals: React.FC = () => {
           <div>
             <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl p-6`}>
               <h2 className="text-xl font-semibold mb-6">AI Insights</h2>
-              
+
               <div className="space-y-4">
                 <div className={`${isDark ? 'bg-gray-700' : 'bg-blue-50'} rounded-lg p-4`}>
                   <h3 className="font-medium text-blue-600 mb-2">Recommendation</h3>

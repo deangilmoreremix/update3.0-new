@@ -1,28 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart3, Mail, TrendingUp, Search, Settings, Plus, Target, Video, Phone, Calendar } from 'lucide-react';
-
-interface QuickAIButtonProps {
-  icon: React.ComponentType<unknown>;
-  label: string;
-  toolName: string;
-  entityType: string;
-  entityId: string;
-  entityData: unknown;
-  size?: 'sm' | 'md';
-  variant?: 'primary' | 'secondary';
-  className?: string;
-  onClick?: () => void;
-}
-
-interface CustomizableAIToolbarProps {
-  entityType: string;
-  entityId: string;
-  entityData: unknown;
-  location: string;
-  layout: 'grid' | 'row';
-  size: 'sm' | 'md';
-  showCustomizeButton?: boolean;
-}
+import { Settings, Plus, Target } from 'lucide-react';
 
 const iconMap: Record<string, React.ComponentType<unknown>> = {
   BarChart3,
@@ -80,7 +57,7 @@ const defaultQuickActions = [
   { icon: 'TrendingUp', label: 'Insights', toolName: 'businessIntelligence', variant: 'secondary' }
 ];
 
-const QuickAIButton: React.FC<QuickAIButtonProps> = ({
+const QuickAIButton: FC<QuickAIButtonProps> = ({
   icon: IconComponent,
   label,
   toolName,
@@ -122,7 +99,7 @@ const QuickAIButton: React.FC<QuickAIButtonProps> = ({
   );
 };
 
-export const AIGoalsButton: React.FC<{
+export const AIGoalsButton: FC<{
   entityType: string;
   entityId: string;
   entityData: unknown;
@@ -147,7 +124,7 @@ export const AIGoalsButton: React.FC<{
   );
 };
 
-export const CustomizableAIToolbar: React.FC<CustomizableAIToolbarProps> = ({
+export const CustomizableAIToolbar: FC<CustomizableAIToolbarProps> = ({
   entityType,
   entityId,
   entityData,

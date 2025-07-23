@@ -1,15 +1,4 @@
-import React from 'react';
 import { supabaseAIService, type AIModelConfig } from './supabaseAIService';
-
-interface GenerateContentRequest {
-  prompt: string;
-  model?: string;
-  temperature?: number;
-  maxTokens?: number;
-  systemInstruction?: string;
-  customerId?: string;
-  featureUsed?: string;
-}
 
 interface GenerateContentResponse {
   content: string;
@@ -51,13 +40,13 @@ class EnhancedGeminiService {
   private stripMarkdownCodeBlocks(content: string): string {
     // Remove markdown code blocks (```json...``` or ```...```)
     let cleaned = content.trim();
-    
+
     // Remove opening code block markers
     cleaned = cleaned.replace(/^```(?:json|javascript|js)?\s*/i, '');
-    
+
     // Remove closing code block markers
     cleaned = cleaned.replace(/\s*```\s*$/i, '');
-    
+
     // Remove any remaining leading/trailing whitespace
     return cleaned.trim();
   }
@@ -104,7 +93,7 @@ class EnhancedGeminiService {
    */
   async generateContent(request: GenerateContentRequest): Promise<GenerateContentResponse> {
     const startTime = Date.now();
-    
+
     if (!this.isValidApiKey()) {
       throw new Error('Google AI API key is required and must be properly configured. Please check your environment variables.');
     }
@@ -112,13 +101,13 @@ class EnhancedGeminiService {
     // Get model configuration from database or fallback
     const modelId = request.model || 'gemini-2.5-flash';
     let modelConfig: AIModelConfig | null = null;
-    
+
     try {
       modelConfig = await supabaseAIService.getModelById(modelId);
     } catch (error) {
       console.warn(`Could not fetch model configuration for ${modelId} from database:`, error);
     }
-    
+
     if (!modelConfig) {
       // Use fallback configuration
       modelConfig = supabaseAIService.getFallbackModel(modelId);
@@ -134,7 +123,7 @@ class EnhancedGeminiService {
     }
 
     const url = `${this.baseUrl}/models/${modelConfig.model_name}:generateContent`;
-    
+
     const requestBody = {
       contents: [{
         parts: [{
@@ -174,7 +163,7 @@ class EnhancedGeminiService {
       }
 
       const data = await response.json();
-      
+
       if (!data.candidates || data.candidates.length === 0) {
         throw new Error('No content generated');
       }
@@ -182,10 +171,10 @@ class EnhancedGeminiService {
       const candidate = data.candidates[0];
       let content = candidate.content?.parts?.[0]?.text || '';
       const responseTime = Date.now() - startTime;
-      
+
       // Always strip markdown code blocks from the content before returning
       content = this.stripMarkdownCodeBlocks(content);
-      
+
       const result: GenerateContentResponse = {
         content,
         model: modelId,
@@ -202,7 +191,7 @@ class EnhancedGeminiService {
       const validCustomerId = this.validateCustomerId(request.customerId);
       if (validCustomerId) {
         const cost = this.calculateCost(modelConfig, result.usage.totalTokens);
-        
+
         try {
           await supabaseAIService.logUsage({
             customer_id: validCustomerId,
@@ -249,14 +238,14 @@ class EnhancedGeminiService {
    */
   private calculateCost(model: AIModelConfig, totalTokens: number): number {
     if (!model.pricing) return 0;
-    
+
     // Estimate input/output split (typically 70/30)
     const inputTokens = Math.floor(totalTokens * 0.7);
     const outputTokens = totalTokens - inputTokens;
-    
+
     const inputCost = (inputTokens / 1_000_000) * model.pricing.input_per_1m_tokens;
     const outputCost = (outputTokens / 1_000_000) * model.pricing.output_per_1m_tokens;
-    
+
     return inputCost + outputCost;
   }
 
@@ -266,15 +255,15 @@ class EnhancedGeminiService {
   async generateInsights(data: unknown, customerId?: string, model?: string): Promise<unknown> {
     const prompt = `
     Analyze the following CRM data and provide actionable insights:
-    
+
     ${JSON.stringify(data, null, 2)}
-    
+
     Please provide:
     1. Key insights about the sales pipeline
     2. Recommendations for improving conversion rates
     3. Identification of high-priority opportunities
     4. Potential risks or concerns
-    
+
     Format your response as JSON with the following structure:
     {
       "healthScore": 75,
@@ -336,7 +325,7 @@ class EnhancedGeminiService {
     tone?: 'formal' | 'casual' | 'friendly';
     context?: string;
   }, customerId?: string, model?: string): Promise<{ subject: string; body: string }> {
-    
+
     if (!this.isValidApiKey()) {
       return {
         subject: `Following up: ${context.purpose}`,
@@ -347,11 +336,11 @@ class EnhancedGeminiService {
     const tone = context.tone || 'professional';
     const prompt = `
     Generate a ${tone} email for the following context:
-    
+
     Recipient: ${context.recipient}
     Purpose: ${context.purpose}
     Additional Context: ${context.context || 'None'}
-    
+
     Format as JSON:
     {
       "subject": "string",

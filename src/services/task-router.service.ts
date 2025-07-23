@@ -3,31 +3,10 @@
  * Intelligent routing between Gemma and OpenAI models based on task requirements
  */
 
-import React from 'react';
 import { logger } from './logger.service';
 import { rateLimiter } from './rate-limiter.service';
 
 import apiConfig, { AIModel } from '../config/api.config';
-
-export interface TaskRequirements {
-  accuracy: 'low' | 'medium' | 'high' | 'critical';
-  speed: 'slow' | 'medium' | 'fast' | 'realtime';
-  cost: 'high' | 'medium' | 'low' | 'free';
-  complexity: 'simple' | 'medium' | 'complex' | 'expert';
-  volume: 'single' | 'batch' | 'bulk' | 'streaming';
-}
-
-export interface TaskContext {
-  taskType: 'contact_scoring' | 'contact_enrichment' | 'categorization' | 'tagging' | 
-            'relationship_mapping' | 'sentiment_analysis' | 'lead_qualification' | 
-            'opportunity_analysis' | 'risk_assessment' | 'engagement_prediction';
-  requirements: TaskRequirements;
-  contactData?: unknown;
-  businessContext?: string;
-  urgency?: 'low' | 'medium' | 'high' | 'critical';
-  batchSize?: number;
-  retryCount?: number;
-}
 
 export interface ModelSelection {
   provider: 'openai' | 'gemini';
@@ -39,20 +18,10 @@ export interface ModelSelection {
   fallbackOptions: Array<{ provider: string; model: string; reasoning: string }>;
 }
 
-export interface TaskPerformanceMetrics {
-  taskType: string;
-  modelUsed: string;
-  executionTime: number;
-  accuracy: number;
-  cost: number;
-  success: boolean;
-  timestamp: string;
-}
-
 class TaskRouterService {
   private performanceHistory: TaskPerformanceMetrics[] = [];
   private modelPerformance: Map<string, { avgTime: number; successRate: number; avgCost: number }> = new Map();
-  
+
   // Task-specific model preferences
   private taskProfiles: Record<string, { 
     gemmaModels: Array<{ model: string; score: number; reasoning: string }>;
@@ -72,7 +41,7 @@ class TaskRouterService {
       ],
       defaultRequirements: { accuracy: 'high', speed: 'fast', cost: 'low', complexity: 'medium', volume: 'single' }
     },
-    
+
     contact_enrichment: {
       gemmaModels: [
         { model: 'gemma-2-27b-it', score: 88, reasoning: 'Comprehensive data analysis and inference' },
@@ -84,7 +53,7 @@ class TaskRouterService {
       ],
       defaultRequirements: { accuracy: 'high', speed: 'medium', cost: 'medium', complexity: 'complex', volume: 'single' }
     },
-    
+
     categorization: {
       gemmaModels: [
         { model: 'gemma-2-2b-it', score: 90, reasoning: 'Optimized for classification tasks' },
@@ -97,7 +66,7 @@ class TaskRouterService {
       ],
       defaultRequirements: { accuracy: 'medium', speed: 'fast', cost: 'free', complexity: 'simple', volume: 'batch' }
     },
-    
+
     tagging: {
       gemmaModels: [
         { model: 'gemma-2-2b-it', score: 88, reasoning: 'Excellent for simple tagging tasks' },
@@ -109,7 +78,7 @@ class TaskRouterService {
       ],
       defaultRequirements: { accuracy: 'medium', speed: 'realtime', cost: 'free', complexity: 'simple', volume: 'bulk' }
     },
-    
+
     relationship_mapping: {
       gemmaModels: [
         { model: 'gemma-2-27b-it', score: 85, reasoning: 'Complex reasoning for relationship analysis' }
@@ -120,7 +89,7 @@ class TaskRouterService {
       ],
       defaultRequirements: { accuracy: 'critical', speed: 'medium', cost: 'medium', complexity: 'expert', volume: 'single' }
     },
-    
+
     lead_qualification: {
       gemmaModels: [
         { model: 'gemma-2-9b-it', score: 88, reasoning: 'Good business logic understanding' },
@@ -132,7 +101,7 @@ class TaskRouterService {
       ],
       defaultRequirements: { accuracy: 'high', speed: 'fast', cost: 'low', complexity: 'medium', volume: 'batch' }
     },
-    
+
     sentiment_analysis: {
       gemmaModels: [
         { model: 'gemma-2-9b-it', score: 85, reasoning: 'Good sentiment understanding' },
@@ -153,7 +122,7 @@ class TaskRouterService {
 
   async selectOptimalModel(taskContext: TaskContext): Promise<ModelSelection> {
     const { taskType, requirements, urgency = 'medium', batchSize = 1 } = taskContext;
-    
+
     logger.info(`Selecting optimal model for task: ${taskType}`, {
       requirements,
       urgency,
@@ -171,14 +140,14 @@ class TaskRouterService {
 
     // Check provider availability and rate limits
     const providerAvailability = await this.checkProviderAvailability();
-    
+
     // Score all available models
     const gemmaOptions = await this.scoreModels('gemini', profile.gemmaModels, finalRequirements, providerAvailability.gemini);
     const openaiOptions = await this.scoreModels('openai', profile.openaiModels, finalRequirements, providerAvailability.openai);
-    
+
     // Combine and sort all options
     const allOptions = [...gemmaOptions, ...openaiOptions].sort((a, b) => b.score - a.score);
-    
+
     if (allOptions.length === 0) {
       throw new Error('No available models for the specified task');
     }
@@ -333,11 +302,11 @@ class TaskRouterService {
 
     // Adjust based on success rate
     const successRateMultiplier = performance.successRate;
-    
+
     // Adjust based on relative speed (compared to average)
     const avgResponseTime = Array.from(this.modelPerformance.values())
       .reduce((sum, p) => sum + p.avgTime, 0) / this.modelPerformance.size;
-    
+
     const speedMultiplier = performance.avgTime < avgResponseTime ? 1.1 : 0.9;
 
     return baseScore * successRateMultiplier * speedMultiplier;
@@ -441,7 +410,7 @@ class TaskRouterService {
   // Performance tracking
   recordTaskPerformance(metrics: TaskPerformanceMetrics): void {
     this.performanceHistory.push(metrics);
-    
+
     // Keep only last 1000 records
     if (this.performanceHistory.length > 1000) {
       this.performanceHistory = this.performanceHistory.slice(-1000);

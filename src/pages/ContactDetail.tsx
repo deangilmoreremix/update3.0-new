@@ -10,28 +10,28 @@ import ContactAgentButtons from '../components/contacts/ContactAgentButtons';
 const ContactDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
+
   // This would normally come from a router parameter and database
   const [contact, setContact] = useState<Contact | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editFormData, setEditFormData] = useState<Partial<Contact>>({});
-  
+
   const openai = useOpenAI();
   const gemini = useGemini();
-  
+
   const [leadScoreResult, setLeadScoreResult] = useState<string | null>(null);
   const [leadScoreLoading, setLeadScoreLoading] = useState(false);
   const [leadScoreError, setLeadScoreError] = useState<string | null>(null);
-  
+
   const [personalizationResult, setPersonalizationResult] = useState<string | null>(null);
   const [personalizationLoading, setPersonalizationLoading] = useState(false);
   const [personalizationError, setPersonalizationError] = useState<string | null>(null);
-  
+
   // Mock data for the contact - in a real app this would come from an API
   useEffect(() => {
     setIsLoading(true);
-    
+
     // Simulate API call
     setTimeout(() => {
       const mockContact: Contact = {
@@ -48,13 +48,13 @@ const ContactDetail: React.FC = () => {
         industry: 'Technology',
         location: 'San Francisco, CA'
       };
-      
+
       setContact(mockContact);
       setEditFormData(mockContact);
       setIsLoading(false);
     }, 500);
   }, [id]);
-  
+
   // Handle editing the contact
   const handleEditToggle = () => {
     if (isEditing && contact) {
@@ -62,7 +62,7 @@ const ContactDetail: React.FC = () => {
     }
     setIsEditing(!isEditing);
   };
-  
+
   // Handle saving the edited contact
   const handleSaveContact = () => {
     if (contact && editFormData) {
@@ -73,7 +73,7 @@ const ContactDetail: React.FC = () => {
       setIsEditing(false);
     }
   };
-  
+
   // Handle delete contact
   const handleDeleteContact = () => {
     if (confirm('Are you sure you want to delete this contact?')) {
@@ -81,7 +81,7 @@ const ContactDetail: React.FC = () => {
       navigate('/contacts');
     }
   };
-  
+
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -90,19 +90,19 @@ const ContactDetail: React.FC = () => {
       [name]: value
     });
   };
-  
+
   const previousInteractions = [
     "Initial call: Discussed basic features of our platform. John expressed interest in the enterprise plan but had concerns about implementation timeline.",
     "Email follow-up: Sent detailed information about implementation process. John replied with questions about security certifications.",
     "Demo meeting: Showcased enterprise features. John had technical questions about API integration capabilities."
   ];
-  
+
   const handleLeadScoreAnalysis = async () => {
     if (!contact) return;
-    
+
     setLeadScoreLoading(true);
     setLeadScoreError(null);
-    
+
     try {
       const result = await openai.predictLeadScore(contact);
       setLeadScoreResult(result);
@@ -112,13 +112,13 @@ const ContactDetail: React.FC = () => {
       setLeadScoreLoading(false);
     }
   };
-  
+
   const handlePersonalization = async () => {
     if (!contact) return;
-    
+
     setPersonalizationLoading(true);
     setPersonalizationError(null);
-    
+
     try {
       const result = await gemini.suggestPersonalization(contact, previousInteractions);
       setPersonalizationResult(result);
@@ -128,14 +128,14 @@ const ContactDetail: React.FC = () => {
       setPersonalizationLoading(false);
     }
   };
-  
+
   const statusColors = {
     lead: 'bg-yellow-100 text-yellow-800',
     prospect: 'bg-purple-100 text-purple-800',
     customer: 'bg-green-100 text-green-800',
     churned: 'bg-red-100 text-red-800'
   };
-  
+
   // Handle initiating a phone call
   const handleCallContact = () => {
     if (contact && contact.phone) {
@@ -144,14 +144,14 @@ const ContactDetail: React.FC = () => {
       window.location.href = `tel:${cleanNumber}`;
     }
   };
-  
+
   // Handle sending an email
   const handleSendEmail = () => {
     if (contact && contact.email) {
       window.location.href = `mailto:${contact.email}`;
     }
   };
-  
+
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -161,7 +161,7 @@ const ContactDetail: React.FC = () => {
       </div>
     );
   }
-  
+
   if (!contact) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -187,7 +187,7 @@ const ContactDetail: React.FC = () => {
             <p className="text-gray-600 mt-1">{contact.position} at {contact.company}</p>
           </div>
         </div>
-        
+
         <div className="mt-4 sm:mt-0 flex flex-wrap gap-2">
           <button 
             onClick={handleEditToggle}
@@ -224,7 +224,7 @@ const ContactDetail: React.FC = () => {
           )}
         </div>
       </header>
-      
+
       <div className="grid grid-cols-1 md:flex md:flex-wrap md:-mx-4">
         {/* Left Column - Main Info */}
         <div className="md:w-2/3 md:px-4 mb-8">
@@ -237,7 +237,7 @@ const ContactDetail: React.FC = () => {
                 {contact.status.charAt(0).toUpperCase() + contact.status.slice(1)}
               </span>
             </div>
-          
+
             {isEditing ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -252,7 +252,7 @@ const ContactDetail: React.FC = () => {
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Email
@@ -265,7 +265,7 @@ const ContactDetail: React.FC = () => {
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Phone
@@ -278,7 +278,7 @@ const ContactDetail: React.FC = () => {
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Company
@@ -291,7 +291,7 @@ const ContactDetail: React.FC = () => {
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Position
@@ -304,7 +304,7 @@ const ContactDetail: React.FC = () => {
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Status
@@ -321,7 +321,7 @@ const ContactDetail: React.FC = () => {
                     <option value="churned">Churned</option>
                   </select>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Industry
@@ -334,7 +334,7 @@ const ContactDetail: React.FC = () => {
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Location
@@ -347,7 +347,7 @@ const ContactDetail: React.FC = () => {
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-                
+
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Notes
@@ -378,7 +378,7 @@ const ContactDetail: React.FC = () => {
                         <p className="text-xs text-gray-500">Email</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center">
                       <Phone className="h-5 w-5 text-gray-400 mr-3" />
                       <div>
@@ -394,7 +394,7 @@ const ContactDetail: React.FC = () => {
                         <p className="text-xs text-gray-500">Phone</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center">
                       <MapPin className="h-5 w-5 text-gray-400 mr-3" />
                       <div>
@@ -402,7 +402,7 @@ const ContactDetail: React.FC = () => {
                         <p className="text-xs text-gray-500">Location</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center">
                       <Calendar className="h-5 w-5 text-gray-400 mr-3" />
                       <div>
@@ -414,7 +414,7 @@ const ContactDetail: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-4">Company Information</h4>
                   <div className="space-y-3">
@@ -425,7 +425,7 @@ const ContactDetail: React.FC = () => {
                         <p className="text-xs text-gray-500">Company</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center">
                       <User className="h-5 w-5 text-gray-400 mr-3" />
                       <div>
@@ -433,7 +433,7 @@ const ContactDetail: React.FC = () => {
                         <p className="text-xs text-gray-500">Position</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center">
                       <Tag className="h-5 w-5 text-gray-400 mr-3" />
                       <div>
@@ -441,7 +441,7 @@ const ContactDetail: React.FC = () => {
                         <p className="text-xs text-gray-500">Industry</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center">
                       <Flag className="h-5 w-5 text-gray-400 mr-3" />
                       <div>
@@ -451,7 +451,7 @@ const ContactDetail: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 {contact.notes && (
                   <div className="col-span-1 md:col-span-2">
                     <h4 className="text-sm font-medium text-gray-500 mb-2">Notes</h4>
@@ -462,7 +462,7 @@ const ContactDetail: React.FC = () => {
                 )}
               </div>
             )}
-            
+
             <div className="mt-6 pt-6 border-t border-gray-200">
               <h4 className="text-sm font-medium text-gray-500 mb-4">Quick Actions</h4>
               <div className="flex flex-wrap gap-2">
@@ -490,17 +490,17 @@ const ContactDetail: React.FC = () => {
                 </button>
               </div>
             </div>
-            
+
             <div className="mt-6 pt-6 border-t border-gray-200">
               <h4 className="text-sm font-medium text-gray-500 mb-4">AI Agents</h4>
               <ContactAgentButtons contact={contact} />
             </div>
           </div>
-          
+
           {/* Interaction History */}
           <div className="bg-white rounded-lg shadow-sm p-6 mt-6 border border-gray-100">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Interaction History</h3>
-            
+
             <div className="space-y-4">
               {previousInteractions.map((interaction, idx) => (
                 <div key={idx} className="border-b pb-4 last:border-0">
@@ -522,7 +522,7 @@ const ContactDetail: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Right Column - AI Insights */}
         <div className="md:w-1/3 md:px-4">
           <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border border-gray-100">
@@ -530,7 +530,7 @@ const ContactDetail: React.FC = () => {
               <Brain size={20} className="text-blue-500 mr-2" />
               <h3 className="text-lg font-medium">AI Insights</h3>
             </div>
-            
+
             <div className="space-y-4">
               <button
                 onClick={handleLeadScoreAnalysis}
@@ -549,21 +549,21 @@ const ContactDetail: React.FC = () => {
                   </>
                 )}
               </button>
-              
+
               {leadScoreError && (
                 <div className="bg-red-50 text-red-700 p-3 rounded-md flex items-center gap-2">
                   <AlertOctagon size={18} />
                   <span>{leadScoreError}</span>
                 </div>
               )}
-              
+
               {leadScoreResult && !leadScoreError && (
                 <div className="bg-blue-50 text-gray-800 p-4 rounded-md">
                   <h3 className="font-medium mb-2">Lead Analysis</h3>
                   <div className="whitespace-pre-wrap text-sm">{leadScoreResult}</div>
                 </div>
               )}
-              
+
               <button
                 onClick={handlePersonalization}
                 disabled={personalizationLoading}
@@ -578,14 +578,14 @@ const ContactDetail: React.FC = () => {
                   "Generate Personalization Recommendations"
                 )}
               </button>
-              
+
               {personalizationError && (
                 <div className="bg-red-50 text-red-700 p-3 rounded-md flex items-center gap-2">
                   <AlertOctagon size={18} />
                   <span>{personalizationError}</span>
                 </div>
               )}
-              
+
               {personalizationResult && !personalizationError && (
                 <div className="bg-blue-50 text-gray-800 p-4 rounded-md">
                   <div className="whitespace-pre-wrap text-sm">{personalizationResult}</div>
@@ -593,13 +593,13 @@ const ContactDetail: React.FC = () => {
               )}
             </div>
           </div>
-          
+
           <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
             <div className="flex items-center mb-4">
               <BarChart3 size={22} className="text-indigo-500 mr-2" />
               <h3 className="text-lg font-medium">Engagement Summary</h3>
             </div>
-            
+
             <div className="space-y-3">
               <div>
                 <div className="flex justify-between text-sm mb-1">
@@ -610,7 +610,7 @@ const ContactDetail: React.FC = () => {
                   <div className="bg-blue-500 h-2 rounded-full" style={{ width: '64%' }}></div>
                 </div>
               </div>
-              
+
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-gray-600">Meeting Attendance</span>
@@ -620,7 +620,7 @@ const ContactDetail: React.FC = () => {
                   <div className="bg-green-500 h-2 rounded-full" style={{ width: '100%' }}></div>
                 </div>
               </div>
-              
+
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-gray-600">Response Time</span>

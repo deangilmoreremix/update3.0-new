@@ -1,42 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Deal } from '../../types';
-import { 
-  X, Edit, Save, Trash2, Upload, FileText, Calendar, 
-  DollarSign, Building2, User, Phone, Mail, Tag, Star,
-  Clock, AlertCircle, CheckCircle, BarChart3, MessageSquare,
-  Paperclip, Download, Eye, MoreHorizontal, Activity,
-  Target, TrendingUp, Zap, Brain, Heart, Share2
-} from 'lucide-react';
+import { X, Edit, Save, Trash2, Upload, FileText, Calendar, DollarSign, Building2, User, Phone, Mail, Clock, AlertCircle, CheckCircle, BarChart3, MessageSquare, Download, Eye, Activity, Target, TrendingUp, Zap, Brain, Heart, Share2 } from 'lucide-react';
 
-interface EnhancedDealModalProps {
-  deal: Deal;
-  isOpen: boolean;
-  onClose: () => void;
-  onUpdate: (dealId: string, updates: Partial<Deal>) => Promise<void>;
-  onDelete?: (dealId: string) => void;
-}
-
-interface DealActivity {
-  id: string;
-  type: 'call' | 'email' | 'meeting' | 'note' | 'stage_change' | 'file_upload';
-  title: string;
-  description: string;
-  timestamp: Date;
-  user: string;
-  metadata?: any;
-}
-
-interface DealAttachment {
-  id: string;
-  name: string;
-  type: string;
-  size: number;
-  url: string;
-  uploadedAt: Date;
-  uploadedBy: string;
-}
-
-export const EnhancedDealModal: React.FC<EnhancedDealModalProps> = ({
+export const EnhancedDealModal: FC<EnhancedDealModalProps> = ({
   deal,
   isOpen,
   onClose,
@@ -258,7 +224,7 @@ export const EnhancedDealModal: React.FC<EnhancedDealModalProps> = ({
               </button>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             {!isEditing && (
               <>
@@ -751,7 +717,7 @@ export const EnhancedDealModal: React.FC<EnhancedDealModalProps> = ({
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="bg-white border border-gray-200 rounded-xl p-6">
                   <div className="flex items-center justify-between">
                     <div>
@@ -763,7 +729,7 @@ export const EnhancedDealModal: React.FC<EnhancedDealModalProps> = ({
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="bg-white border border-gray-200 rounded-xl p-6">
                   <div className="flex items-center justify-between">
                     <div>
@@ -796,7 +762,7 @@ export const EnhancedDealModal: React.FC<EnhancedDealModalProps> = ({
                       This deal shows strong potential with good engagement and regular communication.
                     </p>
                   </div>
-                  
+
                   <div className="bg-white rounded-lg p-4">
                     <h4 className="font-medium text-gray-900 mb-2">Recommendations</h4>
                     <ul className="space-y-2 text-sm text-gray-600">

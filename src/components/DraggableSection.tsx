@@ -3,13 +3,7 @@ import { useDashboardLayout } from '../contexts/DashboardLayoutContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { GripVertical, EyeOff } from 'lucide-react';
 
-interface DraggableSectionProps {
-  sectionId: string;
-  children: React.ReactNode;
-  index: number;
-}
-
-const DraggableSection: React.FC<DraggableSectionProps> = ({ sectionId, children, _index }) => {
+const DraggableSection: FC<DraggableSectionProps> = ({ sectionId, children, _index }) => {
   const { 
     isDragging, 
     setIsDragging, 
@@ -19,19 +13,19 @@ const DraggableSection: React.FC<DraggableSectionProps> = ({ sectionId, children
     setSectionOrder,
     getSectionConfig
   } = useDashboardLayout();
-  
+
   const { isDark } = useTheme();
   const dragRef = useRef<HTMLDivElement>(null);
   const [dragOver, setDragOver] = React.useState(false);
 
   const sectionConfig = getSectionConfig(sectionId);
-  
+
   const handleDragStart = (e: React.DragEvent) => {
     setIsDragging(true);
     setDraggedItem(sectionId);
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', sectionId);
-    
+
     // Add drag image
     if (dragRef.current) {
       const dragImage = dragRef.current.cloneNode(true) as HTMLElement;
@@ -65,23 +59,23 @@ const DraggableSection: React.FC<DraggableSectionProps> = ({ sectionId, children
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
-    
+
     const draggedSectionId = e.dataTransfer.getData('text/plain');
     if (draggedSectionId && draggedSectionId !== sectionId) {
       // Find the current indices
       const draggedIndex = sectionOrder.indexOf(draggedSectionId);
       const targetIndex = sectionOrder.indexOf(sectionId);
-      
+
       if (draggedIndex !== -1 && targetIndex !== -1) {
         // Create new order array
         const newOrder = [...sectionOrder];
-        
+
         // Remove the dragged item from its current position
         const [draggedSection] = newOrder.splice(draggedIndex, 1);
-        
+
         // Insert it at the target position
         newOrder.splice(targetIndex, 0, draggedSection);
-        
+
         // Update the section order
         setSectionOrder(newOrder);
       }

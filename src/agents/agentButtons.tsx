@@ -19,7 +19,7 @@ const agentIconMap: Record<string, { label: string; icon: React.ReactNode }> = {
     label: 'Lead Scoring',
     icon: <Zap size={18} className="text-amber-600" />
   },
-  
+
   // Deal Module Agents
   'ai-ae': {
     label: 'AI AE Demo',
@@ -41,7 +41,7 @@ const agentIconMap: Record<string, { label: string; icon: React.ReactNode }> = {
     label: 'Proposal Generator',
     icon: <FileText size={18} className="text-amber-600" />
   },
-  
+
   // Task Module Agents
   'follow-up': {
     label: 'Follow-Up',
@@ -55,7 +55,7 @@ const agentIconMap: Record<string, { label: string; icon: React.ReactNode }> = {
     label: 'SMS Campaigner',
     icon: <MessageSquare size={18} className="text-blue-600" />
   },
-  
+
   // Calendar Module Agents
   'meetings-agent': {
     label: 'Meetings Agent',
@@ -69,7 +69,7 @@ const agentIconMap: Record<string, { label: string; icon: React.ReactNode }> = {
     label: 'AI Journeys',
     icon: <Zap size={18} className="text-violet-600" />
   },
-  
+
   // Campaign Module Agents
   'whatsapp-nurturer': {
     label: 'WhatsApp Nurturer',

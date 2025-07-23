@@ -2,14 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useContactStore } from '../../store/contactStore';
-import { AlertCircle, ArrowRight, Calendar, CheckCircle, TrendingUp } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Avatar from '../ui/Avatar';
 import { getInitials } from '../../utils/avatars';
 
 const RecentActivity: React.FC = () => {
   const { isDark } = useTheme();
   const { contacts } = useContactStore();
-  
+
   // Updated upcomingDeals with contactId instead of direct avatar
   const upcomingDeals = [
     {
@@ -90,12 +90,12 @@ const RecentActivity: React.FC = () => {
             <ArrowRight size={14} />
           </Link>
         </div>
-        
+
         <div className="space-y-4">
           {upcomingDeals.map((deal) => {
             // Get contact data using contactId
             const contact = contacts[deal.contactId];
-            
+
             return (
               <div 
                 key={deal.id} 
@@ -139,7 +139,7 @@ const RecentActivity: React.FC = () => {
             <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>8 pending</span>
           </div>
         </div>
-        
+
         <div className="space-y-4">
           {recentActivities.map((activity, index) => {
             const Icon = activity.icon;

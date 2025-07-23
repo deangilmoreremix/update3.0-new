@@ -1,20 +1,19 @@
 
-
 export async function meetingsAgent(input: unknown, setSteps?: (steps: unknown) => void) {
   const name = input.name || "there";
   const company = input.company || "your company";
   const meetingType = input.meetingType || "discovery";
-  
+
   setSteps?.([{ step: "Checking calendar availability..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
   setSteps?.(prev => [...prev, { step: "Generating meeting invitation..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1200));
-  
+
   // Generate meeting details based on type
   let meetingDetails = {
     subject: "",
@@ -22,7 +21,7 @@ export async function meetingsAgent(input: unknown, setSteps?: (steps: unknown) 
     duration: 30,
     proposedTimes: []
   };
-  
+
   switch (meetingType) {
     case "discovery":
       meetingDetails = {
@@ -49,7 +48,7 @@ Best regards,
         ]
       };
       break;
-      
+
     case "demo":
       meetingDetails = {
         subject: `${company}: Personalized Product Demo`,
@@ -75,7 +74,7 @@ Best regards,
         ]
       };
       break;
-      
+
     case "proposal":
       meetingDetails = {
         subject: `${company}: Proposal Review`,
@@ -101,7 +100,7 @@ Best regards,
         ]
       };
       break;
-      
+
     default:
       meetingDetails = {
         subject: `Meeting with ${company}`,
@@ -119,9 +118,9 @@ Best regards,
         ]
       };
   }
-  
+
   setSteps?.(prev => [...prev, { step: "Meeting invitation created", result: "Complete" }]);
-  
+
   return {
     meetingDetails,
     calendarLink: "https://calendly.com/your-company/30min", // Simulated URL

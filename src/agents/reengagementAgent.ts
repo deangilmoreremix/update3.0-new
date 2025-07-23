@@ -1,22 +1,21 @@
 
-
 export async function reengagementAgent(input: unknown, setSteps?: (steps: unknown) => void) {
   const name = input.name || "there";
   const company = input.company || "your company";
   const lastInteractionDate = input.lastInteractionDate || "3 months ago";
-  
+
   setSteps?.([{ step: "Analyzing contact history..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
   setSteps?.(prev => [...prev, { step: "Researching industry updates..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1200));
-  
+
   setSteps?.(prev => [...prev, { step: "Creating reengagement campaign..." }]);
-  
+
   // Generate reengagement sequence
   const reengagementSequence = [
     {
@@ -101,9 +100,9 @@ Best regards,
 `
     }
   ];
-  
+
   setSteps?.(prev => [...prev, { step: "Reengagement campaign created", result: "Complete" }]);
-  
+
   return {
     reengagementSequence,
     timingRecommendations: [

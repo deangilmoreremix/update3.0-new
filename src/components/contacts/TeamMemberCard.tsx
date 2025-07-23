@@ -2,15 +2,7 @@ import React from 'react';
 import { Contact } from '../../types/contact';
 import { User, Star, Award, Trophy, TrendingUp, UserMinus, Edit, Mail, Phone, Crown } from 'lucide-react';
 
-interface TeamMemberCardProps {
-  member: Contact;
-  isSelected: boolean;
-  onSelect: () => void;
-  onClick: () => void;
-  onRemove: () => void;
-}
-
-export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
+export const TeamMemberCard: FC<TeamMemberCardProps> = ({
   member,
   isSelected,
   onSelect,
@@ -56,7 +48,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
         >
           <UserMinus className="w-4 h-4" />
         </button>
-        
+
         <button 
           onClick={(e) => {
             e.stopPropagation();
@@ -83,7 +75,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
                 <User className="w-10 h-10 text-indigo-500 dark:text-indigo-400" />
               )}
             </div>
-            
+
             {/* Role Badge */}
             <div className="absolute -bottom-2 -right-1 bg-indigo-600 dark:bg-indigo-500 text-white px-2 py-0.5 rounded-full text-xs shadow-lg">
               {member.role === 'manager' ? 'Manager' : 
@@ -91,7 +83,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
                member.role === 'admin' ? 'Admin' : 'Sales Rep'}
             </div>
           </div>
-          
+
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{member.name}</h3>
           <p className="text-sm text-gray-600 dark:text-gray-300">{member.title}</p>
           <p className="text-xs text-gray-500 dark:text-gray-400">{member.company}</p>
@@ -109,7 +101,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
             <Trophy className="w-3 h-3 text-indigo-600 dark:text-indigo-400 mr-1" />
             Performance Stats
           </h4>
-          
+
           <div className="grid grid-cols-2 gap-2">
             <div className="bg-white dark:bg-gray-800 p-2 rounded border border-indigo-100 dark:border-indigo-800">
               <p className="text-xs text-indigo-500 dark:text-indigo-400 mb-1">Win Rate</p>

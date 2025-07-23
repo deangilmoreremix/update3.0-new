@@ -2,20 +2,15 @@ import React, { useRef } from 'react';
 import { useDealStore } from '../store/dealStore';
 import { Activity, ArrowUp, Calendar, DollarSign, TrendingUp, ZapOff } from 'lucide-react';
 
-interface DealAnalyticsProps {
-  title?: string;
-  className?: string;
-}
-
-const DealAnalytics: React.FC<DealAnalyticsProps> = ({ 
+const DealAnalytics: FC<DealAnalyticsProps> = ({ 
   title = 'Deal Analytics', 
   className = '' 
 }) => {
   const { deals, stageValues } = useDealStore();
-  
+
   // Create a ref for chart resizing
   const chartContainerRef = useRef<HTMLDivElement>(null);
-  
+
   // Calculate deals in each stage
   const dealCounts = {
     qualification: 0,
@@ -24,26 +19,26 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({
     'closed-won': 0,
     'closed-lost': 0
   };
-  
+
   // Calculate monthly pipeline value
   const pipelineByMonth: Record<string, number> = {};
-  
+
   Object.values(deals).forEach(deal => {
     // Count by stage
     if (dealCounts.hasOwnProperty(deal.stage)) {
       dealCounts[deal.stage as keyof typeof dealCounts]++;
     }
-    
+
     // Add to monthly totals (only count open deals)
     if (deal.stage !== 'closed-won' && deal.stage !== 'closed-lost') {
       const month = deal.dueDate ? 
         `${deal.dueDate.getFullYear()}-${String(deal.dueDate.getMonth() + 1).padStart(2, '0')}` : 
         'No date';
-        
+
       pipelineByMonth[month] = (pipelineByMonth[month] || 0) + deal.value;
     }
   });
-  
+
   // Convert to array format for charts
   const stageData = Object.entries(dealCounts).map(([stage, count]) => ({
     stage: stage === 'closed-won' ? 'Won' : 
@@ -52,39 +47,39 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({
            stage === 'proposal' ? 'Proposed' : 'Negotiating',
     count
   }));
-  
+
   const monthlyData = Object.entries(pipelineByMonth)
     .sort()  // Sort by month
     .map(([month, value]) => ({
       month: month === 'No date' ? month : month.split('-')[1],  // Just show the month number
       value
     }));
-    
+
   // Calculate conversion rates between stages
   const calculateConversionRate = (fromStage: string, toStage: string) => {
     const fromCount = dealCounts[fromStage as keyof typeof dealCounts];
     const toCount = dealCounts[toStage as keyof typeof dealCounts];
-    
+
     return fromCount > 0 ? Math.round((toCount / fromCount) * 100) : 0;
   };
-  
+
   const conversionRates = {
     qualToProposal: calculateConversionRate('qualification', 'proposal'),
     proposalToNegotiation: calculateConversionRate('proposal', 'negotiation'),
     negotiationToWon: calculateConversionRate('negotiation', 'closed-won')
   };
-  
+
   // Calculate total value by status
   const valueByStatus = {
     active: stageValues.qualification + stageValues.proposal + stageValues.negotiation,
     won: stageValues['closed-won'],
     lost: stageValues['closed-lost']
   };
-  
+
   return (
     <div className={`bg-white rounded-xl shadow-sm p-6 ${className}`}>
       <h2 className="text-lg font-semibold mb-6">{title}</h2>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4">
           <div className="flex justify-between items-start">
@@ -97,7 +92,7 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({
             </div>
           </div>
         </div>
-        
+
         <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4">
           <div className="flex justify-between items-start">
             <div>
@@ -109,7 +104,7 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({
             </div>
           </div>
         </div>
-        
+
         <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-4">
           <div className="flex justify-between items-start">
             <div>
@@ -122,7 +117,7 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({
           </div>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <h3 className="text-sm font-medium text-gray-500 mb-2">Deal Distribution by Stage</h3>
@@ -144,7 +139,7 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({
               </BarChart>
             </ResponsiveContainer>
           </div>
-          
+
           <div className="mt-4 grid grid-cols-3 gap-2 text-center">
             <div className="border border-indigo-100 bg-indigo-50 rounded-lg p-2">
               <p className="text-xs text-indigo-600 mb-1">Qual → Proposal</p>
@@ -160,7 +155,7 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({
             </div>
           </div>
         </div>
-        
+
         <div>
           <h3 className="text-sm font-medium text-gray-500 mb-2">Pipeline Value by Month</h3>
           <div className="h-64">
@@ -186,7 +181,7 @@ const DealAnalytics: React.FC<DealAnalyticsProps> = ({
               </LineChart>
             </ResponsiveContainer>
           </div>
-          
+
           <div className="mt-4 flex justify-around">
             <div className="text-center">
               <p className="text-xs text-gray-500 mb-1">Top Deal</p>

@@ -5,20 +5,7 @@ import { composioService } from '../services/composioService';
 
 import { runAgentWorkflow, getAgentForGoal, AVAILABLE_AGENTS, type AgentType } from '../agents/AgentOrchestrator';
 import { getOptimalGemmaConfig } from '../services/gemmaAgentOptimizer';
-import { X, Maximize2, Play, Pause, CheckCircle, XCircle, Clock, Users, Bot, Activity, Network, GitBranch, BarChart3, Target, ArrowRight, TrendingUp, Award, Check } from 'lucide-react';
-
-interface ExecutionStep {
-  id: string;
-  agentName: string;
-  action: string;
-  status: 'pending' | 'running' | 'completed' | 'error';
-  startTime?: Date;
-  completionTime?: Date;
-  result?: unknown;
-  thinking?: string;
-  toolsUsed?: string[];
-  crmImpact?: string;
-}
+import { X, Maximize2, Play, Pause, CheckCircle, XCircle, Clock, Users, ArrowRight, TrendingUp, Award } from 'lucide-react';
 
 interface Agent {
   id: string;
@@ -31,25 +18,7 @@ interface Agent {
   connections?: string[];
 }
 
-interface NetworkMessage {
-  id: string;
-  from: string;
-  to: string;
-  message: string;
-  timestamp: Date;
-  type: 'coordination' | 'data' | 'completion';
-}
-
-interface GoalExecutionModalProps {
-  goal: Goal | null;
-  isOpen: boolean;
-  onClose: () => void;
-  realMode?: boolean;
-  onComplete?: (result: unknown) => void;
-  contextData?: unknown;
-}
-
-const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
+const GoalExecutionModal: FC<GoalExecutionModalProps> = ({
   goal,
   isOpen,
   onClose,
@@ -129,7 +98,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
     }
 
     setAgents(requiredAgents);
-    
+
     // Initialize execution steps
     const initialSteps: ExecutionStep[] = [
       {
@@ -172,7 +141,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
     setExecutionState('running');
     setExecutionStartTime(new Date());
     addLog(`🚀 ${realMode ? 'REAL MODE' : 'DEMO MODE'}: Starting execution of "${goal.title}"`);
-    
+
     // Estimate time based on goal complexity
     const estimatedMinutes = goal.estimatedTime || 5;
     setEstimatedTimeRemaining(estimatedMinutes * 60);
@@ -184,7 +153,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
         addThought('Analyzing goal: ' + goal.title);
         addThought('Complexity: ' + goal.complexity);
         addThought('Tools needed: ' + (goal.toolsNeeded?.join(', ') || 'None'));
-        
+
         if (realMode && goal.toolsNeeded?.length) {
           addLog('🔧 Checking tool availability and permissions...');
           // Check Composio connections
@@ -193,7 +162,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
             addLog(`✅ ${connections.data.length} tools connected and ready`);
           }
         }
-        
+
         addNetworkMessage('orchestrator', 'all_agents', 'Strategy developed, beginning coordinated execution', 'coordination');
       });
 
@@ -202,7 +171,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
         addLog('📊 Data Agent: Gathering required resources and context...');
         addThought('Collecting CRM data and contact information');
         addThought('Analyzing past campaign performance');
-        
+
         if (realMode) {
           // Real data gathering would happen here
           addLog('📈 Retrieved 247 relevant contacts from CRM');
@@ -210,7 +179,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
         } else {
           addLog('📊 [DEMO] Simulating data collection from CRM and external sources');
         }
-        
+
         addNetworkMessage('data_agent', 'orchestrator', 'Resource gathering completed, 247 contacts identified', 'data');
       });
 
@@ -219,25 +188,25 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
         const primaryAgent = getAgentForGoal(goal.title, goal.description, goal.toolsNeeded || []);
         if (primaryAgent) {
           addLog(`🤖 ${AVAILABLE_AGENTS[primaryAgent].name}: Executing primary goal tasks...`);
-          
+
           // Use Gemma Agent Optimizer for complex tasks
           const agentConfig = getOptimalGemmaConfig(goal.category.toLowerCase(), goal.complexity === 'High' ? 'complex' : 'simple');
           addLog(`🧠 Using ${agentConfig.modelVersion} with ${agentConfig.capabilities.join(', ')} capabilities`);
-          
+
           // Execute with agent workflow
           const result = await runAgentWorkflow(primaryAgent, {
             goal,
             realMode,
             contextData
           });
-          
+
           if (result.success) {
             addLog(`✅ ${AVAILABLE_AGENTS[primaryAgent].name}: Goal execution completed successfully`);
             addThought(`Execution result: ${result.data?.result || 'Success'}`);
           } else {
             addLog(`❌ ${AVAILABLE_AGENTS[primaryAgent].name}: Execution failed - ${result.error}`);
           }
-          
+
           addNetworkMessage(primaryAgent, 'orchestrator', 'Primary execution phase completed', 'completion');
         }
       });
@@ -247,21 +216,21 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
         addLog('🔍 Orchestrator: Validating results and optimizing outcomes...');
         addThought('Analyzing execution results for quality and effectiveness');
         addThought('Checking goal completion criteria');
-        
+
         if (realMode) {
           addLog('📊 Generating performance metrics and ROI analysis');
           addLog('🎯 Goal completion rate: 94% - Exceeds target threshold');
         } else {
           addLog('📊 [DEMO] Simulating result validation and optimization');
         }
-        
+
         addNetworkMessage('orchestrator', 'all_agents', 'Validation complete, goal successfully achieved', 'completion');
       });
 
       setExecutionState('completed');
       setOverallProgress(100);
       addLog(`🎉 Goal "${goal.title}" completed successfully! ${realMode ? 'Real execution' : 'Demo simulation'} finished.`);
-      
+
       // Call completion callback
       if (onComplete) {
         onComplete({
@@ -271,7 +240,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
           realMode
         });
       }
-      
+
     } catch (error) {
       setExecutionState('failed');
       addLog(`❌ Execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -295,22 +264,22 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
 
     try {
       await action();
-      
+
       // Simulate processing time
       await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
-      
+
       // Update step status to completed
       setExecutionSteps(prev => prev.map(step => 
         step.id === stepId 
           ? { ...step, status: 'completed', completionTime: new Date() }
           : step
       ));
-      
+
       // Update progress
       const completedSteps = executionSteps.filter(step => step.status === 'completed').length + 1;
       const progressPercentage = (completedSteps / executionSteps.length) * 100;
       setOverallProgress(progressPercentage);
-      
+
     } catch (error) {
       setExecutionSteps(prev => prev.map(step => 
         step.id === stepId 
@@ -367,7 +336,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
           <div className="flex-1">
             <h2 className="text-2xl font-bold mb-2">{goal.title}</h2>
             <p className="text-blue-100 mb-4">{goal.description}</p>
-            
+
             {/* Execution Controls */}
             <div className="flex items-center gap-4">
               {executionState === 'idle' && (
@@ -379,7 +348,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
                   {realMode ? 'Execute Real Goal' : 'Start Demo'}
                 </button>
               )}
-              
+
               {executionState === 'running' && (
                 <>
                   <button
@@ -398,7 +367,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
                   </button>
                 </>
               )}
-              
+
               {executionState === 'paused' && (
                 <button
                   onClick={resumeExecution}
@@ -408,14 +377,14 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
                   Resume
                 </button>
               )}
-              
+
               {executionState === 'completed' && (
                 <div className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg">
                   <CheckCircle className="h-4 w-4" />
                   Completed Successfully
                 </div>
               )}
-              
+
               {executionState === 'failed' && (
                 <div className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg">
                   <XCircle className="h-4 w-4" />
@@ -424,7 +393,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
               )}
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsFullscreen(!isFullscreen)}
@@ -689,7 +658,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
                         <div className="flex items-center">
                           <Users className="h-8 w-8 text-blue-600 mr-3" />
@@ -699,7 +668,7 @@ const GoalExecutionModal: React.FC<GoalExecutionModalProps> = ({
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="bg-purple-50 p-6 rounded-lg border border-purple-200">
                         <div className="flex items-center">
                           <Award className="h-8 w-8 text-purple-600 mr-3" />

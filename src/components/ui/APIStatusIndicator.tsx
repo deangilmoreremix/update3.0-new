@@ -102,7 +102,7 @@ export const APIStatusIndicator: React.FC = () => {
                       <span className="font-medium">❌ Not Configured</span>
                     </div>
                   )}
-                  
+
                   <div className="bg-gray-50 rounded-lg p-2">
                     <p className="text-xs font-medium text-gray-700 mb-1">Auto-Selected Models:</p>
                     <div className="grid grid-cols-1 gap-1">
@@ -141,7 +141,7 @@ export const APIStatusIndicator: React.FC = () => {
                       <span className="font-medium">❌ Not Configured</span>
                     </div>
                   )}
-                  
+
                   <div className="bg-gray-50 rounded-lg p-2">
                     <p className="text-xs font-medium text-gray-700 mb-1">Auto-Selected For:</p>
                     <div className="text-xs text-blue-600">

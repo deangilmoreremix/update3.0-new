@@ -22,7 +22,7 @@ interface AIResearchButtonProps {
   className?: string;
 }
 
-export const AIResearchButton: React.FC<AIResearchButtonProps> = ({
+export const AIResearchButton: FC<AIResearchButtonProps> = ({
   searchType,
   searchQuery,
   onDataFound,

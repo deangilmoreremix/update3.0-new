@@ -1,13 +1,6 @@
 import React, { ReactNode } from 'react';
 
-interface AnimatedFeatureIconProps {
-  icon: ReactNode;
-  color: string;
-  delay?: number; // 0, 1, or 2
-  size?: 'sm' | 'md' | 'lg';
-}
-
-const AnimatedFeatureIcon: React.FC<AnimatedFeatureIconProps> = ({ 
+const AnimatedFeatureIcon: FC<AnimatedFeatureIconProps> = ({ 
   icon, 
   color, 
   delay = 0,

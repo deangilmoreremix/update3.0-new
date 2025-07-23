@@ -4,12 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import { Upload, Check, ArrowDown, Eye, X, Download, Copy, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-interface DocumentAnalyzerRealtimeProps {
-  onAnalysisComplete?: (analysis: unknown) => void;
-  analysisType?: 'document' | 'competitor' | 'contract';
-}
-
-const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({ 
+const DocumentAnalyzerRealtime: FC<DocumentAnalyzerRealtimeProps> = ({ 
   onAnalysisComplete,
   analysisType = 'document'
 }) => {
@@ -29,7 +24,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
   } | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [isCopying, setIsCopying] = useState(false);
-  
+
   const analysisSteps = {
     document: [
       "Analyzing document structure...",
@@ -53,7 +48,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
       "Generating summary and recommendations..."
     ]
   };
-  
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
       'image/jpeg': ['.jpg', '.jpeg'],
@@ -71,18 +66,18 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
       }
     }
   });
-  
+
   const runAnalysis = async () => {
     if (!imageUrl) {
       setError('Please upload an image or document first');
       return;
     }
-    
+
     setIsAnalyzing(true);
     setAnalysisProgress(0);
     setCurrentAnalysisStep(analysisSteps[analysisType][0]);
     setError(null);
-    
+
     // Simulate progressive analysis with steps
     const totalSteps = analysisSteps[analysisType].length;
     for (let i = 0; i < totalSteps; i++) {
@@ -91,12 +86,12 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
       // Add a delay between steps to simulate processing
       await new Promise(resolve => setTimeout(resolve, 700));
     }
-    
+
     try {
       // In a real implementation, call OpenAI Vision API
       // For the demo, simulate a response after the progress animation
       await new Promise(resolve => setTimeout(resolve, 700));
-      
+
       // Simulate analysis results based on document type
       let result;
       switch(analysisType) {
@@ -117,7 +112,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
             ]
           };
           break;
-          
+
         case 'competitor':
           result = {
             summary: "This is a marketing brochure from CompeteCRM highlighting their enterprise solution with AI capabilities and integration features.",
@@ -140,7 +135,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
             ]
           };
           break;
-          
+
         case 'contract':
           result = {
             summary: "This is a service agreement for CRM implementation services with standard terms and conditions, payment schedule, and deliverables.",
@@ -165,18 +160,18 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
             ]
           };
           break;
-          
+
         default:
           result = {
             summary: "Document analysis complete.",
             keyPoints: ["No specific details extracted."]
           };
       }
-      
+
       setAnalysisResult(result);
       setAnalysisProgress(100);
       setShowResult(true);
-      
+
       if (onAnalysisComplete) {
         onAnalysisComplete(result);
       }
@@ -187,41 +182,41 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
       setIsAnalyzing(false);
     }
   };
-  
+
   const copyToClipboard = () => {
     if (!analysisResult) return;
-    
+
     let textToCopy = `Analysis Summary:\n${analysisResult.summary}\n\nKey Points:\n`;
     analysisResult.keyPoints.forEach((point, index) => {
       textToCopy += `${index + 1}. ${point}\n`;
     });
-    
+
     if (analysisResult.recommendations) {
       textToCopy += '\nRecommendations:\n';
       analysisResult.recommendations.forEach((rec, index) => {
         textToCopy += `${index + 1}. ${rec}\n`;
       });
     }
-    
+
     if (analysisResult.contractTerms) {
       textToCopy += '\nKey Contract Terms:\n';
       analysisResult.contractTerms.forEach((term, index) => {
         textToCopy += `${index + 1}. ${term}\n`;
       });
     }
-    
+
     navigator.clipboard.writeText(textToCopy);
     setIsCopying(true);
     setTimeout(() => setIsCopying(false), 2000);
   };
-  
+
   const resetAnalysis = () => {
     setImageUrl(null);
     setAnalysisResult(null);
     setShowResult(false);
     setError(null);
   };
-  
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       <div className="border-b border-gray-200 p-4 bg-gradient-to-r from-blue-50 to-indigo-50">
@@ -235,7 +230,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
           </span>
         </h3>
       </div>
-      
+
       <div className="p-6 space-y-4">
         {!imageUrl ? (
           <div 
@@ -278,7 +273,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
                 </button>
               </div>
             </div>
-            
+
             {/* Analysis Controls */}
             {!isAnalyzing && !showResult && (
               <div className="flex justify-center">
@@ -291,7 +286,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
                 </button>
               </div>
             )}
-            
+
             {/* Analysis Progress */}
             {isAnalyzing && (
               <div className="space-y-3">
@@ -306,14 +301,14 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
                 </div>
               </div>
             )}
-            
+
             {/* Error Message */}
             {error && (
               <div className="bg-red-50 text-red-700 p-3 rounded-md">
                 {error}
               </div>
             )}
-            
+
             {/* Analysis Results */}
             <AnimatePresence>
               {showResult && analysisResult && (
@@ -346,12 +341,12 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
                       </button>
                     </div>
                   </div>
-                  
+
                   <div className="bg-indigo-50 p-4 rounded-lg">
                     <h5 className="font-medium text-indigo-900 mb-2">Summary</h5>
                     <p className="text-sm text-indigo-800">{analysisResult.summary}</p>
                   </div>
-                  
+
                   <div>
                     <h5 className="font-medium text-gray-900 mb-2">Key Points</h5>
                     <ul className="space-y-2">
@@ -365,7 +360,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
                       ))}
                     </ul>
                   </div>
-                  
+
                   {analysisResult.contractTerms && (
                     <div>
                       <h5 className="font-medium text-gray-900 mb-2">Key Contract Terms</h5>
@@ -383,7 +378,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
                       </div>
                     </div>
                   )}
-                  
+
                   {analysisResult.competitorStrengths && (
                     <div>
                       <h5 className="font-medium text-gray-900 mb-2">Competitor Strengths</h5>
@@ -401,7 +396,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
                       </div>
                     </div>
                   )}
-                  
+
                   {analysisResult.riskLevel && (
                     <div className="flex items-center space-x-2">
                       <span className="text-sm font-medium text-gray-700">Risk Level:</span>
@@ -414,7 +409,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
                       </span>
                     </div>
                   )}
-                  
+
                   {analysisResult.recommendations && (
                     <div>
                       <h5 className="font-medium text-gray-900 mb-2">Recommendations</h5>
@@ -432,7 +427,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="flex justify-center pt-2">
                     <button
                       onClick={resetAnalysis}

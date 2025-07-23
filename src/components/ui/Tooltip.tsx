@@ -1,17 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-interface TooltipProps {
-  children: React.ReactNode;
-  content: React.ReactNode;
-  position?: 'top' | 'right' | 'bottom' | 'left';
-  delay?: number;
-  maxWidth?: string;
-}
-
 /**
  * Accessible tooltip component with dark mode support
  */
-export const Tooltip: React.FC<TooltipProps> = ({ 
+export const Tooltip: FC<TooltipProps> = ({ 
   children, 
   content,
   position = 'top',
@@ -109,7 +101,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
       >
         {children}
       </div>
-      
+
       {/* Tooltip */}
       {isVisible && (
         <div 
@@ -120,7 +112,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
         >
           <div className="relative">
             {content}
-            
+
             {/* Arrow */}
             <div className={`absolute ${
               position === 'top' ? 'top-full left-1/2 -translate-x-1/2 border-t-gray-900 dark:border-t-gray-700 border-t-8 border-x-transparent border-x-8 border-b-0' :

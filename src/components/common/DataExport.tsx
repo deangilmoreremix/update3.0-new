@@ -1,17 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import {
-  Download, FileText, FileSpreadsheet, Database,
-  Calendar, Filter, Settings, Check, X, Loader2,
-  ChevronDown, Eye, RefreshCw, AlertCircle, Info
-} from 'lucide-react';
-
-interface ExportField {
-  key: string;
-  label: string;
-  type: 'string' | 'number' | 'date' | 'boolean' | 'array';
-  selected: boolean;
-  format?: string;
-}
+import { Download, FileText, FileSpreadsheet, Database, Check, X, Loader2, Info } from 'lucide-react';
 
 interface ExportOptions {
   format: 'csv' | 'excel' | 'json' | 'pdf';
@@ -27,16 +15,7 @@ interface ExportOptions {
   sortOrder: 'asc' | 'desc';
 }
 
-interface DataExportProps {
-  data: any[];
-  type: 'deals' | 'contacts' | 'companies' | 'activities';
-  onExport: (options: ExportOptions) => Promise<void>;
-  isOpen: boolean;
-  onClose: () => void;
-  customFields?: ExportField[];
-}
-
-export const DataExport: React.FC<DataExportProps> = ({
+export const DataExport: FC<DataExportProps> = ({
   data,
   type,
   onExport,
@@ -78,7 +57,7 @@ export const DataExport: React.FC<DataExportProps> = ({
             { key: 'closedAt', label: 'Closed Date', type: 'date', selected: false },
             { key: 'expectedCloseDate', label: 'Expected Close Date', type: 'date', selected: false }
           ];
-        
+
         case 'contacts':
           return [
             { key: 'id', label: 'ID', type: 'string', selected: false },
@@ -96,7 +75,7 @@ export const DataExport: React.FC<DataExportProps> = ({
             { key: 'createdAt', label: 'Created Date', type: 'date', selected: true },
             { key: 'updatedAt', label: 'Last Updated', type: 'date', selected: false }
           ];
-        
+
         case 'companies':
           return [
             { key: 'id', label: 'ID', type: 'string', selected: false },
@@ -112,7 +91,7 @@ export const DataExport: React.FC<DataExportProps> = ({
             { key: 'createdAt', label: 'Created Date', type: 'date', selected: true },
             { key: 'updatedAt', label: 'Last Updated', type: 'date', selected: false }
           ];
-        
+
         case 'activities':
           return [
             { key: 'id', label: 'ID', type: 'string', selected: false },
@@ -126,7 +105,7 @@ export const DataExport: React.FC<DataExportProps> = ({
             { key: 'completedAt', label: 'Completed Date', type: 'date', selected: false },
             { key: 'createdAt', label: 'Created Date', type: 'date', selected: true }
           ];
-        
+
         default:
           return [];
       }
@@ -205,7 +184,7 @@ export const DataExport: React.FC<DataExportProps> = ({
       const previewItem: any = {};
       selectedFields.forEach(field => {
         let value = item[field.key];
-        
+
         // Format value based on type
         if (field.type === 'date' && value) {
           value = new Date(value).toLocaleDateString();
@@ -216,7 +195,7 @@ export const DataExport: React.FC<DataExportProps> = ({
         } else if (field.type === 'array' && Array.isArray(value)) {
           value = value.join(', ');
         }
-        
+
         previewItem[field.label] = value || '';
       });
       return previewItem;
@@ -241,7 +220,7 @@ export const DataExport: React.FC<DataExportProps> = ({
     const selectedFields = exportOptions.fields.filter(f => f.selected);
     const averageFieldSize = 20; // bytes
     const estimatedBytes = data.length * selectedFields.length * averageFieldSize;
-    
+
     if (estimatedBytes < 1024) return `${estimatedBytes} B`;
     if (estimatedBytes < 1024 * 1024) return `${Math.round(estimatedBytes / 1024)} KB`;
     return `${Math.round(estimatedBytes / (1024 * 1024))} MB`;
@@ -262,7 +241,7 @@ export const DataExport: React.FC<DataExportProps> = ({
               {data.length} record{data.length !== 1 ? 's' : ''} available for export
             </p>
           </div>
-          
+
           <button
             onClick={onClose}
             className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
@@ -315,7 +294,7 @@ export const DataExport: React.FC<DataExportProps> = ({
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-6">
                 Choose Export Format
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {formatOptions.map(format => (
                   <div
@@ -332,7 +311,7 @@ export const DataExport: React.FC<DataExportProps> = ({
                         Recommended
                       </div>
                     )}
-                    
+
                     <div className="flex items-center space-x-3 mb-2">
                       <div className={`p-2 rounded-lg ${
                         exportOptions.format === format.value
@@ -345,7 +324,7 @@ export const DataExport: React.FC<DataExportProps> = ({
                         {format.label}
                       </h4>
                     </div>
-                    
+
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       {format.description}
                     </p>
@@ -392,7 +371,7 @@ export const DataExport: React.FC<DataExportProps> = ({
                     }`}>
                       {field.selected && <Check className="w-3 h-3 text-white" />}
                     </div>
-                    
+
                     <div className="flex-1">
                       <div className="font-medium text-gray-900 dark:text-white text-sm">
                         {field.label}
@@ -480,7 +459,7 @@ export const DataExport: React.FC<DataExportProps> = ({
                       </option>
                     ))}
                   </select>
-                  
+
                   <select
                     value={exportOptions.sortOrder}
                     onChange={(e) => setExportOptions(prev => ({ ...prev, sortOrder: e.target.value as 'asc' | 'desc' }))}
@@ -548,7 +527,7 @@ export const DataExport: React.FC<DataExportProps> = ({
                 <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   Data Preview (first 5 records)
                 </h4>
-                
+
                 <div className="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
                   <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead className="bg-gray-50 dark:bg-gray-800">

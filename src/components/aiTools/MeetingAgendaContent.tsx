@@ -11,7 +11,7 @@ const MeetingAgendaContent: React.FC = () => {
     previousMeetingNotes: '',
     meetingDuration: '30'
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -68,7 +68,7 @@ const MeetingAgendaContent: React.FC = () => {
     setIsLoading(true);
     setError(null);
     setReasoning(null);
-    
+
     try {
       const agenda = await gemini.generateMeetingAgenda(
         formData.meetingPurpose,
@@ -109,7 +109,7 @@ const MeetingAgendaContent: React.FC = () => {
     'Status Update',
     'Problem Solving Session'
   ];
-  
+
   // Meeting durations
   const meetingDurations = [
     { value: '15', label: '15 minutes' },
@@ -165,7 +165,7 @@ const MeetingAgendaContent: React.FC = () => {
               </datalist>
             </div>
           </div>
-          
+
           <div>
             <div className="flex justify-between items-center mb-1">
               <label className="block text-sm font-medium text-gray-700">
@@ -180,7 +180,7 @@ const MeetingAgendaContent: React.FC = () => {
                 Add Attendee
               </button>
             </div>
-            
+
             {formData.attendees.map((attendee, index) => (
               <div key={index} className="flex mb-2">
                 <div className="flex-grow flex items-center border border-gray-300 rounded-md overflow-hidden">
@@ -210,7 +210,7 @@ const MeetingAgendaContent: React.FC = () => {
               <p className="text-red-600 text-sm mt-1">Please add at least one attendee</p>
             )}
           </div>
-          
+
           <div>
             <label htmlFor="meetingDuration" className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
               <Clock className="h-4 w-4 mr-1 text-gray-500" />
@@ -228,7 +228,7 @@ const MeetingAgendaContent: React.FC = () => {
               ))}
             </select>
           </div>
-          
+
           <div>
             <label htmlFor="previousMeetingNotes" className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
               <FileText className="h-4 w-4 mr-1 text-gray-500" />
@@ -244,7 +244,7 @@ const MeetingAgendaContent: React.FC = () => {
               onChange={handleChange}
             ></textarea>
           </div>
-            
+
           <div className="flex justify-end">
             <button
               type="submit"

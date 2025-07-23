@@ -3,13 +3,7 @@ import { DollarSign, Zap, Clock, Brain, Activity, Loader2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { supabaseAIService } from '../services/supabaseAIService';
 
-interface AIUsageDashboardProps {
-  customerId?: string;
-  timeframe?: 'day' | 'week' | 'month';
-  className?: string;
-}
-
-const AIUsageDashboard: React.FC<AIUsageDashboardProps> = ({
+const AIUsageDashboard: FC<AIUsageDashboardProps> = ({
   customerId,
   timeframe = 'month',
   className = ''
@@ -23,7 +17,7 @@ const AIUsageDashboard: React.FC<AIUsageDashboardProps> = ({
     const loadUsageStats = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         const stats = await supabaseAIService.getUsageStats(customerId, timeframe);
         setUsageStats(stats);
@@ -193,7 +187,7 @@ const AIUsageDashboard: React.FC<AIUsageDashboardProps> = ({
               Model Usage Breakdown
             </h3>
           </div>
-          
+
           <div className="divide-y divide-white/10">
             {usageStats.map((stat, index) => {
               const usagePercent = totals.requests > 0 ? (stat.requests / totals.requests) * 100 : 0;
@@ -219,7 +213,7 @@ const AIUsageDashboard: React.FC<AIUsageDashboardProps> = ({
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="text-right">
                       <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                         {formatCurrency(stat.totalCost)}

@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import { HelpCircle } from 'lucide-react';
 
-interface HelpTooltipProps {
-  content: string;
-  placement?: 'top' | 'bottom' | 'left' | 'right';
-  children?: React.ReactNode;
-}
-
-const HelpTooltip: React.FC<HelpTooltipProps> = ({ content, placement = 'top', children }) => {
+const HelpTooltip: FC<HelpTooltipProps> = ({ content, placement = 'top', children }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const positionClasses = {
@@ -26,7 +20,7 @@ const HelpTooltip: React.FC<HelpTooltipProps> = ({ content, placement = 'top', c
       >
         {children || <HelpCircle size={16} className="text-gray-400 hover:text-gray-600" />}
       </div>
-      
+
       {isVisible && (
         <div className={`absolute z-10 px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-lg whitespace-nowrap ${positionClasses[placement]}`}>
           {content}

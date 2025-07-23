@@ -1,35 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { 
-  Brain, 
-  Mail, 
-  MessageSquare, 
-  FileText, 
-  Phone, 
-  Target, 
-  FileSearch, 
-  TrendingUp, 
-  BarChart3, 
-  PieChart, 
-  ChevronRight,
-  CheckCheck,
-  ArrowRight,
-  Play,
-  User,
-  Clock,
-  Star,
-  ExternalLink,
-  BarChart,
-  Users,
-  Briefcase,
-  Eye,
-  Image,
-  Mic,
-  Search,
-  Zap,
-  Calendar
-} from 'lucide-react';
+import { Brain, TrendingUp, BarChart3, PieChart, ChevronRight, Clock, ExternalLink, BarChart, Users, Briefcase, Eye, Image, Mic, Search, Zap } from 'lucide-react';
 
 import LandingHeader from './components/LandingHeader';
 import LandingFooter from './components/LandingFooter';
@@ -50,17 +22,17 @@ import ParticleBackground from '../../components/Landing/ParticleBackground';
 
 const LandingPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
-  
+
   // Function to handle page initialization only once
   useEffect(() => {
     console.log("LandingPage component mounted");
-    
+
     const preloadHighPriorityAssets = () => {
       // Preload critical images
       const criticalImages = [
         'https://images.pexels.com/photos/6476582/pexels-photo-6476582.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
       ];
-      
+
       if (typeof window !== 'undefined') {
         criticalImages.forEach(url => {
           const img = new window.Image();
@@ -73,33 +45,33 @@ const LandingPage = () => {
 
     // Call the preload function
     preloadHighPriorityAssets();
-    
+
     // Check animations.css is loaded
     const animationsStylesheet = document.querySelector('link[href*="animations.css"]');
     console.log("Animations CSS loaded:", !!animationsStylesheet);
-    
+
     // Add a small delay to ensure everything is ready
     const timer = setTimeout(() => {
       console.log("Setting isLoaded to true");
       setIsLoaded(true);
     }, 100);
-    
+
     return () => clearTimeout(timer);
   }, []);
-  
+
   // Debug CSS classes for background elements
   useEffect(() => {
     if (isLoaded) {
       console.log("Landing page marked as loaded");
-      
+
       // Check animation classes
       const animatedElements = document.querySelectorAll('.animate-float, .animate-pulse, .animate-spin');
       console.log(`Found ${animatedElements.length} animated elements`);
-      
+
       // Check background classes
       const bgElements = document.querySelectorAll('.bg-gradient-to-r, .bg-gradient-to-b, .parallax-bg');
       console.log(`Found ${bgElements.length} background elements`);
-      
+
       if (bgElements.length > 0) {
         Array.from(bgElements).forEach((el, i) => {
           const computedStyle = window.getComputedStyle(el as Element);
@@ -112,25 +84,25 @@ const LandingPage = () => {
       }
     }
   }, [isLoaded]);
-  
+
   return (
     <div className="bg-white content-stable">
       <LandingHeader />
-      
+
       {/* Hero Section */}
       <ParallaxHero />
-      
+
       {/* Client logos */}
       <ClientLogos />
-      
+
       {/* Feature Demo Section with interactive components */}
       <FeatureDemo />
-      
+
       {/* Interactive Features Grid */}
       <ScrollAnimationWrapper animation="fade-up">
         <InteractiveFeaturesGrid />
       </ScrollAnimationWrapper>
-      
+
       {/* Stats Counter Section */}
       <section className="py-16 bg-gradient-to-r from-blue-50 to-indigo-50 overflow-hidden">
         <ParticleBackground particleCount={30} />
@@ -143,7 +115,7 @@ const LandingPage = () => {
               </p>
             </div>
           </ScrollAnimationWrapper>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             <ScrollAnimationWrapper animation="fade-up" delay={100}>
               <StatCounter 
@@ -153,7 +125,7 @@ const LandingPage = () => {
                 suffix="%" 
               />
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={200}>
               <StatCounter 
                 icon={<Clock size={24} />} 
@@ -162,7 +134,7 @@ const LandingPage = () => {
                 decimals={1} 
               />
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={300}>
               <StatCounter 
                 icon={<BarChart size={24} />} 
@@ -171,7 +143,7 @@ const LandingPage = () => {
                 suffix="%" 
               />
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={400}>
               <StatCounter 
                 icon={<Users size={24} />} 
@@ -183,7 +155,7 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Product Demo Section */}
       <section className="py-16 bg-white overflow-hidden relative z-10">
         <div className="container mx-auto px-4">
@@ -194,13 +166,13 @@ const LandingPage = () => {
                 Discover how our AI-powered CRM transforms your sales process
               </p>
             </div>
-            
+
             <div className="max-w-6xl mx-auto">
               <ProductDemo />
             </div>
           </ScrollAnimationWrapper>
         </div>
-        
+
         {/* Background floating elements */}
         <div className="absolute top-10 right-10 opacity-20">
           <AnimatedFeatureIcon
@@ -219,10 +191,10 @@ const LandingPage = () => {
           />
         </div>
       </section>
-      
+
       {/* Feature Showcase */}
       <FeatureShowcase />
-      
+
       {/* Features Section */}
       <section className="py-20 content-stable" id="features">
         <div className="container mx-auto px-4">
@@ -236,7 +208,7 @@ const LandingPage = () => {
               </p>
             </div>
           </ScrollAnimationWrapper>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <ScrollAnimationWrapper animation="fade-up" delay={100}>
               <FeatureCard
@@ -246,7 +218,7 @@ const LandingPage = () => {
                 link="/features/ai-tools"
               />
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={200}>
               <FeatureCard
                 icon={<Users className="h-8 w-8 text-indigo-600" />}
@@ -255,7 +227,7 @@ const LandingPage = () => {
                 link="/features/contacts"
               />
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={300}>
               <FeatureCard
                 icon={<Briefcase className="h-8 w-8 text-violet-600" />}
@@ -264,7 +236,7 @@ const LandingPage = () => {
                 link="/features/pipeline"
               />
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={150}>
               <FeatureCard
                 icon={<Brain className="h-8 w-8 text-fuchsia-600" />}
@@ -273,7 +245,7 @@ const LandingPage = () => {
                 link="/features/ai-assistant"
               />
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={250}>
               <FeatureCard
                 icon={<Eye className="h-8 w-8 text-cyan-600" />}
@@ -282,7 +254,7 @@ const LandingPage = () => {
                 link="/features/vision-analyzer"
               />
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={350}>
               <FeatureCard
                 icon={<Image className="h-8 w-8 text-emerald-600" />}
@@ -291,7 +263,7 @@ const LandingPage = () => {
                 link="/features/image-generator"
               />
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={150}>
               <FeatureCard
                 icon={<Mic className="h-8 w-8 text-indigo-600" />}
@@ -300,7 +272,7 @@ const LandingPage = () => {
                 link="/voice-profiles"
               />
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={250}>
               <FeatureCard
                 icon={<Search className="h-8 w-8 text-blue-600" />}
@@ -309,7 +281,7 @@ const LandingPage = () => {
                 link="/features/semantic-search"
               />
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={350}>
               <FeatureCard
                 icon={<Zap className="h-8 w-8 text-yellow-600" />}
@@ -319,7 +291,7 @@ const LandingPage = () => {
               />
             </ScrollAnimationWrapper>
           </div>
-          
+
           <div className="text-center mt-12">
             <Link to="/ai-tools" className="inline-flex items-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg transition-colors">
               Explore AI Tools <ChevronRight className="ml-2 h-5 w-5" />
@@ -327,7 +299,7 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      
+
       {/* AI Highlights Section */}
       <section className="py-20 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 content-stable gpu-accelerated">
         <div className="container mx-auto px-4">
@@ -341,7 +313,7 @@ const LandingPage = () => {
               </p>
             </div>
           </ScrollAnimationWrapper>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             <ScrollAnimationWrapper animation="slide-in" delay={100}>
               <Link to="/features/ai-assistant" className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-all duration-300 flex flex-col hover:border-indigo-300 transform hover:-translate-y-1 animation-fix">
@@ -353,7 +325,7 @@ const LandingPage = () => {
                 <span className="text-indigo-600 flex items-center mt-auto">Learn more <ChevronRight className="h-4 w-4 ml-1" /></span>
               </Link>
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="slide-in" delay={200}>
               <Link to="/features/vision-analyzer" className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-all duration-300 flex flex-col hover:border-cyan-300 transform hover:-translate-y-1 animation-fix">
                 <div className="p-3 bg-cyan-100 rounded-full w-min mb-4">
@@ -364,7 +336,7 @@ const LandingPage = () => {
                 <span className="text-cyan-600 flex items-center mt-auto">Learn more <ChevronRight className="h-4 w-4 ml-1" /></span>
               </Link>
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="slide-in" delay={300}>
               <Link to="/features/image-generator" className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-all duration-300 flex flex-col hover:border-emerald-300 transform hover:-translate-y-1 animation-fix">
                 <div className="p-3 bg-emerald-100 rounded-full w-min mb-4">
@@ -375,7 +347,7 @@ const LandingPage = () => {
                 <span className="text-emerald-600 flex items-center mt-auto">Learn more <ChevronRight className="h-4 w-4 ml-1" /></span>
               </Link>
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="slide-in" delay={400}>
               <Link to="/features/function-assistant" className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-all duration-300 flex flex-col hover:border-amber-300 transform hover:-translate-y-1 animation-fix">
                 <div className="p-3 bg-amber-100 rounded-full w-min mb-4">
@@ -387,7 +359,7 @@ const LandingPage = () => {
               </Link>
             </ScrollAnimationWrapper>
           </div>
-          
+
           <div className="text-center mt-12">
             <Link to="/ai-tools" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-lg hover:shadow-lg transition duration-300 transform hover:scale-105">
               Explore All AI Tools <ChevronRight className="ml-2 h-5 w-5" />
@@ -395,7 +367,7 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Benefits Section */}
       <section className="py-20 content-stable">
         <div className="container mx-auto px-4">
@@ -409,7 +381,7 @@ const LandingPage = () => {
               </p>
             </div>
           </ScrollAnimationWrapper>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
             <ScrollAnimationWrapper animation="zoom-in" delay={100}>
               <div className="text-center transform hover:translate-y-[-10px] transition-all duration-300 animation-fix">
@@ -422,7 +394,7 @@ const LandingPage = () => {
                 </p>
               </div>
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="zoom-in" delay={300}>
               <div className="text-center transform hover:translate-y-[-10px] transition-all duration-300 animation-fix">
                 <div className="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
@@ -434,7 +406,7 @@ const LandingPage = () => {
                 </p>
               </div>
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="zoom-in" delay={500}>
               <div className="text-center transform hover:translate-y-[-10px] transition-all duration-300 animation-fix">
                 <div className="w-20 h-20 bg-violet-100 text-violet-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
@@ -449,7 +421,7 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Testimonials Section */}
       <section className="py-20 bg-gray-50 content-stable">
         <div className="container mx-auto px-4">
@@ -463,7 +435,7 @@ const LandingPage = () => {
               </p>
             </div>
           </ScrollAnimationWrapper>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <ScrollAnimationWrapper animation="fade-up" delay={100}>
               <TestimonialCard
@@ -475,7 +447,7 @@ const LandingPage = () => {
                 stars={5}
               />
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={300}>
               <TestimonialCard
                 quote="The AI assistant is like having an extra team member. It handles routine tasks, provides insights, and helps us close more deals."
@@ -486,7 +458,7 @@ const LandingPage = () => {
                 stars={5}
               />
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={500}>
               <TestimonialCard
                 quote="We've seen a 32% increase in our sales since implementing Smart CRM. The AI-powered features are a game-changer!"
@@ -500,7 +472,7 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Pricing Section */}
       <section className="py-20 content-stable" id="pricing">
         <div className="container mx-auto px-4">
@@ -514,7 +486,7 @@ const LandingPage = () => {
               </p>
             </div>
           </ScrollAnimationWrapper>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <ScrollAnimationWrapper animation="fade-up" delay={100}>
               <PricingCard
@@ -532,7 +504,7 @@ const LandingPage = () => {
                 ]}
               />
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={0}>
               <PricingCard
                 tier="Professional"
@@ -553,7 +525,7 @@ const LandingPage = () => {
                 ]}
               />
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={200}>
               <PricingCard
                 tier="Enterprise"
@@ -574,7 +546,7 @@ const LandingPage = () => {
               />
             </ScrollAnimationWrapper>
           </div>
-          
+
           <div className="mt-12 text-center">
             <p className="text-gray-600 mb-6">All plans include a 14-day free trial. No credit card required.</p>
             <Link to="/pricing" className="text-blue-600 hover:text-blue-800 font-medium">
@@ -583,7 +555,7 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Call to Action */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-600 text-white relative overflow-hidden gpu-accelerated">
         <ParticleBackground color="#ffffff" particleCount={30} speed={0.5} />
@@ -606,14 +578,14 @@ const LandingPage = () => {
             </div>
             <p className="mt-4 opacity-80">No credit card required • Free for 14 days</p>
           </div>
-          
+
           {/* Background floating elements */}
           <div className="absolute top-10 left-1/4 w-12 h-12 bg-white opacity-5 rounded-full transform animate-pulse animation-fix" style={{animationDuration: '4s'}}></div>
           <div className="absolute bottom-10 right-1/4 w-24 h-24 bg-white opacity-5 rounded-full transform animate-pulse animation-fix" style={{animationDuration: '7s'}}></div>
           <div className="absolute top-1/3 right-1/3 w-8 h-8 bg-white opacity-5 rounded-full transform animate-pulse animation-fix" style={{animationDuration: '5s'}}></div>
         </div>
       </section>
-      
+
       {/* FAQ Preview */}
       <section className="py-20 bg-white content-stable">
         <div className="container mx-auto px-4">
@@ -627,7 +599,7 @@ const LandingPage = () => {
               </p>
             </div>
           </ScrollAnimationWrapper>
-          
+
           <div className="max-w-3xl mx-auto space-y-6">
             <ScrollAnimationWrapper animation="fade-up" delay={100}>
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 transition-all duration-300 hover:shadow-md">
@@ -639,7 +611,7 @@ const LandingPage = () => {
                 </p>
               </div>
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={200}>
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 transition-all duration-300 hover:shadow-md">
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -650,7 +622,7 @@ const LandingPage = () => {
                 </p>
               </div>
             </ScrollAnimationWrapper>
-            
+
             <ScrollAnimationWrapper animation="fade-up" delay={300}>
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 transition-all duration-300 hover:shadow-md">
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -662,7 +634,7 @@ const LandingPage = () => {
               </div>
             </ScrollAnimationWrapper>
           </div>
-          
+
           <div className="text-center mt-8">
             <Link to="/faq" className="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
               View all FAQs <ChevronRight className="ml-1 h-5 w-5" />
@@ -670,7 +642,7 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      
+
       <LandingFooter />
     </div>
   );

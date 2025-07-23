@@ -2,17 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Upload, X, File, FileText, Image, FileSpreadsheet, RefreshCw } from 'lucide-react';
 
-interface FileUploadProps {
-  accept?: Record<string, string[]>;
-  maxFiles?: number;
-  maxSize?: number;
-  onFilesAdded: (files: File[]) => void;
-  fileType?: 'document' | 'image' | 'any';
-  className?: string;
-  isUploading?: boolean;
-}
-
-const FileUpload: React.FC<FileUploadProps> = ({
+const FileUpload: FC<FileUploadProps> = ({
   accept,
   maxFiles = 1,
   maxSize = 10485760, // 10MB default
@@ -23,7 +13,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
 }) => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Default accepted file types by category
   const defaultAccept = {
     document: {
@@ -67,10 +57,10 @@ const FileUpload: React.FC<FileUploadProps> = ({
     }
 
     setError(null);
-    
+
     if (acceptedFiles.length > 0) {
       const newFiles = [...uploadedFiles];
-      
+
       // Handle maxFiles limit
       if (newFiles.length + acceptedFiles.length > maxFiles) {
         if (maxFiles === 1) {
@@ -81,7 +71,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
           newFiles.splice(0, (newFiles.length + acceptedFiles.length) - maxFiles);
         }
       }
-      
+
       const updatedFiles = [...newFiles, ...acceptedFiles];
       setUploadedFiles(updatedFiles);
       onFilesAdded(updatedFiles);
@@ -106,7 +96,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
   // Get file icon based on type
   const getFileIcon = (file: File) => {
     const fileType = file.type;
-    
+
     if (fileType.startsWith('image/')) {
       return <Image size={18} className="text-purple-500" />;
     } else if (fileType.includes('spreadsheet') || fileType.includes('excel')) {
@@ -138,7 +128,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
         }`}
       >
         <input {...getInputProps()} />
-        
+
         {isUploading ? (
           <div className="text-center py-4">
             <RefreshCw size={32} className="mx-auto text-blue-500 animate-spin mb-2" />
@@ -195,7 +185,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
           </div>
         )}
       </div>
-      
+
       {error && (
         <div className="mt-2 text-sm text-red-600">
           {error}

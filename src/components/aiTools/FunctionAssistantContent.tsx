@@ -15,12 +15,6 @@ interface Message {
   };
 }
 
-interface FunctionExecutionInfo {
-  name: string;
-  arguments: unknown;
-  result: unknown;
-}
-
 const FunctionAssistantContent: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -37,15 +31,15 @@ const FunctionAssistantContent: React.FC = () => {
     'getDealInfo'
   ]);
   const [showSettings, setShowSettings] = useState(false);
-  
+
   const functionService = useOpenAIFunctions();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   // Scroll to bottom when messages change
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-  
+
   // Add welcome message when component mounts
   useEffect(() => {
     setMessages([
@@ -57,14 +51,14 @@ const FunctionAssistantContent: React.FC = () => {
       }
     ]);
   }, []);
-  
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-  
+
   const handleSendMessage = async () => {
     if (!input.trim()) return;
-    
+
     // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -72,12 +66,12 @@ const FunctionAssistantContent: React.FC = () => {
       content: input.trim(),
       timestamp: new Date()
     };
-    
+
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsProcessing(true);
     setError(null);
-    
+
     try {
       // Format previous messages for the API
       const previousMessages = messages
@@ -91,18 +85,18 @@ const FunctionAssistantContent: React.FC = () => {
             arguments: msg.functionCall.arguments
           } : undefined
         }));
-      
+
       // Call the assistant with function capabilities
       const response = await functionService.salesAssistantWithFunctions(
         input.trim(),
         "You have access to this user's CRM data through functions.",
         previousMessages
       );
-      
+
       // Process function calls that might have happened
       // Note: In a real implementation, we'd track the actual function calls and results
       // that were exchanged with OpenAI. For demo purposes, we'll simulate this.
-      
+
       // Add assistant response
       const assistantMessage: Message = {
         id: Date.now().toString(),
@@ -114,9 +108,9 @@ const FunctionAssistantContent: React.FC = () => {
           arguments: response.function_call.arguments
         } : undefined
       };
-      
+
       setMessages(prev => [...prev, assistantMessage]);
-      
+
     } catch (err) {
       console.error('Error with function assistant:', err);
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
@@ -124,11 +118,11 @@ const FunctionAssistantContent: React.FC = () => {
       setIsProcessing(false);
     }
   };
-  
+
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
-  
+
   const toggleFunctionStatus = (functionName: string) => {
     setEnabledFunctions(prev => {
       if (prev.includes(functionName)) {
@@ -167,7 +161,7 @@ const FunctionAssistantContent: React.FC = () => {
               <Zap size={18} className="text-indigo-600 mr-2" />
               <span className="font-medium">CRM Function-Enabled AI Assistant</span>
             </div>
-            
+
             <button 
               onClick={() => setShowSettings(!showSettings)} 
               className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
@@ -176,7 +170,7 @@ const FunctionAssistantContent: React.FC = () => {
               <Settings size={18} />
             </button>
           </div>
-          
+
           {/* Settings panel */}
           {showSettings && (
             <div className="p-4 bg-gray-50 border-b border-gray-200">
@@ -186,7 +180,7 @@ const FunctionAssistantContent: React.FC = () => {
                   <X size={18} />
                 </button>
               </div>
-              
+
               <div className="space-y-2">
                 <div className="flex items-center justify-between p-2 border border-gray-200 rounded hover:bg-white transition-colors">
                   <div className="flex items-center">
@@ -200,7 +194,7 @@ const FunctionAssistantContent: React.FC = () => {
                     className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                   />
                 </div>
-                
+
                 <div className="flex items-center justify-between p-2 border border-gray-200 rounded hover:bg-white transition-colors">
                   <div className="flex items-center">
                     <User size={16} className="text-green-500 mr-2" />
@@ -213,7 +207,7 @@ const FunctionAssistantContent: React.FC = () => {
                     className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                   />
                 </div>
-                
+
                 <div className="flex items-center justify-between p-2 border border-gray-200 rounded hover:bg-white transition-colors">
                   <div className="flex items-center">
                     <CheckSquare size={16} className="text-amber-500 mr-2" />
@@ -226,7 +220,7 @@ const FunctionAssistantContent: React.FC = () => {
                     className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                   />
                 </div>
-                
+
                 <div className="flex items-center justify-between p-2 border border-gray-200 rounded hover:bg-white transition-colors">
                   <div className="flex items-center">
                     <Calendar size={16} className="text-purple-500 mr-2" />
@@ -239,7 +233,7 @@ const FunctionAssistantContent: React.FC = () => {
                     className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                   />
                 </div>
-                
+
                 <div className="flex items-center justify-between p-2 border border-gray-200 rounded hover:bg-white transition-colors">
                   <div className="flex items-center">
                     <Database size={16} className="text-gray-500 mr-2" />
@@ -263,7 +257,7 @@ const FunctionAssistantContent: React.FC = () => {
                   />
                 </div>
               </div>
-              
+
               <button 
                 onClick={() => setShowFunctionLogs(!showFunctionLogs)} 
                 className="mt-4 text-xs text-indigo-600 hover:text-indigo-800"
@@ -272,7 +266,7 @@ const FunctionAssistantContent: React.FC = () => {
               </button>
             </div>
           )}
-          
+
           {/* Function execution logs panel */}
           {showFunctionLogs && (
             <div className="p-3 bg-gray-800 text-gray-200 text-xs font-mono max-h-40 overflow-y-auto">
@@ -289,7 +283,7 @@ const FunctionAssistantContent: React.FC = () => {
               )}
             </div>
           )}
-          
+
           {/* Messages area */}
           <div className="p-4 h-96 overflow-y-auto">
             {messages.map(message => (
@@ -323,7 +317,7 @@ const FunctionAssistantContent: React.FC = () => {
                     </span>
                   </div>
                   <div className="text-sm whitespace-pre-wrap">{message.content}</div>
-                  
+
                   {message.functionCall && (
                     <div className="mt-2 text-xs bg-gray-100 p-2 rounded">
                       <div className="font-bold">Function Call:</div>
@@ -335,7 +329,7 @@ const FunctionAssistantContent: React.FC = () => {
             ))}
             <div ref={messagesEndRef} />
           </div>
-          
+
           {/* Input area */}
           <div className="p-3 border-t border-gray-200">
             <form 
@@ -367,7 +361,7 @@ const FunctionAssistantContent: React.FC = () => {
                 )}
               </button>
             </form>
-            
+
             {/* Function status indicator */}
             <div className="mt-2 flex justify-end">
               <div className="flex items-center text-xs text-indigo-600">

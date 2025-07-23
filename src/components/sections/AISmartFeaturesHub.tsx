@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { BarChart3, Brain, Search, Settings, Zap } from 'lucide-react';
+import { Brain, Search, Zap } from 'lucide-react';
 import { useAITools } from '../../components/AIToolsProvider';
 import AIInsightsPanel from '../dashboard/AIInsightsPanel';
 import { SmartAIControls } from '../ai/SmartAIControls';
@@ -40,7 +40,7 @@ const AISmartFeaturesHub: React.FC = () => {
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
-          
+
           return (
             <button
               key={tab.id}
@@ -61,19 +61,19 @@ const AISmartFeaturesHub: React.FC = () => {
       {/* Tab Content */}
       <div className="mb-6">
         {activeTab === 'insights' && <AIInsightsPanel />}
-        
+
         {activeTab === 'controls' && (
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl p-6`}>
             <SmartAIControls />
           </div>
         )}
-        
+
         {activeTab === 'performance' && (
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl p-6`}>
             <AIModelUsageStats />
           </div>
         )}
-        
+
         {activeTab === 'tools' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl overflow-hidden`}>
@@ -100,7 +100,7 @@ const AISmartFeaturesHub: React.FC = () => {
                 <LiveDealAnalysis />
               </div>
             </div>
-            
+
             <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-100'} backdrop-blur-xl border rounded-2xl overflow-hidden`}>
               <div className={`p-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'} flex justify-between items-center`}>
                 <h3 className={`font-semibold flex items-center ${isDark ? 'text-white' : 'text-gray-900'}`}>

@@ -1,12 +1,6 @@
 import React from 'react';
 
-interface StatusIndicatorProps {
-  status?: 'active' | 'pending' | 'inactive' | 'success' | 'warning' | 'error';
-  size?: 'xs' | 'sm' | 'md' | 'lg';
-  pulse?: boolean;
-}
-
-export const StatusIndicator: React.FC<StatusIndicatorProps> = ({
+export const StatusIndicator: FC<StatusIndicatorProps> = ({
   status = 'active',
   size = 'md',
   pulse = false

@@ -10,12 +10,12 @@ const ClientLogos: React.FC = () => {
     { name: "NextGen Solutions", letter: "N" },
     { name: "Digital Dynamics", letter: "D" }
   ];
-  
+
   return (
     <div className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
         <p className="text-center text-gray-600 mb-8">Trusted by innovative companies worldwide</p>
-        
+
         <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 px-4">
           {logos.map((logo, index) => (
             <div 

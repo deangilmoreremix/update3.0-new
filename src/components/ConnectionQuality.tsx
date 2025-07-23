@@ -3,14 +3,6 @@ import { Wifi, WifiOff, Signal, AlertTriangle } from 'lucide-react';
 import { useSafeVideoCall as useVideoCall } from '../hooks/useSafeVideoCall';
 import { useTheme } from '../contexts/ThemeContext';
 
-interface ConnectionStats {
-  bitrate: number;
-  packetsLost: number;
-  rtt: number; // Round trip time
-  jitter: number;
-  quality: 'excellent' | 'good' | 'poor' | 'disconnected';
-}
-
 const ConnectionQuality: React.FC = () => {
   const { peer, isInCall } = useVideoCall();
   const { isDark } = useTheme();
@@ -30,7 +22,7 @@ const ConnectionQuality: React.FC = () => {
       try {
         // Get WebRTC stats (this is a simplified version)
         // In a real implementation, you'd use peer._pc.getStats()
-        
+
         // Simulate realistic connection stats for demo
         const simulatedStats: ConnectionStats = {
           bitrate: Math.floor(800 + Math.random() * 400), // 800-1200 kbps
@@ -113,7 +105,7 @@ const ConnectionQuality: React.FC = () => {
         } backdrop-blur-xl border ${
           isDark ? 'border-white/20' : 'border-gray-200'
         } rounded-xl shadow-xl p-4 z-50`}>
-          
+
           <div className="flex items-center justify-between mb-3">
             <h3 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
               Connection Quality

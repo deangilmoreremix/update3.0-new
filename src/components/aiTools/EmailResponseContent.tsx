@@ -11,7 +11,7 @@ const EmailResponseContent: React.FC = () => {
     contactCompany: '',
     dealContext: ''
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -33,20 +33,20 @@ const EmailResponseContent: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const contactInfo = {
         name: formData.contactName,
         position: formData.contactPosition,
         company: formData.contactCompany
       };
-      
+
       const emailResponse = await gemini.generateEmailResponse(
         formData.originalEmail,
         contactInfo,
         formData.dealContext
       );
-      
+
       setResult(emailResponse);
       setCopied(false);
     } catch (err) {
@@ -101,7 +101,7 @@ const EmailResponseContent: React.FC = () => {
               required
             ></textarea>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
@@ -117,7 +117,7 @@ const EmailResponseContent: React.FC = () => {
                 onChange={handleChange}
               />
             </div>
-            
+
             <div>
               <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                 <Briefcase className="h-4 w-4 mr-1 text-gray-500" />
@@ -132,7 +132,7 @@ const EmailResponseContent: React.FC = () => {
                 onChange={handleChange}
               />
             </div>
-            
+
             <div>
               <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                 <User className="h-4 w-4 mr-1 text-gray-500" />
@@ -148,7 +148,7 @@ const EmailResponseContent: React.FC = () => {
               />
             </div>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Deal/Relationship Context (Optional)
@@ -162,7 +162,7 @@ const EmailResponseContent: React.FC = () => {
               onChange={handleChange}
             ></textarea>
           </div>
-            
+
           <div className="flex justify-end">
             <button
               type="submit"

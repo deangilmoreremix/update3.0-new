@@ -2,17 +2,12 @@ import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { BarChart3, TrendingUp, Calendar, Search, User } from 'lucide-react';
 
-interface DashboardHeaderProps {
-  title?: string;
-  subtitle?: string;
-}
-
-const DashboardHeader: React.FC<DashboardHeaderProps> = ({ 
+const DashboardHeader: FC<DashboardHeaderProps> = ({ 
   title = 'Dashboard Overview',
   subtitle = 'Welcome back! Here\'s an overview of your sales performance'
 }) => {
   const { isDark } = useTheme();
-  
+
   // Get current date
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString('en-US', {
@@ -31,13 +26,13 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           </h1>
           <p className={`mt-1 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{subtitle}</p>
         </div>
-        
+
         <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm flex items-center`}>
           <Calendar size={16} className="mr-2" />
           {formattedDate}
         </div>
       </div>
-      
+
       {/* KPI Summary */}
       <div className={`mt-6 p-4 rounded-xl border ${
         isDark 
@@ -60,7 +55,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center">
             <div className={`p-3 rounded-lg ${
               isDark ? 'bg-purple-500/20' : 'bg-purple-100'
@@ -76,7 +71,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center">
             <div className={`p-3 rounded-lg ${
               isDark ? 'bg-green-500/20' : 'bg-green-100'
@@ -92,7 +87,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               </div>
             </div>
           </div>
-          
+
           <div className={`px-4 py-2 rounded-lg ${
             isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-white hover:bg-gray-50'
           } flex items-center space-x-2 cursor-pointer transition-colors`}>

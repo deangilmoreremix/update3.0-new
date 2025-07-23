@@ -14,17 +14,17 @@ interface Goal {
 const AIGoalsCard: React.FC = () => {
   const { isDark } = useTheme();
   const navigate = useNavigate();
-  
+
   const goals: Goal[] = [
     { id: 1, name: 'Increase Lead Conversion', progress: 65, category: 'Sales', daysLeft: 12 },
     { id: 2, name: 'Optimize Email Campaigns', progress: 45, category: 'Marketing', daysLeft: 5 },
     { id: 3, name: 'Reduce Deal Cycle Time', progress: 80, category: 'Operations' }
   ];
-  
+
   const handleViewAll = () => {
     navigate('/ai-goals');
   };
-  
+
   return (
     <div className={`rounded-xl ${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border shadow-sm`}>
       <div className={`p-4 flex justify-between items-center border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
@@ -44,7 +44,7 @@ const AIGoalsCard: React.FC = () => {
           <ChevronRight className="h-3 w-3" />
         </button>
       </div>
-      
+
       <div className="p-4 space-y-3">
         {goals.map((goal) => (
           <div key={goal.id} className={`p-3 rounded-lg ${isDark ? 'bg-gray-800/50 hover:bg-gray-800' : 'bg-gray-50 hover:bg-gray-100'} transition-colors cursor-pointer`}>
@@ -62,7 +62,7 @@ const AIGoalsCard: React.FC = () => {
                 </div>
                 <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-600'}`}>{goal.category}</p>
               </div>
-              
+
               <div className={`text-xs font-medium ${
                 goal.progress >= 80 
                   ? (isDark ? 'text-green-400' : 'text-green-600') 
@@ -73,7 +73,7 @@ const AIGoalsCard: React.FC = () => {
                 {goal.progress}%
               </div>
             </div>
-            
+
             {/* Progress bar */}
             <div className={`h-1.5 w-full rounded-full overflow-hidden ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
               <div 
@@ -89,7 +89,7 @@ const AIGoalsCard: React.FC = () => {
             </div>
           </div>
         ))}
-        
+
         <button
           onClick={handleViewAll} 
           className={`w-full py-2.5 mt-2 flex items-center justify-center space-x-2 rounded-lg border-2 border-dashed ${

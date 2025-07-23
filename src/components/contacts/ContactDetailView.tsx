@@ -9,16 +9,9 @@ import { AutomationPanel } from './AutomationPanel';
 import { useGamification } from '../../contexts/GamificationContext';
 import { AvatarWithStatus } from '../ui/AvatarWithStatus';
 import { ModernButton } from '../ui/ModernButton';
-import { X, Edit, Mail, Phone, Building2, Tag, Save, Plus, UserPlus, UserMinus, Globe, Calendar, Clock, BarChart2, MessageSquare, Zap, FileText, Target, Sparkles, Brain, Crown, Star, Award, Trophy, User } from 'lucide-react';
+import { X, Edit, Mail, Phone, Building2, Tag, Plus, UserPlus, UserMinus, Globe, Calendar, Clock, Sparkles, Brain, Crown, Star, Award, Trophy, User } from 'lucide-react';
 
-interface ContactDetailViewProps {
-  contact: Contact;
-  isOpen: boolean;
-  onClose: () => void;
-  onUpdate: (id: string, updates: Partial<Contact>) => Promise<unknown>;
-}
-
-export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
+export const ContactDetailView: FC<ContactDetailViewProps> = ({
   contact,
   isOpen,
   onClose,
@@ -157,26 +150,26 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                   size="xl"
                   status={contact.status}
                 />
-                
+
                 {/* Team Member Badge if applicable */}
                 {contact.isTeamMember && (
                   <div className="absolute -top-2 -right-2 bg-indigo-600 text-white p-1 rounded-full shadow-lg">
                     <Crown className="w-4 h-4" />
                   </div>
                 )}
-                
+
                 {/* Favorite Badge if applicable */}
                 {contact.isFavorite && (
                   <div className="absolute -top-2 -left-2 bg-red-500 text-white p-1 rounded-full shadow-lg">
                     <Star className="w-4 h-4 fill-current" />
                   </div>
                 )}
-                
+
                 <button className="absolute -bottom-2 -right-2 p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
                   <Edit className="w-3 h-3" />
                 </button>
               </div>
-              
+
               {/* Contact Name */}
               {editMode.name ? (
                 <div className="mb-4">
@@ -228,7 +221,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                   </button>
                 </h4>
               )}
-              
+
               {/* Job Title & Company */}
               {editMode.title ? (
                 <div className="mb-4">
@@ -279,7 +272,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                   <p className="text-gray-500 text-sm">{contact.company}</p>
                 </>
               )}
-              
+
               {/* Status and Interest Level */}
               <div className="mt-3 flex justify-center space-x-2">
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(contact.status)}`}>
@@ -330,7 +323,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                 )}
               </div>
             </div>
-            
+
             {/* Team Member Stats (conditionally shown) */}
             {contact.isTeamMember && showTeamStats && contact.gamificationStats && (
               <div className="bg-indigo-50 rounded-xl border border-indigo-200 p-4 shadow-sm">
@@ -338,7 +331,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                   <Trophy className="w-4 h-4 mr-2 text-indigo-600" />
                   Team Performance
                 </h4>
-                
+
                 <div className="grid grid-cols-2 gap-3 mb-4">
                   <div className="bg-white rounded-lg p-3 border border-indigo-100">
                     <h5 className="text-xs font-medium text-indigo-800 mb-1 flex items-center">
@@ -357,23 +350,23 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                       <span className="text-xs text-gray-600 ml-2">{contact.gamificationStats.points} pts</span>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white rounded-lg p-3 border border-indigo-100">
                     <h5 className="text-xs font-medium text-indigo-800 mb-1">Win Rate</h5>
                     <p className="text-lg font-bold text-indigo-900">{contact.gamificationStats.winRate}%</p>
                   </div>
-                  
+
                   <div className="bg-white rounded-lg p-3 border border-indigo-100">
                     <h5 className="text-xs font-medium text-indigo-800 mb-1">Total Deals</h5>
                     <p className="text-lg font-bold text-indigo-900">{contact.gamificationStats.totalDeals}</p>
                   </div>
-                  
+
                   <div className="bg-white rounded-lg p-3 border border-indigo-100">
                     <h5 className="text-xs font-medium text-indigo-800 mb-1">Revenue</h5>
                     <p className="text-lg font-bold text-indigo-900">${contact.gamificationStats.totalRevenue.toLocaleString()}</p>
                   </div>
                 </div>
-                
+
                 {/* Monthly Target */}
                 {contact.gamificationStats.monthlyGoal && (
                   <div className="mb-4">
@@ -391,7 +384,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                     </div>
                   </div>
                 )}
-                
+
                 {/* Achievements */}
                 {contact.gamificationStats.achievements.length > 0 && (
                   <div>
@@ -422,7 +415,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
             {/* Contact Details */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
               <h4 className="font-semibold text-gray-900 mb-4">Contact Details</h4>
-              
+
               <div className="space-y-3">
                 {/* Email */}
                 {editMode.email ? (
@@ -473,7 +466,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                     </button>
                   </div>
                 )}
-                
+
                 {/* Phone */}
                 {editMode.phone ? (
                   <div className="space-y-2">
@@ -527,7 +520,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                     </button>
                   </div>
                 )}
-                
+
                 {/* Company & Industry */}
                 {editMode.company ? (
                   <div className="space-y-2">
@@ -584,7 +577,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                     </button>
                   </div>
                 )}
-                
+
                 {/* Tags */}
                 <div className="flex items-start justify-between text-gray-900 dark:text-white">
                   <div className="flex items-start">
@@ -616,11 +609,11 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                 </div>
               </div>
             </div>
-            
+
             {/* Additional Information */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
               <h4 className="font-semibold text-gray-900 mb-4">Additional Information</h4>
-              
+
               <div className="space-y-3">
                 {/* Sources */}
                 <div>
@@ -636,7 +629,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                     ))}
                   </div>
                 </div>
-                
+
                 {/* Last Connected */}
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Last Connected</p>
@@ -645,7 +638,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                     <p className="text-gray-900">{contact.lastConnected || 'No record'}</p>
                   </div>
                 </div>
-                
+
                 {/* Custom Fields */}
                 <div>
                   <div className="flex items-center justify-between mb-1">
@@ -655,7 +648,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                       Add Field
                     </button>
                   </div>
-                  
+
                   {contact.customFields && Object.keys(contact.customFields).length > 0 ? (
                     <div className="space-y-2">
                       {Object.entries(contact.customFields).map(([key, value]) => (
@@ -671,7 +664,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                 </div>
               </div>
             </div>
-            
+
             {/* Notes */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between mb-4">
@@ -683,7 +676,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                   <Edit className="w-4 h-4" />
                 </button>
               </div>
-              
+
               {editMode.notes ? (
                 <div className="space-y-3">
                   <textarea
@@ -747,28 +740,28 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
               ))}
             </div>
           </div>
-          
+
           {/* Tab Content */}
           <div className="p-8 flex-1 overflow-y-auto bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
             {/* Overview Tab */}
             {activeTab === 'overview' && (
               <div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Contact Overview</h3>
-                
+
                 {/* Contact Summary */}
                 <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm mb-6">
                   <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                     <User className="w-5 h-5 mr-2 text-blue-500 dark:text-blue-400" />
                     Contact Summary
                   </h4>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <div>
                         <p className="text-sm font-medium text-gray-700">Full Name</p>
                         <p className="text-lg text-gray-900">{contact.name}</p>
                       </div>
-                      
+
                       <div>
                         <p className="text-sm font-medium text-gray-700">Status</p>
                         <div className="flex items-center mt-1">
@@ -777,7 +770,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                           </span>
                         </div>
                       </div>
-                      
+
                       <div>
                         <p className="text-sm font-medium text-gray-700">Interest Level</p>
                         <div className="flex items-center mt-1">
@@ -788,7 +781,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-4">
                       <div>
                         <p className="text-sm font-medium text-gray-700">Email</p>
@@ -796,7 +789,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                           {contact.email}
                         </a>
                       </div>
-                      
+
                       <div>
                         <p className="text-sm font-medium text-gray-700">Phone</p>
                         {contact.phone ? (
@@ -807,7 +800,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                           <p className="text-gray-500 italic">Not provided</p>
                         )}
                       </div>
-                      
+
                       <div>
                         <p className="text-sm font-medium text-gray-700">Lead Source</p>
                         <div className="flex flex-wrap gap-1 mt-1">
@@ -821,28 +814,28 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Company Information */}
                 <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm mb-6">
                   <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                     <Building2 className="w-5 h-5 mr-2 text-purple-500" />
                     Company Information
                   </h4>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <p className="text-sm font-medium text-gray-700">Company Name</p>
                       <p className="text-lg text-gray-900 dark:text-white">{contact.company}</p>
                     </div>
-                    
+
                     <div>
                       <p className="text-sm font-medium text-gray-700">Industry</p>
                       <p className="text-lg text-gray-900 dark:text-white">{contact.industry || 'Not specified'}</p>
                     </div>
-                    
+
                     {/* If we had more company details, they would go here */}
                   </div>
-                  
+
                   {/* Company Website */}
                   {contact.socialProfiles?.website && (
                     <div className="mt-4 pt-4 border-t border-gray-200">
@@ -859,7 +852,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                     </div>
                   )}
                 </div>
-                
+
                 {/* AI Enrichment */}
                 {contact.lastEnrichment && (
                   <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-6 border border-purple-200 shadow-sm mb-6">
@@ -867,7 +860,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                       <Sparkles className="w-5 h-5 mr-2 text-purple-500" />
                       AI Enrichment Details
                     </h4>
-                    
+
                     <div className="space-y-3">
                       <div className="flex items-center">
                         <Brain className="w-5 h-5 text-purple-600 mr-3" />
@@ -876,7 +869,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                           <p className="text-lg text-gray-900 dark:text-white">{contact.lastEnrichment.confidence}%</p>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center">
                         <div className="w-5 h-5 flex items-center justify-center mr-3">🤖</div>
                         <div>
@@ -884,7 +877,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                           <p className="text-gray-900 dark:text-white">{contact.lastEnrichment.aiProvider || 'AI Assistant'}</p>
                         </div>
                       </div>
-                      
+
                       {contact.lastEnrichment.timestamp && (
                         <div className="flex items-center">
                           <Calendar className="w-5 h-5 text-blue-600 mr-3" />
@@ -897,7 +890,7 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                     </div>
                   </div>
                 )}
-                
+
                 {/* Quick Actions */}
                 <div className="grid grid-cols-3 gap-3 mb-6">
                   <button className="p-3 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-200 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800/60 transition-colors flex items-center justify-center">
@@ -915,27 +908,27 @@ export const ContactDetailView: React.FC<ContactDetailViewProps> = ({
                 </div>
               </div>
             )}
-            
+
             {/* AI Insights Tab */}
             {activeTab === 'insights' && (
               <AIInsightsPanel contact={contact} />
             )}
-            
+
             {/* Journey Tab */}
             {activeTab === 'journey' && (
               <ContactJourneyTimeline contact={contact} />
             )}
-            
+
             {/* Communication Tab */}
             {activeTab === 'communication' && (
               <CommunicationHub contact={contact} />
             )}
-            
+
             {/* Analytics Tab */}
             {activeTab === 'analytics' && (
               <ContactAnalytics contact={contact} />
             )}
-            
+
             {/* Automation Tab */}
             {activeTab === 'automation' && (
               <AutomationPanel contact={contact} />

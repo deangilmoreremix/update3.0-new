@@ -3,16 +3,6 @@ import { GlassCard } from '../ui/GlassCard';
 import { AvatarWithStatus } from '../ui/AvatarWithStatus';
 import { Edit, MoreHorizontal } from 'lucide-react';
 
-interface LeadCardProps {
-  avatarSrc: string;
-  name: string;
-  title: string;
-  company: string;
-  sources: string[];
-  interestLevel: 'hot' | 'medium' | 'low' | 'cold';
-  status?: 'active' | 'pending' | 'inactive';
-}
-
 const interestColors = {
   hot: 'bg-red-500',
   medium: 'bg-yellow-500', 
@@ -36,7 +26,7 @@ const sourceColors: { [key: string]: string } = {
   'Cold Call': 'bg-gray-600'
 };
 
-export const LeadCard: React.FC<LeadCardProps> = ({
+export const LeadCard: FC<LeadCardProps> = ({
   avatarSrc,
   name,
   title,
@@ -62,7 +52,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
             <p className="text-xs text-gray-500">{company}</p>
           </div>
         </div>
-        
+
         <div className="flex space-x-1">
           <button className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
             <Edit className="w-3 h-3" />
@@ -109,7 +99,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
             (interestLevel === 'medium' && i < 3) ||
             (interestLevel === 'low' && i < 2) ||
             (interestLevel === 'cold' && i < 1);
-          
+
           return (
             <div
               key={i}

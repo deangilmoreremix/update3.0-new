@@ -2,13 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useDealStore } from '../../store/dealStore';
 import { useContactStore } from '../../store/contactStore';
 import { useRealTimeDashboard } from '../../hooks/useRealTimeData';
-import { 
-  TrendingUp, TrendingDown, Users, Target, DollarSign, 
-  Calendar, Phone, Mail, AlertCircle, CheckCircle,
-  Filter, Download, RefreshCw, Settings, ChevronDown,
-  BarChart3, Activity, Zap, Brain, Star,
-  ArrowUp, ArrowDown, Plus, MoreHorizontal
-} from 'lucide-react';
+import { TrendingUp, Users, Target, DollarSign, Calendar, Phone, Mail, AlertCircle, CheckCircle, Download, RefreshCw, Settings, ChevronDown, BarChart3, Activity, Zap, Brain, Star, ArrowUp, ArrowDown, Plus, MoreHorizontal } from 'lucide-react';
 import * as SafeCharts from '../charts/SafeCharts';
 
 }
@@ -16,7 +10,7 @@ import * as SafeCharts from '../charts/SafeCharts';
 export default function EnhancedDashboard() {
   const { deals, stageValues, totalPipelineValue, fetchDeals, isLoading: dealsLoading } = useDealStore();
   const { contacts, fetchContacts, isLoading: contactsLoading } = useContactStore();
-  
+
   // Use real-time dashboard data
   const { 
     metrics: realTimeMetrics, 
@@ -25,7 +19,7 @@ export default function EnhancedDashboard() {
     error: dashboardError,
     refreshData 
   } = useRealTimeDashboard();
-  
+
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -41,7 +35,7 @@ export default function EnhancedDashboard() {
     if (realTimeMetrics && realTimeMetrics.totalDeals > 0) {
       return realTimeMetrics;
     }
-    
+
     // Fallback calculation
     const dealsArray = Object.values(deals || {});
     const contactsArray = Object.values(contacts || {});
@@ -162,7 +156,7 @@ export default function EnhancedDashboard() {
               Overview of your sales performance and pipeline health
             </p>
           </div>
-          
+
           <div className="mt-4 lg:mt-0 flex items-center space-x-4">
             {/* Time Range Selector */}
             <div className="relative">
@@ -295,7 +289,7 @@ export default function EnhancedDashboard() {
                 <MoreHorizontal className="w-5 h-5" />
               </button>
             </div>
-            
+
             <div className="h-80">
               {pipelineChartData.length > 0 ? (
                 <SafeCharts.ResponsiveContainer width="100%" height="100%">
@@ -340,7 +334,7 @@ export default function EnhancedDashboard() {
                 </div>
               </div>
             </div>
-            
+
             <div className="h-80">
               <SafeCharts.ResponsiveContainer width="100%" height="100%">
                 <SafeCharts.LineChart data={monthlyTrendData}>
@@ -383,7 +377,7 @@ export default function EnhancedDashboard() {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
               Conversion Funnel
             </h3>
-            
+
             <div className="space-y-4">
               {conversionFunnelData.map((item, index) => (
                 <div key={item.stage} className="relative">
@@ -431,7 +425,7 @@ export default function EnhancedDashboard() {
                 View all
               </button>
             </div>
-            
+
             <div className="space-y-4">
               {dashboardActivities.map((activity) => (
                 <div key={activity.id} className="flex items-start space-x-3">
@@ -470,7 +464,7 @@ export default function EnhancedDashboard() {
                 AI Insights
               </h3>
             </div>
-            
+
             <div className="space-y-4">
               <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
                 <div className="flex items-start space-x-3">
@@ -533,23 +527,23 @@ export default function EnhancedDashboard() {
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Quick Actions
           </h3>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <button className="flex items-center space-x-3 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
               <Plus className="w-5 h-5 text-blue-600" />
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Add Deal</span>
             </button>
-            
+
             <button className="flex items-center space-x-3 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
               <Users className="w-5 h-5 text-green-600" />
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Add Contact</span>
             </button>
-            
+
             <button className="flex items-center space-x-3 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
               <Calendar className="w-5 h-5 text-purple-600" />
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Schedule Meeting</span>
             </button>
-            
+
             <button className="flex items-center space-x-3 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
               <BarChart3 className="w-5 h-5 text-orange-600" />
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">View Reports</span>

@@ -9,7 +9,7 @@ const VoiceToneOptimizerContent: React.FC = () => {
     targetAudience: '',
     communicationGoal: 'persuasion'
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -31,14 +31,14 @@ const VoiceToneOptimizerContent: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const optimizedContent = await gemini.optimizeVoiceTone(
         formData.content,
         formData.targetAudience,
         formData.communicationGoal
       );
-      
+
       setResult(optimizedContent);
       setCopied(false);
     } catch (err) {
@@ -65,7 +65,7 @@ const VoiceToneOptimizerContent: React.FC = () => {
     { value: 'problem_solving', label: 'Problem Solving - Address concerns or issues' },
     { value: 'inspirational', label: 'Inspirational - Motivate or encourage action' }
   ];
-  
+
   // Target audience suggestions
   const audienceSuggestions = [
     'C-level executives',
@@ -114,7 +114,7 @@ const VoiceToneOptimizerContent: React.FC = () => {
               required
             ></textarea>
           </div>
-          
+
           <div>
             <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
               <User className="h-4 w-4 mr-1 text-gray-500" />
@@ -138,7 +138,7 @@ const VoiceToneOptimizerContent: React.FC = () => {
               </datalist>
             </div>
           </div>
-          
+
           <div>
             <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
               <MessageCircle className="h-4 w-4 mr-1 text-gray-500" />
@@ -156,7 +156,7 @@ const VoiceToneOptimizerContent: React.FC = () => {
               ))}
             </select>
           </div>
-            
+
           <div className="flex justify-end">
             <button
               type="submit"

@@ -1,22 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, MessageSquare, X, Check } from 'lucide-react';
+import { Send, MessageSquare, X } from 'lucide-react';
 import { useSafeVideoCall as useVideoCall } from '../hooks/useSafeVideoCall';
 import { useTheme } from '../contexts/ThemeContext';
 
-interface ChatMessage {
-  id: string;
-  sender: 'user' | 'remote';
-  content: string;
-  timestamp: Date;
-}
-
-interface InCallMessagingProps {
-  isVisible: boolean;
-  onClose: () => void;
-  remoteParticipantName: string;
-}
-
-const InCallMessaging: React.FC<InCallMessagingProps> = ({ 
+const InCallMessaging: FC<InCallMessagingProps> = ({ 
   isVisible, 
   onClose, 
   remoteParticipantName 
@@ -114,7 +101,7 @@ const InCallMessaging: React.FC<InCallMessagingProps> = ({
     } backdrop-blur-xl border ${
       isDark ? 'border-white/20' : 'border-gray-200'
     } rounded-2xl shadow-2xl overflow-hidden z-50 flex flex-col`}>
-      
+
       {/* Header */}
       <div className={`p-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'} flex items-center justify-between`}>
         <div className="flex items-center space-x-2">
@@ -204,7 +191,7 @@ const InCallMessaging: React.FC<InCallMessagingProps> = ({
             <Send size={16} />
           </button>
         </div>
-        
+
         {/* Quick Reactions */}
         <div className="flex items-center space-x-2 mt-2">
           <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Quick:</span>

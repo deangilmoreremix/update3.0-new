@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ChevronRight, Link, Minus, Plus, Search, Calendar } from 'lucide-react';
+import { ArrowRight, ChevronRight, Link, Minus, Plus, Search } from 'lucide-react';
 
 interface FAQ {
   id: string;
@@ -9,18 +9,12 @@ interface FAQ {
   category: string;
 }
 
-interface Category {
-  id: string;
-  name: string;
-  icon: JSX.Element;
-}
-
 const FAQ: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [expandedFaqs, setExpandedFaqs] = useState<Record<string, boolean>>({});
   const [filteredFaqs, setFilteredFaqs] = useState<FAQ[]>([]);
-  
+
   const categories: Category[] = [
     { id: 'general', name: 'General', icon: <div className="w-5 h-5 text-blue-600">?</div> },
     { id: 'ai-features', name: 'AI Features', icon: <div className="w-5 h-5 text-indigo-600">🧠</div> },
@@ -29,7 +23,7 @@ const FAQ: React.FC = () => {
     { id: 'security', name: 'Security & Privacy', icon: <div className="w-5 h-5 text-red-600">🔒</div> },
     { id: 'integrations', name: 'Integrations', icon: <div className="w-5 h-5 text-purple-600">🔌</div> }
   ];
-  
+
   const faqs: FAQ[] = [
     // General
     {
@@ -62,7 +56,7 @@ const FAQ: React.FC = () => {
       answer: 'Yes! Smart CRM is fully responsive and works on all devices including smartphones and tablets. We also offer native mobile apps for iOS and Android that provide enhanced functionality and offline access.',
       category: 'general'
     },
-    
+
     // AI Features
     {
       id: 'ai-features-overview',
@@ -100,7 +94,7 @@ const FAQ: React.FC = () => {
       answer: 'Our AI features are deeply integrated with your CRM data, allowing for personalized and contextual assistance. Unlike general AI systems, Smart CRM understands your contacts, deals, communication history, and sales process. It\'s designed specifically for sales use cases with customized models and features like AI deal analysis, lead scoring, and CRM function calling capabilities.',
       category: 'ai-features'
     },
-    
+
     // Pricing
     {
       id: 'pricing-plans',
@@ -132,7 +126,7 @@ const FAQ: React.FC = () => {
       answer: 'We offer a 30-day money-back guarantee for new subscriptions. If you\'re not satisfied with our service within the first 30 days, contact our support team for a full refund. After 30 days, refunds are prorated based on unused service time.',
       category: 'pricing'
     },
-    
+
     // Setup & Configuration
     {
       id: 'data-import',
@@ -164,7 +158,7 @@ const FAQ: React.FC = () => {
       answer: 'We provide a comprehensive knowledge base, video tutorials, webinars, and interactive in-app guidance. New users receive access to our onboarding program which walks through key features and setup steps. Enterprise customers also receive personalized training sessions.',
       category: 'setup'
     },
-    
+
     // Security & Privacy
     {
       id: 'data-security',
@@ -196,7 +190,7 @@ const FAQ: React.FC = () => {
       answer: 'We perform automated backups of all data multiple times daily, with both on-site and off-site storage. Backups are encrypted and retained according to configurable retention policies. Enterprise customers can request scheduled data exports for their own storage.',
       category: 'security'
     },
-    
+
     // Integrations
     {
       id: 'available-integrations',
@@ -229,24 +223,24 @@ const FAQ: React.FC = () => {
       category: 'integrations'
     }
   ];
-  
+
   // Handle filtering based on search and category
   useEffect(() => {
     let filtered = faqs;
-    
+
     if (searchQuery) {
       filtered = faqs.filter(faq => 
         faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
         faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-    
+
     if (activeCategory) {
       filtered = filtered.filter(faq => faq.category === activeCategory);
     }
-    
+
     setFilteredFaqs(filtered);
-    
+
     // Auto-expand all results when searching
     if (searchQuery) {
       const newExpanded: Record<string, boolean> = {};
@@ -259,36 +253,36 @@ const FAQ: React.FC = () => {
       setExpandedFaqs({});
     }
   }, [searchQuery, activeCategory, faqs]);
-  
+
   const toggleFaq = (id: string) => {
     setExpandedFaqs(prev => ({
       ...prev,
       [id]: !prev[id]
     }));
   };
-  
+
   const selectCategory = (id: string) => {
     if (activeCategory === id) {
       setActiveCategory(null);
     } else {
       setActiveCategory(id);
-      
+
       // Expand first 3 FAQs in this category
       const categoryFaqs = faqs.filter(faq => faq.category === id);
       const newExpanded: Record<string, boolean> = {};
-      
+
       categoryFaqs.slice(0, 3).forEach(faq => {
         newExpanded[faq.id] = true;
       });
-      
+
       setExpandedFaqs(newExpanded);
     }
   };
-  
+
   // Highlight search terms in text
   const highlightSearchTerms = (text: string) => {
     if (!searchQuery) return text;
-    
+
     const parts = text.split(new RegExp(`(${searchQuery})`, 'gi'));
     return parts.map((part, i) => 
       part.toLowerCase() === searchQuery.toLowerCase() 
@@ -296,7 +290,7 @@ const FAQ: React.FC = () => {
         : part
     );
   };
-  
+
   return (
     <div className="container mx-auto px-4 py-12 max-w-7xl">
       <div className="text-center mb-12">
@@ -305,7 +299,7 @@ const FAQ: React.FC = () => {
           Find answers to common questions about Smart CRM, our AI features, pricing, and more.
         </p>
       </div>
-      
+
       {/* Search */}
       <div className="max-w-3xl mx-auto mb-12">
         <div className="relative">
@@ -321,7 +315,7 @@ const FAQ: React.FC = () => {
           />
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Categories sidebar */}
         <div className="lg:col-span-1">
@@ -343,7 +337,7 @@ const FAQ: React.FC = () => {
                 <span>All Questions</span>
                 <ChevronRight size={16} className="ml-auto" />
               </button>
-              
+
               {categories.map(category => (
                 <button
                   key={category.id}
@@ -360,7 +354,7 @@ const FAQ: React.FC = () => {
                 </button>
               ))}
             </div>
-            
+
             <div className="mt-8 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
               <h3 className="font-medium text-gray-900 mb-2">Still have questions?</h3>
               <p className="text-sm text-gray-600 mb-4">Can't find the answer you're looking for? Please contact our support team.</p>
@@ -373,7 +367,7 @@ const FAQ: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         {/* FAQ Content */}
         <div className="lg:col-span-3">
           {searchQuery && (
@@ -381,7 +375,7 @@ const FAQ: React.FC = () => {
               Found {filteredFaqs.length} result{filteredFaqs.length !== 1 ? 's' : ''} for "{searchQuery}"
             </div>
           )}
-          
+
           {filteredFaqs.length === 0 ? (
             <div className="text-center py-12 bg-gray-50 rounded-lg">
               <div className="text-4xl mb-4">😕</div>
@@ -404,7 +398,7 @@ const FAQ: React.FC = () => {
                 categories.map(category => {
                   const categoryFaqs = faqs.filter(faq => faq.category === category.id);
                   if (categoryFaqs.length === 0) return null;
-                  
+
                   return (
                     <div key={category.id} className="mb-10">
                       <div className="flex items-center mb-4">
@@ -432,7 +426,7 @@ const FAQ: React.FC = () => {
                             )}
                           </div>
                         ))}
-                        
+
                         {categoryFaqs.length > 3 && (
                           <div className="pt-2">
                             <button
@@ -477,7 +471,7 @@ const FAQ: React.FC = () => {
               )}
             </div>
           )}
-          
+
           {/* Not finding your answer section */}
           <div className="mt-12 p-6 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl border border-blue-100 text-center">
             <h3 className="text-xl font-semibold text-gray-900 mb-4">Not finding what you're looking for?</h3>

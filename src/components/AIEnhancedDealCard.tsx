@@ -1,22 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { Deal } from '../types';
 import { CustomizableAIToolbar } from './ui/CustomizableAIToolbar';
-import { Calendar, Edit, Camera, Database, Globe, ArrowRight, Activity, Plus, MoreHorizontal, Heart, Loader2, Brain, Sparkles, Target, Mail, Wand2, Phone, BarChart3, ThumbsUp, ThumbsDown, Linkedin, Twitter, Facebook } from 'lucide-react';
+import { Calendar, Edit, Camera, Database, ArrowRight, Activity, Plus, MoreHorizontal, Heart, Loader2, Brain, Sparkles, Target, Mail, Wand2, Phone, BarChart3, ThumbsUp, ThumbsDown } from 'lucide-react';
 
-interface AIEnhancedDealCardProps {
-  deal: Deal;
-  isSelected?: boolean;
-  onSelect?: () => void;
-  onClick: () => void;
-  showAnalyzeButton?: boolean;
-  onAnalyze?: (deal: Deal) => Promise<boolean>;
-  onAIEnrich?: (deal: Deal) => Promise<boolean>;
-  isAnalyzing?: boolean;
-  onToggleFavorite?: (deal: Deal) => Promise<void>;
-  onFindNewImage?: (deal: Deal) => Promise<void>;
-}
-
-const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({ 
+const AIEnhancedDealCard: FC<AIEnhancedDealCardProps> = ({ 
   deal, 
   isSelected = false,
   onSelect,
@@ -110,7 +97,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
   const handleAnalyzeClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!onAnalyze || isAnalyzing || localAnalyzing) return;
-    
+
     setLocalAnalyzing(true);
     try {
       await onAnalyze(deal);
@@ -129,7 +116,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
   const handleAIEnrichClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!onAIEnrich || localEnriching) return;
-    
+
     setLocalEnriching(true);
     try {
       await onAIEnrich(deal);
@@ -148,7 +135,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
   const handleFavoriteClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!onToggleFavorite) return;
-    
+
     try {
       await onToggleFavorite(deal);
     } catch (error) {
@@ -159,7 +146,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
   const handleFindImageClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!onFindNewImage || isFinding) return;
-    
+
     setIsFinding(true);
     try {
       await onFindNewImage(deal);
@@ -238,7 +225,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
             )}
           </button>
         )}
-        
+
         {/* Favorite Button */}
         {onToggleFavorite && (
           <button
@@ -253,7 +240,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
             <Heart className={`w-4 h-4 ${deal.isFavorite ? 'fill-current' : ''}`} />
           </button>
         )}
-        
+
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -281,7 +268,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
             <h3 className="text-gray-900 dark:text-white font-semibold text-lg mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
               {deal.title}
             </h3>
-            
+
             {/* Company Info with Avatar */}
             <div className="flex items-center space-x-2 mb-2">
               <div className="relative">
@@ -290,7 +277,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
                   alt={deal.company}
                   className="w-6 h-6 rounded-full border border-gray-200 dark:border-gray-600"
                 />
-                
+
                 {/* Image search button */}
                 {onFindNewImage && (
                   <button
@@ -311,7 +298,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
                 <p className="text-gray-600 dark:text-gray-300 text-sm font-medium">{deal.company}</p>
               </div>
             </div>
-            
+
             {/* Contact Person with Avatar */}
             <div className="flex items-center space-x-2">
               <div className="relative">
@@ -320,7 +307,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
                   alt={deal.contact}
                   className="w-6 h-6 rounded-full border border-gray-200 dark:border-gray-600"
                 />
-                
+
                 {/* Image search button */}
                 {onFindNewImage && (
                   <button
@@ -340,24 +327,24 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
               </div>
             </div>
           </div>
-          
+
           {/* Deal Score Display */}
           <div className="flex flex-col items-center space-y-2">
             <div className={`h-12 w-12 rounded-full ${getScoreColor(deal.probability)} text-white flex items-center justify-center font-bold text-lg shadow-lg ring-2 ring-white relative`}>
               {deal.probability}%
-              
+
               {/* Analysis Loading Indicator */}
               {analyzing && (
                 <div className="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center">
                   <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 </div>
               )}
-              
+
               {/* AI Enhanced Indicator */}
               {deal.probability > 70 && (
                 <Sparkles className="absolute -top-1 -right-1 w-3 h-3 text-yellow-300" />
               )}
-              
+
               {/* Favorite Badge */}
               {deal.isFavorite && (
                 <div className="absolute -top-1 -left-1 h-4 w-4 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg ring-1 ring-white">
@@ -455,7 +442,7 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
             <Brain className="w-3 h-3 mr-1 text-purple-600 dark:text-purple-400" />
             AI Assistant Tools
           </h4>
-          
+
           <div className="grid grid-cols-2 gap-2 mb-3 text-gray-900 dark:text-white">
             {/* Lead Score */}
             <button 
@@ -470,13 +457,13 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
               )}
               <span className="text-[10px]">Score</span>
             </button>
-            
+
             {/* Email AI */}
             <button className="p-2 flex flex-col items-center justify-center rounded-lg text-xs font-medium transition-all duration-200 border shadow-sm hover:shadow-md hover:scale-105 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 text-gray-700 dark:text-gray-200 hover:from-gray-100 hover:to-gray-200 dark:hover:from-gray-600 dark:hover:to-gray-700 border-gray-200/50 dark:border-gray-700/50">
               <Mail className="w-3 h-3 mb-0.5" />
               <span className="text-[10px] dark:text-gray-200">Email</span>
             </button>
-            
+
             {/* AI Auto-Enrich */}
             <button
               onClick={handleAIEnrichClick}
@@ -561,9 +548,9 @@ const AIEnhancedDealCard: React.FC<AIEnhancedDealCardProps> = ({
               {socialPlatforms.map((platform, index) => {
                 const Icon = platform.icon;
                 const profileUrl = socialProfiles[platform.key as keyof typeof socialProfiles];
-                
+
                 if (!profileUrl) return null;
-                
+
                 return (
                   <a 
                     key={index}

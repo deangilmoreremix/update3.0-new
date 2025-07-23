@@ -1,6 +1,4 @@
-import React from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Plus, UserPlus, Calendar, Mail } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useDealStore } from '../../store/dealStore';
 import { useContactStore } from '../../store/contactStore';
@@ -14,12 +12,12 @@ const QuickActions = () => {
   const { contacts } = useContactStore();
   const { openTool } = useAITools();
   const navigate = useNavigate();
-  
+
   // Get active deals
   const activeDeals = Object.values(deals).filter(deal => 
     deal.stage !== 'closed-won' && deal.stage !== 'closed-lost'
   );
-  
+
   // Get deals with contacts for avatar display
   const dealsWithContacts = activeDeals
     .map(deal => ({
@@ -27,7 +25,7 @@ const QuickActions = () => {
       contact: contacts[deal.contactId]
     }))
     .filter(deal => deal.contact); // Only include deals with valid contacts
-  
+
   // Get contacts for the contact button
   const activeContacts = Object.values(contacts);
 
@@ -35,7 +33,7 @@ const QuickActions = () => {
   const renderAvatarStack = (items: unknown[], maxVisible: number = 3) => {
     const visibleItems = items.slice(0, maxVisible);
     const remainingCount = Math.max(0, items.length - maxVisible);
-    
+
     return (
       <div className="flex items-center mt-3">
         <div className="flex -space-x-2">
@@ -43,7 +41,7 @@ const QuickActions = () => {
             // If the item is a deal with contact property, use the contact
             // Otherwise assume it's a contact directly
             const contact = 'contact' in item ? item.contact : item;
-            
+
             return (
               <div key={index} className="relative" style={{ zIndex: maxVisible - index }}>
                 <Avatar
@@ -154,7 +152,7 @@ const QuickActions = () => {
                 <p className="text-sm text-white/80">{action.description}</p>
               </div>
             </div>
-            
+
             {/* Render avatar stack if data is available */}
             {'data' in action && action.data.length > 0 && renderAvatarStack(action.data)}
           </button>

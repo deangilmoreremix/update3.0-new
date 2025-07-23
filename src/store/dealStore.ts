@@ -7,36 +7,6 @@ import {
   deleteDealFromSupabase 
 } from '../services/dealService';
 
-interface DealState {
-  deals: Record<string, Deal>;
-  columns: Record<string, Column>;
-  columnOrder: string[];
-  isLoading: boolean;
-  error: string | null;
-  selectedDeal: string | null;
-  aiInsight: string | null;
-  isAnalyzing: boolean;
-  
-  // Pipeline view statistics
-  stageValues: Record<string, number>;
-  totalPipelineValue: number;
-  
-  // Actions
-  fetchDeals: () => Promise<void>;
-  createDeal: (deal: Partial<Deal>) => Promise<void>;
-  updateDeal: (id: string, deal: Partial<Deal>) => Promise<void>;
-  deleteDeal: (id: string) => Promise<void>;
-  moveDealToStage: (dealId: string, sourceStage: string, destinationStage: string, destinationIndex: number) => void;
-  selectDeal: (dealId: string | null) => void;
-  generateAiInsight: (dealId: string) => Promise<void>;
-}
-
-interface Column {
-  id: string;
-  title: string;
-  dealIds: string[];
-}
-
 export const useDealStore = create<DealState>((set, get) => ({
   deals: {
     'deal-1': {
@@ -171,20 +141,20 @@ export const useDealStore = create<DealState>((set, get) => ({
     'closed-lost': 0
   },
   totalPipelineValue: 326000,
-  
+
   fetchDeals: async () => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const { data, error } = await fetchDealsFromSupabase();
-      
+
       if (error) throw new Error(error.message);
-      
+
       if (!data) {
         set({ isLoading: false });
         return;
       }
-      
+
       // Transform the deals into the required format
       const dealsRecord: Record<string, Deal> = {};
       const columnsRecord: Record<string, Column> = {
@@ -194,7 +164,7 @@ export const useDealStore = create<DealState>((set, get) => ({
         'closed-won': { id: 'closed-won', title: 'Closed Won', dealIds: [] },
         'closed-lost': { id: 'closed-lost', title: 'Closed Lost', dealIds: [] }
       };
-      
+
       data.forEach(deal => {
         // Map the API response to our Deal type
         dealsRecord[deal.id] = {
@@ -212,7 +182,7 @@ export const useDealStore = create<DealState>((set, get) => ({
           priority: deal.priority,
           daysInStage: deal.days_in_stage
         };
-        
+
         // Add deal ID to the appropriate column
         if (columnsRecord[deal.stage]) {
           columnsRecord[deal.stage].dealIds.push(deal.id);
@@ -221,30 +191,30 @@ export const useDealStore = create<DealState>((set, get) => ({
           columnsRecord['qualification'].dealIds.push(deal.id);
         }
       });
-      
+
       // Calculate stage values and total pipeline value
       const stageValues: Record<string, number> = {};
-      
+
       Object.keys(columnsRecord).forEach(columnId => {
         const column = columnsRecord[columnId];
         const totalValue = column.dealIds.reduce((sum, dealId) => {
           return sum + dealsRecord[dealId].value;
         }, 0);
-        
+
         stageValues[columnId] = totalValue;
       });
-      
+
       const _totalPipelineValue = Object.values(stageValues).reduce((a, b) => a + b, 0);
-      
+
       // Use the mock data for now instead of the API response
       // In a real implementation, we would use the transformed data from the API
       // set({ deals: dealsRecord, columns: columnsRecord, isLoading: false });
-      
+
       // Recalculate stage values based on the current deals in the store
       const currentDeals = get().deals;
       const currentColumns = get().columns;
       const currentStageValues = calculateStageValues(currentDeals, currentColumns);
-      
+
       set({ 
         isLoading: false,
         stageValues: currentStageValues,
@@ -258,23 +228,23 @@ export const useDealStore = create<DealState>((set, get) => ({
       });
     }
   },
-  
+
   createDeal: async (dealData: Partial<Deal>) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const { data, error } = await createDealInSupabase(dealData);
-      
+
       if (error) throw new Error(error.message);
-      
+
       if (!data) {
         set({ isLoading: false });
         return;
       }
-      
+
       // Update local state with the new deal
       const { deals, columns } = get();
-      
+
       // Create a new deal object
       const newDeal: Deal = {
         ...data,
@@ -284,13 +254,13 @@ export const useDealStore = create<DealState>((set, get) => ({
         updatedAt: new Date(data.updated_at || Date.now()),
         stage: data.stage || 'qualification'
       };
-      
+
       // Update the deals record
       const updatedDeals = {
         ...deals,
         [newDeal.id]: newDeal
       };
-      
+
       // Update the column dealIds array
       const stage = newDeal.stage || 'qualification';
       const updatedColumns = {
@@ -300,10 +270,10 @@ export const useDealStore = create<DealState>((set, get) => ({
           dealIds: [...columns[stage].dealIds, newDeal.id]
         }
       };
-      
+
       // Recalculate stage values
       const stageValues = calculateStageValues(updatedDeals, updatedColumns);
-      
+
       set({ 
         deals: updatedDeals, 
         columns: updatedColumns,
@@ -319,35 +289,35 @@ export const useDealStore = create<DealState>((set, get) => ({
       });
     }
   },
-  
+
   updateDeal: async (id: string, dealData: Partial<Deal>) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const { data, error } = await updateDealInSupabase(id, dealData);
-      
+
       if (error) throw new Error(error.message);
-      
+
       if (!data) {
         set({ isLoading: false });
         return;
       }
-      
+
       // Update local state with the updated deal
       const { deals } = get();
-      
+
       const updatedDeal = {
         ...deals[id],
         ...data,
         updatedAt: new Date(data.updated_at || Date.now())
       };
-      
+
       // Check if the stage has changed
       if (data.stage && data.stage !== deals[id].stage) {
         // Need to update columns
         const oldStage = deals[id].stage;
         const newStage = data.stage;
-        
+
         get().moveDealToStage(id, oldStage, newStage, 0);
       } else {
         // Just update the deal
@@ -355,9 +325,9 @@ export const useDealStore = create<DealState>((set, get) => ({
           ...deals,
           [id]: updatedDeal
         };
-        
+
         const stageValues = calculateStageValues(updatedDeals, get().columns);
-        
+
         set({ 
           deals: updatedDeals,
           isLoading: false,
@@ -373,23 +343,23 @@ export const useDealStore = create<DealState>((set, get) => ({
       });
     }
   },
-  
+
   deleteDeal: async (id: string) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const { error } = await deleteDealFromSupabase(id);
-      
+
       if (error) throw new Error(error.message);
-      
+
       // Update local state
       const { deals, columns } = get();
-      
+
       const stage = deals[id].stage;
-      
+
       // Remove the deal from the deals object
       const { [id]: _deletedDeal, ...remainingDeals } = deals;
-      
+
       // Remove the deal ID from the column
       const updatedColumns = {
         ...columns,
@@ -398,10 +368,10 @@ export const useDealStore = create<DealState>((set, get) => ({
           dealIds: columns[stage].dealIds.filter(dealId => dealId !== id)
         }
       };
-      
+
       // Recalculate stage values
       const stageValues = calculateStageValues(remainingDeals, updatedColumns);
-      
+
       set({ 
         deals: remainingDeals, 
         columns: updatedColumns,
@@ -418,23 +388,23 @@ export const useDealStore = create<DealState>((set, get) => ({
       });
     }
   },
-  
+
   moveDealToStage: (dealId, sourceStage, destinationStage, destinationIndex) => {
     const { deals, columns } = get();
-    
+
     // No change if the stages are the same
     if (sourceStage === destinationStage) return;
-    
+
     // Start by removing the deal from the source column
     const sourceColumn = columns[sourceStage];
     const destinationColumn = columns[destinationStage];
-    
+
     const newSourceDealIds = sourceColumn.dealIds.filter(id => id !== dealId);
-    
+
     // Then add it to the destination column at the specified index
     const newDestinationDealIds = [...destinationColumn.dealIds];
     newDestinationDealIds.splice(destinationIndex, 0, dealId);
-    
+
     // Update the columns
     const updatedColumns = {
       ...columns,
@@ -447,7 +417,7 @@ export const useDealStore = create<DealState>((set, get) => ({
         dealIds: newDestinationDealIds
       }
     };
-    
+
     // Update the deal's stage
     const updatedDeals = {
       ...deals,
@@ -457,10 +427,10 @@ export const useDealStore = create<DealState>((set, get) => ({
         updatedAt: new Date()
       }
     };
-    
+
     // Recalculate stage values
     const stageValues = calculateStageValues(updatedDeals, updatedColumns);
-    
+
     // Update state
     set({ 
       deals: updatedDeals,
@@ -468,39 +438,39 @@ export const useDealStore = create<DealState>((set, get) => ({
       stageValues,
       totalPipelineValue: Object.values(stageValues).reduce((a, b) => a + b, 0)
     });
-    
+
     // Persist the change to the backend
     updateDealInSupabase(dealId, { 
       stage: destinationStage,
       updated_at: new Date().toISOString()
     });
   },
-  
+
   selectDeal: (dealId) => {
     set({ 
       selectedDeal: dealId,
       aiInsight: null 
     });
   },
-  
+
   generateAiInsight: async (dealId) => {
     const { deals } = get();
     const deal = deals[dealId];
-    
+
     if (!deal) return;
-    
+
     set({ isAnalyzing: true });
-    
+
     try {
       // In a real implementation, we would call the AI service
       // For demo purposes, we'll simulate a response after a delay
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       const randomProbability = Math.floor(Math.random() * (deal.stage === 'negotiation' ? 30 : 20) + 
                                 (deal.stage === 'negotiation' ? 60 : 
                                  deal.stage === 'proposal' ? 40 : 
                                  deal.stage === 'qualification' ? 15 : 5));
-                                 
+
       const insights = `# Deal Analysis for ${deal.title}
 
 ## Win Probability: ${randomProbability}%
@@ -522,7 +492,7 @@ export const useDealStore = create<DealState>((set, get) => ({
 4. Consider offering phased implementation to reduce initial investment
 
 This deal is currently in the ${deal.stage} stage and has been there for ${deal.daysInStage || 0} days. The average deal at this value point typically closes within 30 days from this stage.`;
-      
+
       set({ 
         aiInsight: insights,
         isAnalyzing: false
@@ -540,15 +510,15 @@ This deal is currently in the ${deal.stage} stage and has been there for ${deal.
 // Helper function to calculate stage values
 function calculateStageValues(deals: Record<string, Deal>, columns: Record<string, Column>) {
   const stageValues: Record<string, number> = {};
-  
+
   Object.keys(columns).forEach(columnId => {
     const column = columns[columnId];
     const totalValue = column.dealIds.reduce((sum, dealId) => {
       return sum + (deals[dealId]?.value || 0);
     }, 0);
-    
+
     stageValues[columnId] = totalValue;
   });
-  
+
   return stageValues;
 }

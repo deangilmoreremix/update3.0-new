@@ -11,7 +11,7 @@ const MarketTrendContent: React.FC = () => {
     timeframe: '6 months',
     additionalContext: ''
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +31,7 @@ const MarketTrendContent: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const analysisResult = await edgeFunctionService.analyzeMarketTrends(
         formData.industry,
@@ -49,7 +49,7 @@ const MarketTrendContent: React.FC = () => {
 
   const handleFilesAdded = (newFiles: File[]) => {
     setFiles(newFiles);
-    
+
     // In a real app, we would extract market data from the files
     if (newFiles.length > 0) {
       setTimeout(() => {
@@ -145,7 +145,7 @@ const MarketTrendContent: React.FC = () => {
               </datalist>
             </div>
           </div>
-          
+
           <div>
             <label htmlFor="targetMarket" className="block text-sm font-medium text-gray-700 mb-1">
               Target Market / Segment
@@ -169,7 +169,7 @@ const MarketTrendContent: React.FC = () => {
               </datalist>
             </div>
           </div>
-          
+
           <div>
             <label htmlFor="timeframe" className="block text-sm font-medium text-gray-700 mb-1">
               Timeframe
@@ -188,7 +188,7 @@ const MarketTrendContent: React.FC = () => {
               ))}
             </select>
           </div>
-          
+
           <div>
             <label htmlFor="additionalContext" className="block text-sm font-medium text-gray-700 mb-1">
               Additional Context (Optional)
@@ -203,7 +203,7 @@ const MarketTrendContent: React.FC = () => {
               onChange={handleChange}
             ></textarea>
           </div>
-          
+
           <div>
             <p className="block text-sm font-medium text-gray-700 mb-2">
               Upload Market Reports (Optional)
@@ -222,7 +222,7 @@ const MarketTrendContent: React.FC = () => {
               Upload relevant market reports or data sheets to enhance your analysis.
             </p>
           </div>
-            
+
           <div className="flex justify-between items-center pt-4">
             <div className="text-sm text-gray-500">
               Analysis includes: trends, opportunities, challenges, and recommendations

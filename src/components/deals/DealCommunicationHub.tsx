@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import { Deal } from '../../types';
 import { Contact } from '../../types/contact';
-import { Mail, Phone, Calendar, MessageSquare, Video, FileText, Send, MicOff, Mic, VideoOff, PhoneOff, Loader2, Brain, Sparkles, Zap, CheckCircle, AlertCircle, RefreshCw, Clock, MoreHorizontal, User, Users } from 'lucide-react';
-
-interface DealCommunicationHubProps {
-  deal: Deal;
-  contact: Contact | null;
-}
+import { Mail, Phone, Calendar, MessageSquare, Video, FileText, Send, MicOff, Mic, VideoOff, PhoneOff, Loader2, Brain, Sparkles, Zap, CheckCircle, AlertCircle, RefreshCw, Clock, MoreHorizontal, Users } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -17,7 +12,7 @@ interface Message {
   type: 'email' | 'sms' | 'note' | 'call';
 }
 
-export const DealCommunicationHub: React.FC<DealCommunicationHubProps> = ({ deal, contact }) => {
+export const DealCommunicationHub: FC<DealCommunicationHubProps> = ({ deal, contact }) => {
   const [activeTab, setActiveTab] = useState<'chat' | 'email' | 'calls' | 'meetings'>('chat');
   const [newMessage, setNewMessage] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -111,7 +106,7 @@ export const DealCommunicationHub: React.FC<DealCommunicationHubProps> = ({ deal
     if (!newMessage.trim()) return;
 
     setIsSending(true);
-    
+
     // Simulate sending delay
     setTimeout(() => {
       const newMsg: Message = {
@@ -122,7 +117,7 @@ export const DealCommunicationHub: React.FC<DealCommunicationHubProps> = ({ deal
         status: 'sent',
         type: 'email'
       };
-      
+
       setMessages([...messages, newMsg]);
       setNewMessage('');
       setIsSending(false);
@@ -131,10 +126,10 @@ export const DealCommunicationHub: React.FC<DealCommunicationHubProps> = ({ deal
 
   const handleGenerateEmail = async () => {
     setIsGenerating(true);
-    
+
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
+
     const template = `Subject: Follow-up regarding ${deal.title} - Next steps
 
 Dear ${contact?.firstName || deal.contact.split(' ')[0] || 'there'},
@@ -159,24 +154,24 @@ P.S. I've also attached a case study from a client in a similar situation who ac
     setGeneratedEmail(template);
     setIsGenerating(false);
   };
-  
+
   const handleStartCall = () => {
     setCallStatus('connecting');
     setTimeout(() => setCallStatus('active'), 1500);
-    
+
     // Start timer for call duration
     const timer = setInterval(() => {
       setCallDuration(prev => prev + 1);
     }, 1000);
-    
+
     // Cleanup function
     return () => clearInterval(timer);
   };
-  
+
   const handleEndCall = () => {
     setCallStatus('ended');
     setCallDuration(0);
-    
+
     // Add call to history
     const newMsg: Message = {
       id: Date.now().toString(),
@@ -186,10 +181,10 @@ P.S. I've also attached a case study from a client in a similar situation who ac
       status: 'sent',
       type: 'call'
     };
-    
+
     setMessages([...messages, newMsg]);
   };
-  
+
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', { 
       weekday: 'short',
@@ -199,7 +194,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
       minute: '2-digit'
     });
   };
-  
+
   const getMessageTypeIcon = (type: string) => {
     switch (type) {
       case 'email': return Mail;
@@ -209,7 +204,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
       default: return MessageSquare;
     }
   };
-  
+
   const getMessageTypeColor = (type: string) => {
     switch (type) {
       case 'email': return 'text-blue-600';
@@ -224,7 +219,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
     <div>
       <div className="mb-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Deal Communications</h3>
-        
+
         {/* Communication Tabs */}
         <div className="flex border-b border-gray-200">
           <button
@@ -269,7 +264,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
           </button>
         </div>
       </div>
-      
+
       {/* Communication Log Tab */}
       {activeTab === 'chat' && (
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
@@ -286,7 +281,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
               messages.map((message) => {
                 const MessageIcon = getMessageTypeIcon(message.type);
                 const messageColor = getMessageTypeColor(message.type);
-                
+
                 return (
                   <div 
                     key={message.id}
@@ -322,7 +317,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
               })
             )}
           </div>
-          
+
           <div className="border-t border-gray-200 p-4">
             <div className="flex space-x-2">
               <div className="flex-1">
@@ -342,7 +337,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
                 >
                   {isSending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
                 </button>
-                
+
                 {/* AI-powered message button */}
                 <button
                   onClick={handleGenerateEmail}
@@ -369,7 +364,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
           </div>
         </div>
       )}
-      
+
       {/* Email Tab */}
       {activeTab === 'email' && (
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm p-4">
@@ -400,7 +395,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
                 >
                   <MoreHorizontal className="w-4 h-4" />
                 </button>
-                
+
                 {showEmailOptions && (
                   <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-10 w-48">
                     <div className="py-1">
@@ -422,7 +417,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
               </div>
             </div>
           </div>
-          
+
           <div className="mb-3">
             <label className="block text-sm font-medium text-gray-700 mb-1">To:</label>
             <div className="flex items-center bg-gray-50 border border-gray-300 rounded-md px-3 py-2">
@@ -444,7 +439,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
               )}
             </div>
           </div>
-          
+
           <div className="mb-3">
             <label className="block text-sm font-medium text-gray-700 mb-1">Subject:</label>
             <input
@@ -461,7 +456,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
               }}
             />
           </div>
-          
+
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">Message:</label>
             <textarea
@@ -478,7 +473,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
               }}
             />
           </div>
-          
+
           <div className="flex justify-between">
             <div>
               <button className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-md hover:bg-gray-200 transition-colors mr-2">
@@ -492,7 +487,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
               Send Email
             </button>
           </div>
-          
+
           {isGenerating && (
             <div className="mt-4 bg-blue-50 rounded-md p-3 border border-blue-200">
               <div className="flex items-center">
@@ -505,14 +500,14 @@ P.S. I've also attached a case study from a client in a similar situation who ac
           )}
         </div>
       )}
-      
+
       {/* Calls Tab */}
       {activeTab === 'calls' && (
         <div>
           {/* Call Panel */}
           <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 mb-6">
             <h4 className="text-base font-medium text-gray-900 mb-4">Call Communication</h4>
-            
+
             {callStatus === 'idle' ? (
               <div className="flex flex-col items-center justify-center py-8">
                 <div className="bg-blue-100 rounded-full p-6 mb-4">
@@ -552,7 +547,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
                 <p className="text-gray-600 mb-6">
                   {Math.floor(callDuration / 60)}:{(callDuration % 60).toString().padStart(2, '0')}
                 </p>
-                
+
                 <div className="flex items-center space-x-4 mb-6">
                   <button
                     onClick={() => setIsAudioEnabled(!isAudioEnabled)}
@@ -573,7 +568,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
                     <PhoneOff className="h-6 w-6" />
                   </button>
                 </div>
-                
+
                 <div className="w-full bg-gray-50 p-4 rounded-lg border border-gray-200">
                   <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
                     <Brain className="w-4 h-4 mr-1 text-purple-600" />
@@ -607,11 +602,11 @@ P.S. I've also attached a case study from a client in a similar situation who ac
               </div>
             )}
           </div>
-          
+
           {/* Call History */}
           <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
             <h4 className="text-base font-medium text-gray-900 mb-4">Call History</h4>
-            
+
             <div className="divide-y divide-gray-200">
               {callHistory.length > 0 ? (
                 callHistory.map((call) => (
@@ -659,7 +654,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
           </div>
         </div>
       )}
-      
+
       {/* Meetings Tab */}
       {activeTab === 'meetings' && (
         <div className="space-y-6">
@@ -669,7 +664,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
               <Calendar className="w-4 h-4 mr-2 text-blue-600" />
               Schedule Meeting
             </h4>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -683,7 +678,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
                   <option>Implementation Planning</option>
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Duration
@@ -696,7 +691,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
                   <option>90 minutes</option>
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Date
@@ -706,7 +701,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
                   className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Time
@@ -737,7 +732,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Meeting Agenda
@@ -748,7 +743,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
                 rows={3}
               />
             </div>
-            
+
             <div className="flex justify-between items-center mt-4">
               <div className="flex items-center space-x-1">
                 <button className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors">
@@ -758,7 +753,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
                   <Phone className="w-4 h-4" />
                 </button>
               </div>
-              
+
               <div>
                 <button 
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium"
@@ -768,11 +763,11 @@ P.S. I've also attached a case study from a client in a similar situation who ac
               </div>
             </div>
           </div>
-          
+
           {/* Upcoming & Past Meetings */}
           <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
             <h4 className="text-base font-medium text-gray-900 mb-4">Meeting Schedule</h4>
-            
+
             <div className="space-y-6">
               {/* Upcoming Meetings */}
               <div>
@@ -780,7 +775,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
                   <Clock className="w-4 h-4 mr-1 text-blue-600" />
                   Upcoming Meetings
                 </h5>
-                
+
                 <div className="divide-y divide-gray-200">
                   {meetings.filter(m => new Date(m.date) > new Date()).map((meeting) => (
                     <div key={meeting.id} className="py-3">
@@ -825,17 +820,17 @@ P.S. I've also attached a case study from a client in a similar situation who ac
                       </div>
                     </div>
                   ))}
-                  
+
                   {meetings.filter(m => new Date(m.date) > new Date()).length === 0 && (
                     <p className="text-sm text-gray-500 py-3">No upcoming meetings scheduled</p>
                   )}
                 </div>
               </div>
-              
+
               {/* Past Meetings */}
               <div>
                 <h5 className="text-sm font-medium text-gray-700 mb-3">Past Meetings</h5>
-                
+
                 <div className="divide-y divide-gray-200">
                   {meetings.filter(m => new Date(m.date) <= new Date()).map((meeting) => (
                     <div key={meeting.id} className="py-3">
@@ -869,7 +864,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
                       </div>
                     </div>
                   ))}
-                  
+
                   {meetings.filter(m => new Date(m.date) <= new Date()).length === 0 && (
                     <p className="text-sm text-gray-500 py-3">No past meetings</p>
                   )}

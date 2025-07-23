@@ -6,11 +6,7 @@ import { useContactStore } from '../store/contactStore';
 import Avatar from './ui/Avatar';
 import { getInitials } from '../utils/avatars';
 
-interface GroupCallInterfaceProps {
-  onClose: () => void;
-}
-
-const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => {
+const GroupCallInterface: FC<GroupCallInterfaceProps> = ({ _onClose }) => {
   const { 
     participants, 
     localStream, 
@@ -26,19 +22,19 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
     stopRecording,
     sendMessage
   } = useVideoCall();
-  
+
   const { _isDark } = useTheme();
   const { _contacts } = useContactStore();
-  
+
   const [focusedParticipantId, setFocusedParticipantId] = useState<string | null>(null);
   const [layout, setLayout] = useState<'grid' | 'spotlight'>('grid');
   const [_chatOpen, _setChatOpen] = useState(false);
   const [chatMessage, setChatMessage] = useState('');
   const [showParticipantsList, setShowParticipantsList] = useState(false);
   const [activeTab, setActiveTab] = useState<'participants' | 'chat'>('participants');
-  
+
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
-  
+
   // Combined participants (local + remote)
   const allParticipants = useMemo(() => [
     {
@@ -52,7 +48,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
     },
     ...participants
   ], [localStream, isVideoEnabled, isAudioEnabled, participants]);
-  
+
   // Set up video refs for each participant
   useEffect(() => {
     allParticipants.forEach(participant => {
@@ -62,11 +58,11 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
       }
     });
   }, [allParticipants]);
-  
+
   // Determine the best layout grid based on number of participants
   const getGridLayout = () => {
     const count = allParticipants.length;
-    
+
     if (count <= 1) return { cols: 1, rows: 1 };
     if (count === 2) return { cols: 2, rows: 1 };
     if (count <= 4) return { cols: 2, rows: 2 };
@@ -74,18 +70,18 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
     if (count <= 9) return { cols: 3, rows: 3 };
     return { cols: 4, rows: Math.ceil(count / 4) };
   };
-  
+
   const { cols, rows } = getGridLayout();
-  
+
   // Get focused participant
   const focusedParticipant = focusedParticipantId 
     ? allParticipants.find(p => p.id === focusedParticipantId) 
     : allParticipants[0];
-  
+
   // Send chat message
   const handleSendMessage = () => {
     if (!chatMessage.trim()) return;
-    
+
     try {
       sendMessage(chatMessage);
       setChatMessage('');
@@ -94,7 +90,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
       alert('Failed to send message. Please try again.');
     }
   };
-  
+
   // Toggle recording
   const handleToggleRecording = async () => {
     try {
@@ -108,7 +104,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
       alert('Failed to start recording. Please check permissions and try again.');
     }
   };
-  
+
   return (
     <div className="fixed inset-0 bg-black z-50 flex flex-col">
       {/* Main Video Grid */}
@@ -140,7 +136,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
                   </div>
                 </div>
               )}
-              
+
               {/* Spotlight overlay with name and controls */}
               <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
                 <div className="bg-black/60 rounded-lg px-4 py-2">
@@ -148,7 +144,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
                 </div>
               </div>
             </div>
-            
+
             {/* Thumbnails row */}
             <div className="h-24 flex space-x-2 p-2 overflow-x-auto bg-black/60">
               {allParticipants.map(participant => (
@@ -177,12 +173,12 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
                       />
                     </div>
                   )}
-                  
+
                   {/* Name overlay */}
                   <div className="absolute bottom-0 left-0 right-0 bg-black/70 p-1">
                     <p className="text-white text-xs truncate">{participant.name}</p>
                   </div>
-                  
+
                   {/* Mute indicator */}
                   {!participant.isAudioEnabled && (
                     <div className="absolute top-1 right-1">
@@ -233,7 +229,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
                     </div>
                   </div>
                 )}
-                
+
                 {/* Participant info overlay */}
                 <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-2 flex justify-between items-center">
                   <span className="text-white text-xs">{participant.name}</span>
@@ -250,12 +246,12 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
             ))}
           </div>
         )}
-        
+
         {/* Call duration and info */}
         <div className="absolute top-4 left-4 bg-black/50 rounded-full px-3 py-1 flex items-center space-x-2">
           <span className="text-white text-sm">Group Call • {allParticipants.length} participants</span>
         </div>
-        
+
         {/* Layout toggle */}
         <div className="absolute top-4 right-4 bg-black/50 rounded-full flex overflow-hidden">
           <button
@@ -276,7 +272,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
           </button>
         </div>
       </div>
-      
+
       {/* Control Bar */}
       <div className="h-20 bg-gray-900 border-t border-white/10 flex items-center justify-center px-4">
         <div className="flex items-center justify-between w-full max-w-3xl">
@@ -291,7 +287,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
             >
               {isAudioEnabled ? <Mic size={20} /> : <MicOff size={20} />}
             </button>
-            
+
             <button
               onClick={toggleVideo}
               className={`w-12 h-12 rounded-full flex items-center justify-center ${
@@ -302,7 +298,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
             >
               {isVideoEnabled ? <Video size={20} /> : <VideoOff size={20} />}
             </button>
-            
+
             <button
               onClick={() => toggleScreenShare()}
               className={`w-12 h-12 rounded-full flex items-center justify-center ${
@@ -314,7 +310,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
               {isScreenSharing ? <MonitorOff size={20} /> : <Monitor size={20} />}
             </button>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setShowParticipantsList(!showParticipantsList)}
@@ -326,7 +322,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
             >
               <Users size={20} />
             </button>
-            
+
             <button
               onClick={() => setActiveTab('chat')}
               className={`w-12 h-12 rounded-full flex items-center justify-center ${
@@ -337,7 +333,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
             >
               <MessageSquare size={20} />
             </button>
-            
+
             <button
               onClick={handleToggleRecording}
               className={`w-12 h-12 rounded-full flex items-center justify-center ${
@@ -348,7 +344,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
             >
               <span className={`w-4 h-4 rounded-full ${isRecording ? 'bg-white' : 'bg-red-500'}`}></span>
             </button>
-            
+
             <button
               onClick={endCall}
               className="w-12 h-12 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center text-white"
@@ -358,7 +354,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
           </div>
         </div>
       </div>
-      
+
       {/* Side Panel (Participants or Chat) */}
       {showParticipantsList && (
         <div className="absolute right-0 top-0 bottom-20 w-80 bg-gray-900 border-l border-white/10 flex flex-col">
@@ -391,7 +387,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
               <X size={16} />
             </button>
           </div>
-          
+
           {/* Tab content */}
           <div className="flex-1 overflow-y-auto">
             {activeTab === 'participants' ? (
@@ -424,7 +420,7 @@ const GroupCallInterface: React.FC<GroupCallInterfaceProps> = ({ _onClose }) => 
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="flex space-x-1">
                         {!participant.isAudioEnabled && (
                           <div className="p-1 rounded-full bg-red-500/20">

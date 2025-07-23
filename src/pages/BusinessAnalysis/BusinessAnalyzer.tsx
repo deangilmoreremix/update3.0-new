@@ -20,18 +20,18 @@ interface BusinessAnalysisForm {
 const BusinessAnalyzer: React.FC = () => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm<BusinessAnalysisForm>();
   const { user } = useAuthStore();
-  
+
   const [businessAnalyses, setBusinessAnalyses] = useState<unknown[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResults, setAnalysisResults] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  
+
   useEffect(() => {
     loadBusinessAnalyses();
   }, []);
-  
+
   const loadBusinessAnalyses = async () => {
     setIsLoading(true);
     setError(null);
@@ -48,17 +48,17 @@ const BusinessAnalyzer: React.FC = () => {
       setIsLoading(false);
     }
   };
-  
+
   const onSubmit = async (data: BusinessAnalysisForm) => {
     setIsAnalyzing(true);
     setError(null);
     setSuccess(null);
-    
+
     try {
       // Generate AI analysis using edge function
       const analysisResult = await edgeFunctionService.analyzeBusinessData(data);
       setAnalysisResults(analysisResult);
-      
+
       // Save to Supabase
       const analysisData = {
         business_name: data.businessName,
@@ -68,17 +68,17 @@ const BusinessAnalyzer: React.FC = () => {
         analysis_results: { text: analysisResult },
         user_id: user?.id,
       };
-      
+
       const { error } = await createBusinessAnalysis(analysisData);
-      
+
       if (error) {
         throw error;
       }
-      
+
       setSuccess('Business analysis completed and saved successfully!');
       loadBusinessAnalyses(); // Reload data
       reset(); // Clear form
-      
+
     } catch (err) {
       console.error(err);
       setError('Failed to analyze business or save results');
@@ -86,14 +86,14 @@ const BusinessAnalyzer: React.FC = () => {
       setIsAnalyzing(false);
     }
   };
-  
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <header className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Business Analyzer</h1>
         <p className="text-gray-600 mt-1">Analyze businesses and get strategic insights</p>
       </header>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <div className="card-modern p-6 mb-6">
@@ -101,7 +101,7 @@ const BusinessAnalyzer: React.FC = () => {
               <Building size={22} className="mr-2 text-blue-600" />
               Business Analysis Tool
             </h2>
-            
+
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -122,7 +122,7 @@ const BusinessAnalyzer: React.FC = () => {
                   <p className="mt-1 text-sm text-red-600">{errors.businessName.message}</p>
                 )}
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Industry
@@ -142,7 +142,7 @@ const BusinessAnalyzer: React.FC = () => {
                   <p className="mt-1 text-sm text-red-600">{errors.industry.message}</p>
                 )}
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Website URL
@@ -168,7 +168,7 @@ const BusinessAnalyzer: React.FC = () => {
                   <p className="mt-1 text-sm text-red-600">{errors.websiteUrl.message}</p>
                 )}
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Social Links (optional)
@@ -208,20 +208,20 @@ const BusinessAnalyzer: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               {error && (
                 <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
                   {error}
                 </div>
               )}
-              
+
               {success && (
                 <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-lg flex items-center">
                   <Check size={18} className="mr-2" />
                   {success}
                 </div>
               )}
-              
+
               <div className="pt-4">
                 <button
                   type="submit"
@@ -247,14 +247,14 @@ const BusinessAnalyzer: React.FC = () => {
               </div>
             </form>
           </div>
-          
+
           {analysisResults && (
             <div className="card-modern p-6 mb-6">
               <h2 className="text-xl font-semibold mb-6 flex items-center">
                 <Brain size={22} className="mr-2 text-indigo-600" />
                 Analysis Results
               </h2>
-              
+
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 shadow-sm border border-blue-100">
                 <div className="prose max-w-none">
                   {analysisResults.split('\n').map((line, index) => {
@@ -273,11 +273,11 @@ const BusinessAnalyzer: React.FC = () => {
             </div>
           )}
         </div>
-        
+
         <div className="lg:col-span-1">
           <div className="card-modern p-6 mb-6">
             <h2 className="text-xl font-semibold mb-4">Previous Analyses</h2>
-            
+
             {isLoading ? (
               <div className="p-4 text-center">
                 <RefreshCw size={24} className="animate-spin mx-auto mb-2 text-blue-600" />
@@ -311,7 +311,7 @@ const BusinessAnalyzer: React.FC = () => {
               </div>
             )}
           </div>
-          
+
           <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 p-6 rounded-xl border border-blue-100">
             <div className="flex items-center mb-4">
               <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-3">

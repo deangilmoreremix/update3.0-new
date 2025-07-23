@@ -27,7 +27,7 @@ export async function runAgentWorkflow(agentId: string, input: unknown, setSteps
       return await personalizedEmailAgent(input, setSteps);
     case "lead-scoring":
       return await leadScoringAgent(input, setSteps);
-      
+
     // Deal Module Agents
     case "proposal-generator":
       return await proposalGeneratorAgent(input, setSteps);
@@ -39,7 +39,7 @@ export async function runAgentWorkflow(agentId: string, input: unknown, setSteps
       return await coldOutreachCloserAgent(input, setSteps);
     case "smart-demo-bot":
       return await smartDemoBotAgent(input, setSteps);
-      
+
     // Task Module Agents
     case "follow-up":
       return await followUpAgent(input, setSteps);
@@ -47,7 +47,7 @@ export async function runAgentWorkflow(agentId: string, input: unknown, setSteps
       return await voiceAgent(input, setSteps);
     case "sms-campaigner":
       return await smsCampaignerAgent(input, setSteps);
-      
+
     // Calendar Module Agents
     case "meetings-agent":
       return await meetingsAgent(input, setSteps);
@@ -55,13 +55,13 @@ export async function runAgentWorkflow(agentId: string, input: unknown, setSteps
       return await aiDialerAgent(input, setSteps);
     case "ai-journeys":
       return await aiJourneysAgent(input, setSteps);
-      
+
     // Campaign Module Agents
     case "whatsapp-nurturer":
       return await whatsappNurturerAgent(input, setSteps);
     case "reengagement-agent":
       return await reengagementAgent(input, setSteps);
-      
+
     default:
       throw new Error(`Unknown agent: ${agentId}`);
   }

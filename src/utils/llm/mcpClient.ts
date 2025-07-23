@@ -10,21 +10,6 @@ export interface MCPFunction {
   };
 }
 
-export interface MCPCallRequest {
-  functionName: string;
-  parameters: Record<string, any>;
-  model?: 'gemini' | 'openai';
-  temperature?: number;
-}
-
-export interface MCPCallResponse {
-  success: boolean;
-  result?: unknown;
-  error?: string;
-  executionTime?: number;
-  modelUsed?: string;
-}
-
 // Available MCP functions for AI Goals system
 export const AVAILABLE_MCP_FUNCTIONS: MCPFunction[] = [
   {
@@ -120,7 +105,7 @@ export class MCPClient {
 
   async callFunction(request: MCPCallRequest): Promise<MCPCallResponse> {
     const startTime = Date.now();
-    
+
     try {
       // Call the real MCP API endpoint
       const response = await fetch(`${this.baseUrl}/call`, {
@@ -136,7 +121,7 @@ export class MCPClient {
       }
 
       const result = await response.json();
-      
+
       return {
         success: true,
         result: result.data || result.result,
@@ -153,21 +138,19 @@ export class MCPClient {
     }
   }
 
-
-
   getAvailableFunctions(): MCPFunction[] {
     return AVAILABLE_MCP_FUNCTIONS;
   }
 
   validateFunctionCall(functionName: string, parameters: Record<string, any>): { valid: boolean; errors?: string[] } {
     const func = AVAILABLE_MCP_FUNCTIONS.find(f => f.name === functionName);
-    
+
     if (!func) {
       return { valid: false, errors: [`Function ${functionName} not found`] };
     }
 
     const errors: string[] = [];
-    
+
     // Check required parameters
     if (func.parameters.required) {
       for (const requiredParam of func.parameters.required) {
@@ -178,7 +161,7 @@ export class MCPClient {
     }
 
     // Basic type validation could be added here
-    
+
     return { valid: errors.length === 0, errors: errors.length > 0 ? errors : undefined };
   }
 }

@@ -2,12 +2,6 @@ import React, { createContext, useContext } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAITools } from '../components/AIToolsProvider';
 
-interface NavigationContextType {
-  scrollToSection: (sectionId: string) => void;
-  openAITool: (toolName: string) => void;
-  navigateToFeature: (feature: string) => void;
-}
-
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
 
 export const useNavigation = () => {
@@ -18,7 +12,7 @@ export const useNavigation = () => {
   return context;
 };
 
-export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const NavigationProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const { openTool } = useAITools();
   const navigate = useNavigate();
 

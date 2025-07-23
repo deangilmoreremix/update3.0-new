@@ -21,22 +21,17 @@ import {
 } from 'lucide-react';
 import DealAgentButtons from './deals/DealAgentButtons';
 
-interface DealDetailProps {
-  dealId: string;
-  onClose: () => void;
-}
-
-const DealDetail: React.FC<DealDetailProps> = ({ dealId, onClose }) => {
+const DealDetail: FC<DealDetailProps> = ({ dealId, onClose }) => {
   const { deals, updateDeal, deleteDeal } = useDealStore();
   const gemini = useGemini();
   const deal = deals[dealId];
-  
+
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [dealAnalysis, setDealAnalysis] = useState<string | null>(null);
-  
+
   const [editForm, setEditForm] = useState({
     title: deal.title,
     value: deal.value,
@@ -48,7 +43,7 @@ const DealDetail: React.FC<DealDetailProps> = ({ dealId, onClose }) => {
     notes: deal.notes || '',
     nextSteps: deal.nextSteps?.join('\n') || ''
   });
-  
+
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -68,7 +63,7 @@ const DealDetail: React.FC<DealDetailProps> = ({ dealId, onClose }) => {
         notes: editForm.notes,
         nextSteps: editForm.nextSteps.split('\n').filter(step => step.trim())
       };
-      
+
       updateDeal(dealId, updatedDeal);
       setIsEditing(false);
     } catch (error) {
@@ -95,7 +90,7 @@ const DealDetail: React.FC<DealDetailProps> = ({ dealId, onClose }) => {
 
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete this deal?')) return;
-    
+
     setIsDeleting(true);
     try {
       deleteDeal(dealId);
@@ -111,7 +106,7 @@ const DealDetail: React.FC<DealDetailProps> = ({ dealId, onClose }) => {
     setIsAnalyzing(true);
     try {
       const analysisPrompt = `Analyze this sales deal and provide insights:
-        
+
         Deal: ${deal.title}
         Company: ${deal.company}
         Value: $${deal.value.toLocaleString()}
@@ -120,7 +115,7 @@ const DealDetail: React.FC<DealDetailProps> = ({ dealId, onClose }) => {
         Due Date: ${deal.dueDate?.toLocaleDateString()}
         Notes: ${deal.notes}
         Next Steps: ${deal.nextSteps?.join(', ')}
-        
+
         Please provide:
         1. Risk assessment
         2. Recommendations to increase close probability
@@ -417,7 +412,7 @@ const DealDetail: React.FC<DealDetailProps> = ({ dealId, onClose }) => {
                     {isAnalyzing ? 'Analyzing...' : 'Generate Analysis'}
                   </button>
                 </div>
-                
+
                 {dealAnalysis && (
                   <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
                     <div className="whitespace-pre-wrap text-gray-700">{dealAnalysis}</div>
@@ -457,7 +452,7 @@ const DealDetail: React.FC<DealDetailProps> = ({ dealId, onClose }) => {
                 {isDeleting ? 'Deleting...' : 'Delete'}
               </button>
             </div>
-            
+
             <div className="flex gap-2">
               <button className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
                 <Phone className="w-4 h-4" />

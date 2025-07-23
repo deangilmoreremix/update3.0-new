@@ -3,7 +3,7 @@ import { GlassCard } from '../ui/GlassCard';
 import { ModernButton } from '../ui/ModernButton';
 import { SmartAIControls } from '../ai/SmartAIControls';
 import { useTaskOptimization } from '../../hooks/';
-import { Brain, TrendingUp, AlertTriangle, Target, Clock, DollarSign, Zap, BarChart3, Lightbulb, RefreshCw, ThumbsUp, ThumbsDown, Star, Settings, Layers, Sparkles, CheckCircle, Activity } from 'lucide-react';
+import { Brain, Target, Clock, Zap, RefreshCw, ThumbsUp, ThumbsDown, Star, Layers, Sparkles, CheckCircle, Activity } from 'lucide-react';
 
 export const EnhancedAIInsightsPanel: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -23,14 +23,14 @@ export const EnhancedAIInsightsPanel: React.FC = () => {
     // Load recommendations for common tasks
     const tasks = ['contact_scoring', 'categorization', 'contact_enrichment', 'lead_qualification'];
     const recommendations: Record<string, any> = {};
-    
+
     tasks.forEach(task => {
       const rec = getRecommendations(task);
       if (rec) {
         recommendations[task] = rec;
       }
     });
-    
+
     setTaskRecommendations(recommendations);
   }, [getRecommendations]);
 
@@ -94,7 +94,7 @@ export const EnhancedAIInsightsPanel: React.FC = () => {
             <p className="text-sm text-gray-600">Advanced multi-model AI orchestration with Gemma & OpenAI</p>
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           {/* View Selector */}
           <div className="flex rounded-lg border border-gray-300 overflow-hidden">
@@ -116,7 +116,7 @@ export const EnhancedAIInsightsPanel: React.FC = () => {
               );
             })}
           </div>
-          
+
           <ModernButton 
             onClick={generateInsights}
             loading={isAnalyzing}
@@ -293,7 +293,7 @@ export const EnhancedAIInsightsPanel: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center space-x-6 text-sm">
                     <div className="text-center">
                       <div className="font-medium text-gray-900">

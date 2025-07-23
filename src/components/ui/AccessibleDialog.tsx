@@ -2,22 +2,11 @@ import React, { useEffect, useRef } from 'react';
 import FocusTrap from 'focus-trap-react';
 import { X } from 'lucide-react';
 
-interface AccessibleDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  description?: string;
-  children: React.ReactNode;
-  maxWidth?: string;
-  closeOnEsc?: boolean;
-  closeOnOutsideClick?: boolean;
-}
-
 /**
  * An accessible dialog component that follows WAI-ARIA best practices
  * with full keyboard navigation, focus management, and proper ARIA attributes.
  */
-export const AccessibleDialog: React.FC<AccessibleDialogProps> = ({
+export const AccessibleDialog: FC<AccessibleDialogProps> = ({
   isOpen,
   onClose,
   title,
@@ -29,34 +18,34 @@ export const AccessibleDialog: React.FC<AccessibleDialogProps> = ({
 }) => {
   const dialogRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
-  
+
   useEffect(() => {
     // Store the currently focused element so we can restore focus later
     if (isOpen) {
       previousFocusRef.current = document.activeElement as HTMLElement;
     }
-    
+
     // Add escape key listener for closing dialog
     const handleKeyDown = (event: KeyboardEvent) => {
       if (closeOnEsc && event.key === 'Escape' && isOpen) {
         onClose();
       }
     };
-    
+
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
       // Prevent scrolling of background content
       document.body.style.overflow = 'hidden';
     }
-    
+
     // Cleanup function
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      
+
       if (isOpen) {
         // Re-enable scrolling when component unmounts if it was open
         document.body.style.overflow = '';
-        
+
         // Return focus to the element that had focus before dialog was opened
         if (previousFocusRef.current) {
           previousFocusRef.current.focus();
@@ -64,9 +53,9 @@ export const AccessibleDialog: React.FC<AccessibleDialogProps> = ({
       }
     };
   }, [isOpen, onClose, closeOnEsc]);
-  
+
   if (!isOpen) return null;
-  
+
   return (
     <div 
       className="fixed inset-0 z-50 overflow-y-auto"
@@ -80,7 +69,7 @@ export const AccessibleDialog: React.FC<AccessibleDialogProps> = ({
         onClick={closeOnOutsideClick ? onClose : undefined}
         aria-hidden="true"
       />
-      
+
       {/* Dialog positioning */}
       <div className="flex min-h-full items-center justify-center p-4 text-center">
         {/* Focus trap for accessibility */}
@@ -99,7 +88,7 @@ export const AccessibleDialog: React.FC<AccessibleDialogProps> = ({
                 >
                   {title}
                 </h2>
-                
+
                 <button
                   type="button"
                   onClick={onClose}
@@ -109,14 +98,14 @@ export const AccessibleDialog: React.FC<AccessibleDialogProps> = ({
                   <X className="h-6 w-6" />
                 </button>
               </div>
-              
+
               {description && (
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                   {description}
                 </p>
               )}
             </div>
-            
+
             {/* Content */}
             <div className="px-6 py-4 text-gray-900 dark:text-white">
               {children}

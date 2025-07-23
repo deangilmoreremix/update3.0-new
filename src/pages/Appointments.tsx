@@ -20,7 +20,7 @@ const Appointments: React.FC = () => {
     isTimeSlotAvailable,
     getAppointmentsForDate
   } = useAppointmentStore();
-  
+
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [showAppointmentForm, setShowAppointmentForm] = useState(false);
   const [appointmentDetail, setAppointmentDetail] = useState<Appointment | null>(null);
@@ -29,7 +29,7 @@ const Appointments: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [appointmentTypes, setAppointmentTypes] = useState<string[]>([]);
-  
+
   // Form data for creating/editing appointments
   const [formData, setFormData] = useState<Partial<Appointment>>({
     title: '',
@@ -43,11 +43,11 @@ const Appointments: React.FC = () => {
     notes: '',
     status: 'scheduled'
   });
-  
+
   useEffect(() => {
     fetchAppointments();
   }, []);
-  
+
   useEffect(() => {
     // Set initial selected date to today
     if (selectedSlot) {
@@ -59,17 +59,17 @@ const Appointments: React.FC = () => {
       setShowAppointmentForm(true);
     }
   }, [selectedSlot]);
-  
+
   useEffect(() => {
     if (selectedAppointment) {
       setAppointmentDetail(appointments[selectedAppointment]);
       setShowAppointmentDetail(true);
     }
   }, [selectedAppointment, appointments]);
-  
+
   // Calculate appointments for the selected date
   const appointmentsForSelectedDate = getAppointmentsForDate(selectedDate);
-  
+
   // Available time slots for the day
   const timeSlots = [
     '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', 
@@ -77,7 +77,7 @@ const Appointments: React.FC = () => {
     '1:00 PM', '1:30 PM', '2:00 PM', '2:30 PM',
     '3:00 PM', '3:30 PM', '4:00 PM', '4:30 PM'
   ];
-  
+
   // Get contacts for dropdown (for demo we're using mock data)
   const contacts = [
     { value: '1', label: 'John Doe', email: 'john.doe@example.com', phone: '(555) 123-4567' },
@@ -85,12 +85,12 @@ const Appointments: React.FC = () => {
     { value: '3', label: 'Robert Johnson', email: 'robert@example.com', phone: '(555) 456-7890' },
     { value: '4', label: 'Sarah Williams', email: 'sarah@example.com', phone: '(555) 567-8901' },
   ];
-  
+
   // Functions to format appointments and dates
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
-  
+
   const formatDuration = (minutes: number) => {
     if (minutes < 60) {
       return `${minutes} min`;
@@ -100,7 +100,7 @@ const Appointments: React.FC = () => {
       return remainingMinutes > 0 ? `${hours} hr ${remainingMinutes} min` : `${hours} hr`;
     }
   };
-  
+
   const isSameDay = (date1: Date, date2: Date) => {
     return (
       date1.getFullYear() === date2.getFullYear() &&
@@ -108,64 +108,64 @@ const Appointments: React.FC = () => {
       date1.getDate() === date2.getDate()
     );
   };
-  
+
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
     selectTimeSlot(null);
     setShowAppointmentForm(false);
   };
-  
+
   const handleTimeSlotClick = (timeSlot: string) => {
     if (!isTimeSlotTaken(timeSlot)) {
       const [hourStr, minuteStr, period] = timeSlot.match(/(\d+):(\d+)\s+([AP]M)/)?.slice(1) || [];
       const isPM = period === 'PM';
       let hour = parseInt(hourStr);
       const minute = parseInt(minuteStr);
-      
+
       if (isPM && hour !== 12) hour += 12;
       if (!isPM && hour === 12) hour = 0;
-      
+
       const slotTime = new Date(selectedDate);
       slotTime.setHours(hour, minute, 0, 0);
-      
+
       // Select the time slot
       selectTimeSlot(slotTime);
     }
   };
-  
+
   // Check if a time slot is taken
   const isTimeSlotTaken = (timeSlot: string) => {
     const [hourStr, minuteStr] = timeSlot.split(':');
     const isPM = timeSlot.includes('PM');
     let hour = parseInt(hourStr);
     const minute = parseInt(minuteStr);
-    
+
     if (isPM && hour !== 12) hour += 12;
     if (!isPM && hour === 12) hour = 0;
-    
+
     const slotTime = new Date(selectedDate);
     slotTime.setHours(hour, minute, 0, 0);
-    
+
     return !isTimeSlotAvailable(slotTime, 30); // Assume 30 min duration for checking
   };
-  
+
   // Function to get appointment at a specific time slot
   const getAppointmentAtTimeSlot = (timeSlot: string) => {
     const [hourStr, minuteStr] = timeSlot.split(':');
     const isPM = timeSlot.includes('PM');
     let hour = parseInt(hourStr);
     const minute = parseInt(minuteStr);
-    
+
     if (isPM && hour !== 12) hour += 12;
     if (!isPM && hour === 12) hour = 0;
-    
+
     const slotTime = new Date(selectedDate);
     slotTime.setHours(hour, minute, 0, 0);
-    
+
     return Object.values(appointments).find(appointment => {
       const appointmentStartTime = appointment.date;
       const appointmentEndTime = appointment.endDate;
-      
+
       return (
         isSameDay(appointmentStartTime, selectedDate) &&
         slotTime >= appointmentStartTime &&
@@ -173,7 +173,7 @@ const Appointments: React.FC = () => {
       );
     });
   };
-  
+
   const formatDateHeader = (date: Date) => {
     const options: Intl.DateTimeFormatOptions = {
       weekday: 'long',
@@ -183,7 +183,7 @@ const Appointments: React.FC = () => {
     };
     return date.toLocaleDateString(undefined, options);
   };
-  
+
   const renderAppointmentTypeIcon = (type: AppointmentType) => {
     switch (type) {
       case 'in-person':
@@ -196,7 +196,7 @@ const Appointments: React.FC = () => {
         return null;
     }
   };
-  
+
   const getStatusBadgeClass = (status: AppointmentStatus) => {
     switch(status) {
       case 'scheduled':
@@ -211,21 +211,21 @@ const Appointments: React.FC = () => {
         return 'bg-gray-100 text-gray-800';
     }
   };
-  
+
   const handleSubmitAppointment = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       // Calculate end date based on start time and duration
       const endDate = new Date(formData.date || new Date());
       endDate.setMinutes(endDate.getMinutes() + (formData.duration || 30));
-      
+
       const appointmentData = {
         ...formData,
         endDate
       };
-      
+
       if (isEditing && appointmentDetail) {
         // Update existing appointment
         await updateAppointment(appointmentDetail.id, appointmentData);
@@ -233,7 +233,7 @@ const Appointments: React.FC = () => {
         // Create new appointment
         await createAppointment(appointmentData);
       }
-      
+
       // Reset form and close
       setFormData({
         title: '',
@@ -255,7 +255,7 @@ const Appointments: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-  
+
   const handleEditAppointment = (appt: Appointment) => {
     setFormData({
       title: appt.title,
@@ -270,12 +270,12 @@ const Appointments: React.FC = () => {
       notes: appt.notes,
       status: appt.status
     });
-    
+
     setShowAppointmentDetail(false);
     setIsEditing(true);
     setShowAppointmentForm(true);
   };
-  
+
   const handleDeleteAppointment = async (id: string) => {
     if (confirm('Are you sure you want to delete this appointment?')) {
       try {
@@ -286,7 +286,7 @@ const Appointments: React.FC = () => {
       }
     }
   };
-  
+
   const handleContactSelect = (option: unknown) => {
     if (option) {
       const contact = contacts.find(c => c.value === option.value);
@@ -307,11 +307,11 @@ const Appointments: React.FC = () => {
       });
     }
   };
-  
+
   const handleAppointmentStatusChange = async (id: string, status: AppointmentStatus) => {
     try {
       await updateAppointment(id, { status });
-      
+
       if (appointmentDetail && appointmentDetail.id === id) {
         setAppointmentDetail({
           ...appointmentDetail,
@@ -322,11 +322,11 @@ const Appointments: React.FC = () => {
       console.error('Error updating appointment status:', error);
     }
   };
-  
+
   const handleCopyMeetingLink = () => {
     // In a real app, this would be a real meeting URL
     const meetingUrl = 'https://meeting.example.com/join/abc123';
-    
+
     navigator.clipboard.writeText(meetingUrl)
       .then(() => {
         alert('Meeting link copied to clipboard');
@@ -335,7 +335,7 @@ const Appointments: React.FC = () => {
         console.error('Failed to copy meeting link:', err);
       });
   };
-  
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <header className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -368,7 +368,7 @@ const Appointments: React.FC = () => {
           </button>
         </div>
       </header>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow-sm mb-6">
@@ -391,7 +391,7 @@ const Appointments: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-lg shadow-sm">
             <div className="p-4 border-b border-gray-200">
               <div className="flex justify-between items-center">
@@ -408,7 +408,7 @@ const Appointments: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="p-4">
               {Object.values(appointments)
                 .filter(appointment => 
@@ -440,7 +440,7 @@ const Appointments: React.FC = () => {
                     </div>
                   </div>
                 ))}
-              
+
               {Object.values(appointments).filter(appointment => 
                 appointment.date >= new Date() && 
                 appointment.status === 'scheduled' &&
@@ -454,7 +454,7 @@ const Appointments: React.FC = () => {
                   <p className="text-gray-500">No upcoming appointments</p>
                 </div>
               )}
-              
+
               <div className="mt-2 text-center">
                 <button className="text-sm text-blue-600 hover:text-blue-800">
                   View All Appointments
@@ -463,7 +463,7 @@ const Appointments: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow-sm">
             <div className="p-4 border-b border-gray-200 flex justify-between items-center">
@@ -497,7 +497,7 @@ const Appointments: React.FC = () => {
                     onChange={(e) => {
                       const types = [...appointmentTypes];
                       const value = e.target.value;
-                      
+
                       if (types.includes(value)) {
                         setAppointmentTypes(types.filter(t => t !== value));
                       } else {
@@ -518,14 +518,14 @@ const Appointments: React.FC = () => {
                 </button>
               </div>
             </div>
-            
+
             <div className="p-4">
               {/* Time slots */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {timeSlots.map(timeSlot => {
                   const isTaken = isTimeSlotTaken(timeSlot);
                   const appointment = getAppointmentAtTimeSlot(timeSlot);
-                  
+
                   return (
                     <div 
                       key={timeSlot}
@@ -547,7 +547,7 @@ const Appointments: React.FC = () => {
                           </span>
                         )}
                       </div>
-                      
+
                       {isTaken && appointment && (
                         <div className="mt-2">
                           <div className="flex items-center">
@@ -560,7 +560,7 @@ const Appointments: React.FC = () => {
                           </div>
                           <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
                             <span>{formatDuration(appointment.duration)}</span>
-                            
+
                             <div className="flex space-x-2">
                               {appointment.type === 'video' && (
                                 <button className="p-1 text-purple-600 hover:text-purple-800" onClick={(e) => {
@@ -592,7 +592,7 @@ const Appointments: React.FC = () => {
                           </div>
                         </div>
                       )}
-                      
+
                       {!isTaken && (
                         <div className="mt-2 text-center text-sm text-gray-500">
                           Available
@@ -602,7 +602,7 @@ const Appointments: React.FC = () => {
                   );
                 })}
               </div>
-              
+
               {/* New Appointment Form */}
               {showAppointmentForm && (
                 <div className="mt-6 border-t pt-6">
@@ -622,7 +622,7 @@ const Appointments: React.FC = () => {
                           required
                         />
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Contact
@@ -640,7 +640,7 @@ const Appointments: React.FC = () => {
                           classNamePrefix="select"
                         />
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Date & Time
@@ -663,7 +663,7 @@ const Appointments: React.FC = () => {
                           required
                         />
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Duration
@@ -681,7 +681,7 @@ const Appointments: React.FC = () => {
                           <option value={120}>2 hours</option>
                         </select>
                       </div>
-                      
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Appointment Type
@@ -731,7 +731,7 @@ const Appointments: React.FC = () => {
                           </label>
                         </div>
                       </div>
-                      
+
                       {formData.type === 'in-person' && (
                         <div className="md:col-span-2">
                           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -746,7 +746,7 @@ const Appointments: React.FC = () => {
                           />
                         </div>
                       )}
-                      
+
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Notes
@@ -760,7 +760,7 @@ const Appointments: React.FC = () => {
                         ></textarea>
                       </div>
                     </div>
-                    
+
                     <div className="mt-4 flex justify-end space-x-2">
                       <button 
                         type="button"
@@ -794,7 +794,7 @@ const Appointments: React.FC = () => {
               )}
             </div>
           </div>
-          
+
           {/* Appointments for selected date */}
           {appointmentsForSelectedDate.length > 0 && (
             <div className="mt-6 bg-white rounded-lg shadow-sm p-6">
@@ -822,20 +822,20 @@ const Appointments: React.FC = () => {
                             </span>
                           </div>
                         </div>
-                        
+
                         {appointment.location && (
                           <div className="flex items-center mt-1 text-xs text-gray-500">
                             <MapPin size={12} className="mr-1" />
                             {appointment.location}
                           </div>
                         )}
-                        
+
                         {appointment.notes && (
                           <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded">
                             {appointment.notes}
                           </div>
                         )}
-                        
+
                         <div className="mt-3 flex flex-wrap gap-2">
                           {appointment.status === 'scheduled' && (
                             <>
@@ -887,7 +887,7 @@ const Appointments: React.FC = () => {
           )}
         </div>
       </div>
-      
+
       {/* Appointment Detail Modal */}
       {showAppointmentDetail && appointmentDetail && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 z-50">
@@ -898,7 +898,7 @@ const Appointments: React.FC = () => {
                 <X size={20} />
               </button>
             </div>
-            
+
             <div className="px-6 py-4">
               <div className="flex justify-between items-start mb-6">
                 <div>
@@ -916,7 +916,7 @@ const Appointments: React.FC = () => {
                   <p className="text-xs text-gray-500 mt-1">({formatDuration(appointmentDetail.duration)})</p>
                 </div>
               </div>
-              
+
               <div className="mb-4">
                 <h5 className="text-sm font-medium text-gray-700 mb-2">Contact Information</h5>
                 <div className="bg-gray-50 p-3 rounded-lg">
@@ -942,7 +942,7 @@ const Appointments: React.FC = () => {
                   )}
                 </div>
               </div>
-              
+
               {appointmentDetail.type === 'in-person' && appointmentDetail.location && (
                 <div className="mb-4">
                   <h5 className="text-sm font-medium text-gray-700 mb-2">Location</h5>
@@ -952,7 +952,7 @@ const Appointments: React.FC = () => {
                   </div>
                 </div>
               )}
-              
+
               {appointmentDetail.type === 'video' && (
                 <div className="mb-4">
                   <h5 className="text-sm font-medium text-gray-700 mb-2">Meeting Link</h5>
@@ -979,7 +979,7 @@ const Appointments: React.FC = () => {
                   </div>
                 </div>
               )}
-              
+
               {appointmentDetail.notes && (
                 <div className="mb-4">
                   <h5 className="text-sm font-medium text-gray-700 mb-2">Notes</h5>
@@ -989,7 +989,7 @@ const Appointments: React.FC = () => {
                 </div>
               )}
             </div>
-            
+
             <div className="px-6 py-3 bg-gray-50 flex justify-between">
               <div className="space-x-2">
                 <button

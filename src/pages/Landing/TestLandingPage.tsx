@@ -20,7 +20,7 @@ const TestLandingPage: React.FC = () => {
   return (
     <div className="relative">
       <LandingHeader />
-      
+
       {/* Test section 1: Simple gradient background */}
       <section className="relative h-screen">
         <div 
@@ -31,7 +31,7 @@ const TestLandingPage: React.FC = () => {
           <h1 className="text-4xl font-bold text-center">Background Test 1: Gradient</h1>
         </div>
       </section>
-      
+
       {/* Test section 2: Particle background */}
       <section className="relative h-screen">
         <div className="absolute inset-0 overflow-hidden">
@@ -53,7 +53,7 @@ const TestLandingPage: React.FC = () => {
           <h1 className="text-4xl font-bold text-center">Background Test 2: Particles</h1>
         </div>
       </section>
-      
+
       {/* Test section 3: Image background */}
       <section className="relative h-screen">
         <div 

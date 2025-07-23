@@ -44,7 +44,7 @@ export const AI_MODELS: Record<string, AIModel> = {
     isAvailable: true,
     recommended: true
   },
-  
+
   'gemini-2.5-flash-8b': {
     id: 'gemini-2.5-flash-8b',
     name: 'Gemini 2.5 Flash 8B',
@@ -208,20 +208,20 @@ export const getModelsByCategory = (category: string): AIModel[] => {
   switch (category) {
     case MODEL_CATEGORIES.RECOMMENDED:
       return Object.values(AI_MODELS).filter(model => model.recommended);
-    
+
     case MODEL_CATEGORIES.GEMINI_FLASH:
       return Object.values(AI_MODELS).filter(model => 
         model.family === 'gemini' && model.id.includes('flash')
       );
-    
+
     case MODEL_CATEGORIES.GEMMA:
       return Object.values(AI_MODELS).filter(model => model.family === 'gemma');
-    
+
     case MODEL_CATEGORIES.LEGACY:
       return Object.values(AI_MODELS).filter(model => 
         model.family === 'gemini' && model.version === '1.5'
       );
-    
+
     default:
       return Object.values(AI_MODELS);
   }
@@ -258,22 +258,22 @@ export const getFastestModels = (): AIModel[] => {
 export const AI_MODEL_RECOMMENDATIONS = {
   // For CRM email generation
   EMAIL_GENERATION: ['gemini-2.5-flash', 'gemma-2-9b-it'],
-  
+
   // For business analysis
   BUSINESS_ANALYSIS: ['gemini-2.5-flash', 'gemma-2-27b-it'],
-  
+
   // For content creation
   CONTENT_CREATION: ['gemini-2.5-flash', 'gemma-2-27b-it'],
-  
+
   // For quick responses
   QUICK_RESPONSES: ['gemini-2.5-flash-8b', 'gemma-2-2b-it'],
-  
+
   // For complex reasoning
   COMPLEX_REASONING: ['gemini-2.5-flash', 'gemma-2-27b-it', 'gemini-1.5-pro'],
-  
+
   // For code generation
   CODE_GENERATION: ['gemini-2.5-flash', 'gemma-2-27b-it'],
-  
+
   // For multimodal tasks
   MULTIMODAL: ['gemini-2.5-flash', 'gemini-1.5-pro', 'gemini-1.5-flash']
 };

@@ -1,16 +1,7 @@
 import React from 'react';
 
-interface AvatarProps {
-  src?: string;
-  alt?: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
-  fallback?: string;
-  status?: 'online' | 'offline' | 'busy' | 'away';
-  className?: string;
-}
-
 // Use React.memo to prevent unnecessary re-renders
-const Avatar: React.FC<AvatarProps> = React.memo(({ 
+const Avatar: FC<AvatarProps> = React.memo(({ 
   src, 
   alt = '', 
   size = 'md', 

@@ -3,17 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Goal } from '../types/goals';
 import { Clock, TrendingUp, Users, Zap, Play, Eye, CheckCircle, Loader, Star, Target, Shield, Brain, Activity, Bot, Settings, Sparkles, FileText, BarChart3, ArrowRight, DollarSign, Database, MessageSquare, Phone, Mail, Calendar, Gauge } from 'lucide-react';
 
-interface InteractiveGoalCardProps {
-  goal: Goal;
-  onExecute: (goal: Goal) => void;
-  isExecuting?: boolean;
-  executionProgress?: number;
-  realMode?: boolean;
-  onPreview?: (goal: Goal) => void;
-  isCompleted?: boolean;
-}
-
-const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
+const InteractiveGoalCard: FC<InteractiveGoalCardProps> = ({
   goal,
   onExecute,
   isExecuting = false,
@@ -85,7 +75,7 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
       'Analytics': <BarChart3 className="h-3 w-3" />,
       'Automation': <Bot className="h-3 w-3" />
     };
-    
+
     return tools.map(tool => (
       <div key={tool} className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs">
         {iconMap[tool] || <Zap className="h-3 w-3" />}
@@ -112,7 +102,7 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
       <div className={`relative bg-white rounded-xl shadow-lg border transition-all duration-300 overflow-hidden ${
         isHovered ? 'shadow-xl border-blue-200' : 'shadow-md border-gray-200'
       } ${isCompleted ? 'bg-green-50 border-green-200' : ''}`}>
-        
+
         {/* Completion Badge */}
         {isCompleted && (
           <div className="absolute top-3 right-3 z-10">
@@ -145,7 +135,7 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
                 <p className="text-sm text-gray-600">{goal.category}</p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <div className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors.bg} ${priorityColors.text} ${priorityColors.border} border`}>
                 {goal.priority}
@@ -240,7 +230,7 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
                 </span>
                 <span className="text-sm text-gray-500">{Math.round(executionProgress)}%</span>
               </div>
-              
+
               {/* Animated Status Indicators */}
               <div className="flex items-center gap-2">
                 {animationPhase === 'preparing' && (
@@ -276,7 +266,7 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
                 {realMode ? 'Execute Real' : 'Run Demo'}
               </button>
             )}
-            
+
             {isExecuting && (
               <button
                 disabled
@@ -286,7 +276,7 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
                 Executing...
               </button>
             )}
-            
+
             {isCompleted && (
               <button
                 onClick={() => onExecute(goal)}
@@ -306,7 +296,7 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
                 <Eye className="h-4 w-4" />
               </button>
             )}
-            
+
             <button
               onClick={() => setShowDetails(!showDetails)}
               className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"

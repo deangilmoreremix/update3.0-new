@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Brain, Zap, RefreshCw, Info, CheckCircle, AlertTriangle, TrendingUp } from 'lucide-react';
+import { Brain, Zap, RefreshCw, Info } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAITools } from '../../components/AIToolsProvider';
 import { useDealStore } from '../../store/dealStore';
@@ -24,7 +24,7 @@ const AIInsightsPanel = () => {
   const { deals } = useDealStore();
   const { contacts } = useContactStore();
   const { generateContentWithReasoning } = useGemini();
-  
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [apiKeysConfigured, setApiKeysConfigured] = useState(true);
@@ -99,14 +99,14 @@ const AIInsightsPanel = () => {
       }
     ];
   }, [deals, contacts, isDark]);
-  
+
   const [insights, setInsights] = useState<Insight[]>(createDefaultInsights());
 
   const generateRealInsights = useCallback(async () => {
     // Convert to arrays for analysis
     const dealsArray = Object.values(deals);
     const contactsArray = Object.values(contacts);
-    
+
     // Prepare pipeline data for analysis
     const pipelineData = {
       deals: dealsArray.map(deal => ({
@@ -136,7 +136,7 @@ const AIInsightsPanel = () => {
         hotLeadsCount: contactsArray.filter(c => c.status === 'hot').length
       }
     };
-    
+
     try {
       // Use generateContentWithReasoning hook to analyze pipeline health
       const response = await generateContentWithReasoning(
@@ -145,19 +145,19 @@ const AIInsightsPanel = () => {
         "sales team and management",
         JSON.stringify(pipelineData, null, 2)
       );
-      
+
       // Reset API keys configured flag if we got a successful result
       setApiKeysConfigured(true);
 
       // Get default insights
       const defaultInsights = createDefaultInsights();
-      
+
       // For now, keep the default insights since the service doesn't have pipeline analysis
       if (response) {
         console.log('Generated pipeline analysis:', response);
         setInsights(defaultInsights);
       }
-      
+
     } catch (error) {
       console.error("Error generating insights:", error);
       // Set a more user-friendly error message
@@ -193,7 +193,7 @@ const AIInsightsPanel = () => {
   const generateInsights = async () => {
     setIsGenerating(true);
     setError(null);
-    
+
     try {
       await generateRealInsights();
     } catch (error) {
@@ -210,7 +210,7 @@ const AIInsightsPanel = () => {
   const renderAvatarStack = (contacts: Array<{ id: string; name: string; avatar?: string }>, maxVisible: number = 3) => {
     const visibleContacts = contacts.slice(0, maxVisible);
     const remainingCount = Math.max(0, contacts.length - maxVisible);
-    
+
     return (
       <div className="flex items-center mt-2">
         <div className="flex -space-x-2">
@@ -302,7 +302,7 @@ const AIInsightsPanel = () => {
                 'warning': 'live-deal-analysis',
                 'insight': 'ai-assistant'
               };
-              
+
               const toolName = toolMap[insight.type] || 'sales-insights';
               openTool(toolName);
             }}
@@ -316,7 +316,7 @@ const AIInsightsPanel = () => {
                   {insight.title}
                 </h3>
                 <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} mt-1`}>{insight.description}</p>
-                
+
                 {/* Avatar stack for related contacts */}
                 {insight.relatedContacts && insight.relatedContacts.length > 0 && (
                   renderAvatarStack(insight.relatedContacts)

@@ -2,12 +2,7 @@ import React, { useState, useRef } from 'react';
 import { ModernButton } from '../ui/ModernButton';
 import { useContactStore } from '../../store/contactStore';
 
-import { AlertCircle, CheckCircle, Database, Download, File, FileSpreadsheet, Info, Upload, Users, X, Phone } from 'lucide-react';
-
-interface ImportContactsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
+import { AlertCircle, CheckCircle, Download, File, FileSpreadsheet, Info, Upload, Users, X } from 'lucide-react';
 
 const CSV_TEMPLATE_HEADERS = [
   'firstName',
@@ -64,10 +59,10 @@ const parseCSV = (text: string): string[][] => {
     const result = [];
     let current = '';
     let inQuotes = false;
-    
+
     for (const i = 0; i < line.length; i++) {
       const char = line[i];
-      
+
       if (char === '"' && (i === 0 || line[i-1] === ',')) {
         inQuotes = true;
       } else if (char === '"' && inQuotes && (i === line.length - 1 || line[i+1] === ',')) {
@@ -79,7 +74,7 @@ const parseCSV = (text: string): string[][] => {
         current += char;
       }
     }
-    
+
     result.push(current.trim());
     return result;
   });
@@ -87,33 +82,33 @@ const parseCSV = (text: string): string[][] => {
 
 const validateContact = (data: Record<string, string>): string[] => {
   const errors = [];
-  
+
   if (!data.email) {
     errors.push('Email is required');
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
     errors.push('Invalid email format');
   }
-  
+
   if (!data.name && (!data.firstName || !data.lastName)) {
     errors.push('Name or firstName + lastName is required');
   }
-  
+
   if (!data.company) {
     errors.push('Company is required');
   }
-  
+
   if (data.interestLevel && !['hot', 'medium', 'low', 'cold'].includes(data.interestLevel)) {
     errors.push('Interest level must be: hot, medium, low, or cold');
   }
-  
+
   if (data.status && !['lead', 'prospect', 'customer', 'churned', 'active', 'pending', 'inactive'].includes(data.status)) {
     errors.push('Status must be: lead, prospect, customer, churned, active, pending, or inactive');
   }
-  
+
   return errors;
 };
 
-export const ImportContactsModal: React.FC<ImportContactsModalProps> = ({ isOpen, onClose }) => {
+export const ImportContactsModal: FC<ImportContactsModalProps> = ({ isOpen, onClose }) => {
   const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [_csvData, setCsvData] = useState<string[][]>([]);
@@ -122,7 +117,7 @@ export const ImportContactsModal: React.FC<ImportContactsModalProps> = ({ isOpen
   const [isProcessing, setIsProcessing] = useState(false);
   const [importResults, setImportResults] = useState<{ success: number; failed: number } | null>(null);
   const [activeTab, setActiveTab] = useState<'guide' | 'upload' | 'preview'>('guide');
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { importContacts } = useContactStore();
 
@@ -131,7 +126,7 @@ export const ImportContactsModal: React.FC<ImportContactsModalProps> = ({ isOpen
       CSV_TEMPLATE_HEADERS.join(','),
       ...SAMPLE_CSV_DATA.map(row => row.join(','))
     ].join('\n');
-    
+
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -155,7 +150,7 @@ export const ImportContactsModal: React.FC<ImportContactsModalProps> = ({ isOpen
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     const files = e.dataTransfer.files;
     if (files && files[0]) {
       handleFileSelect(files[0]);
@@ -167,10 +162,10 @@ export const ImportContactsModal: React.FC<ImportContactsModalProps> = ({ isOpen
       setErrors(['Please select a CSV file']);
       return;
     }
-    
+
     setFile(selectedFile);
     setErrors([]);
-    
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const text = e.target?.result as string;
@@ -191,33 +186,33 @@ export const ImportContactsModal: React.FC<ImportContactsModalProps> = ({ isOpen
       setErrors(['CSV must contain at least a header row and one data row']);
       return;
     }
-    
+
     const headers = data[0].map(h => h.toLowerCase().trim());
     const rows = data.slice(1);
     const newErrors: string[] = [];
     const contacts: unknown[] = [];
-    
+
     rows.forEach((row, index) => {
       const contact: unknown = {};
-      
+
       headers.forEach((header, colIndex) => {
         if (row[colIndex]) {
           contact[header] = row[colIndex].trim();
         }
       });
-      
+
       // Generate full name if not provided
       if (!contact.name && contact.firstname && contact.lastname) {
         contact.name = `${contact.firstname} ${contact.lastname}`;
       }
-      
+
       // Default values
       contact.sources = contact.sources ? contact.sources.split(',').map((s: string) => s.trim()) : ['Manual Import'];
       contact.interestLevel = contact.interestlevel || 'medium';
       contact.status = contact.status || 'lead';
       contact.avatarSrc = `https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2`;
       contact.tags = contact.tags ? contact.tags.split(',').map((t: string) => t.trim()) : [];
-      
+
       const validationErrors = validateContact(contact);
       if (validationErrors.length > 0) {
         newErrors.push(`Row ${index + 2}: ${validationErrors.join(', ')}`);
@@ -225,14 +220,14 @@ export const ImportContactsModal: React.FC<ImportContactsModalProps> = ({ isOpen
         contacts.push(contact);
       }
     });
-    
+
     setErrors(newErrors);
     setParsedContacts(contacts);
   };
 
   const handleImport = async () => {
     if (parsedContacts.length === 0) return;
-    
+
     setIsProcessing(true);
     try {
       await importContacts(parsedContacts);

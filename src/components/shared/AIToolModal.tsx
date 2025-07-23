@@ -1,16 +1,7 @@
 import React, { useState, useRef, ReactNode } from 'react';
 import { X, Maximize2, Minimize2 } from 'lucide-react';
 
-interface AIToolModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  icon: ReactNode;
-  children: ReactNode;
-  maxWidth?: string;
-}
-
-const AIToolModal: React.FC<AIToolModalProps> = ({
+const AIToolModal: FC<AIToolModalProps> = ({
   isOpen,
   onClose,
   title,

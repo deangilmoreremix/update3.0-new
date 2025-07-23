@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTaskStore } from '../store/taskStore';
 import { Task } from '../types';
-import { AlertCircle, Briefcase, Calendar, CheckCircle, CheckSquare, Clock, Flag, Link, Plus, Search, User, X, Check } from 'lucide-react';
+import { AlertCircle, Briefcase, Calendar, CheckCircle, CheckSquare, Clock, Flag, Link, Plus, Search, User, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import SimpleMDE from 'react-simplemde-editor';
@@ -18,7 +18,7 @@ const Tasks: React.FC = () => {
     selectTask,
     selectedTask
   } = useTaskStore();
-  
+
   const [filter, setFilter] = useState<{
     status: 'all' | 'completed' | 'uncompleted';
     priority: 'all' | 'high' | 'medium' | 'low';
@@ -28,7 +28,7 @@ const Tasks: React.FC = () => {
     priority: 'all',
     dateRange: 'all'
   });
-  
+
   const [sortBy, _setSortBy] = useState<{
     field: 'dueDate' | 'priority' | 'title';
     direction: 'asc' | 'desc';
@@ -36,7 +36,7 @@ const Tasks: React.FC = () => {
     field: 'dueDate',
     direction: 'asc'
   });
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -48,14 +48,14 @@ const Tasks: React.FC = () => {
     completed: false,
     category: 'follow-up'
   });
-  
+
   // Filter tasks based on selected filters and search term
   const filteredTasks = Object.values(tasks).filter(task => {
     // Check search term
     if (searchTerm && !task.title.toLowerCase().includes(searchTerm.toLowerCase())) {
       return false;
     }
-    
+
     // Check status filter
     if (
       (filter.status === 'completed' && !task.completed) ||
@@ -63,23 +63,23 @@ const Tasks: React.FC = () => {
     ) {
       return false;
     }
-    
+
     // Check priority filter
     if (filter.priority !== 'all' && task.priority !== filter.priority) {
       return false;
     }
-    
+
     // Check date filter
     if (filter.dateRange !== 'all' && task.dueDate) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
+
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
-      
+
       const endOfWeek = new Date(today);
       endOfWeek.setDate(endOfWeek.getDate() + (7 - endOfWeek.getDay()));
-      
+
       if (filter.dateRange === 'overdue' && (task.completed || task.dueDate >= today)) {
         return false;
       } else if (filter.dateRange === 'today' && (
@@ -92,10 +92,10 @@ const Tasks: React.FC = () => {
         return false;
       }
     }
-    
+
     return true;
   });
-  
+
   // Sort the filtered tasks
   const sortedTasks = [...filteredTasks].sort((a, b) => {
     if (sortBy.field === 'dueDate') {
@@ -106,20 +106,20 @@ const Tasks: React.FC = () => {
         ? a.dueDate.getTime() - b.dueDate.getTime()
         : b.dueDate.getTime() - a.dueDate.getTime();
     }
-    
+
     if (sortBy.field === 'priority') {
       const priorityOrder = { high: 2, medium: 1, low: 0 };
       const aValue = priorityOrder[a.priority] || 0;
       const bValue = priorityOrder[b.priority] || 0;
       return sortBy.direction === 'asc' ? aValue - bValue : bValue - aValue;
     }
-    
+
     // Default to sorting by title
     return sortBy.direction === 'asc'
       ? a.title.localeCompare(b.title)
       : b.title.localeCompare(a.title);
   });
-  
+
   // Group tasks for display
   const groupedTasks = {
     overdue: sortedTasks.filter(
@@ -144,7 +144,7 @@ const Tasks: React.FC = () => {
     completed: sortedTasks.filter(task => task.completed),
     noDueDate: sortedTasks.filter(task => !task.completed && !task.dueDate)
   };
-  
+
   // Open task detail or create form
   const openTaskDetail = (id: string) => {
     selectTask(id);
@@ -153,7 +153,7 @@ const Tasks: React.FC = () => {
     setTaskForm(task);
     setShowTaskModal(true);
   };
-  
+
   // Open task creation form
   const openCreateForm = () => {
     selectTask(null);
@@ -168,7 +168,7 @@ const Tasks: React.FC = () => {
     });
     setShowTaskModal(true);
   };
-  
+
   // Submit task form (create or update)
   const handleSubmit = async () => {
     if (selectedTask) {
@@ -178,19 +178,19 @@ const Tasks: React.FC = () => {
       // Create new task
       await createTask(taskForm);
     }
-    
+
     setShowTaskModal(false);
   };
-  
+
   // Format date for display
   const formatDate = (date?: Date) => {
     if (!date) return 'No due date';
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    
+
     if (date < today) {
       return `Overdue: ${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
     } else if (date >= today && date < tomorrow) {
@@ -201,7 +201,7 @@ const Tasks: React.FC = () => {
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
     }
   };
-  
+
   // Priority badge
   const PriorityBadge = ({ priority }: { priority: 'high' | 'medium' | 'low' }) => {
     const colors = {
@@ -209,14 +209,14 @@ const Tasks: React.FC = () => {
       medium: 'bg-yellow-100 text-yellow-800',
       low: 'bg-green-100 text-green-800'
     };
-    
+
     return (
       <span className={`text-xs px-2 py-1 rounded-full ${colors[priority]} capitalize`}>
         {priority}
       </span>
     );
   };
-  
+
   // Category badge
   const CategoryBadge = ({ category }: { category: string }) => {
     const colors: Record<string, string> = {
@@ -226,18 +226,18 @@ const Tasks: React.FC = () => {
       'follow-up': 'bg-amber-100 text-amber-800',
       'other': 'bg-gray-100 text-gray-800'
     };
-    
+
     return (
       <span className={`text-xs px-2 py-1 rounded-full ${colors[category] || colors.other} capitalize`}>
         {category.replace('-', ' ')}
       </span>
     );
   };
-  
+
   // Task group component
   const TaskGroup = ({ title, tasks, icon }: { title: string; tasks: Task[]; icon: React.ReactNode }) => {
     if (tasks.length === 0) return null;
-    
+
     return (
       <div className="mb-6">
         <h3 className="text-lg font-medium text-gray-900 mb-3 flex items-center">
@@ -288,11 +288,11 @@ const Tasks: React.FC = () => {
                             </span>
                           </div>
                         )}
-                        
+
                         {task.priority && (
                           <PriorityBadge priority={task.priority} />
                         )}
-                        
+
                         {task.category && (
                           <CategoryBadge category={task.category} />
                         )}
@@ -307,7 +307,7 @@ const Tasks: React.FC = () => {
       </div>
     );
   };
-  
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <header className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -332,7 +332,7 @@ const Tasks: React.FC = () => {
           </button>
         </div>
       </header>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         {/* Task count summary cards */}
         <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100 flex items-center">
@@ -344,7 +344,7 @@ const Tasks: React.FC = () => {
             <p className="text-xl font-semibold">{Object.keys(tasks).length}</p>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100 flex items-center">
           <div className="h-10 w-10 rounded-lg bg-red-100 flex items-center justify-center text-red-600 mr-3">
             <AlertCircle size={20} />
@@ -358,7 +358,7 @@ const Tasks: React.FC = () => {
             </p>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100 flex items-center">
           <div className="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center text-green-600 mr-3">
             <CheckCircle size={20} />
@@ -371,12 +371,12 @@ const Tasks: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
         <div className="p-4 border-b border-gray-200">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
             <h2 className="text-lg font-medium text-gray-900">Task List</h2>
-            
+
             <div className="flex space-x-2">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -390,7 +390,7 @@ const Tasks: React.FC = () => {
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               </div>
-              
+
               <div className="relative">
                 <select 
                   value={filter.priority} 
@@ -403,7 +403,7 @@ const Tasks: React.FC = () => {
                   <option value="low">Low Priority</option>
                 </select>
               </div>
-              
+
               <div className="relative">
                 <select 
                   value={filter.status} 
@@ -415,7 +415,7 @@ const Tasks: React.FC = () => {
                   <option value="uncompleted">Uncompleted</option>
                 </select>
               </div>
-              
+
               <div className="relative">
                 <select 
                   value={filter.dateRange} 
@@ -431,7 +431,7 @@ const Tasks: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="p-4">
           {/* Tasks lists by group */}
           {isLoading ? (
@@ -458,25 +458,25 @@ const Tasks: React.FC = () => {
                 tasks={groupedTasks.overdue}
                 icon={<AlertCircle size={20} className="text-red-500" />}
               />
-              
+
               <TaskGroup 
                 title="Today" 
                 tasks={groupedTasks.today}
                 icon={<Clock size={20} className="text-blue-500" />}
               />
-              
+
               <TaskGroup 
                 title="Upcoming" 
                 tasks={groupedTasks.upcoming}
                 icon={<Calendar size={20} className="text-indigo-500" />}
               />
-              
+
               <TaskGroup 
                 title="No Due Date" 
                 tasks={groupedTasks.noDueDate}
                 icon={<CheckSquare size={20} className="text-gray-500" />}
               />
-              
+
               <TaskGroup 
                 title="Completed" 
                 tasks={groupedTasks.completed}
@@ -486,7 +486,7 @@ const Tasks: React.FC = () => {
           )}
         </div>
       </div>
-      
+
       {/* Task Detail/Create Modal */}
       {showTaskModal && (
         <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -496,7 +496,7 @@ const Tasks: React.FC = () => {
             </div>
 
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            
+
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
@@ -512,7 +512,7 @@ const Tasks: React.FC = () => {
                         <X size={20} />
                       </button>
                     </div>
-                    
+
                     {(editMode || !selectedTask) ? (
                       <div className="space-y-4">
                         <div>
@@ -527,7 +527,7 @@ const Tasks: React.FC = () => {
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                           />
                         </div>
-                        
+
                         <div>
                           <label htmlFor="description" className="block text-sm font-medium text-gray-700">
                             Description
@@ -543,7 +543,7 @@ const Tasks: React.FC = () => {
                             }}
                           />
                         </div>
-                        
+
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700">
@@ -557,7 +557,7 @@ const Tasks: React.FC = () => {
                               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                             />
                           </div>
-                          
+
                           <div>
                             <label htmlFor="priority" className="block text-sm font-medium text-gray-700">
                               Priority
@@ -574,7 +574,7 @@ const Tasks: React.FC = () => {
                             </select>
                           </div>
                         </div>
-                        
+
                         <div>
                           <label htmlFor="category" className="block text-sm font-medium text-gray-700">
                             Category
@@ -592,7 +592,7 @@ const Tasks: React.FC = () => {
                             <option value="other">Other</option>
                           </select>
                         </div>
-                        
+
                         <div className="flex items-center">
                           <input
                             id="completed"
@@ -622,7 +622,7 @@ const Tasks: React.FC = () => {
                               <h4 className={`text-lg font-medium ${tasks[selectedTask].completed ? 'line-through text-gray-500' : 'text-gray-900'}`}>
                                 {tasks[selectedTask].title}
                               </h4>
-                              
+
                               <div className="flex flex-wrap gap-2 mt-2">
                                 {tasks[selectedTask].dueDate && (
                                   <div className="flex items-center text-sm text-gray-500">
@@ -637,11 +637,11 @@ const Tasks: React.FC = () => {
                                     </span>
                                   </div>
                                 )}
-                                
+
                                 {tasks[selectedTask].priority && (
                                   <PriorityBadge priority={tasks[selectedTask].priority} />
                                 )}
-                                
+
                                 {tasks[selectedTask].category && (
                                   <CategoryBadge category={tasks[selectedTask].category} />
                                 )}
@@ -649,7 +649,7 @@ const Tasks: React.FC = () => {
                             </div>
                           </div>
                         </div>
-                        
+
                         {tasks[selectedTask].description && (
                           <div className="mt-4">
                             <h4 className="text-sm font-medium text-gray-700 mb-2">Description</h4>
@@ -658,7 +658,7 @@ const Tasks: React.FC = () => {
                             </div>
                           </div>
                         )}
-                        
+
                         {tasks[selectedTask].relatedTo && (
                           <div className="mt-4">
                             <h4 className="text-sm font-medium text-gray-700 mb-1">Related To</h4>
@@ -677,14 +677,14 @@ const Tasks: React.FC = () => {
                             </div>
                           </div>
                         )}
-                        
+
                         <div className="mt-4">
                           <h4 className="text-sm font-medium text-gray-700 mb-1">Created</h4>
                           <p className="text-sm text-gray-600">
                             {tasks[selectedTask].createdAt.toLocaleString()}
                           </p>
                         </div>
-                        
+
                         {tasks[selectedTask].completedAt && (
                           <div className="mt-4">
                             <h4 className="text-sm font-medium text-gray-700 mb-1">Completed</h4>
@@ -756,13 +756,7 @@ const Tasks: React.FC = () => {
 };
 
 // Helper components for the task list
-const _PriorityBadge = ({ priority }: { priority: string }) => {
-  const colors = {
-    high: 'bg-red-100 text-red-800',
-    medium: 'bg-yellow-100 text-yellow-800',
-    low: 'bg-green-100 text-green-800'
-  };
-  
+
   return (
     <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
       colors[priority as keyof typeof colors] || colors.medium

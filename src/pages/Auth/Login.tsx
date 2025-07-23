@@ -7,18 +7,18 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const { login, error, isLoading, isAuthenticated, clearError } = useAuthStore();
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await login(email, password);
   };
-  
+
   if (isAuthenticated) {
     return <Navigate to="/" />;
   }
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -31,7 +31,7 @@ const Login: React.FC = () => {
             </Link>
           </p>
         </div>
-        
+
         {error && (
           <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
             <div className="flex items-center">
@@ -40,7 +40,7 @@ const Login: React.FC = () => {
             </div>
           </div>
         )}
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>

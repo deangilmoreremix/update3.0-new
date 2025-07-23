@@ -1,23 +1,22 @@
 
-
 export async function followUpAgent(input: unknown, setSteps?: (steps: unknown) => void) {
   const name = input.name || "there";
   const company = input.company || "your company";
   const lastInteraction = input.lastInteraction || "our previous conversation";
   const daysElapsed = input.daysElapsed || 7;
-  
+
   setSteps?.([{ step: "Analyzing previous interactions..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
   setSteps?.(prev => [...prev, { step: "Determining optimal follow-up approach..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1200));
-  
+
   setSteps?.(prev => [...prev, { step: "Generating follow-up message..." }]);
-  
+
   // Determine follow-up type based on days elapsed
   let followUpType = "gentle";
   if (daysElapsed > 14) {
@@ -25,10 +24,10 @@ export async function followUpAgent(input: unknown, setSteps?: (steps: unknown) 
   } else if (daysElapsed > 7) {
     followUpType = "value-add";
   }
-  
+
   // Generate follow-up message based on type
   let followUpMessage = "";
-  
+
   switch (followUpType) {
     case "gentle":
       followUpMessage = `
@@ -44,7 +43,7 @@ Best regards,
 [Your Name]
       `;
       break;
-      
+
     case "value-add":
       followUpMessage = `
 Subject: Thought you might find this useful, ${name}
@@ -63,7 +62,7 @@ Best regards,
 [Your Name]
       `;
       break;
-      
+
     case "reengagement":
       followUpMessage = `
 Subject: Reconnecting with ${company}
@@ -81,9 +80,9 @@ Best regards,
       `;
       break;
   }
-  
+
   setSteps?.(prev => [...prev, { step: "Follow-up message generated", result: "Complete" }]);
-  
+
   return {
     followUpType,
     followUpMessage,

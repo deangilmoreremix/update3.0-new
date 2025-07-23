@@ -12,7 +12,7 @@ const SalesInsightsContent: React.FC = () => {
   const handleGenerateInsights = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // For demo purposes, we'll use example data
       const contacts = [
@@ -21,14 +21,14 @@ const SalesInsightsContent: React.FC = () => {
         { name: "Robert Johnson", company: "Initech", status: "prospect", score: 75 },
         { name: "Sarah Williams", company: "Umbrella Corp", status: "customer", score: 90 }
       ];
-      
+
       const deals = [
         { title: "Enterprise License", value: 50000, stage: "negotiation", probability: 0.7 },
         { title: "Software Renewal", value: 25000, stage: "closed-won", probability: 1.0 },
         { title: "Premium Support", value: 15000, stage: "proposal", probability: 0.5 },
         { title: "Implementation Services", value: 30000, stage: "initial", probability: 0.3 }
       ];
-      
+
       const result = await edgeFunctionService.generateSalesInsights(contacts, deals);
       setResult(result);
     } catch (err) {
@@ -65,7 +65,7 @@ const SalesInsightsContent: React.FC = () => {
           <p className="text-gray-600 mb-6">
             Our AI will analyze your contacts, deals, and activities to identify patterns, opportunities, and actionable recommendations to improve your sales performance.
           </p>
-          
+
           <div className="bg-gray-50 p-4 rounded-md mb-6">
             <div className="flex justify-between items-center mb-2">
               <h4 className="font-medium text-gray-700">Sample Data (For Demonstration)</h4>
@@ -77,7 +77,7 @@ const SalesInsightsContent: React.FC = () => {
                 {showDataDetails ? <ChevronUp size={16} className="ml-1" /> : <ChevronDown size={16} className="ml-1" />}
               </button>
             </div>
-            
+
             {showDataDetails && (
               <div className="mt-3 space-y-3 text-sm">
                 <div>
@@ -89,7 +89,7 @@ const SalesInsightsContent: React.FC = () => {
                     <li>Sarah Williams (Umbrella Corp) - Customer, Score: 90</li>
                   </ul>
                 </div>
-                
+
                 <div>
                   <h5 className="font-medium text-gray-700 mb-1">Deals (4):</h5>
                   <ul className="list-disc list-inside text-gray-600 space-y-1 pl-2">
@@ -101,14 +101,14 @@ const SalesInsightsContent: React.FC = () => {
                 </div>
               </div>
             )}
-            
+
             {!showDataDetails && (
               <p className="text-sm text-gray-600">This analysis will use sample CRM data including 4 contacts and 4 deals with a total pipeline value of $120,000.</p>
             )}
-            
+
             <p className="text-xs text-gray-500 mt-3 italic">In a production environment, this would use your actual CRM data.</p>
           </div>
-          
+
           <button
             onClick={handleGenerateInsights}
             disabled={isLoading}

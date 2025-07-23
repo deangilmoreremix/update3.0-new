@@ -3,18 +3,6 @@ import { Camera, Mic, Monitor, AlertTriangle, CheckCircle, Settings, RefreshCw, 
 import { useTheme } from '../contexts/ThemeContext';
 import { useDashboardLayout } from '../contexts/DashboardLayoutContext';
 
-interface DevicePermissions {
-  camera: 'granted' | 'denied' | 'prompt' | 'unknown';
-  microphone: 'granted' | 'denied' | 'prompt' | 'unknown';
-  screen: 'granted' | 'denied' | 'prompt' | 'unknown';
-}
-
-interface DeviceAvailability {
-  cameras: MediaDeviceInfo[];
-  microphones: MediaDeviceInfo[];
-  speakers: MediaDeviceInfo[];
-}
-
 type SettingsTab = 'devices' | 'layout';
 
 const DevicePermissionChecker: React.FC = () => {
@@ -25,7 +13,7 @@ const DevicePermissionChecker: React.FC = () => {
     resetToDefault, 
     getSectionConfig 
   } = useDashboardLayout();
-  
+
   const [activeTab, setActiveTab] = useState<SettingsTab>('devices');
   const [permissions, setPermissions] = useState<DevicePermissions>({
     camera: 'unknown',
@@ -72,20 +60,20 @@ const DevicePermissionChecker: React.FC = () => {
 
   const checkPermissions = useCallback(async () => {
     setIsChecking(true);
-    
+
     try {
       // Check camera permission
       const cameraPermission = await navigator.permissions.query({ name: 'camera' as PermissionName });
-      
+
       // Check microphone permission
       const microphonePermission = await navigator.permissions.query({ name: 'microphone' as PermissionName });
-      
+
       setPermissions({
         camera: cameraPermission.state,
         microphone: microphonePermission.state,
         screen: 'prompt' // Screen sharing is always prompt-based
       });
-      
+
     } catch (error) {
       console.error('Error checking permissions:', error);
       // Fallback to testing with getUserMedia
@@ -115,7 +103,7 @@ const DevicePermissionChecker: React.FC = () => {
   const enumerateDevices = async () => {
     try {
       const deviceList = await navigator.mediaDevices.enumerateDevices();
-      
+
       setDevices({
         cameras: deviceList.filter(device => device.kind === 'videoinput'),
         microphones: deviceList.filter(device => device.kind === 'audioinput'),
@@ -128,7 +116,7 @@ const DevicePermissionChecker: React.FC = () => {
 
   const requestPermission = async (type: 'camera' | 'microphone' | 'screen') => {
     setIsChecking(true);
-    
+
     try {
       switch (type) {
         case 'camera':
@@ -136,7 +124,7 @@ const DevicePermissionChecker: React.FC = () => {
           setTestStream(cameraStream);
           setPermissions(prev => ({ ...prev, camera: 'granted' }));
           break;
-          
+
         case 'microphone':
           const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
           if (testStream) {
@@ -145,7 +133,7 @@ const DevicePermissionChecker: React.FC = () => {
           setTestStream(micStream);
           setPermissions(prev => ({ ...prev, microphone: 'granted' }));
           break;
-          
+
         case 'screen':
           const screenStream = await navigator.mediaDevices.getDisplayMedia({ 
             video: true, 
@@ -156,7 +144,7 @@ const DevicePermissionChecker: React.FC = () => {
           }
           setTestStream(screenStream);
           setPermissions(prev => ({ ...prev, screen: 'granted' }));
-          
+
           // Screen share automatically ends when user stops it
           screenStream.getVideoTracks()[0].addEventListener('ended', () => {
             setPermissions(prev => ({ ...prev, screen: 'prompt' }));
@@ -164,13 +152,13 @@ const DevicePermissionChecker: React.FC = () => {
           });
           break;
       }
-      
+
       // Re-enumerate devices after permission grant
       await enumerateDevices();
-      
+
     } catch (error) {
       console.error(`Error requesting ${type} permission:`, error);
-      
+
       if (error instanceof Error) {
         if (error.name === 'NotAllowedError') {
           setPermissions(prev => ({ ...prev, [type]: 'denied' }));
@@ -252,7 +240,7 @@ const DevicePermissionChecker: React.FC = () => {
       } backdrop-blur-xl border ${
         isDark ? 'border-white/20' : 'border-gray-200'
       } rounded-2xl shadow-xl p-6`}>
-        
+
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -517,14 +505,14 @@ const DevicePermissionChecker: React.FC = () => {
               <h4 className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'} mb-3`}>
                 Section Visibility
               </h4>
-              
+
               <div className="space-y-2 max-h-60 overflow-y-auto">
                 {allSections.map((sectionId) => {
                   const config = getSectionConfig(sectionId);
                   const isEnabled = sectionOrder.includes(sectionId);
-                  
+
                   if (!config) return null;
-                  
+
                   return (
                     <div
                       key={sectionId}
@@ -543,7 +531,7 @@ const DevicePermissionChecker: React.FC = () => {
                           </p>
                         </div>
                       </div>
-                      
+
                       <button
                         onClick={() => handleSectionToggle(sectionId, !isEnabled)}
                         className={`p-1 rounded-md transition-colors ${
@@ -571,7 +559,7 @@ const DevicePermissionChecker: React.FC = () => {
                   {sectionOrder.map((sectionId, index) => {
                     const config = getSectionConfig(sectionId);
                     if (!config) return null;
-                    
+
                     return (
                       <div
                         key={sectionId}

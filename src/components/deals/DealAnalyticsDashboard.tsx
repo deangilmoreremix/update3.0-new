@@ -6,15 +6,11 @@ import {
 } from '../charts/SafeCharts';
 import { AlertTriangle, ArrowDown, ArrowUp, BarChart, BarChart2, Calendar, CheckCircle, Clock, DollarSign, Layers, Mail, MessageSquare, PieChart, Target, TrendingUp, Users } from 'lucide-react';
 
-interface DealAnalyticsDashboardProps {
-  deal: Deal;
-}
-
-export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ deal }) => {
+export const DealAnalyticsDashboard: FC<DealAnalyticsDashboardProps> = ({ deal }) => {
   const [timeframe, setTimeframe] = useState<'30d' | '90d' | 'ytd' | 'all'>('30d');
-  
+
   // Sample data for charts and analytics - in a real app, this would come from API calls
-  
+
   // Generate activity timeline data
   const _activityData = [
     { date: '2023-06-15', emails: 2, calls: 0, meetings: 1, stage: 'qualification' },
@@ -25,7 +21,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
     { date: '2023-09-01', emails: 3, calls: 1, meetings: 1, stage: 'negotiation' },
     { date: '2023-09-15', emails: 1, calls: 2, meetings: 0, stage: 'negotiation' },
   ];
-  
+
   // Stage duration data
   const stageDurationData = [
     { name: 'Qualification', days: 16 },
@@ -33,7 +29,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
     { name: 'Negotiation', days: 22 },
     { name: 'Closing', days: deal.stage === 'closed-won' || deal.stage === 'closed-lost' ? 5 : 0 }
   ];
-  
+
   // Similar deals data
   const similarDealsData = [
     { id: 1, title: 'Software License - Company A', value: 65000, stage: 'closed-won', daysToClose: 45 },
@@ -41,14 +37,14 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
     { id: 3, title: 'Enterprise Solution - Company C', value: 120000, stage: 'closed-won', daysToClose: 75 },
     { id: 4, title: 'SaaS Implementation - Company D', value: 45000, stage: 'closed-won', daysToClose: 30 },
   ];
-  
+
   // Engagement types breakdown
   const engagementData = [
     { name: 'Emails', value: 16, color: '#3b82f6' },
     { name: 'Calls', value: 7, color: '#10b981' },
     { name: 'Meetings', value: 3, color: '#8b5cf6' }
   ];
-  
+
   // Probability history
   const probabilityData = [
     { date: '2023-06-15', value: 20 },
@@ -59,17 +55,17 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
     { date: '2023-09-01', value: 70 },
     { date: '2023-09-15', value: deal.probability }
   ];
-  
+
   // KPI calculations
   const dealAgeDays = Math.ceil((new Date().getTime() - new Date(deal.createdAt).getTime()) / (1000 * 60 * 60 * 24));
   const avgSimilarDealCloseTime = Math.round(similarDealsData.reduce((sum, deal) => sum + deal.daysToClose, 0) / similarDealsData.length);
   const daysRemaining = deal.dueDate ? Math.ceil((deal.dueDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)) : 30;
-  
+
   // Success metrics based on similar deals
   const wonSimilarDeals = similarDealsData.filter(d => d.stage === 'closed-won');
   const avgSimilarDealValue = Math.round(wonSimilarDeals.reduce((sum, deal) => sum + deal.value, 0) / wonSimilarDeals.length);
   const similarDealsWinRate = Math.round((wonSimilarDeals.length / similarDealsData.length) * 100);
-  
+
   // Calculate win probability factors
   const winFactors = [
     { factor: 'Deal Size', impact: deal.value > avgSimilarDealValue ? 'positive' : 'negative', weight: 20 },
@@ -78,7 +74,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
     { factor: 'Stage Progress', impact: deal.stage === 'negotiation' ? 'positive' : 'neutral', weight: 30 },
     { factor: 'Priority', impact: deal.priority === 'high' ? 'positive' : 'neutral', weight: 10 }
   ];
-  
+
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', { 
       style: 'currency', 
@@ -95,7 +91,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
           <BarChart2 className="w-5 h-5 mr-2 text-blue-600" />
           Deal Analytics Dashboard
         </h3>
-        
+
         {/* Time Range Selector */}
         <div className="flex bg-gray-100 rounded-lg p-1">
           {[
@@ -118,7 +114,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
           ))}
         </div>
       </div>
-      
+
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-200">
@@ -134,7 +130,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
           <h4 className="text-sm font-medium text-gray-500">Deal Value</h4>
           <p className="text-2xl font-bold text-gray-900 mt-1">{formatCurrency(deal.value)}</p>
         </div>
-        
+
         <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-200">
           <div className="flex items-center justify-between mb-3">
             <div className="p-2 rounded-lg bg-purple-100">
@@ -155,7 +151,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
           <h4 className="text-sm font-medium text-gray-500">Win Probability</h4>
           <p className="text-2xl font-bold text-gray-900 mt-1">{deal.probability}%</p>
         </div>
-        
+
         <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-200">
           <div className="flex items-center justify-between mb-3">
             <div className="p-2 rounded-lg bg-green-100">
@@ -172,7 +168,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
               : 'N/A'}
           </p>
         </div>
-        
+
         <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-200">
           <div className="flex items-center justify-between mb-3">
             <div className="p-2 rounded-lg bg-yellow-100">
@@ -193,14 +189,14 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
           <p className="text-2xl font-bold text-gray-900 mt-1">{dealAgeDays} days</p>
         </div>
       </div>
-      
+
       {/* Win Probability Factors */}
       <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
         <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
           <Target className="w-5 h-5 mr-2 text-purple-600" />
           Win Probability Factors
         </h4>
-        
+
         <div className="space-y-4">
           {winFactors.map((factor, index) => (
             <div key={index}>
@@ -242,7 +238,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
             </div>
           ))}
         </div>
-        
+
         {/* Overall Probability Indicator */}
         <div className="mt-6 pt-6 border-t border-gray-200">
           <div className="flex justify-between items-center mb-2">
@@ -269,7 +265,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
           </div>
         </div>
       </div>
-      
+
       {/* Multi-Chart Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Probability History Chart */}
@@ -312,7 +308,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
             </ResponsiveContainer>
           </div>
         </div>
-        
+
         {/* Engagement Mix */}
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
           <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
@@ -340,7 +336,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            
+
             <div className="col-span-3 flex flex-col justify-center">
               {engagementData.map((item, index) => (
                 <div key={index} className="flex items-center mb-3">
@@ -349,7 +345,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
                   <span className="text-sm font-semibold text-gray-900">{item.value} interactions</span>
                 </div>
               ))}
-              
+
               <div className="mt-3 pt-3 border-t border-gray-200">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Total Interactions:</span>
@@ -368,14 +364,14 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
           </div>
         </div>
       </div>
-      
+
       {/* Stage Duration */}
       <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
         <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
           <Layers className="w-5 h-5 mr-2 text-indigo-600" />
           Stage Duration Analysis
         </h4>
-        
+
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
@@ -404,7 +400,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
             </BarChart>
           </ResponsiveContainer>
         </div>
-        
+
         <div className="grid grid-cols-4 gap-4 mt-4">
           {stageDurationData.map((stage, index) => (
             <div key={index} className={`p-3 rounded-lg ${
@@ -431,14 +427,14 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
           ))}
         </div>
       </div>
-      
+
       {/* Similar Deals & Benchmarking */}
       <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
         <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
           <PieChartIcon className="w-5 h-5 mr-2 text-green-600" />
           Similar Deals Benchmark
         </h4>
-        
+
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -483,7 +479,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
             </tbody>
           </table>
         </div>
-        
+
         <div className="mt-6 pt-6 border-t border-gray-200 grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
           <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
             <h5 className="text-sm font-medium text-gray-700">Average Days to Close</h5>
@@ -494,7 +490,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
                 : `${dealAgeDays - avgSimilarDealCloseTime} days above average`}
             </p>
           </div>
-          
+
           <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
             <h5 className="text-sm font-medium text-gray-700">Similar Deals Win Rate</h5>
             <p className="text-2xl font-bold text-gray-900 mt-2">{similarDealsWinRate}%</p>
@@ -504,7 +500,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
                 : 'Below industry average'}
             </p>
           </div>
-          
+
           <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
             <h5 className="text-sm font-medium text-gray-700">Average Deal Value</h5>
             <p className="text-2xl font-bold text-gray-900 mt-2">{formatCurrency(avgSimilarDealValue)}</p>
@@ -516,14 +512,14 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
           </div>
         </div>
       </div>
-      
+
       {/* Team & Stakeholder Analysis */}
       <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
         <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
           <Users className="w-5 h-5 mr-2 text-blue-600" />
           Team & Stakeholder Analysis
         </h4>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h5 className="text-sm font-medium text-blue-900 mb-3">Key Stakeholders</h5>
@@ -540,7 +536,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
                   <Mail className="w-4 h-4" />
                 </div>
               </div>
-              
+
               <div className="flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
                 <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 mr-3">
                   <UserIcon className="w-5 h-5" />
@@ -553,7 +549,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
                   <Mail className="w-4 h-4" />
                 </div>
               </div>
-              
+
               <div className="flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
                 <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 mr-3">
                   <UserIcon className="w-5 h-5" />
@@ -567,13 +563,13 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
                 </div>
               </div>
             </div>
-            
+
             <button className="w-full mt-3 px-3 py-2 bg-blue-100 text-blue-700 text-sm font-medium rounded-lg hover:bg-blue-200 transition-colors flex items-center justify-center">
               <Users className="w-4 h-4 mr-2" />
               Map All Stakeholders
             </button>
           </div>
-          
+
           <div>
             <h5 className="text-sm font-medium text-green-900 mb-3">Internal Team</h5>
             <div className="space-y-3">
@@ -589,7 +585,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
                   <CheckCircle className="w-4 h-4" />
                 </div>
               </div>
-              
+
               <div className="flex items-center p-3 bg-green-50 rounded-lg border border-green-100">
                 <div className="w-10 h-10 bg-green-200 rounded-full flex items-center justify-center text-green-700 mr-3">
                   <UserIcon className="w-5 h-5" />
@@ -602,7 +598,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
                   <Mail className="w-4 h-4" />
                 </div>
               </div>
-              
+
               <div className="flex items-center p-3 bg-yellow-50 rounded-lg border border-yellow-100">
                 <div className="w-10 h-10 bg-yellow-200 rounded-full flex items-center justify-center text-yellow-700 mr-3">
                   <UserIcon className="w-5 h-5" />
@@ -616,7 +612,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
                 </button>
               </div>
             </div>
-            
+
             <button className="w-full mt-3 px-3 py-2 bg-green-100 text-green-700 text-sm font-medium rounded-lg hover:bg-green-200 transition-colors flex items-center justify-center">
               <Users className="w-4 h-4 mr-2" />
               Update Deal Team
@@ -624,14 +620,14 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
           </div>
         </div>
       </div>
-      
+
       {/* Risk Assessment */}
       <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
         <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
           <AlertTriangle className="w-5 h-5 mr-2 text-orange-500" />
           Risk Assessment & Recommendations
         </h4>
-        
+
         <div className="space-y-4">
           <div className="p-4 bg-red-50 rounded-lg border border-red-200">
             <h5 className="text-sm font-medium text-red-800 mb-2 flex items-center">
@@ -645,21 +641,21 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
                   <p className="text-sm text-red-700">Deal is still in early qualification stage, need to identify all requirements</p>
                 </div>
               )}
-              
+
               {dealAgeDays > avgSimilarDealCloseTime && (
                 <div className="flex items-start space-x-2">
                   <AlertTriangle className="w-4 h-4 text-red-600 mt-0.5" />
                   <p className="text-sm text-red-700">Deal age ({dealAgeDays} days) exceeds average time to close ({avgSimilarDealCloseTime} days)</p>
                 </div>
               )}
-              
+
               {deal.dueDate && daysRemaining < 14 && (
                 <div className="flex items-start space-x-2">
                   <AlertTriangle className="w-4 h-4 text-red-600 mt-0.5" />
                   <p className="text-sm text-red-700">Close date approaching with only {daysRemaining} days remaining</p>
                 </div>
               )}
-              
+
               {!deal.contact && (
                 <div className="flex items-start space-x-2">
                   <AlertTriangle className="w-4 h-4 text-red-600 mt-0.5" />
@@ -668,7 +664,7 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
               )}
             </div>
           </div>
-          
+
           <div className="p-4 bg-green-50 rounded-lg border border-green-200">
             <h5 className="text-sm font-medium text-green-800 mb-2 flex items-center">
               <CheckCircle className="w-4 h-4 mr-2" />
@@ -681,26 +677,26 @@ export const DealAnalyticsDashboard: React.FC<DealAnalyticsDashboardProps> = ({ 
                   <p className="text-sm text-green-700">Schedule a detailed requirements gathering call with technical stakeholders</p>
                 </div>
               )}
-              
+
               {deal.stage === 'proposal' && (
                 <div className="flex items-start space-x-2">
                   <CheckCircle className="w-4 h-4 text-green-600 mt-0.5" />
                   <p className="text-sm text-green-700">Follow up on proposal with a personalized walkthrough call</p>
                 </div>
               )}
-              
+
               {deal.stage === 'negotiation' && (
                 <div className="flex items-start space-x-2">
                   <CheckCircle className="w-4 h-4 text-green-600 mt-0.5" />
                   <p className="text-sm text-green-700">Prepare alternative pricing models to address potential objections</p>
                 </div>
               )}
-              
+
               <div className="flex items-start space-x-2">
                 <CheckCircle className="w-4 h-4 text-green-600 mt-0.5" />
                 <p className="text-sm text-green-700">Identify and engage all decision makers in the process</p>
               </div>
-              
+
               <div className="flex items-start space-x-2">
                 <CheckCircle className="w-4 h-4 text-green-600 mt-0.5" />
                 <p className="text-sm text-green-700">Document and address client's specific concerns about implementation timeline</p>

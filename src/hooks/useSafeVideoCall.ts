@@ -8,13 +8,13 @@ const fallbackVideoCall = {
   callStatus: 'idle' as const,
   isInCall: false,
   callDuration: 0,
-  
+
   // Stream Management
   localStream: null,
   remoteStream: null,
   isVideoEnabled: true,
   isAudioEnabled: true,
-  
+
   // Call Actions
   startCall: async () => {
     console.warn('VideoCall: Provider not available - using fallback');
@@ -32,7 +32,7 @@ const fallbackVideoCall = {
     console.warn('VideoCall: Provider not available - using fallback');
     return Promise.resolve();
   },
-  
+
   // Media Controls
   toggleVideo: () => {
     console.warn('VideoCall: Provider not available - using fallback');
@@ -40,14 +40,14 @@ const fallbackVideoCall = {
   toggleAudio: () => {
     console.warn('VideoCall: Provider not available - using fallback');
   },
-  
+
   // Group Calls
   participants: [],
   addParticipantToCall: async () => {
     console.warn('VideoCall: Provider not available - using fallback');
     return Promise.resolve();
   },
-  
+
   // Chat/Data Channel
   sendMessage: () => {
     console.warn('VideoCall: Provider not available - using fallback');
@@ -55,7 +55,7 @@ const fallbackVideoCall = {
   onMessageReceived: () => {
     console.warn('VideoCall: Provider not available - using fallback');
   },
-  
+
   // Recording
   startRecording: async () => {
     console.warn('VideoCall: Provider not available - using fallback');

@@ -1,16 +1,3 @@
-interface AITask {
-  type: 'contact-analysis' | 'email-generation' | 'company-research' | 'deal-summary' | 'next-actions' | 'insights' | 'contact-research';
-  priority: 'speed' | 'quality' | 'cost';
-  complexity: 'low' | 'medium' | 'high';
-}
-
-interface ModelPreference {
-  primary: 'openai' | 'gemini';
-  model: string;
-  fallback: 'openai' | 'gemini';
-  fallbackModel: string;
-  reason: string;
-}
 
 class IntelligentAIService {
   // Define which AI service is best for each task type
@@ -76,7 +63,7 @@ class IntelligentAIService {
 
   private getOptimalModel(taskType: string, priority: 'speed' | 'quality' | 'cost' = 'quality'): ModelPreference {
     const basePreference = this.taskRouting[taskType];
-    
+
     if (!basePreference) {
       // Default fallback
       return {
@@ -116,7 +103,7 @@ class IntelligentAIService {
 
   async executeTask(taskType: string, data: unknown, options: { priority?: 'speed' | 'quality' | 'cost' } = {}): Promise<unknown> {
     const modelPref = this.getOptimalModel(taskType, options.priority);
-    
+
     console.log(`🤖 AI Task: ${taskType} → Using ${modelPref.primary} (${modelPref.model}) - ${modelPref.reason}`);
 
     try {
@@ -128,7 +115,7 @@ class IntelligentAIService {
       }
     } catch (error) {
       console.warn(`❌ Primary model failed, trying fallback: ${modelPref.fallback} (${modelPref.fallbackModel})`);
-      
+
       try {
         // Try fallback model
         if (modelPref.fallback === 'openai') {

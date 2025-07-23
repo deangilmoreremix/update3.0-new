@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { fetchVoiceProfiles, createVoiceProfile, updateVoiceProfile, deleteVoiceProfile } from '../../services/supabaseClient';
-import { Music, Mic, RefreshCw, Trash2, Edit, Plus, Save, Volume2, X, Settings } from 'lucide-react';
-
-interface VoiceProfile {
-  id: string;
-  name: string;
-  voice_id: string;
-  settings?: unknown;
-  created_at?: string;
-  user_id?: string;
-}
+import { Music, Mic, RefreshCw, Trash2, Edit, Plus, Save, Volume2, X } from 'lucide-react';
 
 const VOICE_OPTIONS = [
   { id: 'voice-1', name: 'Professional Male' },
@@ -33,7 +24,7 @@ const VoiceProfiles: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
-  
+
   // Form state
   const [formName, setFormName] = useState('');
   const [formVoiceId, setFormVoiceId] = useState('');
@@ -42,11 +33,11 @@ const VoiceProfiles: React.FC = () => {
     speed: 1,
     volume: 1
   });
-  
+
   useEffect(() => {
     loadVoiceProfiles();
   }, [user]);
-  
+
   useEffect(() => {
     if (editingProfile) {
       setFormName(editingProfile.name);
@@ -56,7 +47,7 @@ const VoiceProfiles: React.FC = () => {
       resetForm();
     }
   }, [editingProfile]);
-  
+
   const loadVoiceProfiles = async () => {
     setIsLoading(true);
     setError(null);
@@ -71,7 +62,7 @@ const VoiceProfiles: React.FC = () => {
       setIsLoading(false);
     }
   };
-  
+
   const resetForm = () => {
     setFormName('');
     setFormVoiceId('');
@@ -81,12 +72,12 @@ const VoiceProfiles: React.FC = () => {
       volume: 1
     });
   };
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
-    
+
     try {
       const profileData = {
         name: formName,
@@ -94,23 +85,23 @@ const VoiceProfiles: React.FC = () => {
         settings: formSettings,
         user_id: user?.id
       };
-      
+
       let result;
-      
+
       if (editingProfile) {
         result = await updateVoiceProfile(editingProfile.id, profileData);
       } else {
         result = await createVoiceProfile(profileData);
       }
-      
+
       if (result.error) throw result.error;
-      
+
       // Reset and reload
       setEditingProfile(null);
       setShowAddForm(false);
       resetForm();
       await loadVoiceProfiles();
-      
+
     } catch (err) {
       console.error("Error saving voice profile:", err);
       setError('Failed to save voice profile');
@@ -118,14 +109,14 @@ const VoiceProfiles: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-  
+
   const handleDeleteProfile = async (id: string) => {
     if (confirm('Are you sure you want to delete this voice profile?')) {
       setIsDeleting(id);
       try {
         const { error } = await deleteVoiceProfile(id);
         if (error) throw error;
-        
+
         setProfiles(profiles.filter(profile => profile.id !== id));
       } catch (err) {
         console.error("Error deleting voice profile:", err);
@@ -135,7 +126,7 @@ const VoiceProfiles: React.FC = () => {
       }
     }
   };
-  
+
   const playAudioSample = (voiceId: string) => {
     // In a real app, we would play an audio sample here
     // For this demo, we'll just toggle the state
@@ -145,12 +136,12 @@ const VoiceProfiles: React.FC = () => {
       setPlayingAudio(voiceId);
     }
   };
-  
+
   const getVoiceName = (voiceId: string) => {
     const voice = VOICE_OPTIONS.find(v => v.id === voiceId);
     return voice ? voice.name : voiceId;
   };
-  
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <header className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -180,19 +171,19 @@ const VoiceProfiles: React.FC = () => {
           </button>
         </div>
       </header>
-      
+
       {error && (
         <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6 border border-red-100">
           {error}
         </div>
       )}
-      
+
       {(showAddForm || editingProfile) && (
         <div className="card-modern p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">
             {editingProfile ? 'Edit Voice Profile' : 'Create New Voice Profile'}
           </h2>
-          
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -207,7 +198,7 @@ const VoiceProfiles: React.FC = () => {
                 placeholder="e.g. Professional Sales Voice"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Voice Type
@@ -224,10 +215,10 @@ const VoiceProfiles: React.FC = () => {
                 ))}
               </select>
             </div>
-            
+
             <div className="space-y-4 border rounded-md p-4 bg-gray-50">
               <h3 className="font-medium text-gray-700">Voice Settings</h3>
-              
+
               <div>
                 <label className="block text-sm text-gray-600 mb-1">
                   Pitch: {formSettings.pitch.toFixed(1)}
@@ -242,7 +233,7 @@ const VoiceProfiles: React.FC = () => {
                   className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm text-gray-600 mb-1">
                   Speed: {formSettings.speed.toFixed(1)}
@@ -257,7 +248,7 @@ const VoiceProfiles: React.FC = () => {
                   className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm text-gray-600 mb-1">
                   Volume: {formSettings.volume.toFixed(1)}
@@ -273,7 +264,7 @@ const VoiceProfiles: React.FC = () => {
                 />
               </div>
             </div>
-            
+
             <div className="pt-2 flex justify-end">
               <button
                 type="button"
@@ -308,7 +299,7 @@ const VoiceProfiles: React.FC = () => {
           </form>
         </div>
       )}
-      
+
       <div className="card-modern">
         {isLoading ? (
           <div className="p-8 text-center">
@@ -366,13 +357,13 @@ const VoiceProfiles: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                  
+
                   <div className="text-xs text-gray-500 mb-4">
                     Created: {profile.created_at 
                       ? new Date(profile.created_at).toLocaleDateString() 
                       : 'Unknown date'}
                   </div>
-                  
+
                   {profile.settings && (
                     <div className="space-y-2 mb-4">
                       <div className="flex justify-between text-sm">
@@ -389,7 +380,7 @@ const VoiceProfiles: React.FC = () => {
                       </div>
                     </div>
                   )}
-                  
+
                   <button
                     onClick={() => playAudioSample(profile.voice_id)}
                     className="w-full flex items-center justify-center gap-2 p-2 border border-gray-200 rounded-md hover:bg-gray-50 text-gray-700"

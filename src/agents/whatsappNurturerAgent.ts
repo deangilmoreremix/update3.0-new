@@ -1,23 +1,22 @@
 
-
 export async function whatsappNurturerAgent(input: unknown, setSteps?: (steps: unknown) => void) {
   const name = input.name || "there";
   const company = input.company || "your company";
   const nurturePath = input.nurturePath || "educational";
-  
+
   setSteps?.([{ step: "Creating WhatsApp nurture sequence..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1200));
-  
+
   setSteps?.(prev => [...prev, { step: "Generating message content..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1500));
-  
+
   // Generate WhatsApp sequence based on nurture path
   let whatsappSequence = [];
-  
+
   switch (nurturePath) {
     case "educational":
       whatsappSequence = [
@@ -43,7 +42,7 @@ export async function whatsappNurturerAgent(input: unknown, setSteps?: (steps: u
         }
       ];
       break;
-      
+
     case "promotional":
       whatsappSequence = [
         {
@@ -68,7 +67,7 @@ export async function whatsappNurturerAgent(input: unknown, setSteps?: (steps: u
         }
       ];
       break;
-      
+
     case "relationship":
       whatsappSequence = [
         {
@@ -93,7 +92,7 @@ export async function whatsappNurturerAgent(input: unknown, setSteps?: (steps: u
         }
       ];
       break;
-      
+
     default:
       whatsappSequence = [
         {
@@ -118,9 +117,9 @@ export async function whatsappNurturerAgent(input: unknown, setSteps?: (steps: u
         }
       ];
   }
-  
+
   setSteps?.(prev => [...prev, { step: "WhatsApp nurture sequence created", result: "Complete" }]);
-  
+
   return {
     nurturePath,
     whatsappSequence,

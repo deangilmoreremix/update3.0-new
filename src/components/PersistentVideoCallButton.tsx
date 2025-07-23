@@ -82,7 +82,7 @@ const PersistentVideoCallButton: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handleStartCall(contact.id, 'video')}
@@ -95,7 +95,7 @@ const PersistentVideoCallButton: React.FC = () => {
                     >
                       <Video size={16} />
                     </button>
-                    
+
                     <button
                       onClick={() => handleStartCall(contact.id, 'audio')}
                       className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${

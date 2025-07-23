@@ -3,18 +3,13 @@ import { useDealStore } from '../store/dealStore';
 import { X, ArrowRight, BarChart3, DollarSign } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
-interface PipelineModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const PipelineModal: React.FC<PipelineModalProps> = ({ isOpen, onClose }) => {
+const PipelineModal: FC<PipelineModalProps> = ({ isOpen, onClose }) => {
   const { deals, _stageValues, totalPipelineValue } = useDealStore();
   const { isDark } = useTheme();
   const [activeView, setActiveView] = useState<'pipeline' | 'analysis'>('pipeline');
 
   if (!isOpen) return null;
-  
+
   const stages = [
     { id: 'qualification', name: 'Qualification', color: 'bg-blue-500' },
     { id: 'proposal', name: 'Proposal', color: 'bg-purple-500' },
@@ -22,19 +17,19 @@ const PipelineModal: React.FC<PipelineModalProps> = ({ isOpen, onClose }) => {
     { id: 'closed-won', name: 'Closed Won', color: 'bg-green-500' },
     { id: 'closed-lost', name: 'Closed Lost', color: 'bg-red-500' }
   ];
-  
+
   // Group deals by stage
   const dealsByStage: Record<string, typeof deals> = {};
   stages.forEach(stage => {
     dealsByStage[stage.id] = {};
   });
-  
+
   Object.values(deals).forEach(deal => {
     if (dealsByStage[deal.stage]) {
       dealsByStage[deal.stage][deal.id] = deal;
     }
   });
-  
+
   // Calculate stage metrics
   const stageMetrics = stages.map(stage => {
     const stageDeals = Object.values(dealsByStage[stage.id] || {});
@@ -43,7 +38,7 @@ const PipelineModal: React.FC<PipelineModalProps> = ({ isOpen, onClose }) => {
     const percentage = totalPipelineValue > 0 && stage.id !== 'closed-won' && stage.id !== 'closed-lost' 
       ? (value / totalPipelineValue) * 100 
       : 0;
-      
+
     return { ...stage, value, count, percentage };
   });
 
@@ -63,7 +58,7 @@ const PipelineModal: React.FC<PipelineModalProps> = ({ isOpen, onClose }) => {
               </p>
             </div>
           </div>
-          
+
           {/* View Switcher */}
           <div className="flex items-center space-x-2">
             <div className={`p-1 rounded-lg border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
@@ -96,7 +91,7 @@ const PipelineModal: React.FC<PipelineModalProps> = ({ isOpen, onClose }) => {
                 Analysis
               </button>
             </div>
-            
+
             <button
               onClick={onClose}
               className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-800 text-gray-400' : 'hover:bg-gray-100 text-gray-500'}`}
@@ -105,7 +100,7 @@ const PipelineModal: React.FC<PipelineModalProps> = ({ isOpen, onClose }) => {
             </button>
           </div>
         </div>
-        
+
         {/* Content */}
         <div className="p-6">
           {activeView === 'pipeline' ? (
@@ -120,7 +115,7 @@ const PipelineModal: React.FC<PipelineModalProps> = ({ isOpen, onClose }) => {
                   <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{formatCurrency(totalPipelineValue)}</p>
                   <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'} mt-1`}>{Object.keys(deals).length} total deals</p>
                 </div>
-                
+
                 <div className={`p-4 rounded-xl ${isDark ? 'bg-gray-800' : 'bg-gray-50'} border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                   <div className="flex items-center space-x-2 mb-2">
                     <BarChart3 className={`h-5 w-5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
@@ -131,7 +126,7 @@ const PipelineModal: React.FC<PipelineModalProps> = ({ isOpen, onClose }) => {
                   </p>
                   <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'} mt-1`}>Based on active deals</p>
                 </div>
-                
+
                 <div className={`p-4 rounded-xl ${isDark ? 'bg-gray-800' : 'bg-gray-50'} border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                   <div className="flex items-center space-x-2 mb-2">
                     <ArrowRight className={`h-5 w-5 ${isDark ? 'text-purple-400' : 'text-purple-600'}`} />
@@ -141,7 +136,7 @@ const PipelineModal: React.FC<PipelineModalProps> = ({ isOpen, onClose }) => {
                   <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'} mt-1`}>Average time to close</p>
                 </div>
               </div>
-              
+
               {/* Pipeline Visualization */}
               <div className={`p-6 rounded-xl ${isDark ? 'bg-gray-800' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                 <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Pipeline Stages</h3>
@@ -158,7 +153,7 @@ const PipelineModal: React.FC<PipelineModalProps> = ({ isOpen, onClose }) => {
                           <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{formatCurrency(stage.value)}</span>
                         </div>
                       </div>
-                      
+
                       {/* Progress bar */}
                       {stage.id !== 'closed-won' && stage.id !== 'closed-lost' && (
                         <div className={`w-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'} rounded-full overflow-hidden`}>
@@ -172,7 +167,7 @@ const PipelineModal: React.FC<PipelineModalProps> = ({ isOpen, onClose }) => {
                   ))}
                 </div>
               </div>
-              
+
               {/* Actions */}
               <div className="flex justify-end space-x-3 mt-6">
                 <button 
@@ -199,7 +194,7 @@ const PipelineModal: React.FC<PipelineModalProps> = ({ isOpen, onClose }) => {
                   <div className={`w-full h-60 ${isDark ? 'bg-gray-700' : 'bg-gray-100'} rounded-lg flex items-center justify-center`}>
                     <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Pipeline analysis visualization</p>
                   </div>
-                  
+
                   {/* Analytics Insights */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                     <div className={`p-4 rounded-lg border ${isDark ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-gray-50'}`}>
@@ -219,7 +214,7 @@ const PipelineModal: React.FC<PipelineModalProps> = ({ isOpen, onClose }) => {
                         </li>
                       </ul>
                     </div>
-                    
+
                     <div className={`p-4 rounded-lg border ${isDark ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-gray-50'}`}>
                       <h4 className={`text-sm font-medium mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Insights</h4>
                       <ul className={`space-y-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -240,7 +235,7 @@ const PipelineModal: React.FC<PipelineModalProps> = ({ isOpen, onClose }) => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Actions */}
               <div className="flex justify-end space-x-3 mt-6">
                 <button 

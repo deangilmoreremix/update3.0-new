@@ -2,19 +2,9 @@ import React, { useState } from 'react';
 import { Brain, Users, BarChart3, Search, PieChart, ArrowRight, Check } from 'lucide-react';
 import AnimatedFeatureIcon from './AnimatedFeatureIcon';
 
-interface Feature {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  color: string;
-  benefits: string[];
-  image: string;
-}
-
 const FeatureShowcase: React.FC = () => {
   const [activeFeature, setActiveFeature] = useState<string>('ai-assistant');
-  
+
   const features: Feature[] = [
     {
       id: 'ai-assistant',
@@ -87,9 +77,9 @@ const FeatureShowcase: React.FC = () => {
       image: 'https://images.pexels.com/photos/7821874/pexels-photo-7821874.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
     }
   ];
-  
+
   const currentFeature = features.find(f => f.id === activeFeature) || features[0];
-  
+
   return (
     <div className="py-16 bg-white">
       <div className="container mx-auto px-4">
@@ -99,7 +89,7 @@ const FeatureShowcase: React.FC = () => {
             Discover how our AI-powered features can transform your sales process
           </p>
         </div>
-        
+
         <div className="flex flex-wrap justify-center mb-12 gap-2">
           {features.map((feature, _index) => (
             <button
@@ -118,12 +108,12 @@ const FeatureShowcase: React.FC = () => {
             </button>
           ))}
         </div>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           <div className="p-6 order-2 lg:order-1 animation-fix">
             <h3 className="text-2xl font-bold mb-4">{currentFeature.title}</h3>
             <p className="text-gray-700 mb-6">{currentFeature.description}</p>
-            
+
             <ul className="space-y-3 mb-8">
               {currentFeature.benefits.map((benefit, index) => (
                 <li key={index} className="flex items-start">
@@ -134,13 +124,13 @@ const FeatureShowcase: React.FC = () => {
                 </li>
               ))}
             </ul>
-            
+
             <button className="inline-flex items-center text-blue-600 font-medium group">
               Learn more about {currentFeature.title}
               <ArrowRight size={16} className="ml-2 transition-transform group-hover:translate-x-1" />
             </button>
           </div>
-          
+
           <div className="relative order-1 lg:order-2 h-80 md:h-96 animation-fix">
             <div className="absolute -inset-4 bg-gradient-to-r from-blue-100/20 to-indigo-100/20 rounded-xl blur-xl transform rotate-3 animate-pulse gpu-accelerated" style={{animationDuration: '8s'}}></div>
             <div className="relative h-full rounded-xl overflow-hidden shadow-xl border border-gray-100">
@@ -151,12 +141,12 @@ const FeatureShowcase: React.FC = () => {
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-              
+
               <div className="absolute bottom-4 left-4 right-4 p-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg">
                 <h4 className="font-bold">{currentFeature.title}</h4>
                 <p className="text-sm text-gray-700">{currentFeature.description}</p>
               </div>
-              
+
               {/* Add floating animated icons */}
               <div className="absolute top-2 right-2">
                 <AnimatedFeatureIcon 
@@ -166,7 +156,7 @@ const FeatureShowcase: React.FC = () => {
                   size="sm"
                 />
               </div>
-              
+
               <div className="absolute top-14 left-4">
                 <AnimatedFeatureIcon 
                   icon={features[(features.findIndex(f => f.id === activeFeature) + 1) % features.length].icon}
@@ -175,7 +165,7 @@ const FeatureShowcase: React.FC = () => {
                   size="sm"
                 />
               </div>
-              
+
               <div className="absolute top-8 right-16">
                 <AnimatedFeatureIcon 
                   icon={features[(features.findIndex(f => f.id === activeFeature) + 2) % features.length].icon}

@@ -1,5 +1,4 @@
-import React from 'react';
-import { Award, BarChart3, DollarSign, Target, TrendingDown, TrendingUp } from 'lucide-react';
+import { TrendingDown, TrendingUp } from 'lucide-react';
 
 const KPICards = () => {
   const kpis = [

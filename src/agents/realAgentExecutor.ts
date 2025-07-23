@@ -1,46 +1,24 @@
 // Real Agent Executor - Orchestrates agent execution in Live Mode
 // Determines which LLM provider to use and calls appropriate services
 
-import React from 'react';
 import realApiService from '../services/realApiService';
 import apiConfig from '../config/apiConfig';
 import { composioToolsData } from '../data/composioToolsData';
 
-export interface AgentExecutionRequest {
-  goalId: string;
-  agentName: string;
-  action: string;
-  toolsNeeded: string[];
-  entityId?: string;
-  useComposio?: boolean;
-  context?: unknown;
-}
-
-export interface AgentExecutionResult {
-  success: boolean;
-  result?: string;
-  agentType: 'openai' | 'gemini' | 'demo';
-  confidence: number;
-  executionTime: number;
-  toolsUsed?: string[];
-  businessImpact?: string;
-  nextActions?: string[];
-}
-
 export class RealAgentExecutor {
-  
+
   async executeAgent(request: AgentExecutionRequest): Promise<AgentExecutionResult> {
     const startTime = Date.now();
-    
+
     try {
       // Check API configuration and determine execution mode
       if (!apiConfig.liveMode) {
         return this.executeDemoMode(request, startTime);
       }
-      
+
       // Prepare agent prompt with business context
       const agentPrompt = this.buildAgentPrompt(request);
-      
+
       // Try OpenAI first if available
       if (apiConfig.openai.available) {
         const result = await this.executeWithOpenAI(agentPrompt, request);
@@ -52,7 +30,7 @@ export class RealAgentExecutor {
           };
         }
       }
-      
+
       // Fallback to Gemini if OpenAI failed or unavailable
       if (apiConfig.gemini.available) {
         const result = await this.executeWithGemini(agentPrompt, request);
@@ -64,10 +42,10 @@ export class RealAgentExecutor {
           };
         }
       }
-      
+
       // Final fallback to demo mode
       return this.executeDemoMode(request, startTime);
-      
+
     } catch (error) {
       return {
         success: false,
@@ -78,14 +56,14 @@ export class RealAgentExecutor {
       };
     }
   }
-  
+
   private buildAgentPrompt(request: AgentExecutionRequest): string {
     const availableTools = request.toolsNeeded
       .map(toolId => composioToolsData.find(t => t.id === toolId))
       .filter(Boolean)
       .map(tool => `${tool!.name}: ${tool!.description}`)
       .join('\n- ');
-    
+
     return `Business Automation Agent: ${request.agentName}
 
 Goal ID: ${request.goalId}
@@ -112,11 +90,11 @@ Response Format:
 
 Execute this automation goal and provide detailed results.`;
   }
-  
+
   private async executeWithOpenAI(prompt: string, request: AgentExecutionRequest) {
     try {
       const result = await realApiService.callOpenAI(prompt, 'o1-mini');
-      
+
       if (result.success) {
         return {
           success: true,
@@ -136,11 +114,11 @@ Execute this automation goal and provide detailed results.`;
       };
     }
   }
-  
+
   private async executeWithGemini(prompt: string, request: AgentExecutionRequest) {
     try {
       const result = await realApiService.callGemini(prompt, 'gemma-2-27b-it');
-      
+
       if (result.success) {
         return {
           success: true,
@@ -160,7 +138,7 @@ Execute this automation goal and provide detailed results.`;
       };
     }
   }
-  
+
   private executeDemoMode(request: AgentExecutionRequest, startTime: number): AgentExecutionResult {
     const demoBusinessImpacts = [
       'Increased lead conversion rate by 25%',
@@ -169,7 +147,7 @@ Execute this automation goal and provide detailed results.`;
       'Enhanced data accuracy by 40%',
       'Streamlined workflow efficiency by 35%'
     ];
-    
+
     const demoNextActions = [
       'Review generated insights in dashboard',
       'Implement recommended automation workflows',
@@ -177,10 +155,10 @@ Execute this automation goal and provide detailed results.`;
       'Train team on new processes',
       'Schedule follow-up optimization session'
     ];
-    
+
     const randomImpact = demoBusinessImpacts[Math.floor(Math.random() * demoBusinessImpacts.length)];
     const selectedActions = demoNextActions.slice(0, 3);
-    
+
     return {
       success: true,
       result: `Successfully executed ${request.agentName} for ${request.goalId}
@@ -213,13 +191,13 @@ This automation is now ready for implementation and monitoring.`,
       nextActions: selectedActions
     };
   }
-  
+
   private extractBusinessImpact(result: string): string {
     // Extract business impact from AI response
     const impactMatch = result.match(/Business Impact[:\s]*([^\n]+)/i);
     return impactMatch ? impactMatch[1].trim() : 'Improved operational efficiency and business outcomes';
   }
-  
+
   private extractNextActions(result: string): string[] {
     // Extract next actions from AI response
     const actionsMatch = result.match(/Next Actions?[:\s]*([\s\S]*?)(?:\n\n|\n[A-Z]|\n$|$)/i);

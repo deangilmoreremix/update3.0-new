@@ -26,7 +26,7 @@ interface APIConfiguration {
 export const getAPIConfig = (): APIConfiguration => {
   // Check if we're in development mode
   const isDevelopment = import.meta.env.DEV;
-  
+
   if (isDevelopment) {
     console.warn('⚠️ Development mode: Some API keys may be missing. Add them to your .env file for full functionality.');
   }

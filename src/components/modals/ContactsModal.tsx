@@ -1,18 +1,11 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Check, Filter, Mail, MoreHorizontal, Plus, Search, Trash, User, UserPlus, X } from 'lucide-react';
+import { Check, Filter, Mail, MoreHorizontal, Search, Trash, User, UserPlus, X } from 'lucide-react';
 import Avatar from '../ui/Avatar';
 import { useContactStore } from '../../store/contactStore';
 import { getInitials } from '../../utils/avatars';
 
-interface ContactsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSelectContact?: (contactId: string) => void;
-  selectionMode?: boolean;
-}
-
-export const ContactsModal: React.FC<ContactsModalProps> = ({ 
+export const ContactsModal: FC<ContactsModalProps> = ({ 
   isOpen, 
   onClose, 
   onSelectContact,
@@ -32,9 +25,9 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
       contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       contact.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (contact.company && contact.company.toLowerCase().includes(searchQuery.toLowerCase()));
-    
+
     const matchesFilter = selectedFilter === 'all' || contact.status === selectedFilter;
-    
+
     return matchesSearch && matchesFilter;
   });
 
@@ -87,7 +80,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
               {filteredContacts.length}
             </span>
           </div>
-          
+
           <button 
             onClick={onClose} 
             className={`p-2 rounded-lg transition-colors ${
@@ -97,7 +90,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
             <X size={20} className={isDark ? 'text-gray-400' : 'text-gray-500'} />
           </button>
         </div>
-        
+
         {/* Search and Filters */}
         <div className={`p-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
           <div className="flex gap-3">
@@ -119,7 +112,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                 }`}
               />
             </div>
-            
+
             <div className="flex gap-2">
               {['all', 'hot', 'warm', 'cold'].map((filter) => (
                 <button
@@ -138,7 +131,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                   {filter.charAt(0).toUpperCase() + filter.slice(1)}
                 </button>
               ))}
-              
+
               <button className={`p-2 rounded-lg ${
                 isDark ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}>
@@ -147,7 +140,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
             </div>
           </div>
         </div>
-        
+
         {/* Contacts List */}
         <div className="flex-1 overflow-y-auto">
           {filteredContacts.length === 0 ? (
@@ -185,7 +178,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                       </div>
                     </div>
                   )}
-                  
+
                   <Avatar
                     src={contact.avatar}
                     alt={contact.name}
@@ -193,7 +186,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                     fallback={getInitials(contact.name)}
                     className="mr-4"
                   />
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <h3 className={`font-medium truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -203,7 +196,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                         {contact.status}
                       </span>
                     </div>
-                    
+
                     <div className="flex items-center text-sm">
                       {contact.position && (
                         <span className={`truncate ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -211,14 +204,14 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                           {contact.company && ' at '}
                         </span>
                       )}
-                      
+
                       {contact.company && (
                         <span className={`truncate font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                           {contact.company}
                         </span>
                       )}
                     </div>
-                    
+
                     <div className="flex items-center mt-1 text-xs">
                       <Mail className={`w-3.5 h-3.5 mr-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
                       <span className={`truncate ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -226,7 +219,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className="ml-4">
                     <button 
                       onClick={(e) => {
@@ -245,7 +238,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
             </div>
           )}
         </div>
-        
+
         {/* Footer Actions */}
         <div className={`p-4 border-t ${isDark ? 'border-white/10' : 'border-gray-200'} flex items-center justify-between`}>
           {selectionMode ? (
@@ -255,7 +248,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                   {selectedContacts.length} selected
                 </span>
               </div>
-              
+
               <div className="flex gap-3">
                 <button className={`px-3 py-2 rounded-lg text-sm flex items-center gap-2 ${
                   isDark ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -263,7 +256,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                   <Trash size={16} />
                   <span>Delete</span>
                 </button>
-                
+
                 <button className="px-3 py-2 bg-blue-500 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-blue-600">
                   <Check size={16} />
                   <span>Apply</span>
@@ -282,7 +275,7 @@ export const ContactsModal: React.FC<ContactsModalProps> = ({
                 >
                   Close
                 </button>
-                
+
                 <button className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-blue-600">
                   <UserPlus size={16} />
                   <span>Add Contact</span>

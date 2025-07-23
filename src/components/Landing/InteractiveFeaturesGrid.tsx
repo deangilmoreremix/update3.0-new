@@ -2,19 +2,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Brain, Briefcase, ChevronRight, Eye, Link, Mic, Search, Users, Zap } from 'lucide-react';
 
-interface Feature {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  iconBg: string;
-  iconColor: string;
-  link: string;
-}
-
 const InteractiveFeaturesGrid: React.FC = () => {
   const [hoveredFeature, setHoveredFeature] = useState<string | null>(null);
-  
+
   const features: Feature[] = [
     {
       id: 'ai-tools',
@@ -98,7 +88,7 @@ const InteractiveFeaturesGrid: React.FC = () => {
       link: '/features/function-assistant'
     },
   ];
-  
+
   return (
     <div className="py-16 bg-gradient-to-r from-gray-50 to-blue-50">
       <div className="container mx-auto px-4">
@@ -110,7 +100,7 @@ const InteractiveFeaturesGrid: React.FC = () => {
             Explore our powerful features and see how they can transform your sales process
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto perspective-1000">
           {features.map((feature) => (
             <Link
@@ -142,7 +132,7 @@ const InteractiveFeaturesGrid: React.FC = () => {
                     </span>
                   </div>
                 </div>
-                
+
                 {/* Particle effect on hover */}
                 {hoveredFeature === feature.id && (
                   <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-600 rounded-xl opacity-20 group-hover:opacity-40 blur-lg transition-opacity z-[-1]"></div>

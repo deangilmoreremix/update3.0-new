@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { ArrowRight, BarChart3, Brain, Check, CheckCheck, ChevronRight, Clock, FileSearch, FileText, Link, Mail, MessageSquare, Phone, PieChart, Play, Search, Star, Target, TrendingUp, User } from 'lucide-react';
+import { ArrowRight, BarChart3, Brain, CheckCheck, ChevronRight, Clock, FileSearch, FileText, Link, Mail, MessageSquare, Phone, PieChart, Play, Star, Target, TrendingUp, User } from 'lucide-react';
 
 import LandingHeader from '../components/LandingHeader';
 import LandingFooter from '../components/LandingFooter';
@@ -10,7 +10,7 @@ const AiToolsFeaturePage: React.FC = () => {
   return (
     <div className="bg-white">
       <LandingHeader />
-      
+
       {/* Hero Section */}
       <section className="relative pt-20 bg-gradient-to-b from-white to-blue-50">
         <div className="container mx-auto px-4 py-20">
@@ -48,7 +48,7 @@ const AiToolsFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Key Benefits Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
@@ -58,7 +58,7 @@ const AiToolsFeaturePage: React.FC = () => {
               Our AI tools automate routine tasks, provide data-driven insights, and help you make better decisions.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-blue-100 rounded-full w-min mb-4">
@@ -69,7 +69,7 @@ const AiToolsFeaturePage: React.FC = () => {
                 Automate repetitive tasks like email drafting, call summaries, and data entry to focus your time on closing deals.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-green-100 rounded-full w-min mb-4">
                 <User className="h-6 w-6 text-green-600" />
@@ -79,7 +79,7 @@ const AiToolsFeaturePage: React.FC = () => {
                 Create personalized messages for each prospect based on their behavior, interests, and past interactions.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-purple-100 rounded-full w-min mb-4">
                 <BarChart3 className="h-6 w-6 text-purple-600" />
@@ -92,7 +92,7 @@ const AiToolsFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* AI Tools Showcase Section */}
       <section id="ai-tools" className="py-20 bg-gradient-to-b from-blue-50 to-white">
         <div className="container mx-auto px-4">
@@ -102,7 +102,7 @@ const AiToolsFeaturePage: React.FC = () => {
               Discover how our comprehensive set of AI tools can transform every part of your sales process.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <div className="p-3 bg-blue-100 rounded-full w-min mb-4">
@@ -116,7 +116,7 @@ const AiToolsFeaturePage: React.FC = () => {
                 Learn More <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <div className="p-3 bg-purple-100 rounded-full w-min mb-4">
                 <MessageSquare className="h-6 w-6 text-purple-600" />
@@ -129,7 +129,7 @@ const AiToolsFeaturePage: React.FC = () => {
                 Learn More <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <div className="p-3 bg-emerald-100 rounded-full w-min mb-4">
                 <FileText className="h-6 w-6 text-emerald-600" />
@@ -142,7 +142,7 @@ const AiToolsFeaturePage: React.FC = () => {
                 Learn More <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <div className="p-3 bg-indigo-100 rounded-full w-min mb-4">
                 <Phone className="h-6 w-6 text-indigo-600" />
@@ -155,7 +155,7 @@ const AiToolsFeaturePage: React.FC = () => {
                 Learn More <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <div className="p-3 bg-rose-100 rounded-full w-min mb-4">
                 <Target className="h-6 w-6 text-rose-600" />
@@ -168,7 +168,7 @@ const AiToolsFeaturePage: React.FC = () => {
                 Learn More <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <div className="p-3 bg-amber-100 rounded-full w-min mb-4">
                 <FileSearch className="h-6 w-6 text-amber-600" />
@@ -181,7 +181,7 @@ const AiToolsFeaturePage: React.FC = () => {
                 Learn More <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <div className="p-3 bg-cyan-100 rounded-full w-min mb-4">
                 <TrendingUp className="h-6 w-6 text-cyan-600" />
@@ -194,7 +194,7 @@ const AiToolsFeaturePage: React.FC = () => {
                 Learn More <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <div className="p-3 bg-green-100 rounded-full w-min mb-4">
                 <Brain className="h-6 w-6 text-green-600" />
@@ -207,7 +207,7 @@ const AiToolsFeaturePage: React.FC = () => {
                 Learn More <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
               <div className="p-3 bg-blue-100 rounded-full w-min mb-4">
                 <PieChart className="h-6 w-6 text-blue-600" />
@@ -223,7 +223,7 @@ const AiToolsFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Featured Tool Demo Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -257,13 +257,13 @@ const AiToolsFeaturePage: React.FC = () => {
                       <p><strong>Mike:</strong> Yes, I'll prepare a training plan by next Friday.</p>
                     </div>
                   </div>
-                  
+
                   <div className="text-center py-4">
                     <button className="px-6 py-3 bg-purple-600 text-white rounded-lg font-medium flex items-center justify-center mx-auto">
                       Summarize Meeting
                     </button>
                   </div>
-                  
+
                   <div className="mt-4">
                     <div className="mb-2 text-sm font-medium text-gray-700">AI-Generated Summary</div>
                     <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg text-gray-700 border border-purple-100">
@@ -286,7 +286,7 @@ const AiToolsFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="w-full lg:w-1/2 order-1 lg:order-2">
               <div>
                 <div className="flex items-center mb-4">
@@ -295,13 +295,13 @@ const AiToolsFeaturePage: React.FC = () => {
                   </div>
                   <h3 className="text-2xl font-bold ml-3">Meeting Summarizer</h3>
                 </div>
-                
+
                 <h2 className="text-3xl font-bold text-gray-900 mb-6">Never Miss a Key Detail From Your Meetings</h2>
-                
+
                 <p className="text-xl text-gray-600 mb-6 leading-relaxed">
                   Turn hours of meeting recordings into concise, actionable summaries in seconds. Our AI extracts key points, decisions, and follow-up items automatically.
                 </p>
-                
+
                 <div className="space-y-4 mb-8">
                   <div className="flex items-start">
                     <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
@@ -310,7 +310,7 @@ const AiToolsFeaturePage: React.FC = () => {
                       <p className="text-gray-600">Automatically create comprehensive summaries of every call and meeting.</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start">
                     <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
                     <div>
@@ -318,7 +318,7 @@ const AiToolsFeaturePage: React.FC = () => {
                       <p className="text-gray-600">Never drop the ball on follow-ups with automatically identified tasks.</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start">
                     <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
                     <div>
@@ -326,7 +326,7 @@ const AiToolsFeaturePage: React.FC = () => {
                       <p className="text-gray-600">Gauge interest and identify concerns from tone and language analysis.</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start">
                     <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
                     <div>
@@ -335,7 +335,7 @@ const AiToolsFeaturePage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center">
                   <Link to="/features/ai-tools/meeting-summary" className="px-8 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors mr-4">
                     Learn More
@@ -350,7 +350,7 @@ const AiToolsFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Results & Stats Section */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -360,29 +360,29 @@ const AiToolsFeaturePage: React.FC = () => {
               See how our AI tools are transforming sales processes and driving growth.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-8 text-center">
               <div className="text-4xl font-bold text-blue-600 mb-2">47%</div>
               <p className="text-gray-700">Increase in email response rates</p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 text-center">
               <div className="text-4xl font-bold text-blue-600 mb-2">68%</div>
               <p className="text-gray-700">Less time spent on meeting notes</p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 text-center">
               <div className="text-4xl font-bold text-blue-600 mb-2">32%</div>
               <p className="text-gray-700">Higher deal close rate</p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 text-center">
               <div className="text-4xl font-bold text-blue-600 mb-2">3.2x</div>
               <p className="text-gray-700">Return on investment</p>
             </div>
           </div>
-          
+
           <div className="mt-16 bg-white rounded-xl shadow-lg p-8 border border-gray-100">
             <div className="flex flex-col md:flex-row items-center">
               <div className="w-full md:w-1/3 mb-6 md:mb-0 md:pr-8">
@@ -415,7 +415,7 @@ const AiToolsFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Integration Partners Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -425,7 +425,7 @@ const AiToolsFeaturePage: React.FC = () => {
               Our AI tools work with all your favorite tools and services, providing a unified workflow.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-8 max-w-5xl mx-auto">
             {Array.from({ length: 12 }).map((_, i) => (
               <div key={i} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex items-center justify-center">
@@ -435,7 +435,7 @@ const AiToolsFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="container mx-auto px-4">
@@ -451,7 +451,7 @@ const AiToolsFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       <LandingFooter />
     </div>
   );

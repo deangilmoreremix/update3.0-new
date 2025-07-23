@@ -1,18 +1,6 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { 
-  Edit, 
-  Mail, 
-  Phone, 
-  Plus, 
-  MessageSquare,
-  FileText,
-  Calendar,
-  MoreHorizontal,
-  User,
-  Globe,
-  Clock
-} from 'lucide-react';
+import { Edit, Mail, Phone, Plus, FileText, Calendar, MoreHorizontal, User, Globe, Clock } from 'lucide-react';
 import Avatar from '../ui/Avatar';
 
 const socialPlatforms = [
@@ -24,7 +12,7 @@ const socialPlatforms = [
 
 const CustomerProfile: React.FC = () => {
   const { isDark } = useTheme();
-  
+
   return (
     <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6 mb-6`}>
       <div className="flex items-center justify-between mb-6">

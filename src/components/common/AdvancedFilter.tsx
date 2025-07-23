@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
-  Search, Filter, X, Calendar, DollarSign, Users, 
-  Tag, MapPin, Building, Phone, Mail, Star,
+  Search, Filter, X, Calendar, Users, 
+  Tag, MapPin, Building, Star,
   ChevronDown, ChevronUp, RotateCcw, Save,
-  SlidersHorizontal, Plus, Minus, Check
+  SlidersHorizontal, Check
 } from 'lucide-react';
 
 export interface FilterCriteria {
@@ -26,12 +26,6 @@ export interface FilterCriteria {
   customFields: Record<string, any>;
 }
 
-interface FilterOption {
-  value: string;
-  label: string;
-  count?: number;
-}
-
 interface AdvancedFilterProps {
   type: 'deals' | 'contacts' | 'companies';
   onFiltersChange: (filters: FilterCriteria) => void;
@@ -42,7 +36,7 @@ interface AdvancedFilterProps {
   onLoadFilter?: (filters: FilterCriteria) => void;
 }
 
-export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({
+export const AdvancedFilter: FC<AdvancedFilterProps> = ({
   type,
   onFiltersChange,
   initialFilters = {},
@@ -179,7 +173,7 @@ export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({
   }, [activeFilters]);
 
   // Multi-select component
-  const MultiSelect: React.FC<{
+  const MultiSelect: FC<{
     options: FilterOption[];
     values: string[];
     onChange: (values: string[]) => void;

@@ -17,7 +17,7 @@ interface StreamingChatProps {
   modelOptions?: { value: string; label: string }[];
 }
 
-const StreamingChat: React.FC<StreamingChatProps> = ({
+const StreamingChat: FC<StreamingChatProps> = ({
   systemPrompt = "You are an AI sales assistant helping with CRM tasks, sales strategies, and customer communication.",
   initialMessage = "Hello! I'm your AI sales assistant. How can I help you today?",
   placeholder = "Type your message here...",
@@ -36,7 +36,7 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
       timestamp: new Date()
     }
   ]);
-  
+
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string>('gpt-4o');
@@ -46,19 +46,19 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const streamService = useOpenAIStream();
-  
+
   // Scroll to bottom when messages change
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-  
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: typingSpeed === 'instant' ? 'auto' : 'smooth' });
   };
-  
+
   const handleSendMessage = async () => {
     if (!input.trim()) return;
-    
+
     // Add user message to the chat
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -66,11 +66,11 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
       content: input.trim(),
       timestamp: new Date()
     };
-    
+
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsStreaming(true);
-    
+
     // Create a placeholder for the assistant response
     const assistantMsgId = Date.now() + 1 + '';
     const initialAssistantMessage: Message = {
@@ -79,7 +79,7 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
       content: '',
       timestamp: new Date()
     };
-    
+
     if (typingSpeed === 'instant') {
       try {
         // For instant mode, get the full response first then show it
@@ -89,7 +89,7 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
           () => {}, // Empty callback since we don't update incrementally
           selectedModel
         );
-        
+
         setMessages(prev => [...prev, userMessage, {
           id: assistantMsgId,
           role: 'assistant',
@@ -103,7 +103,7 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
       }
     } else {
       setMessages(prev => [...prev, userMessage, initialAssistantMessage]);
-      
+
       try {
         // Stream the response
         await streamService.streamChatCompletion(
@@ -113,13 +113,13 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
             setMessages(currentMessages => {
               const messageIndex = currentMessages.findIndex(m => m.id === assistantMsgId);
               if (messageIndex === -1) return currentMessages;
-              
+
               const updatedMessages = [...currentMessages];
               updatedMessages[messageIndex] = {
                 ...updatedMessages[messageIndex],
                 content: updatedMessages[messageIndex].content + token
               };
-              
+
               return updatedMessages;
             });
           },
@@ -132,7 +132,7 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
       }
     }
   };
-  
+
   const _getSpeedDelay = () => {
     switch (typingSpeed) {
       case 'faster': return 10;
@@ -140,13 +140,13 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
       default: return 20; // normal
     }
   };
-  
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   };
-  
+
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
@@ -168,7 +168,7 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
           </button>
         </div>
       </div>
-      
+
       {/* Settings panel */}
       <AnimatePresence>
         {showSettings && (
@@ -193,7 +193,7 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
                     ))}
                   </select>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Response Speed</label>
                   <div className="flex gap-2">
@@ -234,7 +234,7 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
-      
+
       {/* Messages area */}
       <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
         <div className="space-y-4">
@@ -261,9 +261,9 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
                     {formatTime(message.timestamp)}
                   </span>
                 </div>
-                
+
                 <p className="whitespace-pre-line text-sm">{message.content}</p>
-                
+
                 {/* Copy button - only for assistant messages */}
                 {message.role === 'assistant' && message.content && (
                   <button 
@@ -277,7 +277,7 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
             </div>
           ))}
           <div ref={messagesEndRef} />
-          
+
           {isStreaming && (
             <div className="flex justify-center">
               <div className="flex items-center space-x-1 text-indigo-500 text-sm bg-indigo-50 rounded-full px-3 py-1">
@@ -288,7 +288,7 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
           )}
         </div>
       </div>
-      
+
       {/* Input area */}
       <div className="border-t border-gray-200 p-3 bg-white">
         <form 
@@ -320,7 +320,7 @@ const StreamingChat: React.FC<StreamingChatProps> = ({
             )}
           </button>
         </form>
-        
+
         <div className="flex justify-between mt-1 text-xs text-gray-500">
           <div className="flex items-center">
             <Clock size={12} className="mr-1" />

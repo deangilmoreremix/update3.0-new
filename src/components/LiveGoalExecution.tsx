@@ -1,29 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Goal } from '../types/goals';
 
-import { Play, Pause, CheckCircle, XCircle, Clock, Bot, Activity, GitBranch, BarChart3, Target, Brain, Volume2, Database, Presentation, Award, Lightbulb, HelpCircle, Check } from 'lucide-react';
+import { Play, Pause, CheckCircle, XCircle, Clock, Bot, Activity, GitBranch, BarChart3, Target, Brain, Volume2, Database, Presentation, Award, Lightbulb, HelpCircle } from 'lucide-react';
 
-interface ExecutionStep {
-  id: string;
-  agentName: string;
-  action: string;
-  status: 'pending' | 'running' | 'completed' | 'error';
-  startTime?: Date;
-  completionTime?: Date;
-  result?: unknown;
-  thinking?: string;
-  toolsUsed?: string[];
-  crmImpact?: string;
-}
-
-interface LiveGoalExecutionProps {
-  goal: Goal;
-  realMode?: boolean;
-  onComplete?: (result: unknown) => void;
-  onCancel?: () => void;
-}
-
-const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
+const LiveGoalExecution: FC<LiveGoalExecutionProps> = ({
   goal,
   realMode = false,
   onComplete,
@@ -193,7 +173,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
         } else {
           // Simulated execution with realistic delays
           await new Promise(resolve => setTimeout(resolve, Math.random() * 3000 + 2000));
-          
+
           setExecutionSteps(prev => prev.map((s, index) => 
             index === i ? { 
               ...s, 
@@ -267,7 +247,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
     if (status === 'completed') return <CheckCircle className="h-5 w-5 text-green-400" />;
     if (status === 'error') return <XCircle className="h-5 w-5 text-red-400" />;
     if (status === 'running') return <div className="animate-spin w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full" />;
-    
+
     // Return appropriate icon based on agent type
     if (agentName.includes('Voice')) return <Volume2 className="h-5 w-5 text-gray-400" />;
     if (agentName.includes('Data') || agentName.includes('Logger')) return <Database className="h-5 w-5 text-gray-400" />;
@@ -294,7 +274,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
                 ✕
               </button>
             </div>
-            
+
             <div className="space-y-4">
               <div className="bg-blue-500/10 border border-blue-400/30 rounded-lg p-4">
                 <h4 className="font-semibold text-white mb-2">Understanding the Execution Flow</h4>
@@ -302,7 +282,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
                   You're watching AI agents work together to execute a business goal. Each agent specializes in a specific task and passes work to the next agent in the workflow.
                 </p>
               </div>
-              
+
               <div className="bg-slate-700/30 rounded-lg p-4">
                 <h4 className="font-semibold text-white mb-2">What You're Seeing</h4>
                 <ul className="text-gray-300 text-sm space-y-2">
@@ -312,7 +292,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
                   <li>• <strong>Progress Bar:</strong> Overall completion percentage</li>
                 </ul>
               </div>
-              
+
               <div className="bg-purple-500/10 border border-purple-400/30 rounded-lg p-4">
                 <h4 className="font-semibold text-white mb-2">Demo vs. Live Mode</h4>
                 <div className="grid grid-cols-2 gap-3 text-sm">
@@ -326,7 +306,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
                   </div>
                 </div>
               </div>
-              
+
               <div className="bg-green-500/10 border border-green-400/30 rounded-lg p-4">
                 <h4 className="font-semibold text-white mb-2">Tips for Best Results</h4>
                 <ul className="text-gray-300 text-sm space-y-1">
@@ -337,7 +317,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
                 </ul>
               </div>
             </div>
-            
+
             <button
               onClick={() => setShowHelp(false)}
               className="mt-6 w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
@@ -372,7 +352,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
               <p className="text-gray-300 text-lg">{goal.description}</p>
             </div>
           </div>
-          
+
           <div className="text-right">
             <div className="text-4xl font-bold text-blue-400 mb-1">{Math.round(overallProgress)}%</div>
             <div className="text-sm text-gray-400">Complete</div>
@@ -445,7 +425,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
               {realMode ? 'Execute Goal Live' : 'Start Demo Execution'}
             </button>
           )}
-          
+
           {isExecuting && (
             <button
               onClick={cancelExecution}
@@ -503,7 +483,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
                         )}
                       </div>
                       <p className="text-sm text-gray-300 mb-2">{step.action}</p>
-                      
+
                       {step.crmImpact && (
                         <div className="text-xs text-gray-400 bg-slate-600/30 rounded-lg p-2 mb-2">
                           <strong>CRM Impact:</strong> {step.crmImpact}
@@ -546,7 +526,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
               <Activity className="h-5 w-5 text-green-400" />
               Live Activity Stream
             </h3>
-            
+
             <div className="space-y-2 max-h-64 overflow-y-auto custom-scrollbar">
               {liveActivity.map((activity, index) => (
                 <div
@@ -557,7 +537,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
                   {activity}
                 </div>
               ))}
-              
+
               {liveActivity.length === 0 && (
                 <div className="text-center text-gray-500 py-8">
                   <Clock className="h-8 w-8 mx-auto mb-2 opacity-50" />
@@ -581,7 +561,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
                 {showCRMView ? 'Hide' : 'Show'} CRM
               </button>
             </div>
-            
+
             {showCRMView && (
               <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-600/50">
                 <div className="space-y-4">
@@ -595,7 +575,7 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
                       }
                     </p>
                   </div>
-                  
+
                   {isExecuting && (
                     <div className="grid grid-cols-2 gap-4 text-center">
                       <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-400/20">

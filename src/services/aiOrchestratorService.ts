@@ -1,4 +1,3 @@
-import React from 'react';
 import { enhancedGeminiService } from './enhancedGeminiService';
 // Note: useOpenAI removed to avoid hook violations in class component
 
@@ -13,26 +12,6 @@ export type AIFeature =
   | 'quick_response'
   | 'lead_qualification'
   | 'business_analysis';
-
-interface TaskContext {
-  customerId?: string;
-  modelId?: string;
-  complexity?: 'low' | 'medium' | 'high';
-  priority?: 'speed' | 'quality' | 'cost';
-  maxBudget?: number;
-  promptTokens?: number;
-}
-
-interface ServiceResponse {
-  content: unknown;
-  model: string;
-  provider: string;
-  responseTime: number;
-  cost?: number;
-  tokensUsed?: number;
-  success: boolean;
-  error?: string;
-}
 
 class AIOrchestratorService {
   // Track usage statistics for smart routing
@@ -70,13 +49,13 @@ class AIOrchestratorService {
   private stripMarkdownCodeBlocks(content: string): string {
     // Remove markdown code blocks (```json...``` or ```...```)
     let cleaned = content.trim();
-    
+
     // Remove opening code block markers
     cleaned = cleaned.replace(/^```(?:json|javascript|js)?\s*/i, '');
-    
+
     // Remove closing code block markers
     cleaned = cleaned.replace(/\s*```\s*$/i, '');
-    
+
     // Remove any remaining leading/trailing whitespace
     return cleaned.trim();
   }
@@ -87,17 +66,17 @@ class AIOrchestratorService {
   private parseJsonSafely(content: string): unknown {
     // First strip any markdown code blocks
     const cleaned = this.stripMarkdownCodeBlocks(content);
-    
+
     try {
       return JSON.parse(cleaned);
     } catch (error) {
       console.warn('Failed to parse JSON, attempting additional cleanup:', error);
-      
+
       // Additional cleanup attempt - sometimes AI adds explanatory text before/after the JSON
       try {
         const jsonStart = cleaned.indexOf('{');
         const jsonEnd = cleaned.lastIndexOf('}') + 1;
-        
+
         if (jsonStart >= 0 && jsonEnd > jsonStart) {
           const jsonPart = cleaned.substring(jsonStart, jsonEnd);
           return JSON.parse(jsonPart);
@@ -105,7 +84,7 @@ class AIOrchestratorService {
       } catch (secondError) {
         console.error('Failed additional JSON parsing attempt:', secondError);
       }
-      
+
       throw new Error('Failed to parse response as JSON');
     }
   }
@@ -124,14 +103,14 @@ class AIOrchestratorService {
         customerId.length < 10) {
       return undefined;
     }
-    
+
     // Check if it's a valid UUID format (basic validation)
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(customerId)) {
       console.debug(`Invalid customer ID format: ${customerId}, treating as null`);
       return undefined;
     }
-    
+
     return customerId;
   }
 
@@ -145,14 +124,14 @@ class AIOrchestratorService {
                           googleKey.length > 10 && 
                           !googleKey.includes('your_google_ai_api_key') &&
                           !googleKey.startsWith('your_');
-    
+
     // Check for OpenAI API key                      
     const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
     const openaiKeyValid = openaiKey && 
                           openaiKey.length > 10 && 
                           !openaiKey.includes('your_openai_api_key') &&
                           !openaiKey.startsWith('your_');
-                          
+
     return googleKeyValid || openaiKeyValid;
   }
 
@@ -183,13 +162,13 @@ class AIOrchestratorService {
                           googleKey.length > 10 && 
                           !googleKey.includes('your_google_ai_api_key') &&
                           !googleKey.startsWith('your_');
-    
+
     const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
     const openaiKeyValid = openaiKey && 
                           openaiKey.length > 10 && 
                           !openaiKey.includes('your_openai_api_key') &&
                           !openaiKey.startsWith('your_');
-    
+
     // Based on available providers, choose appropriate model
     if (googleKeyValid) {
       // If Google AI is available, use it for most tasks
@@ -204,7 +183,7 @@ class AIOrchestratorService {
       // If only OpenAI is available
       return context.priority === 'cost' ? 'gpt-3.5-turbo' : 'gpt-4o-mini';
     }
-    
+
     // No valid API keys, return a default
     return 'gemini-2.5-flash';
   }
@@ -272,7 +251,7 @@ class AIOrchestratorService {
         error: "No AI provider configured. Please check your API keys."
       };
     }
-    
+
     const modelId = await this.getOptimalModel('email_generation', taskContext);
     const service = this.getServiceForModel(modelId);
     const startTime = Date.now();
@@ -335,7 +314,7 @@ class AIOrchestratorService {
         error: "No AI provider configured. Please check your API keys."
       };
     }
-    
+
     const modelId = await this.getOptimalModel('pipeline_analysis', taskContext);
     const startTime = Date.now();
 
@@ -442,7 +421,7 @@ class AIOrchestratorService {
         error: "No AI provider configured. Please check your API keys."
       };
     }
-    
+
     const modelId = await this.getOptimalModel('meeting_agenda', taskContext);
     const startTime = Date.now();
 
@@ -453,13 +432,13 @@ class AIOrchestratorService {
         // Format for Gemini
         const prompt = `
           Create a meeting agenda for:
-          
+
           Meeting Title: ${context.meetingTitle}
           Attendees: ${context.attendees.join(', ')}
           Purpose: ${context.purpose}
           Duration: ${context.duration} minutes
           Previous Notes: ${context.previousNotes || 'None'}
-          
+
           Format your response as a JSON object with the following structure, WITHOUT ANY MARKDOWN CODE BLOCKS:
           {
             "title": "string",
@@ -475,7 +454,7 @@ class AIOrchestratorService {
             "notes": "string"
           }
         `;
-        
+
         const geminiResponse = await enhancedGeminiService.generateContent({
           prompt,
           model: modelId,
@@ -483,7 +462,7 @@ class AIOrchestratorService {
           featureUsed: 'meeting-agenda',
           systemInstruction: "You are an expert meeting facilitator. Create focused, efficient meeting agendas. Return only valid JSON without markdown formatting."
         });
-        
+
         result = this.parseJsonSafely(geminiResponse.content);
       } else {
         // Temporarily use basic fallback for OpenAI
@@ -534,7 +513,7 @@ class AIOrchestratorService {
       };
     } catch (error) {
       console.error(`Error generating meeting agenda with ${modelId}:`, error);
-      
+
       // Fallback to basic structure
       return {
         content: {
@@ -595,19 +574,19 @@ class AIOrchestratorService {
         error: "No AI provider configured. Please check your API keys."
       };
     }
-    
+
     // For complex analytical tasks like deal analysis, prefer more capable models
     const dealDataTyped = dealData as any;
     const useGPT4 = dealDataTyped?.deals && Array.isArray(dealDataTyped.deals) && 
                    dealDataTyped.deals.some((deal: any) => deal?.value > 100000) || 
                    taskContext.complexity === 'high';
     const defaultModelId = useGPT4 ? 'gpt-4o-mini' : 'gemini-2.5-flash';
-    
+
     const modelId = await this.getOptimalModel('deal_insights', {
       ...taskContext,
       modelId: taskContext.modelId || defaultModelId
     });
-    
+
     const startTime = Date.now();
 
     try {
@@ -616,9 +595,9 @@ class AIOrchestratorService {
         // Format for Gemini
         const prompt = `
           Analyze this deal data and provide actionable insights:
-          
+
           ${JSON.stringify(dealData, null, 2)}
-          
+
           Format your response as a JSON object with the following structure, WITHOUT ANY MARKDOWN CODE BLOCKS:
           {
             "riskLevel": "low|medium|high",
@@ -628,7 +607,7 @@ class AIOrchestratorService {
             "potentialBlockers": ["string"]
           }
         `;
-        
+
         const geminiResponse = await enhancedGeminiService.generateContent({
           prompt,
           model: modelId,
@@ -636,7 +615,7 @@ class AIOrchestratorService {
           featureUsed: 'deal-insights',
           systemInstruction: "You are a sales analytics expert specializing in deal risk assessment. Return only plain JSON without markdown code blocks."
         });
-        
+
         result = this.parseJsonSafely(geminiResponse.content);
       } else {
         // Temporarily use basic fallback for OpenAI deal insights
@@ -668,7 +647,7 @@ class AIOrchestratorService {
       };
     } catch (error) {
       console.error(`Error analyzing deal with ${modelId}:`, error);
-      
+
       return {
         content: {
           riskLevel: "unknown",
@@ -709,25 +688,25 @@ class AIOrchestratorService {
         error: "No AI provider configured. Please check your API keys."
       };
     }
-    
+
     // For contact analysis, prefer models with good pattern recognition
     const modelId = await this.getOptimalModel('contact_scoring', {
       ...taskContext,
       modelId: taskContext.modelId || 'gemini-2.5-flash'
     });
-    
+
     const startTime = Date.now();
     const prompt = `
       Analyze these contacts and provide insights:
-      
+
       ${JSON.stringify(contacts, null, 2)}
-      
+
       Identify:
       1. The highest value contacts
       2. Contacts that need follow-up
       3. Patterns in the data
       4. Contact scoring recommendations
-      
+
       Format your response as a JSON object with the following structure, WITHOUT ANY MARKDOWN CODE BLOCKS:
       {
         "highValueContacts": ["string"],
@@ -747,7 +726,7 @@ class AIOrchestratorService {
           featureUsed: 'contact-insights',
           systemInstruction: "You are a CRM analytics expert specialized in contact scoring and analysis. Return only plain JSON without markdown code blocks."
         });
-        
+
         result = this.parseJsonSafely(geminiResponse.content);
       } else {
         // Temporarily use basic fallback for OpenAI contact insights
@@ -778,7 +757,7 @@ class AIOrchestratorService {
       };
     } catch (error) {
       console.error(`Error generating contact insights with ${modelId}:`, error);
-      
+
       return {
         content: {
           highValueContacts: [],

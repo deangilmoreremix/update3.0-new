@@ -1,18 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 
-interface DropdownProps {
-  children: React.ReactNode;
-  trigger: React.ReactNode;
-  align?: 'left' | 'right';
-  width?: string;
-  className?: string;
-}
-
 /**
  * Accessible dropdown menu with dark mode support
  */
-export const Dropdown: React.FC<DropdownProps> = ({
+export const Dropdown: FC<DropdownProps> = ({
   children,
   trigger,
   align = 'left',
@@ -71,7 +63,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       const focusableElements = dropdownRef.current.querySelectorAll(
         'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
       );
-      
+
       if (focusableElements.length > 0) {
         (focusableElements[0] as HTMLElement).focus();
       }

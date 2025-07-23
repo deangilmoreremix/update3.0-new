@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { ArrowUp, BarChart3, Check, CheckCheck, ChevronRight, Database, Filter, Link, MousePointer, Play, RefreshCw, Search, Star, Users, Zap, Video } from 'lucide-react';
+import { ArrowUp, BarChart3, CheckCheck, ChevronRight, Database, Filter, Link, MousePointer, Play, RefreshCw, Search, Star, Users, Zap } from 'lucide-react';
 
 import LandingHeader from '../components/LandingHeader';
 import LandingFooter from '../components/LandingFooter';
@@ -10,7 +10,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
   return (
     <div className="bg-white">
       <LandingHeader />
-      
+
       {/* Hero Section */}
       <section className="relative pt-20 bg-gradient-to-b from-white to-blue-50">
         <div className="container mx-auto px-4 py-20">
@@ -50,7 +50,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                       <div className="h-3 w-3 rounded-full bg-green-500"></div>
                     </div>
                   </div>
-                  
+
                   <div className="p-6">
                     <div className="relative mb-6">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -63,7 +63,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                         defaultValue="customers with budget concerns about enterprise plan"
                       />
                     </div>
-                    
+
                     <div className="space-y-4">
                       <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
                         <span className="font-medium">3 results found</span>
@@ -77,7 +77,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                           </select>
                         </div>
                       </div>
-                      
+
                       {/* Search Results */}
                       <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow p-4">
                         <div className="flex justify-between">
@@ -94,12 +94,12 @@ const SemanticSearchFeaturePage: React.FC = () => {
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded-md">
                           <span className="bg-yellow-200">Interested in enterprise plan. Has concerns about implementation timeline and budget.</span>
                         </div>
                       </div>
-                      
+
                       <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow p-4">
                         <div className="flex justify-between">
                           <div>
@@ -115,12 +115,12 @@ const SemanticSearchFeaturePage: React.FC = () => {
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded-md">
                           <span className="bg-yellow-200">Client has expressed budget concerns about the enterprise plan pricing. Need to discuss ROI.</span>
                         </div>
                       </div>
-                      
+
                       <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow p-4">
                         <div className="flex justify-between">
                           <div>
@@ -136,7 +136,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded-md">
                           <span className="bg-yellow-200">Interested in comprehensive CRM solution. Budget concerns, but decision maker.</span>
                         </div>
@@ -149,7 +149,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Key Benefits Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
@@ -159,7 +159,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
               Our semantic search doesn't just match keywords—it understands context, meaning, and intent.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-blue-100 rounded-full w-min mb-4">
@@ -170,7 +170,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                 Search the way you talk—using complete sentences, questions, and conversational language rather than rigid keywords.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-cyan-100 rounded-full w-min mb-4">
                 <Database className="h-6 w-6 text-cyan-600" />
@@ -180,7 +180,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                 Search across all your CRM data at once—contacts, companies, deals, emails, notes, tasks, and more—from a single query.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-purple-100 rounded-full w-min mb-4">
                 <Zap className="h-6 w-6 text-purple-600" />
@@ -193,7 +193,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Demo Section */}
       <section id="demo" className="py-20 bg-gradient-to-b from-blue-50 to-white">
         <div className="container mx-auto px-4">
@@ -206,13 +206,13 @@ const SemanticSearchFeaturePage: React.FC = () => {
                   </div>
                   <h3 className="text-2xl font-bold ml-3">Search Examples</h3>
                 </div>
-                
+
                 <h2 className="text-3xl font-bold text-gray-900 mb-6">Find Anything in Seconds</h2>
-                
+
                 <p className="text-gray-600 mb-8">
                   See how semantic search understands context and meaning to find exactly what you need—even when your query doesn't contain exact keyword matches.
                 </p>
-                
+
                 <div className="space-y-4">
                   <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                     <div className="flex justify-between items-center mb-2">
@@ -223,7 +223,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                       "Find decision makers in the healthcare industry who haven't been contacted in the last month"
                     </p>
                   </div>
-                  
+
                   <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                     <div className="flex justify-between items-center mb-2">
                       <div className="font-medium text-gray-900">Deal Search</div>
@@ -233,7 +233,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                       "Show me high-value deals that have been stuck in negotiation for more than two weeks"
                     </p>
                   </div>
-                  
+
                   <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                     <div className="flex justify-between items-center mb-2">
                       <div className="font-medium text-gray-900">Activity Search</div>
@@ -244,7 +244,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="mt-8">
                   <button className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                     <Play size={18} className="mr-2" />
@@ -252,7 +252,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                   </button>
                 </div>
               </div>
-              
+
               <div className="w-full md:w-1/2">
                 <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
                   <div className="border-b border-gray-200 p-4 flex items-center justify-between bg-gray-50">
@@ -266,7 +266,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                       <div className="h-3 w-3 rounded-full bg-green-500"></div>
                     </div>
                   </div>
-                  
+
                   <div className="p-6">
                     <div className="relative mb-4">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -278,7 +278,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                         defaultValue="leads who expressed interest in AI features"
                       />
                     </div>
-                    
+
                     <div className="space-y-3">
                       <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
                         <div className="flex justify-between">
@@ -297,7 +297,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                           </p>
                         </div>
                       </div>
-                      
+
                       <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
                         <div className="flex justify-between">
                           <div>
@@ -314,7 +314,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                           </p>
                         </div>
                       </div>
-                      
+
                       <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
                         <div className="flex justify-between">
                           <div>
@@ -339,7 +339,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Technical Highlights */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -349,7 +349,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
               Our semantic search uses advanced AI to understand meaning and context, not just keywords.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
               <div className="flex items-center mb-4">
@@ -365,7 +365,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                 <RefreshCw size={32} className="text-blue-300" />
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-3">
@@ -380,7 +380,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                 <ArrowUp size={32} className="text-blue-300" />
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-3">
@@ -396,7 +396,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="mt-12 bg-blue-50 rounded-xl p-6 max-w-5xl mx-auto border border-blue-100">
             <div className="flex flex-col md:flex-row items-center">
               <div className="w-full md:w-1/2 mb-6 md:mb-0">
@@ -419,7 +419,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Use Cases */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -429,7 +429,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
               Discover how different sales roles leverage semantic search to work more efficiently.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4">
@@ -462,7 +462,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="bg-gradient-to-r from-cyan-500 to-cyan-600 text-white p-4">
                 <h3 className="font-bold text-lg flex items-center">
@@ -497,7 +497,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Integration Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -509,13 +509,13 @@ const SemanticSearchFeaturePage: React.FC = () => {
                 </div>
                 <h3 className="text-2xl font-bold ml-3">Fully Integrated</h3>
               </div>
-              
+
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Works Across Your Entire CRM</h2>
-              
+
               <p className="text-xl text-gray-600 mb-6 leading-relaxed">
                 Our semantic search is deeply integrated into every part of your CRM, making all your data instantly accessible through natural language queries.
               </p>
-              
+
               <div className="space-y-4 mb-8">
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
@@ -524,7 +524,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                     <p className="text-gray-600">Search from anywhere in the CRM with our omnipresent search bar that understands what you need.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
                   <div>
@@ -532,7 +532,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                     <p className="text-gray-600">Get results that understand your current workflow context for even higher relevance.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
                   <div>
@@ -540,7 +540,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                     <p className="text-gray-600">Combine natural language with structured filters for precision searching when needed.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
                   <div>
@@ -549,7 +549,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex items-center">
                 <Link to="/features/semantic-search/integrations" className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors mr-4">
                   Learn More
@@ -560,7 +560,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                 </button>
               </div>
             </div>
-            
+
             <div className="w-full lg:w-1/2">
               <img 
                 src="https://images.pexels.com/photos/6476808/pexels-photo-6476808.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
@@ -571,7 +571,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Testimonials */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -581,7 +581,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
               See how semantic search is changing how sales teams work with their CRM.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
               <div className="flex mb-4">
@@ -606,7 +606,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
               <div className="flex mb-4">
                 {[1, 2, 3, 4, 5].map(star => (
@@ -630,7 +630,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
               <div className="flex mb-4">
                 {[1, 2, 3, 4, 5].map(star => (
@@ -657,7 +657,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
         <div className="container mx-auto px-4 text-center">
@@ -678,7 +678,7 @@ const SemanticSearchFeaturePage: React.FC = () => {
           <p className="mt-4 opacity-80">No credit card required • Free for 14 days</p>
         </div>
       </section>
-      
+
       <LandingFooter />
     </div>
   );

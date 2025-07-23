@@ -1,15 +1,5 @@
 import { useEffect } from 'react';
 
-export interface KeyboardShortcut {
-  key: string;
-  ctrl?: boolean;
-  shift?: boolean;
-  alt?: boolean;
-  meta?: boolean;
-  action: () => void;
-  description: string;
-}
-
 export const globalShortcuts: KeyboardShortcut[] = [
   {
     key: 'k',

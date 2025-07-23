@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Maximize2, MessageSquare, Mic, MicOff, Minimize2, Monitor, MonitorOff, Phone, Plus, UserPlus, Users, Video, VideoOff } from 'lucide-react';
+import { Maximize2, MessageSquare, Mic, MicOff, Minimize2, Monitor, MonitorOff, Phone, UserPlus, Users, Video, VideoOff } from 'lucide-react';
 import { useSafeVideoCall as useVideoCall } from '../hooks/useSafeVideoCall';
 import { useTheme } from '../contexts/ThemeContext';
 import Avatar from './ui/Avatar';
@@ -22,20 +22,20 @@ interface ParticipantTileProps {
   isDark: boolean;
 }
 
-const ParticipantTile: React.FC<ParticipantTileProps> = ({ 
+const ParticipantTile: FC<ParticipantTileProps> = ({ 
   participant, 
   isFocused, 
   onFocus,
   isDark 
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  
+
   useEffect(() => {
     if (videoRef.current && participant.stream && participant.isVideoEnabled) {
       videoRef.current.srcObject = participant.stream;
     }
   }, [participant.stream, participant.isVideoEnabled]);
-  
+
   return (
     <div 
       className={`relative rounded-lg overflow-hidden ${
@@ -63,7 +63,7 @@ const ParticipantTile: React.FC<ParticipantTileProps> = ({
           />
         </div>
       )}
-      
+
       {/* Participant Info & Controls Overlay */}
       <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/60 flex justify-between items-center">
         <div className="flex items-center space-x-2">
@@ -72,7 +72,7 @@ const ParticipantTile: React.FC<ParticipantTileProps> = ({
             <MicOff size={12} className="text-red-400" />
           )}
         </div>
-        
+
         {participant.id === 'local' && (
           <div className="flex space-x-1">
             <button className="p-1 rounded bg-white/10 hover:bg-white/20 text-white">
@@ -84,7 +84,7 @@ const ParticipantTile: React.FC<ParticipantTileProps> = ({
           </div>
         )}
       </div>
-      
+
       {/* Connection Status */}
       {!participant.isConnected && (
         <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
@@ -117,12 +117,12 @@ const GroupCallView: React.FC = () => {
     stopRecording
   } = useVideoCall();
   const { isDark } = useTheme();
-  
+
   const [focusedParticipant, setFocusedParticipant] = useState<string | null>(null);
   const [layout, setLayout] = useState<'grid' | 'focus'>('grid');
   const [showChat, setShowChat] = useState(false);
   const [_showSettings, _setShowSettings] = useState(false);
-  
+
   // Add local participant to list
   const allParticipants = [
     {
@@ -137,26 +137,26 @@ const GroupCallView: React.FC = () => {
     },
     ...participants
   ];
-  
+
   // Get the participant to focus on
   const getFocusedParticipant = () => {
     if (focusedParticipant) {
       return allParticipants.find(p => p.id === focusedParticipant) || allParticipants[0];
     }
-    
+
     // If no focused participant, try to find a speaking one
     const speakingParticipant = allParticipants.find(p => p.isSpeaking);
     if (speakingParticipant) {
       return speakingParticipant;
     }
-    
+
     return allParticipants[0];
   };
-  
+
   // Layout calculations
   const calculateLayout = () => {
     const count = allParticipants.length;
-    
+
     if (count <= 1) return [1, 1];
     if (count === 2) return [1, 2];
     if (count <= 4) return [2, 2];
@@ -165,9 +165,9 @@ const GroupCallView: React.FC = () => {
     if (count <= 12) return [3, 4];
     return [4, 4];
   };
-  
+
   const [rows, cols] = calculateLayout();
-  
+
   // Record the entire group call
   const handleRecording = () => {
     if (isRecording) {
@@ -178,7 +178,7 @@ const GroupCallView: React.FC = () => {
       );
     }
   };
-  
+
   return (
     <div className="fixed inset-0 z-50 bg-black/90">
       {/* Main Content Area */}
@@ -196,7 +196,7 @@ const GroupCallView: React.FC = () => {
                   isDark={isDark}
                 />
               </div>
-              
+
               {/* Thumbnails at bottom */}
               <div className="h-24 flex space-x-2 overflow-x-auto pb-2">
                 {allParticipants.map(participant => (
@@ -237,7 +237,7 @@ const GroupCallView: React.FC = () => {
             </div>
           )}
         </div>
-        
+
         {/* Call Controls */}
         <div className="h-16 mt-2 flex items-center justify-center">
           <div className="bg-black/50 rounded-full p-2 flex items-center space-x-4">
@@ -251,7 +251,7 @@ const GroupCallView: React.FC = () => {
             >
               {isAudioEnabled ? <Mic size={20} /> : <MicOff size={20} />}
             </button>
-            
+
             <button
               onClick={toggleVideo}
               className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
@@ -262,7 +262,7 @@ const GroupCallView: React.FC = () => {
             >
               {isVideoEnabled ? <Video size={20} /> : <VideoOff size={20} />}
             </button>
-            
+
             <button
               onClick={() => toggleScreenShare()}
               className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
@@ -273,7 +273,7 @@ const GroupCallView: React.FC = () => {
             >
               {isScreenSharing ? <MonitorOff size={20} /> : <Monitor size={20} />}
             </button>
-            
+
             <button
               onClick={() => setShowChat(!showChat)}
               className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
@@ -284,7 +284,7 @@ const GroupCallView: React.FC = () => {
             >
               <MessageSquare size={20} />
             </button>
-            
+
             <button
               onClick={handleRecording}
               className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
@@ -295,14 +295,14 @@ const GroupCallView: React.FC = () => {
             >
               <span className={`w-3 h-3 rounded-full ${isRecording ? 'bg-white' : 'bg-red-500'}`}></span>
             </button>
-            
+
             <button
               onClick={() => setLayout(layout === 'grid' ? 'focus' : 'grid')}
               className="w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-full flex items-center justify-center transition-colors text-white"
             >
               {layout === 'grid' ? <Maximize2 size={20} /> : <Minimize2 size={20} />}
             </button>
-            
+
             <button
               onClick={endCall}
               className="w-12 h-12 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors text-white"
@@ -312,18 +312,18 @@ const GroupCallView: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Participant Count and Call Info */}
       <div className="absolute top-4 left-4 bg-black/50 rounded-full px-3 py-1.5 flex items-center space-x-2">
         <Users size={16} className="text-white" />
         <span className="text-white text-sm">{allParticipants.length} participants</span>
       </div>
-      
+
       {/* Connection Quality */}
       <div className="absolute top-4 right-4">
         <ConnectionQuality />
       </div>
-      
+
       {/* Add Participant Button */}
       <button 
         className="absolute top-16 right-4 bg-green-500 hover:bg-green-600 text-white rounded-full p-2"
@@ -331,7 +331,7 @@ const GroupCallView: React.FC = () => {
       >
         <UserPlus size={20} />
       </button>
-      
+
       {/* Chat Panel */}
       {showChat && (
         <div className="absolute right-4 top-28 bottom-24 w-80 bg-gray-900/90 border border-white/20 rounded-xl backdrop-blur-md overflow-hidden">

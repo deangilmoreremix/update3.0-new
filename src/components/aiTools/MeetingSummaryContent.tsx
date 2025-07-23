@@ -18,7 +18,7 @@ const MeetingSummaryContent: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const summaryResult = await edgeFunctionService.generateMeetingSummary(transcript);
       setResult(summaryResult);
@@ -33,12 +33,12 @@ const MeetingSummaryContent: React.FC = () => {
   const handleFilesAdded = (newFiles: File[]) => {
     setFiles(newFiles);
     setIsUploading(true);
-    
+
     // For demo purposes, we'll just handle text files directly
     // In a real implementation, we might use a transcription service for audio files
     if (newFiles.length > 0) {
       const file = newFiles[0];
-      
+
       if (file.type === 'text/plain') {
         const reader = new FileReader();
         reader.onload = (e) => {

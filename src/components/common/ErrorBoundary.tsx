@@ -1,12 +1,6 @@
 import React from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 
-interface ErrorBoundaryState {
-  hasError: boolean;
-  error?: Error;
-  errorInfo?: React.ErrorInfo;
-}
-
 interface ErrorBoundaryProps {
   children: React.ReactNode;
   fallback?: React.ComponentType<{error?: Error; retry: () => void}>;
@@ -27,7 +21,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
-    
+
     this.setState({
       error,
       errorInfo,
@@ -56,11 +50,11 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             <div className="mb-4">
               <AlertTriangle className="h-16 w-16 text-red-500 mx-auto" />
             </div>
-            
+
             <h1 className="text-xl font-semibold text-gray-900 mb-2">
               Something went wrong
             </h1>
-            
+
             <p className="text-gray-600 mb-6">
               We're sorry, but something unexpected happened. Please try refreshing the page or contact support if the problem persists.
             </p>
@@ -81,7 +75,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
                 <RefreshCw className="h-4 w-4" />
                 Try Again
               </button>
-              
+
               <button
                 onClick={() => window.location.href = '/'}
                 className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"

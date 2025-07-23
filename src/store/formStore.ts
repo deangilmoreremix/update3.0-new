@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 
-
 export type FormField = {
   id: string;
   type: 'text' | 'email' | 'phone' | 'number' | 'select' | 'checkbox' | 'radio' | 'textarea';
@@ -38,24 +37,6 @@ export type FormSubmission = {
     phone?: string;
   };
 };
-
-interface FormState {
-  forms: Record<string, FormTemplate>;
-  submissions: Record<string, FormSubmission[]>;
-  isLoading: boolean;
-  error: string | null;
-  
-  // Actions
-  fetchForms: () => Promise<void>;
-  fetchSubmissions: (formId: string) => Promise<void>;
-  createForm: (form: Partial<FormTemplate>) => Promise<void>;
-  updateForm: (id: string, form: Partial<FormTemplate>) => Promise<void>;
-  deleteForm: (id: string) => Promise<void>;
-  getFormSubmissions: (formId: string) => FormSubmission[];
-  submitFormResponse: (formId: string, data: Record<string, any>) => Promise<void>;
-  getPublicFormUrl: (formId: string) => string;
-  toggleFormActive: (formId: string, isActive: boolean) => Promise<void>;
-}
 
 // Helper function to generate a shareable URL for a form
 const generatePublicUrl = (formId: string) => {
@@ -167,22 +148,22 @@ export const useFormStore = create<FormState>((set, get) => ({
   },
   isLoading: false,
   error: null,
-  
+
   fetchForms: async () => {
     set({ isLoading: true, error: null });
-    
+
     try {
       // In a real implementation, this would be a Supabase query
       // const { data, error } = await supabase
       //   .from('forms')
       //   .select('*')
       //   .eq('user_id', get().currentUser.id);
-      
+
       // if (error) throw error;
-      
+
       // For the demo, we just simulate a delay
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       // In a real app, we would set forms from the API response
       set({ isLoading: false });
     } catch (err) {
@@ -193,22 +174,22 @@ export const useFormStore = create<FormState>((set, get) => ({
       });
     }
   },
-  
+
   fetchSubmissions: async (_formId: string) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       // In a real implementation, this would be a Supabase query
       // const { data, error } = await supabase
       //   .from('form_submissions')
       //   .select('*')
       //   .eq('form_id', formId);
-      
+
       // if (error) throw error;
-      
+
       // For the demo, we just simulate a delay
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       // In a real app, we would update submissions from the API response
       set({ isLoading: false });
     } catch (err) {
@@ -219,10 +200,10 @@ export const useFormStore = create<FormState>((set, get) => ({
       });
     }
   },
-  
+
   createForm: async (formData: Partial<FormTemplate>) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const formId = formData.id || `form-${uuidv4()}`;
       const newForm: FormTemplate = {
@@ -238,17 +219,17 @@ export const useFormStore = create<FormState>((set, get) => ({
         totalViews: 0,
         conversionRate: 0
       };
-      
+
       // In a real implementation, this would save to Supabase
       // const { data, error } = await supabase
       //   .from('forms')
       //   .insert([newForm]);
-      
+
       // if (error) throw error;
-      
+
       // For the demo, we just simulate a delay
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       // Update local state
       const { forms } = get();
       set({ 
@@ -263,35 +244,35 @@ export const useFormStore = create<FormState>((set, get) => ({
       });
     }
   },
-  
+
   updateForm: async (id: string, formData: Partial<FormTemplate>) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const { forms } = get();
       const existingForm = forms[id];
-      
+
       if (!existingForm) {
         throw new Error(`Form with id ${id} not found`);
       }
-      
+
       const updatedForm: FormTemplate = {
         ...existingForm,
         ...formData,
         lastUpdated: new Date()
       };
-      
+
       // In a real implementation, this would save to Supabase
       // const { error } = await supabase
       //   .from('forms')
       //   .update(updatedForm)
       //   .eq('id', id);
-      
+
       // if (error) throw error;
-      
+
       // For the demo, we just simulate a delay
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       // Update local state
       set({ 
         forms: { ...forms, [id]: updatedForm },
@@ -305,26 +286,26 @@ export const useFormStore = create<FormState>((set, get) => ({
       });
     }
   },
-  
+
   deleteForm: async (id: string) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       // In a real implementation, this would delete from Supabase
       // const { error } = await supabase
       //   .from('forms')
       //   .delete()
       //   .eq('id', id);
-      
+
       // if (error) throw error;
-      
+
       // For the demo, we just simulate a delay
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       // Update local state
       const { forms } = get();
       const { [id]: _deletedForm, ...remainingForms } = forms;
-      
+
       set({ 
         forms: remainingForms,
         isLoading: false 
@@ -337,23 +318,23 @@ export const useFormStore = create<FormState>((set, get) => ({
       });
     }
   },
-  
+
   getFormSubmissions: (formId: string) => {
     const { submissions } = get();
     return submissions[formId] || [];
   },
-  
+
   submitFormResponse: async (formId: string, data: Record<string, any>) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const { forms, submissions } = get();
       const form = forms[formId];
-      
+
       if (!form) {
         throw new Error(`Form with id ${formId} not found`);
       }
-      
+
       const submissionId = `sub-${uuidv4()}`;
       const newSubmission: FormSubmission = {
         id: submissionId,
@@ -368,33 +349,33 @@ export const useFormStore = create<FormState>((set, get) => ({
           phone: data['Phone Number'] || data['Phone']
         }
       };
-      
+
       // In a real implementation, this would save to Supabase
       // const { error } = await supabase
       //   .from('form_submissions')
       //   .insert([newSubmission]);
-      
+
       // if (error) throw error;
-      
+
       // Update form submissions count
       const updatedForm: FormTemplate = {
         ...form,
         submissions: form.submissions + 1,
         lastUpdated: new Date()
       };
-      
+
       // Calculate new conversion rate
       if (form.totalViews) {
         const newConversionRate = ((form.submissions + 1) / form.totalViews) * 100;
         updatedForm.conversionRate = parseFloat(newConversionRate.toFixed(1));
       }
-      
+
       // For the demo, we just simulate a delay
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       // Update local state
       const formSubmissions = submissions[formId] || [];
-      
+
       set({ 
         forms: { ...forms, [formId]: updatedForm },
         submissions: { ...submissions, [formId]: [...formSubmissions, newSubmission] },
@@ -408,26 +389,26 @@ export const useFormStore = create<FormState>((set, get) => ({
       });
     }
   },
-  
+
   getPublicFormUrl: (formId: string) => {
     const { forms } = get();
     const form = forms[formId];
-    
+
     if (!form) {
       return '';
     }
-    
+
     return form.publicURL || generatePublicUrl(formId);
   },
-  
+
   toggleFormActive: async (formId: string, isActive: boolean) => {
     const { forms } = get();
     const form = forms[formId];
-    
+
     if (!form) {
       return;
     }
-    
+
     await get().updateForm(formId, { isActive });
   }
 }));

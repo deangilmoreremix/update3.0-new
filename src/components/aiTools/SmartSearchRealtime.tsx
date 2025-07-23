@@ -99,20 +99,10 @@ const mockDeals: Deal[] = [
   }
 ];
 
-interface SearchResult {
-  type: 'contact' | 'deal';
-  item: Contact | Deal;
-  score: number;
-}
-
-interface SmartSearchRealtimeProps {
-  onSearchResult?: (results: SearchResult[]) => void;
-}
-
-const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResult }) => {
+const SmartSearchRealtime: FC<SmartSearchRealtimeProps> = ({ onSearchResult }) => {
   const _gemini = useGemini();
   const embeddings = useOpenAIEmbeddings();
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -132,10 +122,10 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
     contactEmbeddings: [],
     dealEmbeddings: []
   });
-  
+
   const searchInputRef = useRef<HTMLInputElement>(null);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   // Initialize embeddings on first load
   useEffect(() => {
     const initializeEmbeddings = async () => {
@@ -143,7 +133,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
         // Generate embeddings for contacts and deals
         const contactEmbs = await embeddings.createContactEmbeddings(mockContacts);
         const dealEmbs = await embeddings.createDealEmbeddings(mockDeals);
-        
+
         setEmbedData({
           ready: true,
           contactEmbeddings: contactEmbs,
@@ -153,31 +143,31 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
         console.error('Error initializing embeddings:', error);
       }
     };
-    
+
     initializeEmbeddings();
   }, []);
-  
+
   // Generate search suggestions based on input
   useEffect(() => {
     if (searchQuery.length > 2) {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
       }
-      
+
       debounceTimerRef.current = setTimeout(() => {
         generateSearchSuggestions(searchQuery);
       }, 300);
     } else {
       setShowSearchSuggestions(false);
     }
-    
+
     return () => {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
       }
     };
   }, [searchQuery]);
-  
+
   // Generate search suggestions
   const generateSearchSuggestions = async (query: string) => {
     try {
@@ -190,7 +180,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
         `recently contacted ${query}`,
         `${query} closing this month`
       ];
-      
+
       // Filter to 3 most relevant suggestions
       setSearchSuggestions(baseSuggestions.slice(0, 3));
       setShowSearchSuggestions(true);
@@ -198,61 +188,61 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
       console.error('Error generating search suggestions:', error);
     }
   };
-  
+
   // Perform the semantic search
   const performSemanticSearch = async (query: string) => {
     if (query.trim().length === 0 || !embedData.ready) return;
-    
+
     setIsSearching(true);
     setSearchResults([]);
-    
+
     try {
       // Create an embedding for the search query
       const _queryEmbedding = await embeddings.createEmbedding(query);
-      
+
       const results: SearchResult[] = [];
-      
+
       // Search contacts if not filtered out
       if (filters.type === 'all' || filters.type === 'contacts') {
         const contactsById = mockContacts.reduce((acc, contact) => {
           acc[contact.id] = contact;
           return acc;
         }, {} as Record<string, Contact>);
-        
+
         const contactResults = await embeddings.searchContacts(query, embedData.contactEmbeddings, contactsById);
-        
+
         results.push(...contactResults.map(result => ({
           type: 'contact',
           item: result.contact,
           score: result.score
         })));
       }
-      
+
       // Search deals if not filtered out
       if (filters.type === 'all' || filters.type === 'deals') {
         const dealsById = mockDeals.reduce((acc, deal) => {
           acc[deal.id] = deal;
           return acc;
         }, {} as Record<string, Deal>);
-        
+
         const dealResults = await embeddings.searchDeals(query, embedData.dealEmbeddings, dealsById);
-        
+
         results.push(...dealResults.map(result => ({
           type: 'deal',
           item: result.deal,
           score: result.score
         })));
       }
-      
+
       // Sort by similarity score
       const sortedResults = results.sort((a, b) => b.score - a.score).slice(0, 5);
-      
+
       setSearchResults(sortedResults);
-      
+
       if (onSearchResult) {
         onSearchResult(sortedResults);
       }
-      
+
       setShowSearchSuggestions(false);
     } catch (error) {
       console.error('Error performing search:', error);
@@ -260,20 +250,20 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
       setIsSearching(false);
     }
   };
-  
+
   const selectSearchSuggestion = (suggestion: string) => {
     setSearchQuery(suggestion);
     setShowSearchSuggestions(false);
     performSemanticSearch(suggestion);
   };
-  
+
   // Handle search on Enter
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       performSemanticSearch(searchQuery);
     }
   };
-  
+
   // Format date for display
   const formatDate = (date: Date | undefined) => {
     if (!date) return 'N/A';
@@ -291,7 +281,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
           </span>
         </h3>
       </div>
-      
+
       <div className="p-6 space-y-6">
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -314,7 +304,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
             </button>
           )}
         </div>
-        
+
         {/* Search suggestions dropdown */}
         <AnimatePresence>
           {showSearchSuggestions && searchSuggestions.length > 0 && (
@@ -342,7 +332,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
             </motion.div>
           )}
         </AnimatePresence>
-        
+
         <div className="flex items-center justify-between">
           <div className="flex space-x-2">
             <button
@@ -378,7 +368,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
               Deals
             </button>
           </div>
-          
+
           <button
             onClick={() => performSemanticSearch(searchQuery)}
             disabled={!searchQuery.trim() || isSearching}
@@ -396,7 +386,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
             Search
           </button>
         </div>
-      
+
         {/* Search metadata */}
         {embedData.ready && (
           <div className="bg-gray-50 p-3 rounded-lg">
@@ -408,7 +398,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
             </div>
           </div>
         )}
-        
+
         {/* Search results */}
         <div className="mt-6">
           <AnimatePresence>
@@ -424,14 +414,14 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
               </motion.div>
             )}
           </AnimatePresence>
-          
+
           {!isSearching && searchResults.length > 0 && (
             <div>
               <h4 className="font-medium text-gray-900 mb-4 flex items-center">
                 <Sparkles size={16} className="text-blue-500 mr-2" />
                 {searchResults.length} Results for "{searchQuery}"
               </h4>
-              
+
               <div className="space-y-4">
                 {searchResults.map((result, index) => (
                   <motion.div
@@ -486,13 +476,13 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
                         </div>
                       </div>
                     )}
-                    
+
                     {result.type === 'contact' && (result.item as Contact).notes && (
                       <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded-md">
                         {(result.item as Contact).notes}
                       </div>
                     )}
-                    
+
                     {result.type === 'deal' && (
                       <div className="flex items-center mt-2 text-xs text-gray-500">
                         <Clock size={14} className="mr-1" />
@@ -506,7 +496,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
                         </span>
                       </div>
                     )}
-                    
+
                     <div className="mt-2 flex justify-end">
                       <button className="text-blue-600 hover:text-blue-800 text-xs flex items-center">
                         View Details <ArrowRight size={12} className="ml-1" />
@@ -517,7 +507,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
               </div>
             </div>
           )}
-          
+
           {!isSearching && searchQuery && searchResults.length === 0 && (
             <div className="text-center py-12">
               <Search size={48} className="mx-auto text-gray-300 mb-4" />
@@ -527,7 +517,7 @@ const SmartSearchRealtime: React.FC<SmartSearchRealtimeProps> = ({ onSearchResul
               </p>
             </div>
           )}
-          
+
           {!isSearching && !searchQuery && (
             <div className="text-center py-12 bg-gray-50 rounded-lg">
               <Search size={48} className="mx-auto text-gray-300 mb-4" />

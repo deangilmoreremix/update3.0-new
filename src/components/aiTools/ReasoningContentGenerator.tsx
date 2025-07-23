@@ -3,15 +3,11 @@ import { useGemini } from '../../services/geminiService';
 import AIToolContent from '../shared/AIToolContent';
 import { Brain, Check, Copy, FileText, Hash, Mail, MessageSquare, RefreshCw, Shield, Sparkles, Target, Users } from 'lucide-react';
 
-interface ReasoningContentGeneratorProps {
-  contentType?: 'email' | 'proposal' | 'script' | 'objection' | 'social';
-}
-
-const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({ 
+const ReasoningContentGenerator: FC<ReasoningContentGeneratorProps> = ({ 
   contentType = 'email' 
 }) => {
   const gemini = useGemini();
-  
+
   const [formData, setFormData] = useState({
     audience: '',
     context: '',
@@ -20,7 +16,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
     previousCommunication: '',
     tone: 'professional'
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -42,24 +38,24 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
 
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // Get the content title based on type
       const contentTitle = getContentTitle();
-      
+
       // Generate reasoning insights first
       const reasoningPrompt = `
         You are an expert AI reasoning engine for ${contentTitle} creation.
-        
+
         Analyze the following context and provide strategic reasoning about how to create the most effective content:
-        
+
         Audience: ${formData.audience}
         Objective: ${formData.objective}
         Context: ${formData.context}
         Constraints: ${formData.constraints}
         Previous Communication: ${formData.previousCommunication}
         Tone: ${formData.tone}
-        
+
         Provide your strategic reasoning about:
         1. Key audience motivations and pain points
         2. Psychological triggers that would be effective
@@ -68,40 +64,40 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
         5. Specific persuasion techniques to employ
         6. Potential objections to address
         7. Call-to-action strategy
-        
+
         Format your response as a strategic analysis that would help a sales or marketing professional understand the reasoning behind the content creation approach.
       `;
-      
+
       const reasoningResult = await gemini.getGenerativeModel({ model: 'gemini-pro' }).generateContent(reasoningPrompt);
       const reasoningResponse = await reasoningResult.response;
       const reasoningText = reasoningResponse.text();
       setReasoningInsights(reasoningText);
-      
+
       // Now generate the actual content using the reasoning insights
       const contentPrompt = `
         You are an expert ${contentTitle} creator.
-        
+
         Based on the following information and strategic reasoning, create a highly effective ${contentType}:
-        
+
         Audience: ${formData.audience}
         Objective: ${formData.objective}
         Context: ${formData.context}
         Constraints: ${formData.constraints}
         Previous Communication: ${formData.previousCommunication}
         Tone: ${formData.tone}
-        
+
         Strategic Reasoning:
         ${reasoningText}
-        
+
         Now, create the ${contentType} content that implements this strategic reasoning. The content should be ready to use without further editing.
-        
+
         ${getContentSpecificInstructions()}
       `;
-      
+
       const contentResult = await gemini.getGenerativeModel({ model: 'gemini-pro' }).generateContent(contentPrompt);
       const contentResponse = await contentResult.response;
       const contentText = contentResponse.text();
-      
+
       setResult(contentText);
       setCopied(false);
     } catch (err) {
@@ -119,7 +115,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
       setTimeout(() => setCopied(false), 2000);
     }
   };
-  
+
   const getContentTitle = () => {
     switch(contentType) {
       case 'email': return 'Email';
@@ -130,7 +126,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
       default: return 'Content';
     }
   };
-  
+
   const getContentSpecificInstructions = () => {
     switch(contentType) {
       case 'email':
@@ -147,7 +143,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
         return '';
     }
   };
-  
+
   const _getContentIcon = () => {
     switch(contentType) {
       case 'email': return <Mail className="h-6 w-6 text-blue-600" />;
@@ -158,7 +154,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
       default: return <FileText className="h-6 w-6 text-blue-600" />;
     }
   };
-  
+
   // Tone options
   const toneOptions = [
     { value: 'professional', label: 'Professional' },
@@ -206,7 +202,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
               required
             ></textarea>
           </div>
-          
+
           <div>
             <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
               <Target className="h-4 w-4 mr-1 text-gray-500" />
@@ -222,7 +218,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
               required
             ></textarea>
           </div>
-          
+
           <div>
             <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
               <FileText className="h-4 w-4 mr-1 text-gray-500" />
@@ -237,7 +233,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
               placeholder="Provide relevant context about your product/service, the current situation, and any specific details that would help create better content"
             ></textarea>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
@@ -253,7 +249,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
                 placeholder="Summarize any previous communications or interactions"
               ></textarea>
             </div>
-            
+
             <div>
               <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                 <FileText className="h-4 w-4 mr-1 text-gray-500" />
@@ -269,7 +265,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
               ></textarea>
             </div>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Tone
@@ -285,7 +281,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
               ))}
             </select>
           </div>
-            
+
           <div className="flex justify-end">
             <button
               type="submit"
@@ -318,7 +314,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
               <Brain size={16} className="mr-1" />
               {reasoningVisible ? 'Hide AI Reasoning' : 'Show AI Reasoning'}
             </button>
-            
+
             <div className="flex space-x-2">
               <button 
                 onClick={handleCopy}
@@ -342,7 +338,7 @@ const ReasoningContentGenerator: React.FC<ReasoningContentGeneratorProps> = ({
               </button>
             </div>
           </div>
-          
+
           {reasoningVisible && reasoningInsights && (
             <div className="mb-4 bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-100">
               <div className="flex items-center mb-2">

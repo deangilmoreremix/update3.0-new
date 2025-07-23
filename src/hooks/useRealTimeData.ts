@@ -3,29 +3,6 @@ import { getSupabaseService } from '../services/supabaseService';
 import { Contact } from '../types/contact';
 import { Deal } from '../types';
 
-export interface ActivityLog {
-  id: string;
-  type: 'deal_created' | 'deal_moved' | 'contact_added' | 'meeting_scheduled' | 'email_sent' | 'call_completed';
-  title: string;
-  description: string;
-  user_name: string;
-  timestamp: Date;
-  relatedId?: string;
-}
-
-export interface DashboardMetrics {
-  totalDeals: number;
-  totalDealValue: number;
-  avgDealSize: number;
-  winRate: number;
-  conversionRate: number;
-  activeContacts: number;
-  totalContacts: number;
-  recentActivity: number;
-  monthlyGrowth: number;
-  quarterlyGrowth: number;
-}
-
 // Enhanced real-time dashboard data hook
 export const useRealTimeDashboard = () => {
   const [metrics, setMetrics] = useState<DashboardMetrics>({
@@ -48,7 +25,7 @@ export const useRealTimeDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       const supabase = getSupabaseService();
-      
+
       // Fetch deals and contacts data
       const [dealsData, contactsData] = await Promise.all([
         supabase.getDeals(),
@@ -113,7 +90,7 @@ export const useRealTimeDashboard = () => {
           user_name: 'Sarah Johnson'
         }
       ];
-      
+
       setActivities(mockActivities);
       setError(null);
     } catch (err) {
@@ -126,10 +103,10 @@ export const useRealTimeDashboard = () => {
 
   useEffect(() => {
     fetchDashboardData();
-    
+
     // Set up polling for real-time updates every 30 seconds
     const interval = setInterval(fetchDashboardData, 30000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -257,7 +234,7 @@ export const useActivityTracking = () => {
     try {
       const supabase = getSupabaseService();
       const user = await supabase.getCurrentUser();
-      
+
       if (!user) {
         throw new Error('User not authenticated');
       }

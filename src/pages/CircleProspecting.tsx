@@ -15,22 +15,6 @@ const defaultIcon = icon({
   shadowSize: [41, 41]
 });
 
-interface ProspectData {
-  id: string;
-  name: string;
-  address: string;
-  email?: string;
-  phone?: string;
-  homeValue?: number;
-  mortgageAmount?: number;
-  lastRefinance?: string;
-  income?: string;
-  occupation?: string;
-  lat: number;
-  lng: number;
-  score?: number;
-}
-
 const CircleProspecting: React.FC = () => {
   const gemini = useGemini();
   const [center, setCenter] = useState<[number, number]>([37.7749, -122.4194]); // San Francisco
@@ -40,7 +24,7 @@ const CircleProspecting: React.FC = () => {
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [aiInsight, setAiInsight] = useState<string | null>(null);
-  
+
   // Mock prospect data
   const [prospects, _setProspects] = useState<ProspectData[]>([
     {
@@ -104,10 +88,10 @@ const CircleProspecting: React.FC = () => {
       score: 68
     },
   ]);
-  
+
   const handleSearch = () => {
     setIsSearching(true);
-    
+
     // In a real app, we would geocode the address here
     // For demo purposes, we'll just simulate a search
     setTimeout(() => {
@@ -116,15 +100,15 @@ const CircleProspecting: React.FC = () => {
       setIsSearching(false);
     }, 1500);
   };
-  
+
   const handleRadiusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRadius(parseInt(e.target.value));
   };
-  
+
   const handleAIAnalysis = async () => {
     setIsAnalyzing(true);
     setAiInsight(null);
-    
+
     try {
       // Generate market trend analysis for the area
       const insight = await gemini.analyzeMarketTrends(
@@ -132,7 +116,7 @@ const CircleProspecting: React.FC = () => {
         "San Francisco Bay Area homeowners",
         "next 6 months"
       );
-      
+
       setAiInsight(insight);
     } catch (error) {
       console.error("Failed to generate AI insight:", error);
@@ -140,13 +124,13 @@ const CircleProspecting: React.FC = () => {
       setIsAnalyzing(false);
     }
   };
-  
+
   const prospectsInRadius = prospects.filter(_prospect => {
     // In a real app, we would calculate the distance between center and each prospect
     // For demo purposes, we'll assume all prospects are within the radius
     return true;
   });
-  
+
   const getMarkerColor = (score?: number) => {
     if (!score) return 'gray';
     if (score >= 80) return 'green';
@@ -154,7 +138,7 @@ const CircleProspecting: React.FC = () => {
     if (score >= 60) return 'orange';
     return 'red';
   };
-  
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <header className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -168,7 +152,7 @@ const CircleProspecting: React.FC = () => {
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
             <h2 className="text-lg font-semibold mb-4">Search Area</h2>
-            
+
             <div className="space-y-4">
               <div>
                 <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
@@ -199,7 +183,7 @@ const CircleProspecting: React.FC = () => {
                   </button>
                 </div>
               </div>
-              
+
               <div>
                 <label htmlFor="radius" className="block text-sm font-medium text-gray-700 mb-1">
                   Radius: {(radius / 1000).toFixed(1)} km
@@ -215,7 +199,7 @@ const CircleProspecting: React.FC = () => {
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                 />
               </div>
-              
+
               <div>
                 <h3 className="text-sm font-medium text-gray-700 mb-2">Data Points to Include:</h3>
                 <div className="space-y-2">
@@ -269,7 +253,7 @@ const CircleProspecting: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="pt-4">
                 <button 
                   onClick={handleAIAnalysis}
@@ -291,7 +275,7 @@ const CircleProspecting: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           {aiInsight && (
             <div className="bg-blue-50 rounded-lg shadow-sm p-6 border border-blue-100">
               <div className="flex items-center mb-3">
@@ -304,7 +288,7 @@ const CircleProspecting: React.FC = () => {
             </div>
           )}
         </div>
-        
+
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow-sm mb-6">
             <div className="flex justify-between items-center p-4 border-b border-gray-200">
@@ -334,7 +318,7 @@ const CircleProspecting: React.FC = () => {
                 </button>
               </div>
             </div>
-            
+
             {viewMode === 'map' && (
               <div className="h-[600px] w-full">
                 <MapContainer 
@@ -346,10 +330,10 @@ const CircleProspecting: React.FC = () => {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   />
-                  
+
                   {/* Draw the radius circle */}
                   <Circle center={center} radius={radius} pathOptions={{ color: 'blue', fillColor: 'blue', fillOpacity: 0.1 }} />
-                  
+
                   {/* Place markers for each prospect */}
                   {prospectsInRadius.map(prospect => (
                     <Marker 
@@ -380,7 +364,7 @@ const CircleProspecting: React.FC = () => {
                 </MapContainer>
               </div>
             )}
-            
+
             {viewMode === 'list' && (
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
@@ -450,13 +434,13 @@ const CircleProspecting: React.FC = () => {
               </div>
             )}
           </div>
-          
+
           <div className="flex justify-between">
             <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
               <Target size={16} className="mr-1" />
               Add to Campaign
             </button>
-            
+
             <button className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
               <Download size={16} className="mr-1" />
               Export Data

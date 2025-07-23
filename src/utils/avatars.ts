@@ -11,7 +11,7 @@ export const avatarCollection = {
     'https://images.pexels.com/photos/3778212/pexels-photo-3778212.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
     'https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2'
   ],
-  
+
   // Business Professionals - Women
   women: [
     'https://images.pexels.com/photos/3763188/pexels-photo-3763188.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
@@ -47,7 +47,7 @@ export const getRandomAvatar = (category?: keyof typeof avatarCollection): strin
     const categoryAvatars = avatarCollection[category];
     return categoryAvatars[Math.floor(Math.random() * categoryAvatars.length)];
   }
-  
+
   // Get from all categories
   const allAvatars = Object.values(avatarCollection).flat();
   return allAvatars[Math.floor(Math.random() * allAvatars.length)];
@@ -59,7 +59,7 @@ export const getAvatarByIndex = (index: number, category?: keyof typeof avatarCo
     const categoryAvatars = avatarCollection[category];
     return categoryAvatars[index % categoryAvatars.length];
   }
-  
+
   const allAvatars = Object.values(avatarCollection).flat();
   return allAvatars[index % allAvatars.length];
 };

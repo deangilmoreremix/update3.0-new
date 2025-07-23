@@ -10,7 +10,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
   return (
     <div className="bg-white">
       <LandingHeader />
-      
+
       {/* Hero Section */}
       <section className="relative pt-20 bg-gradient-to-b from-white to-emerald-50">
         <div className="container mx-auto px-4 py-20">
@@ -48,7 +48,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Key Benefits Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
@@ -58,7 +58,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
               Create professional images for every sales and marketing need without design skills or expensive software.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-emerald-100 rounded-full w-min mb-4">
@@ -69,7 +69,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
                 Generate high-quality images in seconds just by describing what you want—no design skills required.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-teal-100 rounded-full w-min mb-4">
                 <Palette className="h-6 w-6 text-teal-600" />
@@ -79,7 +79,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
                 Choose from different artistic styles, layouts, and color schemes to match your brand and message perfectly.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-cyan-100 rounded-full w-min mb-4">
                 <Layout className="h-6 w-6 text-cyan-600" />
@@ -92,7 +92,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Examples Section */}
       <section id="examples" className="py-20 bg-gradient-to-b from-emerald-50 to-white">
         <div className="container mx-auto px-4">
@@ -102,7 +102,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
               See the quality and versatility of our AI-generated images for various sales and marketing purposes.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <img
@@ -116,7 +116,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
                 <p className="text-sm text-gray-600 mt-1">Perfect for showcasing your products in professional settings and various environments.</p>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <img
                 src="https://images.pexels.com/photos/6476589/pexels-photo-6476589.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
@@ -129,7 +129,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
                 <p className="text-sm text-gray-600 mt-1">Transform data into visually appealing graphics that tell a compelling story.</p>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <img
                 src="https://images.pexels.com/photos/6476254/pexels-photo-6476254.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
@@ -143,7 +143,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="text-center mt-10">
             <Link to="/ai-tools/image-generator" className="inline-flex items-center px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
               Generate Your Own Images <ArrowRight size={18} className="ml-2" />
@@ -151,7 +151,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* How It Works Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -161,7 +161,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
               Creating professional images has never been easier. Just follow these simple steps:
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="text-center">
               <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl font-bold mx-auto mb-4">1</div>
@@ -170,7 +170,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
                 Enter a detailed description of the image you want to create. The more specific you are, the better the results.
               </p>
             </div>
-            
+
             <div className="text-center">
               <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl font-bold mx-auto mb-4">2</div>
               <h3 className="text-xl font-bold mb-2">Select Options</h3>
@@ -178,7 +178,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
                 Choose your preferred style, dimensions, and quality settings for the perfect result.
               </p>
             </div>
-            
+
             <div className="text-center">
               <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl font-bold mx-auto mb-4">3</div>
               <h3 className="text-xl font-bold mb-2">Generate & Download</h3>
@@ -187,7 +187,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
               </p>
             </div>
           </div>
-          
+
           <div className="mt-12 max-w-5xl mx-auto bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-8 border border-emerald-100">
             <div className="flex flex-col md:flex-row items-center">
               <div className="w-full md:w-1/2 mb-6 md:mb-0">
@@ -225,7 +225,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Features Section */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -235,7 +235,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
               Our Image Generator goes beyond basic image creation with powerful features for professional use.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
             <div className="bg-white p-6 rounded-xl shadow-md flex items-start">
               <div className="p-3 bg-emerald-100 rounded-full mr-4">
@@ -260,7 +260,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
                 </ul>
               </div>
             </div>
-            
+
             <div className="bg-white p-6 rounded-xl shadow-md flex items-start">
               <div className="p-3 bg-emerald-100 rounded-full mr-4">
                 <FileText className="h-6 w-6 text-emerald-600" />
@@ -284,7 +284,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
                 </ul>
               </div>
             </div>
-            
+
             <div className="bg-white p-6 rounded-xl shadow-md flex items-start">
               <div className="p-3 bg-emerald-100 rounded-full mr-4">
                 <Download className="h-6 w-6 text-emerald-600" />
@@ -308,7 +308,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
                 </ul>
               </div>
             </div>
-            
+
             <div className="bg-white p-6 rounded-xl shadow-md flex items-start">
               <div className="p-3 bg-emerald-100 rounded-full mr-4">
                 <Share2 className="h-6 w-6 text-emerald-600" />
@@ -335,7 +335,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Testimonials */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -345,7 +345,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
               See how sales teams are using our Image Generator to enhance their presentations and materials.
             </p>
           </div>
-          
+
           <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 border border-gray-100">
             <div className="flex flex-col md:flex-row items-center">
               <div className="w-24 h-24 rounded-full overflow-hidden mb-4 md:mb-0 md:mr-6 flex-shrink-0">
@@ -373,7 +373,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
         <div className="container mx-auto px-4 text-center">
@@ -396,7 +396,7 @@ const ImageGeneratorFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       <LandingFooter />
     </div>
   );

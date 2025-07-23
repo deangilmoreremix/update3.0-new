@@ -3,13 +3,6 @@ import { useGemini } from '../../services/geminiService';
 import { MessageSquare, Copy, RefreshCw, Sparkles, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-interface ResponseTemplate {
-  id: string;
-  title: string;
-  purpose: string;
-  prompt: string;
-}
-
 const RESPONSE_TEMPLATES: ResponseTemplate[] = [
   {
     id: 'follow-up',
@@ -51,29 +44,29 @@ const InstantAIResponseGenerator: React.FC = () => {
   const [generatedResponse, setGeneratedResponse] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
-  
+
   // Generate response using Gemini 2.5 Flash for instant results
   const generateResponse = async () => {
     if (!selectedTemplate || !contactName || !topic) return;
-    
+
     setIsGenerating(true);
-    
+
     try {
       // Replace template variables with actual values
       const promptWithValues = selectedTemplate.prompt
         .replace('{{contact}}', contactName)
         .replace('{{topic}}', topic);
-      
+
       // Enhanced prompt for better results
       const fullPrompt = `${promptWithValues}
-      
+
       Context:
       - This is for a professional sales context
       - Be concise but personable
       - Include a clear call to action
       - Sound natural and conversational
       - Limit to 3-4 sentences maximum`;
-      
+
       const result = await gemini.generateQuickContent('email', fullPrompt, 'short');
       setGeneratedResponse(result);
     } catch (error) {
@@ -82,24 +75,24 @@ const InstantAIResponseGenerator: React.FC = () => {
       setIsGenerating(false);
     }
   };
-  
+
   const copyToClipboard = () => {
     navigator.clipboard.writeText(generatedResponse);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   };
-  
+
   // Generate response when inputs change (with debounce)
   useEffect(() => {
     if (selectedTemplate && contactName && topic) {
       const timer = setTimeout(() => {
         generateResponse();
       }, 500);
-      
+
       return () => clearTimeout(timer);
     }
   }, [selectedTemplate, contactName, topic]);
-  
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
       <div className="border-b border-gray-200 p-4 bg-gradient-to-r from-teal-50 to-blue-50">
@@ -111,7 +104,7 @@ const InstantAIResponseGenerator: React.FC = () => {
           Generate professional responses in seconds using Gemini 2.5 Flash
         </p>
       </div>
-      
+
       <div className="p-4 space-y-4">
         {/* Template Selection */}
         <div>
@@ -136,7 +129,7 @@ const InstantAIResponseGenerator: React.FC = () => {
             ))}
           </div>
         </div>
-        
+
         {/* Variables */}
         <AnimatePresence>
           {selectedTemplate && (
@@ -161,7 +154,7 @@ const InstantAIResponseGenerator: React.FC = () => {
                     placeholder="e.g. John Smith"
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="topic" className="block text-sm font-medium text-gray-700 mb-1">
                     Topic / Context
@@ -176,7 +169,7 @@ const InstantAIResponseGenerator: React.FC = () => {
                   />
                 </div>
               </div>
-              
+
               <AnimatePresence>
                 {generatedResponse && (
                   <motion.div
@@ -218,14 +211,14 @@ const InstantAIResponseGenerator: React.FC = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
-              
+
               {isGenerating && !generatedResponse && (
                 <div className="flex items-center justify-center p-4">
                   <RefreshCw size={20} className="text-teal-600 animate-spin mr-2" />
                   <span className="text-sm text-gray-600">Generating response...</span>
                 </div>
               )}
-              
+
               <div className="flex justify-end pt-2">
                 <button
                   onClick={generateResponse}

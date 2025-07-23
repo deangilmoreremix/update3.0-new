@@ -21,7 +21,7 @@ const Dashboard: React.FC = React.memo(() => {
   const { fetchContacts } = useContactStore();
   const { fetchTasks } = useTaskStore();
   const { fetchAppointments } = useAppointmentStore();
-  
+
   // Theme and layout
   const { isDark } = useTheme();
   const { sectionOrder } = useDashboardLayout();

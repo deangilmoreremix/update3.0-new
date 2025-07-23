@@ -1,4 +1,3 @@
-import React from 'react';
 import { supabase } from './supabaseClient';
 import { Deal } from '../types';
 
@@ -10,7 +9,7 @@ const _fetchDeals = async (userId: string) => {
       .select('*')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
-      
+
     return { data, error };
   } catch (error) {
     console.error("Error fetching deals:", error);
@@ -19,15 +18,7 @@ const _fetchDeals = async (userId: string) => {
 };
 
 // Fetch deals by stage
-const _fetchDealsByStage = async (userId: string, stage: string) => {
-  try {
-    const { data, error } = await supabase
-      .from('deals')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('stage', stage)
-      .order('created_at', { ascending: false });
-      
+
     return { data, error };
   } catch (error) {
     console.error("Error fetching deals by stage:", error);
@@ -36,13 +27,7 @@ const _fetchDealsByStage = async (userId: string, stage: string) => {
 };
 
 // Create a new deal
-const _createDeal = async (dealData: Partial<Deal>, userId: string) => {
-  try {
-    const { data, error } = await supabase
-      .from('deals')
-      .insert([{ ...dealData, user_id: userId }])
-      .select();
-      
+
     return { data, error };
   } catch (error) {
     console.error("Error creating deal:", error);
@@ -58,13 +43,13 @@ const _updateDeal = async (id: string, dealData: Partial<Deal>) => {
       ...dealData,
       updated_at: new Date().toISOString()
     };
-    
+
     const { data, error } = await supabase
       .from('deals')
       .update(updatedDealData)
       .eq('id', id)
       .select();
-      
+
     return { data, error };
   } catch (error) {
     console.error("Error updating deal:", error);
@@ -73,13 +58,7 @@ const _updateDeal = async (id: string, dealData: Partial<Deal>) => {
 };
 
 // Delete a deal
-const _deleteDeal = async (id: string) => {
-  try {
-    const { error } = await supabase
-      .from('deals')
-      .delete()
-      .eq('id', id);
-      
+
     return { error };
   } catch (error) {
     console.error("Error deleting deal:", error);
@@ -88,23 +67,15 @@ const _deleteDeal = async (id: string) => {
 };
 
 // Update deal stage and handle stage transition logic
-const _updateDealStage = async (id: string, newStage: string, oldStage: string) => {
-  try {
-    // Get current deal data to calculate days in stage
-    const { data: currentDealData, error: fetchError } = await supabase
-      .from('deals')
-      .select('*')
-      .eq('id', id)
-      .single();
-      
+
     if (fetchError) throw fetchError;
-    
+
     // Reset days in stage when stage changes
     const daysInStage = newStage !== oldStage ? 0 : (currentDealData?.days_in_stage || 0);
-    
+
     // Update probability based on stage
     let probability = currentDealData?.probability || 0;
-    
+
     switch(newStage) {
       case 'qualification':
         probability = 10;
@@ -125,7 +96,7 @@ const _updateDealStage = async (id: string, newStage: string, oldStage: string) 
         probability = 0;
         break;
     }
-    
+
     const { data, error } = await supabase
       .from('deals')
       .update({ 
@@ -136,7 +107,7 @@ const _updateDealStage = async (id: string, newStage: string, oldStage: string) 
       })
       .eq('id', id)
       .select();
-      
+
     return { data, error };
   } catch (error) {
     console.error("Error updating deal stage:", error);
@@ -145,15 +116,9 @@ const _updateDealStage = async (id: string, newStage: string, oldStage: string) 
 };
 
 // Get deal statistics
-const _getDealStats = async (userId: string) => {
-  try {
-    const { data, error } = await supabase
-      .from('deals')
-      .select('*')
-      .eq('user_id', userId);
-      
+
     if (error) throw error;
-    
+
     // Calculate statistics
     const totalDeals = data.length;
     const totalValue = data.reduce((sum, deal) => sum + (deal.value || 0), 0);
@@ -161,7 +126,7 @@ const _getDealStats = async (userId: string) => {
       .filter(deal => deal.stage === 'closed-won')
       .reduce((sum, deal) => sum + (deal.value || 0), 0);
     const avgDealSize = totalDeals > 0 ? totalValue / totalDeals : 0;
-    
+
     const dealsPerStage = {
       qualification: data.filter(deal => deal.stage === 'qualification').length,
       initial: data.filter(deal => deal.stage === 'initial').length,
@@ -170,7 +135,7 @@ const _getDealStats = async (userId: string) => {
       'closed-won': data.filter(deal => deal.stage === 'closed-won').length,
       'closed-lost': data.filter(deal => deal.stage === 'closed-lost').length,
     };
-    
+
     return { 
       totalDeals,
       totalValue,
@@ -186,16 +151,7 @@ const _getDealStats = async (userId: string) => {
 };
 
 // Fetch deals that need attention
-const _getHighPriorityDeals = async (userId: string) => {
-  try {
-    const { data, error } = await supabase
-      .from('deals')
-      .select('*')
-      .eq('user_id', userId)
-      .in('stage', ['qualification', 'proposal', 'negotiation'])
-      .order('updated_at', { ascending: true })
-      .limit(5);
-      
+
     return { data, error };
   } catch (error) {
     console.error("Error fetching high priority deals:", error);
@@ -208,10 +164,10 @@ export const fetchDealsFromSupabase = async (_userId?: string) => {
   try {
     // This is a simulated function since we don't have the actual deals table yet
     // In a real implementation, we would query Supabase
-    
+
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // Return mock data
     return {
       data: [

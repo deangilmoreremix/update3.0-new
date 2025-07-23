@@ -5,41 +5,12 @@ import { useOpenAI } from '../../services/openaiService';
 import { useGeminiAI } from '../../services/geminiService';
 import { Deal } from '../../types';
 import { Contact } from '../../types/contact';
-import { AlertCircle, Bot, Brain, Building2, Calendar, DollarSign, Mail, MapPin, Phone, Plus, Save, Search, Sparkles, Target, User, UserPlus, UserX, Users, X, Zap } from 'lucide-react';
+import { AlertCircle, Bot, Brain, Calendar, DollarSign, Mail, MapPin, Phone, Save, Search, Sparkles, Target, UserPlus, UserX, Users, X } from 'lucide-react';
 import SelectContactModal from './SelectContactModal';
 import { useContactStore } from '../../store/contactStore';
 import AddContactModal from './AddContactModal';
 
-interface AddDealModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (deal: Omit<Deal, 'id' | 'createdAt' | 'updatedAt'>) => void;
-}
-
-interface ContactDetails {
-  name: string;
-  title: string;
-  email: string;
-  phone: string;
-  department: string;
-  linkedin: string;
-  notes: string;
-}
-
-interface CompanyDetails {
-  name: string;
-  industry: string;
-  website: string;
-  headquarters: string;
-  employees: string;
-  revenue: string;
-  description: string;
-  keyDecisionMakers: string[];
-  potentialNeeds: string[];
-  competitors: string[];
-}
-
-const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
+const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
   // Form state
   const [formData, setFormData] = useState({
     title: '',
@@ -92,7 +63,7 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
   const [aiInsights, setAiInsights] = useState<string[]>([]);
   const [researchResults, setResearchResults] = useState<unknown>(null);
   const [aiProvider, setAiProvider] = useState<string>('');
-  
+
   // UI state
   const [activeTab, setActiveTab] = useState<'basic' | 'contact' | 'company' | 'ai'>('basic');
   const [newTag, setNewTag] = useState('');
@@ -106,7 +77,7 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const dealData: Omit<Deal, 'id' | 'createdAt' | 'updatedAt'> = {
       ...formData,
       dueDate: formData.dueDate ? new Date(formData.dueDate) : undefined,
@@ -171,10 +142,10 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
     setIsResearching(true);
     try {
       console.log(`🚀 Starting AI research for ${formData.company} (Priority: ${researchPriority})`);
-      
+
       // Use intelligent AI routing for company research
       const companyData = await aiResearch.researchCompany(formData.company, undefined, researchPriority);
-      
+
       // Update company details
       setCompanyDetails({
         name: companyData.name,
@@ -195,12 +166,12 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
         company: formData.company,
         industry: companyData.industry
       } as any;
-      
+
       const insights = await intelligentAI.getInsights(mockContact, researchPriority);
       setAiInsights(insights);
       setResearchResults(companyData);
       setAiProvider(companyData.aiProvider);
-      
+
       // Auto-populate some form fields
       setFormData(prev => ({
         ...prev,
@@ -214,7 +185,7 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
           exec.name.toLowerCase().includes(formData.contact.toLowerCase()) ||
           formData.contact.toLowerCase().includes(exec.name.toLowerCase())
         );
-        
+
         if (matchingExecutive) {
           setContactDetails(prev => ({
             ...prev,
@@ -244,9 +215,9 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
     setIsResearching(true);
     try {
       console.log(`👤 Starting contact research for ${contactDetails.name}`);
-      
+
       const contactData = await aiResearch.findContactPerson(contactDetails.name, formData.company, 'speed');
-      
+
       setContactDetails(prev => ({
         ...prev,
         title: contactData.title,
@@ -278,7 +249,7 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
       contactId: contact.id,
       contactAvatar: contact.avatarSrc || ''
     }));
-    
+
     // Pre-fill company if empty
     if (!formData.company && contact.company) {
       setFormData(prev => ({
@@ -286,7 +257,7 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
         company: contact.company
       }));
     }
-    
+
     // Update contact details
     setContactDetails({
       name: contact.name,
@@ -450,7 +421,7 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
                           readOnly
                         />
                       )}
-                      
+
                       <button
                         type="button"
                         onClick={() => setShowContactSelector(true)}
@@ -459,7 +430,7 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
                       >
                         <Users className="w-5 h-5" />
                       </button>
-                      
+
                       <button
                         type="button"
                         onClick={() => setShowAddContactModal(true)}
@@ -622,7 +593,7 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
                       <Users className="w-4 h-4" />
                       <span>Select Contact</span>
                     </button>
-                    
+
                     {/* Add new contact button */}
                     <button
                       type="button"
@@ -632,7 +603,7 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
                       <UserPlus className="w-4 h-4" />
                       <span>New Contact</span>
                     </button>
-                    
+
                     {/* AI Research button */}
                     <button
                       type="button"
@@ -659,7 +630,7 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
                       <div className="flex-1">
                         <h4 className="text-xl font-semibold text-gray-900">{selectedContact.name}</h4>
                         <p className="text-gray-600">{selectedContact.title} at {selectedContact.company}</p>
-                        
+
                         <div className="grid grid-cols-2 gap-4 mt-3">
                           <div>
                             <p className="text-sm text-gray-500">Email</p>
@@ -680,7 +651,7 @@ const AddDealModal: React.FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) 
                             <p className="text-sm font-medium capitalize">{selectedContact.interestLevel}</p>
                           </div>
                         </div>
-                        
+
                         <div className="mt-3 flex justify-end">
                           <button
                             type="button"

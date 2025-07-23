@@ -1,6 +1,4 @@
 
-
-import React from 'react';
 import { IntelligentAIService } from './intelligentAIService';
 
 interface CompanyResearchData {
@@ -30,32 +28,6 @@ interface CompanyResearchData {
   aiProvider: string; // Track which AI was used
 }
 
-interface ContactPersonData {
-  name: string;
-  title: string;
-  email?: string;
-  phone?: string;
-  linkedin?: string;
-  imageUrl?: string;
-  department?: string;
-  location?: string;
-  background?: string;
-  contactStrategy: string;
-  valueProposition: string;
-  communicationStyle: string;
-  iceBreakers: string[];
-  aiProvider: string; // Track which AI was used
-}
-
-interface AIResearchService {
-  researchCompany: (companyName: string, domain?: string, priority?: 'speed' | 'quality' | 'cost') => Promise<CompanyResearchData>;
-  findContactPerson: (personName: string, companyName?: string, priority?: 'speed' | 'quality' | 'cost') => Promise<ContactPersonData>;
-  findCompanyLogo: (companyName: string, domain?: string) => Promise<string>;
-  findPersonImage: (personName: string, company?: string, title?: string) => Promise<string>;
-  enhanceWithAI: (data: unknown, query: string, priority?: 'speed' | 'quality' | 'cost') => Promise<unknown>;
-  getTaskRouting: () => unknown[];
-}
-
 class EnhancedAIResearchService implements AIResearchService {
   private intelligentAI: IntelligentAIService;
 
@@ -72,10 +44,10 @@ class EnhancedAIResearchService implements AIResearchService {
   async researchCompany(companyName: string, domain?: string, priority: 'speed' | 'quality' | 'cost' = 'quality'): Promise<CompanyResearchData> {
     try {
       console.log(`🔍 Company Research: ${companyName} (Priority: ${priority})`);
-      
+
       // Use intelligent AI routing for company research
       const geminiResearch = await this.intelligentAI.researchCompany(companyName, domain, priority);
-      
+
       // Enhance with mock data for completeness
       const enhancedData: CompanyResearchData = {
         name: companyName,
@@ -113,14 +85,14 @@ class EnhancedAIResearchService implements AIResearchService {
   async findContactPerson(personName: string, companyName?: string, priority: 'speed' | 'quality' | 'cost' = 'speed'): Promise<ContactPersonData> {
     try {
       console.log(`👤 Contact Research: ${personName} at ${companyName || 'Unknown Company'} (Priority: ${priority})`);
-      
+
       // Use intelligent AI routing for contact research (optimized for speed)
       const geminiData = await this.intelligentAI.researchContact(personName, companyName, priority);
-      
+
       const names = personName.split(' ');
       const firstName = names[0];
       const lastName = names[names.length - 1];
-      
+
       return {
         name: personName,
         title: geminiData.likelyRole || this.generateTitle(),
@@ -151,7 +123,7 @@ class EnhancedAIResearchService implements AIResearchService {
       .join('')
       .toUpperCase()
       .slice(0, 2);
-    
+
     return `https://api.dicebear.com/7.x/initials/svg?seed=${companyName}&backgroundColor=3b82f6,8b5cf6,f59e0b,10b981,ef4444&textColor=ffffff&chars=2`;
   }
 
@@ -164,10 +136,10 @@ class EnhancedAIResearchService implements AIResearchService {
   async enhanceWithAI(data: unknown, query: string, priority: 'speed' | 'quality' | 'cost' = 'quality'): Promise<unknown> {
     try {
       console.log(`✨ AI Enhancement: ${query} (Priority: ${priority})`);
-      
+
       // Use intelligent routing for insights (OpenAI preferred for creative insights)
       const insights = await this.intelligentAI.getInsights(data, priority);
-      
+
       return {
         ...data,
         enhanced: true,
@@ -224,7 +196,7 @@ class EnhancedAIResearchService implements AIResearchService {
     const names = personName.split(' ');
     const firstName = names[0];
     const lastName = names[names.length - 1];
-    
+
     return {
       name: personName,
       title: this.generateTitle(),
@@ -278,12 +250,12 @@ class EnhancedAIResearchService implements AIResearchService {
     const titles = ['CEO', 'CTO', 'VP of Sales', 'CMO', 'COO'];
     const firstNames = ['John', 'Sarah', 'Michael', 'Emily', 'David', 'Lisa', 'James', 'Maria'];
     const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis'];
-    
+
     return titles.slice(0, 3).map(title => {
       const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
       const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
       const name = `${firstName} ${lastName}`;
-      
+
       return {
         name,
         title,
@@ -296,7 +268,7 @@ class EnhancedAIResearchService implements AIResearchService {
   private generateCompetitors(companyName: string): string[] {
     const prefixes = ['Tech', 'Smart', 'Digital', 'Cloud', 'Data', 'AI'];
     const suffixes = ['Solutions', 'Systems', 'Corp', 'Inc', 'Technologies', 'Labs'];
-    
+
     return Array.from({ length: 3 }, (_, _i) => {
       const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
       const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];

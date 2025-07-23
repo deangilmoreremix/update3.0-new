@@ -68,7 +68,7 @@ const mockContacts: Contact[] = [
 const SemanticSearchContent: React.FC = () => {
   const embeddings = useOpenAIEmbeddings();
   const { deals } = useDealStore();
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -81,21 +81,21 @@ const SemanticSearchContent: React.FC = () => {
   const [dealEmbeddings, setDealEmbeddings] = useState<{ dealId: string, embedding: number[] }[]>([]);
   const [isGeneratingEmbeddings, setIsGeneratingEmbeddings] = useState(false);
   const [searchType, setSearchType] = useState<'all' | 'contacts' | 'deals'>('all');
-  
+
   const generateEmbeddings = useCallback(async () => {
     setIsGeneratingEmbeddings(true);
     setError(null);
-    
+
     try {
       // Generate embeddings for contacts
       const contactEmbs = await embeddings.createContactEmbeddings(mockContacts);
       setContactEmbeddings(contactEmbs);
-      
+
       // Generate embeddings for deals
       const dealsArray = Object.values(deals);
       const dealEmbs = await embeddings.createDealEmbeddings(dealsArray);
       setDealEmbeddings(dealEmbs);
-      
+
       setIsEmbeddingCreated(true);
     } catch (err) {
       console.error('Error generating embeddings:', err);
@@ -111,21 +111,21 @@ const SemanticSearchContent: React.FC = () => {
       generateEmbeddings();
     }
   }, [isEmbeddingCreated, isGeneratingEmbeddings, generateEmbeddings]);
-  
+
   const handleSearch = useCallback(async () => {
     if (!searchQuery) {
       setError('Please enter a search query');
       return;
     }
-    
+
     if (!isEmbeddingCreated) {
       setError('Embeddings are not yet generated. Please wait and try again.');
       return;
     }
-    
+
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const results: {
         contacts: { contact: Contact, score: number }[];
@@ -134,29 +134,29 @@ const SemanticSearchContent: React.FC = () => {
         contacts: [],
         deals: []
       };
-      
+
       // Search contacts if selected
       if (searchType === 'all' || searchType === 'contacts') {
         const contactsById = mockContacts.reduce((acc, contact) => {
           acc[contact.id] = contact;
           return acc;
         }, {} as Record<string, Contact>);
-        
+
         const contactResults = await embeddings.searchContacts(searchQuery, contactEmbeddings, contactsById);
         results.contacts = contactResults;
       }
-      
+
       // Search deals if selected
       if (searchType === 'all' || searchType === 'deals') {
         const dealsById = Object.values(deals).reduce((acc, deal) => {
           acc[deal.id] = deal;
           return acc;
         }, {} as Record<string, Deal>);
-        
+
         const dealResults = await embeddings.searchDeals(searchQuery, dealEmbeddings, dealsById);
         results.deals = dealResults;
       }
-      
+
       setSearchResults(results);
     } catch (err) {
       console.error('Error searching:', err);
@@ -165,7 +165,7 @@ const SemanticSearchContent: React.FC = () => {
       setIsLoading(false);
     }
   }, [searchQuery, isEmbeddingCreated, searchType, embeddings, contactEmbeddings, dealEmbeddings, deals]);
-  
+
   return (
     <div className="space-y-6">
       <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
@@ -208,7 +208,7 @@ const SemanticSearchContent: React.FC = () => {
                   disabled={!isEmbeddingCreated}
                 />
               </div>
-              
+
               <div>
                 <select
                   value={searchType}
@@ -220,7 +220,7 @@ const SemanticSearchContent: React.FC = () => {
                   <option value="deals">Deals Only</option>
                 </select>
               </div>
-              
+
               <button
                 onClick={handleSearch}
                 disabled={!isEmbeddingCreated || isLoading || !searchQuery.trim()}
@@ -240,7 +240,7 @@ const SemanticSearchContent: React.FC = () => {
                 )}
               </button>
             </div>
-            
+
             {/* Search info */}
             <div className="flex items-center justify-between text-sm">
               <div className="text-gray-500">
@@ -253,7 +253,7 @@ const SemanticSearchContent: React.FC = () => {
                   )}
                 </span>
               </div>
-              
+
               <div>
                 <button 
                   onClick={generateEmbeddings} 
@@ -266,7 +266,7 @@ const SemanticSearchContent: React.FC = () => {
             </div>
           </div>
         )}
-                
+
         {/* Search Results */}
         {searchResults && !isLoading && (
           <div className="mt-6">
@@ -291,13 +291,13 @@ const SemanticSearchContent: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                      
+
                       {contact.notes && (
                         <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded-md">
                           {contact.notes}
                         </div>
                       )}
-                      
+
                       <div className="mt-2 flex justify-end">
                         <a href={`/contacts/${contact.id}`} className="text-blue-600 hover:text-blue-800 text-sm flex items-center">
                           View Contact <ChevronRight size={14} className="ml-1" />
@@ -308,7 +308,7 @@ const SemanticSearchContent: React.FC = () => {
                 </div>
               </div>
             )}
-            
+
             {/* Deals Results */}
             {searchResults.deals.length > 0 && (
               <div className="mb-6">
@@ -330,13 +330,13 @@ const SemanticSearchContent: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                      
+
                       {deal.notes && (
                         <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded-md">
                           {deal.notes}
                         </div>
                       )}
-                      
+
                       <div className="mt-2 flex justify-end">
                         <a href={`/pipeline`} className="text-purple-600 hover:text-purple-800 text-sm flex items-center">
                           View Deal <ChevronRight size={14} className="ml-1" />
@@ -347,7 +347,7 @@ const SemanticSearchContent: React.FC = () => {
                 </div>
               </div>
             )}
-            
+
             {searchResults.contacts.length === 0 && searchResults.deals.length === 0 && (
               <div className="p-8 text-center bg-gray-50 rounded-lg">
                 <Search size={32} className="mx-auto text-gray-400 mb-4" />

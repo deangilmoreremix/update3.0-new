@@ -2,13 +2,7 @@ import React, { useState } from 'react';
 import { Contact } from '../../types/contact';
 import { User, Building2, Mail, Phone, Tag, Globe, Briefcase, Save, XCircle } from 'lucide-react';
 
-interface AddContactFormProps {
-  onSubmit: (contactData: Omit<Contact, 'id' | 'createdAt' | 'updatedAt'>) => Promise<Contact>;
-  onCancel: () => void;
-  initialData?: Partial<Contact>;
-}
-
-const AddContactForm: React.FC<AddContactFormProps> = ({
+const AddContactForm: FC<AddContactFormProps> = ({
   onSubmit,
   onCancel,
   initialData = {}
@@ -33,12 +27,12 @@ const AddContactForm: React.FC<AddContactFormProps> = ({
 
   const validateForm = () => {
     const errors: Record<string, string> = {};
-    
+
     if (!formData.firstName.trim()) errors.firstName = 'First name is required';
     if (!formData.lastName.trim()) errors.lastName = 'Last name is required';
     if (!formData.email.trim()) errors.email = 'Email is required';
     if (!formData.company.trim()) errors.company = 'Company is required';
-    
+
     if (formData.email.trim() && !/\S+@\S+\.\S+/.test(formData.email)) {
       errors.email = 'Email is invalid';
     }
@@ -49,9 +43,9 @@ const AddContactForm: React.FC<AddContactFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     try {
       setIsSaving(true);
 
@@ -76,7 +70,7 @@ const AddContactForm: React.FC<AddContactFormProps> = ({
         socialProfiles: {},
         customFields: {},
       };
-      
+
       await onSubmit(contactData);
     } catch (error) {
       console.error('Failed to create contact:', error);
@@ -112,14 +106,14 @@ const AddContactForm: React.FC<AddContactFormProps> = ({
           {formErrors.form}
         </div>
       )}
-      
+
       {/* Personal Information */}
       <div>
         <h4 className="text-base font-semibold text-gray-900 mb-3 flex items-center">
           <User className="w-4 h-4 mr-2 text-blue-600" />
           Contact Information
         </h4>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -196,7 +190,7 @@ const AddContactForm: React.FC<AddContactFormProps> = ({
           <Building2 className="w-4 h-4 mr-2 text-blue-600" />
           Company Information
         </h4>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -305,7 +299,7 @@ const AddContactForm: React.FC<AddContactFormProps> = ({
         <h4 className="text-base font-semibold text-gray-900 mb-3">
           Status Information
         </h4>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">

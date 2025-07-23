@@ -10,7 +10,7 @@ const ObjectionHandlerContent: React.FC = () => {
     industry: '',
     dealStage: 'prospecting'
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +32,7 @@ const ObjectionHandlerContent: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // Enhance product info with industry and deal stage context
       const enhancedProductInfo = `
@@ -45,7 +45,7 @@ const ObjectionHandlerContent: React.FC = () => {
         formData.objection,
         enhancedProductInfo
       );
-      
+
       setResult(objectionHandler);
       setCopied(false);
     } catch (err) {
@@ -75,7 +75,7 @@ const ObjectionHandlerContent: React.FC = () => {
     "I don't see the value",
     "We're happy with our current solution"
   ];
-  
+
   // Deal stages
   const dealStages = [
     { value: 'prospecting', label: 'Prospecting' },
@@ -121,7 +121,7 @@ const ObjectionHandlerContent: React.FC = () => {
               onChange={handleChange}
               required
             ></textarea>
-            
+
             <div className="mt-2">
               <p className="text-sm text-gray-600 mb-2">Common objections:</p>
               <div className="flex flex-wrap gap-2">
@@ -138,7 +138,7 @@ const ObjectionHandlerContent: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -153,7 +153,7 @@ const ObjectionHandlerContent: React.FC = () => {
                 onChange={handleChange}
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Deal Stage
@@ -170,7 +170,7 @@ const ObjectionHandlerContent: React.FC = () => {
               </select>
             </div>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Product/Service Information
@@ -185,7 +185,7 @@ const ObjectionHandlerContent: React.FC = () => {
               required
             ></textarea>
           </div>
-            
+
           <div className="flex justify-end">
             <button
               type="submit"

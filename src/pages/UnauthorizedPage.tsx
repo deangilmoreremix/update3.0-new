@@ -9,11 +9,11 @@ const UnauthorizedPage: React.FC = () => {
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
           Unauthorized Access
         </h1>
-        
+
         <p className="text-gray-600 dark:text-gray-300 mb-6">
           You don't have permission to access this page.
         </p>
-        
+
         <Link
           to="/"
           className="inline-block bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"

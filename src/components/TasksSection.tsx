@@ -1,5 +1,4 @@
 
-import React from 'react';
 import TaskCard from './TaskCard';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
@@ -8,7 +7,7 @@ import { Plus } from 'lucide-react';
 const TasksSection = () => {
   const { isDark } = useTheme();
   const navigate = useNavigate();
-  
+
   const tasks = [
     {
       id: '1',
@@ -69,7 +68,7 @@ const TasksSection = () => {
           <span>New Task</span>
         </button>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {tasks.map((task, index) => (
           <TaskCard key={task.id} task={task} index={index} />

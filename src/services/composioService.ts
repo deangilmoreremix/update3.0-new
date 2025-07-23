@@ -11,10 +11,10 @@ export const composioAuth = async (app: string): Promise<void> => {
     console.log(`Initiating Composio OAuth for ${app}...`);
     // In a real implementation, this would open an OAuth popup or redirect
     // and handle the authentication flow with Composio
-    
+
     // Simulate a successful auth flow
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     console.log(`Successfully connected ${app} via Composio`);
     return Promise.resolve();
   } catch (error) {
@@ -38,13 +38,13 @@ export const sendEmailViaComposio = async (params: {
 }): Promise<{ success: boolean; messageId?: string }> => {
   try {
     console.log('Sending email via Composio:', params);
-    
+
     // In a real implementation, this would call the Composio API
     // to send an email through the connected email provider
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
     // Return a successful result
     return {
       success: true,
@@ -69,10 +69,10 @@ export const createComposioConnection = async (
 ): Promise<{ connectionId: string; success: boolean }> => {
   try {
     console.log(`Creating new Composio connection for ${appType}`);
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     return {
       connectionId: `conn_${Date.now()}`,
       success: true
@@ -92,7 +92,7 @@ export const createComposioConnection = async (
 export const getComposioConnectionStatus = async (): Promise<Record<string, boolean>> => {
   // Simulate API call
   await new Promise(resolve => setTimeout(resolve, 500));
-  
+
   // Return mock connection status
   return {
     gmail: true,
@@ -112,10 +112,10 @@ export const getComposioConnectionStatus = async (): Promise<Record<string, bool
 export const disconnectComposioApp = async (app: string): Promise<boolean> => {
   try {
     console.log(`Disconnecting ${app} from Composio`);
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     return true;
   } catch (error) {
     console.error(`Error disconnecting ${app} from Composio:`, error);

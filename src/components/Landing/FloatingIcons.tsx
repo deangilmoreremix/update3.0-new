@@ -1,12 +1,7 @@
 import React from 'react';
 import { Brain, Mail, MessageSquare, FileText, Phone, Target, FileSearch, TrendingUp, BarChart3, PieChart, Users, Briefcase, Eye, Image, Search, Zap } from 'lucide-react';
 
-interface FloatingIconsProps {
-  count?: number;
-  position?: 'top' | 'right' | 'bottom' | 'left' | 'all';
-}
-
-const FloatingIcons: React.FC<FloatingIconsProps> = ({ 
+const FloatingIcons: FC<FloatingIconsProps> = ({ 
   count = 6,
   position = 'all'
 }) => {
@@ -28,12 +23,12 @@ const FloatingIcons: React.FC<FloatingIconsProps> = ({
     <Zap size={20} className="text-yellow-500" />,
     <PieChart size={20} className="text-purple-500" />
   ];
-  
+
   // Get random icons
   const selectedIcons = iconComponents
     .sort(() => 0.5 - Math.random())
     .slice(0, count);
-  
+
   // Generate positions based on the position prop
   const getPositionClass = (index: number) => {
     // Define position styles for different areas
@@ -62,25 +57,25 @@ const FloatingIcons: React.FC<FloatingIconsProps> = ({
         'top-[70%] right-[30%]', 'top-[80%] left-[35%]', 'bottom-[60%] right-[35%]'
       ]
     };
-    
+
     const positions = positionStyles[position];
     return positions[index % positions.length];
   };
-  
+
   // Generate different animation durations and delays
   const getAnimationStyle = (index: number) => {
     // Animation duration between 5 and 8 seconds
     const duration = 5 + Math.floor((index % 4) * 1.5);
-    
+
     // Animation delay between 0 and 2 seconds
     const delay = Math.floor((index % 3) * 0.7);
-    
+
     return {
       animationDuration: `${duration}s`,
       animationDelay: `${delay}s`
     };
   };
-  
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
       {selectedIcons.map((icon, index) => (

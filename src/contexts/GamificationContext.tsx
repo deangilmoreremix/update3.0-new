@@ -12,37 +12,6 @@ interface Achievement {
   unlockedAt?: Date;
 }
 
-interface Challenge {
-  id: string;
-  title: string;
-  description: string;
-  target: number;
-  current: number;
-  reward: string;
-  endDate: Date;
-}
-
-interface LeaderboardEntry {
-  contactId: string;
-  name: string;
-  role: string;
-  avatarSrc?: string;
-  score: number;
-  recentAchievement?: string;
-}
-
-interface GamificationContextType {
-  achievements: Achievement[];
-  challenges: Challenge[];
-  leaderboard: LeaderboardEntry[];
-  teamMembers: Contact[];
-  isTeamMember: (contactId: string) => boolean;
-  addTeamMember: (contactId: string) => Promise<void>;
-  removeTeamMember: (contactId: string) => Promise<void>;
-  updateTeamMemberStats: (contactId: string, updates: Partial<Contact['gamificationStats']>) => Promise<void>;
-  awardAchievement: (contactId: string, achievementId: string) => Promise<void>;
-}
-
 // Create the context with default values
 const GamificationContext = createContext<GamificationContextType>({
   achievements: [],
@@ -125,7 +94,7 @@ const sampleChallenges: Challenge[] = [
   }
 ];
 
-export const GamificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const GamificationProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const { contacts, updateContact, updateTeamMemberStats: updateContactStats } = useContactStore();
   const [achievements, setAchievements] = useState<Achievement[]>(sampleAchievements);
   const [challenges, _setChallenges] = useState<Challenge[]>(sampleChallenges);
@@ -136,7 +105,7 @@ export const GamificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   useEffect(() => {
     const filteredTeamMembers = contacts.filter(contact => contact.isTeamMember);
     setTeamMembers(filteredTeamMembers);
-    
+
     // Update leaderboard
     const leaderboardData = filteredTeamMembers
       .map(member => ({
@@ -150,7 +119,7 @@ export const GamificationProvider: React.FC<{ children: ReactNode }> = ({ childr
           : undefined
       }))
       .sort((a, b) => b.score - a.score);
-    
+
     setLeaderboard(leaderboardData);
   }, [contacts]);
 
@@ -195,29 +164,29 @@ export const GamificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   const awardAchievement = async (contactId: string, achievementId: string) => {
     const contact = contacts.find(c => c.id === contactId);
     if (!contact || !contact.gamificationStats) throw new Error('Contact not found or not a team member');
-    
+
     // Check if achievement already earned
     if (contact.gamificationStats.achievements?.includes(achievementId)) {
       return; // Already has this achievement
     }
-    
+
     // Find achievement to get points
     const achievement = achievements.find(a => a.id === achievementId);
     if (!achievement) throw new Error('Achievement not found');
-    
+
     // Update achievement list and add points
     const newAchievements = [...(contact.gamificationStats.achievements || []), achievementId];
     const newPoints = (contact.gamificationStats.points || 0) + achievement.points;
-    
+
     // Calculate level (every 1000 points = 1 level)
     const newLevel = Math.floor(newPoints / 1000) + 1;
-    
+
     await updateContactStats(contactId, {
       achievements: newAchievements,
       points: newPoints,
       level: newLevel
     });
-    
+
     // Update achievement list to mark it as unlocked
     setAchievements(prev => prev.map(a => 
       a.id === achievementId

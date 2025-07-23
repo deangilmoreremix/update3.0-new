@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
-import { Sparkles, Check } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { aiEnrichmentService, ContactEnrichmentData } from '../../services/aiEnrichmentService';
 
-interface AIAutoFillButtonProps {
-  formData: unknown;
-  onAutoFill: (enrichmentData: ContactEnrichmentData) => void;
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
-}
-
-export const AIAutoFillButton: React.FC<AIAutoFillButtonProps> = ({
+export const AIAutoFillButton: FC<AIAutoFillButtonProps> = ({
   formData,
   onAutoFill,
   variant = 'primary',
@@ -23,14 +15,14 @@ export const AIAutoFillButton: React.FC<AIAutoFillButtonProps> = ({
 
   const handleClick = async () => {
     if (isProcessing) return;
-    
+
     setIsProcessing(true);
     setError(null);
 
     try {
       // Determine what data we have to work with
       const searchData: ContactEnrichmentData = {};
-      
+
       // Populate with available form data
       if (formData.firstName && formData.lastName) {
         searchData.name = `${formData.firstName} ${formData.lastName}`;
@@ -42,7 +34,7 @@ export const AIAutoFillButton: React.FC<AIAutoFillButtonProps> = ({
 
       if (formData.email) searchData.email = formData.email;
       if (formData.company) searchData.company = formData.company;
-      
+
       if (formData.socialProfiles?.linkedin) {
         searchData.linkedinUrl = formData.socialProfiles.linkedin;
       }
@@ -66,7 +58,7 @@ export const AIAutoFillButton: React.FC<AIAutoFillButtonProps> = ({
       setError(error instanceof Error ? error.message : 'Auto-fill failed');
     } finally {
       setIsProcessing(false);
-      
+
       // Reset success state after 3 seconds
       if (hasEnriched) {
         setTimeout(() => {

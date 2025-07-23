@@ -1,10 +1,6 @@
 import React from "react";
 import OpenAI from "openai";
 
-
-
-
-
 import { composioAuth, sendEmailViaComposio } from "../services/composioService";
 
 import { useApiStore } from "../store/apiStore";
@@ -13,11 +9,11 @@ import { useApiStore } from "../store/apiStore";
 function getOpenAIClient() {
   const apiKeys = useApiStore.getState().apiKeys;
   const openaiKey = apiKeys?.openai;
-  
+
   if (!openaiKey) {
     throw new Error("OpenAI API key is not configured. Please set it in the settings.");
   }
-  
+
   return new OpenAI({ apiKey: openaiKey });
 }
 
@@ -157,7 +153,7 @@ function embedAgentResponseUI(toolsUsed: unknown, output: unknown) {
   const title = document.createElement("h3");
   title.innerText = toolsUsed ? "Agent Tool Result" : "Agent Response";
   title.className = "text-lg font-semibold mb-3 text-indigo-700 flex items-center";
-  
+
   // Add an icon to the title
   const titleIcon = document.createElement("span");
   titleIcon.className = "mr-2 p-1 bg-indigo-100 rounded-full text-indigo-600";
@@ -167,7 +163,7 @@ function embedAgentResponseUI(toolsUsed: unknown, output: unknown) {
   title.prepend(titleIcon);
 
   let content;
-  
+
   // Check if the output is a stringified JSON or an object
   if (typeof output === 'string') {
     try {
@@ -234,7 +230,7 @@ function embedAgentResponseUI(toolsUsed: unknown, output: unknown) {
     setTimeout(() => {
       emailBtn.innerHTML = '<svg class="mr-1.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Email';
     }, 2000);
-    
+
     alert("Email sent via Composio");
   };
 
@@ -252,44 +248,44 @@ function embedAgentResponseUI(toolsUsed: unknown, output: unknown) {
 function createStructuredOutput(data: unknown) {
   const container = document.createElement("div");
   container.className = "bg-gray-50 p-4 rounded-lg border border-gray-100";
-  
+
   // Check if it's an email sequence (has first_email/follow_up pattern)
   if (data.first_email || data.follow_up || data.final_bump) {
     return createEmailSequenceOutput(data);
   }
-  
+
   // Check if it's a lead enrichment result
   if (data.enrichedProfile || data.potentialPainPoints) {
     return createLeadEnrichmentOutput(data);
   }
-  
+
   // Check if it's a proposal
   if (data.title && data.executiveSummary && data.pricing) {
     return createProposalOutput(data);
   }
-  
+
   // Default structured data display
   for (const [key, value] of Object.entries(data)) {
     const section = document.createElement("div");
     section.className = "mb-3";
-    
+
     const title = document.createElement("h4");
     title.className = "text-sm font-semibold text-gray-700 mb-1";
     title.innerText = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-    
+
     const content = document.createElement("div");
-    
+
     if (Array.isArray(value)) {
       // It's an array, create a list
       const list = document.createElement("ul");
       list.className = "list-disc pl-5 text-sm text-gray-600";
-      
+
       value.forEach(item => {
         const listItem = document.createElement("li");
         listItem.innerText = typeof item === 'string' ? item : JSON.stringify(item);
         list.appendChild(listItem);
       });
-      
+
       content.appendChild(list);
     } else if (typeof value === 'object' && value !== null) {
       // It's a nested object, stringify with indentation
@@ -300,12 +296,12 @@ function createStructuredOutput(data: unknown) {
       content.className = "text-sm text-gray-600";
       content.innerText = String(value);
     }
-    
+
     section.appendChild(title);
     section.appendChild(content);
     container.appendChild(section);
   }
-  
+
   return container;
 }
 
@@ -313,7 +309,7 @@ function createStructuredOutput(data: unknown) {
 function createEmailOutput(emailText: string) {
   const container = document.createElement("div");
   container.className = "bg-white p-4 rounded-lg border border-gray-200 shadow-sm";
-  
+
   // Extract subject if present
   const subjectMatch = emailText.match(/Subject:(.+?)(\n|$)/);
   if (subjectMatch) {
@@ -322,20 +318,20 @@ function createEmailOutput(emailText: string) {
     subject.innerText = subjectMatch[1].trim();
     container.appendChild(subject);
   }
-  
+
   // Format the email body with paragraphs
   const bodyContent = document.createElement("div");
   bodyContent.className = "text-sm text-gray-700 whitespace-pre-wrap";
-  
+
   // Clean up the email text by removing the subject line if present
   let emailBody = emailText;
   if (subjectMatch) {
     emailBody = emailBody.replace(subjectMatch[0], '').trim();
   }
-  
+
   bodyContent.innerText = emailBody;
   container.appendChild(bodyContent);
-  
+
   return container;
 }
 
@@ -343,27 +339,27 @@ function createEmailOutput(emailText: string) {
 function createMarkdownOutput(markdownText: string) {
   const container = document.createElement("div");
   container.className = "bg-white p-4 rounded-lg border border-gray-200 prose prose-sm max-w-none";
-  
+
   // Split by lines and process markdown-like syntax
   const lines = markdownText.split('\n');
-  
+
   let currentElement: HTMLElement | null = null;
   let listType: 'ul' | 'ol' | null = null;
   let listElement: HTMLUListElement | HTMLOListElement | null = null;
-  
+
   lines.forEach(line => {
     const trimmedLine = line.trim();
-    
+
     // Handle headings
     if (trimmedLine.startsWith('#')) {
       const level = trimmedLine.match(/^#+/)[0].length;
       const headingText = trimmedLine.replace(/^#+\s+/, '');
-      
+
       const heading = document.createElement(`h${Math.min(level, 6)}`);
       heading.innerText = headingText;
       heading.className = "font-bold mt-3 mb-2"; // Basic styling
       container.appendChild(heading);
-      
+
       currentElement = null;
       if (listElement) {
         container.appendChild(listElement);
@@ -374,7 +370,7 @@ function createMarkdownOutput(markdownText: string) {
     // Handle unordered lists
     else if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ')) {
       const itemText = trimmedLine.substring(2);
-      
+
       if (listType !== 'ul') {
         if (listElement) {
           container.appendChild(listElement);
@@ -383,18 +379,18 @@ function createMarkdownOutput(markdownText: string) {
         listElement.className = "list-disc pl-5 my-2";
         listType = 'ul';
       }
-      
+
       const listItem = document.createElement('li');
       listItem.innerText = itemText;
       listItem.className = "mb-1";
       listElement.appendChild(listItem);
-      
+
       currentElement = null;
     }
     // Handle ordered lists
     else if (trimmedLine.match(/^\d+\.\s/)) {
       const itemText = trimmedLine.replace(/^\d+\.\s/, '');
-      
+
       if (listType !== 'ol') {
         if (listElement) {
           container.appendChild(listElement);
@@ -403,12 +399,12 @@ function createMarkdownOutput(markdownText: string) {
         listElement.className = "list-decimal pl-5 my-2";
         listType = 'ol';
       }
-      
+
       const listItem = document.createElement('li');
       listItem.innerText = itemText;
       listItem.className = "mb-1";
       listElement.appendChild(listItem);
-      
+
       currentElement = null;
     }
     // Handle empty lines
@@ -427,7 +423,7 @@ function createMarkdownOutput(markdownText: string) {
         listElement = null;
         listType = null;
       }
-      
+
       if (!currentElement) {
         currentElement = document.createElement('p');
         currentElement.className = "mb-2 text-gray-700";
@@ -435,16 +431,16 @@ function createMarkdownOutput(markdownText: string) {
       } else {
         currentElement.innerHTML += '<br>';
       }
-      
+
       currentElement.innerHTML += trimmedLine;
     }
   });
-  
+
   // Append any remaining list
   if (listElement) {
     container.appendChild(listElement);
   }
-  
+
   return container;
 }
 
@@ -452,58 +448,58 @@ function createMarkdownOutput(markdownText: string) {
 function createEmailSequenceOutput(data: unknown) {
   const container = document.createElement("div");
   container.className = "space-y-4";
-  
+
   if (data.first_email) {
     const emailCard = document.createElement("div");
     emailCard.className = "bg-blue-50 p-4 rounded-lg border border-blue-200";
-    
+
     const title = document.createElement("h4");
     title.className = "text-sm font-semibold text-blue-800 mb-2 flex items-center";
     title.innerHTML = '<span class="mr-1.5">📧</span> First-touch Email';
-    
+
     const content = document.createElement("div");
     content.className = "text-sm text-gray-700 whitespace-pre-wrap";
     content.innerText = data.first_email;
-    
+
     emailCard.appendChild(title);
     emailCard.appendChild(content);
     container.appendChild(emailCard);
   }
-  
+
   if (data.follow_up) {
     const emailCard = document.createElement("div");
     emailCard.className = "bg-purple-50 p-4 rounded-lg border border-purple-200";
-    
+
     const title = document.createElement("h4");
     title.className = "text-sm font-semibold text-purple-800 mb-2 flex items-center";
     title.innerHTML = '<span class="mr-1.5">⏱️</span> Follow-up Email';
-    
+
     const content = document.createElement("div");
     content.className = "text-sm text-gray-700 whitespace-pre-wrap";
     content.innerText = data.follow_up;
-    
+
     emailCard.appendChild(title);
     emailCard.appendChild(content);
     container.appendChild(emailCard);
   }
-  
+
   if (data.final_bump) {
     const emailCard = document.createElement("div");
     emailCard.className = "bg-teal-50 p-4 rounded-lg border border-teal-200";
-    
+
     const title = document.createElement("h4");
     title.className = "text-sm font-semibold text-teal-800 mb-2 flex items-center";
     title.innerHTML = '<span class="mr-1.5">🔄</span> Final Bump';
-    
+
     const content = document.createElement("div");
     content.className = "text-sm text-gray-700 whitespace-pre-wrap";
     content.innerText = data.final_bump;
-    
+
     emailCard.appendChild(title);
     emailCard.appendChild(content);
     container.appendChild(emailCard);
   }
-  
+
   return container;
 }
 
@@ -511,64 +507,64 @@ function createEmailSequenceOutput(data: unknown) {
 function createLeadEnrichmentOutput(data: unknown) {
   const container = document.createElement("div");
   container.className = "space-y-4";
-  
+
   if (data.enrichedProfile) {
     const section = document.createElement("div");
     section.className = "bg-blue-50 p-4 rounded-lg border border-blue-100";
-    
+
     const title = document.createElement("h4");
     title.className = "font-semibold text-blue-800 mb-2";
     title.innerText = "Enriched Profile";
-    
+
     const content = document.createElement("div");
     content.className = "text-sm text-gray-700 whitespace-pre-wrap";
     content.innerText = data.enrichedProfile;
-    
+
     section.appendChild(title);
     section.appendChild(content);
     container.appendChild(section);
   }
-  
+
   if (data.potentialPainPoints && Array.isArray(data.potentialPainPoints)) {
     const section = document.createElement("div");
     section.className = "bg-amber-50 p-4 rounded-lg border border-amber-100";
-    
+
     const title = document.createElement("h4");
     title.className = "font-semibold text-amber-800 mb-2";
     title.innerText = "Potential Pain Points";
-    
+
     const list = document.createElement("ul");
     list.className = "list-disc pl-5 space-y-1";
-    
+
     data.potentialPainPoints.forEach((point: string) => {
       const item = document.createElement("li");
       item.className = "text-sm text-gray-700";
       item.innerText = point;
       list.appendChild(item);
     });
-    
+
     section.appendChild(title);
     section.appendChild(list);
     container.appendChild(section);
   }
-  
+
   if (data.recommendedApproach) {
     const section = document.createElement("div");
     section.className = "bg-green-50 p-4 rounded-lg border border-green-100";
-    
+
     const title = document.createElement("h4");
     title.className = "font-semibold text-green-800 mb-2";
     title.innerText = "Recommended Approach";
-    
+
     const content = document.createElement("div");
     content.className = "text-sm text-gray-700";
     content.innerText = data.recommendedApproach;
-    
+
     section.appendChild(title);
     section.appendChild(content);
     container.appendChild(section);
   }
-  
+
   return container;
 }
 
@@ -576,89 +572,89 @@ function createLeadEnrichmentOutput(data: unknown) {
 function createProposalOutput(data: unknown) {
   const container = document.createElement("div");
   container.className = "space-y-4";
-  
+
   // Title and executive summary
   const header = document.createElement("div");
   header.className = "bg-gradient-to-r from-gray-50 to-gray-100 p-4 rounded-lg border border-gray-200";
-  
+
   const title = document.createElement("h3");
   title.className = "text-lg font-bold text-gray-900 mb-2";
   title.innerText = data.title || "Proposal";
-  
+
   const summary = document.createElement("div");
   summary.className = "text-sm text-gray-700";
   summary.innerText = data.executiveSummary || "";
-  
+
   header.appendChild(title);
   header.appendChild(summary);
   container.appendChild(header);
-  
+
   // Pricing section if available
   if (data.pricing) {
     const pricingSection = document.createElement("div");
     pricingSection.className = "bg-green-50 p-4 rounded-lg border border-green-100";
-    
+
     const pricingTitle = document.createElement("h4");
     pricingTitle.className = "font-medium text-green-800 mb-2";
     pricingTitle.innerText = "Pricing Details";
-    
+
     const pricingContent = document.createElement("div");
     pricingContent.className = "space-y-2";
-    
+
     // Convert pricing to appropriate format
     if (typeof data.pricing === 'object') {
       const table = document.createElement("table");
       table.className = "min-w-full text-sm";
-      
+
       Object.entries(data.pricing).forEach(([key, value]) => {
         const row = document.createElement("tr");
-        
+
         const keyCell = document.createElement("td");
         keyCell.className = "py-1 font-medium text-gray-700";
         keyCell.innerText = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-        
+
         const valueCell = document.createElement("td");
         valueCell.className = "py-1 text-right text-gray-900 font-medium";
         valueCell.innerText = typeof value === 'number' ? `$${value.toLocaleString()}` : String(value);
-        
+
         row.appendChild(keyCell);
         row.appendChild(valueCell);
         table.appendChild(row);
       });
-      
+
       pricingContent.appendChild(table);
     } else {
       pricingContent.innerText = String(data.pricing);
     }
-    
+
     pricingSection.appendChild(pricingTitle);
     pricingSection.appendChild(pricingContent);
     container.appendChild(pricingSection);
   }
-  
+
   // Add other sections
   if (data.nextSteps && Array.isArray(data.nextSteps)) {
     const section = document.createElement("div");
     section.className = "bg-blue-50 p-4 rounded-lg border border-blue-100";
-    
+
     const sectionTitle = document.createElement("h4");
     sectionTitle.className = "font-medium text-blue-800 mb-2";
     sectionTitle.innerText = "Next Steps";
-    
+
     const list = document.createElement("ol");
     list.className = "list-decimal pl-5 space-y-1 text-sm text-gray-700";
-    
+
     data.nextSteps.forEach((step: string) => {
       const item = document.createElement("li");
       item.innerText = step;
       list.appendChild(item);
     });
-    
+
     section.appendChild(sectionTitle);
     section.appendChild(list);
     container.appendChild(section);
   }
-  
+
   return container;
 }
 

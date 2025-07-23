@@ -1,4 +1,3 @@
-import React from 'react';
 import { Deal, PipelineColumn } from '../types';
 import { mockContacts } from './mockContacts';
 
@@ -11,12 +10,7 @@ const threeWeeks = new Date(today.getTime() + 21 * 24 * 60 * 60 * 1000);
 const sixWeeks = new Date(today.getTime() + 42 * 24 * 60 * 60 * 1000);
 
 // Helper function to find contact by name similarity
-const _findContactByName = (contactName: string) => {
-  return mockContacts.find(contact => 
-    contact.name.toLowerCase().includes(contactName.toLowerCase()) ||
-    contactName.toLowerCase().includes(contact.firstName.toLowerCase()) ||
-    contactName.toLowerCase().includes(contact.lastName.toLowerCase())
-  );
+
 };
 
 export const mockDeals: Record<string, Deal> = {
@@ -237,11 +231,11 @@ export const columnOrder = ['qualification', 'proposal', 'negotiation', 'closed-
 
 export const calculateStageValues = (deals: Record<string, Deal>, columns: Record<string, PipelineColumn>) => {
   const stageValues: Record<string, number> = {};
-  
+
   Object.keys(columns).forEach(stageId => {
     stageValues[stageId] = columns[stageId].dealIds
       .reduce((total, dealId) => total + (deals[dealId]?.value || 0), 0);
   });
-  
+
   return stageValues;
 };

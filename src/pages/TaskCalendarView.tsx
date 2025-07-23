@@ -17,11 +17,11 @@ const TaskCalendarView: React.FC = () => {
     selectTask,
     selectedTask
   } = useTaskStore();
-  
+
   const [showTaskDetail, setShowTaskDetail] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [showCreateForm, setShowCreateForm] = useState<boolean>(false);
-  
+
   const [formData, setFormData] = useState<Partial<Task>>({
     title: '',
     description: '',
@@ -30,14 +30,14 @@ const TaskCalendarView: React.FC = () => {
     category: 'follow-up',
     completed: false
   });
-  
+
   useEffect(() => {
     // If a task is selected, populate the form with its data
     if (selectedTask && tasks[selectedTask]) {
       setFormData(tasks[selectedTask]);
     }
   }, [selectedTask, tasks]);
-  
+
   const clearForm = () => {
     setFormData({
       title: '',
@@ -48,14 +48,14 @@ const TaskCalendarView: React.FC = () => {
       completed: false
     });
   };
-  
+
   // Handle task selection from the calendar
   const handleTaskSelect = (task: Task) => {
     selectTask(task.id);
     setShowTaskDetail(true);
     setIsEditing(false);
   };
-  
+
   // Submit form data (create or update)
   const handleSubmit = async () => {
     try {
@@ -66,7 +66,7 @@ const TaskCalendarView: React.FC = () => {
         // Create new task
         await createTask(formData);
       }
-      
+
       // Close forms and reset
       setShowTaskDetail(false);
       setIsEditing(false);
@@ -76,14 +76,14 @@ const TaskCalendarView: React.FC = () => {
       console.error('Error saving task:', error);
     }
   };
-  
+
   // Priority options for select input
   const priorityOptions = [
     { value: 'high', label: 'High Priority' },
     { value: 'medium', label: 'Medium Priority' },
     { value: 'low', label: 'Low Priority' },
   ];
-  
+
   // Category options for select input
   const categoryOptions = [
     { value: 'call', label: 'Call' },
@@ -92,11 +92,11 @@ const TaskCalendarView: React.FC = () => {
     { value: 'follow-up', label: 'Follow-up' },
     { value: 'other', label: 'Other' },
   ];
-  
+
   // Format dates for display
   const formatDate = (date?: Date) => {
     if (!date) return 'Not set';
-    
+
     return new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'short',
@@ -106,7 +106,7 @@ const TaskCalendarView: React.FC = () => {
       hour12: true
     }).format(date);
   };
-  
+
   // Calculate task statistics
   const taskStats = {
     total: Object.values(tasks).length,
@@ -123,7 +123,7 @@ const TaskCalendarView: React.FC = () => {
       return task.dueDate >= today && task.dueDate < tomorrow;
     }).length
   };
-  
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <header className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between">
@@ -152,7 +152,7 @@ const TaskCalendarView: React.FC = () => {
           </button>
         </div>
       </header>
-      
+
       {/* Task Statistics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100">
@@ -166,7 +166,7 @@ const TaskCalendarView: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100">
           <div className="flex justify-between items-start">
             <div>
@@ -183,7 +183,7 @@ const TaskCalendarView: React.FC = () => {
             )}
           </p>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100">
           <div className="flex justify-between items-start">
             <div>
@@ -195,7 +195,7 @@ const TaskCalendarView: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100">
           <div className="flex justify-between items-start">
             <div>
@@ -208,10 +208,10 @@ const TaskCalendarView: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Task Calendar */}
       <TaskCalendar onTaskSelect={handleTaskSelect} />
-      
+
       {/* Create Task Modal */}
       {showCreateForm && (
         <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -221,7 +221,7 @@ const TaskCalendarView: React.FC = () => {
             </div>
 
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            
+
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
@@ -249,7 +249,7 @@ const TaskCalendarView: React.FC = () => {
                           placeholder="Enter task title"
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="description" className="block text-sm font-medium text-gray-700">
                           Description
@@ -263,7 +263,7 @@ const TaskCalendarView: React.FC = () => {
                           placeholder="Enter task description"
                         ></textarea>
                       </div>
-                      
+
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700">
@@ -277,7 +277,7 @@ const TaskCalendarView: React.FC = () => {
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                           />
                         </div>
-                        
+
                         <div>
                           <label htmlFor="priority" className="block text-sm font-medium text-gray-700">
                             Priority
@@ -292,7 +292,7 @@ const TaskCalendarView: React.FC = () => {
                           />
                         </div>
                       </div>
-                      
+
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label htmlFor="category" className="block text-sm font-medium text-gray-700">
@@ -307,7 +307,7 @@ const TaskCalendarView: React.FC = () => {
                             className="mt-1"
                           />
                         </div>
-                        
+
                         <div className="flex items-end pb-2">
                           <div className="flex items-center h-5">
                             <input
@@ -347,7 +347,7 @@ const TaskCalendarView: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       {/* Task Detail Modal */}
       {selectedTask && showTaskDetail && tasks[selectedTask] && (
         <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -357,7 +357,7 @@ const TaskCalendarView: React.FC = () => {
             </div>
 
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            
+
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
@@ -376,7 +376,7 @@ const TaskCalendarView: React.FC = () => {
                         <X size={20} />
                       </button>
                     </div>
-                    
+
                     {isEditing ? (
                       <div className="space-y-4">
                         <div>
@@ -391,7 +391,7 @@ const TaskCalendarView: React.FC = () => {
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                           />
                         </div>
-                        
+
                         <div>
                           <label htmlFor="description" className="block text-sm font-medium text-gray-700">
                             Description
@@ -404,7 +404,7 @@ const TaskCalendarView: React.FC = () => {
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                           ></textarea>
                         </div>
-                        
+
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700">
@@ -418,7 +418,7 @@ const TaskCalendarView: React.FC = () => {
                               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                             />
                           </div>
-                          
+
                           <div>
                             <label htmlFor="priority" className="block text-sm font-medium text-gray-700">
                               Priority
@@ -432,7 +432,7 @@ const TaskCalendarView: React.FC = () => {
                             />
                           </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <label htmlFor="category" className="block text-sm font-medium text-gray-700">
@@ -446,7 +446,7 @@ const TaskCalendarView: React.FC = () => {
                               className="mt-1"
                             />
                           </div>
-                          
+
                           <div className="flex items-end pb-2">
                             <div className="flex items-center h-5">
                               <input
@@ -478,7 +478,7 @@ const TaskCalendarView: React.FC = () => {
                             }`}>
                               {tasks[selectedTask].title}
                             </h4>
-                            
+
                             <div className="flex flex-wrap gap-2 mt-2">
                               {tasks[selectedTask].priority && (
                                 <div className={`text-xs px-2.5 py-0.5 rounded-full font-medium
@@ -490,7 +490,7 @@ const TaskCalendarView: React.FC = () => {
                                   {tasks[selectedTask].priority} priority
                                 </div>
                               )}
-                              
+
                               {tasks[selectedTask].category && (
                                 <div className="text-xs px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 font-medium capitalize">
                                   {tasks[selectedTask].category}
@@ -499,7 +499,7 @@ const TaskCalendarView: React.FC = () => {
                             </div>
                           </div>
                         </div>
-                        
+
                         {tasks[selectedTask].dueDate && (
                           <div className="flex items-center space-x-2 mt-2 text-sm">
                             <Clock size={16} className="text-gray-400" />
@@ -513,7 +513,7 @@ const TaskCalendarView: React.FC = () => {
                             </span>
                           </div>
                         )}
-                        
+
                         {tasks[selectedTask].description && (
                           <div className="mt-4">
                             <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
@@ -525,7 +525,7 @@ const TaskCalendarView: React.FC = () => {
                             </div>
                           </div>
                         )}
-                        
+
                         {tasks[selectedTask].relatedTo && (
                           <div className="mt-4">
                             <h4 className="text-sm font-medium text-gray-700 mb-2">Related To</h4>
@@ -544,7 +544,7 @@ const TaskCalendarView: React.FC = () => {
                             </div>
                           </div>
                         )}
-                        
+
                         <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between text-sm text-gray-500">
                           <div>
                             Created: {formatDate(tasks[selectedTask].createdAt)}

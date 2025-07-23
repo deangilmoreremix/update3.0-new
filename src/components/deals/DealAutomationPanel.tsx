@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { Deal } from '../../types';
-import { ArrowRight, Brain, Calendar, Check, ChevronDown, ChevronRight, Clock, Edit, Info, Mail, Pause, Phone, Play, Plus, PlusCircle, Settings, SlidersHorizontal, Sparkles, Target, Trash2, X, Zap } from 'lucide-react';
-
-interface DealAutomationPanelProps {
-  deal: Deal;
-}
+import { ArrowRight, Brain, Calendar, ChevronDown, ChevronRight, Clock, Edit, Info, Mail, Pause, Phone, Play, Plus, PlusCircle, Settings, SlidersHorizontal, Sparkles, Target, Trash2, X, Zap } from 'lucide-react';
 
 interface Automation {
   id: string;
@@ -28,7 +24,7 @@ interface Automation {
   nextRun?: Date;
 }
 
-export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }) => {
+export const DealAutomationPanel: FC<DealAutomationPanelProps> = ({ deal }) => {
   const [activeAutomations, setActiveAutomations] = useState<Automation[]>([
     {
       id: '1',
@@ -88,7 +84,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
       nextRun: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)
     }
   ]);
-  
+
   const [availableAutomations, setAvailableAutomations] = useState<Automation[]>([
     {
       id: '2',
@@ -141,7 +137,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
       updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
     }
   ]);
-  
+
   const [expandedAutomations, setExpandedAutomations] = useState<string[]>(['1']);
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [showAIBuilder, setShowAIBuilder] = useState(false);
@@ -154,7 +150,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
         : [...prev, id]
     );
   };
-  
+
   const activateAutomation = (id: string) => {
     // Move from available to active
     const automation = availableAutomations.find(a => a.id === id);
@@ -164,24 +160,24 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
       setActiveAutomations(prev => [...prev, updated]);
     }
   };
-  
+
   const pauseAutomation = (id: string) => {
     setActiveAutomations(prev => 
       prev.map(a => a.id === id ? { ...a, status: 'paused' as const } : a)
     );
   };
-  
+
   const resumeAutomation = (id: string) => {
     setActiveAutomations(prev => 
       prev.map(a => a.id === id ? { ...a, status: 'active' as const } : a)
     );
   };
-  
+
   const deleteAutomation = (id: string) => {
     setActiveAutomations(prev => prev.filter(a => a.id !== id));
     setAvailableAutomations(prev => prev.filter(a => a.id !== id));
   };
-  
+
   const getStepIcon = (type: string) => {
     switch (type) {
       case 'email': return Mail;
@@ -192,7 +188,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
       default: return Mail;
     }
   };
-  
+
   const getStepStatusColor = (status: string) => {
     switch (status) {
       case 'completed': return 'text-green-600';
@@ -201,7 +197,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
       default: return 'text-gray-400';
     }
   };
-  
+
   const getAutomationTypeIcon = (type: string) => {
     switch (type) {
       case 'drip': return Mail;
@@ -211,7 +207,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
       default: return Mail;
     }
   };
-  
+
   const _getAutomationStatusIcon = (status: string) => {
     switch (status) {
       case 'active': return Play;
@@ -221,7 +217,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
       default: return Play;
     }
   };
-  
+
   const getAutomationTypeColor = (type: string) => {
     switch (type) {
       case 'drip': return 'text-blue-600';
@@ -231,7 +227,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
       default: return 'text-blue-600';
     }
   };
-  
+
   const _getAutomationStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'text-green-600';
@@ -241,7 +237,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
       default: return 'text-green-600';
     }
   };
-  
+
   const getAutomationTypeBadgeColor = (type: string) => {
     switch (type) {
       case 'drip': return 'bg-blue-100 text-blue-800';
@@ -251,7 +247,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
       default: return 'bg-gray-100 text-gray-800';
     }
   };
-  
+
   const getAutomationStatusBadgeColor = (status: string) => {
     switch (status) {
       case 'active': return 'bg-green-100 text-green-800';
@@ -261,10 +257,10 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
       default: return 'bg-gray-100 text-gray-800';
     }
   };
-  
+
   const handleGenerateAutomation = () => {
     setAiGenerating(true);
-    
+
     // Simulate AI generating an automation
     setTimeout(() => {
       const newAutomation: Automation = {
@@ -313,7 +309,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      
+
       setAvailableAutomations(prev => [...prev, newAutomation]);
       setAiGenerating(false);
       setShowAIBuilder(false);
@@ -337,7 +333,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
           </button>
         </div>
       </div>
-      
+
       {/* AI-Powered Automation Builder */}
       <div className="mb-6">
         <button 
@@ -355,11 +351,11 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
           </div>
           <ChevronDown className={`w-5 h-5 transition-transform ${showAIBuilder ? 'rotate-180' : ''}`} />
         </button>
-        
+
         {showAIBuilder && (
           <div className="mt-3 p-6 bg-white rounded-xl border border-purple-200 shadow-sm">
             <h4 className="text-lg font-semibold text-gray-900 mb-4">Generate Deal-Specific Automation</h4>
-            
+
             {aiGenerating ? (
               <div className="text-center py-6">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
@@ -383,7 +379,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                       <option>Nurture Relationship</option>
                     </select>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Deal Information to Include
@@ -415,7 +411,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                       </div>
                     </div>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Sequence Length
@@ -426,7 +422,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                       <option>Long (8+ steps)</option>
                     </select>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Communication Style
@@ -439,7 +435,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                     </select>
                   </div>
                 </div>
-                
+
                 <div className="flex justify-end space-x-3">
                   <button 
                     onClick={() => setShowAIBuilder(false)}
@@ -460,14 +456,14 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
           </div>
         )}
       </div>
-      
+
       {/* Active Automations */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <h4 className="text-base font-medium text-gray-900">Active Automations</h4>
           <span className="text-sm text-gray-500">{activeAutomations.length} active</span>
         </div>
-        
+
         {activeAutomations.length === 0 ? (
           <div className="bg-gray-50 rounded-lg border border-gray-200 p-6 text-center">
             <Zap className="h-10 w-10 text-gray-400 mx-auto mb-3" />
@@ -496,7 +492,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                           className: `w-5 h-5 ${getAutomationTypeColor(automation.type)}` 
                         })}
                       </div>
-                      
+
                       <div>
                         <div className="flex items-center space-x-2">
                           <h5 className="text-base font-medium text-gray-900">{automation.name}</h5>
@@ -512,7 +508,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                         <p className="text-sm text-gray-600 mt-1">{automation.description}</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-1">
                       {automation.status === 'active' ? (
                         <button 
@@ -531,7 +527,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                           <Play className="w-4 h-4" />
                         </button>
                       ) : null}
-                      
+
                       <button 
                         onClick={() => toggleExpand(automation.id)}
                         className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors"
@@ -542,7 +538,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                           <ChevronRight className="w-4 h-4" />
                         )}
                       </button>
-                      
+
                       <button 
                         onClick={() => deleteAutomation(automation.id)}
                         className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
@@ -552,7 +548,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                       </button>
                     </div>
                   </div>
-                  
+
                   {/* Progress Bar (if applicable) */}
                   {automation.progress !== undefined && (
                     <div className="mt-3">
@@ -569,7 +565,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                     </div>
                   )}
                 </div>
-                
+
                 {/* Expanded Steps */}
                 {expandedAutomations.includes(automation.id) && (
                   <div className="p-4">
@@ -579,18 +575,18 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                         Edit Steps
                       </button>
                     </div>
-                    
+
                     <div className="space-y-3">
                       {automation.steps.map((step, index) => {
                         const StepIcon = getStepIcon(step.type);
-                        
+
                         return (
                           <div key={step.id} className="flex items-start relative">
                             {/* Connector line between steps */}
                             {index < automation.steps.length - 1 && (
                               <div className="absolute left-4 top-8 bottom-0 w-0.5 bg-gray-200"></div>
                             )}
-                            
+
                             <div className={`relative flex-shrink-0 w-8 h-8 rounded-full border-2 ${
                               step.status === 'completed' ? 'border-green-500 bg-green-100' :
                               step.status === 'active' ? 'border-blue-500 bg-blue-100' :
@@ -599,7 +595,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                             } flex items-center justify-center mr-4`}>
                               <StepIcon className={`w-4 h-4 ${getStepStatusColor(step.status)}`} />
                             </div>
-                            
+
                             <div className="flex-1 bg-gray-50 rounded-lg border border-gray-200 p-3">
                               <div className="flex justify-between">
                                 <h6 className="text-sm font-medium text-gray-900">{step.name}</h6>
@@ -613,7 +609,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                                 </span>
                               </div>
                               <p className="text-sm text-gray-600 mt-1">{step.details}</p>
-                              
+
                               {step.scheduledAt && (
                                 <div className="flex items-center mt-2 text-xs text-gray-500">
                                   <Clock className="w-3 h-3 mr-1" />
@@ -623,7 +619,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                                   </span>
                                 </div>
                               )}
-                              
+
                               {/* Step Actions */}
                               {step.status === 'active' && (
                                 <div className="mt-2 flex space-x-2">
@@ -635,7 +631,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                                   </button>
                                 </div>
                               )}
-                              
+
                               {step.status === 'pending' && (
                                 <button className="mt-2 text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded">
                                   View Details
@@ -646,7 +642,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                         );
                       })}
                     </div>
-                    
+
                     <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between items-center">
                       <div className="text-sm text-gray-600">
                         {automation.nextRun && (
@@ -667,14 +663,14 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
           </div>
         )}
       </div>
-      
+
       {/* Available Automations */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <h4 className="text-base font-medium text-gray-900">Recommended Automations</h4>
           <span className="text-sm text-gray-500">{availableAutomations.length} available</span>
         </div>
-        
+
         {availableAutomations.length === 0 ? (
           <div className="bg-gray-50 rounded-lg border border-gray-200 p-4 text-center">
             <p className="text-gray-500 text-sm">No recommended automations</p>
@@ -689,7 +685,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                       className: `w-5 h-5 ${getAutomationTypeColor(automation.type)}` 
                     })}
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <h5 className="text-base font-medium text-gray-900 truncate">{automation.name}</h5>
@@ -699,15 +695,15 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                          automation.type === 'date' ? 'Date-Based' : 'AI-Powered'}
                       </span>
                     </div>
-                    
+
                     <p className="text-sm text-gray-600 mt-1 line-clamp-2">{automation.description}</p>
-                    
+
                     <div className="mt-3 flex items-center justify-between">
                       <div className="flex items-center text-xs text-gray-500">
                         <Clock className="w-3 h-3 mr-1" />
                         <span>{automation.steps.length} steps</span>
                       </div>
-                      
+
                       <div className="flex space-x-2">
                         <button
                           onClick={() => toggleExpand(automation.id)}
@@ -725,7 +721,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Expanded Preview */}
                 {expandedAutomations.includes(automation.id) && (
                   <div className="mt-4 pt-4 border-t border-gray-200">
@@ -733,7 +729,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                     <div className="space-y-2">
                       {automation.steps.map((step, index) => {
                         const StepIcon = getStepIcon(step.type);
-                        
+
                         return (
                           <div key={step.id} className="flex items-center space-x-2">
                             <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center">
@@ -754,7 +750,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
           </div>
         )}
       </div>
-      
+
       {/* Create New Automation Modal */}
       {isCreatingNew && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -768,7 +764,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             {/* Basic Info */}
             <div className="space-y-4 mb-6">
               <div>
@@ -781,7 +777,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Description
@@ -792,7 +788,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Automation Type
@@ -817,7 +813,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                 </div>
               </div>
             </div>
-            
+
             {/* Steps Builder */}
             <div className="mb-6">
               <div className="flex items-center justify-between mb-3">
@@ -827,7 +823,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                   Add Step
                 </button>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
                   <div className="flex items-center justify-between mb-2">
@@ -848,7 +844,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                   </div>
                   <p className="text-xs text-gray-600">Send email with personalized value proposition</p>
                 </div>
-                
+
                 <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
@@ -868,7 +864,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                   </div>
                   <p className="text-xs text-gray-600">Wait 3 days before next action</p>
                 </div>
-                
+
                 <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
@@ -888,14 +884,14 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
                   </div>
                   <p className="text-xs text-gray-600">Schedule follow-up call to discuss next steps</p>
                 </div>
-                
+
                 <button className="w-full border border-dashed border-gray-300 rounded-lg py-3 text-sm text-gray-500 hover:bg-gray-50 transition-colors flex items-center justify-center">
                   <PlusCircle className="w-4 h-4 mr-2" />
                   Add Another Step
                 </button>
               </div>
             </div>
-            
+
             <div className="flex justify-end space-x-3">
               <button 
                 onClick={() => setIsCreatingNew(false)}
@@ -916,7 +912,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
           </div>
         </div>
       )}
-      
+
       {/* Settings & Metrics */}
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
         <div className="flex items-center justify-between mb-4">
@@ -929,7 +925,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
             Configure
           </button>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
             <h5 className="text-sm font-medium text-gray-700 mb-1">Active Sequences</h5>
@@ -956,7 +952,7 @@ export const DealAutomationPanel: React.FC<DealAutomationPanelProps> = ({ deal }
             <p className="text-xs text-gray-500 mt-1">Next automated action</p>
           </div>
         </div>
-        
+
         <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200 flex items-center space-x-3">
           <div className="p-2 rounded-full bg-yellow-100">
             <Info className="w-4 h-4 text-yellow-600" />

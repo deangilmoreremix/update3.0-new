@@ -1,14 +1,3 @@
-export interface AIGoal {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  icon: string;
-  complexity: 'Simple' | 'Intermediate' | 'Advanced';
-  estimatedTime: string;
-  recommendedFor: ('contact' | 'deal' | 'company')[];
-  toolMapping?: string; // Maps to existing AI tools
-}
 
 export const AI_GOALS: AIGoal[] = [
   // Sales Goals (15 goals)

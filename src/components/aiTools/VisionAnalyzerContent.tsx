@@ -2,17 +2,13 @@ import React, { useState, useCallback } from 'react';
 import { useOpenAIVision } from '../../services/openaiVisionService';
 import AIToolContent from '../shared/AIToolContent';
 import { useDropzone } from 'react-dropzone';
-import { File, Image, RefreshCw, Upload, ExternalLink, Check } from 'lucide-react';
+import { File, Image, RefreshCw, Upload, ExternalLink } from 'lucide-react';
 
-interface VisionAnalyzerContentProps {
-  type?: 'competitor' | 'document' | 'general';
-}
-
-const VisionAnalyzerContent: React.FC<VisionAnalyzerContentProps> = ({ 
+const VisionAnalyzerContent: FC<VisionAnalyzerContentProps> = ({ 
   type = 'general'
 }) => {
   const vision = useOpenAIVision();
-  
+
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -20,11 +16,11 @@ const VisionAnalyzerContent: React.FC<VisionAnalyzerContentProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [customPrompt, setCustomPrompt] = useState<string>('');
   const [imageUrlInput, setImageUrlInput] = useState<string>('');
-  
+
   let defaultPrompt = 'Please analyze this image and provide insights.';
   let title = 'Image Analyzer';
   let description = 'Analyze images using AI to extract insights and information.';
-  
+
   // Set type-specific defaults
   if (type === 'competitor') {
     defaultPrompt = 'Please analyze this competitor\'s visual material and provide competitive insights.';
@@ -35,30 +31,30 @@ const VisionAnalyzerContent: React.FC<VisionAnalyzerContentProps> = ({
     title = 'Document Visual Analysis';
     description = 'Extract key information from documents, presentations, or other visual materials.';
   }
-  
+
   // Handle file drop
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
-      
+
       // Check if it's an image
       if (!file.type.startsWith('image/')) {
         setError('Please upload an image file (JPEG, PNG, etc.)');
         return;
       }
-      
+
       setImageFile(file);
-      
+
       // Create a URL for the image
       const objectUrl = URL.createObjectURL(file);
       setImageUrl(objectUrl);
-      
+
       // Clear previous results and errors
       setResult(null);
       setError(null);
     }
   }, []);
-  
+
   // Set up dropzone
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -70,38 +66,38 @@ const VisionAnalyzerContent: React.FC<VisionAnalyzerContentProps> = ({
     },
     maxFiles: 1
   });
-  
+
   const handleUrlSubmit = () => {
     if (!imageUrlInput) {
       setError('Please enter an image URL');
       return;
     }
-    
+
     // Simple URL validation
     if (!imageUrlInput.match(/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i)) {
       setError('Please enter a valid image URL');
       return;
     }
-    
+
     setImageUrl(imageUrlInput);
     setImageFile(null);
     setResult(null);
     setError(null);
   };
-  
+
   const handleAnalyze = async () => {
     if (!imageUrl) {
       setError('Please upload an image first');
       return;
     }
-    
+
     setIsLoading(true);
     setError(null);
-    
+
     try {
       let analysisResult;
       const promptToUse = customPrompt || defaultPrompt;
-      
+
       if (type === 'competitor' && !customPrompt) {
         const competitorName = 'Unknown'; // Could be an input in the UI
         analysisResult = await vision.analyzeCompetitorVisuals(imageUrl, competitorName);
@@ -111,7 +107,7 @@ const VisionAnalyzerContent: React.FC<VisionAnalyzerContentProps> = ({
         // General analysis or custom prompt
         analysisResult = await vision.analyzeImage(imageUrl, promptToUse);
       }
-      
+
       setResult(analysisResult);
     } catch (err) {
       console.error('Error analyzing image:', err);
@@ -159,7 +155,7 @@ const VisionAnalyzerContent: React.FC<VisionAnalyzerContentProps> = ({
               }`}
             >
               <input {...getInputProps()} />
-              
+
               {imageUrl ? (
                 <div className="text-center">
                   <div className="mx-auto max-h-48 max-w-full overflow-hidden rounded-md mb-4">
@@ -202,14 +198,14 @@ const VisionAnalyzerContent: React.FC<VisionAnalyzerContentProps> = ({
               )}
             </div>
           </div>
-          
+
           {/* OR Separator */}
           <div className="flex items-center">
             <div className="flex-grow border-t border-gray-300"></div>
             <span className="flex-shrink mx-4 text-gray-500 text-sm">OR</span>
             <div className="flex-grow border-t border-gray-300"></div>
           </div>
-          
+
           {/* Image URL Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -235,7 +231,7 @@ const VisionAnalyzerContent: React.FC<VisionAnalyzerContentProps> = ({
               <p className="mt-2 text-xs text-green-600">Image URL loaded: {imageUrl}</p>
             )}
           </div>
-          
+
           {/* Analysis Options */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -249,7 +245,7 @@ const VisionAnalyzerContent: React.FC<VisionAnalyzerContentProps> = ({
               rows={3}
             ></textarea>
           </div>
-          
+
           {/* Analyze Button */}
           <div className="pt-2 flex justify-end">
             <button

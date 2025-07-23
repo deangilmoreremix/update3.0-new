@@ -17,12 +17,12 @@ const DashboardV3: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-gray-800">
       <div className="p-6 max-w-7xl mx-auto">
         <DashboardHeader />
-        
+
         {/* KPI Overview */}
         <div className="mb-8">
           <KPICards />
         </div>
-        
+
         {/* Metrics and Quick Actions Row */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2">
@@ -32,12 +32,12 @@ const DashboardV3: React.FC = () => {
             <QuickActions />
           </div>
         </div>
-        
+
         {/* Charts and Analytics */}
         <div className="mb-8">
           <ChartsSection />
         </div>
-        
+
         {/* Three Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <div>
@@ -50,7 +50,7 @@ const DashboardV3: React.FC = () => {
             <AIInsightsPanel />
           </div>
         </div>
-        
+
         {/* Bottom Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
           <div>

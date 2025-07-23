@@ -1,26 +1,6 @@
 // Composio Tools Data - Integration platform for 250+ business tools
 // This data represents tools available through Composio API integration
 
-export interface ComposioTool {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  icon: string;
-  status: 'active' | 'coming-soon';
-  popularityScore?: number;
-  setupTime?: string;
-  authType?: 'oauth' | 'apiKey' | 'basic';
-  useCases?: string[];
-}
-
-export interface ComposioToolCategory {
-  id: string;
-  name: string;
-  iconText: string;
-  description?: string;
-}
-
 export const composioTools: ComposioTool[] = [
   // CRM & Sales Tools
   {

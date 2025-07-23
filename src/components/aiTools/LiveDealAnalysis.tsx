@@ -21,12 +21,7 @@ const sampleDeal: Deal = {
   priority: 'high'
 };
 
-interface LiveDealAnalysisProps {
-  deal?: Deal;
-  onAnalysisComplete?: (analysis: unknown) => void;
-}
-
-const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({ 
+const LiveDealAnalysis: FC<LiveDealAnalysisProps> = ({ 
   deal = sampleDeal,
   onAnalysisComplete 
 }) => {
@@ -43,7 +38,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
     timelineEstimate: string;
     competitivePosition: string;
   } | null>(null);
-  
+
   const progressSteps = [
     "Analyzing deal attributes...",
     "Assessing win probability...",
@@ -53,14 +48,14 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
     "Determining next steps...",
     "Finalizing analysis..."
   ];
-  
+
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   const runProgressSimulation = () => {
     let step = 0;
     setProgressText(progressSteps[0]);
     setProgress(0);
-    
+
     progressIntervalRef.current = setInterval(() => {
       if (step < progressSteps.length - 1) {
         step++;
@@ -74,17 +69,17 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
       }
     }, 1000);
   };
-  
+
   const runAnalysis = async () => {
     setIsAnalyzing(true);
     setAnalysisResults(null);
     runProgressSimulation();
-    
+
     try {
       // In a real implementation, we would call the Gemini API with the deal data
       // For the demo, let's simulate a response after the progress animation
       await new Promise(resolve => setTimeout(resolve, 7000));
-      
+
       // Calculate win probability based on stage with some randomization
       let baseProb = 0;
       switch (deal.stage) {
@@ -93,9 +88,9 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
         case 'negotiation': baseProb = 65; break;
         default: baseProb = 25;
       }
-      
+
       const winProbability = Math.min(95, Math.max(5, baseProb + (Math.random() * 20 - 10)));
-      
+
       // Determine risk level based on probability and priority
       let riskLevel: 'low' | 'medium' | 'high' = 'medium';
       if (winProbability < 30 || deal.priority === 'high') {
@@ -103,7 +98,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
       } else if (winProbability > 70 && deal.priority !== 'high') {
         riskLevel = 'low';
       }
-      
+
       // Generate analysis results
       const results = {
         winProbability: parseFloat(winProbability.toFixed(1)),
@@ -126,7 +121,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
         timelineEstimate: "45-60 days",
         competitivePosition: "Strong, with differentiated features in security and scalability"
       };
-      
+
       setAnalysisResults(results);
       if (onAnalysisComplete) {
         onAnalysisComplete(results);
@@ -142,7 +137,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
       setProgress(100);
     }
   };
-  
+
   // Clean up interval on unmount
   useEffect(() => {
     return () => {
@@ -183,7 +178,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
           </div>
         </div>
       </div>
-      
+
       {/* Deal summary */}
       <div className="p-4 border-b border-gray-100 bg-gray-50">
         <div className="flex flex-wrap gap-4">
@@ -214,7 +209,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
           </div>
         </div>
       </div>
-      
+
       {/* Analysis section */}
       <div className="p-4">
         {isAnalyzing && (
@@ -223,7 +218,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
               <RefreshCw size={24} className="mx-auto text-indigo-600 mb-2 animate-spin" />
               <p className="text-sm font-medium text-gray-700">{progressText}</p>
             </div>
-            
+
             <div className="w-full bg-gray-200 rounded-full h-2.5">
               <motion.div
                 className="bg-indigo-600 h-2.5 rounded-full"
@@ -232,13 +227,13 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
                 transition={{ duration: 0.5 }}
               ></motion.div>
             </div>
-            
+
             <div className="text-center text-xs text-gray-500">
               Using Gemini 2.5 Pro for in-depth analysis
             </div>
           </div>
         )}
-        
+
         <AnimatePresence>
           {analysisResults && !isAnalyzing && (
             <motion.div 
@@ -274,7 +269,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
                     ></div>
                   </div>
                 </div>
-                
+
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                   <div className="flex justify-between items-start mb-2">
                     <h4 className="text-sm font-medium text-gray-700">Risk Level</h4>
@@ -300,7 +295,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
                     ></div>
                   </div>
                 </div>
-                
+
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                   <div className="flex justify-between items-start mb-2">
                     <h4 className="text-sm font-medium text-gray-700">Timeline</h4>
@@ -311,7 +306,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
                   <p className="text-xs text-gray-600">Estimated time to close this deal</p>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
@@ -329,7 +324,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
                     ))}
                   </ul>
                 </div>
-                
+
                 <div>
                   <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
                     <TrendingUp size={16} className="text-green-500 mr-1.5" />
@@ -347,7 +342,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
                   </ul>
                 </div>
               </div>
-              
+
               <div>
                 <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <CheckCircle size={16} className="text-blue-500 mr-1.5" />
@@ -364,7 +359,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
                   </ul>
                 </div>
               </div>
-              
+
               <div>
                 <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
                   <Shield size={16} className="text-purple-500 mr-1.5" />
@@ -377,7 +372,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
             </motion.div>
           )}
         </AnimatePresence>
-        
+
         {!isAnalyzing && !analysisResults && (
           <div className="text-center py-12">
             <BarChart3 size={48} className="mx-auto text-gray-300 mb-4" />

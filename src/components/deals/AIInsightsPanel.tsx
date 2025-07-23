@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Deal } from '../../types';
-import { Brain, Sparkles, Zap, Target, Calendar, Clock, AlertCircle, CheckCircle, TrendingUp, Mail, RefreshCw, ThumbsUp, ThumbsDown, HelpCircle, Bell, DollarSign, Building2, Award, User, Search } from 'lucide-react';
-
-interface AIInsightsPanelProps {
-  deal: Deal;
-}
+import { Brain, Sparkles, Target, Calendar, AlertCircle, CheckCircle, TrendingUp, RefreshCw, ThumbsUp, ThumbsDown, HelpCircle, Bell, DollarSign, Search } from 'lucide-react';
 
 interface Insight {
   id: string;
@@ -23,7 +19,7 @@ interface Insight {
 
 const aiModels = ['GPT-4o', 'Gemini Pro', 'Claude 3', 'Hybrid AI'];
 
-export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
+export const AIInsightsPanel: FC<AIInsightsPanelProps> = ({ deal }) => {
   const [insights, setInsights] = useState<Insight[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -35,9 +31,9 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
     const generateInsights = async () => {
       setIsLoading(true);
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      
+
       const generatedInsights: Insight[] = [];
-      
+
       // Add insights based on deal data
       if (deal.probability > 70) {
         generatedInsights.push({
@@ -53,7 +49,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
           source: aiProvider
         });
       }
-      
+
       if (deal.stage === 'qualification') {
         generatedInsights.push({
           id: '2',
@@ -68,7 +64,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
           source: aiProvider
         });
       }
-      
+
       if (deal.stage === 'proposal') {
         generatedInsights.push({
           id: '3',
@@ -83,7 +79,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
           source: aiProvider
         });
       }
-      
+
       if (deal.stage === 'negotiation') {
         generatedInsights.push({
           id: '4',
@@ -98,7 +94,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
           source: aiProvider
         });
       }
-      
+
       if (deal.value > 50000) {
         generatedInsights.push({
           id: '5',
@@ -113,7 +109,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
           source: aiProvider
         });
       }
-      
+
       if (deal.company && deal.company.length > 0) {
         generatedInsights.push({
           id: '6',
@@ -128,7 +124,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
           source: aiProvider
         });
       }
-      
+
       if (deal.dueDate && deal.dueDate > new Date()) {
         const daysUntilDue = Math.ceil((deal.dueDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
         if (daysUntilDue < 14) {
@@ -146,7 +142,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
           });
         }
       }
-      
+
       if (deal.priority === 'high') {
         generatedInsights.push({
           id: '8',
@@ -192,21 +188,21 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
           source: aiProvider
         });
       }
-      
+
       setInsights(generatedInsights);
       setIsLoading(false);
     };
-    
+
     generateInsights();
   }, [deal, aiProvider]);
-  
+
   const handleRefreshInsights = async () => {
     setIsRefreshing(true);
     setAiProvider(aiModels[Math.floor(Math.random() * aiModels.length)]);
     await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
     setIsRefreshing(false);
   };
-  
+
   const handleFeedback = (id: string, feedback: 'positive' | 'negative') => {
     setInsights(prevInsights => 
       prevInsights.map(insight => 
@@ -214,11 +210,11 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
       )
     );
   };
-  
+
   const filteredInsights = activeCategory === 'all' 
     ? insights 
     : insights.filter(insight => insight.type === activeCategory);
-  
+
   const highPriorityInsights = filteredInsights.filter(i => i.priority === 'high');
   const mediumPriorityInsights = filteredInsights.filter(i => i.priority === 'medium');
   const lowPriorityInsights = filteredInsights.filter(i => i.priority === 'low');
@@ -247,7 +243,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
           <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
         </button>
       </div>
-      
+
       {/* AI Source Information */}
       <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-3 border border-purple-200 flex items-center justify-between">
         <div className="flex items-center">
@@ -266,7 +262,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
           </span>
         </div>
       </div>
-      
+
       {/* Deal Intelligence Summary */}
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
         <h4 className="text-sm font-semibold text-blue-900 mb-3">Deal Intelligence Summary</h4>
@@ -281,7 +277,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
               which is {deal.probability > 60 ? 'above' : 'below'} average for deals in {deal.stage} stage.
             </p>
           </div>
-          
+
           <div className="bg-white p-3 rounded-lg border border-blue-100">
             <div className="flex items-center mb-2">
               <Calendar className="w-4 h-4 text-blue-600 mr-2" />
@@ -293,7 +289,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
                 : `Based on similar deals, expected to close in ${Math.floor(Math.random() * 30) + 15} days.`}
             </p>
           </div>
-          
+
           <div className="bg-white p-3 rounded-lg border border-blue-100">
             <div className="flex items-center mb-2">
               <DollarSign className="w-4 h-4 text-blue-600 mr-2" />
@@ -305,7 +301,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
           </div>
         </div>
       </div>
-      
+
       {/* Category Tabs */}
       <div className="flex space-x-2 border-b border-gray-200">
         {[
@@ -327,7 +323,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
           </button>
         ))}
       </div>
-      
+
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
@@ -365,7 +361,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
               </div>
             </div>
           )}
-          
+
           {/* Medium Priority Insights */}
           {mediumPriorityInsights.length > 0 && (
             <div>
@@ -383,7 +379,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
               </div>
             </div>
           )}
-          
+
           {/* Low Priority Insights */}
           {lowPriorityInsights.length > 0 && (
             <div>
@@ -403,7 +399,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
           )}
         </div>
       )}
-      
+
       {/* Action Summary */}
       <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
         <h4 className="text-sm font-medium text-gray-700 mb-3">Recommended Next Steps</h4>
@@ -423,7 +419,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
           )}
         </div>
       </div>
-      
+
       {/* AI Research & Competitive Analysis */}
       <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
         <div className="flex items-center justify-between mb-4">
@@ -436,7 +432,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
             Update
           </button>
         </div>
-        
+
         <div className="space-y-4">
           <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
             <h5 className="text-sm font-medium text-purple-900 mb-2">Company Analysis</h5>
@@ -445,7 +441,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
               Recent news indicates they're expanding operations and investing in digital transformation initiatives.
             </p>
           </div>
-          
+
           <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
             <h5 className="text-sm font-medium text-blue-900 mb-2">Decision Factors</h5>
             <p className="text-xs text-blue-700 mb-2">
@@ -470,7 +466,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-green-50 p-4 rounded-lg border border-green-200">
             <h5 className="text-sm font-medium text-green-900 mb-2">Competitive Landscape</h5>
             <p className="text-xs text-green-700 mb-2">
@@ -498,12 +494,12 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ deal }) => {
 };
 
 // Helper component for individual insights
-const InsightCard: React.FC<{
+const InsightCard: FC<{
   insight: Insight;
   onFeedback: (id: string, feedback: 'positive' | 'negative') => void;
 }> = ({ insight, onFeedback }) => {
   const [expanded, setExpanded] = useState(false);
-  
+
   const typeColors = {
     'action': 'bg-blue-50 border-blue-200',
     'prediction': 'bg-purple-50 border-purple-200',
@@ -512,7 +508,7 @@ const InsightCard: React.FC<{
     'opportunity': 'bg-yellow-50 border-yellow-200',
     'status': 'bg-gray-50 border-gray-200'
   };
-  
+
   const typeLabels = {
     'action': 'Action Item',
     'prediction': 'Prediction',
@@ -521,14 +517,14 @@ const InsightCard: React.FC<{
     'opportunity': 'Opportunity',
     'status': 'Status Update'
   };
-  
+
   return (
     <div className={`rounded-lg border p-4 ${typeColors[insight.type]} transition-all duration-300 ${expanded ? 'shadow-md' : ''}`}>
       <div className="flex items-start">
         <div className={`${insight.iconBg} text-white p-2 rounded-lg mr-3 flex-shrink-0`}>
           <insight.icon className="h-4 w-4" />
         </div>
-        
+
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
             <h5 className="text-sm font-semibold text-gray-900">{insight.title}</h5>
@@ -536,9 +532,9 @@ const InsightCard: React.FC<{
               {typeLabels[insight.type]}
             </span>
           </div>
-          
+
           <p className="text-sm text-gray-700 mt-1">{insight.description}</p>
-          
+
           {(insight.confidence || insight.accuracy) && (
             <div className="mt-2 flex items-center text-xs text-gray-600">
               {insight.confidence && (
@@ -555,14 +551,14 @@ const InsightCard: React.FC<{
               )}
             </div>
           )}
-          
+
           {expanded && (
             <div className="mt-3 pt-3 border-t border-gray-200">
               <div className="text-xs text-gray-500 flex items-center mb-2">
                 <Calendar className="w-3 h-3 mr-1" />
                 Generated {insight.createdAt.toLocaleDateString()} by {insight.source}
               </div>
-              
+
               {insight.type === 'action' && (
                 <div className="flex space-x-2 mt-2">
                   <button className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-md hover:bg-blue-200 transition-colors">
@@ -577,7 +573,7 @@ const InsightCard: React.FC<{
           )}
         </div>
       </div>
-      
+
       <div className="flex items-center justify-between mt-3">
         <button
           onClick={() => setExpanded(!expanded)}
@@ -585,7 +581,7 @@ const InsightCard: React.FC<{
         >
           {expanded ? 'Show less' : 'Show more'}
         </button>
-        
+
         <div className="flex space-x-2">
           <button
             onClick={() => onFeedback(insight.id, 'positive')}

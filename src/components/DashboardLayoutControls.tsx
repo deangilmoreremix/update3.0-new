@@ -10,7 +10,7 @@ const DashboardLayoutControls: React.FC = () => {
     resetToDefault, 
     getSectionConfig 
   } = useDashboardLayout();
-  
+
   const { isDark } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -122,14 +122,14 @@ const DashboardLayoutControls: React.FC = () => {
               <h4 className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'} mb-3`}>
                 Section Visibility
               </h4>
-              
+
               <div className="space-y-2 max-h-60 overflow-y-auto">
                 {allSections.map((sectionId) => {
                   const config = getSectionConfig(sectionId);
                   const isEnabled = sectionOrder.includes(sectionId);
-                  
+
                   if (!config) return null;
-                  
+
                   return (
                     <div
                       key={sectionId}
@@ -148,7 +148,7 @@ const DashboardLayoutControls: React.FC = () => {
                           </p>
                         </div>
                       </div>
-                      
+
                       <button
                         onClick={() => handleSectionToggle(sectionId, !isEnabled)}
                         className={`p-1 rounded-md transition-colors ${
@@ -176,7 +176,7 @@ const DashboardLayoutControls: React.FC = () => {
                   {sectionOrder.map((sectionId, index) => {
                     const config = getSectionConfig(sectionId);
                     if (!config) return null;
-                    
+
                     return (
                       <div
                         key={sectionId}

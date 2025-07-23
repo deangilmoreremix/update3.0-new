@@ -1,22 +1,21 @@
 
-
 export async function coldOutreachCloserAgent(input: unknown, setSteps?: (steps: unknown) => void) {
   const name = input.name || "there";
   const company = input.company || "your company";
   const dealValue = input.value || "$10,000";
-  
+
   setSteps?.([{ step: "Analyzing deal status..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
   setSteps?.(prev => [...prev, { step: "Crafting closing sequence..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1500));
-  
+
   setSteps?.(prev => [...prev, { step: "Generating urgency triggers..." }]);
-  
+
   const closingSequence = {
     email1: {
       subject: `Next steps for ${company} (time-sensitive)`,
@@ -37,7 +36,7 @@ Would you have 15 minutes this week to discuss the final details?
 Best regards,
 [Your Name]`
     },
-    
+
     email2: {
       subject: `Re: Next steps for ${company} (time-sensitive)`,
       body: `Hi ${name},
@@ -53,7 +52,7 @@ Would tomorrow at 2pm work for a quick call to answer any remaining questions?
 Best regards,
 [Your Name]`
     },
-    
+
     finalCall: {
       subject: `Final opportunity: ${company} + [Our Company]`,
       body: `Hi ${name},
@@ -79,9 +78,9 @@ Best regards,
 [Your Name]`
     }
   };
-  
+
   setSteps?.(prev => [...prev, { step: "Closing sequence generated", result: "Complete" }]);
-  
+
   return {
     closingSequence,
     timingRecommendations: {

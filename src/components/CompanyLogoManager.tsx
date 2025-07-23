@@ -6,14 +6,6 @@ import CompanyLogoUploader from './CompanyLogoUploader';
 import Avatar from './ui/Avatar';
 import { getInitials } from '../utils/avatars';
 
-interface Company {
-  id: string;
-  name: string;
-  logo?: string;
-  contactsCount: number;
-  dealsCount: number;
-}
-
 const CompanyLogoManager: React.FC = () => {
   const { isDark } = useTheme();
   const { contacts } = useContactStore();
@@ -23,7 +15,7 @@ const CompanyLogoManager: React.FC = () => {
   // Extract unique companies from contacts
   const companies: Company[] = React.useMemo(() => {
     const companyMap = new Map<string, Company>();
-    
+
     Object.values(contacts).forEach(contact => {
       if (contact.company) {
         const existing = companyMap.get(contact.company);
@@ -40,7 +32,7 @@ const CompanyLogoManager: React.FC = () => {
         }
       }
     });
-    
+
     return Array.from(companyMap.values()).sort((a, b) => a.name.localeCompare(b.name));
   }, [contacts]);
 
@@ -48,10 +40,10 @@ const CompanyLogoManager: React.FC = () => {
     if (selectedCompany) {
       // Update the company logo in local state
       setSelectedCompany(prev => prev ? { ...prev, logo: logoUrl } : null);
-      
+
       // Close uploader
       setShowUploader(false);
-      
+
       // You could also update a companies store here if you had one
       console.log(`Logo updated for ${selectedCompany.name}: ${logoUrl}`);
     }
@@ -180,7 +172,7 @@ const CompanyLogoManager: React.FC = () => {
                   {company.logo ? 'Has Logo' : 'No Logo'}
                 </span>
               </div>
-              
+
               <div className="flex items-center space-x-2 text-xs text-gray-500">
                 <span>{company.dealsCount} deals</span>
               </div>

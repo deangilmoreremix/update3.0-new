@@ -1,5 +1,4 @@
 // Temporarily simplified AI orchestrator to get app running
-import React from 'react';
 import { enhancedGeminiService } from './enhancedGeminiService';
 // Note: useOpenAI removed to avoid hook violations in class component
 
@@ -34,18 +33,11 @@ export type ModelCapability =
   | 'intent_detection';
 
 // Task context interface
-export interface TaskContext {
-  customerId: string;
-  feature: AIFeature;
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  deadline?: Date;
-  additionalContext?: Record<string, unknown>;
-}
 
 // Simplified AI Orchestrator
 export class AIOrchestrator {
   private static instance: AIOrchestrator;
-  
+
   private constructor() {}
 
   static getInstance(): AIOrchestrator {
@@ -63,7 +55,7 @@ export class AIOrchestrator {
       switch (feature) {
         case 'email_generation':
           return await this.generateEmail(context);
-        
+
         case 'pipeline_analysis':
         case 'deal_insights':
         case 'meeting_agenda':
@@ -79,7 +71,7 @@ export class AIOrchestrator {
         case 'performance_analytics':
           // Return placeholder for now - implement incrementally
           return { status: 'success', message: `${feature} feature temporarily disabled for stability` };
-        
+
         default:
           throw new Error(`Unknown feature: ${feature}`);
       }
@@ -97,7 +89,7 @@ export class AIOrchestrator {
       // TODO: Implement proper service initialization without hooks
       const contactName = context.contactName as string || 'Customer';
       const purpose = context.purpose as string || 'General inquiry';
-      
+
       // Return placeholder for now until proper service architecture
       return { 
         status: 'success', 

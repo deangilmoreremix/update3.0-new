@@ -1,25 +1,24 @@
 
-
 export async function aiDialerAgent(input: unknown, setSteps?: (steps: unknown) => void) {
   const name = input.name || "there";
   const company = input.company || "your company";
   const callPurpose = input.callPurpose || "follow-up";
-  
+
   setSteps?.([{ step: "Preparing call script..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
   setSteps?.(prev => [...prev, { step: "Researching contact information..." }]);
-  
+
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1200));
-  
+
   setSteps?.(prev => [...prev, { step: "Generating call preparation notes..." }]);
-  
+
   // Generate call script based on purpose
   let callScript = "";
-  
+
   switch (callPurpose) {
     case "introduction":
       callScript = `
@@ -54,7 +53,7 @@ export async function aiDialerAgent(input: unknown, setSteps?: (steps: unknown) 
 "Thank you for your time today, ${name}. I'll send you an email with some more information and [next step]. Is there anything else you'd like me to include?"
 `;
       break;
-      
+
     case "follow-up":
       callScript = `
 # Follow-Up Call Script for ${name} at ${company}
@@ -83,7 +82,7 @@ export async function aiDialerAgent(input: unknown, setSteps?: (steps: unknown) 
 "Thank you for your time today, ${name}. I'll [follow-up action] by [specific date]. Is there anything else you need from me in the meantime?"
 `;
       break;
-      
+
     case "closing":
       callScript = `
 # Closing Call Script for ${name} at ${company}
@@ -117,7 +116,7 @@ export async function aiDialerAgent(input: unknown, setSteps?: (steps: unknown) 
 "Thank you for your business, ${name}. I'm excited to start working with ${company}. I'll send over the agreement right after this call, and you can expect [first deliverable] by [date]."
 `;
       break;
-      
+
     default:
       callScript = `
 # Call Script for ${name} at ${company}
@@ -141,9 +140,9 @@ export async function aiDialerAgent(input: unknown, setSteps?: (steps: unknown) 
 "Thank you for your time today, ${name}. I'll [follow-up action] by [specific date]."
 `;
   }
-  
+
   setSteps?.(prev => [...prev, { step: "Call preparation complete", result: "Complete" }]);
-  
+
   return {
     callScript,
     contactInfo: {

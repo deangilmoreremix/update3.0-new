@@ -50,7 +50,7 @@ describe('HTTP Client Service', () => {
     });
 
     const response = await mockHttpClient.get('/test');
-    
+
     expect(response.status).toBe(200);
     expect(response.data).toEqual({ test: 'data' });
     expect(mockHttpClient.get).toHaveBeenCalledWith('/test');
@@ -100,7 +100,7 @@ describe('Cache Service', () => {
   test('should store and retrieve data', () => {
     const testData = { test: 'value' };
     cacheService.set('test', 'key1', testData, 1000);
-    
+
     const retrieved = cacheService.get('test', 'key1');
     expect(retrieved).toEqual(testData);
   });
@@ -113,9 +113,9 @@ describe('Cache Service', () => {
   test('should clear all cache', () => {
     cacheService.set('test', 'key1', { data: 1 }, 1000);
     cacheService.set('test', 'key2', { data: 2 }, 1000);
-    
+
     cacheService.clear();
-    
+
     expect(cacheService.get('test', 'key1')).toBeNull();
     expect(cacheService.get('test', 'key2')).toBeNull();
   });
@@ -523,7 +523,7 @@ export const testUtilities = {
     ...mockContact,
     ...overrides,
   }),
-  
+
   createMockHttpResponse: (data: unknown, status = 200) => ({
     data,
     status,
@@ -531,9 +531,9 @@ export const testUtilities = {
     headers: {},
     config: {},
   }),
-  
+
   waitFor: (ms: number) => new Promise(resolve => setTimeout(resolve, ms)),
-  
+
   generateRandomId: () => `test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
 };
 

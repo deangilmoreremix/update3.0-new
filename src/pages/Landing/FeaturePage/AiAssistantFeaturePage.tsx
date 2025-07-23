@@ -10,7 +10,7 @@ const AiAssistantFeaturePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'functions' | 'customization'>('overview');
   const [playingDemo, setPlayingDemo] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
-  
+
   // Simulated chat conversation for the demo
   const [chatMessages, setChatMessages] = useState([
     { role: 'assistant', content: 'Hello! I\'m your AI sales assistant. How can I help you today?' },
@@ -18,7 +18,7 @@ const AiAssistantFeaturePage: React.FC = () => {
   const [demoMessageIndex, setDemoMessageIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
   const [currentTypedMessage, setCurrentTypedMessage] = useState('');
-  
+
   const demoMessages = [
     { role: 'user', content: 'Can you help me find my high-value deals?' },
     { role: 'assistant', content: 'I\'ll search for your high-value deals. Based on your CRM data, here are the top 3 highest value deals in your pipeline:\n\n1. Enterprise License with Acme Inc - $75,000 (Qualification stage)\n2. Cloud Migration with Wayne Enterprises - $95,000 (Qualification stage)\n3. Implementation Services with Umbrella Corp - $50,000 (Negotiation stage)\n\nWould you like more details on any of these deals?' },
@@ -27,7 +27,7 @@ const AiAssistantFeaturePage: React.FC = () => {
     { role: 'user', content: 'Yes, please schedule a follow-up task for next Tuesday' },
     { role: 'assistant', content: 'I\'ve created a follow-up task for the Cloud Migration deal with Wayne Enterprises.\n\n✅ Task details:\n• Title: "Follow up with Bruce Wayne about Cloud Migration proposal"\n• Due date: Next Tuesday at 10:00 AM\n• Priority: High\n• Notes: "Discuss technical requirements and timeline for the Cloud Migration project"\n\nThe task has been added to your calendar. Is there anything else you need help with?' }
   ];
-  
+
   // Advance the demo conversation
   const advanceDemo = () => {
     if (demoMessageIndex >= demoMessages.length) {
@@ -35,15 +35,15 @@ const AiAssistantFeaturePage: React.FC = () => {
       setChatMessages([{ role: 'assistant', content: 'Hello! I\'m your AI sales assistant. How can I help you today?' }]);
       return;
     }
-    
+
     const nextMessage = demoMessages[demoMessageIndex];
     setIsTyping(true);
-    
+
     const charIndex = 0;
     const typingInterval = setInterval(() => {
       setCurrentTypedMessage(nextMessage.content.substring(0, charIndex));
       charIndex++;
-      
+
       if (charIndex > nextMessage.content.length) {
         clearInterval(typingInterval);
         setIsTyping(false);
@@ -53,11 +53,11 @@ const AiAssistantFeaturePage: React.FC = () => {
       }
     }, 20); // Typing speed
   };
-  
+
   return (
     <div className="bg-white">
       <LandingHeader />
-      
+
       {/* Hero Section */}
       <section className="relative pt-20 bg-gradient-to-b from-white to-indigo-50">
         <div className="container mx-auto px-4 py-20">
@@ -97,7 +97,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                       <div className="h-3 w-3 rounded-full bg-green-500"></div>
                     </div>
                   </div>
-                  
+
                   <div className="h-80 p-4 overflow-y-auto bg-white">
                     <div className="space-y-4">
                       {chatMessages.map((message, index) => (
@@ -107,7 +107,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                           </div>
                         </div>
                       ))}
-                      
+
                       {isTyping && (
                         <div className="flex justify-start">
                           <div className="max-w-3/4 p-3 rounded-lg bg-gray-100 text-gray-800">
@@ -118,7 +118,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="border-t border-gray-200 p-4 bg-gray-50">
                     <div className="relative">
                       <input
@@ -140,13 +140,13 @@ const AiAssistantFeaturePage: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Animated wave divider */}
         <div className="absolute bottom-0 left-0 right-0 h-20 bg-white" style={{ 
           clipPath: 'polygon(100% 0%, 0% 0%, 0% 100%, 4% 95%, 8% 100%, 12% 95%, 16% 90%, 20% 95%, 24% 100%, 28% 95%, 32% 90%, 36% 95%, 40% 100%, 44% 95%, 48% 90%, 52% 95%, 56% 100%, 60% 95%, 64% 90%, 68% 95%, 72% 100%, 76% 95%, 80% 90%, 84% 95%, 88% 100%, 92% 95%, 96% 90%, 100% 95%)'
         }}></div>
       </section>
-      
+
       {/* Key Benefits Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
@@ -156,7 +156,7 @@ const AiAssistantFeaturePage: React.FC = () => {
               Our AI Assistant is deeply integrated with your CRM data and can perform real actions to help you work more efficiently.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100 transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
               <div className="p-3 bg-indigo-100 rounded-full w-min mb-4">
@@ -167,7 +167,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                 Unlike simple chatbots, our AI Assistant remembers your entire conversation history and maintains context across sessions for truly meaningful interactions.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100 transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
               <div className="p-3 bg-violet-100 rounded-full w-min mb-4">
                 <Database className="h-6 w-6 text-violet-600" />
@@ -177,7 +177,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                 Get instant answers about your contacts, deals, and activities without having to search through multiple screens or run reports.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100 transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
               <div className="p-3 bg-fuchsia-100 rounded-full w-min mb-4">
                 <Zap className="h-6 w-6 text-fuchsia-600" />
@@ -190,7 +190,7 @@ const AiAssistantFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Interactive Demo Section */}
       <section id="demo" className="py-20 bg-gradient-to-b from-indigo-50 to-white">
         <div className="container mx-auto px-4">
@@ -203,7 +203,7 @@ const AiAssistantFeaturePage: React.FC = () => {
               Watch how our AI Assistant can help you find information, analyze data, and take action all in a natural conversation.
             </p>
           </div>
-          
+
           <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden max-w-5xl mx-auto">
             {/* Demo Tabs */}
             <div className="flex border-b border-gray-200">
@@ -226,7 +226,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                 Customization
               </button>
             </div>
-            
+
             {/* Tab Content */}
             <div className="p-6">
               {activeTab === 'overview' && (
@@ -301,7 +301,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="p-4 border border-gray-200 rounded-lg">
                       <div className="flex items-center mb-2">
@@ -310,7 +310,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                       </div>
                       <p className="text-sm text-gray-600">Ask about contacts, deals, or activities in natural language without hunting through your CRM.</p>
                     </div>
-                    
+
                     <div className="p-4 border border-gray-200 rounded-lg">
                       <div className="flex items-center mb-2">
                         <Calendar size={18} className="text-indigo-600 mr-2" />
@@ -318,7 +318,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                       </div>
                       <p className="text-sm text-gray-600">Schedule follow-ups, create tasks, and manage your calendar through simple conversation.</p>
                     </div>
-                    
+
                     <div className="p-4 border border-gray-200 rounded-lg">
                       <div className="flex items-center mb-2">
                         <BarChart3 size={18} className="text-indigo-600 mr-2" />
@@ -329,13 +329,13 @@ const AiAssistantFeaturePage: React.FC = () => {
                   </div>
                 </div>
               )}
-              
+
               {activeTab === 'functions' && (
                 <div className="space-y-6">
                   <p className="text-gray-700">
                     Our AI Assistant can perform real actions in your CRM through function calling. This goes beyond just answering questions—it can actually do things for you.
                   </p>
-                  
+
                   <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                     <h3 className="font-medium text-gray-900 mb-3">Available Functions</h3>
                     <div className="space-y-4">
@@ -351,7 +351,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                           </code>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-start">
                         <div className="p-2 bg-green-100 rounded-full text-green-600 mr-3 mt-0.5">
                           <Calendar size={16} />
@@ -364,7 +364,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                           </code>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-start">
                         <div className="p-2 bg-amber-100 rounded-full text-amber-600 mr-3 mt-0.5">
                           <Database size={16} />
@@ -377,7 +377,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                           </code>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-start">
                         <div className="p-2 bg-purple-100 rounded-full text-purple-600 mr-3 mt-0.5">
                           <FileText size={16} />
@@ -392,7 +392,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="relative p-4 border border-indigo-200 rounded-lg bg-indigo-50">
                     <div 
                       className="absolute top-4 right-4 text-indigo-600 cursor-pointer" 
@@ -413,13 +413,13 @@ const AiAssistantFeaturePage: React.FC = () => {
                   </div>
                 </div>
               )}
-              
+
               {activeTab === 'customization' && (
                 <div className="space-y-6">
                   <p className="text-gray-700">
                     Our AI Assistant is highly customizable to match your specific business needs, communication style, and sales process.
                   </p>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="border border-gray-200 rounded-lg p-4 hover:border-indigo-200 transition-colors">
                       <div className="flex items-center mb-3">
@@ -430,7 +430,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                         Define exactly how your AI Assistant should communicate, what information it should focus on, and your preferred response style.
                       </p>
                     </div>
-                    
+
                     <div className="border border-gray-200 rounded-lg p-4 hover:border-indigo-200 transition-colors">
                       <div className="flex items-center mb-3">
                         <Code size={18} className="text-indigo-600 mr-2" />
@@ -440,7 +440,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                         Connect the AI Assistant to your specific business operations and tools through custom function definitions.
                       </p>
                     </div>
-                    
+
                     <div className="border border-gray-200 rounded-lg p-4 hover:border-indigo-200 transition-colors">
                       <div className="flex items-center mb-3">
                         <FileText size={18} className="text-indigo-600 mr-2" />
@@ -450,7 +450,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                         Upload your company documents, product information, and sales materials for the AI to reference during conversations.
                       </p>
                     </div>
-                    
+
                     <div className="border border-gray-200 rounded-lg p-4 hover:border-indigo-200 transition-colors">
                       <div className="flex items-center mb-3">
                         <Brain size={18} className="text-indigo-600 mr-2" />
@@ -461,7 +461,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="mt-6 bg-gradient-to-r from-indigo-50 via-purple-50 to-violet-50 p-4 rounded-lg border border-indigo-100 relative overflow-hidden">
                     <div className="relative z-10">
                       <h3 className="font-medium text-indigo-900 mb-3">Create Multiple Assistants</h3>
@@ -479,7 +479,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                         Create specialized AI assistants for different roles and tasks within your sales organization.
                       </p>
                     </div>
-                    
+
                     {/* Decorative element */}
                     <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-indigo-200 rounded-full opacity-20"></div>
                     <div className="absolute -top-10 -left-10 w-20 h-20 bg-purple-200 rounded-full opacity-20"></div>
@@ -490,7 +490,7 @@ const AiAssistantFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Results Section */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -500,7 +500,7 @@ const AiAssistantFeaturePage: React.FC = () => {
               See how our AI Assistant is transforming sales teams and driving measurable outcomes.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             <div className="bg-white rounded-xl shadow-lg p-6 text-center border border-gray-100">
               <div className="text-4xl font-bold text-indigo-600 mb-2 flex justify-center items-baseline">
@@ -508,14 +508,14 @@ const AiAssistantFeaturePage: React.FC = () => {
               </div>
               <p className="text-gray-700">Average response time to customer inquiries</p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 text-center border border-gray-100">
               <div className="text-4xl font-bold text-indigo-600 mb-2 flex justify-center items-baseline">
                 4.8 <span className="text-base text-gray-500 ml-1">hours</span>
               </div>
               <p className="text-gray-700">Weekly time saved per sales representative</p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 text-center border border-gray-100">
               <div className="text-4xl font-bold text-indigo-600 mb-2 flex justify-center items-baseline">
                 28% <span className="text-base text-gray-500 ml-1">increase</span>
@@ -523,7 +523,7 @@ const AiAssistantFeaturePage: React.FC = () => {
               <p className="text-gray-700">In qualified opportunities identified</p>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100 max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row items-center">
               <div className="w-full md:w-1/3 mb-6 md:mb-0 md:pr-8">
@@ -551,7 +551,7 @@ const AiAssistantFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Features In Depth */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -561,7 +561,7 @@ const AiAssistantFeaturePage: React.FC = () => {
               Explore the full range of what our AI Assistant can do for your sales team.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="flex flex-col md:flex-row gap-6">
               <div className="p-3 bg-blue-100 rounded-full h-min text-blue-600">
@@ -588,7 +588,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                 </ul>
               </div>
             </div>
-            
+
             <div className="flex flex-col md:flex-row gap-6">
               <div className="p-3 bg-purple-100 rounded-full h-min text-purple-600">
                 <Calendar size={24} />
@@ -614,7 +614,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                 </ul>
               </div>
             </div>
-            
+
             <div className="flex flex-col md:flex-row gap-6">
               <div className="p-3 bg-green-100 rounded-full h-min text-green-600">
                 <Zap size={24} />
@@ -640,7 +640,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                 </ul>
               </div>
             </div>
-            
+
             <div className="flex flex-col md:flex-row gap-6">
               <div className="p-3 bg-amber-100 rounded-full h-min text-amber-600">
                 <Brain size={24} />
@@ -669,7 +669,7 @@ const AiAssistantFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Comparison Section */}
       <section className="py-20 bg-gradient-to-b from-white to-indigo-50">
         <div className="container mx-auto px-4">
@@ -679,7 +679,7 @@ const AiAssistantFeaturePage: React.FC = () => {
               See how our purpose-built AI Assistant compares to general-purpose AI tools.
             </p>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-xl shadow-lg overflow-hidden max-w-4xl mx-auto">
               <thead>
@@ -757,7 +757,7 @@ const AiAssistantFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Setup & Getting Started */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -767,7 +767,7 @@ const AiAssistantFeaturePage: React.FC = () => {
               Getting started with our AI Assistant takes minutes, not days or weeks.
             </p>
           </div>
-          
+
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
               <div className="relative">
@@ -780,7 +780,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                   </p>
                 </div>
               </div>
-              
+
               <div className="relative">
                 <div className="absolute top-0 left-8 h-full w-0.5 bg-indigo-100 z-0"></div>
                 <div className="relative z-10 flex flex-col items-center">
@@ -791,7 +791,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                   </p>
                 </div>
               </div>
-              
+
               <div className="relative">
                 <div className="relative z-10 flex flex-col items-center">
                   <div className="w-16 h-16 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xl mb-4">3</div>
@@ -802,7 +802,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-12 bg-gradient-to-r from-indigo-600 to-violet-600 rounded-xl shadow-xl p-8 text-white relative overflow-hidden">
               <div className="relative z-10">
                 <h3 className="text-2xl font-bold mb-4">Ready to Experience the Future of Sales?</h3>
@@ -824,7 +824,7 @@ const AiAssistantFeaturePage: React.FC = () => {
                   </Link>
                 </div>
               </div>
-              
+
               {/* Decorative elements */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full transform translate-x-1/2 -translate-y-1/2"></div>
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-white opacity-10 rounded-full transform -translate-x-1/2 translate-y-1/2"></div>
@@ -832,7 +832,7 @@ const AiAssistantFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       <LandingFooter />
     </div>
   );

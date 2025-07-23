@@ -1,5 +1,4 @@
 
-
 export type TaskType = 
   | 'email_generation' 
   | 'email_analysis'
@@ -12,17 +11,6 @@ export type TaskType =
   | 'market_analysis'
   | 'meeting_summarization'
   | 'business_analysis';
-
-export interface ModelRecommendation {
-  modelId: string;
-  modelName: string;
-  provider: string;
-  confidence: number;
-  reason: string;
-  costEfficiency: number; // 0-100
-  speed: number; // 0-100
-  quality: number; // 0-100
-}
 
 export interface TaskConfig {
   name: string;
@@ -201,11 +189,11 @@ class AITaskRecommender {
    */
   getModelRecommendation(taskType: TaskType, preferredProvider?: string): ModelRecommendation {
     const taskConfig = TASK_CONFIGS[taskType];
-    
+
     if (!taskConfig) {
       throw new Error(`Unknown task type: ${taskType}`);
     }
-    
+
     // Calculate scores for each model based on task requirements
     const scores = Object.entries(MODEL_PERFORMANCE).map(([modelId, performance]) => {
       // Skip if provider doesn't match (when specified)
@@ -216,13 +204,13 @@ class AITaskRecommender {
           return { modelId, score: 0 };
         }
       }
-      
+
       // Check if model matches complexity requirement
       const complexityMatch = performance.complexityMatch.includes(taskConfig.complexity);
       if (!complexityMatch) {
         return { modelId, score: 0 };
       }
-      
+
       // Calculate weighted score based on task priority
       let score = 0;
       const weights = {
@@ -230,28 +218,28 @@ class AITaskRecommender {
         quality: taskConfig.priority === 'quality' ? 0.6 : 0.2,
         cost: taskConfig.priority === 'cost' ? 0.6 : 0.2
       };
-      
+
       // If balanced, adjust weights
       if (taskConfig.priority === 'balanced') {
         weights.speed = 0.3;
         weights.quality = 0.4;
         weights.cost = 0.3;
       }
-      
+
       // Calculate final score (higher is better)
       score = (
         (performance.speed * weights.speed) +
         (performance.quality * weights.quality) +
         ((100 - performance.cost) * weights.cost) // Invert cost so lower cost = higher score
       ) / (weights.speed + weights.quality + weights.cost);
-      
+
       return { modelId, score };
     });
-    
+
     // Sort by score and get the best match
     scores.sort((a, b) => b.score - a.score);
     const bestMatch = scores[0];
-    
+
     if (bestMatch.score === 0) {
       // Fallback to a default model if no good matches
       return {
@@ -265,13 +253,13 @@ class AITaskRecommender {
         quality: 90
       };
     }
-    
+
     const selectedModel = MODEL_PERFORMANCE[bestMatch.modelId as keyof typeof MODEL_PERFORMANCE];
     const providerName = bestMatch.modelId.includes('gemma') ? 'Google Gemma' : 
                           bestMatch.modelId.includes('gemini') ? 'Google Gemini' : 'OpenAI';
-    
+
     const confidence = bestMatch.score / 100;
-    
+
     // Generate reason based on model strengths and task requirements
     let reason = '';
     if (taskConfig.priority === 'speed') {
@@ -283,13 +271,13 @@ class AITaskRecommender {
     } else {
       reason = `Provides a good balance of speed, quality, and cost for ${taskConfig.name.toLowerCase()}.`;
     }
-    
+
     const displayName = bestMatch.modelId
       .split('-')
       .map(part => part.charAt(0).toUpperCase() + part.slice(1))
       .join(' ')
       .replace('It', 'Instruction-tuned');
-    
+
     return {
       modelId: bestMatch.modelId,
       modelName: displayName,
@@ -307,11 +295,11 @@ class AITaskRecommender {
    */
   getAllRecommendations(): Record<TaskType, ModelRecommendation> {
     const recommendations: Partial<Record<TaskType, ModelRecommendation>> = {};
-    
+
     Object.keys(TASK_CONFIGS).forEach(taskType => {
       recommendations[taskType as TaskType] = this.getModelRecommendation(taskType as TaskType);
     });
-    
+
     return recommendations as Record<TaskType, ModelRecommendation>;
   }
 
@@ -325,11 +313,11 @@ class AITaskRecommender {
   } {
     const taskConfig = TASK_CONFIGS[taskType];
     const modelPerf = MODEL_PERFORMANCE[modelId as keyof typeof MODEL_PERFORMANCE];
-    
+
     if (!taskConfig || !modelPerf) {
       return { suitable: false, confidence: 0, reason: 'Invalid task type or model ID.' };
     }
-    
+
     // Check complexity match
     if (!modelPerf.complexityMatch.includes(taskConfig.complexity)) {
       return { 
@@ -338,11 +326,11 @@ class AITaskRecommender {
         reason: `This model is not well-suited for ${taskConfig.complexity} complexity tasks.`
       };
     }
-    
+
     // Check priority match
     let score = 0;
     let reason = '';
-    
+
     switch (taskConfig.priority) {
       case 'speed':
         score = modelPerf.speed / 100;
@@ -350,21 +338,21 @@ class AITaskRecommender {
           ? 'This model is well-suited for speed-prioritized tasks.'
           : 'This model may not be fast enough for this speed-critical task.';
         break;
-        
+
       case 'quality':
         score = modelPerf.quality / 100;
         reason = modelPerf.quality > 80
           ? 'This model is well-suited for quality-prioritized tasks.'
           : 'This model may not produce high enough quality for this task.';
         break;
-        
+
       case 'cost':
         score = (100 - modelPerf.cost) / 100;
         reason = modelPerf.cost < 30
           ? 'This model is cost-effective for this task.'
           : 'There may be more cost-effective options for this task.';
         break;
-        
+
       case 'balanced':
         score = ((modelPerf.speed + modelPerf.quality + (100 - modelPerf.cost)) / 3) / 100;
         reason = score > 0.7
@@ -372,7 +360,7 @@ class AITaskRecommender {
           : 'This model may not provide the best balance for this task.';
         break;
     }
-    
+
     return {
       suitable: score > 0.6,
       confidence: score,

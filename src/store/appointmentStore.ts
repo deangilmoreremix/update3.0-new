@@ -24,25 +24,6 @@ export interface Appointment {
   userId: string;
 }
 
-interface AppointmentState {
-  appointments: Record<string, Appointment>;
-  isLoading: boolean;
-  error: string | null;
-  selectedSlot: Date | null;
-  selectedAppointment: string | null;
-  
-  // Actions
-  fetchAppointments: () => Promise<void>;
-  createAppointment: (appointment: Partial<Appointment>) => Promise<Appointment>;
-  updateAppointment: (id: string, appointment: Partial<Appointment>) => Promise<Appointment>;
-  deleteAppointment: (id: string) => Promise<void>;
-  selectAppointment: (id: string | null) => void;
-  selectTimeSlot: (date: Date | null) => void;
-  isTimeSlotAvailable: (date: Date, duration?: number) => boolean;
-  getAppointmentsForDate: (date: Date) => Appointment[];
-  getUpcomingAppointments: (limit?: number) => Appointment[];
-}
-
 export const useAppointmentStore = create<AppointmentState>((set, get) => ({
   appointments: {
     'appt-1': {
@@ -100,15 +81,15 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
   error: null,
   selectedSlot: null,
   selectedAppointment: null,
-  
+
   fetchAppointments: async () => {
     set({ isLoading: true, error: null });
-    
+
     try {
       // In a real app, we would fetch appointments from an API
       // For the demo, we'll just use our mock data
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       set({ isLoading: false });
     } catch (err) {
       console.error('Error fetching appointments:', err);
@@ -118,21 +99,21 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       });
     }
   },
-  
+
   createAppointment: async (appointmentData: Partial<Appointment>) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       // In a real app, we would send this to an API
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       const appointmentId = uuidv4();
       const now = new Date();
-      
+
       // Create end date by adding duration to start date
       const endDate = new Date(appointmentData.date || now);
       endDate.setMinutes(endDate.getMinutes() + (appointmentData.duration || 30));
-      
+
       const newAppointment: Appointment = {
         id: appointmentId,
         title: appointmentData.title || 'New Appointment',
@@ -152,15 +133,15 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         updatedAt: now,
         userId: 'demo-user-123'
       };
-      
+
       const { appointments } = get();
-      
+
       set({ 
         appointments: { ...appointments, [appointmentId]: newAppointment },
         isLoading: false,
         selectedSlot: null
       });
-      
+
       return newAppointment;
     } catch (err) {
       console.error('Error creating appointment:', err);
@@ -171,21 +152,21 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       throw err;
     }
   },
-  
+
   updateAppointment: async (id: string, appointmentData: Partial<Appointment>) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       // In a real app, we would send this to an API
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       const { appointments } = get();
       const existingAppointment = appointments[id];
-      
+
       if (!existingAppointment) {
         throw new Error(`Appointment with id ${id} not found`);
       }
-      
+
       // If duration changed, update the endDate
       let endDate = appointmentData.endDate;
       if (appointmentData.date && appointmentData.duration) {
@@ -200,19 +181,19 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         endDate = new Date(existingAppointment.date);
         endDate.setMinutes(endDate.getMinutes() + appointmentData.duration);
       }
-      
+
       const updatedAppointment: Appointment = {
         ...existingAppointment,
         ...appointmentData,
         endDate: endDate || existingAppointment.endDate,
         updatedAt: new Date()
       };
-      
+
       set({ 
         appointments: { ...appointments, [id]: updatedAppointment },
         isLoading: false 
       });
-      
+
       return updatedAppointment;
     } catch (err) {
       console.error('Error updating appointment:', err);
@@ -223,17 +204,17 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       throw err;
     }
   },
-  
+
   deleteAppointment: async (id: string) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       // In a real app, we would send this to an API
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       const { appointments } = get();
       const { [id]: _deletedAppointment, ...remainingAppointments } = appointments;
-      
+
       set({ 
         appointments: remainingAppointments,
         isLoading: false,
@@ -248,24 +229,24 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       throw err;
     }
   },
-  
+
   selectAppointment: (id) => {
     set({ selectedAppointment: id });
   },
-  
+
   selectTimeSlot: (date) => {
     set({ selectedSlot: date });
   },
-  
+
   isTimeSlotAvailable: (date, duration = 30) => {
     const { appointments } = get();
     const startTime = date.getTime();
     const endTime = new Date(date.getTime() + duration * 60000).getTime();
-    
+
     return !Object.values(appointments).some(appointment => {
       const apptStartTime = appointment.date.getTime();
       const apptEndTime = appointment.endDate.getTime();
-      
+
       // Check if there is any overlap
       return (
         (startTime >= apptStartTime && startTime < apptEndTime) || // New start time falls within existing appointment
@@ -274,10 +255,10 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       );
     });
   },
-  
+
   getAppointmentsForDate: (date) => {
     const { appointments } = get();
-    
+
     return Object.values(appointments).filter(appointment => {
       const appointmentDate = new Date(appointment.date);
       return (
@@ -287,11 +268,11 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       );
     }).sort((a, b) => a.date.getTime() - b.date.getTime());
   },
-  
+
   getUpcomingAppointments: (limit = 5) => {
     const { appointments } = get();
     const now = new Date();
-    
+
     return Object.values(appointments)
       .filter(appointment => appointment.date >= now && appointment.status === 'scheduled')
       .sort((a, b) => a.date.getTime() - b.date.getTime())

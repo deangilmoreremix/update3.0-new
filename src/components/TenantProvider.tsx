@@ -22,13 +22,6 @@ interface Tenant {
   status: 'active' | 'suspended' | 'trial';
 }
 
-interface TenantContextType {
-  tenant: Tenant | null;
-  isLoading: boolean;
-  hasFeature: (feature: keyof Tenant['features']) => boolean;
-  applyBranding: () => void;
-}
-
 const TenantContext = createContext<TenantContextType | undefined>(undefined);
 
 export const useTenant = () => {
@@ -39,11 +32,7 @@ export const useTenant = () => {
   return context;
 };
 
-interface TenantProviderProps {
-  children: ReactNode;
-}
-
-export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
+export const TenantProvider: FC<TenantProviderProps> = ({ children }) => {
   const [tenant] = useState<Tenant>({
     id: 'default-tenant',
     name: 'Smart CRM',
@@ -63,7 +52,7 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
     plan: 'enterprise',
     status: 'active',
   });
-  
+
   const [isLoading] = useState(false);
 
   const hasFeature = (feature: keyof Tenant['features']) => {

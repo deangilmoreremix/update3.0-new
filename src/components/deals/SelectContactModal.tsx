@@ -4,14 +4,7 @@ import { Contact } from '../../types/contact';
 import { X, Search, User, Building2, Mail, Phone, Check, Plus, UserCircle } from 'lucide-react';
 import AddContactForm from './AddContactForm';
 
-interface SelectContactModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSelectContact: (contact: Contact) => void;
-  selectedContactId?: string;
-}
-
-export const SelectContactModal: React.FC<SelectContactModalProps> = ({
+export const SelectContactModal: FC<SelectContactModalProps> = ({
   isOpen,
   onClose,
   onSelectContact,
@@ -26,7 +19,7 @@ export const SelectContactModal: React.FC<SelectContactModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       fetchContacts();
-      
+
       // Pre-select the current contact if provided
       if (selectedContactId) {
         const currentContact = contacts.find(c => c.id === selectedContactId);
@@ -40,7 +33,7 @@ export const SelectContactModal: React.FC<SelectContactModalProps> = ({
   // Filter contacts based on search term
   const filteredContacts = useMemo(() => {
     if (!searchTerm.trim()) return contacts;
-    
+
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       contact.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -187,7 +180,7 @@ export const SelectContactModal: React.FC<SelectContactModalProps> = ({
                               <User className="w-5 h-5 text-blue-600" />
                             </div>
                           )}
-                          
+
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2">
                               <h4 className="font-medium text-gray-900 truncate">{contact.name}</h4>
@@ -198,7 +191,7 @@ export const SelectContactModal: React.FC<SelectContactModalProps> = ({
                               )}
                             </div>
                             <p className="text-sm text-gray-600 truncate">{contact.title}</p>
-                            
+
                             <div className="flex items-center space-x-4 mt-2">
                               <div className="flex items-center space-x-1 text-xs text-gray-500">
                                 <Building2 className="w-3 h-3" />

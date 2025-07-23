@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { ArrowDownRight, ArrowUpRight, Award, BarChart3, DollarSign, Target } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
 import { useNavigation } from '../../contexts/NavigationContext';
 
 const MetricsCards: React.FC = () => {

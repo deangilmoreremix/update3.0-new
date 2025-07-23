@@ -23,17 +23,6 @@ export interface Customer {
   updated_at: Date;
 }
 
-interface CustomerStore {
-  customers: Record<string, Customer>;
-  isLoading: boolean;
-  error: string | null;
-  fetchCustomers: () => Promise<void>;
-  updateCustomerLogo: (customerId: string, logoUrl: string) => Promise<void>;
-  addCustomer: (customer: Omit<Customer, 'id' | 'created_at' | 'updated_at'>) => Promise<string>;
-  updateCustomer: (id: string, updates: Partial<Customer>) => Promise<void>;
-  deleteCustomer: (id: string) => Promise<void>;
-}
-
 export const useCustomerStore = create<CustomerStore>((set, get) => ({
   customers: {},
   isLoading: false,

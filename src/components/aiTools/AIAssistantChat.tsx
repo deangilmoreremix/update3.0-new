@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useOpenAIAssistants } from '../../services/openaiAssistantsService';
-import { User, Bot, Send, RefreshCw, Plus, Settings, X, Save, MessagesSquare, Clock, Sparkles, Check } from 'lucide-react';
+import { User, Bot, Send, RefreshCw, Plus, Settings, X, Save, MessagesSquare, Clock, Sparkles } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -9,13 +9,9 @@ interface Message {
   createdAt: Date;
 }
 
-interface AIAssistantChatProps {
-  assistantId?: string;
-}
-
-const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssistantId }) => {
+const AIAssistantChat: FC<AIAssistantChatProps> = ({ assistantId: propAssistantId }) => {
   const assistants = useOpenAIAssistants();
-  
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [threadId, setThreadId] = useState<string | null>(null);
@@ -24,22 +20,22 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
   const [error, setError] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(!propAssistantId);
   const [runId, setRunId] = useState<string | null>(null);
-  
+
   // Settings form state
   const [assistantName, setAssistantName] = useState('Sales Assistant');
   const [assistantInstructions, setAssistantInstructions] = useState('You are a helpful sales assistant that helps with CRM tasks, deal analysis, and sales strategy.');
   const [selectedTools, setSelectedTools] = useState<string[]>(['retrieval']);
-  
+
   const messageEndRef = useRef<HTMLDivElement>(null);
   const messageContainerRef = useRef<HTMLDivElement>(null);
-  
+
   const initializeThread = useCallback(async () => {
     try {
       if (!threadId) {
         const thread = await assistants.createThread();
         setThreadId(thread.id);
         console.log('New thread created:', thread.id);
-        
+
         // Add welcome message
         setMessages(prev => [
           ...prev,
@@ -59,18 +55,18 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
 
   const checkRunStatus = useCallback(async () => {
     if (!threadId || !runId) return;
-    
+
     try {
       const run = await assistants.getRunStatus(threadId, runId);
-      
+
       if (run.status === 'completed') {
         // Get the latest messages
         const threadMessages = await assistants.getThreadMessages(threadId);
-        
+
         if (threadMessages.data.length > 0) {
           // Convert the latest assistant message to our format
           const latestAssistantMessage = threadMessages.data.find(m => m.role === 'assistant');
-          
+
           if (latestAssistantMessage && latestAssistantMessage.content[0].type === 'text') {
             const newMessage: Message = {
               id: latestAssistantMessage.id,
@@ -78,7 +74,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
               content: latestAssistantMessage.content[0].text.value,
               createdAt: new Date(latestAssistantMessage.created_at * 1000)
             };
-            
+
             // Check if we already have this message
             const messageExists = messages.some(m => m.id === newMessage.id);
             if (!messageExists) {
@@ -86,7 +82,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
             }
           }
         }
-        
+
         setRunId(null);
         setIsLoading(false);
       } else if (run.status === 'failed') {
@@ -95,7 +91,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
         setIsLoading(false);
       }
       // For other statuses (queued, in_progress), keep waiting
-      
+
     } catch (err) {
       setError('Error checking message status');
       console.error(err);
@@ -108,46 +104,46 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
   useEffect(() => {
     initializeThread();
   }, [initializeThread]);
-  
+
   // Scroll to bottom on new messages
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-  
+
   // Poll for updates when there's an active run
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
-    
+
     if (runId && threadId) {
       intervalId = setInterval(() => {
         checkRunStatus();
       }, 1000);
     }
-    
+
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
   }, [runId, threadId, checkRunStatus]);
-  
+
   const createNewAssistant = async () => {
     if (!assistantName || !assistantInstructions) {
       setError('Assistant name and instructions are required');
       return;
     }
-    
+
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const assistant = await assistants.createAssistant(
         assistantName,
         assistantInstructions,
         selectedTools
       );
-      
+
       setAssistantId(assistant.id);
       setShowSettings(false);
-      
+
       // Add confirmation message
       setMessages(prev => [
         ...prev,
@@ -165,14 +161,14 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
       setIsLoading(false);
     }
   };
-  
+
   const scrollToBottom = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-  
+
   const handleSendMessage = async () => {
     if (!input.trim() || !threadId || !assistantId) return;
-    
+
     // Add user message to the local state first for immediate feedback
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -180,27 +176,27 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
       content: input,
       createdAt: new Date()
     };
-    
+
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // Send message to the thread
       await assistants.addMessageToThread(threadId, input);
-      
+
       // Run the assistant
       const run = await assistants.runAssistant(threadId, assistantId);
       setRunId(run.id);
-      
+
     } catch (err) {
       setError('Error sending message');
       console.error(err);
       setIsLoading(false);
     }
   };
-  
+
   return (
     <div className="flex flex-col h-full rounded-xl border border-gray-200 overflow-hidden bg-white shadow-md transition-all duration-200 transform hover:shadow-lg">
       {/* Settings Panel */}
@@ -220,7 +216,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
               </button>
             )}
           </div>
-          
+
           <div className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-indigo-800 mb-2">
@@ -234,7 +230,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
                 placeholder="e.g., Sales Strategy Assistant"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-indigo-800 mb-2">
                 Instructions
@@ -247,7 +243,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
                 placeholder="Describe what the assistant should do and how it should behave..."
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-indigo-800 mb-2">
                 Capabilities
@@ -271,7 +267,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
                     Knowledge Retrieval
                   </label>
                 </div>
-                
+
                 <div className="flex items-center">
                   <input
                     type="checkbox"
@@ -290,7 +286,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
                     Data Analysis
                   </label>
                 </div>
-                
+
                 <div className="flex items-center">
                   <input
                     type="checkbox"
@@ -311,7 +307,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
                 </div>
               </div>
             </div>
-            
+
             <div className="pt-4">
               <button
                 onClick={createNewAssistant}
@@ -334,7 +330,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
           </div>
         </div>
       )}
-      
+
       {/* Messages Area */}
       <div ref={messageContainerRef} className="flex-1 p-4 overflow-y-auto bg-gray-50 bg-[linear-gradient(to_right,#f9fafb_1px,transparent_1px),linear-gradient(to_bottom,#f9fafb_1px,transparent_1px)] bg-[size:20px_20px]">
         <div className="space-y-4">
@@ -372,7 +368,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
             </div>
           ))}
           <div ref={messageEndRef} />
-          
+
           {isLoading && !runId && messages.length === 0 && (
             <div className="flex justify-center my-6">
               <div className="flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100">
@@ -380,7 +376,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
               </div>
             </div>
           )}
-          
+
           {isLoading && runId && (
             <div className="flex items-center space-x-2 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-indigo-100">
               <div className="relative">
@@ -404,7 +400,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
               </div>
             </div>
           )}
-          
+
           {error && (
             <div className="p-4 mt-2 bg-red-50 border border-red-100 rounded-lg text-red-700 text-sm flex items-start">
               <div className="bg-red-100 p-1 rounded-full mr-2 mt-0.5">
@@ -418,7 +414,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
           )}
         </div>
       </div>
-      
+
       {/* Action Bar */}
       <div className="bg-white p-4 border-t border-gray-200">
         <div className="flex justify-between items-center mb-3">
@@ -429,7 +425,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
             <Settings size={16} className="mr-1" />
             Assistant Settings
           </button>
-          
+
           {assistantId && (
             <button
               onClick={() => {
@@ -440,7 +436,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
                   content: 'Hello! I\'m your AI sales assistant. How can I help you today?',
                   createdAt: new Date()
                 }]);
-                
+
                 // Create a new thread
                 initializeThread();
               }}
@@ -451,7 +447,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
             </button>
           )}
         </div>
-        
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -485,7 +481,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
             )}
           </button>
         </form>
-        
+
         {!assistantId && !showSettings && (
           <div className="text-center mt-4">
             <button
@@ -497,7 +493,7 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ assistantId: propAssi
             </button>
           </div>
         )}
-        
+
         <div className="flex justify-between items-center mt-3 px-1 text-xs text-gray-500">
           <div className="flex items-center space-x-2">
             <Clock size={12} />

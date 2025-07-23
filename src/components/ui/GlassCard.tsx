@@ -1,14 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 
-interface GlassCardProps {
-  children: React.ReactNode;
-  className?: string;
-  onClick?: () => void;
-  hover?: boolean;
-}
-
-export const GlassCard: React.FC<GlassCardProps> = ({ 
+export const GlassCard: FC<GlassCardProps> = ({ 
   children, 
   className = '', 
   onClick,

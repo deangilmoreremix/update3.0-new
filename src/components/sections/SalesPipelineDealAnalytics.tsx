@@ -38,7 +38,7 @@ const SalesPipelineDealAnalytics: React.FC = () => {
           <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Sales Conversion Metrics</h3>
           <TrendingUp className={`h-5 w-5 ${isDark ? 'text-green-400' : 'text-green-600'}`} />
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg border ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
             <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Lead to Opportunity</p>
@@ -51,7 +51,7 @@ const SalesPipelineDealAnalytics: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg border ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
             <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Opportunity to Proposal</p>
             <div className="flex items-center justify-between mt-2">
@@ -63,7 +63,7 @@ const SalesPipelineDealAnalytics: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className={`p-4 ${isDark ? 'bg-white/5' : 'bg-gray-50'} rounded-lg border ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
             <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Proposal to Win</p>
             <div className="flex items-center justify-between mt-2">

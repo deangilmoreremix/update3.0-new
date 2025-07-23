@@ -1,22 +1,21 @@
 
-
 export async function personalizedEmailAgent(input: unknown, setSteps?: (steps: unknown) => void) {
   const name = input.name || "there";
   const company = input.company || "your company";
   const position = input.position || "professional";
-  
+
   setSteps?.([{ step: "Analyzing contact data..." }]);
-  
+
   // Analyze contact data to personalize the email
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
   setSteps?.(prev => [...prev, { step: "Researching industry context..." }]);
-  
+
   // Research industry context
   await new Promise(resolve => setTimeout(resolve, 1200));
-  
+
   setSteps?.(prev => [...prev, { step: "Generating personalized email..." }]);
-  
+
   // Generate personalized email content
   const emailContent = `
 Subject: Personalized Solution for ${company}'s Unique Challenges
@@ -37,9 +36,9 @@ Looking forward to your response,
 
 [Your Name]
   `;
-  
+
   setSteps?.(prev => [...prev, { step: "Email generated successfully", result: "Complete" }]);
-  
+
   return {
     subject: `Personalized Solution for ${company}'s Unique Challenges`,
     body: emailContent,

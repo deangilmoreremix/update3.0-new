@@ -3,17 +3,6 @@ import { useAuthStore } from '../../store/authStore';
 import { fetchContentItems, createContentItem, deleteContentItem } from '../../services/supabaseClient';
 import { FileText, Video, Headphones, Trash2, Plus, Search, RefreshCw, X, Music } from 'lucide-react';
 
-interface ContentItem {
-  id: string;
-  title: string;
-  type: 'podcast' | 'audiobook' | 'video' | 'voice_over';
-  url: string;
-  metadata?: unknown;
-  created_at?: string;
-  updated_at?: string;
-  user_id?: string;
-}
-
 const ContentLibrary: React.FC = () => {
   const { user } = useAuthStore();
   const [contentItems, setContentItems] = useState<ContentItem[]>([]);
@@ -23,17 +12,17 @@ const ContentLibrary: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<string>('all');
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
-  
+
   // New content item form
   const [newItemTitle, setNewItemTitle] = useState('');
   const [newItemType, setNewItemType] = useState<'podcast' | 'audiobook' | 'video' | 'voice_over'>('podcast');
   const [newItemUrl, setNewItemUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   useEffect(() => {
     loadContentItems();
   }, [user]);
-  
+
   const loadContentItems = async () => {
     setIsLoading(true);
     setError(null);
@@ -48,7 +37,7 @@ const ContentLibrary: React.FC = () => {
       setIsLoading(false);
     }
   };
-  
+
   const handleAddContent = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -60,17 +49,17 @@ const ContentLibrary: React.FC = () => {
         user_id: user?.id,
         metadata: {}
       };
-      
+
       const { error } = await createContentItem(newItem);
       if (error) throw error;
-      
+
       // Reset form and reload
       setNewItemTitle('');
       setNewItemType('podcast');
       setNewItemUrl('');
       setShowAddForm(false);
       loadContentItems();
-      
+
     } catch (err) {
       console.error("Error adding content item:", err);
       setError('Failed to add content item');
@@ -78,17 +67,17 @@ const ContentLibrary: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-  
+
   const handleDeleteContent = async (id: string) => {
     if (confirm('Are you sure you want to delete this item?')) {
       setIsDeleting(id);
       try {
         const { error } = await deleteContentItem(id);
         if (error) throw error;
-        
+
         // Remove item from state
         setContentItems(contentItems.filter(item => item.id !== id));
-        
+
       } catch (err) {
         console.error("Error deleting content item:", err);
         setError('Failed to delete content item');
@@ -97,7 +86,7 @@ const ContentLibrary: React.FC = () => {
       }
     }
   };
-  
+
   const getTypeIcon = (type: string) => {
     switch(type) {
       case 'podcast':
@@ -112,11 +101,11 @@ const ContentLibrary: React.FC = () => {
         return <FileText size={16} className="text-gray-500" />;
     }
   };
-  
+
   const filteredItems = contentItems
     .filter(item => filterType === 'all' || item.type === filterType)
     .filter(item => item.title.toLowerCase().includes(searchTerm.toLowerCase()));
-  
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <header className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -143,17 +132,17 @@ const ContentLibrary: React.FC = () => {
           </button>
         </div>
       </header>
-      
+
       {error && (
         <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6 border border-red-100">
           {error}
         </div>
       )}
-      
+
       {showAddForm && (
         <div className="card-modern p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">Add New Content</h2>
-          
+
           <form onSubmit={handleAddContent} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -168,7 +157,7 @@ const ContentLibrary: React.FC = () => {
                 placeholder="Enter content title"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Content Type
@@ -185,7 +174,7 @@ const ContentLibrary: React.FC = () => {
                 <option value="voice_over">Voice Over</option>
               </select>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Content URL
@@ -199,7 +188,7 @@ const ContentLibrary: React.FC = () => {
                 placeholder="https://example.com/content.mp3"
               />
             </div>
-            
+
             <div className="pt-2 flex justify-end">
               <button
                 type="button"
@@ -228,7 +217,7 @@ const ContentLibrary: React.FC = () => {
           </form>
         </div>
       )}
-      
+
       <div className="card-modern mb-6">
         <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="relative flex-grow max-w-md">
@@ -243,7 +232,7 @@ const ContentLibrary: React.FC = () => {
               className="pl-10 pr-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
-          
+
           <div className="flex space-x-2">
             <select
               value={filterType}
@@ -256,7 +245,7 @@ const ContentLibrary: React.FC = () => {
               <option value="video">Videos</option>
               <option value="voice_over">Voice Overs</option>
             </select>
-            
+
             <button 
               onClick={loadContentItems}
               className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50"
@@ -266,7 +255,7 @@ const ContentLibrary: React.FC = () => {
             </button>
           </div>
         </div>
-        
+
         {isLoading ? (
           <div className="p-8 text-center">
             <RefreshCw size={32} className="animate-spin mx-auto mb-4 text-blue-600" />

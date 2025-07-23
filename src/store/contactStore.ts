@@ -3,16 +3,6 @@ import { Contact } from '../types/contact';
 import { logger } from '../services/logger.service';
 import { avatarCollection } from '../utils/avatars';
 
-interface ContactStore {
-  contacts: Record<string, Contact>;
-  isLoading: boolean;
-  error: string | null;
-  fetchContacts: () => Promise<void>;
-  addContact: (contact: Omit<Contact, 'id' | 'createdAt' | 'updatedAt'>) => void;
-  updateContact: (id: string, updates: Partial<Contact>) => void;
-  deleteContact: (id: string) => void;
-}
-
 // Create sample contacts with data from both branches
 export const useContactStore = create<ContactStore>((set, _get) => ({
   contacts: {
@@ -236,7 +226,7 @@ export const useContactStore = create<ContactStore>((set, _get) => ({
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    
+
     set(state => ({
       contacts: { ...state.contacts, [newContact.id]: newContact }
     }));

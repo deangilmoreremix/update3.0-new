@@ -75,12 +75,6 @@ export interface Task {
   tags?: string[];
 }
 
-export interface ApiKeys {
-  openai?: string;
-  gemini?: string;
-  elevenlabs?: string;
-}
-
 interface Document {
   id: string;
   title: string;
@@ -134,17 +128,3 @@ interface SalesInsight {
   feedback?: 'helpful' | 'not-helpful' | 'neutral';
 }
 
-interface MarketTrend {
-  id: string;
-  title: string;
-  description: string;
-  industry: string;
-  region?: string;
-  impact: 'low' | 'medium' | 'high';
-  source?: string;
-  detectedAt: Date;
-  relevanceScore?: number;
-  opportunities?: string[];
-  threats?: string[];
-  relatedProducts?: string[];
-}

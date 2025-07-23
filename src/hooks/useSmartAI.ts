@@ -13,14 +13,6 @@ import { Contact } from '../types/contact';
 // Define types for task optimization
 export type TaskType = 'contact_scoring' | 'categorization' | 'contact_enrichment' | 'lead_qualification';
 
-interface TaskRecommendation {
-  recommendedModel: string;
-  recommendedProvider: string;
-  reasoning: string;
-  alternativeModels?: string[];
-  estimatedCost?: number;
-}
-
 interface TaskOptimizationMetrics {
   totalTasks: number;
   overallSuccessRate: number;
@@ -32,20 +24,6 @@ interface TaskOptimizationMetrics {
     avgCost: number;
     taskTypes: string[];
   }[];
-}
-
-export interface SmartAIState {
-  analyzing: boolean;
-  enriching: boolean;
-  results: Record<string, any>;
-  errors: Record<string, string>;
-  recommendations: Record<string, any>;
-  performance: unknown;
-}
-
-interface EnhancedAIAnalysisRequest {
-  contactId: string;
-  [key: string]: unknown;
 }
 
 interface SmartBulkRequest {
@@ -60,13 +38,13 @@ interface SmartBulkRequest {
 const enhancedAI = {
   scoreContact: async (contactId: string, contact: unknown, urgency: string = 'medium') => {
     console.log('Scoring contact with enhancedAI', { contactId, urgency });
-    
+
     // Use aiOrchestratorService to select the right model
     const result = await aiOrchestratorService.analyzeDeal(
       { contact, priority: urgency },
       { priority: urgency as any }
     );
-    
+
     return {
       contactId,
       score: Math.floor(Math.random() * 100),
@@ -75,16 +53,16 @@ const enhancedAI = {
       results: result.content
     };
   },
-  
+
   enrichContact: async (contactId: string, contact: unknown, priority: 'standard' | 'premium' = 'standard') => {
     console.log('Enriching contact with enhancedAI', { contactId, priority });
-    
+
     // Simulate enrichment with aiOrchestratorService
     const result = await aiOrchestratorService.generateContactInsights(
       [contact],
       { priority: priority === 'premium' ? 'quality' : 'balanced' }
     );
-    
+
     return {
       contactId,
       modelUsed: result.model,
@@ -92,17 +70,17 @@ const enhancedAI = {
       results: result.content
     };
   },
-  
+
   categorizeAndTag: async (contactId: string, contact: unknown) => {
     console.log('Categorizing contact', contactId);
-    
+
     // Use Gemma for categorization (typically faster)
     const result = await enhancedGeminiService.generateContent({
       prompt: `Categorize this contact and suggest tags: ${JSON.stringify(contact)}`,
       model: 'gemma-2-2b-it',
       featureUsed: 'categorization'
     });
-    
+
     return {
       contactId,
       modelUsed: result.model,
@@ -112,26 +90,26 @@ const enhancedAI = {
       }
     };
   },
-  
+
   qualifyLead: async (contactId: string, contact: unknown, businessContext?: string) => {
     console.log('Qualifying lead', contactId);
-    
+
     // Use more advanced models for qualification
     const result = await aiOrchestratorService.analyzeDeal(
       { contact, businessContext },
       { priority: 'quality' }
     );
-    
+
     return {
       contactId,
       modelUsed: result.model,
       results: result.content
     };
   },
-  
+
   smartBulkAnalysis: async (request: SmartBulkRequest) => {
     console.log('Running bulk analysis', request);
-    
+
     // Simulate batch processing
     const results = await Promise.all(
       request.contacts.slice(0, 10).map(async ({ contactId, contact }) => {
@@ -141,7 +119,7 @@ const enhancedAI = {
             { contact },
             { priority: request.urgency as any || 'balanced' }
           );
-          
+
           return {
             contactId,
             success: true,
@@ -157,7 +135,7 @@ const enhancedAI = {
         }
       })
     );
-    
+
     return {
       summary: {
         total: request.contacts.length,
@@ -170,17 +148,17 @@ const enhancedAI = {
       results
     };
   },
-  
+
   smartAnalyzeContact: async (request: EnhancedAIAnalysisRequest) => {
     console.log('Smart analyzing contact', request);
-    
+
     // Custom analysis
     const result = await enhancedGeminiService.generateContent({
       prompt: `Analyze this contact: ${JSON.stringify(request)}`,
       model: 'gemini-2.5-flash',
       featureUsed: 'custom-analysis'
     });
-    
+
     return {
       contactId: request.contactId,
       modelUsed: result.model,
@@ -190,7 +168,7 @@ const enhancedAI = {
       }
     };
   },
-  
+
   getTaskRecommendations: (taskType: string) => {
     // Map task types
     const mappedType: TaskType = 
@@ -199,12 +177,12 @@ const enhancedAI = {
       taskType === 'categorize' ? 'categorization' :
       taskType === 'qualify' ? 'lead_qualification' :
       'contact_scoring';
-    
+
     // Use the existing recommendations function
     const taskOptimization = new TaskOptimizationHelper();
     return taskOptimization.getRecommendations(mappedType);
   },
-  
+
   getPerformanceInsights: () => {
     return {
       totalTasks: aiOrchestratorService.getUsageStatistics().totalCalls || 0,
@@ -289,14 +267,14 @@ class TaskOptimizationHelper {
 
     return recommendations[taskType] || null;
   }
-  
+
   getInsights(data: unknown, customerId?: string) {
     return aiOrchestratorService.analyzePipelineHealth(data, {
       customerId,
       priority: 'quality'
     });
   }
-  
+
   getPerformance(): TaskOptimizationMetrics {
     return {
       totalTasks: aiOrchestratorService.getUsageStatistics().totalCalls || 0,
@@ -354,19 +332,19 @@ export const useSmartAI = () => {
     urgency: 'low' | 'medium' | 'high' = 'medium'
   ) => {
     setState(prev => ({ ...prev, analyzing: true, errors: { ...prev.errors, [contactId]: '' } }));
-    
+
     try {
       const result = await enhancedAI.scoreContact(contactId, contact, urgency);
-      
+
       setState(prev => ({
         ...prev,
         analyzing: false,
         results: { ...prev.results, [`score_${contactId}`]: result }
       }));
-      
+
       logger.info('Smart contact scoring completed', { contactId, urgency });
       return result;
-      
+
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Scoring failed';
       setState(prev => ({
@@ -374,7 +352,7 @@ export const useSmartAI = () => {
         analyzing: false,
         errors: { ...prev.errors, [contactId]: errorMessage }
       }));
-      
+
       logger.error('Smart contact scoring failed', error as Error, { contactId });
       throw error;
     }
@@ -387,19 +365,19 @@ export const useSmartAI = () => {
     priority: 'standard' | 'premium' = 'standard'
   ) => {
     setState(prev => ({ ...prev, enriching: true, errors: { ...prev.errors, [`enrich_${contactId}`]: '' } }));
-    
+
     try {
       const result = await enhancedAI.enrichContact(contactId, contact, priority);
-      
+
       setState(prev => ({
         ...prev,
         enriching: false,
         results: { ...prev.results, [`enrich_${contactId}`]: result }
       }));
-      
+
       logger.info('Smart contact enrichment completed', { contactId, priority });
       return result;
-      
+
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Enrichment failed';
       setState(prev => ({
@@ -407,7 +385,7 @@ export const useSmartAI = () => {
         enriching: false,
         errors: { ...prev.errors, [`enrich_${contactId}`]: errorMessage }
       }));
-      
+
       logger.error('Smart contact enrichment failed', error as Error, { contactId });
       throw error;
     }
@@ -419,18 +397,18 @@ export const useSmartAI = () => {
     contact: Contact
   ) => {
     setState(prev => ({ ...prev, analyzing: true }));
-    
+
     try {
       const result = await enhancedAI.categorizeAndTag(contactId, contact);
-      
+
       setState(prev => ({
         ...prev,
         analyzing: false,
         results: { ...prev.results, [`categorize_${contactId}`]: result }
       }));
-      
+
       return result;
-      
+
     } catch (error) {
       setState(prev => ({ ...prev, analyzing: false }));
       throw error;
@@ -444,18 +422,18 @@ export const useSmartAI = () => {
     businessContext?: string
   ) => {
     setState(prev => ({ ...prev, analyzing: true }));
-    
+
     try {
       const result = await enhancedAI.qualifyLead(contactId, contact, businessContext);
-      
+
       setState(prev => ({
         ...prev,
         analyzing: false,
         results: { ...prev.results, [`qualify_${contactId}`]: result }
       }));
-      
+
       return result;
-      
+
     } catch (error) {
       setState(prev => ({ ...prev, analyzing: false }));
       throw error;
@@ -473,7 +451,7 @@ export const useSmartAI = () => {
     }
   ) => {
     setState(prev => ({ ...prev, analyzing: true }));
-    
+
     try {
       const request: SmartBulkRequest = {
         contacts,
@@ -482,23 +460,23 @@ export const useSmartAI = () => {
         costLimit: options?.costLimit,
         timeLimit: options?.timeLimit
       };
-      
+
       const result = await enhancedAI.smartBulkAnalysis(request);
-      
+
       setState(prev => ({
         ...prev,
         analyzing: false,
         results: { ...prev.results, [`bulk_${analysisType}`]: result }
       }));
-      
+
       logger.info('Smart bulk analysis completed', { 
         contactCount: contacts.length,
         analysisType,
         successRate: result.summary.successful / result.summary.total
       });
-      
+
       return result;
-      
+
     } catch (error) {
       setState(prev => ({ ...prev, analyzing: false }));
       logger.error('Smart bulk analysis failed', error as Error);
@@ -509,18 +487,18 @@ export const useSmartAI = () => {
   // Advanced analysis with custom requirements
   const smartAnalyze = useCallback(async (request: EnhancedAIAnalysisRequest) => {
     setState(prev => ({ ...prev, analyzing: true }));
-    
+
     try {
       const result = await enhancedAI.smartAnalyzeContact(request);
-      
+
       setState(prev => ({
         ...prev,
         analyzing: false,
         results: { ...prev.results, [`custom_${request.contactId}`]: result }
       }));
-      
+
       return result;
-      
+
     } catch (error) {
       setState(prev => ({ ...prev, analyzing: false }));
       throw error;
@@ -531,14 +509,14 @@ export const useSmartAI = () => {
   const getTaskRecommendations = useCallback((taskType: string) => {
     try {
       const recommendations = enhancedAI.getTaskRecommendations(taskType);
-      
+
       setState(prev => ({
         ...prev,
         recommendations: { ...prev.recommendations, [taskType]: recommendations }
       }));
-      
+
       return recommendations;
-      
+
     } catch (error) {
       logger.error('Failed to get task recommendations', error as Error, { taskType });
       return null;
@@ -549,11 +527,11 @@ export const useSmartAI = () => {
   const getPerformanceInsights = useCallback(() => {
     try {
       const performance = enhancedAI.getPerformanceInsights();
-      
+
       setState(prev => ({ ...prev, performance }));
-      
+
       return performance;
-      
+
     } catch (error) {
       logger.error('Failed to get performance insights', error as Error);
       return null;
@@ -585,7 +563,7 @@ export const useSmartAI = () => {
     errors: state.errors,
     recommendations: state.recommendations,
     performance: state.performance,
-    
+
     // Core AI operations
     smartScoreContact,
     smartEnrichContact,
@@ -593,11 +571,11 @@ export const useSmartAI = () => {
     smartQualifyLead,
     smartBulkAnalysis,
     smartAnalyze,
-    
+
     // Insights and recommendations
     getTaskRecommendations,
     getPerformanceInsights,
-    
+
     // Utility functions
     getResult,
     getError,
@@ -609,7 +587,7 @@ export const useSmartAI = () => {
 // Specialized hooks for specific use cases
 export const useSmartScoring = () => {
   const { smartScoreContact, analyzing, getResult, getError } = useSmartAI();
-  
+
   return {
     scoreContact: smartScoreContact,
     analyzing,
@@ -620,7 +598,7 @@ export const useSmartScoring = () => {
 
 export const useSmartEnrichment = () => {
   const { smartEnrichContact, enriching, getResult, getError } = useSmartAI();
-  
+
   return {
     enrichContact: smartEnrichContact,
     enriching,
@@ -633,9 +611,9 @@ export const useSmartEnrichment = () => {
 export const useTaskOptimization = () => {
   const { _getTaskRecommendations, _getPerformanceInsights } = useSmartAI();
   const [performance, setPerformance] = useState<TaskOptimizationMetrics | null>(null);
-  
+
   const helper = new TaskOptimizationHelper();
-  
+
   const getRecommendations = useCallback((taskType: string): TaskRecommendation | null => {
     const mappedType: TaskType = 
       taskType === 'score' ? 'contact_scoring' :
@@ -643,10 +621,10 @@ export const useTaskOptimization = () => {
       taskType === 'categorize' ? 'categorization' :
       taskType === 'qualify' ? 'lead_qualification' :
       taskType as TaskType;
-    
+
     return helper.getRecommendations(mappedType);
   }, []);
-  
+
   const getInsights = useCallback(async (data: unknown, customerId?: string) => {
     try {
       const result = await helper.getInsights(data, customerId);
@@ -656,12 +634,12 @@ export const useTaskOptimization = () => {
       return null;
     }
   }, []);
-  
+
   // Initialize performance metrics
   useEffect(() => {
     setPerformance(helper.getPerformance());
   }, []);
-  
+
   return {
     getRecommendations,
     getInsights,

@@ -10,7 +10,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
   return (
     <div className="bg-white">
       <LandingHeader />
-      
+
       {/* Hero Section */}
       <section className="relative pt-20 bg-gradient-to-b from-white to-cyan-50">
         <div className="container mx-auto px-4 py-20">
@@ -50,7 +50,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                       <div className="h-3 w-3 rounded-full bg-green-500"></div>
                     </div>
                   </div>
-                  
+
                   <div className="p-6">
                     <div className="mb-4">
                       <div className="bg-gray-50 p-6 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center">
@@ -59,7 +59,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                         <p className="text-xs text-gray-400 text-center">Supports PNG, JPG, PDF, and more</p>
                       </div>
                     </div>
-                    
+
                     <div className="mb-4">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Analysis Type
@@ -71,7 +71,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                         <option>Product Comparison</option>
                       </select>
                     </div>
-                    
+
                     <button className="w-full p-3 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg font-medium hover:from-cyan-700 hover:to-blue-700 transition-colors flex items-center justify-center">
                       <Eye size={18} className="mr-2" />
                       Analyze Visual Content
@@ -83,7 +83,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Key Benefits Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
@@ -93,7 +93,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
               Our Vision Analyzer transforms visual content into actionable sales intelligence.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-cyan-100 rounded-full w-min mb-4">
@@ -104,7 +104,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                 Extract valuable information from images and documents in seconds, saving hours of manual review and analysis.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-blue-100 rounded-full w-min mb-4">
                 <FileSearch className="h-6 w-6 text-blue-600" />
@@ -114,7 +114,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                 Analyze competitor materials, presentations, and visuals to extract strategic insights for better positioning.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-purple-100 rounded-full w-min mb-4">
                 <FileText className="h-6 w-6 text-purple-600" />
@@ -127,7 +127,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Use Cases Section */}
       <section id="use-cases" className="py-20 bg-gradient-to-b from-cyan-50 to-white">
         <div className="container mx-auto px-4">
@@ -137,7 +137,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
               Discover the many ways sales teams are leveraging vision analysis to gain an edge.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="h-48 bg-gray-200 relative overflow-hidden">
@@ -173,7 +173,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="h-48 bg-gray-200 relative overflow-hidden">
                 <img 
@@ -208,7 +208,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="h-48 bg-gray-200 relative overflow-hidden">
                 <img 
@@ -243,7 +243,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="h-48 bg-gray-200 relative overflow-hidden">
                 <img 
@@ -278,7 +278,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="h-48 bg-gray-200 relative overflow-hidden">
                 <img 
@@ -313,7 +313,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="h-48 bg-gray-200 relative overflow-hidden">
                 <img 
@@ -349,7 +349,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="text-center mt-12">
             <Link to="/features/vision-analyzer/gallery" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-medium rounded-lg hover:shadow-md transition-colors">
               View More Use Cases <ArrowRight size={18} className="ml-2" />
@@ -357,7 +357,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Technology Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -367,7 +367,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
               Our Vision Analyzer is built on cutting-edge computer vision and natural language processing technologies.
             </p>
           </div>
-          
+
           <div className="flex flex-col md:flex-row items-center max-w-5xl mx-auto">
             <div className="w-full md:w-1/2 pr-0 md:pr-8 mb-8 md:mb-0">
               <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden shadow-lg">
@@ -376,7 +376,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="w-full md:w-1/2">
               <div className="space-y-5">
                 <div className="flex items-start">
@@ -390,7 +390,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <div className="p-2 bg-cyan-100 rounded-full text-cyan-600 mr-3 mt-0.5">
                     <FileText size={16} />
@@ -402,7 +402,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <div className="p-2 bg-cyan-100 rounded-full text-cyan-600 mr-3 mt-0.5">
                     <PieChart size={16} />
@@ -414,7 +414,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <div className="p-2 bg-cyan-100 rounded-full text-cyan-600 mr-3 mt-0.5">
                     <Search size={16} />
@@ -431,7 +431,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Example Results Section */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -441,7 +441,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
               See the type of insights our Vision Analyzer produces from different types of visual content.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12 max-w-6xl mx-auto">
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="h-64 bg-gray-200 relative overflow-hidden">
@@ -474,7 +474,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                       </li>
                     </ul>
                   </div>
-                  
+
                   <div>
                     <p className="text-sm font-medium text-gray-700">Timeline & Deadlines:</p>
                     <ul className="mt-1 space-y-1 text-sm">
@@ -488,7 +488,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                       </li>
                     </ul>
                   </div>
-                  
+
                   <div>
                     <p className="text-sm font-medium text-gray-700">Decision Criteria:</p>
                     <ul className="mt-1 space-y-1 text-sm">
@@ -511,7 +511,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                     </ul>
                   </div>
                 </div>
-                
+
                 <div className="mt-4 flex justify-end">
                   <button className="text-cyan-600 hover:text-cyan-800 text-sm font-medium flex items-center">
                     <PlusCircle size={16} className="mr-1" />
@@ -520,7 +520,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="h-64 bg-gray-200 relative overflow-hidden">
                 <img 
@@ -552,7 +552,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                       </li>
                     </ul>
                   </div>
-                  
+
                   <div>
                     <p className="text-sm font-medium text-gray-700">Pricing Structure:</p>
                     <ul className="mt-1 space-y-1 text-sm">
@@ -566,7 +566,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                       </li>
                     </ul>
                   </div>
-                  
+
                   <div>
                     <p className="text-sm font-medium text-gray-700">Competitive Advantages:</p>
                     <ul className="mt-1 space-y-1 text-sm">
@@ -585,7 +585,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                     </ul>
                   </div>
                 </div>
-                
+
                 <div className="mt-4 flex justify-end">
                   <button className="text-cyan-600 hover:text-cyan-800 text-sm font-medium flex items-center">
                     <PlusCircle size={16} className="mr-1" />
@@ -594,7 +594,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="h-64 bg-gray-200 relative overflow-hidden">
                 <img 
@@ -626,7 +626,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                       </li>
                     </ul>
                   </div>
-                  
+
                   <div>
                     <p className="text-sm font-medium text-gray-700">Opportunity Areas:</p>
                     <ul className="mt-1 space-y-1 text-sm">
@@ -640,7 +640,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                       </li>
                     </ul>
                   </div>
-                  
+
                   <div>
                     <p className="text-sm font-medium text-gray-700">Extracted Data Points:</p>
                     <div className="mt-1 text-sm">
@@ -649,7 +649,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="mt-4 flex justify-end">
                   <button className="text-cyan-600 hover:text-cyan-800 text-sm font-medium flex items-center">
                     <PlusCircle size={16} className="mr-1" />
@@ -658,7 +658,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="h-64 bg-gray-200 relative overflow-hidden">
                 <img 
@@ -690,7 +690,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                       </li>
                     </ul>
                   </div>
-                  
+
                   <div>
                     <p className="text-sm font-medium text-gray-700">Project Timeline:</p>
                     <ul className="mt-1 space-y-1 text-sm">
@@ -704,7 +704,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                       </li>
                     </ul>
                   </div>
-                  
+
                   <div>
                     <p className="text-sm font-medium text-gray-700">Decision Makers:</p>
                     <ul className="mt-1 space-y-1 text-sm">
@@ -719,7 +719,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                     </ul>
                   </div>
                 </div>
-                
+
                 <div className="mt-4 flex justify-end">
                   <button className="text-cyan-600 hover:text-cyan-800 text-sm font-medium flex items-center">
                     <PlusCircle size={16} className="mr-1" />
@@ -731,7 +731,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Testimonials Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -741,7 +741,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
               Hear from sales teams who have transformed their process with Vision Analyzer.
             </p>
           </div>
-          
+
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="flex flex-col md:flex-row items-center">
@@ -768,7 +768,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
                 <p className="text-gray-700 italic mb-4">
@@ -788,7 +788,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
                 <p className="text-gray-700 italic mb-4">
                   "The chart analysis feature is so powerful. I took a photo of a market trend slide during a client presentation, and immediately got insights about growing segments we should target."
@@ -811,7 +811,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Integration Section */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -821,7 +821,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
               Vision Analyzer integrates deeply with your CRM workflow to enhance your sales process.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow">
               <div className="flex items-center mb-4">
@@ -837,7 +837,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                 Saves an average of 2 minutes per contact
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-3">
@@ -852,7 +852,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
                 28% higher win rate with visual intelligence
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 mr-3">
@@ -870,7 +870,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-cyan-600 to-blue-600 text-white">
         <div className="container mx-auto px-4 text-center">
@@ -891,7 +891,7 @@ const VisionAnalyzerFeaturePage: React.FC = () => {
           <p className="mt-4 opacity-80">No credit card required • Free for 14 days</p>
         </div>
       </section>
-      
+
       <LandingFooter />
     </div>
   );

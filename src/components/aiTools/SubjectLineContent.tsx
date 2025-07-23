@@ -9,7 +9,7 @@ const SubjectLineContent: React.FC = () => {
     audience: '',
     keyMessage: '',
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -50,7 +50,7 @@ const SubjectLineContent: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // Using the market trends function to simulate subject line generation
       const _result = await edgeFunctionService.analyzeMarketTrends(
@@ -58,7 +58,7 @@ const SubjectLineContent: React.FC = () => {
         formData.audience,
         formData.purpose
       );
-      
+
       // Format the result as subject line suggestions
       const formattedResult = `# Email Subject Line Suggestions
 
@@ -151,7 +151,7 @@ Based on your inputs:
               ))}
             </select>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Target Audience
@@ -171,7 +171,7 @@ Based on your inputs:
               ))}
             </select>
           </div>
-          
+
           <div>
             <label htmlFor="keyMessage" className="block text-sm font-medium text-gray-700 mb-1">
               Key Message or Offer
@@ -187,7 +187,7 @@ Based on your inputs:
               required
             ></textarea>
           </div>
-            
+
           <div className="flex justify-between items-center pt-4 border-t border-gray-200">
             <div className="flex gap-4">
               <div className="flex items-center text-xs text-gray-500">

@@ -55,7 +55,7 @@ export const DarkModeToggle: React.FC = () => {
           {isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
         </span>
       </button>
-      
+
       {/* Theme options dropdown button */}
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -73,7 +73,7 @@ export const DarkModeToggle: React.FC = () => {
       >
         <ChevronDown className="h-4 w-4" />
       </button>
-      
+
       {/* Dropdown menu */}
       <div 
         id="theme-menu" 

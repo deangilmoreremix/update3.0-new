@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { useTenant } from './TenantProvider';
-import { User, Check } from 'lucide-react';
+import { User } from 'lucide-react';
 
 interface User {
   id: string;
@@ -14,18 +14,6 @@ interface User {
   status: 'active' | 'inactive' | 'suspended';
 }
 
-interface RoleContextType {
-  user: User | null;
-  isLoading: boolean;
-  hasPermission: (permission: string) => boolean;
-  hasRole: (role: string) => boolean;
-  canAccess: (resource: string) => boolean;
-  isSuperAdmin: () => boolean;
-  isPartnerAdmin: () => boolean;
-  isCustomerAdmin: () => boolean;
-  isEndUser: () => boolean;
-}
-
 const RoleContext = createContext<RoleContextType | undefined>(undefined);
 
 export const useRole = () => {
@@ -36,11 +24,7 @@ export const useRole = () => {
   return context;
 };
 
-interface RoleProviderProps {
-  children: React.ReactNode;
-}
-
-export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
+export const RoleProvider: FC<RoleProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { tenant } = useTenant();
@@ -48,12 +32,12 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
   const fetchUserRole = useCallback(async () => {
     try {
       setIsLoading(true);
-      
+
       // Get current user with role information
       const response = await fetch('/api/auth/user-role', {
         headers: tenant ? { 'X-Tenant-ID': tenant.id } : {},
       });
-      
+
       if (response.ok) {
         const userData = await response.json();
         setUser(userData.user);
@@ -85,10 +69,10 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
 
   const canAccess = (resource: string): boolean => {
     if (!user) return false;
-    
+
     // Super admin can access everything
     if (user.role === 'super_admin') return true;
-    
+
     // Define resource access rules
     const accessRules: Record<string, string[]> = {
       'super_admin_dashboard': ['super_admin'],
@@ -134,15 +118,8 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
 };
 
 // HOC for protecting routes based on roles
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-  requiredRole?: string;
-  requiredPermission?: string;
-  resource?: string;
-  fallback?: React.ReactNode;
-}
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+export const ProtectedRoute: FC<ProtectedRouteProps> = ({
   children,
   requiredRole,
   requiredPermission,
@@ -182,15 +159,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 };
 
 // Component for conditional rendering based on permissions
-interface ConditionalRenderProps {
-  children: React.ReactNode;
-  role?: string;
-  permission?: string;
-  resource?: string;
-  inverse?: boolean;
-}
 
-export const ConditionalRender: React.FC<ConditionalRenderProps> = ({
+export const ConditionalRender: FC<ConditionalRenderProps> = ({
   children,
   role,
   permission,
@@ -222,12 +192,8 @@ export const ConditionalRender: React.FC<ConditionalRenderProps> = ({
 };
 
 // Role badge component
-interface RoleBadgeProps {
-  role: string;
-  className?: string;
-}
 
-export const RoleBadge: React.FC<RoleBadgeProps> = ({ role, className = '' }) => {
+export const RoleBadge: FC<RoleBadgeProps> = ({ role, className = '' }) => {
   const getRoleColor = (role: string) => {
     switch (role) {
       case 'super_admin':
@@ -270,7 +236,7 @@ export const RoleBadge: React.FC<RoleBadgeProps> = ({ role, className = '' }) =>
 // Permission checker hook
 export const usePermissions = () => {
   const { user, hasPermission, hasRole, canAccess } = useRole();
-  
+
   return {
     user,
     can: hasPermission,

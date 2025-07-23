@@ -14,7 +14,7 @@ const EmailComposerContent: React.FC = () => {
     emailPurpose: '',
     additionalContext: ''
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +38,7 @@ const EmailComposerContent: React.FC = () => {
     setIsLoading(true);
     setError(null);
     setReasoning(null);
-    
+
     try {
       const _contactInfo = {
         name: formData.recipientName,
@@ -125,7 +125,7 @@ const EmailComposerContent: React.FC = () => {
                 onChange={handleChange}
               />
             </div>
-            
+
             <div>
               <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                 <Building className="h-4 w-4 mr-1 text-gray-500" />
@@ -141,7 +141,7 @@ const EmailComposerContent: React.FC = () => {
               />
             </div>
           </div>
-          
+
           <div>
             <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
               <FileText className="h-4 w-4 mr-1 text-gray-500" />
@@ -156,7 +156,7 @@ const EmailComposerContent: React.FC = () => {
               onChange={handleChange}
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email Purpose
@@ -181,7 +181,7 @@ const EmailComposerContent: React.FC = () => {
                 </button>
               ))}
             </div>
-            
+
             <textarea
               name="emailPurpose"
               rows={3}
@@ -192,7 +192,7 @@ const EmailComposerContent: React.FC = () => {
               required
             ></textarea>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Additional Context (Optional)
@@ -206,7 +206,7 @@ const EmailComposerContent: React.FC = () => {
               onChange={handleChange}
             ></textarea>
           </div>
-            
+
           <div className="flex justify-end">
             <button
               type="submit"
@@ -265,21 +265,5 @@ const EmailComposerContent: React.FC = () => {
 };
 
 // CheckIcon component
-const CheckIcon = ({ size, className }: { size: number, className?: string }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    className={className}
-  >
-    <path d="M20 6L9 17l-5-5"/>
-  </svg>
-);
 
 export default EmailComposerContent;

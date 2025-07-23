@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GlassCard } from '../ui/GlassCard';
 import { AvatarWithStatus } from '../ui/AvatarWithStatus';
-import { Search, Bell, Settings, ChevronDown, BarChart3, Users, TrendingUp, Bot, Mail, Phone, Calendar, MessageSquare, FileText, Zap, Video, PieChart, Globe, User } from 'lucide-react';
+import { Search, Bell, Settings, ChevronDown } from 'lucide-react';
 
 const aiTools = [
   { name: 'Email Composer', icon: Mail },
@@ -70,7 +70,7 @@ export const EnhancedNavbar: React.FC = () => {
         <span>{title}</span>
         <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
-      
+
       {isOpen && (
         <div className="absolute top-full left-0 mt-2 w-72 bg-white/95 backdrop-blur-md border border-white/20 rounded-xl shadow-lg z-50 max-h-96 overflow-y-auto">
           <div className="p-2">
@@ -103,7 +103,7 @@ export const EnhancedNavbar: React.FC = () => {
             </div>
             <span className="font-semibold text-lg">Smart CRM</span>
           </div>
-          
+
           <nav className="flex items-center space-x-1">
             <button className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white">
               Dashboard
@@ -117,7 +117,7 @@ export const EnhancedNavbar: React.FC = () => {
             <button className="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
               AI Goals
             </button>
-            
+
             <Dropdown 
               title="AI Tools (29+)" 
               items={aiTools} 
@@ -151,16 +151,16 @@ export const EnhancedNavbar: React.FC = () => {
               className="pl-10 pr-4 py-2 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
             />
           </div>
-          
+
           <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors relative">
             <Bell className="w-5 h-5" />
             <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
           </button>
-          
+
           <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
             <Settings className="w-5 h-5" />
           </button>
-          
+
           <div className="flex items-center space-x-2 cursor-pointer">
             <AvatarWithStatus
               src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2"

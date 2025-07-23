@@ -3,24 +3,7 @@ import { AlertCircle, Check, Eye, File, Loader2, Trash2, Upload } from 'lucide-r
 import { useTheme } from '../contexts/ThemeContext';
 import { supabase, STORAGE_BUCKETS } from '../lib/supabase';
 
-interface CompanyLogoUploaderProps {
-  customerId: string;
-  currentLogoUrl?: string;
-  onUploadSuccess?: (logoUrl: string) => void;
-  onUploadError?: (error: string) => void;
-  maxSizeMB?: number;
-  allowedTypes?: string[];
-  className?: string;
-}
-
-interface UploadState {
-  uploading: boolean;
-  progress: number;
-  error: string | null;
-  success: boolean;
-}
-
-const CompanyLogoUploader: React.FC<CompanyLogoUploaderProps> = ({
+const CompanyLogoUploader: FC<CompanyLogoUploaderProps> = ({
   customerId,
   currentLogoUrl,
   onUploadSuccess,
@@ -119,12 +102,12 @@ const CompanyLogoUploader: React.FC<CompanyLogoUploaderProps> = ({
           if (error) {
             throw error;
           }
-          
+
           // Get public URL
           const { data: urlData } = supabase.storage
             .from(STORAGE_BUCKETS.COMPANY_LOGOS)
             .getPublicUrl(filePath);
-          
+
           resolve(urlData.publicUrl);
         })
         .catch(reject);
@@ -226,7 +209,7 @@ const CompanyLogoUploader: React.FC<CompanyLogoUploaderProps> = ({
     setSelectedFile(null);
     setPreview(currentLogoUrl || null);
     setUploadState(prev => ({ ...prev, error: null, success: false }));
-    
+
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -324,7 +307,7 @@ const CompanyLogoUploader: React.FC<CompanyLogoUploaderProps> = ({
                   <Upload className={`w-8 h-8 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
                 )}
               </div>
-              
+
               <div>
                 <p className={`text-lg font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
                   {uploadState.uploading ? 'Uploading...' : 'Upload Company Logo'}

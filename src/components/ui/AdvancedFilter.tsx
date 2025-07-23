@@ -1,18 +1,7 @@
 import React, { useState } from 'react';
 import { Filter, X, Plus } from 'lucide-react';
 
-interface FilterCondition {
-  field: string;
-  operator: string;
-  value: string | number;
-}
-
-interface AdvancedFilterProps {
-  onApplyFilters: (filters: FilterCondition[]) => void;
-  onClearFilters: () => void;
-}
-
-export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ 
+export const AdvancedFilter: FC<AdvancedFilterProps> = ({ 
   onApplyFilters, 
   onClearFilters 
 }) => {
@@ -73,7 +62,7 @@ export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({
 
   const handleAddFilter = () => {
     if (!newFilter.value && typeof newFilter.value !== 'number') return;
-    
+
     setFilters([...filters, newFilter]);
     setNewFilter({
       field: 'value',
@@ -144,7 +133,7 @@ export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({
             {/* Add New Filter */}
             <div className="space-y-3">
               <h4 className="text-sm font-medium text-gray-700">Add Filter</h4>
-              
+
               <div className="flex space-x-2">
                 <select
                   className="flex-1 border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
@@ -155,7 +144,7 @@ export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({
                     <option key={field.id} value={field.id}>{field.label}</option>
                   ))}
                 </select>
-                
+
                 <select
                   className="flex-1 border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   value={newFilter.operator}
@@ -165,7 +154,7 @@ export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({
                     <option key={op.id} value={op.id}>{op.label}</option>
                   ))}
                 </select>
-                
+
                 {valueOptions[newFilter.field as keyof typeof valueOptions] ? (
                   <select
                     className="flex-1 border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
@@ -190,7 +179,7 @@ export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({
                     })}
                   />
                 )}
-                
+
                 <button
                   onClick={handleAddFilter}
                   className="p-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
@@ -200,7 +189,7 @@ export const AdvancedFilter: React.FC<AdvancedFilterProps> = ({
                 </button>
               </div>
             </div>
-            
+
             {/* Actions */}
             <div className="flex justify-between mt-6 pt-4 border-t border-gray-200">
               <button

@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { supabaseAIService } from './supabaseAIService';
 
 interface ChatMessage {
@@ -64,13 +63,13 @@ class OpenAIService {
   private stripMarkdownCodeBlocks(content: string): string {
     // Remove markdown code blocks (```json...``` or ```...```)
     let cleaned = content.trim();
-    
+
     // Remove opening code block markers
     cleaned = cleaned.replace(/^```(?:json|javascript|js)?\s*/i, '');
-    
+
     // Remove closing code block markers
     cleaned = cleaned.replace(/\s*```\s*$/i, '');
-    
+
     // Remove any remaining leading/trailing whitespace
     return cleaned.trim();
   }
@@ -95,7 +94,7 @@ class OpenAIService {
 
     const startTime = Date.now();
     const model = request.model || this.defaultModel;
-    
+
     try {
       const response = await fetch(`${this.baseUrl}/chat/completions`, {
         method: 'POST',
@@ -120,11 +119,11 @@ class OpenAIService {
 
       const data = await response.json();
       const responseTime = Date.now() - startTime;
-      
+
       // Extract function calls if any
       let functionCalls;
       let content;
-      
+
       if (data.choices[0]?.message?.function_call) {
         functionCalls = [data.choices[0].message.function_call];
         content = '';
@@ -153,7 +152,7 @@ class OpenAIService {
         try {
           const modelConfig = await supabaseAIService.getModelById(model);
           const cost = this.calculateCost(model, result.usage.totalTokens, modelConfig);
-          
+
           await supabaseAIService.logUsage({
             customer_id: validCustomerId,
             model_id: model,
@@ -202,10 +201,10 @@ class OpenAIService {
       // Use pricing from database if available
       const inputTokens = Math.floor(tokens * 0.7);
       const outputTokens = tokens - inputTokens;
-      
+
       const inputCost = (inputTokens / 1_000_000) * modelConfig.pricing.input_per_1m_tokens;
       const outputCost = (outputTokens / 1_000_000) * modelConfig.pricing.output_per_1m_tokens;
-      
+
       return inputCost + outputCost;
     }
 
@@ -238,18 +237,18 @@ class OpenAIService {
         body: `Dear ${context.recipient},\n\nI hope this email finds you well.\n\n[Please configure OpenAI API key to enable AI-generated content]\n\nBest regards`
       };
     }
-    
+
     const tone = context.tone || 'professional';
     const systemPrompt = `You are a professional email writing assistant. Write clear, engaging emails that drive action. Always format your response as JSON with subject and body fields. Do not wrap the JSON in markdown code blocks.`;
 
     const messages: ChatMessage[] = [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: `Generate a ${tone} email for the following context:
-      
+
       Recipient: ${context.recipient}
       Purpose: ${context.purpose}
       Additional Context: ${context.context || 'None'}
-      
+
       Format as JSON:
       {
         "subject": "string",
@@ -300,15 +299,15 @@ class OpenAIService {
         potentialBlockers: ["Set up API keys to enable AI analysis"]
       };
     }
-    
+
     const systemPrompt = `You are an AI specialized in sales analytics. Analyze the provided deal data and return insightful observations in JSON format only. Do not wrap the JSON in markdown code blocks.`;
-    
+
     const messages: ChatMessage[] = [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: `Analyze this deal data and provide actionable insights:
-      
+
       ${JSON.stringify(dealData)}
-      
+
       Format your response as JSON with the following structure:
       {
         "riskLevel": "low|medium|high",
@@ -365,15 +364,15 @@ class OpenAIService {
         forecastAccuracy: 0
       };
     }
-    
+
     const systemPrompt = `You are an AI specialized in sales pipeline analysis. Examine the provided pipeline data and identify patterns, bottlenecks, and opportunities. Return only valid JSON without markdown formatting.`;
-    
+
     const messages: ChatMessage[] = [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: `Analyze this pipeline data and provide actionable insights:
-      
+
       ${JSON.stringify(pipelineData)}
-      
+
       Format your response as JSON with the following structure:
       {
         "healthScore": number,
@@ -442,19 +441,19 @@ class OpenAIService {
         notes: "API key not configured - please set up OpenAI API key to enable AI-generated agendas."
       };
     }
-    
+
     const systemPrompt = `You are an AI specialized in meeting planning and facilitation. Create clear, focused meeting agendas that make excellent use of time. Return only valid JSON without markdown formatting.`;
-    
+
     const messages: ChatMessage[] = [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: `Create a meeting agenda for the following context:
-      
+
       Meeting Title: ${context.meetingTitle}
       Attendees: ${context.attendees.join(', ')}
       Purpose: ${context.purpose}
       Duration: ${context.duration} minutes
       Previous Notes: ${context.previousNotes || 'None'}
-      
+
       Format your response as JSON with the following structure:
       {
         "title": "string",

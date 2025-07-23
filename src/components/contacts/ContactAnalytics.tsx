@@ -4,15 +4,11 @@ import {
   BarChart, LineChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   Cell, PieChart, Pie 
 } from '../charts/SafeCharts';
-import { Activity, ArrowDown, ArrowUp, BarChart, BarChart2, Calendar, Clock, DollarSign, Eye, LineChart, Mail, MessageSquare, PieChart, Star, Target, TrendingUp } from 'lucide-react';
+import { ArrowDown, ArrowUp, BarChart, BarChart2, Calendar, Clock, DollarSign, Eye, LineChart, Mail, MessageSquare, PieChart, Star, TrendingUp } from 'lucide-react';
 
-interface ContactAnalyticsProps {
-  contact: Contact;
-}
-
-export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) => {
+export const ContactAnalytics: FC<ContactAnalyticsProps> = ({ contact }) => {
   // Sample data for charts and analytics - in a real app, this would come from API calls
-  
+
   // Engagement trend data
   const engagementData = [
     { month: 'Jan', emails: 4, calls: 1, meetings: 1, score: 40 },
@@ -22,7 +18,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
     { month: 'May', emails: 10, calls: 1, meetings: 1, score: 80 },
     { month: 'Jun', emails: 8, calls: 2, meetings: 2, score: 85 }
   ];
-  
+
   // Communication breakdown
   const communicationData = [
     { name: 'Emails', value: 37, color: '#3b82f6' },
@@ -30,14 +26,14 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
     { name: 'Meetings', value: 7, color: '#8b5cf6' },
     { name: 'SMS', value: 5, color: '#f59e0b' }
   ];
-  
+
   // Email engagement
   const emailEngagementData = [
     { name: 'Open Rate', value: 76, color: '#3b82f6' },
     { name: 'Click Rate', value: 42, color: '#10b981' },
     { name: 'Response Rate', value: 31, color: '#8b5cf6' }
   ];
-  
+
   // Page visits data
   const pageVisitsData = [
     { page: 'Homepage', visits: 12 },
@@ -46,7 +42,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
     { page: 'Blog', visits: 4 },
     { page: 'Contact Us', visits: 2 }
   ];
-  
+
   // Time to response data
   const timeToResponseData = [
     { day: 'Mon', hours: 2.5 },
@@ -57,7 +53,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
     { day: 'Sat', hours: 4.2 },
     { day: 'Sun', hours: 5.0 }
   ];
-  
+
   // Deal metrics
   const dealMetrics = {
     total: 3,
@@ -69,7 +65,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
     winRate: 100,
     conversionTime: 32 // days
   };
-  
+
   // Calculate engagement metrics
   const engagementMetrics = {
     totalInteractions: 60,
@@ -77,7 +73,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
     avgResponseTime: 2.4, // hours
     engagementScore: contact.aiScore || 70
   };
-  
+
   // Calculate key performance indicators
   const kpis = [
     {
@@ -116,7 +112,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
         <BarChart2 className="w-5 h-5 mr-2 text-blue-600" />
         Contact Analytics Dashboard
       </h3>
-      
+
       {/* KPI Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map((kpi, index) => (
@@ -139,7 +135,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
           </div>
         ))}
       </div>
-      
+
       {/* Engagement Trend Chart */}
       <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
         <div className="flex items-center justify-between mb-4">
@@ -154,7 +150,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
             <option>All Time</option>
           </select>
         </div>
-        
+
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={engagementData}>
@@ -202,7 +198,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
           </ResponsiveContainer>
         </div>
       </div>
-      
+
       {/* Multi-Chart Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Communication Mix */}
@@ -248,7 +244,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
             </div>
           </div>
         </div>
-        
+
         {/* Email Engagement */}
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
           <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
@@ -272,7 +268,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
           </div>
         </div>
       </div>
-      
+
       {/* Second Multi-Chart Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Website Activity */}
@@ -301,7 +297,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
             </ResponsiveContainer>
           </div>
         </div>
-        
+
         {/* Response Time */}
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
           <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
@@ -334,14 +330,14 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
           </div>
         </div>
       </div>
-      
+
       {/* Deal Metrics */}
       <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
         <h4 className="text-base font-semibold text-gray-900 mb-6 flex items-center">
           <BarChartIcon className="w-4 h-4 mr-2 text-blue-600" />
           Deal Metrics
         </h4>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="text-center">
             <div className="inline-flex items-center justify-center p-4 bg-blue-100 rounded-full mb-3">
@@ -350,7 +346,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
             <p className="text-2xl font-bold text-gray-900">{dealMetrics.total}</p>
             <p className="text-sm text-gray-600">Total Deals</p>
           </div>
-          
+
           <div className="text-center">
             <div className="inline-flex items-center justify-center p-4 bg-green-100 rounded-full mb-3">
               <DollarSign className="w-6 h-6 text-green-600" />
@@ -358,7 +354,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
             <p className="text-2xl font-bold text-gray-900">${dealMetrics.totalValue.toLocaleString()}</p>
             <p className="text-sm text-gray-600">Total Value</p>
           </div>
-          
+
           <div className="text-center">
             <div className="inline-flex items-center justify-center p-4 bg-purple-100 rounded-full mb-3">
               <TrendingUp className="w-6 h-6 text-purple-600" />
@@ -366,7 +362,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
             <p className="text-2xl font-bold text-gray-900">{dealMetrics.winRate}%</p>
             <p className="text-sm text-gray-600">Win Rate</p>
           </div>
-          
+
           <div className="text-center">
             <div className="inline-flex items-center justify-center p-4 bg-yellow-100 rounded-full mb-3">
               <Calendar className="w-6 h-6 text-yellow-600" />
@@ -375,7 +371,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
             <p className="text-sm text-gray-600">Avg. Conversion</p>
           </div>
         </div>
-        
+
         <div className="mt-8 pt-6 border-t border-gray-200">
           <div className="flex justify-between items-center mb-4">
             <h5 className="text-sm font-medium text-gray-700">Active Deals</h5>
@@ -383,7 +379,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
               {dealMetrics.active} Active
             </span>
           </div>
-          
+
           <div className="space-y-3">
             <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
               <div className="flex justify-between mb-2">
@@ -397,7 +393,7 @@ export const ContactAnalytics: React.FC<ContactAnalyticsProps> = ({ contact }) =
                 </span>
               </div>
             </div>
-            
+
             <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
               <div className="flex justify-between mb-2">
                 <h6 className="text-sm font-medium text-gray-900">Cloud Infrastructure Setup</h6>

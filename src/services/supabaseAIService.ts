@@ -1,4 +1,3 @@
-import React from 'react';
 import { supabase } from '../lib/supabase';
 
 export interface AIModelConfig {
@@ -19,20 +18,6 @@ export interface AIModelConfig {
   description?: string;
   created_at: Date;
   updated_at: Date;
-}
-
-export interface AIUsageLog {
-  id: string;
-  customer_id?: string;
-  user_id?: string;
-  model_id: string;
-  feature_used: string;
-  tokens_used: number;
-  cost: number;
-  response_time_ms: number;
-  success: boolean;
-  error_message?: string;
-  created_at: Date;
 }
 
 // Fallback model configurations when database is not available
@@ -182,7 +167,7 @@ class SupabaseAIService {
       // Check if environment variables are set to actual values (not placeholders)
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-      
+
       if (!supabaseUrl || !supabaseKey || 
           supabaseUrl.includes('your_supabase_project_url') ||
           supabaseKey.includes('your_supabase_anon_key') ||
@@ -208,7 +193,7 @@ class SupabaseAIService {
       console.warn('Supabase connection check failed. Using fallback configurations:', error);
       this.supabaseAvailable = false;
     }
-    
+
     this.connectionChecked = true;
   }
 
@@ -237,14 +222,14 @@ class SupabaseAIService {
         customerId.length < 10) {
       return undefined;
     }
-    
+
     // Check if it's a valid UUID format (basic validation)
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(customerId)) {
       console.debug(`Invalid customer ID format: ${customerId}, treating as null`);
       return undefined;
     }
-    
+
     return customerId;
   }
 
@@ -253,7 +238,7 @@ class SupabaseAIService {
    */
   async getAvailableModels(): Promise<AIModelConfig[]> {
     await this.ensureConnectionChecked();
-    
+
     if (!this.supabaseAvailable) {
       return Object.values(FALLBACK_MODELS).filter(model => model.is_active);
     }
@@ -292,7 +277,7 @@ class SupabaseAIService {
    */
   async getModelsByProvider(provider: string): Promise<AIModelConfig[]> {
     await this.ensureConnectionChecked();
-    
+
     if (!this.supabaseAvailable) {
       return Object.values(FALLBACK_MODELS).filter(model => 
         model.is_active && model.provider === provider
@@ -372,18 +357,18 @@ class SupabaseAIService {
    */
   async getRecommendedModels(useCase?: string): Promise<AIModelConfig[]> {
     await this.ensureConnectionChecked();
-    
+
     if (!this.supabaseAvailable) {
       const recommended = Object.values(FALLBACK_MODELS).filter(model => 
         model.is_active && model.is_recommended
       );
-      
+
       if (useCase) {
         return recommended.filter(model => 
           model.capabilities.includes(useCase)
         );
       }
-      
+
       return recommended;
     }
 
@@ -406,13 +391,13 @@ class SupabaseAIService {
         const recommended = Object.values(FALLBACK_MODELS).filter(model => 
           model.is_active && model.is_recommended
         );
-        
+
         if (useCase) {
           return recommended.filter(model => 
             model.capabilities.includes(useCase)
           );
         }
-        
+
         return recommended;
       }
 
@@ -426,13 +411,13 @@ class SupabaseAIService {
       const recommended = Object.values(FALLBACK_MODELS).filter(model => 
         model.is_active && model.is_recommended
       );
-      
+
       if (useCase) {
         return recommended.filter(model => 
           model.capabilities.includes(useCase)
         );
       }
-      
+
       return recommended;
     }
   }
@@ -442,7 +427,7 @@ class SupabaseAIService {
    */
   async logUsage(usage: Omit<AIUsageLog, 'id' | 'created_at'>): Promise<void> {
     await this.ensureConnectionChecked();
-    
+
     if (!this.supabaseAvailable) {
       console.debug('Supabase not available, skipping usage logging');
       return;
@@ -450,7 +435,7 @@ class SupabaseAIService {
 
     // Validate customer ID before attempting to insert
     const validCustomerId = this.validateCustomerId(usage.customer_id);
-    
+
     const cleanedUsage = {
       ...usage,
       customer_id: validCustomerId // This will be undefined if invalid, which Supabase treats as NULL
@@ -475,7 +460,7 @@ class SupabaseAIService {
    */
   async getUsageStats(customerId?: string, timeframe: 'day' | 'week' | 'month' = 'month') {
     await this.ensureConnectionChecked();
-    
+
     if (!this.supabaseAvailable) {
       console.warn('Supabase not available, returning empty usage stats');
       return [];
@@ -484,7 +469,7 @@ class SupabaseAIService {
     try {
       const now = new Date();
       const startDate = new Date();
-      
+
       switch (timeframe) {
         case 'day':
           startDate.setDate(now.getDate() - 1);
@@ -526,7 +511,7 @@ class SupabaseAIService {
       // Process the data for statistics
       const stats = (data || []).reduce((acc, log) => {
         const modelId = log.model_id;
-        
+
         if (!acc[modelId]) {
           acc[modelId] = {
             modelId,
@@ -546,7 +531,7 @@ class SupabaseAIService {
         acc[modelId].totalCost += log.cost || 0;
         acc[modelId].avgResponseTime += log.response_time_ms || 0;
         acc[modelId].features.add(log.feature_used);
-        
+
         if (log.success) {
           acc[modelId].successRate++;
         }
@@ -573,7 +558,7 @@ class SupabaseAIService {
    */
   async getAgentModels(): Promise<AIModelConfig[]> {
     await this.ensureConnectionChecked();
-    
+
     if (!this.supabaseAvailable) {
       return Object.values(FALLBACK_MODELS).filter(model => 
         model.is_active && 
@@ -623,7 +608,7 @@ class SupabaseAIService {
    */
   async updateAgentModel(agentId: string, modelId: string): Promise<void> {
     await this.ensureConnectionChecked();
-    
+
     if (!this.supabaseAvailable) {
       console.warn('Supabase not available, cannot update agent model');
       return;

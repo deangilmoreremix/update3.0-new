@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MoreHorizontal, Mail, MapPin, Building, Video } from 'lucide-react';
+import { MoreHorizontal, Mail, MapPin, Building } from 'lucide-react';
 import Avatar from './ui/Avatar';
 import CallButton from './CallButton';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -7,11 +7,7 @@ import { getInitials } from '../utils/avatars';
 import { useTheme } from '../contexts/ThemeContext';
 import { Contact } from '../types/contact';
 
-interface ContactCardProps {
-  contact: Contact;
-}
-
-const ContactCard: React.FC<ContactCardProps> = ({ contact }) => {
+const ContactCard: FC<ContactCardProps> = ({ contact }) => {
   const { isDark } = useTheme();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -48,7 +44,7 @@ const ContactCard: React.FC<ContactCardProps> = ({ contact }) => {
           }}
         >
           <MoreHorizontal className="h-4 w-4" />
-          
+
           {menuOpen && (
             <div 
               className={`absolute right-0 mt-1 w-40 ${
@@ -68,7 +64,7 @@ const ContactCard: React.FC<ContactCardProps> = ({ contact }) => {
                 <MapPin size={14} className="text-gray-400" />
                 <span>Edit Contact</span>
               </button>
-              
+
               <button 
                 className={`w-full text-left px-3 py-2 text-sm ${
                   isDark ? 'hover:bg-white/5 text-white' : 'hover:bg-gray-100 text-gray-700'
@@ -85,7 +81,7 @@ const ContactCard: React.FC<ContactCardProps> = ({ contact }) => {
           )}
         </button>
       </div>
-      
+
       <div className="space-y-3">
         <div>
           <h3 className={`font-medium ${isDark ? 'text-white group-hover:text-green-400' : 'text-gray-900 group-hover:text-green-600'} transition-colors`}>
@@ -99,12 +95,12 @@ const ContactCard: React.FC<ContactCardProps> = ({ contact }) => {
             </div>
           )}
         </div>
-        
+
         <div className={`flex items-center space-x-2 text-xs ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
           <span>Source:</span>
           <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>{contact.source || (contact.sources && contact.sources[0]) || 'Unknown'}</span>
         </div>
-        
+
         <div className="flex flex-wrap gap-1">
           <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(contact.interestLevel || contact.status)}`}>
             {contact.interestLevel || contact.status}
@@ -118,12 +114,12 @@ const ContactCard: React.FC<ContactCardProps> = ({ contact }) => {
             </span>
           ))}
         </div>
-        
+
         <div className="flex items-center justify-between pt-2">
           <button className={`p-2 ${isDark ? 'bg-white/10 hover:bg-green-400/20' : 'bg-gray-100 hover:bg-green-100'} rounded-lg transition-colors`}>
             <Mail className={`h-4 w-4 ${isDark ? 'text-gray-400 hover:text-green-400' : 'text-gray-500 hover:text-green-600'}`} />
           </button>
-          
+
           {/* Video/Audio Call Buttons */}
           <CallButton 
             contact={contact} 

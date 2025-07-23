@@ -3,13 +3,7 @@ import { runAgentWorkflow } from '../../agents/AgentOrchestrator';
 import agentButtonMap from '../../agents/agentButtons';
 import { X, Copy, CheckCircle, Send, Check } from 'lucide-react';
 
-interface AgentModalProps {
-  agentId: string;
-  data: unknown;
-  onClose: () => void;
-}
-
-const AgentModal: React.FC<AgentModalProps> = ({ agentId, data, onClose }) => {
+const AgentModal: FC<AgentModalProps> = ({ agentId, data, onClose }) => {
   const [steps, setSteps] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState<unknown>(null);
@@ -87,7 +81,7 @@ const AgentModal: React.FC<AgentModalProps> = ({ agentId, data, onClose }) => {
             <h4 className="font-bold text-blue-800 mb-2">Enriched Profile</h4>
             <p className="text-sm whitespace-pre-wrap">{data.enrichedProfile}</p>
           </div>
-          
+
           {data.potentialPainPoints && data.potentialPainPoints.length > 0 && (
             <div className="bg-amber-50 p-4 rounded-lg border border-amber-100">
               <h4 className="font-bold text-amber-800 mb-2">Potential Pain Points</h4>
@@ -98,7 +92,7 @@ const AgentModal: React.FC<AgentModalProps> = ({ agentId, data, onClose }) => {
               </ul>
             </div>
           )}
-          
+
           {data.recommendedApproach && (
             <div className="bg-green-50 p-4 rounded-lg border border-green-100">
               <h4 className="font-bold text-green-800 mb-2">Recommended Approach</h4>
@@ -131,11 +125,11 @@ const AgentModal: React.FC<AgentModalProps> = ({ agentId, data, onClose }) => {
           </div>
         );
       }
-      
+
       // Otherwise show as plain text
       return <p className="whitespace-pre-wrap text-sm">{result}</p>;
     }
-    
+
     // Handle JSON/object results
     return renderJsonOutput(result);
   };
@@ -220,7 +214,7 @@ const AgentModal: React.FC<AgentModalProps> = ({ agentId, data, onClose }) => {
             >
               Close
             </button>
-            
+
             <div className="flex space-x-2">
               <button 
                 className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm flex items-center"
@@ -230,7 +224,7 @@ const AgentModal: React.FC<AgentModalProps> = ({ agentId, data, onClose }) => {
                 <CheckCircle size={16} className="mr-1.5" />
                 Create Task
               </button>
-              
+
               {agentId === 'ai-sdr' && (
                 <button 
                   className="px-3 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm flex items-center"

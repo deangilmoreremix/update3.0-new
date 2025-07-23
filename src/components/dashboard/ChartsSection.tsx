@@ -5,7 +5,7 @@ import { useDealStore } from '../../store/dealStore';
 import { useContactStore } from '../../store/contactStore';
 import Avatar from '../ui/Avatar';
 import { getInitials } from '../../utils/avatars';
-import { BarChart as BarChartIcon, BarChart3, LineChart as LineChartIcon, PieChart as PieChartIcon, TrendingUp } from 'lucide-react';
+import { BarChart3, TrendingUp } from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -50,7 +50,7 @@ const ChartsSection: React.FC = () => {
     const activeDeals = Object.values(deals).filter(deal => 
       deal.stage !== 'closed-lost'
     );
-    
+
     return activeDeals.map(deal => {
       const contact = contacts[deal.contactId];
       return contact ? {
@@ -65,7 +65,7 @@ const ChartsSection: React.FC = () => {
   const renderAvatarStack = (contacts: Array<{ id: string; name: string; avatar?: string }>, maxVisible: number = 3) => {
     const visibleContacts = contacts.slice(0, maxVisible);
     const remainingCount = Math.max(0, contacts.length - maxVisible);
-    
+
     return (
       <div className="flex items-center mt-2">
         <div className="flex -space-x-2">
@@ -130,7 +130,7 @@ const ChartsSection: React.FC = () => {
         <h2 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
           Sales Analytics
         </h2>
-        
+
         <div className="flex items-center space-x-4">
           {/* Chart Type Tabs */}
           <div className="flex border rounded-lg overflow-hidden">
@@ -149,7 +149,7 @@ const ChartsSection: React.FC = () => {
               <LineChart size={16} className="mr-1.5" />
               <span>Performance</span>
             </button>
-            
+
             <button
               onClick={() => setActiveTab('pipeline')}
               className={`flex items-center px-3 py-1.5 text-sm ${
@@ -165,7 +165,7 @@ const ChartsSection: React.FC = () => {
               <BarChart3 size={16} className="mr-1.5" />
               <span>Pipeline</span>
             </button>
-            
+
             <button
               onClick={() => setActiveTab('breakdown')}
               className={`flex items-center px-3 py-1.5 text-sm ${
@@ -182,7 +182,7 @@ const ChartsSection: React.FC = () => {
               <span>Breakdown</span>
             </button>
           </div>
-          
+
           {/* Time Frame Selector */}
           <div className="flex">
             {['week', 'month', 'quarter'].map((period) => (
@@ -266,7 +266,7 @@ const ChartsSection: React.FC = () => {
             </RechartsLineChart>
           </ResponsiveContainer>
         )}
-        
+
         {activeTab === 'pipeline' && (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
@@ -295,7 +295,7 @@ const ChartsSection: React.FC = () => {
             </BarChart>
           </ResponsiveContainer>
         )}
-        
+
         {activeTab === 'breakdown' && (
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -326,7 +326,7 @@ const ChartsSection: React.FC = () => {
           </ResponsiveContainer>
         )}
       </div>
-      
+
       {/* Key Metrics */}
       <div className="grid grid-cols-4 gap-4 mt-6">
         <div className={`p-3 rounded-lg ${isDark ? 'bg-white/5' : 'bg-gray-50'}`}>
@@ -342,7 +342,7 @@ const ChartsSection: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className={`p-3 rounded-lg ${isDark ? 'bg-white/5' : 'bg-gray-50'}`}>
           <div className="flex items-center">
             <TrendingUp className={`w-4 h-4 mr-2 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
@@ -358,7 +358,7 @@ const ChartsSection: React.FC = () => {
           {/* Add avatar stack for deals */}
           {dealsForAvgSizeContacts.length > 0 && renderAvatarStack(dealsForAvgSizeContacts)}
         </div>
-        
+
         <div className={`p-3 rounded-lg ${isDark ? 'bg-white/5' : 'bg-gray-50'}`}>
           <div className="flex items-center">
             <TrendingUp className={`w-4 h-4 mr-2 ${isDark ? 'text-purple-400' : 'text-purple-600'}`} />
@@ -372,7 +372,7 @@ const ChartsSection: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className={`p-3 rounded-lg ${isDark ? 'bg-white/5' : 'bg-gray-50'}`}>
           <div className="flex items-center">
             <TrendingUp className={`w-4 h-4 mr-2 ${isDark ? 'text-orange-400' : 'text-orange-600'}`} />

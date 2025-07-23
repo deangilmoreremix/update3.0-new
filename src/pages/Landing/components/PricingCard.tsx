@@ -2,17 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Link, Zap } from 'lucide-react';
 
-interface PricingCardProps {
-  tier: string;
-  price: number;
-  description: string;
-  buttonText: string;
-  features: string[];
-  popular?: boolean;
-  color?: string;
-}
-
-const PricingCard: React.FC<PricingCardProps> = ({
+const PricingCard: FC<PricingCardProps> = ({
   tier,
   price,
   description,
@@ -33,7 +23,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
           </div>
         </div>
       )}
-      
+
       <div className="text-center mb-6">
         <h3 className="text-xl font-bold mb-2">{tier}</h3>
         <div className="flex justify-center items-start mb-2">
@@ -43,7 +33,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
         </div>
         <p className="text-gray-600 text-sm">{description}</p>
       </div>
-      
+
       <div className="space-y-3 mb-8">
         {features.map((feature, index) => (
           <div key={index} className="flex items-start">
@@ -52,7 +42,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
           </div>
         ))}
       </div>
-      
+
       <div className="text-center mt-auto">
         <Link
           to="/dashboard"

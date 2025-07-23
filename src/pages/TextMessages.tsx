@@ -11,16 +11,6 @@ interface Message {
   status: 'sending' | 'sent' | 'delivered' | 'read' | 'failed';
 }
 
-interface Contact {
-  id: string;
-  name: string;
-  phone: string;
-  unread: number;
-  lastMessage?: string;
-  lastActivity?: Date;
-  messages: Message[];
-}
-
 // SMS configuration
 interface SmsProvider {
   name: string;
@@ -29,19 +19,6 @@ interface SmsProvider {
     [key: string]: string;
   };
   status: 'active' | 'inactive' | 'error';
-}
-
-interface TemplateCategory {
-  id: string;
-  name: string;
-}
-
-interface MessageTemplate {
-  id: string;
-  name: string;
-  content: string;
-  category: string;
-  variables: string[];
 }
 
 interface ScheduledMessage {
@@ -54,7 +31,7 @@ interface ScheduledMessage {
 
 const TextMessages: React.FC = () => {
   const openai = useOpenAI();
-  
+
   // SMS Provider configuration
   const [smsProvider, setSmsProvider] = useState<SmsProvider>({
     name: 'twilio',
@@ -66,10 +43,10 @@ const TextMessages: React.FC = () => {
     },
     status: process.env.TWILIO_ACCOUNT_SID ? 'active' : 'inactive'
   });
-  
+
   // Show provider configuration modal
   const [showProviderConfig, setShowProviderConfig] = useState(false);
-  
+
   // Mock contacts with message history
   const [contacts, setContacts] = useState<Contact[]>([
     {
@@ -145,7 +122,7 @@ const TextMessages: React.FC = () => {
       ]
     }
   ]);
-  
+
   const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -194,7 +171,7 @@ const TextMessages: React.FC = () => {
       variables: ['name', 'amount', 'date']
     }
   ]);
-  
+
   // Template categories
   const [templateCategories, _setTemplateCategories] = useState<TemplateCategory[]>([
     { id: 'follow-up', name: 'Follow Up' },
@@ -203,10 +180,10 @@ const TextMessages: React.FC = () => {
     { id: 'greeting', name: 'Greetings' },
     { id: 'payment', name: 'Payments' }
   ]);
-  
+
   // Selected template category filter
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  
+
   // Message scheduling
   const [scheduledMessage, setScheduledMessage] = useState<{
     content: string;
@@ -243,51 +220,51 @@ const TextMessages: React.FC = () => {
     responseRate: 84,
     averageResponseTime: '2.3 hours'
   });
-  
+
   // New contact form
   const [newContact, setNewContact] = useState({
     name: '',
     phone: '',
     email: ''
   });
-  
+
   const messageEndRef = useRef<HTMLDivElement>(null);
-  
+
   const selectedContact = contacts.find(contact => contact.id === selectedContactId);
-  
+
   // Auto-scroll to latest message
   useEffect(() => {
     if (messageEndRef.current) {
       messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [selectedContact?.messages]);
-  
+
   const selectContact = (contactId: string) => {
     setSelectedContactId(contactId);
-    
+
     // Mark unread messages as read
     setContacts(contacts.map(contact => 
       contact.id === contactId 
         ? { ...contact, unread: 0 } 
         : contact
     ));
-    
+
     // Close any open panels
     setShowTemplates(false);
     setShowScheduler(false);
     setGeneratedText(null);
   };
-  
+
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(searchText.toLowerCase()) ||
     contact.phone.includes(searchText)
   );
-  
+
   const sendMessage = () => {
     if (!selectedContactId || !newMessage.trim()) return;
-    
+
     setIsSending(true);
-    
+
     // Create new message
     const newMessageObj: Message = {
       id: `m${Date.now()}`,
@@ -296,7 +273,7 @@ const TextMessages: React.FC = () => {
       timestamp: new Date(),
       status: 'sending'
     };
-    
+
     // Update contacts state with the new message
     setContacts(contacts.map(contact => 
       contact.id === selectedContactId 
@@ -308,10 +285,10 @@ const TextMessages: React.FC = () => {
           }
         : contact
     ));
-    
+
     // Clear input
     setNewMessage('');
-    
+
     // Simulate message delivery
     setTimeout(() => {
       setContacts(contacts.map(contact => 
@@ -326,7 +303,7 @@ const TextMessages: React.FC = () => {
             }
           : contact
       ));
-      
+
       // Simulate delivery receipt after a bit more time
       setTimeout(() => {
         setContacts(prevContacts => 
@@ -343,7 +320,7 @@ const TextMessages: React.FC = () => {
               : contact
           )
         );
-        
+
         // Simulate read receipt after yet more time
         setTimeout(() => {
           setContacts(prevContacts => 
@@ -362,16 +339,16 @@ const TextMessages: React.FC = () => {
           );
         }, 2000);
       }, 1500);
-      
+
       setIsSending(false);
     }, 1500);
   };
-  
+
   const formatDate = (date: Date) => {
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-    
+
     if (date.toDateString() === today.toDateString()) {
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     } else if (date.toDateString() === yesterday.toDateString()) {
@@ -380,7 +357,7 @@ const TextMessages: React.FC = () => {
       return date.toLocaleDateString();
     }
   };
-  
+
   const applyTemplate = (templateContent: string) => {
     if (selectedContact) {
       const personalizedContent = templateContent.replace('{name}', selectedContact.name);
@@ -388,38 +365,38 @@ const TextMessages: React.FC = () => {
       setShowTemplates(false);
     }
   };
-  
+
   const generateTextSuggestion = async () => {
     if (!selectedContact) return;
-    
+
     setIsGenerating(true);
     setGeneratedText(null);
-    
+
     try {
       // Use the OpenAI service to generate a text message suggestion
       const result = await openai.generateEmailDraft(
         selectedContact.name,
         "Short text message follow-up (keep it under 160 characters)"
       );
-      
+
       // Extract just a simple message part from the generated content
       let message = result;
-      
+
       // If it has multiple paragraphs, just take the first one
       if (result.includes('\n\n')) {
         message = result.split('\n\n')[0];
       }
-      
+
       // Remove any "Subject:" line if present
       if (message.toLowerCase().startsWith('subject:')) {
         message = message.split('\n').slice(1).join('\n').trim();
       }
-      
+
       // Remove signature if present
       if (message.includes('\n\nBest')) {
         message = message.split('\n\nBest')[0];
       }
-      
+
       setGeneratedText(message);
     } catch (error) {
       console.error("Failed to generate text suggestion:", error);
@@ -427,22 +404,22 @@ const TextMessages: React.FC = () => {
       setIsGenerating(false);
     }
   };
-  
+
   const useGeneratedText = () => {
     if (generatedText) {
       setNewMessage(generatedText);
       setGeneratedText(null);
     }
   };
-  
+
   const scheduleMessage = () => {
     if (!selectedContactId || !scheduledMessage.content.trim() || !scheduledMessage.scheduledDate || !scheduledMessage.scheduledTime) {
       alert('Please fill in all fields to schedule a message');
       return;
     }
-    
+
     const scheduledDateTime = new Date(`${scheduledMessage.scheduledDate}T${scheduledMessage.scheduledTime}`);
-    
+
     // Add to scheduled messages
     const newScheduledMessage: ScheduledMessage = {
       id: `sched-${Date.now()}`,
@@ -451,9 +428,9 @@ const TextMessages: React.FC = () => {
       scheduledFor: scheduledDateTime,
       status: 'pending'
     };
-    
+
     setScheduledMessages([...scheduledMessages, newScheduledMessage]);
-    
+
     // Reset form and close panel
     setScheduledMessage({
       content: '',
@@ -461,17 +438,17 @@ const TextMessages: React.FC = () => {
       scheduledTime: ''
     });
     setShowScheduler(false);
-    
+
     // Show confirmation
     alert(`Message scheduled for ${scheduledDateTime.toLocaleString()}`);
   };
-  
+
   const createNewContact = () => {
     if (!newContact.name || !newContact.phone) {
       alert('Name and phone number are required');
       return;
     }
-    
+
     const newContactObj: Contact = {
       id: `contact-${Date.now()}`,
       name: newContact.name,
@@ -480,20 +457,20 @@ const TextMessages: React.FC = () => {
       messages: [],
       lastActivity: new Date()
     };
-    
+
     setContacts([...contacts, newContactObj]);
     setNewContact({ name: '', phone: '', email: '' });
     setShowContactForm(false);
   };
-  
+
   const initiateCall = (phoneNumber: string) => {
     // Clean the phone number to only include digits
     const cleanNumber = phoneNumber.replace(/\D/g, '');
-    
+
     // Use the tel: protocol to initiate a call
     window.location.href = `tel:${cleanNumber}`;
   };
-  
+
   const handleConfigureSmsProvider = () => {
     if (
       !smsProvider.configFields.accountSid ||
@@ -503,27 +480,27 @@ const TextMessages: React.FC = () => {
       alert('Please fill in all provider configuration fields');
       return;
     }
-    
+
     setSmsProvider({
       ...smsProvider,
       configured: true,
       status: 'active'
     });
-    
+
     setShowProviderConfig(false);
     alert('SMS provider configuration saved successfully!');
   };
-  
+
   const renderFilteredTemplates = () => {
     return messageTemplates
       .filter(template => 
         selectedCategory ? template.category === selectedCategory : true
       );
   };
-  
+
   // Filtered templates based on selected category
   const filteredTemplates = renderFilteredTemplates();
-  
+
   const getMessageStatusIcon = (status: string) => {
     switch(status) {
       case 'sending':
@@ -545,7 +522,7 @@ const TextMessages: React.FC = () => {
         return null;
     }
   };
-  
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <header className="mb-6">
@@ -563,10 +540,10 @@ const TextMessages: React.FC = () => {
         </div>
         <p className="text-gray-600 mt-1">Send and receive SMS messages with contacts and leads</p>
       </header>
-      
+
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-3 h-[700px]">
-          
+
           {/* Contacts List */}
           <div className="border-r border-gray-200">
             <div className="p-4 border-b border-gray-200">
@@ -592,7 +569,7 @@ const TextMessages: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="overflow-y-auto h-[calc(700px-65px)]">
               {filteredContacts.length > 0 ? (
                 filteredContacts.map(contact => (
@@ -634,7 +611,7 @@ const TextMessages: React.FC = () => {
               )}
             </div>
           </div>
-          
+
           {/* Conversation View */}
           <div className="col-span-2 flex flex-col">
             {selectedContact ? (
@@ -659,7 +636,7 @@ const TextMessages: React.FC = () => {
                     </button>
                   </div>
                 </div>
-                
+
                 <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
                   <div className="space-y-4">
                     {selectedContact.messages.map(message => (
@@ -691,7 +668,7 @@ const TextMessages: React.FC = () => {
                     <div ref={messageEndRef} /> {/* Auto-scroll anchor */}
                   </div>
                 </div>
-                
+
                 <div className="p-4 border-t border-gray-200">
                   {/* Show templates panel */}
                   {showTemplates && (
@@ -706,7 +683,7 @@ const TextMessages: React.FC = () => {
                             <X size={18} />
                           </button>
                         </div>
-                        
+
                         <div className="flex mb-2 overflow-x-auto py-1 scrollbar-hide">
                           <button 
                             onClick={() => setSelectedCategory(null)}
@@ -728,7 +705,7 @@ const TextMessages: React.FC = () => {
                             </button>
                           ))}
                         </div>
-                        
+
                         <div className="space-y-2 max-h-48 overflow-y-auto">
                           {filteredTemplates.map(template => (
                             <div 
@@ -746,7 +723,7 @@ const TextMessages: React.FC = () => {
                             </div>
                           ))}
                         </div>
-                        
+
                         {filteredTemplates.length === 0 && (
                           <div className="p-3 text-center text-gray-500 text-sm">
                             No templates found
@@ -755,7 +732,7 @@ const TextMessages: React.FC = () => {
                       </div>
                     </div>
                   )}
-                  
+
                   {/* Message Scheduler Panel */}
                   {showScheduler && (
                     <div className="mb-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -769,7 +746,7 @@ const TextMessages: React.FC = () => {
                             <X size={18} />
                           </button>
                         </div>
-                        
+
                         <div className="space-y-3">
                           <div>
                             <label htmlFor="scheduled-message" className="block text-xs font-medium text-gray-700 mb-1">
@@ -784,7 +761,7 @@ const TextMessages: React.FC = () => {
                               placeholder="Enter message to schedule"
                             ></textarea>
                           </div>
-                          
+
                           <div className="grid grid-cols-2 gap-3">
                             <div>
                               <label htmlFor="scheduled-date" className="block text-xs font-medium text-gray-700 mb-1">
@@ -812,7 +789,7 @@ const TextMessages: React.FC = () => {
                               />
                             </div>
                           </div>
-                          
+
                           <div className="flex justify-end">
                             <button 
                               onClick={scheduleMessage}
@@ -823,7 +800,7 @@ const TextMessages: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                      
+
                       {/* Scheduled messages list */}
                       {scheduledMessages.filter(msg => msg.contactId === selectedContactId).length > 0 && (
                         <div className="p-3">
@@ -854,7 +831,7 @@ const TextMessages: React.FC = () => {
                       )}
                     </div>
                   )}
-                  
+
                   {/* AI Message Generator Panel */}
                   {isGenerating && (
                     <div className="mb-4 bg-gray-50 p-3 rounded-lg border border-gray-200">
@@ -864,7 +841,7 @@ const TextMessages: React.FC = () => {
                       </div>
                     </div>
                   )}
-                  
+
                   {generatedText && !isGenerating && (
                     <div className="mb-4 bg-gray-50 p-3 rounded-lg border border-gray-200">
                       <div className="flex justify-between items-center mb-2">
@@ -890,7 +867,7 @@ const TextMessages: React.FC = () => {
                       <p className="text-sm text-gray-800">{generatedText}</p>
                     </div>
                   )}
-                  
+
                   {/* Message Input */}
                   <div className="flex items-center">
                     <div className="flex-1 flex space-x-2">
@@ -961,7 +938,7 @@ const TextMessages: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                  
+
                   <div className="mt-2 text-xs text-gray-500 flex justify-between">
                     <span>160 characters per message</span>
                     <span>{newMessage.length} chars</span>
@@ -987,7 +964,7 @@ const TextMessages: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Message Analytics */}
         <div className="bg-white rounded-lg shadow-sm p-6">
@@ -1037,7 +1014,7 @@ const TextMessages: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="mt-6 pt-6 border-t border-gray-200">
             <h3 className="text-sm font-medium mb-3">Upcoming Scheduled Messages</h3>
             {scheduledMessages.filter(msg => msg.status === 'pending').length > 0 ? (
@@ -1074,7 +1051,7 @@ const TextMessages: React.FC = () => {
             )}
           </div>
         </div>
-        
+
         {/* Best Practices & Bulk Messaging */}
         <div className="space-y-6">
           <div className="bg-white rounded-lg shadow-sm p-6">
@@ -1102,7 +1079,7 @@ const TextMessages: React.FC = () => {
               </li>
             </ul>
           </div>
-          
+
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">Bulk Messaging</h2>
@@ -1122,7 +1099,7 @@ const TextMessages: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* New Contact Modal */}
       {showContactForm && (
         <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -1132,7 +1109,7 @@ const TextMessages: React.FC = () => {
             </div>
 
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            
+
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
@@ -1196,7 +1173,7 @@ const TextMessages: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       {/* SMS Provider Configuration Modal */}
       {showProviderConfig && (
         <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -1206,7 +1183,7 @@ const TextMessages: React.FC = () => {
             </div>
 
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            
+
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
@@ -1215,13 +1192,13 @@ const TextMessages: React.FC = () => {
                       <Settings size={20} className="mr-2" />
                       SMS Provider Configuration
                     </h3>
-                    
+
                     <div className="mt-2 mb-4">
                       <p className="text-sm text-gray-500">
                         Configure your SMS provider to enable sending and receiving text messages.
                       </p>
                     </div>
-                    
+
                     <div className="mt-4 space-y-4">
                       {/* Provider selection */}
                       <div>
@@ -1237,7 +1214,7 @@ const TextMessages: React.FC = () => {
                           <option value="vonage">Vonage (Nexmo)</option>
                         </select>
                       </div>
-                      
+
                       {/* Twilio specific fields */}
                       {smsProvider.name === 'twilio' && (
                         <>
@@ -1285,7 +1262,7 @@ const TextMessages: React.FC = () => {
                           </div>
                         </>
                       )}
-                      
+
                       {/* MessageBird specific fields */}
                       {smsProvider.name === 'messagebird' && (
                         <>
@@ -1319,7 +1296,7 @@ const TextMessages: React.FC = () => {
                           </div>
                         </>
                       )}
-                      
+
                       {/* Vonage specific fields */}
                       {smsProvider.name === 'vonage' && (
                         <>
@@ -1367,7 +1344,7 @@ const TextMessages: React.FC = () => {
                           </div>
                         </>
                       )}
-                      
+
                       <div className="flex items-center">
                         <button
                           type="button"

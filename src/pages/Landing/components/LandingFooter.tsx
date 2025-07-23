@@ -5,7 +5,7 @@ import { Mail, Phone, MapPin, Twitter, Linkedin, Facebook, Instagram, Youtube, A
 
 const LandingFooter: React.FC = () => {
   const currentYear = new Date().getFullYear();
-  
+
   return (
     <footer className="bg-gray-900 text-white pt-20 pb-10">
       <div className="container mx-auto px-4">
@@ -36,7 +36,7 @@ const LandingFooter: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Features */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-white">Features</h3>
@@ -73,7 +73,7 @@ const LandingFooter: React.FC = () => {
               </li>
             </ul>
           </div>
-          
+
           {/* Company */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-white">Company</h3>
@@ -110,7 +110,7 @@ const LandingFooter: React.FC = () => {
               </li>
             </ul>
           </div>
-          
+
           {/* Resources */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-white">Resources</h3>
@@ -148,7 +148,7 @@ const LandingFooter: React.FC = () => {
             </ul>
           </div>
         </div>
-        
+
         {/* Newsletter */}
         <div className="border-t border-gray-800 mt-12 pt-8 pb-6">
           <div className="max-w-3xl mx-auto text-center">
@@ -168,7 +168,7 @@ const LandingFooter: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Bottom Footer */}
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
@@ -176,7 +176,7 @@ const LandingFooter: React.FC = () => {
               &copy; {currentYear} SmartCRM. All rights reserved.
             </p>
           </div>
-          
+
           <div className="flex space-x-8">
             <Link to="/legal/privacy" className="text-gray-400 hover:text-blue-400 transition-colors text-sm">
               Privacy Policy
@@ -188,7 +188,7 @@ const LandingFooter: React.FC = () => {
               Cookie Policy
             </Link>
           </div>
-          
+
           <div className="flex space-x-4 mt-4 md:mt-0">
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-400 transition-colors">
               <Twitter size={20} />

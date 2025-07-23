@@ -8,20 +8,14 @@ import { Brain, Info, ArrowLeft, Target, Users, BarChart3, Bot, Activity, Zap } 
 import { Navigate, useNavigate } from 'react-router-dom';
 
 // Define context type
-interface AIGoalContext {
-  type: 'contact' | 'deal' | 'company';
-  name?: string;
-  title?: string;
-  id?: string;
-}
 
 export function AIGoalsPage() {
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [showExecutionModal, setShowExecutionModal] = useState(false);
   const [realMode, setRealMode] = useState(false);
-  
+
   const navigate = useNavigate();
-  
+
   // Get context from session storage or URL params
   const [context] = useState<AIGoalContext | null>(() => {
     try {
@@ -72,7 +66,7 @@ export function AIGoalsPage() {
                 AI Goals Center
               </h1>
             </div>
-            
+
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
               Transform business objectives into automated AI workflows
             </p>
@@ -95,7 +89,7 @@ export function AIGoalsPage() {
               <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-4xl mx-auto">
                 Each goal triggers a specialized AI agent team that executes real business actions. Watch as multiple agents collaborate to achieve measurable outcomes in your CRM.
               </p>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-slate-700/50 shadow-xl">
                   <div className="flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-xl mb-4 mx-auto">
@@ -104,7 +98,7 @@ export function AIGoalsPage() {
                   <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">Set Goals</h3>
                   <p className="text-gray-600 dark:text-gray-400">Choose from 58+ pre-built business objectives</p>
                 </div>
-                
+
                 <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-slate-700/50 shadow-xl">
                   <div className="flex items-center justify-center w-16 h-16 bg-purple-100 dark:bg-purple-900/50 rounded-xl mb-4 mx-auto">
                     <Bot className="h-8 w-8 text-purple-600" />
@@ -112,7 +106,7 @@ export function AIGoalsPage() {
                   <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">AI Execution</h3>
                   <p className="text-gray-600 dark:text-gray-400">17 specialized agents work together automatically</p>
                 </div>
-                
+
                 <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-slate-700/50 shadow-xl">
                   <div className="flex items-center justify-center w-16 h-16 bg-green-100 dark:bg-green-900/50 rounded-xl mb-4 mx-auto">
                     <BarChart3 className="h-8 w-8 text-green-600" />
@@ -135,7 +129,7 @@ export function AIGoalsPage() {
                   <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">AI Agents</div>
                   <div className="text-xs text-green-600 dark:text-green-400">Active</div>
                 </div>
-                
+
                 <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-slate-700/50 shadow-xl">
                   <div className="flex items-center gap-3 mb-2">
                     <Target className="h-8 w-8 text-purple-600" />
@@ -144,7 +138,7 @@ export function AIGoalsPage() {
                   <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">Available Goals</div>
                   <div className="text-xs text-blue-600 dark:text-blue-400">Ready to execute</div>
                 </div>
-                
+
                 <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-slate-700/50 shadow-xl">
                   <div className="flex items-center gap-3 mb-2">
                     <Zap className="h-8 w-8 text-yellow-600" />
@@ -153,7 +147,7 @@ export function AIGoalsPage() {
                   <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">Categories</div>
                   <div className="text-xs text-purple-600 dark:text-purple-400">Types</div>
                 </div>
-                
+
                 <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-slate-700/50 shadow-xl">
                   <div className="flex items-center gap-3 mb-2">
                     <Users className="h-8 w-8 text-green-600" />
@@ -191,31 +185,31 @@ export function AIGoalsPage() {
                   <div className="text-sm text-blue-600 dark:text-blue-400 font-medium">Available Goals</div>
                   <div className="text-xs text-blue-500 dark:text-blue-500">Ready to execute</div>
                 </div>
-                
+
                 <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl p-4 text-center">
                   <div className="text-2xl font-bold text-green-600 dark:text-green-400">0</div>
                   <div className="text-sm text-green-600 dark:text-green-400 font-medium">Executing Now</div>
                   <div className="text-xs text-green-500 dark:text-green-500">Active workflows</div>
                 </div>
-                
+
                 <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-4 text-center">
                   <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">0</div>
                   <div className="text-sm text-purple-600 dark:text-purple-400 font-medium">Completed</div>
                   <div className="text-xs text-purple-500 dark:text-purple-500">Successfully achieved</div>
                 </div>
-                
+
                 <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-xl p-4 text-center">
                   <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">0</div>
                   <div className="text-sm text-orange-600 dark:text-orange-400 font-medium">AI Agents</div>
                   <div className="text-xs text-orange-500 dark:text-orange-500">Currently working</div>
                 </div>
-                
+
                 <div className="bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 rounded-xl p-4 text-center">
                   <div className="text-2xl font-bold text-teal-600 dark:text-teal-400">0</div>
                   <div className="text-sm text-teal-600 dark:text-teal-400 font-medium">CRM Updates</div>
                   <div className="text-xs text-teal-500 dark:text-teal-500">Data changes made</div>
                 </div>
-                
+
                 <div className="bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-900/20 dark:to-pink-800/20 rounded-xl p-4 text-center">
                   <div className="text-2xl font-bold text-pink-600 dark:text-pink-400">$0</div>
                   <div className="text-sm text-pink-600 dark:text-pink-400 font-medium">Business Value</div>
@@ -229,7 +223,7 @@ export function AIGoalsPage() {
         {/* Interactive Goal Explorer */}
         <div className="max-w-7xl mx-auto px-6 mb-8">
           <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl border border-white/50 dark:border-slate-700/50 shadow-2xl p-8">
-            
+
             {/* Mode Toggle with Enhanced UX */}
             <div className="flex items-center justify-center gap-4 mb-8">
               <div className="flex items-center gap-2">
@@ -253,7 +247,7 @@ export function AIGoalsPage() {
                   </button>
                 </div>
               </div>
-              
+
               {realMode ? (
                 <div className="flex items-center gap-2 px-3 py-1 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700/50 rounded-lg">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>

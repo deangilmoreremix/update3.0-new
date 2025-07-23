@@ -4,21 +4,6 @@ import { useTheme } from '../contexts/ThemeContext';
 import Avatar from './ui/Avatar';
 import { getInitials } from '../utils/avatars';
 
-interface CallRecord {
-  id: string;
-  participantName: string;
-  participantEmail: string;
-  participantAvatar?: string;
-  type: 'video' | 'audio';
-  direction: 'incoming' | 'outgoing';
-  status: 'completed' | 'missed' | 'declined';
-  startTime: Date;
-  endTime?: Date;
-  duration: number; // in seconds
-  quality: 'excellent' | 'good' | 'poor';
-  recordingAvailable: boolean;
-}
-
 const CallHistory: React.FC = () => {
   const { isDark } = useTheme();
   const [callHistory, setCallHistory] = useState<CallRecord[]>([]);
@@ -98,7 +83,7 @@ const CallHistory: React.FC = () => {
       ...callData,
       id: Date.now().toString()
     };
-    
+
     const updatedHistory = [newCall, ...callHistory];
     setCallHistory(updatedHistory);
     saveCallHistory(updatedHistory);
@@ -153,7 +138,7 @@ const CallHistory: React.FC = () => {
     if (call.status === 'missed') {
       return <PhoneCall size={14} className="text-red-400" />;
     }
-    
+
     return call.direction === 'incoming' ? (
       <PhoneIncoming size={14} className="text-green-400" />
     ) : (
@@ -228,7 +213,7 @@ const CallHistory: React.FC = () => {
                       size="md"
                       fallback={getInitials(call.participantName)}
                     />
-                    
+
                     <div className="flex-1">
                       <div className="flex items-center space-x-2">
                         <h3 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -243,7 +228,7 @@ const CallHistory: React.FC = () => {
                           {getStatusIcon(call)}
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center space-x-4 mt-1">
                         <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                           {formatDate(call.startTime)}
@@ -302,7 +287,7 @@ const CallHistory: React.FC = () => {
       {selectedCall && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className={`${isDark ? 'bg-gray-900/95' : 'bg-white/95'} backdrop-blur-2xl border ${isDark ? 'border-white/20' : 'border-gray-200'} rounded-2xl overflow-hidden shadow-2xl max-w-md w-full mx-4`}>
-            
+
             {/* Header */}
             <div className={`p-6 border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
               <div className="flex items-center space-x-4">

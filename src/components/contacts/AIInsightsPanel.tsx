@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Contact } from '../../types/contact';
-import { Brain, Sparkles, Zap, Target, Calendar, Clock, AlertCircle, CheckCircle, TrendingUp, BarChart3, Mail, PhoneCall, RefreshCw, ThumbsUp, ThumbsDown, HelpCircle, Bell, DollarSign, Phone } from 'lucide-react';
-
-interface AIInsightsPanelProps {
-  contact: Contact;
-}
+import { Brain, Sparkles, Target, Calendar, AlertCircle, CheckCircle, RefreshCw, ThumbsUp, ThumbsDown, HelpCircle, Bell } from 'lucide-react';
 
 interface Insight {
   id: string;
@@ -23,7 +19,7 @@ interface Insight {
 
 const aiModels = ['GPT-4o', 'Gemini Pro', 'Claude 3', 'Hybrid AI'];
 
-export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => {
+export const AIInsightsPanel: FC<AIInsightsPanelProps> = ({ contact }) => {
   const [insights, setInsights] = useState<Insight[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -35,9 +31,9 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
     const generateInsights = async () => {
       setIsLoading(true);
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      
+
       const generatedInsights: Insight[] = [];
-      
+
       // Add insights based on contact data
       if (contact.interestLevel === 'hot') {
         generatedInsights.push({
@@ -53,7 +49,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
           source: aiProvider
         });
       }
-      
+
       if (contact.status === 'lead') {
         generatedInsights.push({
           id: '2',
@@ -68,7 +64,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
           source: aiProvider
         });
       }
-      
+
       if (contact.status === 'prospect') {
         generatedInsights.push({
           id: '3',
@@ -83,7 +79,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
           source: aiProvider
         });
       }
-      
+
       if (!contact.phone) {
         generatedInsights.push({
           id: '4',
@@ -98,7 +94,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
           source: aiProvider
         });
       }
-      
+
       if (contact.aiScore && contact.aiScore > 80) {
         generatedInsights.push({
           id: '5',
@@ -113,7 +109,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
           source: aiProvider
         });
       }
-      
+
       if (contact.sources.includes('Referral')) {
         generatedInsights.push({
           id: '6',
@@ -128,7 +124,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
           source: aiProvider
         });
       }
-      
+
       if (contact.industry) {
         generatedInsights.push({
           id: '7',
@@ -143,7 +139,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
           source: aiProvider
         });
       }
-      
+
       if (contact.lastConnected && contact.lastConnected.includes('week') || contact.lastConnected?.includes('month')) {
         generatedInsights.push({
           id: '8',
@@ -158,7 +154,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
           source: aiProvider
         });
       }
-      
+
       if (contact.title.toLowerCase().includes('cto') || 
           contact.title.toLowerCase().includes('chief') || 
           contact.title.toLowerCase().includes('director') ||
@@ -176,21 +172,21 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
           source: aiProvider
         });
       }
-      
+
       setInsights(generatedInsights);
       setIsLoading(false);
     };
-    
+
     generateInsights();
   }, [contact, aiProvider]);
-  
+
   const handleRefreshInsights = async () => {
     setIsRefreshing(true);
     setAiProvider(aiModels[Math.floor(Math.random() * aiModels.length)]);
     await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
     setIsRefreshing(false);
   };
-  
+
   const handleFeedback = (id: string, feedback: 'positive' | 'negative') => {
     setInsights(prevInsights => 
       prevInsights.map(insight => 
@@ -198,11 +194,11 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
       )
     );
   };
-  
+
   const filteredInsights = activeCategory === 'all' 
     ? insights 
     : insights.filter(insight => insight.type === activeCategory);
-  
+
   const highPriorityInsights = filteredInsights.filter(i => i.priority === 'high');
   const mediumPriorityInsights = filteredInsights.filter(i => i.priority === 'medium');
   const lowPriorityInsights = filteredInsights.filter(i => i.priority === 'low');
@@ -223,7 +219,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
           <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
         </button>
       </div>
-      
+
       {/* AI Source Information */}
       <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-3 border border-purple-200 flex items-center justify-between">
         <div className="flex items-center">
@@ -244,7 +240,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
           </div>
         )}
       </div>
-      
+
       {/* Category Tabs */}
       <div className="flex space-x-2 border-b border-gray-200">
         {[
@@ -266,7 +262,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
           </button>
         ))}
       </div>
-      
+
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
@@ -304,7 +300,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
               </div>
             </div>
           )}
-          
+
           {/* Medium Priority Insights */}
           {mediumPriorityInsights.length > 0 && (
             <div>
@@ -322,7 +318,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
               </div>
             </div>
           )}
-          
+
           {/* Low Priority Insights */}
           {lowPriorityInsights.length > 0 && (
             <div>
@@ -342,7 +338,7 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
           )}
         </div>
       )}
-      
+
       {/* Action Summary */}
       <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
         <h4 className="text-sm font-medium text-gray-700 mb-3">Suggested Next Steps</h4>
@@ -367,12 +363,12 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ contact }) => 
 };
 
 // Helper component for individual insights
-const InsightCard: React.FC<{
+const InsightCard: FC<{
   insight: Insight;
   onFeedback: (id: string, feedback: 'positive' | 'negative') => void;
 }> = ({ insight, onFeedback }) => {
   const [expanded, setExpanded] = useState(false);
-  
+
   const typeColors = {
     'action': 'bg-blue-50 border-blue-200',
     'prediction': 'bg-purple-50 border-purple-200',
@@ -381,7 +377,7 @@ const InsightCard: React.FC<{
     'opportunity': 'bg-yellow-50 border-yellow-200',
     'status': 'bg-gray-50 border-gray-200'
   };
-  
+
   const typeLabels = {
     'action': 'Action Item',
     'prediction': 'Prediction',
@@ -390,14 +386,14 @@ const InsightCard: React.FC<{
     'opportunity': 'Opportunity',
     'status': 'Status Update'
   };
-  
+
   return (
     <div className={`rounded-lg border p-4 ${typeColors[insight.type]} transition-all duration-300 ${expanded ? 'shadow-md' : ''}`}>
       <div className="flex items-start">
         <div className={`${insight.iconBg} text-white p-2 rounded-lg mr-3 flex-shrink-0`}>
           <insight.icon className="h-4 w-4" />
         </div>
-        
+
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
             <h5 className="text-sm font-semibold text-gray-900">{insight.title}</h5>
@@ -405,9 +401,9 @@ const InsightCard: React.FC<{
               {typeLabels[insight.type]}
             </span>
           </div>
-          
+
           <p className="text-sm text-gray-700 mt-1">{insight.description}</p>
-          
+
           {(insight.confidence || insight.accuracy) && (
             <div className="mt-2 flex items-center text-xs text-gray-600">
               {insight.confidence && (
@@ -424,14 +420,14 @@ const InsightCard: React.FC<{
               )}
             </div>
           )}
-          
+
           {expanded && (
             <div className="mt-3 pt-3 border-t border-gray-200">
               <div className="text-xs text-gray-500 flex items-center mb-2">
                 <Calendar className="w-3 h-3 mr-1" />
                 Generated {insight.createdAt.toLocaleDateString()} by {insight.source}
               </div>
-              
+
               {insight.type === 'action' && (
                 <div className="flex space-x-2 mt-2">
                   <button className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-md hover:bg-blue-200 transition-colors">
@@ -446,7 +442,7 @@ const InsightCard: React.FC<{
           )}
         </div>
       </div>
-      
+
       <div className="flex items-center justify-between mt-3">
         <button
           onClick={() => setExpanded(!expanded)}
@@ -454,7 +450,7 @@ const InsightCard: React.FC<{
         >
           {expanded ? 'Show less' : 'Show more'}
         </button>
-        
+
         <div className="flex space-x-2">
           <button
             onClick={() => onFeedback(insight.id, 'positive')}

@@ -2,7 +2,7 @@ import React from 'react';
 import { GlassCard } from '../ui/GlassCard';
 import { AvatarWithStatus } from '../ui/AvatarWithStatus';
 
-import { Search, Bell, Settings, ChevronDown, User } from 'lucide-react';
+import { Search, Bell, Settings, ChevronDown } from 'lucide-react';
 
 const navigationTabs = [
   { label: 'Book Summaries', active: false },
@@ -26,7 +26,7 @@ export const TopBar: React.FC = () => {
             </div>
             <span className="font-semibold text-lg">salesforce</span>
           </div>
-          
+
           <nav className="flex space-x-1">
             {navigationTabs.map((tab, index) => (
               <button
@@ -55,15 +55,15 @@ export const TopBar: React.FC = () => {
               className="pl-10 pr-4 py-2 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
             />
           </div>
-          
+
           <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
             <Bell className="w-5 h-5" />
           </button>
-          
+
           <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
             <Settings className="w-5 h-5" />
           </button>
-          
+
           <div className="flex items-center space-x-2">
             <AvatarWithStatus
               src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2"

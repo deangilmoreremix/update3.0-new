@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { useContactStore } from '../store/contactStore';
 import { Navigate, useNavigate } from 'react-router-dom';
 import ContactCard from './ContactCard';
@@ -10,7 +9,7 @@ const LeadsSection = () => {
   const { contacts } = useContactStore();
   const { isDark } = useTheme();
   const navigate = useNavigate();
-  
+
   // Get first 4 contacts as new leads, preferring hot leads
   const newLeads = Object.values(contacts)
     .filter(contact => contact.interestLevel === 'hot' || contact.status === 'hot')
@@ -36,7 +35,7 @@ const LeadsSection = () => {
           </button>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {newLeads.map((lead) => (
           <ContactCard key={lead.id} contact={lead} />

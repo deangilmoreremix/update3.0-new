@@ -2,29 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, CheckCircle, AlertCircle, Settings, Play, Pause, RefreshCw, Shield, Mail, MessageSquare, Calendar, Share2, Phone, FileText, Database, Globe, Link, Plus, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-interface Integration {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  icon: React.ReactNode;
-  status: 'connected' | 'disconnected' | 'error' | 'pending';
-  isActive: boolean;
-  usageCount: number;
-  lastUsed?: Date;
-  features: string[];
-  setupRequired: boolean;
-  apiEndpoint?: string;
-}
-
-interface ComposioIntegrationsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onIntegrationToggle?: (integrationId: string, enabled: boolean) => void;
-  onIntegrationConnect?: (integrationId: string) => void;
-}
-
-const ComposioIntegrationsModal: React.FC<ComposioIntegrationsModalProps> = ({
+const ComposioIntegrationsModal: FC<ComposioIntegrationsModalProps> = ({
   isOpen,
   onClose,
   onIntegrationToggle,
@@ -192,7 +170,7 @@ const ComposioIntegrationsModal: React.FC<ComposioIntegrationsModalProps> = ({
     const searchMatch = searchQuery === '' || 
       integration.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       integration.description.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     return categoryMatch && searchMatch;
   });
 
@@ -225,13 +203,13 @@ const ComposioIntegrationsModal: React.FC<ComposioIntegrationsModalProps> = ({
       try {
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 2000));
-        
+
         setIntegrations(prev => prev.map(i => 
           i.id === integrationId 
             ? { ...i, status: 'connected' as const, isActive: true }
             : i
         ));
-        
+
         onIntegrationConnect?.(integrationId);
       } catch (error) {
         console.error('Failed to connect integration:', error);
@@ -245,7 +223,7 @@ const ComposioIntegrationsModal: React.FC<ComposioIntegrationsModalProps> = ({
           ? { ...i, isActive: !i.isActive }
           : i
       ));
-      
+
       onIntegrationToggle?.(integrationId, !integration.isActive);
     }
   };
@@ -259,11 +237,11 @@ const ComposioIntegrationsModal: React.FC<ComposioIntegrationsModalProps> = ({
     <div className="fixed inset-0 z-50 overflow-hidden">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300" onClick={onClose} />
-      
+
       {/* Modal */}
       <div className="relative w-full h-full flex items-center justify-center p-4">
         <div className="relative w-full max-w-5xl h-full max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden">
-          
+
           {/* Header */}
           <div className="relative z-20 flex items-center justify-between p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-200">
             <div className="flex items-center gap-3">
@@ -275,7 +253,7 @@ const ComposioIntegrationsModal: React.FC<ComposioIntegrationsModalProps> = ({
                 <p className="text-gray-600">Manage your external tool connections and automations</p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-4">
               {/* Stats */}
               <div className="flex items-center gap-4 text-sm">
@@ -288,7 +266,7 @@ const ComposioIntegrationsModal: React.FC<ComposioIntegrationsModalProps> = ({
                   <span className="text-gray-600">{activeCount} Active</span>
                 </div>
               </div>
-              
+
               <button
                 onClick={onClose}
                 className="p-2 rounded-lg bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-all duration-300"
@@ -374,7 +352,7 @@ const ComposioIntegrationsModal: React.FC<ComposioIntegrationsModalProps> = ({
                             <p className="text-sm text-gray-600">{integration.description}</p>
                           </div>
                         </div>
-                        
+
                         <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(integration.status)}`}>
                           {getStatusIcon(integration.status)}
                           <span className="capitalize">{integration.status}</span>
@@ -456,7 +434,7 @@ const ComposioIntegrationsModal: React.FC<ComposioIntegrationsModalProps> = ({
                                 </>
                               )}
                             </button>
-                            
+
                             <button className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors">
                               <Settings className="h-4 w-4" />
                             </button>

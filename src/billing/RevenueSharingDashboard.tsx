@@ -8,28 +8,6 @@ import { useQuery } from '@tanstack/react-query';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from '../charts/SafeCharts';
 import type { RevenueSharing, PartnerBilling } from '@shared/schema';
 
-interface RevenueSummary {
-  totalRevenue: number;
-  totalCommission: number;
-  pendingPayouts: number;
-  paidPayouts: number;
-  commissionRate: number;
-  growthRate: number;
-}
-
-interface MonthlyData {
-  month: string;
-  revenue: number;
-  commission: number;
-  customers: number;
-}
-
-interface PayoutStatus {
-  pending: number;
-  paid: number;
-  disputed: number;
-}
-
 export default function RevenueSharingDashboard() {
   const { user } = useAuth();
   const [selectedPeriod, setSelectedPeriod] = useState('last-6-months');

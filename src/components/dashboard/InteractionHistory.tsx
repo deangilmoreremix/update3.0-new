@@ -10,7 +10,7 @@ const InteractionHistory: React.FC = () => {
   const { isDark } = useTheme();
   const { contacts } = useContactStore();
   const navigate = useNavigate();
-  
+
   // Updated interactions with contactIds instead of direct participant arrays
   const interactions = [
     {
@@ -94,7 +94,7 @@ const InteractionHistory: React.FC = () => {
           </button>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {interactions.map((interaction) => (
           <div 
@@ -114,12 +114,12 @@ const InteractionHistory: React.FC = () => {
                 <MoreHorizontal className="w-4 h-4" />
               </button>
             </div>
-            
+
             <div className="mb-6">
               <h3 className="font-semibold text-sm mb-3 leading-tight">{interaction.type}</h3>
               <p className="text-2xl font-bold">{interaction.value}</p>
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div className="flex -space-x-2">
                 {interaction.participantIds.slice(0, 3).map((participantId, i) => {

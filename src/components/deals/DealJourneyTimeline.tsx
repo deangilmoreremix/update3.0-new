@@ -1,16 +1,12 @@
 import React from 'react';
 import { Deal } from '../../types';
-import { Calendar, CheckCircle, Clock, FileText, Target, AlertCircle, DollarSign, Plus, Briefcase, Award, MessageSquare } from 'lucide-react';
+import { Clock, FileText, Target, Plus, Award } from 'lucide-react';
 
-interface DealJourneyTimelineProps {
-  deal: Deal;
-}
-
-export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }) => {
+export const DealJourneyTimeline: FC<DealJourneyTimelineProps> = ({ deal }) => {
   // Generate some sample timeline events based on deal data
   const generateTimelineEvents = () => {
     const today = new Date();
-    
+
     const events = [
       {
         id: 1,
@@ -38,7 +34,7 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
         complete: true
       });
     }
-    
+
     if (deal.stage === 'proposal' || deal.stage === 'negotiation' || deal.stage === 'closed-won' || deal.stage === 'closed-lost') {
       const propDate = new Date(deal.createdAt.getTime() + (14 * 24 * 60 * 60 * 1000));
       events.push({
@@ -52,7 +48,7 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
         complete: true
       });
     }
-    
+
     if (deal.stage === 'negotiation' || deal.stage === 'closed-won' || deal.stage === 'closed-lost') {
       const negDate = new Date(deal.createdAt.getTime() + (21 * 24 * 60 * 60 * 1000));
       events.push({
@@ -66,7 +62,7 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
         complete: true
       });
     }
-    
+
     if (deal.stage === 'closed-won') {
       const wonDate = new Date(deal.createdAt.getTime() + (30 * 24 * 60 * 60 * 1000));
       events.push({
@@ -80,7 +76,7 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
         complete: true
       });
     }
-    
+
     if (deal.stage === 'closed-lost') {
       const lostDate = new Date(deal.createdAt.getTime() + (28 * 24 * 60 * 60 * 1000));
       events.push({
@@ -94,13 +90,13 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
         complete: true
       });
     }
-    
+
     // Add future event
     if (deal.stage !== 'closed-won' && deal.stage !== 'closed-lost') {
       const nextStage = deal.stage === 'qualification' ? 'Proposal' : 
                         deal.stage === 'proposal' ? 'Negotiation' : 'Closing';
       const nextDate = deal.dueDate || new Date(today.getTime() + (7 * 24 * 60 * 60 * 1000));
-      
+
       events.push({
         id: 7,
         type: 'upcoming',
@@ -112,7 +108,7 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
         complete: false
       });
     }
-    
+
     // Add communication events
     const commDate = new Date(deal.updatedAt.getTime() - (3 * 24 * 60 * 60 * 1000));
     events.push({
@@ -131,7 +127,7 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
   };
 
   const timelineEvents = generateTimelineEvents();
-  
+
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', { 
       year: 'numeric', 
@@ -157,11 +153,11 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
           <Target className="w-4 h-4 mr-1" /> Set Milestones
         </button>
       </div>
-      
+
       {/* Timeline Visualization */}
       <div className="relative">
         <div className="absolute left-6 top-0 bottom-0 w-px bg-gray-200 z-0"></div>
-        
+
         <div className="space-y-8">
           {timelineEvents.map((event, _index) => (
             <div key={event.id} className="relative z-10 flex items-start">
@@ -176,7 +172,7 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
                   </span>
                 </div>
                 <p className="text-sm text-gray-600 mt-1">{event.description}</p>
-                
+
                 {/* Additional actions based on event type */}
                 {event.type === 'upcoming' && (
                   <div className="mt-3 flex space-x-3">
@@ -188,7 +184,7 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
                     </button>
                   </div>
                 )}
-                
+
                 {event.type === 'communication' && (
                   <div className="mt-2 text-sm text-gray-500">
                     <p className="flex items-center">
@@ -200,7 +196,7 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
               </div>
             </div>
           ))}
-          
+
           {/* Add new journey point */}
           <div className="relative z-10 flex items-start">
             <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 border-dashed flex items-center justify-center mr-4">
@@ -215,21 +211,21 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
           </div>
         </div>
       </div>
-      
+
       {/* Journey Metrics Summary */}
       <div className="grid grid-cols-3 gap-4 mt-6">
         <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
           <h5 className="text-sm font-medium text-gray-600 mb-1">Created</h5>
           <p className="text-lg font-semibold text-gray-900">{formatDate(deal.createdAt)}</p>
         </div>
-        
+
         <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
           <h5 className="text-sm font-medium text-gray-600 mb-1">Days Active</h5>
           <p className="text-lg font-semibold text-gray-900">
             {Math.ceil((new Date().getTime() - new Date(deal.createdAt).getTime()) / (1000 * 60 * 60 * 24))}
           </p>
         </div>
-        
+
         <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
           <h5 className="text-sm font-medium text-gray-600 mb-1">Stage Changes</h5>
           <p className="text-lg font-semibold text-gray-900">
@@ -241,7 +237,7 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
       {/* Key Milestones */}
       <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 mt-6">
         <h4 className="text-base font-semibold text-gray-900 mb-4">Key Milestones</h4>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="flex flex-col items-center p-4 bg-blue-50 rounded-lg border border-blue-200">
             <div className="p-3 bg-blue-100 rounded-full mb-2">
@@ -252,7 +248,7 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
               {deal.stage === 'qualification' ? 'In Progress' : 'Completed'}
             </p>
           </div>
-          
+
           <div className="flex flex-col items-center p-4 bg-indigo-50 rounded-lg border border-indigo-200">
             <div className="p-3 bg-indigo-100 rounded-full mb-2">
               <FileText className="h-5 w-5 text-indigo-700" />
@@ -263,7 +259,7 @@ export const DealJourneyTimeline: React.FC<DealJourneyTimelineProps> = ({ deal }
                deal.stage === 'proposal' ? 'In Progress' : 'Completed'}
             </p>
           </div>
-          
+
           <div className="flex flex-col items-center p-4 bg-green-50 rounded-lg border border-green-200">
             <div className="p-3 bg-green-100 rounded-full mb-2">
               <Award className="h-5 w-5 text-green-700" />

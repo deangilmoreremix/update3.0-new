@@ -22,16 +22,6 @@ interface Message {
   mediaUrl?: string;
 }
 
-interface Contact {
-  id: string;
-  name: string;
-  phone: string;
-  avatar?: string;
-  lastMessage?: string;
-  unreadCount: number;
-  isOnline?: boolean;
-}
-
 const SMSWhatsAppMessaging: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'sms' | 'whatsapp'>('sms');
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
@@ -57,7 +47,7 @@ const SMSWhatsAppMessaging: React.FC = () => {
     try {
       const response = await fetch('/api/contacts');
       const contactsData = await response.json();
-      
+
       const formattedContacts: Contact[] = contactsData.map((contact: unknown) => ({
         id: contact.id,
         name: contact.name,
@@ -67,7 +57,7 @@ const SMSWhatsAppMessaging: React.FC = () => {
         unreadCount: 0,
         isOnline: Math.random() > 0.5 // Simulate online status
       }));
-      
+
       setContacts(formattedContacts);
     } catch (error) {
       console.error('Failed to fetch contacts:', error);
@@ -81,7 +71,7 @@ const SMSWhatsAppMessaging: React.FC = () => {
 
   const fetchMessages = useCallback(async () => {
     if (!selectedContact) return;
-    
+
     try {
       // In a real app, this would fetch from your message API
       const mockMessages: Message[] = [
@@ -108,7 +98,7 @@ const SMSWhatsAppMessaging: React.FC = () => {
           timestamp: new Date(Date.now() - 1800000)
         }
       ];
-      
+
       setMessages(mockMessages);
     } catch (error) {
       console.error('Failed to fetch messages:', error);
@@ -117,9 +107,9 @@ const SMSWhatsAppMessaging: React.FC = () => {
 
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectedContact) return;
-    
+
     setIsLoading(true);
-    
+
     try {
       const messageData = {
         contactId: selectedContact.id,
@@ -150,10 +140,10 @@ const SMSWhatsAppMessaging: React.FC = () => {
           status: 'sent',
           timestamp: new Date()
         };
-        
+
         setMessages(prev => [...prev, newMsg]);
         setNewMessage('');
-        
+
         toast({
           title: "Message sent",
           description: `${activeTab.toUpperCase()} message sent successfully`
@@ -214,7 +204,7 @@ const SMSWhatsAppMessaging: React.FC = () => {
             </TabsList>
           </Tabs>
         </div>
-        
+
         <ScrollArea className="flex-1">
           <div className="p-2">
             {contacts.map((contact) => (
@@ -236,7 +226,7 @@ const SMSWhatsAppMessaging: React.FC = () => {
                     <div className="absolute -bottom-0 -right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
                   )}
                 </div>
-                
+
                 <div className="ml-3 flex-1 min-w-0">
                   <div className="flex justify-between items-center">
                     <p className="font-medium text-sm truncate">{contact.name}</p>

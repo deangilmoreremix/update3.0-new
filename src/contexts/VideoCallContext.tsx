@@ -1,51 +1,35 @@
 import React, { createContext, useContext, useState, useRef, useCallback, useEffect } from 'react';
 import SimplePeer from 'simple-peer';
 
-export interface CallParticipant {
-  id: string;
-  name: string;
-  avatar?: string;
-  email?: string;
-}
-
-export interface CallData {
-  id: string;
-  caller: CallParticipant;
-  recipient: CallParticipant;
-  startTime: Date;
-  status: 'ringing' | 'connected' | 'ended' | 'rejected';
-  type: 'video' | 'audio';
-}
-
 interface VideoCallContextType {
   // Call State
   currentCall: CallData | null;
   isInCall: boolean;
   callStatus: 'idle' | 'calling' | 'ringing' | 'connected' | 'ending';
-  
+
   // Media State
   localStream: MediaStream | null;
   remoteStream: MediaStream | null;
   isVideoEnabled: boolean;
   isAudioEnabled: boolean;
   isScreenSharing: boolean;
-  
+
   // Call Actions
   initiateCall: (recipient: CallParticipant, type: 'video' | 'audio') => Promise<void>;
   initiateGroupCall: (participants: CallParticipant[], type: 'video' | 'audio') => Promise<void>;
   acceptCall: () => Promise<void>;
   rejectCall: () => void;
   endCall: () => void;
-  
+
   // Media Controls
   toggleVideo: () => void;
   toggleAudio: () => void;
   toggleScreenShare: () => Promise<void>;
-  
+
   // Connection Management
   peer: SimplePeer.Instance | null;
   connectionQuality: 'excellent' | 'good' | 'poor' | 'disconnected';
-  
+
   // Group Call Features
   isGroupCall: boolean;
   participants: Array<{
@@ -59,11 +43,11 @@ interface VideoCallContextType {
     isSpeaking: boolean;
   }>;
   addParticipantToCall: (participant: CallParticipant) => Promise<void>;
-  
+
   // Chat/Data Channel
   sendMessage: (message: string) => void;
   onMessageReceived: (callback: (message: string) => void) => void;
-  
+
   // Recording
   startRecording: () => Promise<void>;
   stopRecording: () => void;
@@ -81,11 +65,11 @@ export const useVideoCall = (): VideoCallContextType => {
   return context;
 };
 
-export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const VideoCallProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   // Call State
   const [currentCall, setCurrentCall] = useState<CallData | null>(null);
   const [callStatus, setCallStatus] = useState<'idle' | 'calling' | 'ringing' | 'connected' | 'ending'>('idle');
-  
+
   // Media State
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
@@ -93,11 +77,11 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  
+
   // Peer Connection
   const [peer, setPeer] = useState<SimplePeer.Instance | null>(null);
   const [connectionQuality, setConnectionQuality] = useState<'excellent' | 'good' | 'poor' | 'disconnected'>('disconnected');
-  
+
   // Group Call State
   const [isGroupCall, setIsGroupCall] = useState(false);
   const [participants, setParticipants] = useState<Array<{
@@ -110,7 +94,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     isAudioEnabled: boolean;
     isSpeaking: boolean;
   }>>([]);
-  
+
   // Refs
   const peerRef = useRef<SimplePeer.Instance | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
@@ -124,13 +108,13 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Cleanup function
   const cleanup = useCallback(() => {
     console.log('Cleaning up video call...');
-    
+
     if (peerRef.current) {
       peerRef.current.destroy();
       peerRef.current = null;
       setPeer(null);
     }
-    
+
     if (localStreamRef.current) {
       localStreamRef.current.getTracks().forEach(track => {
         console.log('Stopping track:', track.kind);
@@ -139,17 +123,17 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       localStreamRef.current = null;
       setLocalStream(null);
     }
-    
+
     if (originalStreamRef.current) {
       originalStreamRef.current.getTracks().forEach(track => track.stop());
       originalStreamRef.current = null;
     }
-    
+
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
     }
-    
+
     setRemoteStream(null);
     setCurrentCall(null);
     setCallStatus('idle');
@@ -162,7 +146,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Get user media with enhanced error handling
   const getUserMedia = useCallback(async (videoEnabled: boolean = true, audioEnabled: boolean = true) => {
     console.log('Getting user media:', { videoEnabled, audioEnabled });
-    
+
     try {
       const constraints: MediaStreamConstraints = {
         video: videoEnabled ? {
@@ -179,27 +163,27 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           channelCount: { ideal: 2 }
         } : false
       };
-      
+
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       console.log('Got user media stream:', stream.getTracks().map(t => `${t.kind}: ${t.label}`));
-      
+
       // Verify track states
       const videoTracks = stream.getVideoTracks();
       const audioTracks = stream.getAudioTracks();
-      
+
       if (videoEnabled && videoTracks.length === 0) {
         console.warn('Video requested but no video tracks received');
       }
-      
+
       if (audioEnabled && audioTracks.length === 0) {
         console.warn('Audio requested but no audio tracks received');
       }
-      
+
       localStreamRef.current = stream;
       setLocalStream(stream);
       setIsVideoEnabled(videoEnabled && videoTracks.length > 0);
       setIsAudioEnabled(audioEnabled && audioTracks.length > 0);
-      
+
       // Set up track event listeners
       stream.getTracks().forEach(track => {
         track.addEventListener('ended', () => {
@@ -211,11 +195,11 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           }
         });
       });
-      
+
       return stream;
     } catch (error) {
       console.error('Error accessing media devices:', error);
-      
+
       if (error instanceof Error) {
         if (error.name === 'NotAllowedError') {
           throw new Error('Camera/microphone access denied. Please allow permissions and try again.');
@@ -231,19 +215,19 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
               video: videoEnabled ? true : false,
               audio: audioEnabled ? true : false
             });
-            
+
             localStreamRef.current = basicStream;
             setLocalStream(basicStream);
             setIsVideoEnabled(videoEnabled && basicStream.getVideoTracks().length > 0);
             setIsAudioEnabled(audioEnabled && basicStream.getAudioTracks().length > 0);
-            
+
             return basicStream;
           } catch (basicError) {
             throw new Error('Unable to access camera/microphone with any settings.');
           }
         }
       }
-      
+
       throw new Error('Could not access camera/microphone. Please check permissions and ensure no other app is using them.');
     }
   }, []);
@@ -251,14 +235,14 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Real signaling simulation using localStorage for cross-tab communication
   const handleSignaling = useCallback((signal: unknown, isInitiator: boolean) => {
     console.log('Handling signaling:', signal.type, 'initiator:', isInitiator);
-    
+
     // For demo purposes, use localStorage to enable cross-tab calling
     const channelName = `webrtc-signal-${currentCall?.id || 'demo'}`;
-    
+
     if (isInitiator) {
       // Store offer for the other peer to pick up
       localStorage.setItem(`${channelName}-offer`, JSON.stringify(signal));
-      
+
       // Listen for answer
       const checkForAnswer = () => {
         const answer = localStorage.getItem(`${channelName}-answer`);
@@ -274,13 +258,13 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           setTimeout(checkForAnswer, 1000);
         }
       };
-      
+
       setTimeout(checkForAnswer, 1000);
     } else {
       // Store answer for the initiator to pick up
       localStorage.setItem(`${channelName}-answer`, JSON.stringify(signal));
     }
-    
+
     // For single-tab demo, also create a mirror connection
     if (isInitiator) {
       setTimeout(() => {
@@ -289,7 +273,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             // Create a self-connecting demo by using the same signal
             console.log('Setting up demo self-connection');
             setCallStatus('connected');
-            
+
             // For demo, use the local stream as remote stream with some delay
             setTimeout(() => {
               if (localStreamRef.current) {
@@ -311,7 +295,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Create peer connection with real WebRTC
   const createPeer = useCallback((initiator: boolean, stream: MediaStream) => {
     console.log('Creating peer connection, initiator:', initiator);
-    
+
     const config = {
       initiator,
       trickle: false,
@@ -342,7 +326,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     // Enhanced signaling with real WebRTC
     newPeer.on('signal', (signal) => {
       console.log('Signal generated:', signal.type, signal);
-      
+
       // In a production app, you'd send this to a signaling server
       // For demo, we'll use localStorage to simulate peer communication
       handleSignaling(signal, initiator);
@@ -354,17 +338,17 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setRemoteStream(stream);
       setCallStatus('connected');
       setConnectionQuality('excellent');
-      
+
       // Set up remote stream track event listeners
       stream.getTracks().forEach(track => {
         track.addEventListener('ended', () => {
           console.log(`Remote track ended: ${track.kind}`);
         });
-        
+
         track.addEventListener('mute', () => {
           console.log(`Remote track muted: ${track.kind}`);
         });
-        
+
         track.addEventListener('unmute', () => {
           console.log(`Remote track unmuted: ${track.kind}`);
         });
@@ -383,9 +367,9 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       try {
         const message = data.toString();
         console.log('Received data:', message);
-        
+
         const parsedData = JSON.parse(message);
-        
+
         if (parsedData.type === 'chat' && messageCallbackRef.current) {
           messageCallbackRef.current(parsedData.content);
         } else if (parsedData.type === 'media-control') {
@@ -400,11 +384,11 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     // Enhanced error handling
     newPeer.on('error', (error) => {
       console.error('Peer error:', error);
-      
+
       if (error.message.includes('Ice connection failed')) {
         setConnectionQuality('poor');
         console.log('ICE connection failed, attempting to reconnect...');
-        
+
         // Attempt to restart ICE
         setTimeout(() => {
           if (peerRef.current && !peerRef.current.destroyed) {
@@ -427,17 +411,17 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     peerRef.current = newPeer;
     setPeer(newPeer);
-    
+
     return newPeer;
   }, [cleanup, handleSignaling]);
 
   // Initiate call with real media capture
   const initiateCall = useCallback(async (recipient: CallParticipant, type: 'video' | 'audio') => {
     console.log('Initiating call to:', recipient.name, 'type:', type);
-    
+
     try {
       setCallStatus('calling');
-      
+
       // Create call data
       const callData: CallData = {
         id: Date.now().toString(),
@@ -451,22 +435,22 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         status: 'ringing',
         type
       };
-      
+
       setCurrentCall(callData);
-      
+
       // Get real user media
       const stream = await getUserMedia(type === 'video', true);
-      
+
       // Create peer as initiator with real WebRTC
       createPeer(true, stream);
-      
+
       // Set calling status
       setTimeout(() => {
         if (callStatus === 'calling') {
           setCallStatus('ringing');
         }
       }, 1000);
-      
+
       // For demo, auto-accept after delay (in real app, wait for recipient)
       setTimeout(() => {
         if (callStatus === 'ringing' || callStatus === 'calling') {
@@ -474,7 +458,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           setCallStatus('connected');
         }
       }, 3000);
-      
+
     } catch (error) {
       console.error('Error initiating call:', error);
       cleanup();
@@ -485,18 +469,18 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Initiate group call
   const initiateGroupCall = useCallback(async (callParticipants: CallParticipant[], type: 'video' | 'audio') => {
     console.log('Initiating group call with', callParticipants.length, 'participants, type:', type);
-    
+
     if (callParticipants.length === 0) {
       throw new Error('Cannot start a group call without participants');
     }
-    
+
     try {
       setCallStatus('calling');
       setIsGroupCall(true);
-      
+
       // Get real user media
       await getUserMedia(type === 'video', true);
-      
+
       // Initialize participants
       const initialParticipants = callParticipants.map(p => ({
         id: p.id,
@@ -508,28 +492,28 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         isAudioEnabled: true,
         isSpeaking: false
       }));
-      
+
       setParticipants(initialParticipants);
-      
+
       // In a real implementation, we would:
       // 1. Connect to a signaling server
       // 2. Create peer connections for each participant
       // 3. Exchange SDP offers/answers and ICE candidates
       // 4. Set up media streams
-      
+
       // For demo purposes, simulate connections being established
       let connectedCount = 0;
       const totalParticipants = callParticipants.length;
-      
+
       const simulateParticipantConnection = (index: number) => {
         setTimeout(() => {
           // Simulate participant connecting
           setParticipants(prev => {
             const updated = [...prev];
-            
+
             // Skip if already connected
             if (updated[index]?.isConnected) return updated;
-            
+
             if (updated[index]) {
               updated[index] = {
                 ...updated[index],
@@ -538,34 +522,34 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 isAudioEnabled: Math.random() > 0.2  // 80% chance audio is enabled
               };
             }
-            
+
             return updated;
           });
-          
+
           connectedCount++;
-          
+
           // When all participants are connected
           if (connectedCount >= totalParticipants) {
             setCallStatus('connected');
           }
-          
+
           // Simulate occasional speaking
           const simulateSpeaking = () => {
             if (Math.random() > 0.7) { // 30% chance of speaking
               setParticipants(prev => {
                 const updated = [...prev];
-                
+
                 // Reset all speaking states
                 updated.forEach(p => {
                   p.isSpeaking = false;
                 });
-                
+
                 // Set random participant as speaking
                 const speakingIndex = Math.floor(Math.random() * updated.length);
                 if (updated[speakingIndex]) {
                   updated[speakingIndex].isSpeaking = true;
                 }
-                
+
                 return updated;
               });
             } else {
@@ -575,7 +559,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
               );
             }
           };
-          
+
           // Simulate speaking every 2-5 seconds
           const speakingInterval = setInterval(() => {
             if (callStatus === 'connected') {
@@ -586,12 +570,12 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           }, 2000 + Math.random() * 3000);
         }, 1000 + Math.random() * 2000); // Random connection time between 1-3 seconds
       };
-      
+
       // Start simulating connections
       for (let i = 0; i < totalParticipants; i++) {
         simulateParticipantConnection(i);
       }
-      
+
     } catch (error) {
       console.error('Error initiating group call:', error);
       cleanup();
@@ -604,9 +588,9 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (!isGroupCall || callStatus !== 'connected') {
       throw new Error('Cannot add participant: not in an active group call');
     }
-    
+
     console.log('Adding participant to call:', participant.name);
-    
+
     // Add participant to state
     setParticipants(prev => [
       ...prev,
@@ -621,13 +605,13 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         isSpeaking: false
       }
     ]);
-    
+
     // Simulate connection after a short delay
     setTimeout(() => {
       setParticipants(prev => {
         const updated = [...prev];
         const index = updated.findIndex(p => p.id === participant.id);
-        
+
         if (index >= 0) {
           updated[index] = {
             ...updated[index],
@@ -636,11 +620,11 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             isAudioEnabled: Math.random() > 0.2
           };
         }
-        
+
         return updated;
       });
     }, 2000);
-    
+
     // In a real implementation, we would:
     // 1. Send invitation to the participant via signaling server
     // 2. Create a new peer connection
@@ -651,18 +635,18 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Accept call with real media
   const acceptCall = useCallback(async () => {
     if (!currentCall) return;
-    
+
     console.log('Accepting call');
-    
+
     try {
       // Get real user media
       const stream = await getUserMedia(currentCall.type === 'video', true);
-      
+
       // Create peer as non-initiator
       createPeer(false, stream);
-      
+
       setCallStatus('connected');
-      
+
     } catch (error) {
       console.error('Error accepting call:', error);
       rejectCall();
@@ -683,7 +667,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const endCall = useCallback(() => {
     console.log('Ending call');
     setCallStatus('ending');
-    
+
     // Notify remote peer
     if (peerRef.current && peerRef.current.connected) {
       try {
@@ -695,7 +679,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         console.error('Error sending call end notification:', error);
       }
     }
-    
+
     setTimeout(() => {
       cleanup();
     }, 1000);
@@ -704,14 +688,14 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Toggle video with real track control
   const toggleVideo = useCallback(() => {
     console.log('Toggling video, current state:', isVideoEnabled);
-    
+
     if (localStreamRef.current) {
       const videoTrack = localStreamRef.current.getVideoTracks()[0];
       if (videoTrack) {
         videoTrack.enabled = !videoTrack.enabled;
         setIsVideoEnabled(videoTrack.enabled);
         console.log('Video toggled to:', videoTrack.enabled);
-        
+
         // Notify remote peer
         if (peerRef.current && peerRef.current.connected) {
           try {
@@ -734,14 +718,14 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Toggle audio with real track control
   const toggleAudio = useCallback(() => {
     console.log('Toggling audio, current state:', isAudioEnabled);
-    
+
     if (localStreamRef.current) {
       const audioTrack = localStreamRef.current.getAudioTracks()[0];
       if (audioTrack) {
         audioTrack.enabled = !audioTrack.enabled;
         setIsAudioEnabled(audioTrack.enabled);
         console.log('Audio toggled to:', audioTrack.enabled);
-        
+
         // Notify remote peer
         if (peerRef.current && peerRef.current.connected) {
           try {
@@ -764,12 +748,12 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Real screen sharing implementation
   const toggleScreenShare = useCallback(async () => {
     console.log('Toggling screen share, current state:', isScreenSharing);
-    
+
     try {
       if (!isScreenSharing) {
         // Start screen sharing with real getDisplayMedia
         console.log('Starting screen share');
-        
+
         const screenStream = await navigator.mediaDevices.getDisplayMedia({
           video: { 
             frameRate: { ideal: 30, max: 60 },
@@ -782,16 +766,16 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             sampleRate: 48000
           }
         });
-        
+
         console.log('Screen share stream obtained:', screenStream.getTracks().map(t => `${t.kind}: ${t.label}`));
-        
+
         // Store original stream
         originalStreamRef.current = localStreamRef.current;
-        
+
         // Replace video track in peer connection
         if (peerRef.current && localStreamRef.current) {
           const videoTrack = screenStream.getVideoTracks()[0];
-          
+
           // Get the peer connection
           const pc = (peerRef.current as any)._pc;
           if (pc) {
@@ -799,12 +783,12 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             const videoSender = senders.find((sender: RTCRtpSender) => 
               sender.track && sender.track.kind === 'video'
             );
-            
+
             if (videoSender && videoTrack) {
               try {
                 await videoSender.replaceTrack(videoTrack);
                 console.log('Screen share track replaced successfully in peer connection');
-                
+
                 // Notify remote peer
                 peerRef.current.send(JSON.stringify({
                   type: 'media-control',
@@ -817,32 +801,32 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             }
           }
         }
-        
+
         localStreamRef.current = screenStream;
         setLocalStream(screenStream);
         setIsScreenSharing(true);
-        
+
         // Handle screen share end by user
         screenStream.getVideoTracks()[0].addEventListener('ended', () => {
           console.log('Screen share ended by user');
           toggleScreenShare();
         });
-        
+
       } else {
         // Stop screen sharing
         console.log('Stopping screen share');
-        
+
         if (localStreamRef.current) {
           localStreamRef.current.getTracks().forEach(track => {
             console.log('Stopping screen share track:', track.kind);
             track.stop();
           });
         }
-        
+
         // Restore original camera stream
         if (originalStreamRef.current) {
           const videoTrack = originalStreamRef.current.getVideoTracks()[0];
-          
+
           // Replace track back to camera in peer connection
           if (peerRef.current && videoTrack) {
             const pc = (peerRef.current as any)._pc;
@@ -851,12 +835,12 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
               const videoSender = senders.find((sender: RTCRtpSender) => 
                 sender.track && sender.track.kind === 'video'
               );
-              
+
               if (videoSender) {
                 try {
                   await videoSender.replaceTrack(videoTrack);
                   console.log('Camera track restored successfully in peer connection');
-                  
+
                   // Notify remote peer
                   peerRef.current.send(JSON.stringify({
                     type: 'media-control',
@@ -869,7 +853,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
               }
             }
           }
-          
+
           localStreamRef.current = originalStreamRef.current;
           setLocalStream(originalStreamRef.current);
           originalStreamRef.current = null;
@@ -883,13 +867,13 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             console.error('Error getting fresh camera stream:', error);
           }
         }
-        
+
         setIsScreenSharing(false);
       }
     } catch (error) {
       console.error('Error toggling screen share:', error);
       setIsScreenSharing(false);
-      
+
       if (error instanceof Error) {
         if (error.name === 'NotAllowedError') {
           alert('Screen sharing was denied. Please allow screen sharing to continue.');
@@ -912,10 +896,10 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     try {
       console.log('Starting call recording...');
-      
+
       // Create combined stream for recording
       const combinedStream = new MediaStream();
-      
+
       // Add local tracks
       localStreamRef.current.getTracks().forEach(track => {
         combinedStream.addTrack(track);
@@ -935,7 +919,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         'video/webm',
         'video/mp4'
       ];
-      
+
       let supportedMimeType = '';
       for (const mimeType of mimeTypes) {
         if (MediaRecorder.isTypeSupported(mimeType)) {
@@ -943,7 +927,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           break;
         }
       }
-      
+
       if (!supportedMimeType) {
         throw new Error('No supported video format for recording');
       }
@@ -969,7 +953,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         const recordedBlob = new Blob(recordedChunksRef.current, {
           type: supportedMimeType
         });
-        
+
         // Save recording to downloads
         const url = URL.createObjectURL(recordedBlob);
         const a = document.createElement('a');
@@ -979,7 +963,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        
+
         console.log('Recording saved, blob size:', recordedBlob.size, 'bytes');
       };
 
@@ -991,7 +975,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       mediaRecorderRef.current = mediaRecorder;
       mediaRecorder.start(1000); // Record in 1-second chunks
       setIsRecording(true);
-      
+
       console.log('Recording started successfully');
 
     } catch (error) {
@@ -1019,7 +1003,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           timestamp: new Date().toISOString(),
           sender: 'user'
         };
-        
+
         peerRef.current.send(JSON.stringify(messageData));
         console.log('Message sent:', message);
       } catch (error) {
@@ -1062,7 +1046,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
         // Calculate quality based on real metrics
         let quality: 'excellent' | 'good' | 'poor' | 'disconnected' = 'excellent';
-        
+
         const lossRate = packetsReceived > 0 ? (packetsLost / packetsReceived) * 100 : 0;
         const rttMs = rtt * 1000;
 
@@ -1077,7 +1061,7 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
 
         setConnectionQuality(quality);
-        
+
       } catch (error) {
         console.error('Error monitoring connection:', error);
         setConnectionQuality('poor');
@@ -1093,39 +1077,39 @@ export const VideoCallProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     currentCall,
     isInCall,
     callStatus,
-    
+
     // Media State
     localStream,
     remoteStream,
     isVideoEnabled,
     isAudioEnabled,
     isScreenSharing,
-    
+
     // Call Actions
     initiateCall,
     initiateGroupCall,
     acceptCall,
     rejectCall,
     endCall,
-    
+
     // Media Controls
     toggleVideo,
     toggleAudio,
     toggleScreenShare,
-    
+
     // Connection Management
     peer,
     connectionQuality,
-    
+
     // Group Call Features
     isGroupCall,
     participants,
     addParticipantToCall,
-    
+
     // Chat/Data Channel
     sendMessage,
     onMessageReceived,
-    
+
     // Recording
     startRecording,
     stopRecording,

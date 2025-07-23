@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { ArrowRight, Bot, Briefcase, Calendar, Check, CheckCheck, ChevronRight, Code, Database, HelpCircle, Link, Play, Search, Shield, Star, Users, Zap, Video, Settings } from 'lucide-react';
+import { ArrowRight, Bot, Briefcase, Calendar, CheckCheck, ChevronRight, Code, Database, HelpCircle, Link, Play, Search, Shield, Star, Users, Zap } from 'lucide-react';
 
 import LandingHeader from '../components/LandingHeader';
 import LandingFooter from '../components/LandingFooter';
@@ -10,7 +10,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
   return (
     <div className="bg-white">
       <LandingHeader />
-      
+
       {/* Hero Section */}
       <section className="relative pt-20 bg-gradient-to-b from-white to-yellow-50">
         <div className="container mx-auto px-4 py-20">
@@ -50,7 +50,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
                       <div className="h-3 w-3 rounded-full bg-green-500"></div>
                     </div>
                   </div>
-                  
+
                   <div className="p-4">
                     <div className="bg-gray-100 rounded-lg p-4 mb-3">
                       <div className="flex items-start">
@@ -62,11 +62,11 @@ const FunctionAssistantFeaturePage: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="bg-amber-100 rounded-lg p-4 mb-3 ml-auto max-w-[80%]">
                       <p className="text-sm text-gray-800">Find deals that are closing this month</p>
                     </div>
-                    
+
                     <div className="bg-gray-100 rounded-lg p-4 mb-3">
                       <div className="flex items-start">
                         <div className="bg-amber-100 p-1 rounded-full">
@@ -88,7 +88,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="border-t border-gray-200 p-4">
                     <div className="relative">
                       <input
@@ -114,7 +114,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Key Features Section */}
       <section id="features" className="py-20">
         <div className="container mx-auto px-4">
@@ -124,7 +124,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
               Our Function Assistant goes beyond conversation to perform actual tasks that save you time and streamline your workflow.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
               <div className="p-3 bg-amber-100 rounded-full w-min mb-4">
@@ -138,7 +138,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
                 <p><span className="text-amber-800 font-medium">Example:</span> "Find all deals worth over $50,000 in the negotiation stage"</p>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
               <div className="p-3 bg-amber-100 rounded-full w-min mb-4">
                 <Calendar className="h-6 w-6 text-amber-600" />
@@ -151,7 +151,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
                 <p><span className="text-amber-800 font-medium">Example:</span> "Schedule a call with Sarah from ABC Corp next Tuesday at 2pm"</p>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
               <div className="p-3 bg-amber-100 rounded-full w-min mb-4">
                 <Database className="h-6 w-6 text-amber-600" />
@@ -164,7 +164,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
                 <p><span className="text-amber-800 font-medium">Example:</span> "Move the Acme deal to negotiation stage and update the probability to 75%"</p>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
               <div className="p-3 bg-amber-100 rounded-full w-min mb-4">
                 <Briefcase className="h-6 w-6 text-amber-600" />
@@ -178,7 +178,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="mt-12 max-w-5xl mx-auto bg-yellow-50 rounded-xl p-8 border border-yellow-100">
             <div className="flex flex-col md:flex-row items-center">
               <div className="w-full md:w-1/2 mb-6 md:mb-0">
@@ -202,7 +202,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Use Cases Section */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -212,7 +212,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
               Discover how sales teams are using the Function Assistant to streamline their daily workflows.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
               <div className="bg-amber-600 text-white p-4">
@@ -243,7 +243,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
                 </ul>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
               <div className="bg-amber-600 text-white p-4">
                 <h3 className="font-bold text-lg flex items-center">
@@ -274,7 +274,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="mt-12 flex justify-center">
             <Link to="/features" className="inline-flex items-center px-6 py-3 bg-white border border-amber-300 text-amber-700 hover:bg-amber-50 rounded-lg transition-colors">
               See All Features <ChevronRight size={18} className="ml-2" />
@@ -282,7 +282,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Security Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -292,7 +292,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
               We've built our Function Assistant with enterprise-grade security to protect your sensitive CRM data.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
               <div className="p-3 bg-amber-100 rounded-full w-min mb-4">
@@ -303,7 +303,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
                 Granular control over which functions the AI can access and detailed audit logging of all actions taken.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
               <div className="p-3 bg-amber-100 rounded-full w-min mb-4">
                 <Code className="h-6 w-6 text-amber-600" />
@@ -313,7 +313,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
                 All function calls are validated and executed with proper authentication, ensuring only authorized actions.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
               <div className="p-3 bg-amber-100 rounded-full w-min mb-4">
                 <HelpCircle className="h-6 w-6 text-amber-600" />
@@ -326,7 +326,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Testimonials */}
       <section className="py-20 bg-gradient-to-b from-white to-yellow-50">
         <div className="container mx-auto px-4">
@@ -336,7 +336,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
               Hear from sales professionals who've transformed their workflow with our Function Assistant.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
               <div className="flex mb-4">
@@ -361,7 +361,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
               <div className="flex mb-4">
                 {[1, 2, 3, 4, 5].map(star => (
@@ -385,7 +385,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
               <div className="flex mb-4">
                 {[1, 2, 3, 4, 5].map(star => (
@@ -412,7 +412,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Setup Overview */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -422,7 +422,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
               Getting started with the Function Assistant is simple and takes just minutes.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="relative">
               <div className="absolute top-0 left-1/2 h-full w-0.5 bg-amber-100 -ml-[1px] z-0 md:hidden"></div>
@@ -434,7 +434,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
                 </p>
               </div>
             </div>
-            
+
             <div className="relative">
               <div className="absolute top-0 left-1/2 h-full w-0.5 bg-amber-100 -ml-[1px] z-0 md:hidden"></div>
               <div className="relative z-10 flex flex-col items-center">
@@ -445,7 +445,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
                 </p>
               </div>
             </div>
-            
+
             <div className="relative">
               <div className="relative z-10 flex flex-col items-center">
                 <div className="w-14 h-14 rounded-full bg-amber-600 text-white flex items-center justify-center text-2xl font-bold mb-4">3</div>
@@ -456,7 +456,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="mt-16 max-w-5xl mx-auto">
             <div className="bg-gradient-to-r from-yellow-600 to-amber-600 rounded-xl shadow-lg overflow-hidden">
               <div className="p-8 text-white">
@@ -477,7 +477,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* FAQ Section */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -487,7 +487,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
               Get answers to frequently asked questions about the Function Assistant.
             </p>
           </div>
-          
+
           <div className="max-w-3xl mx-auto space-y-6">
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
               <h3 className="font-bold text-lg text-gray-900 mb-2">Is the Function Assistant secure?</h3>
@@ -495,21 +495,21 @@ const FunctionAssistantFeaturePage: React.FC = () => {
                 Yes, security is our top priority. All functions are executed with proper authentication, permissions are controlled by user roles, and detailed audit logs track every action. You maintain complete control over what the assistant can and cannot do.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
               <h3 className="font-bold text-lg text-gray-900 mb-2">What kind of functions can the assistant perform?</h3>
               <p className="text-gray-700">
                 The Function Assistant can search for records, create and update deals, add contacts, schedule tasks and appointments, generate reports, send notifications, and more. The specific functions available depend on your subscription plan.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
               <h3 className="font-bold text-lg text-gray-900 mb-2">Can I customize what functions are available?</h3>
               <p className="text-gray-700">
                 Absolutely! You have complete control over which functions are enabled and can customize access based on user roles. Enterprise plans also support custom function development for specific business processes.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
               <h3 className="font-bold text-lg text-gray-900 mb-2">How does the assistant know what to do?</h3>
               <p className="text-gray-700">
@@ -517,7 +517,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
               </p>
             </div>
           </div>
-          
+
           <div className="text-center mt-8">
             <Link to="/faq" className="inline-flex items-center text-amber-600 hover:text-amber-800 font-medium">
               View all FAQs <ChevronRight className="ml-1 h-5 w-5" />
@@ -525,7 +525,7 @@ const FunctionAssistantFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       <LandingFooter />
     </div>
   );

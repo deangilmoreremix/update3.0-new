@@ -5,13 +5,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import type { CallParticipant } from '../hooks/useSafeVideoCall';
 import { Contact } from '../types/contact';
 
-interface CallButtonProps {
-  contact: Contact;
-  variant?: 'icon' | 'full';
-  size?: 'sm' | 'md' | 'lg';
-}
-
-const CallButton: React.FC<CallButtonProps> = ({ 
+const CallButton: FC<CallButtonProps> = ({ 
   contact, 
   variant = 'icon', 
   size = 'md' 
@@ -22,7 +16,7 @@ const CallButton: React.FC<CallButtonProps> = ({
 
   const handleVideoCall = async () => {
     if (callStatus !== 'idle') return;
-    
+
     setIsLoading(true);
     try {
       const participant: CallParticipant = {
@@ -31,7 +25,7 @@ const CallButton: React.FC<CallButtonProps> = ({
         email: contact.email,
         avatar: contact.avatarSrc || contact.avatar
       };
-      
+
       await initiateCall(participant, 'video');
     } catch (error) {
       console.error('Failed to start video call:', error);
@@ -43,7 +37,7 @@ const CallButton: React.FC<CallButtonProps> = ({
 
   const handleAudioCall = async () => {
     if (callStatus !== 'idle') return;
-    
+
     setIsLoading(true);
     try {
       const participant: CallParticipant = {
@@ -52,7 +46,7 @@ const CallButton: React.FC<CallButtonProps> = ({
         email: contact.email,
         avatar: contact.avatarSrc || contact.avatar
       };
-      
+
       await initiateCall(participant, 'audio');
     } catch (error) {
       console.error('Failed to start audio call:', error);
@@ -93,7 +87,7 @@ const CallButton: React.FC<CallButtonProps> = ({
             <Video size={iconSizes[size]} />
           )}
         </button>
-        
+
         <button
           onClick={handleAudioCall}
           disabled={isLoading || callStatus !== 'idle'}
@@ -128,7 +122,7 @@ const CallButton: React.FC<CallButtonProps> = ({
         <Video size={16} />
         <span className="text-sm font-medium">Video Call</span>
       </button>
-      
+
       <button
         onClick={handleAudioCall}
         disabled={isLoading || callStatus !== 'idle'}

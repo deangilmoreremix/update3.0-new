@@ -7,7 +7,7 @@ const LandingHeader: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [featuresOpen, setFeaturesOpen] = useState(false);
-  
+
   // Track scroll position to change header style
   useEffect(() => {
     const handleScroll = () => {
@@ -17,7 +17,7 @@ const LandingHeader: React.FC = () => {
         setIsScrolled(false);
       }
     };
-    
+
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -36,7 +36,7 @@ const LandingHeader: React.FC = () => {
               Smart<span className="text-gray-900">CRM</span>
             </span>
           </Link>
-          
+
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
             <div className="relative">
@@ -47,7 +47,7 @@ const LandingHeader: React.FC = () => {
               >
                 Features <ChevronDown size={16} className={`ml-1 transition-transform ${featuresOpen ? 'rotate-180' : ''}`} />
               </button>
-              
+
               {featuresOpen && (
                 <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl border border-gray-100 p-4 w-[580px] z-10">
                   <div className="grid grid-cols-2 gap-2">
@@ -104,7 +104,7 @@ const LandingHeader: React.FC = () => {
               Contact
             </Link>
           </nav>
-          
+
           {/* Auth Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
             <Link to="/login" className="text-gray-700 hover:text-blue-600 transition-colors">
@@ -114,7 +114,7 @@ const LandingHeader: React.FC = () => {
               Sign Up
             </Link>
           </div>
-          
+
           {/* Mobile Menu Button */}
           <button 
             className="lg:hidden text-gray-700 p-2"
@@ -124,7 +124,7 @@ const LandingHeader: React.FC = () => {
           </button>
         </div>
       </div>
-      
+
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="lg:hidden bg-white shadow-lg p-4 mt-3">
@@ -136,7 +136,7 @@ const LandingHeader: React.FC = () => {
               >
                 Features <ChevronDown size={16} className={`ml-2 transition-transform ${featuresOpen ? 'rotate-180' : ''}`} />
               </button>
-              
+
               {featuresOpen && (
                 <div className="mt-2 ml-4 space-y-2">
                   <Link to="/features/ai-tools" className="block py-1 text-gray-600 hover:text-blue-600">

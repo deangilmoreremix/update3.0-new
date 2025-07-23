@@ -24,7 +24,7 @@ const PersonalizationContext = createContext<PersonalizationContextType>(default
 
 export const usePersonalization = () => useContext(PersonalizationContext);
 
-export const PersonalizationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const PersonalizationProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [userPreferences, setUserPreferences] = useState(() => {
     // Try to load from localStorage if available
     try {

@@ -3,13 +3,7 @@ import { X, Search, Check, ExternalLink, Star, Clock, ArrowRight, Globe, Zap, Sh
 import { composioTools, composioToolCategories, getToolsByCategory, searchTools, ComposioTool } from '../data/composioToolsData';
 import { apiConfig } from '../config/apiConfig';
 
-interface ComposioIntegrationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onToolSelect?: (tool: ComposioTool) => void;
-}
-
-const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
+const ComposioIntegrationModal: FC<ComposioIntegrationModalProps> = ({
   isOpen,
   onClose,
   onToolSelect
@@ -23,34 +17,34 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
   const [selectedTool, setSelectedTool] = useState<ComposioTool | null>(null);
   const [view, setView] = useState<'grid' | 'list'>('grid');
   const searchInputRef = useRef<HTMLInputElement>(null);
-  
+
   // Filter tools based on current filters
   const filteredTools = (() => {
     let filtered = composioTools;
-    
+
     // Apply category filter
     if (selectedCategory !== 'all') {
       filtered = getToolsByCategory(selectedCategory);
     }
-    
+
     // Apply status filter
     if (statusFilter !== 'all') {
       filtered = filtered.filter(tool => tool.status === statusFilter);
     }
-    
+
     // Apply search filter
     if (searchQuery) {
       filtered = searchTools(searchQuery);
     }
-    
+
     // Apply popular filter
     if (popularOnly) {
       filtered = filtered.filter(tool => (tool.popularityScore || 0) >= 90);
     }
-    
+
     return filtered;
   })();
-  
+
   // Categories with counts
   const categoriesWithCounts = composioToolCategories.map(category => ({
     ...category,
@@ -112,7 +106,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
     <div className="fixed inset-0 z-50 overflow-hidden flex items-center justify-center">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => selectedTool ? setSelectedTool(null) : onClose()} />
-      
+
       {/* Main modal */}
       <div className="relative w-full max-w-7xl max-h-[90vh] bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700 overflow-hidden">
         {/* Header */}
@@ -126,7 +120,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
               <p className="text-gray-300">Connect your AI agents to 250+ tools and services</p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <div className={`px-3 py-1 rounded-full text-sm ${
               apiConfig.composio.available 
@@ -142,7 +136,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                 </span>
               </div>
             </div>
-            
+
             <button
               onClick={onClose}
               className="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-gray-400 hover:text-white transition-colors"
@@ -164,7 +158,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                 <ArrowRight className="h-5 w-5 rotate-180" />
                 Back to all integrations
               </button>
-              
+
               <div className="bg-gradient-to-br from-slate-700/50 to-slate-800/50 rounded-2xl border border-slate-600/50 p-8">
                 <div className="flex items-start gap-6">
                   <div className="p-6 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl border border-blue-400/30 text-center">
@@ -177,7 +171,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                       {selectedTool.status === 'active' ? 'Active' : 'Coming Soon'}
                     </span>
                   </div>
-                  
+
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="text-3xl font-bold text-white">{selectedTool.name}</h3>
@@ -190,15 +184,15 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                         )}
                       </div>
                     </div>
-                    
+
                     <div className="text-blue-400 mb-6">
                       {composioToolCategories.find(c => c.id === selectedTool.category)?.name}
                     </div>
-                    
+
                     <p className="text-gray-300 text-lg mb-6 leading-relaxed">
                       {selectedTool.description}
                     </p>
-                    
+
                     <div className="grid md:grid-cols-2 gap-6 mb-8">
                       <div className="bg-slate-700/30 rounded-lg p-4">
                         <h4 className="font-medium text-white mb-3 flex items-center gap-2">
@@ -224,7 +218,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                           </li>
                         </ul>
                       </div>
-                      
+
                       <div className="bg-slate-700/30 rounded-lg p-4">
                         <h4 className="font-medium text-white mb-3 flex items-center gap-2">
                           <LinkIcon className="h-4 w-4 text-purple-400" />
@@ -250,7 +244,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="mb-8">
                       <h4 className="font-medium text-white mb-3 flex items-center gap-2">
                         <Star className="h-4 w-4 text-yellow-400" />
@@ -264,7 +258,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                         ))}
                       </div>
                     </div>
-                    
+
                     {selectedTool.status === 'active' ? (
                       <div className="grid grid-cols-2 gap-4">
                         <button
@@ -295,7 +289,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                             </>
                           )}
                         </button>
-                        
+
                         <a
                           href={`https://composio.dev/docs/integrations/${selectedTool.id}`}
                           target="_blank"
@@ -325,7 +319,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                     )}
                   </div>
                 </div>
-                
+
                 <div className="mt-8 pt-6 border-t border-slate-600/50">
                   <div className="grid md:grid-cols-3 gap-6">
                     <div className="bg-slate-700/30 rounded-lg p-4">
@@ -338,7 +332,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                         All data is encrypted in transit and at rest.
                       </p>
                     </div>
-                    
+
                     <div className="bg-slate-700/30 rounded-lg p-4">
                       <h4 className="font-medium text-white mb-2 flex items-center gap-2">
                         <Key className="h-4 w-4 text-blue-400" />
@@ -354,7 +348,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                         )}
                       </p>
                     </div>
-                    
+
                     <div className="bg-slate-700/30 rounded-lg p-4">
                       <h4 className="font-medium text-white mb-2 flex items-center gap-2">
                         <RefreshCw className="h-4 w-4 text-purple-400" />
@@ -395,7 +389,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                   </button>
                 )}
               </div>
-              
+
               {/* Status Filter */}
               <div className="flex flex-wrap gap-3">
                 {['all', 'active', 'coming-soon'].map((status) => (
@@ -415,7 +409,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                         : 'Coming Soon'}
                   </button>
                 ))}
-                
+
                 {/* Popular Filter */}
                 <button
                   onClick={() => setPopularOnly(!popularOnly)}
@@ -428,7 +422,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                   <Star className={`h-4 w-4 ${popularOnly ? 'fill-white' : ''}`} />
                   Popular Tools
                 </button>
-                
+
                 {/* View Toggle */}
                 <div className="flex rounded-lg overflow-hidden">
                   <button
@@ -463,7 +457,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
               >
                 All Categories
               </button>
-              
+
               {categoriesWithCounts.map((category) => (
                 <button
                   key={category.id}
@@ -525,7 +519,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                   >
                     <div className="flex justify-between mb-4">
                       <div className="text-4xl">{tool.icon}</div>
-                      
+
                       {tool.popularityScore && tool.popularityScore >= 90 && (
                         <div className="flex items-center gap-1 text-yellow-400">
                           <Star className="h-4 w-4 fill-yellow-400" />
@@ -533,7 +527,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                         </div>
                       )}
                     </div>
-                    
+
                     <h3 className="text-lg font-semibold text-white mb-1">{tool.name}</h3>
                     <div className="text-blue-400 text-sm mb-2">
                       {composioToolCategories.find(c => c.id === tool.category)?.name}
@@ -541,7 +535,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                     <p className="text-gray-300 text-sm mb-3 line-clamp-2">
                       {tool.description}
                     </p>
-                    
+
                     <div className="flex items-center justify-between">
                       <div className={`text-xs font-medium px-2 py-1 rounded-full ${
                         tool.status === 'active'
@@ -550,7 +544,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                       }`}>
                         {tool.status === 'active' ? 'Ready to use' : 'Coming soon'}
                       </div>
-                      
+
                       {tool.status === 'active' && (
                         <div className="flex items-center gap-1 text-gray-400 text-xs">
                           <Clock className="h-3 w-3" />
@@ -574,7 +568,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                     }`}
                   >
                     <div className="text-3xl">{tool.icon}</div>
-                    
+
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <h3 className="font-semibold text-white">{tool.name}</h3>
@@ -586,7 +580,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                         {tool.description}
                       </p>
                     </div>
-                    
+
                     <div className="flex items-center gap-3">
                       <div className={`text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap ${
                         tool.status === 'active'
@@ -595,11 +589,11 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                       }`}>
                         {tool.status === 'active' ? 'Active' : 'Coming Soon'}
                       </div>
-                      
+
                       <div className="text-blue-400 text-sm">
                         {composioToolCategories.find(c => c.id === tool.category)?.name}
                       </div>
-                      
+
                       {tool.status === 'active' && (
                         <ArrowRight className="h-5 w-5 text-gray-400" />
                       )}
@@ -618,7 +612,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
               Powered by <a href="https://composio.dev" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">Composio.dev</a> 
               - The universal API integration platform
             </p>
-            
+
             <div className="flex gap-3">
               {!selectedTool && (
                 <button
@@ -633,7 +627,7 @@ const ComposioIntegrationModal: React.FC<ComposioIntegrationModalProps> = ({
                   Clear Filters
                 </button>
               )}
-              
+
               <a
                 href="https://composio.dev/integrations" 
                 target="_blank" 

@@ -5,12 +5,7 @@ import { AIResearchButton } from '../ui/AIResearchButton';
 import { useContactStore } from '../../store/contactStore';
 import { ContactEnrichmentData } from '../../services/aiEnrichmentService';
 
-import { X, User, Building, Tag, Globe, Target, Save, UserPlus, AlertCircle, CheckCircle, Heart, MessageSquare, Linkedin, Twitter, Facebook, Instagram, Plus, Database, Briefcase, MapPin, Brain, Sparkles, RefreshCw, Phone } from 'lucide-react';
-
-interface NewContactModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
+import { X, User, Building, Tag, Globe, Target, Save, UserPlus, AlertCircle, CheckCircle, Heart, Plus, Database, Briefcase, MapPin, Brain, Sparkles, RefreshCw } from 'lucide-react';
 
 const interestLevels = [
   { value: 'hot', label: 'Hot Client', color: 'bg-red-500' },
@@ -50,7 +45,7 @@ const socialPlatforms = [
   { key: 'website', name: 'Website', icon: Globe, color: 'bg-purple-500', placeholder: 'https://company.com' }
 ];
 
-export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClose }) => {
+export const NewContactModal: FC<NewContactModalProps> = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
     // Basic Information
     firstName: '',
@@ -58,30 +53,30 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
     email: '',
     phone: '',
     avatarSrc: '',
-    
+
     // Professional Information
     title: '',
     company: '',
     industry: '',
     department: '',
-    
+
     // Location Information
     address: '',
     city: '',
     state: '',
     country: '',
     zipCode: '',
-    
+
     // Lead Information
     interestLevel: 'medium' as const,
     status: 'lead' as const,
     sources: [] as string[],
-    
+
     // Personal Details
     birthday: '',
     timezone: '',
     preferredContact: 'email',
-    
+
     // Social & Contact
     socialProfiles: {
       whatsapp: '',
@@ -91,57 +86,57 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
       instagram: '',
       website: ''
     },
-    
+
     // Additional Information
     notes: '',
     tags: '',
     isFavorite: false,
-    
+
     // Custom Fields
     customFields: {} as Record<string, string>
   });
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [newCustomField, setNewCustomField] = useState({ name: '', value: '' });
   const [showCustomFields, setShowCustomFields] = useState(false);
   const [lastEnrichmentData, setLastEnrichmentData] = useState<ContactEnrichmentData | null>(null);
-  
+
   const { createContact } = useContactStore();
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Invalid email format';
     }
-    
+
     if (!formData.firstName) {
       newErrors.firstName = 'First name is required';
     }
-    
+
     if (!formData.lastName) {
       newErrors.lastName = 'Last name is required';
     }
-    
+
     if (!formData.company) {
       newErrors.company = 'Company is required';
     }
-    
+
     if (!formData.title) {
       newErrors.title = 'Title is required';
     }
-    
+
     // Validate social profile URLs
     Object.entries(formData.socialProfiles).forEach(([key, value]) => {
       if (value && key !== 'whatsapp' && !value.startsWith('http')) {
         newErrors[`social_${key}`] = `${key} must be a valid URL`;
       }
     });
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -201,10 +196,10 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
 
   const handleAIAutoFill = (enrichmentData: ContactEnrichmentData) => {
     setLastEnrichmentData(enrichmentData);
-    
+
     // Apply enrichment data to form
     const updates: unknown = {};
-    
+
     if (enrichmentData.firstName && !formData.firstName) {
       updates.firstName = enrichmentData.firstName;
     }
@@ -229,7 +224,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
     if (enrichmentData.avatar && !formData.avatarSrc) {
       updates.avatarSrc = enrichmentData.avatar;
     }
-    
+
     // Location data
     if (enrichmentData.location) {
       if (typeof enrichmentData.location === 'object') {
@@ -253,7 +248,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
         }
       }
     }
-    
+
     // Social profiles
     if (enrichmentData.socialProfiles) {
       const socialUpdates: unknown = {};
@@ -266,22 +261,22 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
         updates.socialProfiles = { ...formData.socialProfiles, ...socialUpdates };
       }
     }
-    
+
     // Notes
     if (enrichmentData.notes && !formData.notes) {
       updates.notes = enrichmentData.notes;
     } else if (enrichmentData.bio && !formData.notes) {
       updates.notes = enrichmentData.bio;
     }
-    
+
     setFormData(prev => ({ ...prev, ...updates }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsSubmitting(true);
     try {
       const contactData = {
@@ -305,15 +300,15 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
         ),
         customFields: Object.keys(formData.customFields).length > 0 ? formData.customFields : undefined
       };
-      
+
       await createContact(contactData);
       setIsSuccess(true);
-      
+
       // Auto-close after 2 seconds
       setTimeout(() => {
         handleClose();
       }, 2000);
-      
+
     } catch (error) {
       console.error('Failed to create contact:', error);
       setErrors({ submit: 'Failed to create contact. Please try again.' });
@@ -381,7 +376,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
               <p className="text-gray-600">Add a contact with AI-powered research and auto-fill</p>
             </div>
           </div>
-          
+
           {/* AI Quick Actions */}
           <div className="flex items-center space-x-3">
             <AIAutoFillButton
@@ -389,7 +384,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
               onAutoFill={handleAIAutoFill}
               size="sm"
             />
-            
+
             <button
               onClick={handleClose}
               className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
@@ -427,7 +422,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                   </div>
                 )}
               </div>
-              
+
               {/* Avatar Section with AI Image Search */}
               {formData.avatarSrc && (
                 <div className="flex items-center justify-center mb-6">
@@ -453,7 +448,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                   </div>
                 </div>
               )}
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -472,7 +467,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                     <p className="text-sm text-red-600 mt-1">{errors.firstName}</p>
                   )}
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Last Name *
@@ -502,7 +497,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-                
+
                 <div className="relative">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Email *
@@ -527,7 +522,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                     <p className="text-sm text-red-600 mt-1">{errors.email}</p>
                   )}
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Phone Number
@@ -594,7 +589,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                 <Building className="w-5 h-5 mr-2 text-green-500" />
                 Professional Information
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -613,7 +608,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                     <p className="text-sm text-red-600 mt-1">{errors.company}</p>
                   )}
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Job Title *
@@ -631,7 +626,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                     <p className="text-sm text-red-600 mt-1">{errors.title}</p>
                   )}
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Industry
@@ -669,7 +664,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                 <MapPin className="w-5 h-5 mr-2 text-red-500" />
                 Location Information
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -683,7 +678,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                     placeholder="Street address"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     City
@@ -744,7 +739,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                 <Target className="w-5 h-5 mr-2 text-orange-500" />
                 Lead Information
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -767,7 +762,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                     ))}
                   </div>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Status
@@ -793,7 +788,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                 <Briefcase className="w-5 h-5 mr-2 text-purple-500" />
                 Lead Sources
               </h3>
-              
+
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 {sourceOptions.map((source) => (
                   <label key={source} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
@@ -827,7 +822,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                   />
                 )}
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {socialPlatforms.map((platform) => {
                   const Icon = platform.icon;
@@ -876,7 +871,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                   <span>Add Custom Field</span>
                 </button>
               </div>
-              
+
               {/* Existing Custom Fields */}
               {Object.keys(formData.customFields).length > 0 && (
                 <div className="space-y-3 mb-4">
@@ -903,7 +898,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                   ))}
                 </div>
               )}
-              
+
               {/* Add New Custom Field */}
               {showCustomFields && (
                 <div className="p-4 bg-gray-50 rounded-lg">
@@ -952,7 +947,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                 <Tag className="w-5 h-5 mr-2 text-yellow-500" />
                 Additional Information
               </h3>
-              
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -967,7 +962,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                   />
                   <p className="text-xs text-gray-500 mt-1">Separate tags with commas</p>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Notes
@@ -999,7 +994,7 @@ export const NewContactModal: React.FC<NewContactModalProps> = ({ isOpen, onClos
                 <Brain className="w-4 h-4 text-purple-500" />
                 <span>Powered by OpenAI & Gemini AI</span>
               </div>
-              
+
               <div className="flex items-center space-x-4">
                 <ModernButton
                   type="button"

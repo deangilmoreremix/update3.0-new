@@ -20,7 +20,7 @@ export default function Settings() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center mb-4">
             <Shield className="h-8 w-8 text-green-500" />
@@ -30,7 +30,7 @@ export default function Settings() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center mb-4">
             <Bell className="h-8 w-8 text-purple-500" />
@@ -40,7 +40,7 @@ export default function Settings() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center mb-4">
             <Database className="h-8 w-8 text-orange-500" />
@@ -55,7 +55,7 @@ export default function Settings() {
       {/* Settings Form */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-6">General Settings</h2>
-        
+
         <div className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -67,7 +67,7 @@ export default function Settings() {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Time Zone
@@ -79,7 +79,7 @@ export default function Settings() {
               <option>Pacific Time (PT)</option>
             </select>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Currency
@@ -91,7 +91,7 @@ export default function Settings() {
               <option>CAD ($)</option>
             </select>
           </div>
-          
+
           <div className="flex items-center">
             <input
               type="checkbox"
@@ -103,7 +103,7 @@ export default function Settings() {
               Enable email notifications
             </label>
           </div>
-          
+
           <div className="pt-4">
             <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors mr-3">
               Save Changes
@@ -113,7 +113,7 @@ export default function Settings() {
             </button>
           </div>
         </div>
-        
+
         <div className="mt-8 pt-6 border-t border-gray-200">
           <p className="text-gray-600 mb-4">
             This is a placeholder for the Settings page. In the full implementation, this would include:

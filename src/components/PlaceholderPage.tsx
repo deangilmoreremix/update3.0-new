@@ -2,13 +2,7 @@ import React from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Construction } from 'lucide-react';
 
-interface PlaceholderPageProps {
-  title: string;
-  description?: string;
-  icon?: React.ReactNode;
-}
-
-const PlaceholderPage: React.FC<PlaceholderPageProps> = ({ title, description, icon }) => {
+const PlaceholderPage: FC<PlaceholderPageProps> = ({ title, description, icon }) => {
   const { isDark } = useTheme();
 
   return (

@@ -2,16 +2,9 @@ import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { TrendingUp, TrendingDown } from 'lucide-react'
 
-interface MetricCardProps {
-  title: string
-  value: string
-  change: string
-  icon?: React.ReactNode
-}
-
 export default function MetricCard({ title, value, change, icon }: MetricCardProps) {
   const isPositive = change.startsWith('+')
-  
+
   return (
     <Card className="hover:shadow-lg transition-shadow duration-200">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

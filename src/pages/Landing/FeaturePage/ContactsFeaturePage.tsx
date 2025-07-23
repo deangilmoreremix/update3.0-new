@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { BarChart3, Brain, Check, CheckCheck, ChevronRight, Link, Mail, MessageSquare, Play, Plus, Search, Smartphone, Star, Tag, UserPlus } from 'lucide-react';
+import { BarChart3, Brain, CheckCheck, ChevronRight, Link, Mail, MessageSquare, Play, Search, Smartphone, Star, Tag, UserPlus } from 'lucide-react';
 
 import LandingHeader from '../components/LandingHeader';
 import LandingFooter from '../components/LandingFooter';
@@ -10,7 +10,7 @@ const ContactsFeaturePage: React.FC = () => {
   return (
     <div className="bg-white">
       <LandingHeader />
-      
+
       {/* Hero Section */}
       <section className="relative pt-20 bg-gradient-to-b from-white to-blue-50">
         <div className="container mx-auto px-4 py-20">
@@ -48,7 +48,7 @@ const ContactsFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Key Features Section */}
       <section id="features" className="py-20">
         <div className="container mx-auto px-4">
@@ -58,7 +58,7 @@ const ContactsFeaturePage: React.FC = () => {
               Everything you need to organize, track, and engage with your contacts efficiently.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-blue-100 rounded-full w-min mb-4">
@@ -69,7 +69,7 @@ const ContactsFeaturePage: React.FC = () => {
                 Create rich contact profiles with all relevant information, interaction history, and automatic social media enrichment.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-green-100 rounded-full w-min mb-4">
                 <Tag className="h-6 w-6 text-green-600" />
@@ -79,7 +79,7 @@ const ContactsFeaturePage: React.FC = () => {
                 Organize contacts with custom fields, tags, and automated segmentation based on behavior and attributes.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-purple-100 rounded-full w-min mb-4">
                 <Brain className="h-6 w-6 text-purple-600" />
@@ -89,7 +89,7 @@ const ContactsFeaturePage: React.FC = () => {
                 Automatically score leads based on engagement, behavior, and profile data to prioritize your efforts.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-amber-100 rounded-full w-min mb-4">
                 <Search className="h-6 w-6 text-amber-600" />
@@ -99,7 +99,7 @@ const ContactsFeaturePage: React.FC = () => {
                 Find exactly who you're looking for with powerful search capabilities and customizable filters.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-indigo-100 rounded-full w-min mb-4">
                 <MessageSquare className="h-6 w-6 text-indigo-600" />
@@ -109,7 +109,7 @@ const ContactsFeaturePage: React.FC = () => {
                 Log all communications and track every touchpoint with detailed interaction history.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-rose-100 rounded-full w-min mb-4">
                 <BarChart3 className="h-6 w-6 text-rose-600" />
@@ -122,7 +122,7 @@ const ContactsFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* AI Lead Scoring Section */}
       <section className="py-20 bg-gradient-to-b from-blue-50 to-white">
         <div className="container mx-auto px-4">
@@ -152,7 +152,7 @@ const ContactsFeaturePage: React.FC = () => {
                       <p className="text-gray-600 text-sm">VP of Technology, TechCorp</p>
                     </div>
                   </div>
-                  
+
                   <div className="mb-6">
                     <div className="flex justify-between items-end mb-1">
                       <span className="text-sm font-medium text-gray-700">Lead Score</span>
@@ -162,7 +162,7 @@ const ContactsFeaturePage: React.FC = () => {
                       <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: '85%' }}></div>
                     </div>
                   </div>
-                  
+
                   <div className="p-4 bg-blue-50 rounded-lg border border-blue-100 mb-6">
                     <h4 className="font-semibold text-blue-800 mb-2">AI Analysis & Insights</h4>
                     <ul className="space-y-2 text-sm text-gray-700">
@@ -184,7 +184,7 @@ const ContactsFeaturePage: React.FC = () => {
                       </li>
                     </ul>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm">
                       View Full Profile
@@ -196,7 +196,7 @@ const ContactsFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="w-full lg:w-1/2 order-1 lg:order-2">
               <div className="flex items-center mb-4">
                 <div className="p-3 bg-blue-100 rounded-full">
@@ -204,13 +204,13 @@ const ContactsFeaturePage: React.FC = () => {
                 </div>
                 <h3 className="text-2xl font-bold ml-3">AI Lead Scoring</h3>
               </div>
-              
+
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Focus on the Right Leads at the Right Time</h2>
-              
+
               <p className="text-xl text-gray-600 mb-6 leading-relaxed">
                 Our AI automatically analyzes dozens of data points to identify your hottest leads and opportunities, so you can prioritize effectively.
               </p>
-              
+
               <div className="space-y-4 mb-8">
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
@@ -219,7 +219,7 @@ const ContactsFeaturePage: React.FC = () => {
                     <p className="text-gray-600">Score leads based on likelihood to convert using machine learning algorithms.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
                   <div>
@@ -227,7 +227,7 @@ const ContactsFeaturePage: React.FC = () => {
                     <p className="text-gray-600">Automatically track interactions across email, calls, and website activity.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
                   <div>
@@ -235,7 +235,7 @@ const ContactsFeaturePage: React.FC = () => {
                     <p className="text-gray-600">Get AI-suggested next actions for each contact to move relationships forward.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <CheckCheck className="h-5 w-5 text-green-500 mt-1 mr-3" />
                   <div>
@@ -244,7 +244,7 @@ const ContactsFeaturePage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex items-center">
                 <Link to="/register" className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors mr-4">
                   Try It Free
@@ -258,7 +258,7 @@ const ContactsFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Multi-channel Communication Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -268,7 +268,7 @@ const ContactsFeaturePage: React.FC = () => {
               Reach your contacts through their preferred channels, all from one unified platform.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-blue-100 rounded-full w-min mb-4">
@@ -279,7 +279,7 @@ const ContactsFeaturePage: React.FC = () => {
                 Send personalized emails directly from contact records with templates, tracking, and scheduling.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-green-100 rounded-full w-min mb-4">
                 <Smartphone className="h-6 w-6 text-green-600" />
@@ -289,7 +289,7 @@ const ContactsFeaturePage: React.FC = () => {
                 Send and receive text messages with contacts for quick, direct communication.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
               <div className="p-3 bg-purple-100 rounded-full w-min mb-4">
                 <MessageSquare className="h-6 w-6 text-purple-600" />
@@ -300,7 +300,7 @@ const ContactsFeaturePage: React.FC = () => {
               </p>
             </div>
           </div>
-          
+
           <div className="mt-16 flex justify-center">
             <Link to="/features/communications" className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-lg hover:shadow-lg transition duration-300">
               Explore Communication Tools
@@ -308,7 +308,7 @@ const ContactsFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Testimonials Section */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -318,7 +318,7 @@ const ContactsFeaturePage: React.FC = () => {
               See how our contact management features are transforming sales teams
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
               <div className="flex mb-4">
@@ -344,7 +344,7 @@ const ContactsFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
               <div className="flex mb-4">
                 {Array(5).fill(0).map((_, index) => (
@@ -369,7 +369,7 @@ const ContactsFeaturePage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
               <div className="flex mb-4">
                 {Array(5).fill(0).map((_, index) => (
@@ -397,7 +397,7 @@ const ContactsFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="container mx-auto px-4">
@@ -413,7 +413,7 @@ const ContactsFeaturePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       <LandingFooter />
     </div>
   );

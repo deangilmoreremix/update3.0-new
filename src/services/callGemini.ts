@@ -1,16 +1,15 @@
 
-
 export async function callGemini(prompt: string) {
   try {
     // For demo purposes, we'll simulate a response
     console.log('Calling Gemini with prompt:', prompt);
-    
+
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
+
     // Generate a simulated response based on the prompt
     let response = '';
-    
+
     if (prompt.includes('pain points') || prompt.includes('selling angles')) {
       response = `
 Based on my analysis, here are potential pain points for this company:
@@ -27,7 +26,7 @@ Their industry is facing increasing competition and pressure to digitize sales p
     } else if (prompt.includes('enriched information')) {
       const name = prompt.match(/about\s+([^\s]+)/)?.[1] || 'the contact';
       const company = prompt.match(/at\s+([^\s]+)/)?.[1] || 'the company';
-      
+
       response = `
 ${name} likely holds a senior position at ${company} with responsibilities including:
 
@@ -50,7 +49,7 @@ They're likely evaluated on metrics like:
 - Revenue growth
       `;
     }
-    
+
     return response.trim();
   } catch (error) {
     console.error('Error calling Gemini:', error);

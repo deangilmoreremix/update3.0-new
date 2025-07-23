@@ -1,21 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 
-interface BaseModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title?: string;
-  children: React.ReactNode;
-  maxWidth?: string;
-  showClose?: boolean;
-  closeOnOutsideClick?: boolean;
-}
-
 /**
  * Base modal component with accessibility features and dark mode support
  * Handles focus trapping, keyboard navigation, and proper ARIA attributes
  */
-export const BaseModal: React.FC<BaseModalProps> = ({
+export const BaseModal: FC<BaseModalProps> = ({
   isOpen,
   onClose,
   title,
@@ -26,35 +16,35 @@ export const BaseModal: React.FC<BaseModalProps> = ({
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const previousFocusElement = useRef<Element | null>(null);
-  
+
   useEffect(() => {
     // Store the element that had focus before opening modal
     if (isOpen) {
       previousFocusElement.current = document.activeElement;
-      
+
       // Focus the modal when it opens
       if (modalRef.current) {
         // Focus the first focusable element or the modal itself
         const firstFocusable = modalRef.current.querySelector(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         ) as HTMLElement;
-        
+
         if (firstFocusable) {
           firstFocusable.focus();
         } else {
           modalRef.current.focus();
         }
       }
-      
+
       // Disable body scroll when modal is open
       document.body.style.overflow = 'hidden';
     }
-    
+
     return () => {
       // Re-enable scroll when modal closes
       if (isOpen) {
         document.body.style.overflow = '';
-        
+
         // Restore focus to previously focused element
         if (previousFocusElement.current) {
           (previousFocusElement.current as HTMLElement).focus();
@@ -62,26 +52,26 @@ export const BaseModal: React.FC<BaseModalProps> = ({
       }
     };
   }, [isOpen]);
-  
+
   // Handle keyboard interactions
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       onClose();
     }
-    
+
     // Trap focus within modal
     if (e.key === 'Tab') {
       if (!modalRef.current) return;
-      
+
       const focusableElements = modalRef.current.querySelectorAll(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
       );
-      
+
       if (focusableElements.length === 0) return;
-      
+
       const firstElement = focusableElements[0] as HTMLElement;
       const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
-      
+
       // If shift+tab on first element, focus last element
       if (e.shiftKey && document.activeElement === firstElement) {
         e.preventDefault();
@@ -94,9 +84,9 @@ export const BaseModal: React.FC<BaseModalProps> = ({
       }
     }
   };
-  
+
   if (!isOpen) return null;
-  
+
   return (
     <div 
       className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
@@ -128,7 +118,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
             )}
           </div>
         )}
-        
+
         <div className="overflow-y-auto max-h-[calc(90vh-4rem)]">
           {children}
         </div>

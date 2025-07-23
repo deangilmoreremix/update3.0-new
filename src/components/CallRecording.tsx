@@ -3,13 +3,7 @@ import { Circle, Square, Video, Mic, Monitor } from 'lucide-react';
 import { useSafeVideoCall as useVideoCall } from '../hooks/useSafeVideoCall';
 import { useTheme } from '../contexts/ThemeContext';
 
-interface CallRecordingProps {
-  isInCall: boolean;
-  localStream: MediaStream | null;
-  remoteStream: MediaStream | null;
-}
-
-const CallRecording: React.FC<CallRecordingProps> = ({ 
+const CallRecording: FC<CallRecordingProps> = ({ 
   isInCall, 
   localStream, 
   remoteStream 
@@ -155,7 +149,7 @@ const CallRecording: React.FC<CallRecordingProps> = ({
         <h3 className={`font-medium mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
           Recording Tips
         </h3>
-        
+
         <div className="space-y-2 text-sm">
           <div className="flex items-start space-x-2">
             <div className={`w-1.5 h-1.5 rounded-full mt-1.5 ${isDark ? 'bg-green-400' : 'bg-green-500'}`}></div>

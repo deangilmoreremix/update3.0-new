@@ -9,7 +9,7 @@ const CustomerPersonaContent: React.FC = () => {
     companySize: 'mid-market', // default value
     painPoints: ['', '', '']
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -63,14 +63,14 @@ const CustomerPersonaContent: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const persona = await gemini.generateCustomerPersona(
         formData.industry,
         formData.companySize,
         validPainPoints
       );
-      
+
       setResult(persona);
       setCopied(false);
     } catch (err) {
@@ -150,7 +150,7 @@ const CustomerPersonaContent: React.FC = () => {
               </datalist>
             </div>
           </div>
-          
+
           <div>
             <label htmlFor="companySize" className="block text-sm font-medium text-gray-700 mb-1">
               Company Size
@@ -167,7 +167,7 @@ const CustomerPersonaContent: React.FC = () => {
               ))}
             </select>
           </div>
-          
+
           <div>
             <div className="flex justify-between items-center mb-1">
               <label className="block text-sm font-medium text-gray-700">
@@ -182,7 +182,7 @@ const CustomerPersonaContent: React.FC = () => {
                 Add Pain Point
               </button>
             </div>
-            
+
             {formData.painPoints.map((painPoint, index) => (
               <div key={index} className="flex mb-2">
                 <input
@@ -207,7 +207,7 @@ const CustomerPersonaContent: React.FC = () => {
               <p className="text-red-600 text-sm mt-1">Please add at least one pain point</p>
             )}
           </div>
-            
+
           <div className="flex justify-end">
             <button
               type="submit"

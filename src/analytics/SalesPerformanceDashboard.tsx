@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart, DollarSign, LineChart, PieChart, Target, TrendingDown, TrendingUp, Users } from 'lucide-react';
+import { BarChart, LineChart, PieChart, TrendingDown, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from '../charts/SafeCharts';
@@ -13,20 +13,6 @@ interface KPIMetric {
   changeType: 'increase' | 'decrease';
   icon: React.ComponentType<{ className?: string }>;
   description: string;
-}
-
-interface SalesData {
-  month: string;
-  revenue: number;
-  deals: number;
-  conversion: number;
-}
-
-interface PipelineStage {
-  name: string;
-  value: number;
-  deals: number;
-  color: string;
 }
 
 const SalesPerformanceDashboard: React.FC = () => {
@@ -89,7 +75,7 @@ const SalesPerformanceDashboard: React.FC = () => {
       const baseDeals = 25 + (index * 5);
       const revenue = baseRevenue + (Math.random() - 0.5) * 20000;
       const dealsCount = baseDeals + Math.floor((Math.random() - 0.5) * 10);
-      
+
       return {
         month,
         revenue: Math.max(revenue, 30000),

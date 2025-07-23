@@ -18,7 +18,7 @@ const ParallaxHero: React.FC = () => {
   const handleScroll = useCallback(() => {
     if (containerRef.current) {
       const { top } = containerRef.current.getBoundingClientRect();
-      
+
       // Only update if the element is in view
       if (top < window.innerHeight && top > -containerRef.current.clientHeight) {
         setScrollY(window.scrollY);
@@ -30,13 +30,13 @@ const ParallaxHero: React.FC = () => {
   // Track scroll position
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true });
-    
+
     // Force an initial call to properly position elements
     handleScroll();
-    
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
-  
+
   const parallaxItems = [
     { 
       icon: <Brain size={40} className="text-indigo-600" />, 
@@ -102,7 +102,7 @@ const ParallaxHero: React.FC = () => {
         minHeight: styles.minHeight
       });
     }
-    
+
     if (iconsRef.current) {
       console.log("Icons container:", iconsRef.current);
       console.log("Parallax items count:", parallaxItems.length);
@@ -121,7 +121,7 @@ const ParallaxHero: React.FC = () => {
       >
         ScrollY: {scrollY} | Items: {parallaxItems.length}
       </div>
-      
+
       {/* Parallax Elements */}
       <div ref={iconsRef} className="absolute inset-0 pointer-events-none">
         {parallaxItems.map((item, index) => (
@@ -145,18 +145,18 @@ const ParallaxHero: React.FC = () => {
           </div>
         ))}
       </div>
-      
+
       {/* Content */}
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             Experience the Future of <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">Sales Technology</span>
           </h1>
-          
+
           <p className="text-xl text-gray-700 mb-12">
             Our AI-powered CRM transforms how sales teams work by automating routine tasks, providing deep insights, and helping you close more deals.
           </p>
-          
+
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/dashboard" className="
               px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl 
@@ -165,7 +165,7 @@ const ParallaxHero: React.FC = () => {
             ">
               Try it for Free <ArrowRight size={18} className="ml-2" />
             </Link>
-            
+
             <HashLink to="#features" className="
               px-8 py-4 bg-white text-indigo-600 font-medium rounded-xl border border-indigo-200 
               hover:border-indigo-300 hover:shadow-md transition duration-300 transform hover:translate-y-[-2px]
@@ -175,7 +175,7 @@ const ParallaxHero: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Gradient orbs */}
       <div className="absolute top-1/4 left-1/4 w-40 h-40 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{animationDuration: '8s'}}></div>
       <div className="absolute bottom-1/4 right-1/4 w-60 h-60 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{animationDuration: '12s', animationDelay: '1s'}}></div>

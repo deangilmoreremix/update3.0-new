@@ -40,43 +40,43 @@ const Dashboard: React.FC = React.memo(() => {
     stageValues,
     totalPipelineValue 
   } = useDealStore();
-  
+
   const { 
     contacts, 
     fetchContacts, 
     isLoading: contactsLoading 
   } = useContactStore();
-  
+
   const { tasks, fetchTasks } = useTaskStore();
   const { fetchAppointments } = useAppointmentStore();
   const { _openTool } = useAITools();
   const { isDark } = useTheme();
   const { sectionOrder } = useDashboardLayout();
-  
+
   const _gemini = useGemini();
-  
+
   const [pipelineInsight, setPipelineInsight] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiRecommendations, setAiRecommendations] = useState<unknown[]>([]);
-  
+
   useEffect(() => {
     // Fetch deals data when component mounts
     fetchDeals();
     fetchTasks();
     fetchAppointments();
     fetchContacts();
-    
+
     // Generate AI recommendations
     generateRecommendations();
-    
+
     // Set up timer to refresh data periodically
     const intervalId = setInterval(() => {
       fetchDeals();
     }, 300000); // refresh every 5 minutes
-    
+
     return () => clearInterval(intervalId);
   }, [fetchDeals, fetchTasks, fetchAppointments, fetchContacts]);
-  
+
   const generateRecommendations = async () => {
     // Generate sample recommendations (in production this would call Gemini API)
     setAiRecommendations([
@@ -116,7 +116,7 @@ const Dashboard: React.FC = React.memo(() => {
         return <ActivitiesCommunications />;
       case 'integrations-system':
         return <IntegrationsSystem />;
-      
+
       // Legacy sections for backward compatibility
       case 'kpi-cards-section':
         return <KPICards />;
@@ -148,7 +148,7 @@ const Dashboard: React.FC = React.memo(() => {
         return <ChartsSection />;
       case 'new-leads-section':
         return <NewLeadsSection />;
-      
+
       default:
         return (
           <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200'} backdrop-blur-xl border rounded-2xl p-6`}>
