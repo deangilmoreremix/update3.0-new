@@ -1,7 +1,7 @@
 export interface AIModel {
   id: string;
   name: string;
-  provider: 'openai' | 'gemini' | 'gemma';
+  provider: 'openai' | 'gemini' | 'gemma' | 'kimi';
   family: string;
   contextWindow: number;
   maxTokens: number;
@@ -127,6 +127,43 @@ export const AI_MODELS: AIModel[] = [
     capabilities: ['text-generation', 'analysis', 'complex-reasoning', 'instruction-following'],
     isActive: true,
     endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemma-2-27b-it:generateContent'
+  },
+
+  // Kimi AI Models
+  {
+    id: 'moonshot-v1-32k',
+    name: 'Kimi K2 32K',
+    provider: 'kimi',
+export function getModelsByProvider(provider: 'openai' | 'gemini' | 'gemma' | 'kimi'): AIModel[] {
+    contextWindow: 32768,
+    maxTokens: 4096,
+    pricing: {
+      input: 0.002,
+      output: 0.006
+    },
+    capabilities: ['text-generation', 'analysis', 'reasoning', 'coding', 'tool-calling', 'debugging'],
+    isActive: true,
+    endpoint: 'https://api.moonshot.cn/v1/chat/completions'
+  },
+  {
+// Task-specific model recommendations
+export const TASK_MODEL_MAPPING = {
+  'contact-analysis': ['gemma-2-9b-it', 'gemini-1.5-flash'],
+  'email-generation': ['gpt-4o', 'gemini-1.5-pro'],
+  'company-research': ['gemini-1.5-pro', 'gemini-2.0-flash-exp'],
+  'deal-summary': ['gemma-2-27b-it', 'gpt-4o-mini'],
+  'next-actions': ['gemma-2-9b-it', 'gpt-3.5-turbo'],
+  'insights': ['gpt-4o', 'gemini-1.5-pro'],
+  'contact-research': ['gemini-1.5-flash', 'gemma-2-9b-it'],
+  'code-debugging': ['moonshot-v1-128k', 'moonshot-v1-32k', 'gpt-4o'],
+  'code-analysis': ['moonshot-v1-128k', 'gemini-1.5-pro'],
+  'tool-calling': ['moonshot-v1-32k', 'gpt-4o'],
+  'github-agent': ['moonshot-v1-128k', 'moonshot-v1-32k'],
+  'reasoning': ['moonshot-v1-128k', 'gpt-4o', 'gemini-1.5-pro']
+} as const;
+    capabilities: ['text-generation', 'analysis', 'reasoning', 'coding', 'tool-calling', 'debugging', 'large-context'],
+    isActive: true,
+    endpoint: 'https://api.moonshot.cn/v1/chat/completions'
   }
 ];
 

@@ -1,0 +1,120 @@
+name: Kimi AI Code Analysis
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  kimi-analysis:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch full history for proper diff analysis
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: |
+        cd github-agent
+        npm install
+    
+    - name: Run Kimi AI PR Review
+      if: github.event_name == 'pull_request'
+      env:
+        KIMI_API_KEY: ${{ secrets.KIMI_API_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+        GITHUB_PR_DESCRIPTION: ${{ github.event.pull_request.body }}
+      run: |
+        cd github-agent
+        node github-kimi-agent.js pr-review
+    
+    - name: Run Kimi AI Commit Analysis
+      if: github.event_name == 'push'
+      env:
+        KIMI_API_KEY: ${{ secrets.KIMI_API_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+      run: |
+        cd github-agent
+        node github-kimi-agent.js commit-analysis
+    
+    - name: Run Kimi AI Debug Scan
+      env:
+        KIMI_API_KEY: ${{ secrets.KIMI_API_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+      run: |
+        cd github-agent
+        node github-kimi-agent.js debug-scan
+
+  kimi-security-scan:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    - name: Kimi AI Security Analysis
+      env:
+        KIMI_API_KEY: ${{ secrets.KIMI_API_KEY }}
+      run: |
+        cd github-agent
+        cat > security-check.js << 'EOF'
+        const { KimiAIAgent } = require('./kimi-integration');
+        const fs = require('fs');
+        
+        async function securityScan() {
+          const agent = new KimiAIAgent(process.env.KIMI_API_KEY);
+          
+          // Scan for security patterns
+          const securityPatterns = [
+            'process.env',
+            'eval(',
+            'innerHTML',
+            'document.write',
+            'localStorage',
+            'sessionStorage'
+          ];
+          
+          const files = fs.readdirSync('./src', { recursive: true })
+            .filter(file => file.endsWith('.js') || file.endsWith('.ts'))
+            .slice(0, 5);
+          
+          for (const file of files) {
+            const content = fs.readFileSync(`./src/${file}`, 'utf8');
+            
+            if (securityPatterns.some(pattern => content.includes(pattern))) {
+              const analysis = await agent.analyzeCode(
+                content, 
+                'typescript', 
+                'Security vulnerability analysis'
+              );
+              
+              console.log(`🔒 Security Analysis for ${file}:`);
+              console.log(analysis.choices[0].message.content);
+              console.log('---');
+            }
+          }
+        }
+        
+        securityScan().catch(console.error);
+        EOF
+        
+        node security-check.js

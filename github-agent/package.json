@@ -1,0 +1,27 @@
+{
+  "name": "kimi-github-agent",
+  "version": "1.0.0",
+  "description": "GitHub agent powered by Kimi AI for code analysis and debugging",
+  "main": "github-kimi-agent.js",
+  "scripts": {
+    "pr-review": "node github-kimi-agent.js pr-review",
+    "commit-analysis": "node github-kimi-agent.js commit-analysis",
+    "debug-scan": "node github-kimi-agent.js debug-scan",
+    "test": "node test-kimi-integration.js"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  },
+  "keywords": [
+    "kimi-ai",
+    "github-agent",
+    "code-analysis",
+    "debugging",
+    "ai-assistant"
+  ],
+  "author": "Smart CRM Team",
+  "license": "MIT"
+}

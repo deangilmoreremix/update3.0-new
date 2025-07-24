@@ -15,13 +15,19 @@ import LandingPage from './pages/Landing/LandingPage';
 import Appointments from './pages/Appointments';
 import SalesTools from './pages/SalesTools';
 import Tasks from './pages/Tasks';
+import KimiDebugPage from './pages/KimiDebugPage';
 
 function App() {
   return (
-    <AppProviders>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-        <Navbar />
+    <KimiErrorBoundary>
+      <AppProviders>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+          <Navbar />
 
+          {/* Main Content with padding for top navbar */}
+          <main className="pt-20 px-4">
+            <div className="max-w-7xl mx-auto">
+              <Routes>
         {/* Main Content with padding for top navbar */}
         <main className="pt-20 px-4">
           <div className="max-w-7xl mx-auto">
@@ -30,10 +36,11 @@ function App() {
                         <Route path="/" element={<LandingPage />} />
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/contacts" element={<Contacts />} />
-                        <Route path="/pipeline" element={<Pipeline />} />
                         <Route path="/ai-tools" element={<AITools />} />
                         <Route path="/ai-goals" element={<AIGoals />} />
                         <Route path="/appointments" element={<Appointments />} />
+                        <Route path="/settings" element={<Settings />} />
+                        <Route path="/debug" element={<KimiDebugPage />} />s />} />
                         <Route path="/settings" element={<Settings />} />
 
                         {/* Sales Tools Routes */}
@@ -69,12 +76,16 @@ function App() {
                         <Route path="/connection-quality" element={<PlaceholderPage title="Connection Quality" />} />
 
                         {/* Content Tools Routes */}
-                        <Route path="/content-library" element={<PlaceholderPage title="Content Library" />} />
-                        <Route path="/voice-profiles" element={<PlaceholderPage title="Voice Profiles" />} />
-                        <Route path="/business-analysis" element={<PlaceholderPage title="Business Analysis" />} />
-                        <Route path="/image-generator" element={<PlaceholderPage title="Image Generator" />} />
-                        <Route path="/forms" element={<PlaceholderPage title="Forms" />} />
                         <Route path="/ai-model-demo" element={<PlaceholderPage title="AI Model Demo" />} />
+                      </Routes>
+                    </div>
+                  </main>
+                  
+                  {/* Kimi AI Debug Assistant - Available globally */}
+                  <FloatingDebugAssistant />
+                </div>
+              </AppProviders>
+            </KimiErrorBoundary>     <Route path="/ai-model-demo" element={<PlaceholderPage title="AI Model Demo" />} />
                       </Routes>
                     </div>
                   </main>

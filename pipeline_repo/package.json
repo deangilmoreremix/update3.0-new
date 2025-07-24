@@ -7,7 +7,14 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "kimi:build": "tsc --project tsconfig.kimi.json",
+    "kimi:dev": "ts-node cli/kimi-agent.ts",
+    "kimi:analyze": "npm run kimi:dev analyze",
+    "kimi:debug": "npm run kimi:dev debug",
+    "kimi:commit": "npm run kimi:dev commit",
+    "kimi:review": "npm run kimi:dev review",
+    "kimi:ask": "npm run kimi:dev ask"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^16.5.0",
@@ -32,6 +39,8 @@
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.4.2",
-    "vite": "^5.1.6"
+    "vite": "^5.1.6",
+    "ts-node": "^10.9.2",
+    "@types/node": "^20.0.0"
   }
 }
