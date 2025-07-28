@@ -4,29 +4,29 @@ import { Contact, Deal } from '../types';
 
 export const useOpenAIEmbeddings = () => {
   const { apiKeys } = useApiStore();
-
+  
   const getClient = () => {
     if (!apiKeys.openai) {
       throw new Error('OpenAI API key is not set');
     }
-
+    
     return new OpenAI({
       apiKey: apiKeys.openai,
       dangerouslyAllowBrowser: true // Note: In production, proxy requests through a backend
     });
   };
-
+  
   // Create embeddings for a text
   const createEmbedding = async (text: string) => {
     const client = getClient();
-
+    
     try {
       const response = await client.embeddings.create({
         model: "text-embedding-3-small",
         input: text,
         encoding_format: "float",
       });
-
+      
       return response.data[0].embedding;
     } catch (error) {
       console.error('Error creating embedding:', error);
@@ -38,7 +38,7 @@ export const useOpenAIEmbeddings = () => {
   const createContactEmbeddings = async (contacts: Contact[]) => {
     try {
       const embeddings: { contactId: string, embedding: number[] }[] = [];
-
+      
       for (const contact of contacts) {
         // Create a text representation of the contact
         const contactText = `
@@ -51,26 +51,26 @@ export const useOpenAIEmbeddings = () => {
           Notes: ${contact.notes || ''}
           Location: ${contact.location || ''}
         `;
-
+        
         const embedding = await createEmbedding(contactText);
         embeddings.push({
           contactId: contact.id,
           embedding
         });
       }
-
+      
       return embeddings;
     } catch (error) {
       console.error('Error creating contact embeddings:', error);
       throw error;
     }
   };
-
+  
   // Create embeddings for multiple deals to enable semantic search
   const createDealEmbeddings = async (deals: Deal[]) => {
     try {
       const embeddings: { dealId: string, embedding: number[] }[] = [];
-
+      
       for (const deal of deals) {
         // Create a text representation of the deal
         const dealText = `
@@ -81,42 +81,42 @@ export const useOpenAIEmbeddings = () => {
           Value: ${deal.value}
           Notes: ${deal.notes || ''}
         `;
-
+        
         const embedding = await createEmbedding(dealText);
         embeddings.push({
           dealId: deal.id,
           embedding
         });
       }
-
+      
       return embeddings;
     } catch (error) {
       console.error('Error creating deal embeddings:', error);
       throw error;
     }
   };
-
+  
   // Calculate cosine similarity between two vectors
   const cosineSimilarity = (vecA: number[], vecB: number[]) => {
     let dotProduct = 0;
     let normA = 0;
     let normB = 0;
-
+    
     for (let i = 0; i < vecA.length; i++) {
       dotProduct += vecA[i] * vecB[i];
       normA += vecA[i] * vecA[i];
       normB += vecB[i] * vecB[i];
     }
-
+    
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
   };
-
+  
   // Perform semantic search on contacts
   const searchContacts = async (query: string, contactEmbeddings: { contactId: string, embedding: number[] }[], contactsById: Record<string, Contact>) => {
     try {
       // Create embedding for the query
       const queryEmbedding = await createEmbedding(query);
-
+      
       // Calculate similarity scores
       const results = contactEmbeddings.map(contactEmb => {
         const similarity = cosineSimilarity(queryEmbedding, contactEmb.embedding);
@@ -125,7 +125,7 @@ export const useOpenAIEmbeddings = () => {
           score: similarity
         };
       });
-
+      
       // Sort by similarity score (highest first)
       return results.sort((a, b) => b.score - a.score);
     } catch (error) {
@@ -133,13 +133,13 @@ export const useOpenAIEmbeddings = () => {
       throw error;
     }
   };
-
+  
   // Perform semantic search on deals
   const searchDeals = async (query: string, dealEmbeddings: { dealId: string, embedding: number[] }[], dealsById: Record<string, Deal>) => {
     try {
       // Create embedding for the query
       const queryEmbedding = await createEmbedding(query);
-
+      
       // Calculate similarity scores
       const results = dealEmbeddings.map(dealEmb => {
         const similarity = cosineSimilarity(queryEmbedding, dealEmb.embedding);
@@ -148,7 +148,7 @@ export const useOpenAIEmbeddings = () => {
           score: similarity
         };
       });
-
+      
       // Sort by similarity score (highest first)
       return results.sort((a, b) => b.score - a.score);
     } catch (error) {
@@ -156,7 +156,7 @@ export const useOpenAIEmbeddings = () => {
       throw error;
     }
   };
-
+  
   return {
     createEmbedding,
     createContactEmbeddings,

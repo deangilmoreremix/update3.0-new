@@ -40,11 +40,6 @@ const EmailComposerContent: React.FC = () => {
     setReasoning(null);
 
     try {
-        name: formData.recipientName,
-        position: formData.recipientPosition,
-        company: formData.recipientCompany
-      };
-
       const emailDraft = await openai.generateEmailDraft(
         formData.recipientName,
         formData.emailPurpose,

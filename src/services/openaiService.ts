@@ -4,21 +4,21 @@ import { Contact, Deal } from '../types';
 
 export const useOpenAI = () => {
   const { apiKeys } = useApiStore();
-
+  
   const getClient = () => {
     if (!apiKeys.openai) {
       throw new Error('OpenAI API key is not set');
     }
-
+    
     return new OpenAI({ 
       apiKey: apiKeys.openai,
       dangerouslyAllowBrowser: true // Note: In production, proxy requests through a backend
     });
   };
-
+  
   const generateEmailDraft = async (contactName: string, purpose: string, additionalContext?: string) => {
     const client = getClient();
-
+    
     const response = await client.chat.completions.create({
       model: "gpt-4o", // Updated from gpt-4.1
       messages: [
@@ -34,13 +34,13 @@ export const useOpenAI = () => {
       max_tokens: 500,
       temperature: 0.7,
     });
-
+    
     return response.choices[0].message.content || 'Unable to generate email';
   };
-
+  
   const optimizeSubjectLine = async (purpose: string, audience: string, keyMessage: string) => {
     const client = getClient();
-
+    
     const response = await client.chat.completions.create({
       model: "gpt-4o", // Updated from gpt-4.1
       messages: [
@@ -51,7 +51,7 @@ export const useOpenAI = () => {
         {
           role: "user",
           content: `Generate 5 high-converting email subject lines for a ${purpose} email targeted at ${audience} with the key message about "${keyMessage}". 
-
+          
           For each subject line:
           1. Provide the subject line
           2. Explain why it would be effective
@@ -63,13 +63,13 @@ export const useOpenAI = () => {
       max_tokens: 600,
       temperature: 0.8,
     });
-
+    
     return response.choices[0].message.content || 'Unable to generate subject lines';
   };
-
+  
   const analyzeSentiment = async (text: string) => {
     const client = getClient();
-
+    
     const response = await client.chat.completions.create({
       model: "gpt-4o-mini", // Updated from gpt-4.1 to mini for less complex tasks
       messages: [
@@ -85,13 +85,13 @@ export const useOpenAI = () => {
       max_tokens: 300,
       temperature: 0.3,
     });
-
+    
     return response.choices[0].message.content || 'Unable to analyze sentiment';
   };
-
+  
   const predictLeadScore = async (contact: Partial<Contact>) => {
     const client = getClient();
-
+    
     // Prepare contact data for analysis
     const contactDetails = Object.entries(contact)
       .filter(([key, value]) => value !== undefined && key !== 'id')
@@ -102,7 +102,7 @@ export const useOpenAI = () => {
         return `${key}: ${value}`;
       })
       .join('\n');
-
+    
     const response = await client.chat.completions.create({
       model: "gpt-4o", // Updated from gpt-4.1
       messages: [
@@ -116,20 +116,20 @@ export const useOpenAI = () => {
           role: "user",
           content: `Analyze the following lead information and provide a lead score (0-100) with a detailed explanation.
           Also include key strengths, areas of opportunity, and specific recommendations for the sales rep.
-
+          
           ${contactDetails}`
         }
       ],
       max_tokens: 500,
       temperature: 0.4,
     });
-
+    
     return response.choices[0].message.content || 'Unable to predict lead score';
   };
-
+  
   const analyzeCustomerEmail = async (emailContent: string) => {
     const client = getClient();
-
+    
     const response = await client.chat.completions.create({
       model: "gpt-4o-mini", // Updated from gpt-4.1 to mini for less complex tasks
       messages: [
@@ -148,20 +148,20 @@ export const useOpenAI = () => {
         {
           role: "user",
           content: `Analyze the following customer email and extract key insights:
-
+          
           "${emailContent}"`
         }
       ],
       max_tokens: 600,
       temperature: 0.3,
     });
-
+    
     return response.choices[0].message.content || 'Unable to analyze email';
   };
 
   const generateMeetingSummary = async (transcript: string) => {
     const client = getClient();
-
+    
     const response = await client.chat.completions.create({
       model: "gpt-4o", // Updated from gpt-4.1
       messages: [
@@ -180,21 +180,21 @@ export const useOpenAI = () => {
         {
           role: "user",
           content: `Summarize the following meeting transcript. Format the summary with clear headings and bullet points:
-
+          
           "${transcript}"`
         }
       ],
       max_tokens: 800,
       temperature: 0.4,
     });
-
+    
     return response.choices[0].message.content || 'Unable to generate meeting summary';
   };
-
+  
   // Smart Proposal Generator
   const generateProposal = async (contact: Partial<Contact>, dealDetails: string, previousInteractions: string[]) => {
     const client = getClient();
-
+    
     // Prepare contact data
     const contactDetails = Object.entries(contact)
       .filter(([key, value]) => value !== undefined && key !== 'id')
@@ -205,12 +205,12 @@ export const useOpenAI = () => {
         return `${key}: ${value}`;
       })
       .join('\n');
-
+    
     // Format previous interactions
     const interactionsText = previousInteractions.length > 0 
       ? previousInteractions.map((interaction, idx) => `Interaction ${idx + 1}: ${interaction}`).join('\n\n')
       : "No previous interactions";
-
+    
     const response = await client.chat.completions.create({
       model: "gpt-4o", // Updated from gpt-4.1
       messages: [
@@ -228,30 +228,30 @@ export const useOpenAI = () => {
         {
           role: "user",
           content: `Generate a professional sales proposal for the following contact and deal information:
-
+          
           Client information:
           ${contactDetails}
-
+          
           Deal details:
           ${dealDetails}
-
+          
           Previous interactions:
           ${interactionsText}
-
+          
           Create a complete, ready-to-present sales proposal.`
         }
       ],
       max_tokens: 1500,
       temperature: 0.5,
     });
-
+    
     return response.choices[0].message.content || 'Unable to generate proposal';
   };
-
+  
   // Call Script Generator
   const generateCallScript = async (contact: Partial<Contact>, callPurpose: string, previousInteractions: string[]) => {
     const client = getClient();
-
+    
     // Prepare contact data
     const contactDetails = Object.entries(contact)
       .filter(([key, value]) => value !== undefined && key !== 'id')
@@ -262,12 +262,12 @@ export const useOpenAI = () => {
         return `${key}: ${value}`;
       })
       .join('\n');
-
+    
     // Format previous interactions
     const interactionsText = previousInteractions.length > 0 
       ? previousInteractions.map((interaction, idx) => `Interaction ${idx + 1}: ${interaction}`).join('\n\n')
       : "No previous interactions";
-
+    
     const response = await client.chat.completions.create({
       model: "gpt-4o", // Updated from gpt-4.1
       messages: [
@@ -280,16 +280,16 @@ export const useOpenAI = () => {
         {
           role: "user",
           content: `Generate a sales call script for a conversation with the following contact:
-
+          
           Contact information:
           ${contactDetails}
-
+          
           Call purpose:
           ${callPurpose}
-
+          
           Previous interactions:
           ${interactionsText}
-
+          
           Create a structured call script with opening, key topics to discuss, questions to ask,
           potential objections with responses, and closing.`
         }
@@ -297,14 +297,14 @@ export const useOpenAI = () => {
       max_tokens: 1000,
       temperature: 0.6,
     });
-
+    
     return response.choices[0].message.content || 'Unable to generate call script';
   };
-
+  
   // Sales Forecast Generator
   const generateSalesForecast = async (deals: Partial<Deal>[], timeframe: string) => {
     const client = getClient();
-
+    
     // Prepare deals data
     const dealsData = deals.map((deal, index) => {
       return `Deal ${index + 1}:
@@ -318,7 +318,7 @@ export const useOpenAI = () => {
         })
         .join('\n      ')}`;
     }).join('\n\n');
-
+    
     const response = await client.chat.completions.create({
       model: "gpt-4o", // Updated from gpt-4.1
       messages: [
@@ -335,9 +335,9 @@ export const useOpenAI = () => {
         {
           role: "user",
           content: `Generate a sales forecast for the following deals over a ${timeframe} period:
-
+          
           ${dealsData}
-
+          
           Provide revenue projections, probability-weighted forecasts, risk analysis, and actionable recommendations.
           Format your response with clear sections, bullet points, and highlight the most important insights.`
         }
@@ -345,16 +345,16 @@ export const useOpenAI = () => {
       max_tokens: 1200,
       temperature: 0.5,
     });
-
+    
     return response.choices[0].message.content || 'Unable to generate sales forecast';
   };
-
+  
   // Competitive Analysis
   const analyzeCompetitor = async (competitorName: string, industry: string, strengths: string[]) => {
     const client = getClient();
-
+    
     const strengthsText = strengths.map((strength, idx) => `${idx + 1}. ${strength}`).join('\n');
-
+    
     const response = await client.chat.completions.create({
       model: "gpt-4o", // Updated from gpt-4.1
       messages: [
@@ -370,13 +370,13 @@ export const useOpenAI = () => {
         {
           role: "user",
           content: `Analyze the following competitor for a competitive intelligence briefing:
-
+          
           Competitor: ${competitorName}
           Industry: ${industry}
-
+          
           Our key strengths:
           ${strengthsText}
-
+          
           Provide a comprehensive competitive analysis including strengths, weaknesses,
           differentiation strategy, and how to position against this competitor.
           Format your analysis with clear sections and actionable insights.`
@@ -385,16 +385,16 @@ export const useOpenAI = () => {
       max_tokens: 1000,
       temperature: 0.5,
     });
-
+    
     return response.choices[0].message.content || 'Unable to analyze competitor';
   };
-
+  
   // Visual Content Idea Generator
   const generateVisualContentIdea = async (contentType: string, industry: string, keyPoints: string[]) => {
     const client = getClient();
-
+    
     const keyPointsText = keyPoints.map((point, idx) => `${idx + 1}. ${point}`).join('\n');
-
+    
     const response = await client.chat.completions.create({
       model: "gpt-4o", // Updated from gpt-4.1
       messages: [
@@ -406,10 +406,10 @@ export const useOpenAI = () => {
         {
           role: "user",
           content: `Create a detailed description for a ${contentType} visual asset for a company in the ${industry} industry.
-
+          
           The visual should represent the following key points:
           ${keyPointsText}
-
+          
           Provide:
           1. A detailed visual description
           2. Suggested layout and design elements
@@ -421,14 +421,14 @@ export const useOpenAI = () => {
       max_tokens: 800,
       temperature: 0.7,
     });
-
+    
     return response.choices[0].message.content || 'Unable to generate visual content idea';
   };
-
+  
   // Market Trend Analysis
   const analyzeMarketTrends = async (industry: string, targetMarket: string, timeframe: string) => {
     const client = getClient();
-
+    
     const response = await client.chat.completions.create({
       model: "gpt-4o", // Updated from gpt-4.1
       messages: [
@@ -441,7 +441,7 @@ export const useOpenAI = () => {
         {
           role: "user",
           content: `Analyze current market trends in the ${industry} industry for the ${targetMarket} market over the ${timeframe} timeframe.
-
+          
           Provide:
           1. Key market trends and shifts
           2. Emerging opportunities for sales
@@ -449,19 +449,19 @@ export const useOpenAI = () => {
           4. Technological disruptions affecting the market
           5. Regulatory considerations
           6. Actionable recommendations for sales and business development
-
+          
           Format your analysis with clear sections and specific actionable insights that sales representatives can use when speaking with prospects.`
         }
       ],
       max_tokens: 1000,
       temperature: 0.6,
     });
-
+    
     return response.choices[0].message.content || 'Unable to analyze market trends';
   };
-
+  
   // Deal Analysis
-  const analyzeDeal = async (dealData: unknown) => {
+  const analyzeDeal = async (dealData: any) => {
     const client = getClient();
 
     // Format deal data
@@ -525,7 +525,7 @@ export const useOpenAI = () => {
 
     return response.choices[0].message.content || '';
   };
-
+  
   return {
     generateEmailDraft,
     optimizeSubjectLine,

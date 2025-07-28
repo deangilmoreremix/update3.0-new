@@ -2,7 +2,14 @@ import { callEdgeFunction } from './supabaseClient';
 import { Contact, Deal } from '../types';
 
 // Email generation
-
+const generateEmailContent = async (contactName: string, purpose: string): Promise<string> => {
+  try {
+    const response = await callEdgeFunction('ai-content-generator', {
+      contentType: 'email',
+      purpose,
+      data: { contactName }
+    });
+    
     return response.result;
   } catch (error) {
     console.error('Error generating email content:', error);
@@ -11,7 +18,14 @@ import { Contact, Deal } from '../types';
 };
 
 // Text message generation
-
+const generateTextMessage = async (contactName: string, purpose: string): Promise<string> => {
+  try {
+    const response = await callEdgeFunction('ai-content-generator', {
+      contentType: 'text',
+      purpose,
+      data: { contactName }
+    });
+    
     return response.result;
   } catch (error) {
     console.error('Error generating text message:', error);
@@ -34,7 +48,7 @@ export const generateCallScript = async (
         previousInteractions
       }
     });
-
+    
     return response.result;
   } catch (error) {
     console.error('Error generating call script:', error);
@@ -58,7 +72,7 @@ export const analyzeMarketTrends = async (
         timeframe
       }
     });
-
+    
     return response.result;
   } catch (error) {
     console.error('Error analyzing market trends:', error);
@@ -82,7 +96,7 @@ export const analyzeCompetitor = async (
         strengths
       }
     });
-
+    
     return response.result;
   } catch (error) {
     console.error('Error analyzing competitor:', error);
@@ -104,7 +118,7 @@ export const generateSalesForecast = async (
         timeframe
       }
     });
-
+    
     return response.result;
   } catch (error) {
     console.error('Error generating sales forecast:', error);
@@ -113,7 +127,22 @@ export const generateSalesForecast = async (
 };
 
 // Proposal generator
-
+const generateProposal = async (
+  contact: Partial<Contact>, 
+  dealDetails: string, 
+  previousInteractions: string[]
+): Promise<string> => {
+  try {
+    const response = await callEdgeFunction('ai-content-generator', {
+      contentType: 'proposal',
+      purpose: 'Sales Proposal',
+      data: { 
+        contact,
+        dealDetails,
+        previousInteractions
+      }
+    });
+    
     return response.result;
   } catch (error) {
     console.error('Error generating proposal:', error);
@@ -127,7 +156,7 @@ export const analyzeCustomerEmail = async (emailContent: string): Promise<string
     const response = await callEdgeFunction('email-analyzer', {
       emailContent
     });
-
+    
     return response.result;
   } catch (error) {
     console.error('Error analyzing customer email:', error);
@@ -141,7 +170,7 @@ export const generateMeetingSummary = async (transcript: string): Promise<string
     const response = await callEdgeFunction('meeting-summarizer', {
       transcript
     });
-
+    
     return response.result;
   } catch (error) {
     console.error('Error generating meeting summary:', error);
@@ -151,7 +180,7 @@ export const generateMeetingSummary = async (transcript: string): Promise<string
 
 // Business analysis
 export const analyzeBusinessData = async (
-  businessData: unknown, 
+  businessData: any, 
   userId?: string
 ): Promise<string> => {
   try {
@@ -159,7 +188,7 @@ export const analyzeBusinessData = async (
       businessData,
       userId
     });
-
+    
     return response.result;
   } catch (error) {
     console.error('Error analyzing business:', error);
@@ -177,7 +206,7 @@ export const generateSalesInsights = async (
       contacts,
       deals
     });
-
+    
     return response.result;
   } catch (error) {
     console.error('Error generating sales insights:', error);
@@ -186,7 +215,13 @@ export const generateSalesInsights = async (
 };
 
 // Real-time analysis functions
-
+const analyzeSentimentRealTime = async (text: string): Promise<any> => {
+  try {
+    const response = await callEdgeFunction('realtime-analysis', {
+      analysisType: 'sentiment',
+      content: text
+    });
+    
     return response.result;
   } catch (error) {
     console.error('Error analyzing sentiment:', error);
@@ -194,6 +229,13 @@ export const generateSalesInsights = async (
   }
 };
 
+const provideEmailFeedback = async (emailContent: string): Promise<string> => {
+  try {
+    const response = await callEdgeFunction('realtime-analysis', {
+      analysisType: 'email-feedback',
+      content: emailContent
+    });
+    
     return response.result;
   } catch (error) {
     console.error('Error providing email feedback:', error);
@@ -201,6 +243,21 @@ export const generateSalesInsights = async (
   }
 };
 
+const validateFormField = async (
+  fieldName: string, 
+  fieldValue: string, 
+  formContext: string = 'general'
+): Promise<any> => {
+  try {
+    const response = await callEdgeFunction('realtime-analysis', {
+      analysisType: 'form-validation',
+      content: {
+        fieldName,
+        fieldValue,
+        formContext
+      }
+    });
+    
     return response.result;
   } catch (error) {
     console.error('Error validating form field:', error);
@@ -208,6 +265,13 @@ export const generateSalesInsights = async (
   }
 };
 
+const analyzeCallRealTime = async (transcript: string): Promise<any> => {
+  try {
+    const response = await callEdgeFunction('realtime-analysis', {
+      analysisType: 'call-insights',
+      content: transcript
+    });
+    
     return response.result;
   } catch (error) {
     console.error('Error analyzing call:', error);
@@ -215,6 +279,13 @@ export const generateSalesInsights = async (
   }
 };
 
+const summarizeMeetingRealTime = async (partialTranscript: string): Promise<string> => {
+  try {
+    const response = await callEdgeFunction('realtime-analysis', {
+      analysisType: 'meeting-summary-realtime',
+      content: partialTranscript
+    });
+    
     return response.result;
   } catch (error) {
     console.error('Error summarizing meeting:', error);
