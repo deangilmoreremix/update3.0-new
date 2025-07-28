@@ -20,5 +20,9 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false
   },
-  "include": ["src"]
+  "include": [
+    "src/components/shared/AIToolContent.tsx",
+    "vite-env.d.ts"
+  ],
+  "exclude": ["src/tests", "src/services", "src/components/ui"]
 }
