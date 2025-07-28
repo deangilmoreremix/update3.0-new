@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Copy, Download, RefreshCw } from 'lucide-react';
 
 const AIToolContent: FC<AIToolContentProps> = ({
