@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GlassCard } from '../ui/GlassCard';
 import { AvatarWithStatus } from '../ui/AvatarWithStatus';
-import { Search, Bell, Settings, ChevronDown } from 'lucide-react';
+import { Search, Bell, Settings, ChevronDown, Mail, BarChart3, Calendar, TrendingUp, Zap, FileText, PieChart, MessageSquare, Users, Globe, Phone, Bot, Video } from 'lucide-react';
 
 const aiTools = [
   { name: 'Email Composer', icon: Mail },
