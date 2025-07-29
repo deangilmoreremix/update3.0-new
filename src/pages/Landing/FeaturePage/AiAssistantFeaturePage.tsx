@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
-import { ArrowRight, BarChart3, Brain, Calendar, Check, CheckCheck, ChevronRight, Code, Database, FileText, Link, MessageSquare, Play, PlusCircle, Search, Settings, Sparkles, Star, X, Zap } from 'lucide-react';
+import { ArrowRight, BarChart3, Brain, Calendar, Check, CheckCheck, ChevronRight, Code, Database, FileText, Link as ExternalLink, MessageSquare, Play, PlusCircle, Search, Settings, Sparkles, Star, X, Zap } from 'lucide-react';
 
 import LandingHeader from '../components/LandingHeader';
 import LandingFooter from '../components/LandingFooter';
@@ -39,7 +39,7 @@ const AiAssistantFeaturePage: React.FC = () => {
     const nextMessage = demoMessages[demoMessageIndex];
     setIsTyping(true);
 
-    const charIndex = 0;
+    let charIndex = 0;
     const typingInterval = setInterval(() => {
       setCurrentTypedMessage(nextMessage.content.substring(0, charIndex));
       charIndex++;

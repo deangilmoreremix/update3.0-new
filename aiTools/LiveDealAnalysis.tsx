@@ -1,8 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useGemini } from '../../services/geminiService';
-import { Deal } from '../../types';
 import { BarChart3, DollarSign, TrendingUp, AlertCircle, CheckCircle, Shield, RefreshCw, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+// Define the Deal type locally
+interface Deal {
+  id: string;
+  title: string;
+  value: number;
+  stage: 'qualification' | 'proposal' | 'negotiation' | 'closed-won' | 'closed-lost';
+  company: string;
+  contact: string;
+  contactId: string;
+  dueDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  probability: number;
+  daysInStage: number;
+  priority: 'low' | 'medium' | 'high';
+}
 
 // For demo purposes, create a sample deal
 const sampleDeal: Deal = {
@@ -30,10 +45,9 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
   deal = sampleDeal,
   onAnalysisComplete 
 }) => {
-  const gemini = useGemini();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [progressText, setProgressText] = useState('');
   const [progress, setProgress] = useState(0);
+  const [progressText, setProgressText] = useState('');
   const [analysisResults, setAnalysisResults] = useState<{
     winProbability: number;
     riskLevel: 'low' | 'medium' | 'high';
@@ -57,7 +71,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
   const runProgressSimulation = () => {
-    const step = 0;;
+    let step = 0;
     setProgressText(progressSteps[0]);
     setProgress(0);
     
@@ -100,7 +114,7 @@ const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({
       let riskLevel: 'low' | 'medium' | 'high' = 'medium';
       if (winProbability < 30 || deal.priority === 'high') {
         riskLevel = 'high';
-      } else if (winProbability > 70 && deal.priority !== 'high') {
+      } else if (winProbability > 70 && deal.priority === 'low') {
         riskLevel = 'low';
       }
       

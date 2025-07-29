@@ -4,9 +4,54 @@
  */
 
 import { aiIntegration as baseAIIntegration } from './ai-integration.service';
-import { taskRouter, TaskContext, TaskPerformanceMetrics } from './task-router.service';
+import { taskRouter } from './task-router.service';
 import { logger } from './logger.service';
 import { Contact } from '../types/contact';
+
+export interface TaskRequirements {
+  accuracy: 'low' | 'medium' | 'high' | 'critical';
+  speed: 'slow' | 'medium' | 'fast';
+  cost: 'free' | 'low' | 'medium' | 'high';
+  complexity: 'simple' | 'medium' | 'complex' | 'expert';
+  volume: 'single' | 'batch' | 'bulk';
+}
+
+export interface ModelSelection {
+  provider: string;
+  model: string;
+  reasoning: string;
+  confidenceScore: number;
+  expectedCost: number;
+  expectedLatency: number;
+}
+
+export interface TaskContext {
+  taskType: string;
+  requirements?: TaskRequirements;
+  contactData?: Contact;
+  businessContext?: string;
+  urgency?: 'low' | 'medium' | 'high';
+  batchSize?: number;
+}
+
+export interface TaskPerformanceMetrics {
+  taskType: string;
+  modelUsed: string;
+  executionTime: number;
+  accuracy: number;
+  cost: number;
+  success: boolean;
+  timestamp: string;
+}
+
+export interface EnhancedAIAnalysisRequest {
+  contactId: string;
+  contact: Contact;
+  analysisTypes: string[];
+  urgency?: 'low' | 'medium' | 'high';
+  requirements?: unknown;
+  businessContext?: string;
+}
 
 export interface SmartBulkRequest {
   contacts: Array<{ contactId: string; contact: Contact }>;
@@ -149,7 +194,13 @@ class EnhancedAIIntegrationService {
 
     if (costLimit && estimatedCost > costLimit) {
       // Try to find a cheaper model
-      const cheaperContext = { ...taskContext, requirements: { ...taskContext.requirements, cost: 'free' } };
+      const cheaperContext = { 
+        ...taskContext, 
+        requirements: { 
+          ...(typeof taskContext.requirements === 'object' && taskContext.requirements !== null ? taskContext.requirements : {}), 
+          cost: 'free' 
+        } 
+      };
       const cheaperSelection = await taskRouter.selectOptimalModel(cheaperContext);
 
       if (cheaperSelection.expectedCost * contacts.length <= costLimit) {
@@ -174,16 +225,16 @@ class EnhancedAIIntegrationService {
   private async executeBulkWithModel(
     contacts: Array<{ contactId: string; contact: Contact }>,
     analysisType: string,
-    modelSelection: unknown
-  ): Promise<unknown> {
+    modelSelection: ModelSelection
+  ): Promise<any> {
     const batchSize = this.getOptimalBatchSize(modelSelection.provider, contacts.length);
-    const results: unknown[] = [];
-    const failed: unknown[] = [];
-    const totalCost = 0;
+    const results: any[] = [];
+    const failed: any[] = [];
+    let totalCost = 0;
     const startTime = Date.now();
 
     // Process in batches
-    for (const i = 0; i < contacts.length; i += batchSize) {
+    for (let i = 0; i < contacts.length; i += batchSize) {
       const batch = contacts.slice(i, i + batchSize);
 
       try {
@@ -234,8 +285,8 @@ class EnhancedAIIntegrationService {
   private async processBatch(
     batch: Array<{ contactId: string; contact: Contact }>,
     analysisType: string,
-    modelSelection: unknown
-  ): Promise<{ successful: unknown[]; failed: unknown[]; cost: number }> {
+    modelSelection: ModelSelection
+  ): Promise<{ successful: any[]; failed: any[]; cost: number }> {
     const promises = batch.map(async ({ contactId, contact }) => {
       try {
         const result = await this.executeAnalysisWithModel(
@@ -249,14 +300,14 @@ class EnhancedAIIntegrationService {
     });
 
     const results = await Promise.all(promises);
-    const successful = results.filter(r => r.success).map(r => ({ contactId: r.contactId, ...r.result }));
-    const failed = results.filter(r => !r.success).map(r => ({ contactId: r.contactId, error: r.error }));
+    const successful = results.filter(r => r.success).map(r => ({ contactId: r.contactId, ...(r as any).result }));
+    const failed = results.filter(r => !r.success).map(r => ({ contactId: r.contactId, error: (r as any).error }));
     const cost = modelSelection.expectedCost * batch.length;
 
     return { successful, failed, cost };
   }
 
-  private async executeAnalysisWithModel(request: unknown, modelSelection: unknown): Promise<unknown> {
+  private async executeAnalysisWithModel(request: any, modelSelection: ModelSelection): Promise<any> {
     // Use the base AI integration service with the selected model
     const enhancedRequest = {
       ...request,
@@ -273,14 +324,14 @@ class EnhancedAIIntegrationService {
   private getDefaultRequirements(
     analysisType: string, 
     urgency: string, 
-    customRequirements?: unknown
-  ): import('./task-router.service').TaskRequirements {
-    const baseRequirements = {
-      accuracy: urgency === 'critical' ? 'critical' as const : urgency === 'high' ? 'high' as const : 'medium' as const,
-      speed: urgency === 'critical' ? 'fast' as const : 'medium' as const,
-      cost: 'low' as const,
-      complexity: 'medium' as const,
-      volume: 'single' as const
+    customRequirements?: Partial<TaskRequirements>
+  ): TaskRequirements {
+    const baseRequirements: TaskRequirements = {
+      accuracy: urgency === 'critical' ? 'critical' : urgency === 'high' ? 'high' : 'medium',
+      speed: urgency === 'critical' ? 'fast' : 'medium',
+      cost: 'low',
+      complexity: 'medium',
+      volume: 'single'
     };
 
     // Task-specific adjustments
@@ -288,7 +339,7 @@ class EnhancedAIIntegrationService {
       case 'categorization':
       case 'tagging':
         baseRequirements.complexity = 'simple';
-        baseRequirements.cost = 'free';
+        baseRequirements.cost = 'low';
         baseRequirements.speed = 'fast';
         break;
       case 'relationship_mapping':
@@ -297,11 +348,11 @@ class EnhancedAIIntegrationService {
         break;
       case 'contact_enrichment':
         baseRequirements.complexity = 'complex';
-        baseRequirements.cost = 'medium';
+        baseRequirements.cost = 'low';
         break;
     }
 
-    return { ...baseRequirements, ...customRequirements };
+    return { ...baseRequirements, ...(customRequirements || {}) };
   }
 
   private getOptimalBatchSize(provider: string, totalContacts: number): number {
@@ -313,15 +364,15 @@ class EnhancedAIIntegrationService {
     }
   }
 
-  private estimateAccuracy(result: unknown): number {
+  private estimateAccuracy(result: any): number {
     // Simple accuracy estimation based on confidence and result completeness
-    if (result.confidence) return result.confidence / 100;
-    if (result.score) return Math.min(result.score / 100, 1);
+    if (result?.confidence) return result.confidence / 100;
+    if (result?.score) return Math.min(result.score / 100, 1);
     return 0.8; // Default assumption
   }
 
   // Convenience methods for common operations
-  async scoreContact(contactId: string, contact: Contact, urgency: 'low' | 'medium' | 'high' = 'medium'): Promise<unknown> {
+  async scoreContact(contactId: string, contact: Contact, urgency: 'low' | 'medium' | 'high' = 'medium'): Promise<any> {
     return this.smartAnalyzeContact({
       contactId,
       contact,
@@ -330,7 +381,7 @@ class EnhancedAIIntegrationService {
     });
   }
 
-  async enrichContact(contactId: string, contact: Contact, priority: 'standard' | 'premium' = 'standard'): Promise<unknown> {
+  async enrichContact(contactId: string, contact: Contact, priority: 'standard' | 'premium' = 'standard'): Promise<any> {
     return this.smartAnalyzeContact({
       contactId,
       contact,
@@ -340,7 +391,7 @@ class EnhancedAIIntegrationService {
     });
   }
 
-  async categorizeAndTag(contactId: string, contact: Contact): Promise<unknown> {
+  async categorizeAndTag(contactId: string, contact: Contact): Promise<any> {
     return this.smartAnalyzeContact({
       contactId,
       contact,
@@ -350,7 +401,7 @@ class EnhancedAIIntegrationService {
     });
   }
 
-  async qualifyLead(contactId: string, contact: Contact, businessContext?: string): Promise<unknown> {
+  async qualifyLead(contactId: string, contact: Contact, businessContext?: string): Promise<any> {
     return this.smartAnalyzeContact({
       contactId,
       contact,
@@ -361,11 +412,11 @@ class EnhancedAIIntegrationService {
   }
 
   // Performance and monitoring
-  getPerformanceInsights(): unknown {
+  getPerformanceInsights(): any {
     return taskRouter.getPerformanceStats();
   }
 
-  getTaskRecommendations(taskType: string): unknown {
+  getTaskRecommendations(taskType: string): any {
     return taskRouter.getTaskRecommendations(taskType);
   }
 }

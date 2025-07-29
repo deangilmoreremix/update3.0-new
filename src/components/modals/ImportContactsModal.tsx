@@ -2,7 +2,31 @@ import React, { useState, useRef, FC } from 'react';
 import { ModernButton } from '../ui/ModernButton';
 import { useContactStore } from '../../store/contactStore';
 
-import { AlertCircle, CheckCircle, Download, File, FileSpreadsheet, Info, Upload, Users, X } from 'lucide-react';
+import { AlertCircle, CheckCircle, Download, File, FileSpreadsheet, Info, Upload, Users, X, Database } from 'lucide-react';
+
+interface ImportContactsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+interface ContactData {
+  name?: string;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  phone?: string;
+  title?: string;
+  company?: string;
+  industry?: string;
+  sources?: string | string[];
+  interestLevel?: string;
+  interestlevel?: string;
+  status?: string;
+  notes?: string;
+  tags?: string | string[];
+  avatarSrc?: string;
+  [key: string]: any;
+}
 
 const CSV_TEMPLATE_HEADERS = [
   'firstName',
@@ -60,7 +84,7 @@ const parseCSV = (text: string): string[][] => {
     let current = '';
     let inQuotes = false;
 
-    for (const i = 0; i < line.length; i++) {
+    for (let i = 0; i < line.length; i++) {
       const char = line[i];
 
       if (char === '"' && (i === 0 || line[i-1] === ',')) {
@@ -80,7 +104,7 @@ const parseCSV = (text: string): string[][] => {
   });
 };
 
-const validateContact = (data: Record<string, string>): string[] => {
+const validateContact = (data: ContactData): string[] => {
   const errors = [];
 
   if (!data.email) {
@@ -112,7 +136,7 @@ export const ImportContactsModal: FC<ImportContactsModalProps> = ({ isOpen, onCl
   const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [_csvData, setCsvData] = useState<string[][]>([]);
-  const [parsedContacts, setParsedContacts] = useState<unknown[]>([]);
+  const [parsedContacts, setParsedContacts] = useState<ContactData[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [importResults, setImportResults] = useState<{ success: number; failed: number } | null>(null);
@@ -193,11 +217,11 @@ export const ImportContactsModal: FC<ImportContactsModalProps> = ({ isOpen, onCl
     const contacts: unknown[] = [];
 
     rows.forEach((row, index) => {
-      const contact: unknown = {};
+      const contact: ContactData = {};
 
       headers.forEach((header, colIndex) => {
         if (row[colIndex]) {
-          contact[header] = row[colIndex].trim();
+          (contact as any)[header] = row[colIndex].trim();
         }
       });
 
@@ -207,11 +231,11 @@ export const ImportContactsModal: FC<ImportContactsModalProps> = ({ isOpen, onCl
       }
 
       // Default values
-      contact.sources = contact.sources ? contact.sources.split(',').map((s: string) => s.trim()) : ['Manual Import'];
+      contact.sources = typeof contact.sources === 'string' ? contact.sources.split(',').map((s: string) => s.trim()) : ['Manual Import'];
       contact.interestLevel = contact.interestlevel || 'medium';
       contact.status = contact.status || 'lead';
       contact.avatarSrc = `https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2`;
-      contact.tags = contact.tags ? contact.tags.split(',').map((t: string) => t.trim()) : [];
+      contact.tags = typeof contact.tags === 'string' ? contact.tags.split(',').map((t: string) => t.trim()) : [];
 
       const validationErrors = validateContact(contact);
       if (validationErrors.length > 0) {
@@ -281,9 +305,9 @@ export const ImportContactsModal: FC<ImportContactsModalProps> = ({ isOpen, onCl
         {/* Tabs */}
         <div className="flex border-b border-gray-200">
           {[
-            { id: 'guide', label: 'CSV Format Guide', icon: Info },
-            { id: 'upload', label: 'Upload File', icon: Upload },
-            { id: 'preview', label: 'Preview & Import', icon: Database }
+            { id: 'guide' as const, label: 'CSV Format Guide', icon: Info },
+            { id: 'upload' as const, label: 'Upload File', icon: Upload },
+            { id: 'preview' as const, label: 'Preview & Import', icon: Database }
           ].map((tab) => {
             const Icon = tab.icon;
             return (

@@ -1,7 +1,55 @@
 import React, { useState, useEffect, FC } from 'react';
-import { Goal } from '../types/goals';
 
 import { Play, Pause, CheckCircle, XCircle, Clock, Bot, Activity, GitBranch, BarChart3, Target, Brain, Volume2, Database, Presentation, Award, Lightbulb, HelpCircle } from 'lucide-react';
+
+// Define types locally since they're not available from '../types/goals'
+interface Goal {
+  id: string;
+  title: string;
+  description: string;
+  agentsRequired: string[];
+  toolsNeeded: string[];
+  successMetrics: string[];
+  estimatedSetupTime: string;
+  roi: string;
+  complexity: string;
+  priority: string;
+}
+
+interface ExecutionStep {
+  id: string;
+  agentName: string;
+  action: string;
+  status: 'pending' | 'running' | 'completed' | 'error';
+  crmImpact: string;
+  toolsUsed?: string[];
+  startTime?: Date;
+  completionTime?: Date;
+  result?: string;
+  thinking?: string;
+}
+
+interface GoalResults {
+  goalId: string;
+  goalTitle: string;
+  completedAt: Date;
+  executionTime: number;
+  stepsCompleted: number;
+  agentsUsed: string[];
+  toolsUsed: string[];
+  successMetrics: string[];
+  estimatedROI: string;
+  businessValue: number;
+  crmChanges: number;
+  realMode: boolean;
+}
+
+interface LiveGoalExecutionProps {
+  goal: Goal;
+  realMode?: boolean;
+  onComplete?: (result: any) => void;
+  onCancel?: () => void;
+}
 
 const LiveGoalExecution: FC<LiveGoalExecutionProps> = ({
   goal,
@@ -9,6 +57,7 @@ const LiveGoalExecution: FC<LiveGoalExecutionProps> = ({
   onComplete,
   onCancel
 }) => {
+  const [goalResults, setGoalResults] = useState<GoalResults | null>(null);
   const [isExecuting, setIsExecuting] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [executionSteps, setExecutionSteps] = useState<ExecutionStep[]>([]);
@@ -22,9 +71,8 @@ const LiveGoalExecution: FC<LiveGoalExecutionProps> = ({
     businessValue: 0
   });
   const [liveActivity, setLiveActivity] = useState<string[]>([]);
-  const [showCRMView, setShowCRMView] = useState(true);
-  const [goalResults, setGoalResults] = useState<unknown>(null);
   const [showHelp, setShowHelp] = useState(false);
+  const [showCRMView, setShowCRMView] = useState(true);
 
   // Generate execution steps based on goal and required agents
   useEffect(() => {
@@ -99,7 +147,7 @@ const LiveGoalExecution: FC<LiveGoalExecutionProps> = ({
     });
 
     try {
-      for (const i = 0; i < executionSteps.length; i++) {
+      for (let i = 0; i < executionSteps.length; i++) {
         const step = executionSteps[i];
         setCurrentStep(i);
 
@@ -610,21 +658,21 @@ const LiveGoalExecution: FC<LiveGoalExecutionProps> = ({
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
             <div className="text-center p-4 bg-slate-700/30 rounded-xl">
-              <div className="text-3xl font-bold text-green-400">{goalResults.stepsCompleted}</div>
+              <div className="text-3xl font-bold text-green-400">{(goalResults as GoalResults).stepsCompleted}</div>
               <div className="text-sm text-gray-300">Steps Completed</div>
             </div>
             <div className="text-center p-4 bg-slate-700/30 rounded-xl">
               <div className="text-3xl font-bold text-blue-400">
-                {(goalResults.executionTime / 1000).toFixed(1)}s
+                {((goalResults as GoalResults).executionTime / 1000).toFixed(1)}s
               </div>
               <div className="text-sm text-gray-300">Execution Time</div>
             </div>
             <div className="text-center p-4 bg-slate-700/30 rounded-xl">
-              <div className="text-3xl font-bold text-purple-400">${goalResults.businessValue.toLocaleString()}</div>
+              <div className="text-3xl font-bold text-purple-400">${(goalResults as GoalResults).businessValue.toLocaleString()}</div>
               <div className="text-sm text-gray-300">Business Value</div>
             </div>
             <div className="text-center p-4 bg-slate-700/30 rounded-xl">
-              <div className="text-3xl font-bold text-orange-400">{goalResults.crmChanges}</div>
+              <div className="text-3xl font-bold text-orange-400">{(goalResults as GoalResults).crmChanges}</div>
               <div className="text-sm text-gray-300">CRM Updates</div>
             </div>
           </div>

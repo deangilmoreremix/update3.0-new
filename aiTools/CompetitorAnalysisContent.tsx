@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import * as edgeFunctionService from '../../services/edgeFunctionService';
+import { Link } from 'react-router-dom';
+import * as edgeFunctionService from '../services/edgeFunctionService';
 import FileUpload from '../shared/FileUpload';
 import AIToolContent from '../shared/AIToolContent';
-import { FileSearch, Link, PlusCircle, Search, Trash } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { FileSearch, Link as ExternalLink, PlusCircle, Search, Trash } from 'lucide-react';
 
 const CompetitorAnalysisContent: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -165,7 +165,7 @@ const CompetitorAnalysisContent: React.FC = () => {
             <div className="flex">
               <div className="relative flex-1">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Link className="h-4 w-4 text-gray-400" />
+                  <ExternalLink className="h-4 w-4 text-gray-400" />
                 </div>
                 <input
                   id="competitorWebsite"

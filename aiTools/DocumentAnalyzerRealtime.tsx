@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useOpenAIVision } from '../../services/openaiVisionService';
 import { useDropzone } from 'react-dropzone';
 import { Upload, Check, ArrowDown, Eye, X, Download, Copy, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,12 +12,11 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
   onAnalysisComplete,
   analysisType = 'document'
 }) => {
-  const vision = useOpenAIVision();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [currentAnalysisStep, setCurrentAnalysisStep] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<{
     summary: string;
     keyPoints: string[];
@@ -85,7 +83,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
     
     // Simulate progressive analysis with steps
     const totalSteps = analysisSteps[analysisType].length;
-    for (const i = 0; i < totalSteps; i++) {
+    for (let i = 0; i < totalSteps; i++) {
       setCurrentAnalysisStep(analysisSteps[analysisType][i]);
       setAnalysisProgress(Math.round((i / (totalSteps - 1)) * 100));
       // Add a delay between steps to simulate processing
@@ -191,7 +189,7 @@ const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({
   const copyToClipboard = () => {
     if (!analysisResult) return;
     
-    const textToCopy = `Analysis Summary:\n${analysisResult.summary}\n\nKey Points:\n`;;
+    let textToCopy = `Analysis Summary:\n${analysisResult.summary}\n\nKey Points:\n`;
     analysisResult.keyPoints.forEach((point, index) => {
       textToCopy += `${index + 1}. ${point}\n`;
     });

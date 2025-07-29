@@ -18,7 +18,21 @@
     "skipLibCheck": true,
     "allowJs": true,
     "noUnusedLocals": false,
-    "noUnusedParameters": false
+    "noUnusedParameters": false,
+    "forceConsistentCasingInFileNames": false
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": [
+    "node_modules", 
+    "dist", 
+    "attached_assets/**", 
+    "client/**", 
+    "pipeline_repo/**", 
+    "pipeline_deals_new/**",
+    "aiTools/**",
+    "services/**",
+    "store/**",
+    "*.tsx",
+    "*.ts"
+  ]
 }

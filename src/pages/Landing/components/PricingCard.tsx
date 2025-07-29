@@ -1,6 +1,14 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle, Link, Zap } from 'lucide-react';
+import { CheckCircle, Zap } from 'lucide-react';
+  tier: string;
+  price: string;
+  description: string;
+  buttonText: string;
+  features: string[];
+  popular?: boolean;
+  color?: string;
+}
 
 const PricingCard: FC<PricingCardProps> = ({
   tier,

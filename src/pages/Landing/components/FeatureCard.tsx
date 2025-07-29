@@ -1,6 +1,13 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Link } from 'lucide-react';
+import { ArrowRight, Link as ExternalLink } from 'lucide-react';
+
+interface FeatureCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  link: string;
+}
 
 const FeatureCard: FC<FeatureCardProps> = ({ icon, title, description, link }) => {
   return (
