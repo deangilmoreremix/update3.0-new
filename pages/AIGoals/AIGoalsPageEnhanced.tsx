@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Goal } from '../../types/goals';
-import InteractiveGoalExplorer from '../../components/InteractiveGoalExplorer';
-import GoalExecutionModal from '../../components/GoalExecutionModalExact';
-import CustomizeButtonsModal from '../../components/ai/CustomizeButtonsModal';
-import { aiGoalsData } from '../../data/goalsData';
-import { Button } from '../../components/ui/button';
-import { Card, CardContent, CardHeader } from '../../components/ui/card';
+import { Goal } from '../../src/types/goals';
+import InteractiveGoalExplorer from '../../InteractiveGoalExplorer';
+import GoalExecutionModal from '../../GoalExecutionModalExact';
+import CustomizeButtonsModal from '../../ai/CustomizeButtonsModal';
+import { aiGoalsData } from '../../src/data/goalsData';
+import { Button } from '../../ui/button';
+import { Card, CardContent, CardHeader } from '../../ui/card';
 import { Brain, Info, Lightbulb, ArrowLeft, Target, Users, BarChart3, Activity, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAITools } from '../../components/AIToolsProvider';
+import { useAITools } from '../../src/components/AIToolsProvider';
 
 // Define context type
 interface AIGoalContext {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Users, Plus, Edit, Trash2, Shield, Mail, Calendar, Search, UserCheck, UserX } from 'lucide-react';
-import { RoleBadge, ConditionalRender, useRole } from '../components/RoleBasedAccess';
+import { RoleBadge, ConditionalRender, useRole } from '../src/components/RoleBasedAccess';
 
 interface User {
   id: string;

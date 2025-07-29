@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useGemini } from '../../services/geminiService';
-import { MessageSquare, Copy, RefreshCw, Sparkles, Check } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useGemini } from '../services/geminiService';
+import { Send, Loader2, Mic, Copy, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ResponseTemplate {

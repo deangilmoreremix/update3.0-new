@@ -1,6 +1,10 @@
 import React, { useState, FC } from 'react';
 import { Brain, Sparkles } from 'lucide-react';
 
+interface ReasoningToggleProps {
+  reasoning?: string;
+}
+
 const ReasoningToggle: FC<ReasoningToggleProps> = ({ reasoning }) => {
   const [visible, setVisible] = useState(false);
   if (!reasoning) return null;

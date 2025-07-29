@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import * as edgeFunctionService from '../../services/edgeFunctionService';
-import { useOpenAI } from '../../services/openaiService';
+import * as edgeFunctionService from '../services/edgeFunctionService';
+import { useOpenAI } from '../services/openaiService';
 import AIToolContent from '../shared/AIToolContent';
 import { Mail, User, Building, RefreshCw, Copy, FileText, Send } from 'lucide-react';
-import ReasoningToggle from '../shared/ReasoningToggle';
+import ReasoningToggle from '../src/components/shared/ReasoningToggle';
 import Select from 'react-select';
 
 const EmailComposerContent: React.FC = () => {

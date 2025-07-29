@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useOpenAIEmbeddings } from '../../services/openaiEmbeddingsService';
-import { useDealStore } from '../../store/dealStore';
-import AIToolContent from '../shared/AIToolContent';
+import { useOpenAIEmbeddings } from '../services/openaiEmbeddingsService';
+import { useDealStore } from '../store/dealStore';
+import AIToolContent from '../src/components/shared/AIToolContent';
 import { Search, Database, RefreshCw, ChevronRight } from 'lucide-react';
-import { Contact, Deal } from '../../types';
+import { Contact, Deal } from '../src/types';
 
 // Mock contacts for the demo
 const mockContacts: Contact[] = [

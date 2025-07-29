@@ -1,13 +1,14 @@
-import React, { FC, useState, ReactNode } from 'react';
+import React, { FC } from 'react';
+import { useState } from 'react';
 import { Copy, Download, RefreshCw } from 'lucide-react';
 
 interface AIToolContentProps {
-  isLoading: boolean;
-  error: string | null;
-  result: string | null;
+  isLoading?: boolean;
+  error?: string | null;
+  result?: string;
   loadingMessage?: string;
   resultTitle?: string;
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 const AIToolContent: FC<AIToolContentProps> = ({

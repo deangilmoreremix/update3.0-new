@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useOpenAIImage } from '../../services/openaiImageService';
+import { useOpenAIImage } from '../services/openaiImageService';
 import AIToolContent from '../shared/AIToolContent';
 import { Image, Camera, RefreshCw, Download, Copy, Check, Lightbulb, Grid3X3, Layout } from 'lucide-react';
 

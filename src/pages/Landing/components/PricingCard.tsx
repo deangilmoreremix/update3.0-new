@@ -1,6 +1,8 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Zap } from 'lucide-react';
+
+interface PricingCardProps {
   tier: string;
   price: string;
   description: string;
