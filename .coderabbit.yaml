@@ -1,0 +1,113 @@
+version: 1
+
+# CodeRabbit configuration for SmartCRM
+language: typescript
+
+# Review settings
+reviews:
+  # Enable automatic reviews on pull requests
+  auto_review: true
+  
+  # Review request settings
+  request_changes: ask
+  dismiss_stale_reviews: true
+  
+  # Code analysis preferences
+  high_level_summary: true
+  poem: true
+  review_status: true
+  
+  # Focus areas for review
+  focus_areas:
+    - security
+    - performance
+    - maintainability
+    - best_practices
+    - type_safety
+    - accessibility
+
+# Path-based settings
+path_instructions:
+  - path: "src/**/*.{ts,tsx}"
+    instructions: |
+      - Focus on TypeScript best practices and type safety
+      - Check for proper error handling
+      - Ensure components follow React best practices
+      - Verify accessibility standards (WCAG)
+      
+  - path: "src/components/**/*.{ts,tsx}"
+    instructions: |
+      - Review component structure and reusability
+      - Check for proper prop types and interfaces
+      - Ensure consistent styling patterns
+      - Verify component documentation
+      
+  - path: "src/pages/**/*.{ts,tsx}"
+    instructions: |
+      - Review page structure and routing
+      - Check for proper loading states
+      - Ensure SEO considerations
+      - Verify error boundaries
+      
+  - path: "src/services/**/*.{ts,tsx}"
+    instructions: |
+      - Focus on API design and error handling
+      - Check for proper async/await usage
+      - Verify input validation
+      - Review security considerations
+      
+  - path: "**/*.test.{ts,tsx,js,jsx}"
+    instructions: |
+      - Review test coverage and quality
+      - Check for edge cases
+      - Ensure proper mocking
+      - Verify test descriptions
+
+# Ignore patterns
+ignore:
+  - "node_modules/**"
+  - "dist/**"
+  - "build/**"
+  - "coverage/**"
+  - "*.d.ts"
+  - "vite.config.ts"
+  - "tailwind.config.js"
+
+# Custom rules
+rules:
+  # Enforce consistent code style
+  - name: consistent_naming
+    description: "Use consistent naming conventions"
+    pattern: "camelCase for variables, PascalCase for components"
+    
+  - name: proper_imports
+    description: "Use proper import statements"
+    pattern: "Prefer named imports over default imports where appropriate"
+    
+  - name: error_handling
+    description: "Implement proper error handling"
+    pattern: "Always handle potential errors in async operations"
+
+# Review templates
+templates:
+  summary: |
+    ## CodeRabbit AI Review Summary
+    
+    This pull request has been automatically reviewed by CodeRabbit AI.
+    
+    ### Key Areas Reviewed:
+    - Code quality and best practices
+    - TypeScript type safety
+    - React component patterns
+    - Security considerations
+    - Performance implications
+    
+    ### Recommendations:
+    Please review the inline comments and suggestions below.
+  
+  suggestion: |
+    💡 **Suggestion**: {suggestion}
+    
+    **Reasoning**: {reasoning}
+    
+    **Impact**: {impact}

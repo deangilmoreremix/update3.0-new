@@ -1,0 +1,45 @@
+name: CodeRabbit AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main, develop]
+
+jobs:
+  coderabbit:
+    runs-on: ubuntu-latest
+    name: CodeRabbit AI Review
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript check
+        run: npm run type-check
+        continue-on-error: true
+
+      - name: Run ESLint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Run tests
+        run: npm test
+        continue-on-error: true
+
+      - name: Build project
+        run: npm run build
+        continue-on-error: true
+
+      # CodeRabbit will automatically analyze the code when this workflow runs
+      # Make sure to install the CodeRabbit GitHub App on your repository
