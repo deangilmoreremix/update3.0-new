@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Goal } from '../types/goals';
-import { aiGoalsData, goalCategories, allGoals } from '../data/goalsData';
+import { Goal } from './types/goals';
+import { aiGoalsData, goalCategories, allGoals } from './data/goalsData';
 import InteractiveGoalCard from './InteractiveGoalCard';
 import GoalExecutionModal from './GoalExecutionModal';
 import { Target, Search, Zap, Star, TrendingUp, Eye, Sparkles, Brain, Users, Activity, BarChart3, Network, Bot, Award, Settings, Gauge, Cpu, Rocket, FileText } from 'lucide-react';

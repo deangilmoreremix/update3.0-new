@@ -111,7 +111,7 @@ export const DealCard: FC<DealCardProps> = ({
       attachments: updatedAttachments,
       updatedAt: new Date().toISOString()
     });
-  };
+;
 
     if (!tag.trim() || editForm.tags.includes(tag.trim())) return;
 
@@ -119,13 +119,13 @@ export const DealCard: FC<DealCardProps> = ({
       ...prev,
       tags: [...prev.tags, tag.trim()]
     }));
-  };
+;
 
     setEditForm(prev => ({
       ...prev,
       tags: prev.tags.filter(tag => tag !== tagToRemove)
     }));
-  };
+;
 
   const getStageColor = (stage: string) => {
     const colors = {
@@ -186,7 +186,7 @@ export const DealCard: FC<DealCardProps> = ({
   };
 
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(contactName)}&background=10b981&color=ffffff&size=32`;
-  };
+;
 
   return (
     <div
@@ -351,4 +351,4 @@ export const DealCard: FC<DealCardProps> = ({
       </div>
     </div>
   );
-};
+;

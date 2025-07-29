@@ -128,3 +128,19 @@ interface SalesInsight {
   feedback?: 'helpful' | 'not-helpful' | 'neutral';
 }
 
+export interface ApiKeys {
+  openai: string;
+  composio?: string;
+  anthropic?: string;
+  gemini?: string;
+}
+
+export interface ApiState {
+  keys: ApiKeys;
+  isValid: boolean;
+  lastChecked?: Date;
+  setApiKey: (provider: keyof ApiKeys, key: string) => void;
+  validateKeys: () => Promise<boolean>;
+  clearKeys: () => void;
+}
+

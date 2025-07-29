@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { X, Search, Target, RotateCcw, Download, Upload, Sparkles, Palette } from 'lucide-react';
-import { useCustomizationStore, CustomizationLocation } from '../../store/customizationStore';
-import { AI_GOALS, AI_GOAL_CATEGORIES, getGoalById, getRecommendedGoals } from '../../data/aiGoals';
+import { useCustomizationStore, CustomizationLocation } from '../store/customizationStore';
+import { AI_GOALS, AI_GOAL_CATEGORIES, getGoalById, getRecommendedGoals } from '../data/aiGoals';
 import { Card, CardContent, CardHeader } from '../ui/card';
 import { Button } from '../ui/button';
 import SelectableGoalCard from './SelectableGoalCard';
@@ -21,7 +21,7 @@ const CustomizeButtonsModal: React.FC<CustomizeButtonsModalProps> = ({
 }) => {
   const {
     buttonConfigurations,
-    setButtonConfiguration,
+    setSelectedGoals: updateSelectedGoals,
     resetToDefaults,
     exportConfiguration,
     importConfiguration
@@ -31,13 +31,13 @@ const CustomizeButtonsModal: React.FC<CustomizeButtonsModalProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [showRecommended, setShowRecommended] = useState(false);
-  const [selectedGoals, setSelectedGoals] = useState<string[]>(
+  const [selectedGoals, setLocalSelectedGoals] = useState<string[]>(
     buttonConfigurations[activeLocation] || []
   );
 
   // Update selected goals when location changes
   React.useEffect(() => {
-    setSelectedGoals(buttonConfigurations[activeLocation] || []);
+    setLocalSelectedGoals(buttonConfigurations[activeLocation] || []);
   }, [activeLocation, buttonConfigurations]);
 
   // Filtered goals based on search, category, and recommendations
@@ -80,20 +80,20 @@ const CustomizeButtonsModal: React.FC<CustomizeButtonsModalProps> = ({
 
   const handleGoalToggle = (goalId: string) => {
     if (selectedGoals.includes(goalId)) {
-      setSelectedGoals(prev => prev.filter(id => id !== goalId));
+      setLocalSelectedGoals(prev => prev.filter(id => id !== goalId));
     } else if (selectedGoals.length < maxButtonsPerLocation) {
-      setSelectedGoals(prev => [...prev, goalId]);
+      setLocalSelectedGoals(prev => [...prev, goalId]);
     }
   };
 
   const handleSave = () => {
-    setButtonConfiguration(activeLocation, selectedGoals);
+    updateSelectedGoals(activeLocation, selectedGoals);
     onClose();
   };
 
   const handleReset = () => {
     resetToDefaults(activeLocation);
-    setSelectedGoals(buttonConfigurations[activeLocation] || []);
+    setLocalSelectedGoals(buttonConfigurations[activeLocation] || []);
   };
 
   const handleExport = () => {
@@ -116,7 +116,7 @@ const CustomizeButtonsModal: React.FC<CustomizeButtonsModalProps> = ({
       const content = e.target?.result as string;
       const success = importConfiguration(content);
       if (success) {
-        setSelectedGoals(buttonConfigurations[activeLocation] || []);
+        setLocalSelectedGoals(buttonConfigurations[activeLocation] || []);
       } else {
         alert('Invalid configuration file. Please check the format and try again.');
       }

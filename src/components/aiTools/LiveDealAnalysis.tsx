@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, FC } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useGemini } from '../../services/geminiService';
 import { Deal } from '../../types';
 import { BarChart3, DollarSign, TrendingUp, AlertCircle, CheckCircle, Shield, RefreshCw, ArrowUpRight, ArrowDownRight } from 'lucide-react';
@@ -10,18 +10,21 @@ const sampleDeal: Deal = {
   title: 'Enterprise License',
   value: 75000,
   stage: 'qualification',
-  company: 'Acme Inc',
-  contact: 'John Doe',
   contactId: 'contact-1',
-  dueDate: new Date('2025-07-15'),
+  probability: 10,
   createdAt: new Date('2025-06-01'),
   updatedAt: new Date('2025-06-01'),
-  probability: 10,
+  expectedCloseDate: new Date('2025-07-15'),
   daysInStage: 5,
   priority: 'high'
 };
 
-const LiveDealAnalysis: FC<LiveDealAnalysisProps> = ({ 
+interface LiveDealAnalysisProps {
+  deal?: Deal;
+  onAnalysisComplete?: (analysis: unknown) => void;
+}
+
+const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({ 
   deal = sampleDeal,
   onAnalysisComplete 
 }) => {
@@ -94,7 +97,7 @@ const LiveDealAnalysis: FC<LiveDealAnalysisProps> = ({
       let riskLevel: 'low' | 'medium' | 'high' = 'medium';
       if (winProbability < 30 || deal.priority === 'high') {
         riskLevel = 'high';
-      } else if (winProbability > 70 && deal.priority !== 'high') {
+      } else if (winProbability > 70 && deal.priority === 'low') {
         riskLevel = 'low';
       }
 

@@ -135,11 +135,11 @@ export const useOpenAIEmbeddings = () => {
   
   // Calculate cosine similarity between two vectors
   const cosineSimilarity = (vecA: number[], vecB: number[]) => {
-    const dotProduct = 0;;
-    const normA = 0;;
-    const normB = 0;;
+    let dotProduct = 0;
+    let normA = 0;
+    let normB = 0;
     
-    for (const i = 0; i < vecA.length; i++) {
+    for (let i = 0; i < vecA.length; i++) {
       dotProduct += vecA[i] * vecB[i];
       normA += vecA[i] * vecA[i];
       normB += vecB[i] * vecB[i];

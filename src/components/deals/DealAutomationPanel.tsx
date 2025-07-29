@@ -234,7 +234,7 @@ export const DealAutomationPanel: FC<DealAutomationPanelProps> = ({ deal }) => {
       case 'draft': return 'text-gray-600';
       default: return 'text-green-600';
     }
-  };
+;
 
   const getAutomationTypeBadgeColor = (type: string) => {
     switch (type) {
@@ -969,4 +969,4 @@ export const DealAutomationPanel: FC<DealAutomationPanelProps> = ({ deal }) => {
       </div>
     </div>
   );
-};
+;

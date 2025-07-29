@@ -1,16 +1,16 @@
-import React, { useEffect, useRef, useState, ReactNode, FC } from 'react';
+import React, { useEffect, useRef, useState, ReactNode } from 'react';
 
 interface ScrollAnimationWrapperProps {
   children: ReactNode;
   animation?: 'fade-up' | 'fade-in' | 'slide-in' | 'zoom-in' | 'bounce';
   duration?: number;
   delay?: number;
-  threshold?: number;
+  threshold?: number; // 0 to 1, percentage of element visible to trigger animation
   once?: boolean;
   className?: string;
 }
 
-const ScrollAnimationWrapper: FC<ScrollAnimationWrapperProps> = ({
+const ScrollAnimationWrapper: React.FC<ScrollAnimationWrapperProps> = ({
   children,
   animation = 'fade-up',
   duration = 800,
@@ -62,8 +62,8 @@ const ScrollAnimationWrapper: FC<ScrollAnimationWrapperProps> = ({
       return 'opacity-0 transform';
     }
 
-    let animationClasses = 'opacity-100 transform';
-
+    const animationClasses = 'opacity-100 transform';
+    
     switch (animation) {
       case 'fade-up':
         animationClasses += isVisible ? ' translate-y-0' : ' translate-y-12';
@@ -83,7 +83,7 @@ const ScrollAnimationWrapper: FC<ScrollAnimationWrapperProps> = ({
       default:
         animationClasses += isVisible ? ' translate-y-0' : ' translate-y-12';
     }
-
+    
     return animationClasses;
   };
 

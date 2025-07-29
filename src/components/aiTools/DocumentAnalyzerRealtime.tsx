@@ -1,10 +1,15 @@
-import React, { useState, FC } from 'react';
+import React, { useState } from 'react';
 import { useOpenAIVision } from '../../services/openaiVisionService';
 import { useDropzone } from 'react-dropzone';
 import { Upload, Check, ArrowDown, Eye, X, Download, Copy, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const DocumentAnalyzerRealtime: FC<DocumentAnalyzerRealtimeProps> = ({ 
+interface DocumentAnalyzerRealtimeProps {
+  onAnalysisComplete?: (analysis: unknown) => void;
+  analysisType?: 'document' | 'competitor' | 'contract';
+}
+
+const DocumentAnalyzerRealtime: React.FC<DocumentAnalyzerRealtimeProps> = ({ 
   onAnalysisComplete,
   analysisType = 'document'
 }) => {

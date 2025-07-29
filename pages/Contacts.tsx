@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import Avatar from 'react-avatar';
 import { CSVLink } from 'react-csv';
 import { useDropzone } from 'react-dropzone';
-import { read, utils } from 'xlsx';
+import * as ExcelJS from 'exceljs';
 import Fuse from 'fuse.js';
 import Select from 'react-select';
 import AIEnhancedContactCard from '../components/contacts/AIEnhancedContactCard';
@@ -165,7 +165,7 @@ const Contacts: React.FC = () => {
       const file = acceptedFiles[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
           try {
             const data = e.target?.result;
             if (!data) {
@@ -173,10 +173,27 @@ const Contacts: React.FC = () => {
               return;
             }
             
-            const workbook = read(data, { type: 'array' });
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            const jsonData = utils.sheet_to_json(worksheet);
+            const workbook = new ExcelJS.Workbook();
+            await workbook.xlsx.load(data as ArrayBuffer);
+            
+            const worksheet = workbook.worksheets[0];
+            if (!worksheet) {
+              setImportValidation({ error: 'No worksheet found in file' });
+              return;
+            }
+            
+            const jsonData: any[] = [];
+            worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+              if (rowNumber === 1) return; // Skip header row
+              
+              const rowData: any = {};
+              row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+                const headerCell = worksheet.getCell(1, colNumber);
+                const header = headerCell.value?.toString() || `Column${colNumber}`;
+                rowData[header] = cell.value;
+              });
+              jsonData.push(rowData);
+            });
             
             // Validate data has required fields
             if (jsonData.length === 0) {

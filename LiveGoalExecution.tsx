@@ -118,12 +118,10 @@ const LiveGoalExecution: React.FC<LiveGoalExecutionProps> = ({
       businessValue: 0
     });
 
-    try {
-      for (const i = 0; i < executionSteps.length; i++) {
-        const step = executionSteps[i];
-        setCurrentStep(i);
-
-        // Update step to running
+      try {
+        for (let i = 0; i < executionSteps.length; i++) {
+          const step = executionSteps[i];
+          setCurrentStep(i);        // Update step to running
         setExecutionSteps(prev => prev.map((s, index) => 
           index === i ? { ...s, status: 'running', startTime: new Date() } : s
         ));

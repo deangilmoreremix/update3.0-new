@@ -11,6 +11,7 @@ export const DealAnalyticsDashboard: FC<DealAnalyticsDashboardProps> = ({ deal }
 
   // Sample data for charts and analytics - in a real app, this would come from API calls
 
+const dealActivities = [
   // Generate activity timeline data
     { date: '2023-06-15', emails: 2, calls: 0, meetings: 1, stage: 'qualification' },
     { date: '2023-07-01', emails: 3, calls: 1, meetings: 0, stage: 'qualification' },

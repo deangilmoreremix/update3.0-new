@@ -1427,4 +1427,4 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
       </div>
     </div>
   );
-};
+;

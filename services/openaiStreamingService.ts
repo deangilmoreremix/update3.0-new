@@ -85,7 +85,7 @@ export const useOpenAIStream = () => {
           const content = response.choices[0]?.message?.content || '';
           // Simulate streaming by sending tokens gradually
           const words = content.split(' ');
-          for (const i = 0; i < words.length; i++) {
+          for (let i = 0; i < words.length; i++) {
             onToken(words[i] + (i < words.length - 1 ? ' ' : ''));
             await new Promise(resolve => setTimeout(resolve, 50)); // Delay for streaming effect
           }
@@ -108,7 +108,7 @@ export const useOpenAIStream = () => {
           stream: true
         });
         
-        const fullResponse = '';;
+        let fullResponse = '';
         
         for await (const chunk of stream) {
           const content = chunk.choices[0]?.delta?.content || '';

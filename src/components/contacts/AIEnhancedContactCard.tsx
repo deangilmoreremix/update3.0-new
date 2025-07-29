@@ -272,6 +272,6 @@ const AIEnhancedContactCard: FC<AIEnhancedContactCardProps> = ({
       )}
     </div>
   );
-};
+;
 
 export default AIEnhancedContactCard;

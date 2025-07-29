@@ -254,7 +254,7 @@ export const AutomationPanel: FC<AutomationPanelProps> = ({ contact }) => {
       case 'draft': return 'text-gray-600';
       default: return 'text-green-600';
     }
-  };
+;
 
   const getAutomationTypeBadgeColor = (type: string) => {
     switch (type) {
@@ -980,4 +980,4 @@ export const AutomationPanel: FC<AutomationPanelProps> = ({ contact }) => {
       </div>
     </div>
   );
-};
+;

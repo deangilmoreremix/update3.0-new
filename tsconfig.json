@@ -28,11 +28,6 @@
     "attached_assets/**", 
     "client/**", 
     "pipeline_repo/**", 
-    "pipeline_deals_new/**",
-    "aiTools/**",
-    "services/**",
-    "store/**",
-    "*.tsx",
-    "*.ts"
+    "pipeline_deals_new/**"
   ]
 }

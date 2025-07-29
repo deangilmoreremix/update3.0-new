@@ -19,7 +19,12 @@
     "clean-all": "npm run clean-cache && rm -rf node_modules && npm ci",
     "rebuild": "npm run clean-cache && npm run build",
     "cache-bust": "npm run clean-all && npm run build",
-    "coderabbit:prepare": "npm run type-check && npm run lint && npm run build"
+    "coderabbit:prepare": "npm run type-check && npm run lint && npm run build",
+    "coderabbit:check": "./coderabbit-local.sh check",
+    "coderabbit:watch": "./coderabbit-local.sh watch",
+    "coderabbit:info": "./coderabbit-local.sh info",
+    "coderabbit:dashboard": "./coderabbit-dashboard.sh",
+    "dev:with-coderabbit": "concurrently \"npm run dev\" \"npm run coderabbit:watch\""
   },
   "dependencies": {
     "@google/generative-ai": "^0.2.1",

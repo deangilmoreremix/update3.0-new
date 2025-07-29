@@ -5,11 +5,23 @@ on:
     types: [opened, synchronize, reopened]
   push:
     branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      force_review:
+        description: 'Force CodeRabbit review'
+        required: false
+        default: 'false'
+
+env:
+  NODE_VERSION: '18'
 
 jobs:
   coderabbit:
     runs-on: ubuntu-latest
     name: CodeRabbit AI Review
+    outputs:
+      review-url: ${{ steps.coderabbit-review.outputs.review-url }}
+      suggestions-count: ${{ steps.coderabbit-review.outputs.suggestions-count }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -19,27 +31,108 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
       - name: Run TypeScript check
-        run: npm run type-check
+        id: typecheck
+        run: |
+          echo "Running TypeScript check..."
+          npm run type-check 2>&1 | tee typecheck.log || true
+          echo "typecheck-output=$(cat typecheck.log)" >> $GITHUB_OUTPUT
         continue-on-error: true
 
       - name: Run ESLint
-        run: npm run lint
+        id: eslint
+        run: |
+          echo "Running ESLint..."
+          npm run lint 2>&1 | tee eslint.log || true
+          echo "eslint-output=$(cat eslint.log)" >> $GITHUB_OUTPUT
         continue-on-error: true
 
       - name: Run tests
-        run: npm test
+        id: tests
+        run: |
+          echo "Running tests..."
+          npm test 2>&1 | tee test.log || true
+          echo "test-output=$(cat test.log)" >> $GITHUB_OUTPUT
         continue-on-error: true
 
       - name: Build project
-        run: npm run build
+        id: build
+        run: |
+          echo "Building project..."
+          npm run build 2>&1 | tee build.log || true
+          echo "build-output=$(cat build.log)" >> $GITHUB_OUTPUT
         continue-on-error: true
+
+      - name: Generate CodeRabbit Review Summary
+        id: coderabbit-review
+        run: |
+          echo "# 🤖 CodeRabbit AI Review Summary" > review-summary.md
+          echo "" >> review-summary.md
+          echo "## 📊 Code Quality Report" >> review-summary.md
+          echo "" >> review-summary.md
+          
+          # Count TypeScript errors
+          TS_ERRORS=$(grep -c "error TS" typecheck.log || echo "0")
+          echo "- **TypeScript Errors:** $TS_ERRORS" >> review-summary.md
+          
+          # Count ESLint issues
+          ESLINT_ERRORS=$(grep -c "error" eslint.log || echo "0")
+          echo "- **ESLint Errors:** $ESLINT_ERRORS" >> review-summary.md
+          
+          # Build status
+          if grep -q "built in" build.log; then
+            echo "- **Build Status:** ✅ Success" >> review-summary.md
+          else
+            echo "- **Build Status:** ❌ Failed" >> review-summary.md
+          fi
+          
+          echo "" >> review-summary.md
+          echo "## 🔍 CodeRabbit Suggestions" >> review-summary.md
+          echo "" >> review-summary.md
+          echo "Review the detailed suggestions below for each file:" >> review-summary.md
+          echo "" >> review-summary.md
+          
+          # Add quick access links
+          echo "### 🚀 Quick Actions" >> review-summary.md
+          echo "- View full review: [CodeRabbit Dashboard](https://coderabbit.ai)" >> review-summary.md
+          echo "- Local dev server: [http://localhost:5174](http://localhost:5174)" >> review-summary.md
+          echo "- Run fixes: \`npm run lint:fix\`" >> review-summary.md
+          
+          echo "suggestions-count=$((TS_ERRORS + ESLINT_ERRORS))" >> $GITHUB_OUTPUT
+          echo "review-url=https://coderabbit.ai/review/${{ github.repository }}/pull/${{ github.event.number }}" >> $GITHUB_OUTPUT
+
+      - name: Upload review artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coderabbit-review-${{ github.sha }}
+          path: |
+            review-summary.md
+            typecheck.log
+            eslint.log
+            build.log
+            test.log
+          retention-days: 7
+
+      - name: Comment PR with CodeRabbit Summary
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('review-summary.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
 
       # CodeRabbit will automatically analyze the code when this workflow runs
       # Make sure to install the CodeRabbit GitHub App on your repository

@@ -1,7 +1,16 @@
-import React, { FC } from 'react';
+import React from 'react';
 import AnimatedCounter from './AnimatedCounter';
 
-const StatCounter: FC<StatCounterProps> = ({
+interface StatCounterProps {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  decimals?: number;
+}
+
+const StatCounter: React.FC<StatCounterProps> = ({
   icon,
   label,
   value,

@@ -384,6 +384,5 @@ const CallHistory: React.FC = () => {
       )}
     </div>
   );
-};
 
 export default CallHistory;

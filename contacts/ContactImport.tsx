@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { read, utils } from 'xlsx';
+import * as ExcelJS from 'exceljs';
 import { useContactStore } from '../../store/contactStore';
 import { Contact } from '../../types';
 import { Upload, CheckCircle, AlertCircle, RefreshCw, FileText } from 'lucide-react';
@@ -28,22 +28,36 @@ const ContactImport: React.FC = () => {
         const data = e.target?.result;
         if (!data) throw new Error('Failed to read file');
         
-        const workbook = read(data, { type: 'array' });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const json = utils.sheet_to_json(worksheet);
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(data as ArrayBuffer);
+        
+        const worksheet = workbook.worksheets[0];
+        if (!worksheet) throw new Error('No worksheet found in file');
+        
+        const jsonData: any[] = [];
+        worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+          if (rowNumber === 1) return; // Skip header row
+          
+          const rowData: any = {};
+          row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+            const headerCell = worksheet.getCell(1, colNumber);
+            const header = headerCell.value?.toString() || `Column${colNumber}`;
+            rowData[header] = cell.value;
+          });
+          jsonData.push(rowData);
+        });
         
         // Map to Contact structure
-        const contacts = json.map((row: unknown) => ({
-          name: row.Name || row.name,
-          email: row.Email || row.email,
-          phone: row.Phone || row.phone,
-          company: row.Company || row.company,
-          position: row.Position || row.Title || row.position,
+        const contacts = jsonData.map((row: any) => ({
+          name: row.Name || row.name || row['Full Name'] || '',
+          email: row.Email || row.email || row['Email Address'] || '',
+          phone: row.Phone || row.phone || row['Phone Number'] || '',
+          company: row.Company || row.company || row.Organization || '',
+          position: row.Position || row.Title || row.position || row.title || '',
           status: row.Status || row.status || 'lead',
-          industry: row.Industry || row.industry,
-          location: row.Location || row.location,
-          notes: row.Notes || row.notes,
+          industry: row.Industry || row.industry || '',
+          location: row.Location || row.location || row.Address || '',
+          notes: row.Notes || row.notes || row.Comments || '',
           // Ensure user_id is set by the server using RLS
         }));
         
