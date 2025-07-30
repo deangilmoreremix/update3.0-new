@@ -11,9 +11,9 @@ function SimpleApp() {
         </p>
         <div className="space-y-2 text-sm">
           <p><strong>Build Status:</strong> ✅ Success</p>
-          <p><strong>Environment:</strong> {import.meta.env as any).MODE}</p>
-          <p><strong>Supabase URL:</strong> {import.meta.env as any).VITE_SUPABASE_URL ? '✅ Set' : '❌ Missing'}</p>
-          <p><strong>Supabase Key:</strong> {import.meta.env as any).VITE_SUPABASE_ANON_KEY ? '✅ Set' : '❌ Missing'}</p>
+          <p><strong>Environment:</strong> {(import.meta.env as any).MODE}</p>
+          <p><strong>Supabase URL:</strong> {(import.meta.env as any).VITE_SUPABASE_URL ? '✅ Set' : '❌ Missing'}</p>
+          <p><strong>Supabase Key:</strong> {(import.meta.env as any).VITE_SUPABASE_ANON_KEY ? '✅ Set' : '❌ Missing'}</p>
         </div>
         <button 
           onClick={() => window.location.href = '/dashboard'}

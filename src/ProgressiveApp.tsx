@@ -7,7 +7,7 @@ import { DashboardLayoutProvider } from './contexts/DashboardLayoutContext';
 import { AIToolsProvider } from './components/AIToolsProvider';
 
 // Use the complete redesigned Dashboard from smartcrmdash integration
-// import Dashboard from './components/Dashboard'; // Commented out - component removed
+// // import Dashboard from './components/Dashboard'; // Commented out - component removed // Commented out - component removed
 
 // Import page components from src directory
 import Pipeline from './pages/Pipeline';
