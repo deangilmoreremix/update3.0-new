@@ -7,8 +7,8 @@ import Dashboard from './pages/Dashboard';
 import Contacts from './pages/Contacts';
 import Pipeline from './pages/Pipeline';
 import AITools from './pages/AITools';
-import Settings from './pages/Settings';
 import AIGoals from './pages/AIGoals';
+import Settings from './pages/Settings';
 import LandingPage from './pages/Landing/LandingPage';
 
 // Import existing pages
