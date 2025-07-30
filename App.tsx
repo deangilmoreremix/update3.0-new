@@ -7,7 +7,7 @@ import { Settings as SettingsIcon } from 'lucide-react';
 import { AIToolsProvider } from './AIToolsProvider';
 import { TenantProvider } from './TenantProvider';
 import { RoleProvider } from './RoleBasedAccess';
-import { EnhancedHelpProvider } from './contexts/EnhancedHelpContext';
+import { EnhancedHelpProvider } from './src/contexts/EnhancedHelpContext';
 import { queryClient } from './lib/queryClient';
 import { ProtectedRoute, SuperAdminRoute, ResellerRoute, UserRoute } from './auth/ProtectedRoute';
 import { ThemeProvider } from './contexts/ThemeContext';

@@ -17,8 +17,8 @@ import SalesTools from './pages/SalesTools';
 import Tasks from './pages/Tasks';
 
 // Import auth pages
-import { SignIn } from './pages/auth/SignIn';
-import { SignUp } from './pages/auth/SignUp';
+import SignIn from './pages/Auth/Login';
+import SignUp from './pages/Auth/Register';
 
 function App() {
   return (

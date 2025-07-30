@@ -6,6 +6,20 @@ type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
+export interface Database {
+  public: {
+    Tables: {
+      business_analysis: {
+        Row: {
+          id: number
+          created_at: string | null
+          business_name: string | null
+          industry: string | null
+          website_url: string | null
+          social_links: Json | null
+          analysis_results: Json | null
+          user_id: string | null
+        }
         Insert: {
           id?: number
           created_at?: string | null

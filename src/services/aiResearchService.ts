@@ -115,6 +115,7 @@ class EnhancedAIResearchService implements AIResearchService {
 
   async findCompanyLogo(companyName: string, domain?: string): Promise<string> {
     // Generate company logo using DiceBear API with company initials
+    const initials = companyName
       .split(' ')
       .map(word => word[0])
       .join('')
