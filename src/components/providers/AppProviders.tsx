@@ -8,6 +8,10 @@ import { AIToolsProvider } from '../AIToolsProvider';
 import { ModalsProvider } from '../ModalsProvider';
 import { VideoCallErrorBoundary } from '../VideoCallErrorBoundary';
 
+interface AppProvidersProps {
+  children: ReactNode;
+}
+
 export const AppProviders = ({ children }: AppProvidersProps) => {
   return (
     <BrowserRouter>
