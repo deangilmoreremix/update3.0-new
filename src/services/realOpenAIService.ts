@@ -61,9 +61,9 @@ class RealOpenAIService implements OpenAIService {
         Analyze this sales contact and provide a detailed assessment:
 
         Contact Information:
-        - Name: ${contact.name}
-        - Title: ${contact.title}
-        - Company: ${contact.company}
+        - Name: ${contact?.name}
+        - Title: ${contact?.title}
+        - Company: ${contact?.company}
         - Industry: ${contact.industry || 'Unknown'}
         - Status: ${contact.status}
         - Interest Level: ${contact.interestLevel}
@@ -107,7 +107,7 @@ class RealOpenAIService implements OpenAIService {
       const prompt = `
         Generate a professional sales email for this contact:
 
-        Contact: ${contact.name} (${contact.title} at ${contact.company})
+        Contact: ${contact?.name} (${contact?.title} at ${contact?.company})
         Context: ${context || 'General follow-up'}
         Industry: ${contact.industry || 'Unknown'}
         Previous notes: ${contact.notes || 'No previous notes'}
@@ -139,7 +139,7 @@ class RealOpenAIService implements OpenAIService {
       const prompt = `
         Generate 3-5 quick insights about this sales contact:
 
-        ${contact.name} - ${contact.title} at ${contact.company}
+        ${contact?.name} - ${contact?.title} at ${contact?.company}
         Status: ${contact.status}
         Interest: ${contact.interestLevel}
         Sources: ${(contact.sources || []).join(', ')}
@@ -160,13 +160,13 @@ class RealOpenAIService implements OpenAIService {
     }
   }
 
-  async generateDealSummary(dealData: unknown): Promise<string> {
+  async generateDealSummary(dealData: any): Promise<string> {
     try {
       const prompt = `
         Summarize this deal opportunity:
 
-        Deal: ${dealData.title}
-        Company: ${dealData.company}
+        Deal: ${dealData?.title}
+        Company: ${dealData?.company}
         Value: $${dealData.value?.toLocaleString()}
         Stage: ${dealData.stage}
         Probability: ${dealData.probability}%
@@ -183,16 +183,16 @@ class RealOpenAIService implements OpenAIService {
       return response;
     } catch (error) {
       console.error('Failed to generate deal summary:', error);
-      return `Deal Summary: ${dealData.title} with ${dealData.company} valued at $${dealData.value?.toLocaleString()}. Currently in ${dealData.stage} stage with ${dealData.probability}% probability.`;
+      return `Deal Summary: ${dealData?.title} with ${dealData?.company} valued at $${dealData.value?.toLocaleString()}. Currently in ${dealData.stage} stage with ${dealData.probability}% probability.`;
     }
   }
 
-  async suggestNextActions(dealData: unknown): Promise<string[]> {
+  async suggestNextActions(dealData: any): Promise<string[]> {
     try {
       const prompt = `
         Suggest next actions for this deal:
 
-        Deal: ${dealData.title}
+        Deal: ${dealData?.title}
         Stage: ${dealData.stage}
         Probability: ${dealData.probability}%
         Value: $${dealData.value?.toLocaleString()}
@@ -247,13 +247,13 @@ class RealOpenAIService implements OpenAIService {
   private generateBasicEmail(contact: Contact, context?: string): string {
     return `Subject: Following up on our conversation
 
-Hi ${contact.firstName || contact.name},
+Hi ${contact.firstName || contact?.name},
 
-I hope this email finds you well. I wanted to follow up on our recent discussion about ${contact.company}'s ${context || 'business needs'}.
+I hope this email finds you well. I wanted to follow up on our recent discussion about ${contact?.company}'s ${context || 'business needs'}.
 
-Based on our conversation, I believe our solution could be a great fit for your ${contact.title} role.
+Based on our conversation, I believe our solution could be a great fit for your ${contact?.title} role.
 
-Would you be available for a brief call this week to discuss how we can help ${contact.company} achieve its goals?
+Would you be available for a brief call this week to discuss how we can help ${contact?.company} achieve its goals?
 
 Best regards,
 [Your Name]`;
@@ -277,7 +277,7 @@ Best regards,
     return insights;
   }
 
-  private generateBasicNextActions(dealData: unknown): string[] {
+  private generateBasicNextActions(dealData: any): string[] {
     const actions: string[] = [];
 
     switch (dealData.stage) {

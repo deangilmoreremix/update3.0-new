@@ -73,7 +73,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
     }));
   };
 
-  const handleInputChange = (field: string, value: unknown) => {
+  const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -146,7 +146,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
               <div className="relative inline-block mb-4">
                 <AvatarWithStatus
                   src={contact.avatarSrc}
-                  alt={contact.name}
+                  alt={contact?.name}
                   size="xl"
                   status={contact.status}
                 />
@@ -171,7 +171,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
               </div>
 
               {/* Contact Name */}
-              {editMode.name ? (
+              {editMode?.name ? (
                 <div className="mb-4">
                   <div className="flex space-x-2 mb-1">
                     <input
@@ -212,7 +212,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
                 </div>
               ) : (
                 <h4 className="text-xl font-semibold text-gray-900 mb-1 flex items-center justify-center space-x-2">
-                  <span>{contact.name}</span>
+                  <span>{contact?.name}</span>
                   <button
                     onClick={() => toggleEditMode('name')}
                     className="text-gray-400 hover:text-gray-600"
@@ -223,18 +223,18 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
               )}
 
               {/* Job Title & Company */}
-              {editMode.title ? (
+              {editMode?.title ? (
                 <div className="mb-4">
                   <input
                     type="text"
-                    value={formData.title}
+                    value={formData?.title}
                     onChange={(e) => handleInputChange('title', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg mb-2"
                     placeholder="Job Title"
                   />
                   <input
                     type="text"
-                    value={formData.company}
+                    value={formData?.company}
                     onChange={(e) => handleInputChange('company', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg mb-2"
                     placeholder="Company"
@@ -261,7 +261,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
               ) : (
                 <>
                   <p className="text-gray-600 text-sm flex items-center justify-center space-x-2">
-                    <span>{contact.title}</span>
+                    <span>{contact?.title}</span>
                     <button
                       onClick={() => toggleEditMode('title')}
                       className="text-gray-400 hover:text-gray-600"
@@ -269,7 +269,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
                       <Edit className="w-3 h-3" />
                     </button>
                   </p>
-                  <p className="text-gray-500 text-sm">{contact.company}</p>
+                  <p className="text-gray-500 text-sm">{contact?.company}</p>
                 </>
               )}
 
@@ -522,13 +522,13 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
                 )}
 
                 {/* Company & Industry */}
-                {editMode.company ? (
+                {editMode?.company ? (
                   <div className="space-y-2">
                     <label className="text-sm text-gray-600">Company & Industry</label>
                     <div className="flex space-x-2">
                       <input
                         type="text"
-                        value={formData.company}
+                        value={formData?.company}
                         onChange={(e) => handleInputChange('company', e.target.value)}
                         className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
                         placeholder="Company"
@@ -566,7 +566,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
                       <Building2 className="w-5 h-5 text-purple-500 dark:text-purple-400 mr-3" />
                       <div>
                         <p className="text-sm text-gray-600">Company & Industry</p>
-                        <p className="text-gray-900">{contact.company} {contact.industry ? `• ${contact.industry}` : ''}</p>
+                        <p className="text-gray-900">{contact?.company} {contact.industry ? `• ${contact.industry}` : ''}</p>
                       </div>
                     </div>
                     <button
@@ -759,7 +759,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
                     <div className="space-y-4">
                       <div>
                         <p className="text-sm font-medium text-gray-700">Full Name</p>
-                        <p className="text-lg text-gray-900">{contact.name}</p>
+                        <p className="text-lg text-gray-900">{contact?.name}</p>
                       </div>
 
                       <div>
@@ -825,7 +825,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <p className="text-sm font-medium text-gray-700">Company Name</p>
-                      <p className="text-lg text-gray-900 dark:text-white">{contact.company}</p>
+                      <p className="text-lg text-gray-900 dark:text-white">{contact?.company}</p>
                     </div>
 
                     <div>

@@ -258,7 +258,7 @@ const Appointments: React.FC = () => {
 
   const handleEditAppointment = (appt: Appointment) => {
     setFormData({
-      title: appt.title,
+      title: appt?.title,
       contactId: appt.contactId,
       contactName: appt.contactName,
       contactEmail: appt.contactEmail,
@@ -287,7 +287,7 @@ const Appointments: React.FC = () => {
     }
   };
 
-  const handleContactSelect = (option: unknown) => {
+  const handleContactSelect = (option: any) => {
     if (option) {
       const contact = contacts.find(c => c.value === option.value);
       setFormData({
@@ -416,7 +416,7 @@ const Appointments: React.FC = () => {
                   appointment.status === 'scheduled' && 
                   (searchText === '' || 
                     appointment.contactName.toLowerCase().includes(searchText.toLowerCase()) || 
-                    appointment.title.toLowerCase().includes(searchText.toLowerCase())
+                    appointment?.title.toLowerCase().includes(searchText.toLowerCase())
                   )
                 )
                 .sort((a, b) => a.date.getTime() - b.date.getTime())
@@ -427,7 +427,7 @@ const Appointments: React.FC = () => {
                       <div>
                         <div className="flex items-center">
                           {renderAppointmentTypeIcon(appointment.type)}
-                          <h3 className="font-medium ml-1 text-sm">{appointment.title}</h3>
+                          <h3 className="font-medium ml-1 text-sm">{appointment?.title}</h3>
                         </div>
                         <p className="text-xs text-gray-500">{appointment.contactName}</p>
                       </div>
@@ -446,7 +446,7 @@ const Appointments: React.FC = () => {
                 appointment.status === 'scheduled' &&
                 (searchText === '' || 
                   appointment.contactName.toLowerCase().includes(searchText.toLowerCase()) || 
-                  appointment.title.toLowerCase().includes(searchText.toLowerCase())
+                  appointment?.title.toLowerCase().includes(searchText.toLowerCase())
                 )
               ).length === 0 && (
                 <div className="text-center p-4">
@@ -552,7 +552,7 @@ const Appointments: React.FC = () => {
                         <div className="mt-2">
                           <div className="flex items-center">
                             {renderAppointmentTypeIcon(appointment.type)}
-                            <p className="text-sm font-medium ml-1">{appointment.title}</p>
+                            <p className="text-sm font-medium ml-1">{appointment?.title}</p>
                           </div>
                           <div className="flex items-center mt-1">
                             <User size={14} className="text-gray-400 mr-1" />
@@ -615,7 +615,7 @@ const Appointments: React.FC = () => {
                         </label>
                         <input
                           type="text"
-                          value={formData.title || ''}
+                          value={formData?.title || ''}
                           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                           placeholder="Enter appointment title"
                           className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -812,7 +812,7 @@ const Appointments: React.FC = () => {
                           <div>
                             <div className="flex items-center">
                               {renderAppointmentTypeIcon(appointment.type)}
-                              <h3 className="font-medium ml-1">{appointment.title}</h3>
+                              <h3 className="font-medium ml-1">{appointment?.title}</h3>
                             </div>
                             <p className="text-sm text-gray-500">{appointment.contactName}</p>
                           </div>
@@ -904,7 +904,7 @@ const Appointments: React.FC = () => {
                 <div>
                   <div className="flex items-center">
                     {renderAppointmentTypeIcon(appointmentDetail.type)}
-                    <h4 className="text-xl font-semibold ml-2">{appointmentDetail.title}</h4>
+                    <h4 className="text-xl font-semibold ml-2">{appointmentDetail?.title}</h4>
                   </div>
                   <span className={`mt-1 inline-block text-xs px-2 py-0.5 rounded-full ${getStatusBadgeClass(appointmentDetail.status)}`}>
                     {appointmentDetail.status.charAt(0).toUpperCase() + appointmentDetail.status.slice(1)}

@@ -25,22 +25,22 @@ export const AIAutoFillButton: FC<AIAutoFillButtonProps> = ({
 
       // Populate with available form data
       if (formData.firstName && formData.lastName) {
-        searchData.name = `${formData.firstName} ${formData.lastName}`;
+        searchData?.name = `${formData.firstName} ${formData.lastName}`;
       } else if (formData.firstName) {
-        searchData.name = formData.firstName;
+        searchData?.name = formData.firstName;
       } else if (formData.lastName) {
-        searchData.name = formData.lastName;
+        searchData?.name = formData.lastName;
       }
 
       if (formData.email) searchData.email = formData.email;
-      if (formData.company) searchData.company = formData.company;
+      if (formData?.company) searchData?.company = formData?.company;
 
       if (formData.socialProfiles?.linkedin) {
         searchData.linkedinUrl = formData.socialProfiles.linkedin;
       }
 
       // Check if we have minimum required data
-      if (!searchData.name && !searchData.email && !searchData.linkedinUrl) {
+      if (!searchData?.name && !searchData.email && !searchData.linkedinUrl) {
         throw new Error('Please provide at least a name or email to auto-fill');
       }
 

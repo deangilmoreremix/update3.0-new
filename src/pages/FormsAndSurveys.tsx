@@ -47,7 +47,7 @@ const FormsAndSurveys: React.FC = () => {
     if (form) {
       setCurrentForm({
         id: form.id,
-        name: form.name,
+        name: form?.name,
         description: form.description || '',
         fields: [...form.fields], // Clone to avoid mutating the original
         submissions: form.submissions,
@@ -132,7 +132,7 @@ const FormsAndSurveys: React.FC = () => {
   };
 
   // Handle changes to the editing field
-  const handleEditingChange = (key: string, value: unknown) => {
+  const handleEditingChange = (key: string, value: any) => {
     if (!editingField) return;
 
     setEditingField({
@@ -368,7 +368,7 @@ const FormsAndSurveys: React.FC = () => {
     return (
       <div className="max-w-2xl mx-auto">
         <div className="bg-gray-50 p-6 rounded-md border border-gray-200">
-          <h2 className="text-xl font-bold mb-4">{currentForm.name}</h2>
+          <h2 className="text-xl font-bold mb-4">{currentForm?.name}</h2>
           {currentForm.description && (
             <p className="text-gray-600 mb-6">{currentForm.description}</p>
           )}
@@ -396,7 +396,7 @@ const FormsAndSurveys: React.FC = () => {
   };
 
   // Render form analytics
-  const renderFormAnalytics = (form: unknown) => {
+  const renderFormAnalytics = (form: any) => {
     const conversionRate = form.submissions > 0 && form.totalViews 
       ? ((form.submissions / form.totalViews) * 100).toFixed(1) 
       : '0.0';
@@ -542,7 +542,7 @@ const FormsAndSurveys: React.FC = () => {
                           </div>
                           <div className="ml-4">
                             <div className="text-sm font-medium text-gray-900 cursor-pointer hover:text-blue-600" onClick={() => openFormEditor(form.id)}>
-                              {form.name}
+                              {form?.name}
                             </div>
                             <div className="text-sm text-gray-500">{form.description}</div>
                           </div>
@@ -725,7 +725,7 @@ const FormsAndSurveys: React.FC = () => {
                     </label>
                     <input
                       type="text"
-                      value={currentForm.name}
+                      value={currentForm?.name}
                       onChange={(e) => setCurrentForm({ ...currentForm, name: e.target.value })}
                       className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Enter form name"
@@ -1387,7 +1387,7 @@ const FormsAndSurveys: React.FC = () => {
                       <div className="flex items-center">
                         <FileText size={20} className="text-blue-500 mr-2" />
                         <div>
-                          <p className="font-medium text-sm text-gray-900">{form.name}</p>
+                          <p className="font-medium text-sm text-gray-900">{form?.name}</p>
                           <p className="text-xs text-gray-500 truncate max-w-xs">{form.description}</p>
                         </div>
                       </div>

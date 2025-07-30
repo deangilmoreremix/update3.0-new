@@ -183,8 +183,8 @@ const ContactDetail: React.FC = () => {
             <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">{contact.name}</h1>
-            <p className="text-gray-600 mt-1">{contact.position} at {contact.company}</p>
+            <h1 className="text-3xl font-bold text-gray-900">{contact?.name}</h1>
+            <p className="text-gray-600 mt-1">{contact.position} at {contact?.company}</p>
           </div>
         </div>
 
@@ -247,7 +247,7 @@ const ContactDetail: React.FC = () => {
                   <input
                     type="text"
                     name="name"
-                    value={editFormData.name || ''}
+                    value={editFormData?.name || ''}
                     onChange={handleInputChange}
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
@@ -286,7 +286,7 @@ const ContactDetail: React.FC = () => {
                   <input
                     type="text"
                     name="company"
-                    value={editFormData.company || ''}
+                    value={editFormData?.company || ''}
                     onChange={handleInputChange}
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
@@ -421,7 +421,7 @@ const ContactDetail: React.FC = () => {
                     <div className="flex items-center">
                       <Building className="h-5 w-5 text-gray-400 mr-3" />
                       <div>
-                        <p className="text-sm font-medium text-gray-900">{contact.company || 'Not provided'}</p>
+                        <p className="text-sm font-medium text-gray-900">{contact?.company || 'Not provided'}</p>
                         <p className="text-xs text-gray-500">Company</p>
                       </div>
                     </div>

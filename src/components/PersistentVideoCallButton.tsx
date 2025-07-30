@@ -25,7 +25,7 @@ const PersistentVideoCallButton: React.FC = () => {
     try {
       await initiateCall({
         id: contact.id,
-        name: contact.name,
+        name: contact?.name,
         email: contact.email,
         avatar: contact.avatarSrc || contact.avatar
       }, type);
@@ -69,16 +69,16 @@ const PersistentVideoCallButton: React.FC = () => {
                   <div className="flex items-center space-x-3">
                     <Avatar
                       src={contact.avatarSrc || contact.avatar}
-                      alt={contact.name}
+                      alt={contact?.name}
                       size="md"
-                      fallback={getInitials(contact.name)}
+                      fallback={getInitials(contact?.name)}
                     />
                     <div>
                       <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                        {contact.name}
+                        {contact?.name}
                       </h4>
                       <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                        {contact.title || contact.position} at {contact.company}
+                        {contact?.title || contact.position} at {contact?.company}
                       </p>
                     </div>
                   </div>

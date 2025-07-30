@@ -146,7 +146,7 @@ const PipelineModal: FC<PipelineModalProps> = ({ isOpen, onClose }) => {
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center space-x-2">
                           <div className={`w-3 h-3 rounded-full ${stage.color}`}></div>
-                          <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{stage.name}</span>
+                          <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{stage?.name}</span>
                         </div>
                         <div className="flex items-center space-x-3">
                           <span className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{stage.count} deals</span>

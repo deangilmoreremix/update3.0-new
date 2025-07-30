@@ -174,7 +174,7 @@ const AIModelUsageStats: FC<AIModelUsageStatsProps> = ({
                     </div>
                     <div>
                       <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                        {model.name}
+                        {model?.name}
                       </h4>
                       <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                         {model.family} • {model.version}

@@ -1,8 +1,8 @@
 import { callGemini } from "../services/callGemini";
 
-export async function leadEnrichmentAgent(input: unknown, setSteps?: (steps: unknown) => void) {
-  const name = input.name || "Unknown";
-  const company = input.company || "Unknown";
+export async function leadEnrichmentAgent(input: any, setSteps?: (steps: any) => void) {
+  const name = input?.name || "Unknown";
+  const company = input?.company || "Unknown";
 
   // Simulate steps for UI feedback
   setSteps?.([{ step: "Researching contact information..." }]);

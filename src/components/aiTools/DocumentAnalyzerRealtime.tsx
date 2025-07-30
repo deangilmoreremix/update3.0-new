@@ -5,7 +5,7 @@ import { Upload, Check, ArrowDown, Eye, X, Download, Copy, Zap } from 'lucide-re
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface DocumentAnalyzerRealtimeProps {
-  onAnalysisComplete?: (analysis: unknown) => void;
+  onAnalysisComplete?: (analysis: any) => void;
   analysisType?: 'document' | 'competitor' | 'contract';
 }
 

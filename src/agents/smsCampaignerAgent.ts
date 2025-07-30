@@ -1,7 +1,7 @@
 
-export async function smsCampaignerAgent(input: unknown, setSteps?: (steps: unknown) => void) {
-  const name = input.name || "there";
-  const company = input.company || "your company";
+export async function smsCampaignerAgent(input: any, setSteps?: (steps: any) => void) {
+  const name = input?.name || "there";
+  const company = input?.company || "your company";
   const campaignType = input.campaignType || "follow-up";
 
   setSteps?.([{ step: "Creating SMS campaign..." }]);

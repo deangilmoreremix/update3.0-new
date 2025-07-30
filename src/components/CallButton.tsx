@@ -21,7 +21,7 @@ const CallButton: FC<CallButtonProps> = ({
     try {
       const participant: CallParticipant = {
         id: contact.id,
-        name: contact.name,
+        name: contact?.name,
         email: contact.email,
         avatar: contact.avatarSrc || contact.avatar
       };
@@ -42,7 +42,7 @@ const CallButton: FC<CallButtonProps> = ({
     try {
       const participant: CallParticipant = {
         id: contact.id,
-        name: contact.name,
+        name: contact?.name,
         email: contact.email,
         avatar: contact.avatarSrc || contact.avatar
       };

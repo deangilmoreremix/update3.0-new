@@ -21,7 +21,7 @@ const TaskCalendar: FC<TaskCalendarProps> = ({ onTaskSelect }) => {
       .filter(task => task.dueDate || showAll) // Only show tasks with due dates unless showAll is true
       .map(task => ({
         id: task.id,
-        title: task.title,
+        title: task?.title,
         start: task.dueDate || task.createdAt,
         end: task.dueDate || task.createdAt,
         allDay: !task.dueDate?.getHours(), // If no time is set, treat as all-day
@@ -30,7 +30,7 @@ const TaskCalendar: FC<TaskCalendarProps> = ({ onTaskSelect }) => {
   }, [tasks, showAll]);
 
   // Custom styling for events based on task status and priority
-  const eventStyleGetter = (event: unknown) => {
+  const eventStyleGetter = (event: any) => {
     const task = event.resource as Task;
     const isOverdue = task.dueDate && !task.completed && task.dueDate < new Date();
 
@@ -59,7 +59,7 @@ const TaskCalendar: FC<TaskCalendarProps> = ({ onTaskSelect }) => {
   };
 
   // Custom component for the toolbar
-  const CustomToolbar = (toolbar: unknown) => {
+  const CustomToolbar = (toolbar: any) => {
     const goToBack = () => {
       const newDate = new Date(toolbar.date);
 
@@ -182,20 +182,20 @@ const TaskCalendar: FC<TaskCalendarProps> = ({ onTaskSelect }) => {
   const calendarComponents = {
     toolbar: CustomToolbar,
     // @ts-expect-error - the types don't include 'event' but it works
-    event: ({ event }: unknown) => {
+    event: ({ event }: any) => {
       const task = event.resource as Task;
       return (
         <div className="truncate">
           {task.completed && '✓ '}
-          {event.title}
+          {event?.title}
         </div>
       );
     },
     // @ts-expect-error - the types don't include 'eventWrapper' but it works
-    eventWrapper: ({ children, event }: unknown) => {
+    eventWrapper: ({ children, event }: any) => {
       const task = event.resource as Task;
       return (
-        <div title={`${event.title} - ${task.priority} priority`}>
+        <div title={`${event?.title} - ${task.priority} priority`}>
           {children}
         </div>
       );
@@ -217,11 +217,11 @@ const TaskCalendar: FC<TaskCalendarProps> = ({ onTaskSelect }) => {
         }}
         view={view}
         date={date}
-        onView={(newView: unknown) => setView(newView)}
+        onView={(newView: any) => setView(newView)}
         onNavigate={(newDate: Date) => setDate(newDate)}
         components={calendarComponents}
         eventPropGetter={eventStyleGetter}
-        onSelectEvent={(event: unknown) => {
+        onSelectEvent={(event: any) => {
           const task = event.resource as Task;
           if (onTaskSelect) {
             onTaskSelect(task);

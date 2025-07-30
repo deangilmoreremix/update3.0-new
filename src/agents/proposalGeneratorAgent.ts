@@ -6,10 +6,10 @@ interface ProposalInput {
   title?: string;
 }
 
-export async function proposalGeneratorAgent(input: ProposalInput, setSteps?: (steps: unknown[] | ((prev: unknown[]) => unknown[])) => void) {
-  const company = input.company || "Unknown";
+export async function proposalGeneratorAgent(input: ProposalInput, setSteps?: (steps: any[] | ((prev: any[]) => unknown[])) => void) {
+  const company = input?.company || "Unknown";
   const value = input.value || 0;
-  const title = input.title || "Unknown";
+  const title = input?.title || "Unknown";
 
   // Simulate steps for UI feedback
   setSteps?.([{ step: "Analyzing deal information..." }]);

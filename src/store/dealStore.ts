@@ -169,11 +169,11 @@ export const useDealStore = create<DealState>((set, get) => ({
         // Map the API response to our Deal type
         dealsRecord[deal.id] = {
           id: deal.id,
-          title: deal.title,
+          title: deal?.title,
           value: deal.value || deal.amount,
           stage: deal.stage,
           contactId: deal.contact_id || 'unknown',
-          company: deal.company,
+          company: deal?.company,
           contact: deal.contact,
           dueDate: new Date(deal.dueDate),
           createdAt: new Date(deal.created_at || Date.now()),
@@ -469,7 +469,7 @@ export const useDealStore = create<DealState>((set, get) => ({
                                  deal.stage === 'proposal' ? 40 : 
                                  deal.stage === 'qualification' ? 15 : 5));
 
-      const insights = `# Deal Analysis for ${deal.title}
+      const insights = `# Deal Analysis for ${deal?.title}
 
 ## Win Probability: ${randomProbability}%
 

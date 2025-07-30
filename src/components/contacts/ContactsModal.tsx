@@ -102,16 +102,16 @@ export const ContactsModal: FC<ContactsModalProps> = ({
 
     // Apply sorting
     result.sort((a, b) => {
-      let aValue: unknown, bValue: unknown;
+      let aValue: any, bValue: any;
 
       switch (sortBy) {
         case 'name':
-          aValue = a.name.toLowerCase();
-          bValue = b.name.toLowerCase();
+          aValue = a?.name.toLowerCase();
+          bValue = b?.name.toLowerCase();
           break;
         case 'company':
-          aValue = a.company.toLowerCase();
-          bValue = b.company.toLowerCase();
+          aValue = a?.company.toLowerCase();
+          bValue = b?.company.toLowerCase();
           break;
         case 'score':
           aValue = a.aiScore || 0;

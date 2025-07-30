@@ -61,7 +61,7 @@ const KPICards = () => {
             <h3 className="text-2xl font-bold text-white group-hover:text-green-400 transition-colors">
               {kpi.value}
             </h3>
-            <p className="text-gray-400 text-sm">{kpi.title}</p>
+            <p className="text-gray-400 text-sm">{kpi?.title}</p>
           </div>
         </div>
       ))}

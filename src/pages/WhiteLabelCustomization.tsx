@@ -281,7 +281,7 @@ export default function WhiteLabelCustomization() {
                       </label>
                       <input
                         type="text"
-                        value={config.companyName}
+                        value={config?.companyName}
                         onChange={(e) => setConfig({ ...config, companyName: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                         placeholder="Your Company Name"
@@ -375,7 +375,7 @@ export default function WhiteLabelCustomization() {
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                       {presetThemes.map((theme) => (
                         <button
-                          key={theme.name}
+                          key={theme?.name}
                           onClick={() => applyTheme(theme)}
                           className="p-3 border border-gray-200 rounded-lg hover:border-purple-300 text-left"
                         >
@@ -384,7 +384,7 @@ export default function WhiteLabelCustomization() {
                             <div className="w-4 h-4 rounded" style={{ backgroundColor: theme.secondary }}></div>
                             <div className="w-4 h-4 rounded" style={{ backgroundColor: theme.accent }}></div>
                           </div>
-                          <span className="text-sm font-medium">{theme.name}</span>
+                          <span className="text-sm font-medium">{theme?.name}</span>
                         </button>
                       ))}
                     </div>
@@ -691,14 +691,14 @@ export default function WhiteLabelCustomization() {
                         {config.logo && (
                           <img src={config.logo} alt="Logo" className="h-8" />
                         )}
-                        <span className="text-white font-semibold">{config.companyName || 'Your Company'}</span>
+                        <span className="text-white font-semibold">{config?.companyName || 'Your Company'}</span>
                       </div>
                     </div>
 
                     {/* Content Preview */}
                     <div className="space-y-4">
                       <h2 className="text-xl font-bold" style={{ color: config.textColor }}>
-                        Welcome to {config.companyName || 'Your Company'}
+                        Welcome to {config?.companyName || 'Your Company'}
                       </h2>
                       {config.tagline && (
                         <p className="text-gray-600">{config.tagline}</p>
@@ -730,13 +730,13 @@ export default function WhiteLabelCustomization() {
                         <img src={config.emailConfig.headerLogo} alt="Logo" className="h-12 mb-4" />
                       )}
                       <h3 className="text-lg font-semibold mb-4">
-                        Email from {config.emailConfig.fromName || config.companyName || 'Your Company'}
+                        Email from {config.emailConfig.fromName || config?.companyName || 'Your Company'}
                       </h3>
                       <p className="text-gray-600 mb-4">
                         This is how your emails will appear to customers.
                       </p>
                       <div className="border-t pt-4 text-sm text-gray-500">
-                        {config.emailConfig.emailSignature || `Best regards,\n${config.companyName || 'Your Company'} Team`}
+                        {config.emailConfig.emailSignature || `Best regards,\n${config?.companyName || 'Your Company'} Team`}
                       </div>
                     </div>
                   </div>

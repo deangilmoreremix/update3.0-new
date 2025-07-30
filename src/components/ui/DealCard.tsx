@@ -14,7 +14,7 @@ export const DealCard: FC<DealCardProps> = ({
   const [isSaving, setIsSaving] = useState(false);
 
   const [editForm, setEditForm] = useState({
-    company: deal.company,
+    company: deal?.company,
     value: deal.value,
     stage: deal.stage,
     priority: deal.priority,
@@ -31,7 +31,7 @@ export const DealCard: FC<DealCardProps> = ({
     setIsSaving(true);
     try {
       const updates: Partial<Deal> = {
-        company: editForm.company,
+        company: editForm?.company,
         value: editForm.value,
         stage: editForm.stage,
         priority: editForm.priority,
@@ -54,7 +54,7 @@ export const DealCard: FC<DealCardProps> = ({
 
   const handleCancel = () => {
     setEditForm({
-      company: deal.company,
+      company: deal?.company,
       value: deal.value,
       stage: deal.stage,
       priority: deal.priority,
@@ -87,7 +87,7 @@ export const DealCard: FC<DealCardProps> = ({
       // For now, we'll just store the filename
       const attachment = {
         id: Date.now().toString(),
-        name: file.name,
+        name: file?.name,
         size: file.size,
         type: file.type,
         uploadedAt: new Date().toISOString()
@@ -197,20 +197,20 @@ export const DealCard: FC<DealCardProps> = ({
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-3">
           <img
-            src={deal.companyAvatar || getCompanyAvatar(deal.company)}
-            alt={deal.company}
+            src={deal?.companyAvatar || getCompanyAvatar(deal?.company)}
+            alt={deal?.company}
             className="w-10 h-10 rounded-lg object-cover dark:border-gray-600"
           />
           <div>
             {isEditing ? (
               <input
                 type="text"
-                value={editForm.company}
+                value={editForm?.company}
                 onChange={(e) => setEditForm(prev => ({ ...prev, company: e.target.value }))}
                 className="text-lg font-semibold text-gray-900 dark:text-white bg-transparent border-b border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:outline-none dark:focus:border-blue-400"
               />
             ) : (
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{deal.title || deal.company}</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{deal?.title || deal?.company}</h3>
             )}
             <div className="flex items-center space-x-2 mt-1">
               <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStageColor(deal.stage)}`}>

@@ -94,11 +94,11 @@ const TaskAssignees: FC<{
             key={assigneeId} 
             className="relative cursor-pointer hover:z-10 transition-all hover:transform hover:scale-110"
             onClick={() => onClick && onClick(assigneeId)}
-            title={contact.name}
+            title={contact?.name}
           >
             <Avatar
               src={contact.avatarSrc || contact.avatar}
-              alt={contact.name}
+              alt={contact?.name}
               size={size}
               status={status}
             />
@@ -348,11 +348,11 @@ const TasksAndFunnel: React.FC = () => {
                     <div className="flex items-center space-x-2">
                       <Avatar
                         src={contact.avatarSrc || contact.avatar}
-                        alt={contact.name}
+                        alt={contact?.name}
                         size="sm"
                         status={status}
                       />
-                      <span className={`text-sm font-medium ${isDark ? 'text-blue-100' : 'text-blue-800'}`}>{contact.name}</span>
+                      <span className={`text-sm font-medium ${isDark ? 'text-blue-100' : 'text-blue-800'}`}>{contact?.name}</span>
                     </div>
                     <span className={`text-xs ${isDark ? 'text-blue-300 bg-blue-500/30' : 'text-blue-700 bg-blue-100'} px-2 py-1 rounded`}>
                       {taskCount} days

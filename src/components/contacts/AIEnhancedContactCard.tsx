@@ -128,7 +128,7 @@ const AIEnhancedContactCard: FC<AIEnhancedContactCardProps> = ({
             )}
 
             <div className="flex-1 min-w-0">
-              <h3 className="text-lg font-medium text-gray-900 truncate">{contact.name}</h3>
+              <h3 className="text-lg font-medium text-gray-900 truncate">{contact?.name}</h3>
 
               <div className="mt-1 flex flex-wrap gap-2">
                 {contact.status && getStatusIndicator(contact.status)}
@@ -142,10 +142,10 @@ const AIEnhancedContactCard: FC<AIEnhancedContactCardProps> = ({
               </div>
 
               <div className="mt-2 space-y-1">
-                {contact.position && contact.company && (
+                {contact.position && contact?.company && (
                   <div className="flex items-center text-sm">
                     <Building size={16} className="text-gray-400 mr-2" />
-                    <span className="text-gray-600">{contact.position} at {contact.company}</span>
+                    <span className="text-gray-600">{contact.position} at {contact?.company}</span>
                   </div>
                 )}
 

@@ -313,7 +313,7 @@ export const AutomationPanel: FC<AutomationPanelProps> = ({ contact }) => {
             id: `s${Date.now()}-4`,
             type: 'email',
             name: 'Follow-up with Case Study',
-            details: `Send a case study relevant to ${contact.company}'s needs`,
+            details: `Send a case study relevant to ${contact?.company}'s needs`,
             status: 'pending'
           },
           {
@@ -513,7 +513,7 @@ export const AutomationPanel: FC<AutomationPanelProps> = ({ contact }) => {
 
                       <div>
                         <div className="flex items-center space-x-2">
-                          <h5 className="text-base font-medium text-gray-900">{automation.name}</h5>
+                          <h5 className="text-base font-medium text-gray-900">{automation?.name}</h5>
                           <span className={`px-2 py-0.5 text-xs rounded-full ${getAutomationStatusBadgeColor(automation.status)}`}>
                             {automation.status.charAt(0).toUpperCase() + automation.status.slice(1)}
                           </span>
@@ -616,7 +616,7 @@ export const AutomationPanel: FC<AutomationPanelProps> = ({ contact }) => {
 
                             <div className="flex-1 bg-gray-50 rounded-lg border border-gray-200 p-3">
                               <div className="flex justify-between">
-                                <h6 className="text-sm font-medium text-gray-900">{step.name}</h6>
+                                <h6 className="text-sm font-medium text-gray-900">{step?.name}</h6>
                                 <span className={`text-xs px-2 py-0.5 rounded-full ${
                                   step.status === 'completed' ? 'bg-green-100 text-green-800' :
                                   step.status === 'active' ? 'bg-blue-100 text-blue-800' :
@@ -706,7 +706,7 @@ export const AutomationPanel: FC<AutomationPanelProps> = ({ contact }) => {
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <h5 className="text-base font-medium text-gray-900 truncate">{automation.name}</h5>
+                      <h5 className="text-base font-medium text-gray-900 truncate">{automation?.name}</h5>
                       <span className={`px-2 py-0.5 text-xs rounded-full ${getAutomationTypeBadgeColor(automation.type)}`}>
                         {automation.type === 'drip' ? 'Sequence' : 
                          automation.type === 'event' ? 'Event-Based' : 
@@ -753,7 +753,7 @@ export const AutomationPanel: FC<AutomationPanelProps> = ({ contact }) => {
                             <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center">
                               <StepIcon className="w-3 h-3 text-gray-600" />
                             </div>
-                            <span className="text-xs text-gray-700">{step.name}</span>
+                            <span className="text-xs text-gray-700">{step?.name}</span>
                             {index < automation.steps.length - 1 && (
                               <ArrowRight className="w-3 h-3 text-gray-400" />
                             )}

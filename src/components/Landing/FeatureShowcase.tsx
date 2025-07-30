@@ -122,14 +122,14 @@ const FeatureShowcase: React.FC = () => {
               <div className={`mr-2 ${activeFeature === feature.id ? '' : feature.color} p-1 rounded-full`}>
                 {feature.icon}
               </div>
-              <span className="font-medium">{feature.title}</span>
+              <span className="font-medium">{feature?.title}</span>
             </button>
           ))}
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           <div className="p-6 order-2 lg:order-1 animation-fix">
-            <h3 className="text-2xl font-bold mb-4">{currentFeature.title}</h3>
+            <h3 className="text-2xl font-bold mb-4">{currentFeature?.title}</h3>
             <p className="text-gray-700 mb-6">{currentFeature.description}</p>
             
             <ul className="space-y-3 mb-8">
@@ -144,7 +144,7 @@ const FeatureShowcase: React.FC = () => {
             </ul>
             
             <button className="inline-flex items-center text-blue-600 font-medium group">
-              Learn more about {currentFeature.title}
+              Learn more about {currentFeature?.title}
               <ArrowRight size={16} className="ml-2 transition-transform group-hover:translate-x-1" />
             </button>
           </div>
@@ -154,14 +154,14 @@ const FeatureShowcase: React.FC = () => {
             <div className="relative h-full rounded-xl overflow-hidden shadow-xl border border-gray-100">
               <img 
                 src={currentFeature.image} 
-                alt={currentFeature.title} 
+                alt={currentFeature?.title} 
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
               
               <div className="absolute bottom-4 left-4 right-4 p-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg">
-                <h4 className="font-bold">{currentFeature.title}</h4>
+                <h4 className="font-bold">{currentFeature?.title}</h4>
                 <p className="text-sm text-gray-700">{currentFeature.description}</p>
               </div>
               

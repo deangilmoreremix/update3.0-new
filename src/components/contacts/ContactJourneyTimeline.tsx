@@ -113,7 +113,7 @@ export const ContactJourneyTimeline: FC<ContactJourneyTimelineProps> = ({ contac
               </div>
               <div className="flex-1 min-w-0 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-base font-medium text-gray-900">{event.title}</h4>
+                  <h4 className="text-base font-medium text-gray-900">{event?.title}</h4>
                   <span className={`text-sm ${event.complete ? 'text-gray-500' : 'text-blue-600 font-medium'}`}>
                     {event.complete ? formatDate(event.date) : 'Upcoming'}
                   </span>

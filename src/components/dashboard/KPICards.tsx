@@ -209,7 +209,7 @@ const KPICards: React.FC = () => {
                 {kpi.renderContent()}
               </div>
             )}
-            <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm`}>{kpi.title}</p>
+            <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm`}>{kpi?.title}</p>
           </div>
         </div>
       ))}

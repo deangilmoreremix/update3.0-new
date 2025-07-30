@@ -243,7 +243,7 @@ const TaskCalendarView: React.FC = () => {
                         <input
                           id="title"
                           type="text"
-                          value={formData.title || ''}
+                          value={formData?.title || ''}
                           onChange={(e) => setFormData({...formData, title: e.target.value})}
                           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                           placeholder="Enter task title"
@@ -386,7 +386,7 @@ const TaskCalendarView: React.FC = () => {
                           <input
                             id="title"
                             type="text"
-                            value={formData.title || ''}
+                            value={formData?.title || ''}
                             onChange={(e) => setFormData({...formData, title: e.target.value})}
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                           />
@@ -476,7 +476,7 @@ const TaskCalendarView: React.FC = () => {
                             <h4 className={`text-lg font-medium ${
                               tasks[selectedTask].completed ? 'line-through text-gray-500' : 'text-gray-900'
                             }`}>
-                              {tasks[selectedTask].title}
+                              {tasks[selectedTask]?.title}
                             </h4>
 
                             <div className="flex flex-wrap gap-2 mt-2">

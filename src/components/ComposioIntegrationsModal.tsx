@@ -168,7 +168,7 @@ const ComposioIntegrationsModal: FC<ComposioIntegrationsModalProps> = ({
   const filteredIntegrations = integrations.filter(integration => {
     const categoryMatch = selectedCategory === 'all' || integration.category === selectedCategory;
     const searchMatch = searchQuery === '' || 
-      integration.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      integration?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       integration.description.toLowerCase().includes(searchQuery.toLowerCase());
 
     return categoryMatch && searchMatch;
@@ -308,7 +308,7 @@ const ComposioIntegrationsModal: FC<ComposioIntegrationsModalProps> = ({
                           : 'text-gray-600 hover:bg-gray-100'
                       }`}
                     >
-                      <span>{category.name}</span>
+                      <span>{category?.name}</span>
                       <span className="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full">
                         {category.count}
                       </span>
@@ -348,7 +348,7 @@ const ComposioIntegrationsModal: FC<ComposioIntegrationsModalProps> = ({
                             {integration.icon}
                           </div>
                           <div>
-                            <h3 className="font-semibold text-gray-900">{integration.name}</h3>
+                            <h3 className="font-semibold text-gray-900">{integration?.name}</h3>
                             <p className="text-sm text-gray-600">{integration.description}</p>
                           </div>
                         </div>

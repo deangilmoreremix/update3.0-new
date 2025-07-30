@@ -131,7 +131,7 @@ const InteractiveGoalCard: FC<InteractiveGoalCardProps> = ({
                 {getCategoryIcon(goal.category)}
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 text-lg leading-tight">{goal.title}</h3>
+                <h3 className="font-semibold text-gray-900 text-lg leading-tight">{goal?.title}</h3>
                 <p className="text-sm text-gray-600">{goal.category}</p>
               </div>
             </div>

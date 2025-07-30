@@ -180,7 +180,7 @@ export const EnhancedAIInsightsPanel: React.FC = () => {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-1">
-                        <h4 className="font-semibold text-gray-900 dark:text-white">{insight.title}</h4>
+                        <h4 className="font-semibold text-gray-900 dark:text-white">{insight?.title}</h4>
                         <span className={`px-2 py-1 rounded-md text-xs font-medium ${
                           insight.priority === 'high' 
                             ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-400' 
@@ -278,7 +278,7 @@ export const EnhancedAIInsightsPanel: React.FC = () => {
           <div>
             <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Model Performance Breakdown</h4>
             <div className="space-y-3">
-              {performance.modelPerformance.map((model: unknown, index: number) => (
+              {performance.modelPerformance.map((model: any, index: number) => (
                 <div key={index} className="flex items-center justify-between p-4 bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10">
                   <div className="flex items-center space-x-3">
                     <div className={`w-3 h-3 rounded-full ${

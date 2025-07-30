@@ -225,16 +225,16 @@ const PreCallSetup: FC<PreCallSetupProps> = ({
           <div className="flex items-center space-x-4">
             <Avatar
               src={participant.avatar}
-              alt={participant.name}
+              alt={participant?.name}
               size="lg"
-              fallback={getInitials(participant.name)}
+              fallback={getInitials(participant?.name)}
             />
             <div>
               <h2 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                 Call Setup
               </h2>
               <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                Calling {participant.name} • {callType} call
+                Calling {participant?.name} • {callType} call
               </p>
             </div>
           </div>

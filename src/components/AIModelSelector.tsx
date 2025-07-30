@@ -142,7 +142,7 @@ const AIModelSelector: FC<AIModelSelectorProps> = ({
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-1">
                         <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                          {model.name}
+                          {model?.name}
                         </h4>
                         {isSelected && (
                           <CheckCircle size={14} className="text-green-400" />

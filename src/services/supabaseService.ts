@@ -22,7 +22,7 @@ interface Database {
           entity_type: 'contact' | 'deal';
           entity_id: string;
           description: string;
-          metadata: unknown;
+          metadata: any;
           created_at: string;
           user_id: string;
         };
@@ -164,7 +164,7 @@ class SupabaseService {
     entity_type: 'contact' | 'deal';
     entity_id: string;
     description: string;
-    metadata?: unknown;
+    metadata?: any;
     user_id: string;
   }): Promise<void> {
     const { error } = await this.supabase
@@ -187,14 +187,14 @@ class SupabaseService {
   }
 
   // Real-time subscriptions
-  subscribeToContacts(callback: (payload: unknown) => void) {
+  subscribeToContacts(callback: (payload: any) => void) {
     return this.supabase
       .channel('contacts')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'contacts' }, callback)
       .subscribe();
   }
 
-  subscribeToDeals(callback: (payload: unknown) => void) {
+  subscribeToDeals(callback: (payload: any) => void) {
     return this.supabase
       .channel('deals')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'deals' }, callback)

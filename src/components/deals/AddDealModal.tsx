@@ -134,7 +134,7 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
   };
 
   const handleAIResearch = async () => {
-    if (!formData.company) {
+    if (!formData?.company) {
       alert('Please enter a company name first');
       return;
     }
@@ -143,11 +143,11 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
     try {
 
       // Use intelligent AI routing for company research
-      const companyData = await aiResearch.researchCompany(formData.company, undefined, researchPriority);
+      const companyData = await aiResearch.researchCompany(formData?.company, undefined, researchPriority);
 
       // Update company details
       setCompanyDetails({
-        name: companyData.name,
+        name: companyData?.name,
         industry: companyData.industry,
         website: companyData.website,
         headquarters: companyData.headquarters,
@@ -161,8 +161,8 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
 
       // Generate AI insights using intelligent routing
       const mockContact = {
-        name: formData.company,
-        company: formData.company,
+        name: formData?.company,
+        company: formData?.company,
         industry: companyData.industry
       } as any;
 
@@ -174,22 +174,22 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
       // Auto-populate some form fields
       setFormData(prev => ({
         ...prev,
-        title: `${companyData.potentialNeeds?.[0] || 'Business Solution'} for ${companyData.name}`,
+        title: `${companyData.potentialNeeds?.[0] || 'Business Solution'} for ${companyData?.name}`,
         notes: `Company research completed using ${companyData.aiProvider}. ${companyData.description}`
       }));
 
       // If we have contact info from the company research, try to use that
       if (formData.contact && companyData.keyExecutives?.length > 0) {
         const matchingExecutive = companyData.keyExecutives.find(exec => 
-          exec.name.toLowerCase().includes(formData.contact.toLowerCase()) ||
-          formData.contact.toLowerCase().includes(exec.name.toLowerCase())
+          exec?.name.toLowerCase().includes(formData.contact.toLowerCase()) ||
+          formData.contact.toLowerCase().includes(exec?.name.toLowerCase())
         );
 
         if (matchingExecutive) {
           setContactDetails(prev => ({
             ...prev,
-            name: matchingExecutive.name,
-            title: matchingExecutive.title,
+            name: matchingExecutive?.name,
+            title: matchingExecutive?.title,
             email: matchingExecutive.email || prev.email,
             linkedin: matchingExecutive.linkedin || prev.linkedin,
           }));
@@ -206,7 +206,7 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
   };
 
   const handleContactResearch = async () => {
-    if (!contactDetails.name) {
+    if (!contactDetails?.name) {
       alert('Please enter a contact name first');
       return;
     }
@@ -214,11 +214,11 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
     setIsResearching(true);
     try {
 
-      const contactData = await aiResearch.findContactPerson(contactDetails.name, formData.company, 'speed');
+      const contactData = await aiResearch.findContactPerson(contactDetails?.name, formData?.company, 'speed');
 
       setContactDetails(prev => ({
         ...prev,
-        title: contactData.title,
+        title: contactData?.title,
         email: contactData.email || prev.email,
         phone: contactData.phone || prev.phone,
         department: contactData.department || prev.department,
@@ -229,7 +229,7 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
       // Update main form contact
       setFormData(prev => ({
         ...prev,
-        contact: contactDetails.name
+        contact: contactDetails?.name
       }));
 
     } catch (error) {
@@ -243,23 +243,23 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
     setSelectedContact(contact);
     setFormData(prev => ({
       ...prev,
-      contact: contact.name,
+      contact: contact?.name,
       contactId: contact.id,
       contactAvatar: contact.avatarSrc || ''
     }));
 
     // Pre-fill company if empty
-    if (!formData.company && contact.company) {
+    if (!formData?.company && contact?.company) {
       setFormData(prev => ({
         ...prev,
-        company: contact.company
+        company: contact?.company
       }));
     }
 
     // Update contact details
     setContactDetails({
-      name: contact.name,
-      title: contact.title,
+      name: contact?.name,
+      title: contact?.title,
       email: contact.email,
       phone: contact.phone || '',
       department: '',
@@ -359,7 +359,7 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
                     <input
                       type="text"
                       required
-                      value={formData.title}
+                      value={formData?.title}
                       onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="e.g., Enterprise Software License"
@@ -373,7 +373,7 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
                     <input
                       type="text"
                       required
-                      value={formData.company}
+                      value={formData?.company}
                       onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="e.g., TechCorp Inc."
@@ -398,7 +398,7 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
                           <div className="flex-1 min-w-0">
                             <p className="text-blue-700 font-medium truncate">{formData.contact}</p>
                             {selectedContact && (
-                              <p className="text-xs text-blue-600 truncate">{selectedContact.title} at {selectedContact.company}</p>
+                              <p className="text-xs text-blue-600 truncate">{selectedContact?.title} at {selectedContact?.company}</p>
                             )}
                           </div>
                           <button
@@ -606,7 +606,7 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
                     <button
                       type="button"
                       onClick={handleContactResearch}
-                      disabled={isResearching || !contactDetails.name}
+                      disabled={isResearching || !contactDetails?.name}
                       className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       <Search className="w-4 h-4" />
@@ -621,13 +621,13 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
                       {selectedContact.avatarSrc && (
                         <img 
                           src={selectedContact.avatarSrc} 
-                          alt={selectedContact.name}
+                          alt={selectedContact?.name}
                           className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-md mr-4"
                         />
                       )}
                       <div className="flex-1">
-                        <h4 className="text-xl font-semibold text-gray-900">{selectedContact.name}</h4>
-                        <p className="text-gray-600">{selectedContact.title} at {selectedContact.company}</p>
+                        <h4 className="text-xl font-semibold text-gray-900">{selectedContact?.name}</h4>
+                        <p className="text-gray-600">{selectedContact?.title} at {selectedContact?.company}</p>
 
                         <div className="grid grid-cols-2 gap-4 mt-3">
                           <div>
@@ -670,7 +670,7 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
                       </label>
                       <input
                         type="text"
-                        value={contactDetails.name}
+                        value={contactDetails?.name}
                         onChange={(e) => setContactDetails(prev => ({ ...prev, name: e.target.value }))}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="e.g., John Smith"
@@ -683,7 +683,7 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
                       </label>
                       <input
                         type="text"
-                        value={contactDetails.title}
+                        value={contactDetails?.title}
                         onChange={(e) => setContactDetails(prev => ({ ...prev, title: e.target.value }))}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="e.g., VP of Sales"
@@ -908,7 +908,7 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
                   <button
                     type="button"
                     onClick={handleAIResearch}
-                    disabled={isResearching || !formData.company}
+                    disabled={isResearching || !formData?.company}
                     className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                   >
                     <Bot className="w-4 h-4" />
@@ -974,7 +974,7 @@ const AddDealModal: FC<AddDealModalProps> = ({ isOpen, onClose, onSave }) => {
                 {isResearching && (
                   <div className="flex items-center justify-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-                    <span className="ml-2 text-purple-600">AI is researching {formData.company}...</span>
+                    <span className="ml-2 text-purple-600">AI is researching {formData?.company}...</span>
                   </div>
                 )}
 

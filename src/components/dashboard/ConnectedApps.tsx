@@ -85,7 +85,7 @@ const ConnectedApps: React.FC = () => {
               </div>
               <ExternalLink size={14} className={`${isDark ? 'text-gray-400 group-hover:text-purple-400' : 'text-gray-400 group-hover:text-purple-600'} transition-colors`} />
             </div>
-            <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>{app.name}</h4>
+            <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>{app?.name}</h4>
             <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'} mb-2`}>{app.team}</p>
             <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>{app.description}</p>
           </a>

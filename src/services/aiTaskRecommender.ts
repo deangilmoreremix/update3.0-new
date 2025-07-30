@@ -263,13 +263,13 @@ class AITaskRecommender {
     // Generate reason based on model strengths and task requirements
     let reason = '';
     if (taskConfig.priority === 'speed') {
-      reason = `Selected for its excellent processing speed (${selectedModel.speed}/100) while maintaining adequate quality for ${taskConfig.name.toLowerCase()}.`;
+      reason = `Selected for its excellent processing speed (${selectedModel.speed}/100) while maintaining adequate quality for ${taskConfig?.name.toLowerCase()}.`;
     } else if (taskConfig.priority === 'quality') {
-      reason = `Selected for its high-quality outputs (${selectedModel.quality}/100) that meet the precision requirements for ${taskConfig.name.toLowerCase()}.`;
+      reason = `Selected for its high-quality outputs (${selectedModel.quality}/100) that meet the precision requirements for ${taskConfig?.name.toLowerCase()}.`;
     } else if (taskConfig.priority === 'cost') {
-      reason = `Selected for optimal cost efficiency while providing adequate performance for ${taskConfig.name.toLowerCase()}.`;
+      reason = `Selected for optimal cost efficiency while providing adequate performance for ${taskConfig?.name.toLowerCase()}.`;
     } else {
-      reason = `Provides a good balance of speed, quality, and cost for ${taskConfig.name.toLowerCase()}.`;
+      reason = `Provides a good balance of speed, quality, and cost for ${taskConfig?.name.toLowerCase()}.`;
     }
 
     const displayName = bestMatch.modelId

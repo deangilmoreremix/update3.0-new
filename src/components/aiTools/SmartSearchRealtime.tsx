@@ -435,11 +435,11 @@ const SmartSearchRealtime: FC<SmartSearchRealtimeProps> = ({ onSearchResult }) =
                           <div className="flex items-center">
                             <User size={16} className="text-blue-600 mr-2" />
                             <h3 className="font-medium text-blue-600">
-                              {(result.item as Contact).name}
+                              {(result.item as Contact)?.name}
                             </h3>
                           </div>
                           <p className="text-xs text-gray-500">
-                            {(result.item as Contact).position} at {(result.item as Contact).company}
+                            {(result.item as Contact).position} at {(result.item as Contact)?.company}
                           </p>
                         </div>
                         <div className="text-right">
@@ -457,11 +457,11 @@ const SmartSearchRealtime: FC<SmartSearchRealtimeProps> = ({ onSearchResult }) =
                           <div className="flex items-center">
                             <Briefcase size={16} className="text-purple-600 mr-2" />
                             <h3 className="font-medium text-purple-600">
-                              {(result.item as Deal).title}
+                              {(result.item as Deal)?.title}
                             </h3>
                           </div>
                           <p className="text-xs text-gray-500">
-                            {(result.item as Deal).company} - ${(result.item as Deal).value.toLocaleString()}
+                            {(result.item as Deal)?.company} - ${(result.item as Deal).value.toLocaleString()}
                           </p>
                         </div>
                         <div className="text-right">

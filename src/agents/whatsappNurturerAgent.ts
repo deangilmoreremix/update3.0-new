@@ -1,7 +1,7 @@
 
-export async function whatsappNurturerAgent(input: unknown, setSteps?: (steps: unknown) => void) {
-  const name = input.name || "there";
-  const company = input.company || "your company";
+export async function whatsappNurturerAgent(input: any, setSteps?: (steps: any) => void) {
+  const name = input?.name || "there";
+  const company = input?.company || "your company";
   const nurturePath = input.nurturePath || "educational";
 
   setSteps?.([{ step: "Creating WhatsApp nurture sequence..." }]);

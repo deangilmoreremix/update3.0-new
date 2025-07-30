@@ -139,7 +139,7 @@ export default function FeaturePackageManager() {
   const handleEditPackage = (pkg: FeaturePackage) => {
     setSelectedPackage(pkg);
     setFormData({
-      name: pkg.name,
+      name: pkg?.name,
       description: pkg.description || '',
       tier: pkg.tier as 'basic' | 'professional' | 'enterprise',
       price: pkg.price,
@@ -154,7 +154,7 @@ export default function FeaturePackageManager() {
     e.preventDefault();
     
     const packageData: InsertFeaturePackage = {
-      name: formData.name,
+      name: formData?.name,
       description: formData.description,
       tier: formData.tier,
       price: formData.price,
@@ -248,7 +248,7 @@ export default function FeaturePackageManager() {
                       {pkg.tier}
                     </Badge>
                     <div>
-                      <CardTitle className="text-lg">{pkg.name}</CardTitle>
+                      <CardTitle className="text-lg">{pkg?.name}</CardTitle>
                       <CardDescription>{pkg.description}</CardDescription>
                     </div>
                   </div>
@@ -348,7 +348,7 @@ export default function FeaturePackageManager() {
                     <Label htmlFor="name">Package Name</Label>
                     <Input
                       id="name"
-                      value={formData.name}
+                      value={formData?.name}
                       onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                       required
                     />

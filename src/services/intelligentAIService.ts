@@ -53,10 +53,10 @@ class IntelligentAIService {
     }
   };
 
-  private openaiService: unknown;
-  private geminiService: unknown;
+  private openaiService: any;
+  private geminiService: any;
 
-  constructor(openaiService: unknown, geminiService: unknown) {
+  constructor(openaiService: any, geminiService: any) {
     this.openaiService = openaiService;
     this.geminiService = geminiService;
   }
@@ -101,7 +101,7 @@ class IntelligentAIService {
     return basePreference;
   }
 
-  async executeTask(taskType: string, data: unknown, options: { priority?: 'speed' | 'quality' | 'cost' } = {}): Promise<unknown> {
+  async executeTask(taskType: string, data: any, options: { priority?: 'speed' | 'quality' | 'cost' } = {}): Promise<unknown> {
     const modelPref = this.getOptimalModel(taskType, options.priority);
 
     try {
@@ -128,7 +128,7 @@ class IntelligentAIService {
     }
   }
 
-  private async executeOpenAITask(taskType: string, data: unknown, model: string): Promise<unknown> {
+  private async executeOpenAITask(taskType: string, data: any, model: string): Promise<unknown> {
     switch (taskType) {
       case 'contact-analysis':
         return await this.openaiService.analyzeContact(data);
@@ -145,16 +145,16 @@ class IntelligentAIService {
     }
   }
 
-  private async executeGeminiTask(taskType: string, data: unknown, model: string): Promise<unknown> {
+  private async executeGeminiTask(taskType: string, data: any, model: string): Promise<unknown> {
     switch (taskType) {
       case 'contact-analysis':
         return await this.geminiService.analyzeContact(data, model);
       case 'email-generation':
         return await this.geminiService.generateEmail(data.contact, data.context, model);
       case 'company-research':
-        return await this.geminiService.researchCompany(data.companyName, data.domain, model);
+        return await this.geminiService.researchCompany(data?.companyName, data.domain, model);
       case 'contact-research':
-        return await this.geminiService.findContactInfo(data.personName, data.companyName, model);
+        return await this.geminiService.findContactInfo(data.personName, data?.companyName, model);
       case 'deal-summary':
         return await this.geminiService.generateDealSummary(data, model);
       case 'next-actions':
@@ -166,7 +166,7 @@ class IntelligentAIService {
     }
   }
 
-  private generateFallbackResponse(taskType: string, data: unknown): unknown {
+  private generateFallbackResponse(taskType: string, data: any): any {
     // Provide basic fallback responses when all AI services fail
     switch (taskType) {
       case 'contact-analysis':
@@ -190,7 +190,7 @@ Best regards,
       case 'insights':
         return ['Follow up within 24 hours', 'Research company background', 'Prepare value proposition'];
       case 'deal-summary':
-        return `Deal: ${data.title || 'Untitled'} with ${data.company || 'Unknown Company'}. Value: $${data.value?.toLocaleString() || 0}. Status: ${data.stage || 'Unknown'}`;
+        return `Deal: ${data?.title || 'Untitled'} with ${data?.company || 'Unknown Company'}. Value: $${data.value?.toLocaleString() || 0}. Status: ${data.stage || 'Unknown'}`;
       case 'next-actions':
         return ['Schedule follow-up call', 'Send additional information', 'Connect with decision maker'];
       default:
@@ -199,11 +199,11 @@ Best regards,
   }
 
   // Public methods for different AI tasks
-  async analyzeContact(contact: unknown, priority: 'speed' | 'quality' | 'cost' = 'quality') {
+  async analyzeContact(contact: any, priority: 'speed' | 'quality' | 'cost' = 'quality') {
     return this.executeTask('contact-analysis', contact, { priority });
   }
 
-  async generateEmail(contact: unknown, context?: string, priority: 'speed' | 'quality' | 'cost' = 'quality') {
+  async generateEmail(contact: any, context?: string, priority: 'speed' | 'quality' | 'cost' = 'quality') {
     return this.executeTask('email-generation', { contact, context }, { priority });
   }
 
@@ -215,15 +215,15 @@ Best regards,
     return this.executeTask('contact-research', { personName, companyName }, { priority });
   }
 
-  async generateDealSummary(dealData: unknown, priority: 'speed' | 'quality' | 'cost' = 'quality') {
+  async generateDealSummary(dealData: any, priority: 'speed' | 'quality' | 'cost' = 'quality') {
     return this.executeTask('deal-summary', dealData, { priority });
   }
 
-  async suggestNextActions(dealData: unknown, priority: 'speed' | 'quality' | 'cost' = 'quality') {
+  async suggestNextActions(dealData: any, priority: 'speed' | 'quality' | 'cost' = 'quality') {
     return this.executeTask('next-actions', dealData, { priority });
   }
 
-  async getInsights(data: unknown, priority: 'speed' | 'quality' | 'cost' = 'quality') {
+  async getInsights(data: any, priority: 'speed' | 'quality' | 'cost' = 'quality') {
     return this.executeTask('insights', data, { priority });
   }
 

@@ -110,11 +110,11 @@ export const AIInsightsPanel: FC<AIInsightsPanelProps> = ({ deal }) => {
         });
       }
 
-      if (deal.company && deal.company.length > 0) {
+      if (deal?.company && deal?.company.length > 0) {
         generatedInsights.push({
           id: '6',
           type: 'opportunity',
-          title: `${deal.company} Industry Insights`,
+          title: `${deal?.company} Industry Insights`,
           description: 'Companies in this sector are increasing technology investments by 22% YoY. Emphasize ROI in your conversations.',
           icon: Building2,
           iconBg: 'bg-indigo-500',
@@ -437,7 +437,7 @@ export const AIInsightsPanel: FC<AIInsightsPanelProps> = ({ deal }) => {
           <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
             <h5 className="text-sm font-medium text-purple-900 mb-2">Company Analysis</h5>
             <p className="text-xs text-purple-700">
-              {deal.company} is a mid-sized company in the technology sector with an estimated annual revenue of $50-100M.
+              {deal?.company} is a mid-sized company in the technology sector with an estimated annual revenue of $50-100M.
               Recent news indicates they're expanding operations and investing in digital transformation initiatives.
             </p>
           </div>
@@ -527,7 +527,7 @@ const InsightCard: FC<{
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
-            <h5 className="text-sm font-semibold text-gray-900">{insight.title}</h5>
+            <h5 className="text-sm font-semibold text-gray-900">{insight?.title}</h5>
             <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-white text-gray-700 border border-gray-200">
               {typeLabels[insight.type]}
             </span>

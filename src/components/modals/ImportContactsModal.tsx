@@ -113,11 +113,11 @@ const validateContact = (data: ContactData): string[] => {
     errors.push('Invalid email format');
   }
 
-  if (!data.name && (!data.firstName || !data.lastName)) {
+  if (!data?.name && (!data.firstName || !data.lastName)) {
     errors.push('Name or firstName + lastName is required');
   }
 
-  if (!data.company) {
+  if (!data?.company) {
     errors.push('Company is required');
   }
 
@@ -182,7 +182,7 @@ export const ImportContactsModal: FC<ImportContactsModalProps> = ({ isOpen, onCl
   };
 
   const handleFileSelect = (selectedFile: File) => {
-    if (!selectedFile.name.endsWith('.csv')) {
+    if (!selectedFile?.name.endsWith('.csv')) {
       setErrors(['Please select a CSV file']);
       return;
     }
@@ -214,7 +214,7 @@ export const ImportContactsModal: FC<ImportContactsModalProps> = ({ isOpen, onCl
     const headers = data[0].map(h => h.toLowerCase().trim());
     const rows = data.slice(1);
     const newErrors: string[] = [];
-    const contacts: unknown[] = [];
+    const contacts: any[] = [];
 
     rows.forEach((row, index) => {
       const contact: ContactData = {};
@@ -226,8 +226,8 @@ export const ImportContactsModal: FC<ImportContactsModalProps> = ({ isOpen, onCl
       });
 
       // Generate full name if not provided
-      if (!contact.name && contact.firstname && contact.lastname) {
-        contact.name = `${contact.firstname} ${contact.lastname}`;
+      if (!contact?.name && contact.firstname && contact.lastname) {
+        contact?.name = `${contact.firstname} ${contact.lastname}`;
       }
 
       // Default values
@@ -441,7 +441,7 @@ Sarah,Johnson,Sarah Johnson,sarah@startup.io,+1-555-0456,CEO,Startup Inc,Softwar
                 </h3>
                 {file ? (
                   <div className="space-y-2">
-                    <p className="text-green-600 font-medium">{file.name}</p>
+                    <p className="text-green-600 font-medium">{file?.name}</p>
                     <p className="text-sm text-gray-500">
                       {(file.size / 1024).toFixed(1)} KB
                     </p>
@@ -561,10 +561,10 @@ Sarah,Johnson,Sarah Johnson,sarah@startup.io,+1-555-0456,CEO,Startup Inc,Softwar
                           <tbody>
                             {parsedContacts.map((contact, index) => (
                               <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-                                <td className="py-3 px-4 font-medium text-gray-900">{contact.name}</td>
+                                <td className="py-3 px-4 font-medium text-gray-900">{contact?.name}</td>
                                 <td className="py-3 px-4 text-gray-700">{contact.email}</td>
-                                <td className="py-3 px-4 text-gray-700">{contact.company}</td>
-                                <td className="py-3 px-4 text-gray-700">{contact.title}</td>
+                                <td className="py-3 px-4 text-gray-700">{contact?.company}</td>
+                                <td className="py-3 px-4 text-gray-700">{contact?.title}</td>
                                 <td className="py-3 px-4">
                                   <span className={`px-2 py-1 rounded-md text-xs font-medium ${
                                     contact.interestLevel === 'hot' ? 'bg-red-100 text-red-800' :

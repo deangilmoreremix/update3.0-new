@@ -144,7 +144,7 @@ const FormPublicView: React.FC = () => {
     );
   }
 
-  const renderField = (field: unknown) => {
+  const renderField = (field: any) => {
     const { id, type, label, required, options, placeholder } = field;
 
     switch (type) {
@@ -291,7 +291,7 @@ const FormPublicView: React.FC = () => {
     <div className="bg-gray-50 min-h-screen flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full bg-white rounded-lg shadow-md overflow-hidden">
         <div className="px-6 py-8">
-          <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">{currentForm.name}</h2>
+          <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">{currentForm?.name}</h2>
 
           {currentForm.description && (
             <p className="mb-6 text-gray-600 text-center">{currentForm.description}</p>

@@ -38,8 +38,8 @@ const Pipeline: React.FC = () => {
     if (searchTerm) {
       filtered = Object.fromEntries(
         Object.entries(filtered).filter(([_, deal]) =>
-          deal.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          deal.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          deal?.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          deal?.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
           deal.contact.toLowerCase().includes(searchTerm.toLowerCase())
         )
       );
@@ -164,7 +164,7 @@ const Pipeline: React.FC = () => {
     setSelectedDealId(dealId);
   };
 
-  const handleApplyFilters = (filters: unknown[]) => {
+  const handleApplyFilters = (filters: any[]) => {
     setActiveFilters(filters);
   };
 
@@ -233,7 +233,7 @@ const Pipeline: React.FC = () => {
     setEnrichingDealId(deal.id);
     try {
       // Use the AI Research service to get company information
-      const companyData = await aiResearch.researchCompany(deal.company);
+      const companyData = await aiResearch.researchCompany(deal?.company);
 
       // Update the deal with enhanced data
       const updatedDeal = {
@@ -448,7 +448,7 @@ const Pipeline: React.FC = () => {
                   <div key={column.id} className="flex-shrink-0 w-80">
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-semibold text-gray-900">{column.title}</h3>
+                        <h3 className="font-semibold text-gray-900">{column?.title}</h3>
                         <div className="text-right">
                           <span className="text-2xl font-bold text-gray-900">
                             {columnDeals.length}
@@ -557,13 +557,13 @@ const Pipeline: React.FC = () => {
                             />
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">{deal.title}</div>
+                            <div className="text-sm font-medium text-gray-900">{deal?.title}</div>
                             <div className="text-sm text-gray-500">{deal.contact}</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {deal.company}
+                        {deal?.company}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         ${deal.value.toLocaleString()}

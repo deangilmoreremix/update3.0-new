@@ -131,13 +131,13 @@ const InteractiveFeaturesGrid: React.FC = () => {
                   }`}>
                     {feature.icon}
                   </div>
-                  <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                  <h3 className="text-xl font-bold mb-3">{feature?.title}</h3>
                   <p className="text-gray-600 mb-6 flex-grow">{feature.description}</p>
                   <div className="mt-auto">
                     <span className={`inline-flex items-center font-medium transition-all duration-300 ${
                       hoveredFeature === feature.id ? 'text-blue-700 translate-x-2' : 'text-blue-600'
                     }`}>
-                      Explore {feature.title}
+                      Explore {feature?.title}
                       <ChevronRight className="ml-1 w-5 h-5" />
                     </span>
                   </div>

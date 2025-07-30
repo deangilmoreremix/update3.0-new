@@ -1,7 +1,7 @@
 
-export async function coldOutreachCloserAgent(input: unknown, setSteps?: (steps: unknown) => void) {
-  const name = input.name || "there";
-  const company = input.company || "your company";
+export async function coldOutreachCloserAgent(input: any, setSteps?: (steps: any) => void) {
+  const name = input?.name || "there";
+  const company = input?.company || "your company";
   const dealValue = input.value || "$10,000";
 
   setSteps?.([{ step: "Analyzing deal status..." }]);

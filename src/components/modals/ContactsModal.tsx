@@ -22,9 +22,9 @@ export const ContactsModal: FC<ContactsModalProps> = ({
   // Filter contacts based on search and filter
   const filteredContacts = Object.values(contacts).filter(contact => {
     const matchesSearch = searchQuery === '' || 
-      contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      contact?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       contact.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (contact.company && contact.company.toLowerCase().includes(searchQuery.toLowerCase()));
+      (contact?.company && contact?.company.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const matchesFilter = selectedFilter === 'all' || contact.status === selectedFilter;
 
@@ -181,16 +181,16 @@ export const ContactsModal: FC<ContactsModalProps> = ({
 
                   <Avatar
                     src={contact.avatar}
-                    alt={contact.name}
+                    alt={contact?.name}
                     size="md"
-                    fallback={getInitials(contact.name)}
+                    fallback={getInitials(contact?.name)}
                     className="mr-4"
                   />
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <h3 className={`font-medium truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                        {contact.name}
+                        {contact?.name}
                       </h3>
                       <span className={`ml-2 px-2 py-0.5 text-xs rounded-full ${getStatusColor(contact.status)}`}>
                         {contact.status}
@@ -201,13 +201,13 @@ export const ContactsModal: FC<ContactsModalProps> = ({
                       {contact.position && (
                         <span className={`truncate ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                           {contact.position}
-                          {contact.company && ' at '}
+                          {contact?.company && ' at '}
                         </span>
                       )}
 
-                      {contact.company && (
+                      {contact?.company && (
                         <span className={`truncate font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                          {contact.company}
+                          {contact?.company}
                         </span>
                       )}
                     </div>

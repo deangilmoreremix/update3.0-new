@@ -42,9 +42,9 @@ export const useOpenAIEmbeddings = () => {
       for (const contact of contacts) {
         // Create a text representation of the contact
         const contactText = `
-          Name: ${contact.name}
+          Name: ${contact?.name}
           Email: ${contact.email}
-          Company: ${contact.company || ''}
+          Company: ${contact?.company || ''}
           Position: ${contact.position || ''}
           Industry: ${contact.industry || ''}
           Status: ${contact.status}
@@ -74,8 +74,8 @@ export const useOpenAIEmbeddings = () => {
       for (const deal of deals) {
         // Create a text representation of the deal
         const dealText = `
-          Title: ${deal.title}
-          Company: ${deal.company}
+          Title: ${deal?.title}
+          Company: ${deal?.company}
           Contact: ${deal.contact}
           Stage: ${deal.stage}
           Value: ${deal.value}

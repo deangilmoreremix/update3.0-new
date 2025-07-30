@@ -68,7 +68,7 @@ export const TeamMemberCard: FC<TeamMemberCardProps> = ({
               {member.avatarSrc ? (
                 <img 
                   src={member.avatarSrc}
-                  alt={member.name}
+                  alt={member?.name}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -84,9 +84,9 @@ export const TeamMemberCard: FC<TeamMemberCardProps> = ({
             </div>
           </div>
 
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{member.name}</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-300">{member.title}</p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{member.company}</p>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{member?.name}</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{member?.title}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">{member?.company}</p>
 
           {/* Member Level Badge */}
           <div className="mt-2 inline-flex items-center bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-700 dark:to-purple-700 px-3 py-1 rounded-full">

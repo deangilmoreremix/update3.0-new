@@ -325,7 +325,7 @@ class AIIntegrationService {
             ...fallbackData,
             firstName: enrichmentRequest.firstName,
             lastName: enrichmentRequest.lastName || '',
-            company: enrichmentRequest.company || 'Unknown Company',
+            company: enrichmentRequest?.company || 'Unknown Company',
             socialProfiles: {
               linkedin: `https://linkedin.com/in/${enrichmentRequest.firstName.toLowerCase()}${enrichmentRequest.lastName ? `-${enrichmentRequest.lastName.toLowerCase()}` : ''}`,
             }

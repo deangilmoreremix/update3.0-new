@@ -35,10 +35,10 @@ export const SelectContactModal: FC<SelectContactModalProps> = ({
     if (!searchTerm.trim()) return contacts;
 
     return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contact.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contact?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contact?.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
       contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contact.title.toLowerCase().includes(searchTerm.toLowerCase())
+      contact?.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [contacts, searchTerm]);
 
@@ -172,7 +172,7 @@ export const SelectContactModal: FC<SelectContactModalProps> = ({
                           {contact.avatarSrc ? (
                             <img 
                               src={contact.avatarSrc} 
-                              alt={contact.name}
+                              alt={contact?.name}
                               className="w-10 h-10 rounded-full border border-gray-200"
                             />
                           ) : (
@@ -183,19 +183,19 @@ export const SelectContactModal: FC<SelectContactModalProps> = ({
 
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2">
-                              <h4 className="font-medium text-gray-900 truncate">{contact.name}</h4>
+                              <h4 className="font-medium text-gray-900 truncate">{contact?.name}</h4>
                               {selectedContactId === contact.id && (
                                 <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">
                                   Current
                                 </span>
                               )}
                             </div>
-                            <p className="text-sm text-gray-600 truncate">{contact.title}</p>
+                            <p className="text-sm text-gray-600 truncate">{contact?.title}</p>
 
                             <div className="flex items-center space-x-4 mt-2">
                               <div className="flex items-center space-x-1 text-xs text-gray-500">
                                 <Building2 className="w-3 h-3" />
-                                <span className="truncate">{contact.company}</span>
+                                <span className="truncate">{contact?.company}</span>
                               </div>
                               <div className="flex items-center space-x-1 text-xs text-gray-500">
                                 <Mail className="w-3 h-3" />

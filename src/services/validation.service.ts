@@ -13,7 +13,7 @@ class ValidationService {
   private emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   private urlRegex = /^https?:\/\/.+/;
 
-  private validateField(value: unknown, rule: ValidationRule, fieldPath: string): string[] {
+  private validateField(value: any, rule: ValidationRule, fieldPath: string): string[] {
     const errors: string[] = [];
 
     // Required check
@@ -115,7 +115,7 @@ class ValidationService {
     return errors;
   }
 
-  private validateObject(obj: unknown, schema: ValidationSchema, basePath = ''): ValidationResult {
+  private validateObject(obj: any, schema: ValidationSchema, basePath = ''): ValidationResult {
     const errors: { [field: string]: string[] } = {};
 
     // Validate each field in the schema
@@ -142,7 +142,7 @@ class ValidationService {
     };
   }
 
-  validate(data: unknown, schema: ValidationSchema): ValidationResult {
+  validate(data: any, schema: ValidationSchema): ValidationResult {
     return this.validateObject(data, schema);
   }
 
@@ -191,42 +191,42 @@ class ValidationService {
   };
 
   // Utility methods
-  validateContact(contact: unknown): ValidationResult {
+  validateContact(contact: any): ValidationResult {
     return this.validate(contact, this.contactSchema);
   }
 
-  validateAIAnalysis(analysis: unknown): ValidationResult {
+  validateAIAnalysis(analysis: any): ValidationResult {
     return this.validate(analysis, this.aiAnalysisSchema);
   }
 
-  validateEnrichmentRequest(request: unknown): ValidationResult {
+  validateEnrichmentRequest(request: any): ValidationResult {
     return this.validate(request, this.enrichmentRequestSchema);
   }
 
   // Sanitization methods
-  sanitizeString(value: unknown): string {
+  sanitizeString(value: any): string {
     if (typeof value !== 'string') return '';
     return value.trim().replace(/[<>]/g, ''); // Basic XSS prevention
   }
 
-  sanitizeEmail(email: unknown): string {
+  sanitizeEmail(email: any): string {
     return this.sanitizeString(email).toLowerCase();
   }
 
-  sanitizePhone(phone: unknown): string {
+  sanitizePhone(phone: any): string {
     const cleaned = this.sanitizeString(phone).replace(/[^\d+]/g, '');
     return cleaned.startsWith('+') ? cleaned : `+${cleaned}`;
   }
 
-  sanitizeContact(contact: unknown): unknown {
+  sanitizeContact(contact: any): any {
     return {
       ...contact,
       firstName: this.sanitizeString(contact.firstName),
       lastName: this.sanitizeString(contact.lastName),
       email: this.sanitizeEmail(contact.email),
       phone: contact.phone ? this.sanitizePhone(contact.phone) : undefined,
-      title: this.sanitizeString(contact.title),
-      company: this.sanitizeString(contact.company),
+      title: this.sanitizeString(contact?.title),
+      company: this.sanitizeString(contact?.company),
       industry: this.sanitizeString(contact.industry),
       notes: this.sanitizeString(contact.notes),
     };

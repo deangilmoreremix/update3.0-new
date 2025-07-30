@@ -483,7 +483,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ onOpenPipelineModal }) => {
                             className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
                           >
                             <tool.icon size={16} className="text-green-500" />
-                            <span className="text-sm font-medium">{tool.name}</span>
+                            <span className="text-sm font-medium">{tool?.name}</span>
                           </button>
                         ))}
                       </div>
@@ -501,7 +501,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ onOpenPipelineModal }) => {
                             className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
                           >
                             <tool.icon size={16} className="text-orange-500" />
-                            <span className="text-sm font-medium">{tool.name}</span>
+                            <span className="text-sm font-medium">{tool?.name}</span>
                           </button>
                         ))}
                       </div>
@@ -519,7 +519,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ onOpenPipelineModal }) => {
                             className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
                           >
                             <tool.icon size={16} className="text-blue-500" />
-                            <span className="text-sm font-medium">{tool.name}</span>
+                            <span className="text-sm font-medium">{tool?.name}</span>
                           </button>
                         ))}
                       </div>
@@ -537,7 +537,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ onOpenPipelineModal }) => {
                             className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
                           >
                             <tool.icon size={16} className="text-amber-500" />
-                            <span className="text-sm font-medium">{tool.name}</span>
+                            <span className="text-sm font-medium">{tool?.name}</span>
                           </button>
                         ))}
                       </div>
@@ -572,7 +572,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ onOpenPipelineModal }) => {
                                 className={`text-left flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
                               >
                                 <tool.icon size={12} className="text-blue-500" />
-                                <span className="text-xs">{tool.name}</span>
+                                <span className="text-xs">{tool?.name}</span>
                               </button>
                             ))}
                           </div>
@@ -596,7 +596,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ onOpenPipelineModal }) => {
                                 className={`text-left flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
                               >
                                 <tool.icon size={12} className="text-green-500" />
-                                <span className="text-xs">{tool.name}</span>
+                                <span className="text-xs">{tool?.name}</span>
                               </button>
                             ))}
                           </div>
@@ -620,7 +620,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ onOpenPipelineModal }) => {
                                 className={`text-left flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
                               >
                                 <tool.icon size={12} className="text-purple-500" />
-                                <span className="text-xs">{tool.name}</span>
+                                <span className="text-xs">{tool?.name}</span>
                               </button>
                             ))}
                           </div>
@@ -652,7 +652,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ onOpenPipelineModal }) => {
                             >
                               <div className="flex items-center space-x-3">
                                 <app.icon size={16} className="text-purple-500" />
-                                <span className="text-sm font-medium">{app.name}</span>
+                                <span className="text-sm font-medium">{app?.name}</span>
                               </div>
                               <ExternalLink size={12} className="opacity-50" />
                             </a>
@@ -663,7 +663,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ onOpenPipelineModal }) => {
                               className={`w-full text-left flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${isDark ? 'hover:bg-white/5 text-gray-300 hover:text-white' : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'}`}
                             >
                               <app.icon size={16} className="text-purple-500" />
-                              <span className="text-sm font-medium">{app.name}</span>
+                              <span className="text-sm font-medium">{app?.name}</span>
                             </button>
                           )
                         ))}

@@ -28,7 +28,7 @@ export const DealCommunicationHub: FC<DealCommunicationHubProps> = ({ deal, cont
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: `Hi ${contact?.firstName || deal.contact.split(' ')[0] || 'there'}, I wanted to follow up on our previous discussion about ${deal.title}.`,
+      content: `Hi ${contact?.firstName || deal.contact.split(' ')[0] || 'there'}, I wanted to follow up on our previous discussion about ${deal?.title}.`,
       sender: 'user',
       timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
       status: 'read',
@@ -130,11 +130,11 @@ export const DealCommunicationHub: FC<DealCommunicationHubProps> = ({ deal, cont
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 2000));
 
-    const template = `Subject: Follow-up regarding ${deal.title} - Next steps
+    const template = `Subject: Follow-up regarding ${deal?.title} - Next steps
 
 Dear ${contact?.firstName || deal.contact.split(' ')[0] || 'there'},
 
-I hope this email finds you well. I wanted to follow up on our recent discussion about ${deal.title} for ${deal.company}.
+I hope this email finds you well. I wanted to follow up on our recent discussion about ${deal?.title} for ${deal?.company}.
 
 Based on our conversation, I understand that [key pain point/requirement] is a priority for your team. Our solution addresses this directly through [specific feature/benefit].
 
@@ -423,7 +423,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
             <div className="flex items-center bg-gray-50 border border-gray-300 rounded-md px-3 py-2">
               {contact ? (
                 <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm flex items-center">
-                  {contact.name} <span className="text-blue-500 ml-1">&times;</span>
+                  {contact?.name} <span className="text-blue-500 ml-1">&times;</span>
                 </span>
               ) : deal.contact ? (
                 <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm flex items-center">
@@ -789,7 +789,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
                             )}
                           </div>
                           <div>
-                            <h5 className="text-sm font-medium text-gray-900">{meeting.title}</h5>
+                            <h5 className="text-sm font-medium text-gray-900">{meeting?.title}</h5>
                             <p className="text-xs text-gray-500">
                               {meeting.date.toLocaleDateString()} at {meeting.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </p>
@@ -844,7 +844,7 @@ P.S. I've also attached a case study from a client in a similar situation who ac
                             )}
                           </div>
                           <div>
-                            <h5 className="text-sm font-medium text-gray-900">{meeting.title}</h5>
+                            <h5 className="text-sm font-medium text-gray-900">{meeting?.title}</h5>
                             <p className="text-xs text-gray-500">
                               {meeting.date.toLocaleDateString()} at {meeting.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </p>

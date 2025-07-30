@@ -82,7 +82,7 @@ export const AchievementPanel: React.FC = () => {
                     {entry.avatarSrc ? (
                       <img 
                         src={entry.avatarSrc}
-                        alt={entry.name}
+                        alt={entry?.name}
                         className="w-7 h-7 rounded-full mr-2 border border-indigo-200"
                       />
                     ) : (
@@ -90,7 +90,7 @@ export const AchievementPanel: React.FC = () => {
                         <User className="w-4 h-4 text-indigo-600" />
                       </div>
                     )}
-                    <span className="font-medium text-gray-900 truncate">{entry.name}</span>
+                    <span className="font-medium text-gray-900 truncate">{entry?.name}</span>
                     {entry.recentAchievement && (
                       <span className="ml-2 bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded-full">
                         <Award className="w-3 h-3 inline mr-0.5" />
@@ -129,7 +129,7 @@ export const AchievementPanel: React.FC = () => {
             {challenges.map((challenge) => (
               <div key={challenge.id} className="bg-green-50 rounded-lg p-4 border border-green-200">
                 <h4 className="font-semibold text-gray-900 mb-2 flex items-center justify-between">
-                  <span>{challenge.title}</span>
+                  <span>{challenge?.title}</span>
                   <span className="text-sm font-normal text-green-700 flex items-center">
                     <Clock className="w-3 h-3 mr-1" />
                     {new Date(challenge.endDate) > new Date() 
@@ -224,7 +224,7 @@ const TeamMemberCard: FC<{ member: Contact }> = ({ member }) => {
         {member.avatarSrc ? (
           <img 
             src={member.avatarSrc}
-            alt={member.name}
+            alt={member?.name}
             className="w-10 h-10 rounded-full object-cover border-2 border-indigo-100"
           />
         ) : (
@@ -241,7 +241,7 @@ const TeamMemberCard: FC<{ member: Contact }> = ({ member }) => {
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between">
-          <p className="font-medium text-gray-900 truncate">{member.name}</p>
+          <p className="font-medium text-gray-900 truncate">{member?.name}</p>
           <span className="text-xs px-1.5 py-0.5 bg-indigo-100 text-indigo-800 rounded-md">
             {gamificationStats.points} pts
           </span>

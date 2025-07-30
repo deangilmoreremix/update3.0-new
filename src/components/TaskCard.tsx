@@ -143,7 +143,7 @@ const TaskCard: FC<TaskCardProps> = ({ task, index }) => {
           </div>
           <div>
             <h4 className={`font-medium ${isDark ? 'text-white group-hover:text-green-400' : 'text-gray-900 group-hover:text-green-600'} transition-colors`}>
-              {task.title}
+              {task?.title}
             </h4>
             {task.subtitle && (
               <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{task.subtitle}</p>

@@ -63,7 +63,7 @@ class AIOrchestratorService {
   /**
    * Parse JSON safely from AI response
    */
-  private parseJsonSafely(content: string): unknown {
+  private parseJsonSafely(content: string): any {
     // First strip any markdown code blocks
     const cleaned = this.stripMarkdownCodeBlocks(content);
 
@@ -219,7 +219,7 @@ class AIOrchestratorService {
   /**
    * Get the appropriate service for a model
    */
-  private getServiceForModel(modelId: string): unknown {
+  private getServiceForModel(modelId: string): any {
     // Return service factory instead of calling hook directly
     return this.isGoogleModel(modelId) ? enhancedGeminiService : { type: 'openai' };
   }
@@ -293,7 +293,7 @@ class AIOrchestratorService {
    * Analyze pipeline health with the optimal model
    */
   async analyzePipelineHealth(
-    pipelineData: unknown,
+    pipelineData: any,
     taskContext: TaskContext = {}
   ): Promise<ServiceResponse> {
     // Check if any provider is available
@@ -553,7 +553,7 @@ class AIOrchestratorService {
    * Generate deal insights with the optimal model
    */
   async analyzeDeal(
-    dealData: unknown,
+    dealData: any,
     taskContext: TaskContext = {}
   ): Promise<ServiceResponse> {
     // Check if any provider is available
@@ -668,7 +668,7 @@ class AIOrchestratorService {
    * Generate insights for contacts
    */
   async generateContactInsights(
-    contacts: unknown[],
+    contacts: any[],
     taskContext: TaskContext = {}
   ): Promise<ServiceResponse> {
     // Check if any provider is available
@@ -793,7 +793,7 @@ class AIOrchestratorService {
   /**
    * Get usage statistics
    */
-  getUsageStatistics(): unknown {
+  getUsageStatistics(): any {
     return {
       modelStats: this.usageStats,
       totalCalls: Object.values(this.usageStats).reduce((sum, stat) => sum + stat.callCount, 0),

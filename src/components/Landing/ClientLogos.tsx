@@ -25,7 +25,7 @@ const ClientLogos: React.FC = () => {
               <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 flex items-center justify-center text-xl font-bold text-indigo-600">
                 {logo.letter}
               </div>
-              <span className="ml-2 text-gray-700 font-medium">{logo.name}</span>
+              <span className="ml-2 text-gray-700 font-medium">{logo?.name}</span>
             </div>
           ))}
         </div>

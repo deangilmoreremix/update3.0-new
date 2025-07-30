@@ -79,7 +79,7 @@ const AIEnhancedDealCard: FC<AIEnhancedDealCardProps> = ({
   // Generate avatar URLs based on company and contact names
   const getCompanyAvatar = (companyName: string) => {
     const seed = companyName.toLowerCase().replace(/\s+/g, '');
-    return deal.companyAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${seed}&backgroundColor=3b82f6,8b5cf6,f59e0b,10b981,ef4444&textColor=ffffff`;
+    return deal?.companyAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${seed}&backgroundColor=3b82f6,8b5cf6,f59e0b,10b981,ef4444&textColor=ffffff`;
   };
 
   const getPersonAvatar = (personName: string) => {
@@ -159,8 +159,8 @@ const AIEnhancedDealCard: FC<AIEnhancedDealCardProps> = ({
 
   // Get social profiles (mock data if not provided)
   const socialProfiles = deal.socialProfiles || {
-    linkedin: deal.company ? `https://linkedin.com/company/${deal.company.toLowerCase().replace(/\s+/g, '-')}` : undefined,
-    website: deal.company ? `https://${deal.company.toLowerCase().replace(/\s+/g, '')}.com` : undefined
+    linkedin: deal?.company ? `https://linkedin.com/company/${deal?.company.toLowerCase().replace(/\s+/g, '-')}` : undefined,
+    website: deal?.company ? `https://${deal?.company.toLowerCase().replace(/\s+/g, '')}.com` : undefined
   };
 
   // Custom fields (mock data if not provided)
@@ -266,15 +266,15 @@ const AIEnhancedDealCard: FC<AIEnhancedDealCardProps> = ({
         <div className="flex items-start justify-between mb-4 mt-4 text-gray-900 dark:text-white">
           <div className="flex-1 min-w-0">
             <h3 className="text-gray-900 dark:text-white font-semibold text-lg mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
-              {deal.title}
+              {deal?.title}
             </h3>
 
             {/* Company Info with Avatar */}
             <div className="flex items-center space-x-2 mb-2">
               <div className="relative">
                 <img 
-                  src={getCompanyAvatar(deal.company)}
-                  alt={deal.company}
+                  src={getCompanyAvatar(deal?.company)}
+                  alt={deal?.company}
                   className="w-6 h-6 rounded-full border border-gray-200 dark:border-gray-600"
                 />
 
@@ -295,7 +295,7 @@ const AIEnhancedDealCard: FC<AIEnhancedDealCardProps> = ({
                 )}
               </div>
               <div className="text-gray-600 dark:text-gray-300">
-                <p className="text-gray-600 dark:text-gray-300 text-sm font-medium">{deal.company}</p>
+                <p className="text-gray-600 dark:text-gray-300 text-sm font-medium">{deal?.company}</p>
               </div>
             </div>
 
@@ -559,7 +559,7 @@ const AIEnhancedDealCard: FC<AIEnhancedDealCardProps> = ({
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
                     className={`p-1.5 ${platform.color} rounded-lg text-white hover:opacity-90 transition-all`}
-                    title={platform.name}
+                    title={platform?.name}
                   >
                     <Icon className="w-3 h-3" />
                   </a>

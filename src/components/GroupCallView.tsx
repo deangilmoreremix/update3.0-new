@@ -57,9 +57,9 @@ const ParticipantTile: FC<ParticipantTileProps> = ({
         }`}>
           <Avatar
             src={participant.avatar}
-            alt={participant.name}
+            alt={participant?.name}
             size="lg"
-            fallback={getInitials(participant.name)}
+            fallback={getInitials(participant?.name)}
           />
         </div>
       )}
@@ -67,7 +67,7 @@ const ParticipantTile: FC<ParticipantTileProps> = ({
       {/* Participant Info & Controls Overlay */}
       <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/60 flex justify-between items-center">
         <div className="flex items-center space-x-2">
-          <span className="text-xs text-white truncate">{participant.name}</span>
+          <span className="text-xs text-white truncate">{participant?.name}</span>
           {!participant.isAudioEnabled && (
             <MicOff size={12} className="text-red-400" />
           )}

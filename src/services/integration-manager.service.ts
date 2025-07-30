@@ -230,7 +230,7 @@ class IntegrationManagerService {
   async enrichAndAnalyzeContact(
     contactId: string,
     enrichmentRequest?: Partial<ContactEnrichmentData>
-  ): Promise<{ contact: Contact; enrichment: ContactEnrichmentData; analysis: unknown }> {
+  ): Promise<{ contact: Contact; enrichment: ContactEnrichmentData; analysis: any }> {
     const startTime = Date.now();
     this.trackRequest();
 
@@ -245,7 +245,7 @@ class IntegrationManagerService {
             email: contact.email,
             firstName: contact.firstName,
             lastName: contact.lastName,
-            company: contact.company,
+            company: contact?.company,
           });
 
       // Update contact with enrichment data
@@ -343,7 +343,7 @@ class IntegrationManagerService {
       try {
         await this.executeWorkflow(workflow, contact);
       } catch (error) {
-        logger.error(`Workflow execution failed: ${workflow.name}`, error as Error, {
+        logger.error(`Workflow execution failed: ${workflow?.name}`, error as Error, {
           contactId: contact.id,
           workflowId: workflow.id,
         });
@@ -352,7 +352,7 @@ class IntegrationManagerService {
   }
 
   private async executeWorkflow(workflow: ContactWorkflow, contact: Contact): Promise<void> {
-    logger.info(`Executing workflow: ${workflow.name}`, { 
+    logger.info(`Executing workflow: ${workflow?.name}`, { 
       contactId: contact.id, 
       workflowId: workflow.id 
     });
@@ -387,7 +387,7 @@ class IntegrationManagerService {
           email: contact.email,
           firstName: contact.firstName,
           lastName: contact.lastName,
-          company: contact.company,
+          company: contact?.company,
         });
         break;
 
@@ -426,8 +426,8 @@ class IntegrationManagerService {
     }
 
     // Role-based tags
-    if (contact.title) {
-      const title = contact.title.toLowerCase();
+    if (contact?.title) {
+      const title = contact?.title.toLowerCase();
       if (title.includes('ceo') || title.includes('founder')) {
         tags.push('decision-maker');
       }
@@ -449,7 +449,7 @@ class IntegrationManagerService {
 
     // Company size estimation (basic)
     const largeCorp = ['microsoft', 'google', 'apple', 'amazon'];
-    if (largeCorp.some(corp => contact.company.toLowerCase().includes(corp))) {
+    if (largeCorp.some(corp => contact?.company.toLowerCase().includes(corp))) {
       tags.push('enterprise');
     }
 
@@ -487,7 +487,7 @@ class IntegrationManagerService {
       // Check AI providers
       const providerStatus = await aiIntegration.getProviderStatus();
       healthCheck.services.aiProviders = providerStatus.map(p => ({
-        name: p.name,
+        name: p?.name,
         status: p.status === 'available' ? 'up' : p.status === 'rate_limited' ? 'rate_limited' : 'down',
       }));
 

@@ -155,10 +155,10 @@ export const AIInsightsPanel: FC<AIInsightsPanelProps> = ({ contact }) => {
         });
       }
 
-      if (contact.title.toLowerCase().includes('cto') || 
-          contact.title.toLowerCase().includes('chief') || 
-          contact.title.toLowerCase().includes('director') ||
-          contact.title.toLowerCase().includes('vp')) {
+      if (contact?.title.toLowerCase().includes('cto') || 
+          contact?.title.toLowerCase().includes('chief') || 
+          contact?.title.toLowerCase().includes('director') ||
+          contact?.title.toLowerCase().includes('vp')) {
         generatedInsights.push({
           id: '9',
           type: 'opportunity',
@@ -396,7 +396,7 @@ const InsightCard: FC<{
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
-            <h5 className="text-sm font-semibold text-gray-900">{insight.title}</h5>
+            <h5 className="text-sm font-semibold text-gray-900">{insight?.title}</h5>
             <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-white text-gray-700 border border-gray-200">
               {typeLabels[insight.type]}
             </span>

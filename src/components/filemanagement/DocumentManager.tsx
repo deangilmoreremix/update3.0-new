@@ -44,7 +44,7 @@ const DocumentManager: React.FC = () => {
         
         const newDocument: Document = {
           id: Date.now().toString() + Math.random(),
-          name: file.name,
+          name: file?.name,
           type: file.type,
           size: file.size,
           uploadDate: new Date(),
@@ -56,7 +56,7 @@ const DocumentManager: React.FC = () => {
         
         toast({
           title: "File uploaded",
-          description: `${file.name} has been uploaded successfully`
+          description: `${file?.name} has been uploaded successfully`
         });
       }
     } catch (error) {
@@ -86,7 +86,7 @@ const DocumentManager: React.FC = () => {
   });
 
   const filteredDocuments = documents.filter(doc => {
-    const matchesSearch = doc.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = doc?.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || doc.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -140,12 +140,12 @@ const DocumentManager: React.FC = () => {
     // In a real app, this would download from your storage service
     const link = document.createElement('a');
     link.href = document.url;
-    link.download = document.name;
+    link.download = document?.name;
     link.click();
     
     toast({
       title: "Download started",
-      description: `Downloading ${document.name}`
+      description: `Downloading ${document?.name}`
     });
   };
 
@@ -230,8 +230,8 @@ const DocumentManager: React.FC = () => {
                 <div className="flex items-center gap-3">
                   {getFileIcon(document.type)}
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-sm truncate" title={document.name}>
-                      {document.name}
+                    <h3 className="font-medium text-sm truncate" title={document?.name}>
+                      {document?.name}
                     </h3>
                     <p className="text-xs text-gray-500">
                       {formatFileSize(document.size)}
@@ -260,13 +260,13 @@ const DocumentManager: React.FC = () => {
                   </DialogTrigger>
                   <DialogContent className="max-w-4xl max-h-[80vh]">
                     <DialogHeader>
-                      <DialogTitle>{document.name}</DialogTitle>
+                      <DialogTitle>{document?.name}</DialogTitle>
                     </DialogHeader>
                     <div className="flex-1 min-h-[500px] bg-gray-100 rounded-lg flex items-center justify-center">
                       {document.type.includes('image') ? (
                         <img 
                           src={document.url} 
-                          alt={document.name}
+                          alt={document?.name}
                           className="max-w-full max-h-full object-contain"
                         />
                       ) : (

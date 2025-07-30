@@ -31,7 +31,7 @@ const QuickActions = () => {
   const activeContacts = Object.values(contacts);
 
   // Render avatar stack for buttons
-  const renderAvatarStack = (items: unknown[], maxVisible: number = 3) => {
+  const renderAvatarStack = (items: any[], maxVisible: number = 3) => {
     const visibleItems = items.slice(0, maxVisible);
     const remainingCount = Math.max(0, items.length - maxVisible);
 
@@ -47,9 +47,9 @@ const QuickActions = () => {
               <div key={index} className="relative" style={{ zIndex: maxVisible - index }}>
                 <Avatar
                   src={contact.avatar}
-                  alt={contact.name}
+                  alt={contact?.name}
                   size="sm"
-                  fallback={getInitials(contact.name)}
+                  fallback={getInitials(contact?.name)}
                   className="border-2 border-white dark:border-transparent"
                 />
               </div>
@@ -149,7 +149,7 @@ const QuickActions = () => {
                 <action.icon className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-white">{action.title}</h3>
+                <h3 className="font-semibold text-white">{action?.title}</h3>
                 <p className="text-sm text-white/80">{action.description}</p>
               </div>
             </div>

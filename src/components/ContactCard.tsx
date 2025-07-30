@@ -31,9 +31,9 @@ const ContactCard: FC<ContactCardProps> = ({ contact }) => {
       <div className="flex items-start justify-between mb-4">
         <Avatar 
           src={contact.avatarSrc || contact.avatar}
-          alt={contact.name}
+          alt={contact?.name}
           size="lg"
-          fallback={getInitials(contact.name)}
+          fallback={getInitials(contact?.name)}
           status="online"
         />
         <button 
@@ -85,13 +85,13 @@ const ContactCard: FC<ContactCardProps> = ({ contact }) => {
       <div className="space-y-3">
         <div>
           <h3 className={`font-medium ${isDark ? 'text-white group-hover:text-green-400' : 'text-gray-900 group-hover:text-green-600'} transition-colors`}>
-            {contact.name}
+            {contact?.name}
           </h3>
-          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{contact.title || contact.position}</p>
-          {contact.company && (
+          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{contact?.title || contact.position}</p>
+          {contact?.company && (
             <div className={`flex items-center mt-1 text-xs ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
               <Building size={12} className="mr-1" />
-              {contact.company}
+              {contact?.company}
             </div>
           )}
         </div>

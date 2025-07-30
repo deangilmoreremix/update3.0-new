@@ -252,7 +252,7 @@ class EnhancedGeminiService {
   /**
    * Generate insights for CRM data
    */
-  async generateInsights(data: unknown, customerId?: string, model?: string): Promise<unknown> {
+  async generateInsights(data: any, customerId?: string, model?: string): Promise<unknown> {
     const prompt = `
     Analyze the following CRM data and provide actionable insights:
 
@@ -397,9 +397,9 @@ export const enhancedGeminiService = new EnhancedGeminiService();
 // Export the hook for React components
 export const useEnhancedGemini = () => {
   return {
-    generateInsights: (data: unknown, customerId?: string, model?: string) => 
+    generateInsights: (data: any, customerId?: string, model?: string) => 
       enhancedGeminiService.generateInsights(data, customerId, model),
-    generateEmail: (context: unknown, customerId?: string, model?: string) => 
+    generateEmail: (context: any, customerId?: string, model?: string) => 
       enhancedGeminiService.generateEmail(context, customerId, model),
     generateContent: (request: GenerateContentRequest) => 
       enhancedGeminiService.generateContent(request),

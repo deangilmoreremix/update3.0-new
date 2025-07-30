@@ -123,7 +123,7 @@ const InstantAIResponseGenerator: React.FC = () => {
                 <MessageSquare size={18} className={`mb-2 ${
                   selectedTemplate?.id === template.id ? 'text-teal-600' : 'text-gray-400'
                 }`} />
-                <span className={`font-medium ${selectedTemplate?.id === template.id ? 'text-teal-700' : 'text-gray-700'}`}>{template.title}</span>
+                <span className={`font-medium ${selectedTemplate?.id === template.id ? 'text-teal-700' : 'text-gray-700'}`}>{template?.title}</span>
                 <span className="text-xs text-gray-500 mt-1">{template.purpose}</span>
               </button>
             ))}

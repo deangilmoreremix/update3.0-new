@@ -1,7 +1,7 @@
 
-export async function meetingsAgent(input: unknown, setSteps?: (steps: unknown) => void) {
-  const name = input.name || "there";
-  const company = input.company || "your company";
+export async function meetingsAgent(input: any, setSteps?: (steps: any) => void) {
+  const name = input?.name || "there";
+  const company = input?.company || "your company";
   const meetingType = input.meetingType || "discovery";
 
   setSteps?.([{ step: "Checking calendar availability..." }]);

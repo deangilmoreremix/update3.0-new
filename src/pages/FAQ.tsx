@@ -349,7 +349,7 @@ const FAQ: React.FC = () => {
                   }`}
                 >
                   <div className="mr-3">{category.icon}</div>
-                  <span>{category.name}</span>
+                  <span>{category?.name}</span>
                   <ChevronRight size={16} className="ml-auto" />
                 </button>
               ))}
@@ -403,7 +403,7 @@ const FAQ: React.FC = () => {
                     <div key={category.id} className="mb-10">
                       <div className="flex items-center mb-4">
                         <div className="mr-2">{category.icon}</div>
-                        <h2 className="text-xl font-bold text-gray-900">{category.name}</h2>
+                        <h2 className="text-xl font-bold text-gray-900">{category?.name}</h2>
                       </div>
                       <div className="space-y-4 ml-1">
                         {categoryFaqs.slice(0, 3).map(faq => (
@@ -433,7 +433,7 @@ const FAQ: React.FC = () => {
                               onClick={() => selectCategory(category.id)}
                               className="text-blue-600 hover:text-blue-800 flex items-center text-sm font-medium"
                             >
-                              View all {categoryFaqs.length} {category.name.toLowerCase()} questions
+                              View all {categoryFaqs.length} {category?.name.toLowerCase()} questions
                               <ChevronRight size={16} className="ml-1" />
                             </button>
                           </div>

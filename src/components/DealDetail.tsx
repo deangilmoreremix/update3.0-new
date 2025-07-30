@@ -33,9 +33,9 @@ const DealDetail: FC<DealDetailProps> = ({ dealId, onClose }) => {
   const [dealAnalysis, setDealAnalysis] = useState<string | null>(null);
 
   const [editForm, setEditForm] = useState({
-    title: deal.title,
+    title: deal?.title,
     value: deal.value,
-    company: deal.company,
+    company: deal?.company,
     contact: deal.contact,
     dueDate: deal.dueDate ? deal.dueDate.toISOString().split('T')[0] : '',
     probability: deal.probability || 0,
@@ -53,9 +53,9 @@ const DealDetail: FC<DealDetailProps> = ({ dealId, onClose }) => {
     try {
       const updatedDeal = {
         ...deal,
-        title: editForm.title,
+        title: editForm?.title,
         value: editForm.value,
-        company: editForm.company,
+        company: editForm?.company,
         contact: editForm.contact,
         dueDate: editForm.dueDate ? new Date(editForm.dueDate) : null,
         probability: editForm.probability,
@@ -75,9 +75,9 @@ const DealDetail: FC<DealDetailProps> = ({ dealId, onClose }) => {
 
   const handleCancel = () => {
     setEditForm({
-      title: deal.title,
+      title: deal?.title,
       value: deal.value,
-      company: deal.company,
+      company: deal?.company,
       contact: deal.contact,
       dueDate: deal.dueDate ? deal.dueDate.toISOString().split('T')[0] : '',
       probability: deal.probability || 0,
@@ -107,8 +107,8 @@ const DealDetail: FC<DealDetailProps> = ({ dealId, onClose }) => {
     try {
       const analysisPrompt = `Analyze this sales deal and provide insights:
 
-        Deal: ${deal.title}
-        Company: ${deal.company}
+        Deal: ${deal?.title}
+        Company: ${deal?.company}
         Value: $${deal.value.toLocaleString()}
         Probability: ${deal.probability}%
         Priority: ${deal.priority}
@@ -171,7 +171,7 @@ const DealDetail: FC<DealDetailProps> = ({ dealId, onClose }) => {
                 </label>
                 <input
                   type="text"
-                  value={editForm.title}
+                  value={editForm?.title}
                   onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -184,7 +184,7 @@ const DealDetail: FC<DealDetailProps> = ({ dealId, onClose }) => {
                   </label>
                   <input
                     type="text"
-                    value={editForm.company}
+                    value={editForm?.company}
                     onChange={(e) => setEditForm({ ...editForm, company: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
@@ -308,7 +308,7 @@ const DealDetail: FC<DealDetailProps> = ({ dealId, onClose }) => {
                   <Building className="w-5 h-5 text-gray-600" />
                   <div>
                     <p className="text-sm font-medium text-gray-600">Company</p>
-                    <p className="text-lg font-semibold">{deal.company}</p>
+                    <p className="text-lg font-semibold">{deal?.company}</p>
                   </div>
                 </div>
 

@@ -128,9 +128,9 @@ const InteractionHistory: React.FC = () => {
                     <div key={i} className="relative">
                       <Avatar
                         src={contact.avatar}
-                        alt={contact.name}
+                        alt={contact?.name}
                         size="sm"
-                        fallback={getInitials(contact.name)}
+                        fallback={getInitials(contact?.name)}
                         className="border-3 border-white object-cover shadow-lg ring-2 ring-white/50"
                       />
                     </div>

@@ -137,7 +137,7 @@ const InteractiveGoalCard: React.FC<InteractiveGoalCardProps> = ({
           <h3 className={`text-lg font-bold transition-colors duration-300 ${
             isHovered ? 'text-gray-900' : 'text-gray-900'
           }`}>
-            {goal.title}
+            {goal?.title}
           </h3>
           <p className="text-sm text-gray-700 mt-2 line-clamp-2">{goal.description}</p>
         </div>

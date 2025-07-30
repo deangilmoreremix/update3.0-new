@@ -66,7 +66,7 @@ export const withChartWrapper = <P extends object>(
     </ChartErrorBoundary>
   );
 
-  WrappedChart.displayName = `withChartWrapper(${ChartComponent.displayName || ChartComponent.name})`;
+  WrappedChart.displayName = `withChartWrapper(${ChartComponent.displayName || ChartComponent?.name})`;
   return WrappedChart;
 };
 

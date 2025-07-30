@@ -83,7 +83,7 @@ const AIInsightsPanel = () => {
               </div>
               <div className="flex-1">
                 <h3 className={`font-medium ${isDark ? 'text-white group-hover:text-green-400' : 'text-gray-900 group-hover:text-green-600'} transition-colors`}>
-                  {insight.title}
+                  {insight?.title}
                 </h3>
                 <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} mt-1`}>{insight.description}</p>
               </div>

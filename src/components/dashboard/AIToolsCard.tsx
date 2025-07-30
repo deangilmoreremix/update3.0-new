@@ -55,7 +55,7 @@ const AIToolsCard: React.FC = () => {
             <div className={`p-2 rounded-lg ${tool.bgColor} inline-block mb-2`}>
               <tool.icon size={16} className={tool.color} />
             </div>
-            <h3 className="font-medium text-gray-900 text-sm">{tool.name}</h3>
+            <h3 className="font-medium text-gray-900 text-sm">{tool?.name}</h3>
           </button>
         ))}
       </div>

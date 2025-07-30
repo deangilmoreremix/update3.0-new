@@ -61,7 +61,7 @@ export const EnhancedNavbar: React.FC = () => {
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
   };
 
-  const Dropdown = ({ title, items, isOpen }: { title: string; items: unknown[]; isOpen: boolean }) => (
+  const Dropdown = ({ title, items, isOpen }: { title: string; items: any[]; isOpen: boolean }) => (
     <div className="relative">
       <button
         onClick={() => toggleDropdown(title)}
@@ -82,7 +82,7 @@ export const EnhancedNavbar: React.FC = () => {
                   className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                 >
                   <Icon className="w-4 h-4" />
-                  <span>{item.name}</span>
+                  <span>{item?.name}</span>
                 </button>
               );
             })}

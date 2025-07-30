@@ -104,7 +104,7 @@ const ContentLibrary: React.FC = () => {
 
   const filteredItems = contentItems
     .filter(item => filterType === 'all' || item.type === filterType)
-    .filter(item => item.title.toLowerCase().includes(searchTerm.toLowerCase()));
+    .filter(item => item?.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -297,7 +297,7 @@ const ContentLibrary: React.FC = () => {
                 {filteredItems.map(item => (
                   <tr key={item.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-900">{item.title}</div>
+                      <div className="font-medium text-gray-900">{item?.title}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">

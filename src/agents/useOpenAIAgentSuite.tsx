@@ -69,7 +69,7 @@ export async function getComposioToolset(actions: string[] | null = null, app: s
   return { toolset, tools };
 }
 
-export async function handleComposioExecution(response: unknown, toolset: unknown) {
+export async function handleComposioExecution(response: any, toolset: any) {
   const responseMessage = response.choices[0].message;
   if (responseMessage.tool_calls) {
 
@@ -142,7 +142,7 @@ export function wireAgentsIntoSmartCRM() {
 }
 
 // Enhanced function to better format different types of agent responses
-function embedAgentResponseUI(toolsUsed: unknown, output: unknown) {
+function embedAgentResponseUI(toolsUsed: any, output: any) {
   const container = document.querySelector("#agent-response-container");
   if (!container) return;
   container.innerHTML = "";
@@ -245,7 +245,7 @@ function embedAgentResponseUI(toolsUsed: unknown, output: unknown) {
 }
 
 // Helper function to create a structured output for JSON data
-function createStructuredOutput(data: unknown) {
+function createStructuredOutput(data: any) {
   const container = document.createElement("div");
   container.className = "bg-gray-50 p-4 rounded-lg border border-gray-100";
 
@@ -260,7 +260,7 @@ function createStructuredOutput(data: unknown) {
   }
 
   // Check if it's a proposal
-  if (data.title && data.executiveSummary && data.pricing) {
+  if (data?.title && data.executiveSummary && data.pricing) {
     return createProposalOutput(data);
   }
 
@@ -445,7 +445,7 @@ function createMarkdownOutput(markdownText: string) {
 }
 
 // Helper function for email sequence output
-function createEmailSequenceOutput(data: unknown) {
+function createEmailSequenceOutput(data: any) {
   const container = document.createElement("div");
   container.className = "space-y-4";
 
@@ -504,7 +504,7 @@ function createEmailSequenceOutput(data: unknown) {
 }
 
 // Helper function for lead enrichment output
-function createLeadEnrichmentOutput(data: unknown) {
+function createLeadEnrichmentOutput(data: any) {
   const container = document.createElement("div");
   container.className = "space-y-4";
 
@@ -569,7 +569,7 @@ function createLeadEnrichmentOutput(data: unknown) {
 }
 
 // Helper function for proposal output
-function createProposalOutput(data: unknown) {
+function createProposalOutput(data: any) {
   const container = document.createElement("div");
   container.className = "space-y-4";
 
@@ -579,7 +579,7 @@ function createProposalOutput(data: unknown) {
 
   const title = document.createElement("h3");
   title.className = "text-lg font-bold text-gray-900 mb-2";
-  title.innerText = data.title || "Proposal";
+  title.innerText = data?.title || "Proposal";
 
   const summary = document.createElement("div");
   summary.className = "text-sm text-gray-700";

@@ -52,7 +52,7 @@ const Tasks: React.FC = () => {
   // Filter tasks based on selected filters and search term
   const filteredTasks = (Object.values(tasks) as Task[]).filter((task: Task) => {
     // Check search term
-    if (searchTerm && !task.title.toLowerCase().includes(searchTerm.toLowerCase())) {
+    if (searchTerm && !task?.title.toLowerCase().includes(searchTerm.toLowerCase())) {
       return false;
     }
 
@@ -116,8 +116,8 @@ const Tasks: React.FC = () => {
 
     // Default to sorting by title
     return sortBy.direction === 'asc'
-      ? a.title.localeCompare(b.title)
-      : b.title.localeCompare(a.title);
+      ? a?.title.localeCompare(b?.title)
+      : b?.title.localeCompare(a?.title);
   });
 
   // Group tasks for display
@@ -267,7 +267,7 @@ const Tasks: React.FC = () => {
                   </div>
                   <div>
                     <h4 className={`text-sm font-medium ${task.completed ? 'line-through text-gray-500' : 'text-gray-900'}`}>
-                      {task.title}
+                      {task?.title}
                     </h4>
                     {task.description && (
                       <p className="mt-1 text-xs text-gray-500 line-clamp-2">
@@ -522,7 +522,7 @@ const Tasks: React.FC = () => {
                           <input
                             id="title"
                             type="text"
-                            value={taskForm.title || ''}
+                            value={taskForm?.title || ''}
                             onChange={(e) => setTaskForm({...taskForm, title: e.target.value})}
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                           />
@@ -620,7 +620,7 @@ const Tasks: React.FC = () => {
                             </div>
                             <div className="ml-3">
                               <h4 className={`text-lg font-medium ${tasks[selectedTask].completed ? 'line-through text-gray-500' : 'text-gray-900'}`}>
-                                {tasks[selectedTask].title}
+                                {tasks[selectedTask]?.title}
                               </h4>
 
                               <div className="flex flex-wrap gap-2 mt-2">

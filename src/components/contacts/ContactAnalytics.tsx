@@ -130,7 +130,7 @@ export const ContactAnalytics: FC<ContactAnalyticsProps> = ({ contact }) => {
                 {kpi.change}
               </span>
             </div>
-            <h4 className="text-sm font-medium text-gray-500">{kpi.name}</h4>
+            <h4 className="text-sm font-medium text-gray-500">{kpi?.name}</h4>
             <p className="text-2xl font-bold text-gray-900 mt-1">{kpi.value}</p>
           </div>
         ))}

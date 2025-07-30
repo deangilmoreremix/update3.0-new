@@ -128,7 +128,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
     }
   };
 
-  const handleEditField = (field: string, value: unknown) => {
+  const handleEditField = (field: string, value: any) => {
     setEditedContact(prev => ({ ...prev, [field]: value }));
   };
 
@@ -327,7 +327,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
 
     try {
       // Apply enrichment data to contact
-      const updates: unknown = {};
+      const updates: any = {};
 
       if (enrichmentData.phone && !editedContact.phone) {
         updates.phone = enrichmentData.phone;
@@ -346,7 +346,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
 
       // Social profiles
       if (enrichmentData.socialProfiles) {
-        const socialUpdates: unknown = {};
+        const socialUpdates: any = {};
         Object.entries(enrichmentData.socialProfiles).forEach(([key, value]) => {
           if (value && !editedContact.socialProfiles?.[key as keyof typeof editedContact.socialProfiles]) {
             socialUpdates[key] = value;
@@ -380,8 +380,8 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
     try {
       setIsEnriching(true);
       const newImageUrl = await aiEnrichmentService.findContactImage(
-        editedContact.name,
-        editedContact.company
+        editedContact?.name,
+        editedContact?.company
       );
 
       const updatedContact = { ...editedContact, avatarSrc: newImageUrl };
@@ -435,7 +435,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
                   email: editedContact.email,
                   firstName: editedContact.firstName,
                   lastName: editedContact.lastName,
-                  company: editedContact.company,
+                  company: editedContact?.company,
                   linkedinUrl: editedContact.socialProfiles?.linkedin
                 }}
                 onDataFound={handleAIEnrichment}
@@ -472,7 +472,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
               <div className="relative inline-block mb-4">
                 <AvatarWithStatus
                   src={editedContact.avatarSrc}
-                  alt={editedContact.name}
+                  alt={editedContact?.name}
                   size="xl"
                   status={editedContact.status}
                 />
@@ -517,9 +517,9 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
               </div>
 
               {/* Name and Title */}
-              <h3 className="text-xl font-bold text-gray-900 mb-2 leading-tight">{editedContact.name}</h3>
-              <p className="text-gray-600 font-medium mb-1">{editedContact.title}</p>
-              <p className="text-gray-500 text-sm">{editedContact.company}</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2 leading-tight">{editedContact?.name}</h3>
+              <p className="text-gray-600 font-medium mb-1">{editedContact?.title}</p>
+              <p className="text-gray-500 text-sm">{editedContact?.company}</p>
               {editedContact.industry && (
                 <span className="inline-block mt-2 px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
                   {editedContact.industry}
@@ -581,14 +581,14 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
                       email: editedContact.email,
                       firstName: editedContact.firstName,
                       lastName: editedContact.lastName,
-                      company: editedContact.company
+                      company: editedContact?.company
                     };
 
                     handleAIEnrichment({
                       email: searchQuery.email,
                       firstName: searchQuery.firstName,
                       lastName: searchQuery.lastName,
-                      company: searchQuery.company,
+                      company: searchQuery?.company,
                       confidence: 75
                     });
                   }}
@@ -618,7 +618,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
                       firstName: editedContact.firstName,
                       lastName: editedContact.lastName,
                       email: editedContact.email,
-                      company: editedContact.company,
+                      company: editedContact?.company,
                       phone: editedContact.phone || `+1-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
                       industry: editedContact.industry || ['Technology', 'Finance', 'Healthcare', 'Education'][Math.floor(Math.random() * 4)],
                       notes: "Auto-enriched with AI on " + new Date().toLocaleDateString(),
@@ -678,7 +678,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
                   <span className="text-xs font-medium">Files</span>
                 </button>
                 <button 
-                  onClick={() => window.open(`https://calendar.google.com/calendar/u/0/r/eventedit?text=Meeting+with+${editedContact.name}&details=${editedContact.company}`, '_blank')}
+                  onClick={() => window.open(`https://calendar.google.com/calendar/u/0/r/eventedit?text=Meeting+with+${editedContact?.name}&details=${editedContact?.company}`, '_blank')}
                   className="p-3 flex flex-col items-center hover:bg-indigo-50 rounded-lg transition-all text-center"
                 >
                   <Calendar className="w-4 h-4 mb-1 text-indigo-600" />
@@ -775,14 +775,14 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
                       {editingField === 'company' ? (
                         <input
                           type="text"
-                          value={editedContact.company}
+                          value={editedContact?.company}
                           onChange={(e) => handleEditField('company', e.target.value)}
                           className="w-full text-sm border border-gray-300 rounded-md px-2 py-1"
                           onBlur={handleSaveField}
                           autoFocus
                         />
                       ) : (
-                        <p className="text-sm font-medium text-gray-900">{editedContact.company}</p>
+                        <p className="text-sm font-medium text-gray-900">{editedContact?.company}</p>
                       )}
                     </div>
                   </div>
@@ -810,7 +810,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
                             <div 
                               key={index} 
                               className={`${social.color} p-1 rounded-md text-white ${profileUrl ? '' : 'opacity-50'} hover:opacity-80 transition-opacity cursor-pointer`}
-                              title={profileUrl ? `${social.name}: ${profileUrl}` : `Add ${social.name}`}
+                              title={profileUrl ? `${social?.name}: ${profileUrl}` : `Add ${social?.name}`}
                               onClick={() => {
                                 if (profileUrl) {
                                   window.open(profileUrl, '_blank');
@@ -847,7 +847,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
                         <option value="">Select platform...</option>
                         {socialPlatforms.map((platform) => (
                           <option key={platform.key} value={platform.key}>
-                            {platform.name}
+                            {platform?.name}
                           </option>
                         ))}
                       </select>
@@ -1175,12 +1175,12 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {[
-                      { label: 'First Name', value: editedContact.firstName || editedContact.name.split(' ')[0], icon: User, field: 'firstName' },
-                      { label: 'Last Name', value: editedContact.lastName || editedContact.name.split(' ').slice(1).join(' '), icon: User, field: 'lastName' },
+                      { label: 'First Name', value: editedContact.firstName || editedContact?.name.split(' ')[0], icon: User, field: 'firstName' },
+                      { label: 'Last Name', value: editedContact.lastName || editedContact?.name.split(' ').slice(1).join(' '), icon: User, field: 'lastName' },
                       { label: 'Email', value: editedContact.email, icon: Mail, field: 'email' },
                       { label: 'Phone', value: editedContact.phone || 'Not provided', icon: Phone, field: 'phone' },
-                      { label: 'Title', value: editedContact.title, icon: Building, field: 'title' },
-                      { label: 'Company', value: editedContact.company, icon: Building, field: 'company' },
+                      { label: 'Title', value: editedContact?.title, icon: Building, field: 'title' },
+                      { label: 'Company', value: editedContact?.company, icon: Building, field: 'company' },
                       { label: 'Industry', value: editedContact.industry || 'Not specified', icon: Tag, field: 'industry' },
                       { label: 'Status', value: editedContact.status, icon: Activity, field: 'status' }
                     ].map((field, index) => {
@@ -1245,7 +1245,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
                             <Icon className="w-4 h-4 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900">{platform.name}</p>
+                            <p className="text-sm font-medium text-gray-900">{platform?.name}</p>
                             {editingField === `social_${platform.key}` ? (
                               <input
                                 type="text"
@@ -1273,7 +1273,7 @@ export const ContactDetailView: FC<ContactDetailViewProps> = ({
                                 }}
                                 className="text-xs text-gray-500 hover:text-blue-600"
                               >
-                                Add {platform.name}
+                                Add {platform?.name}
                               </button>
                             )}
                           </div>

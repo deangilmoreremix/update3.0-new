@@ -17,14 +17,14 @@ const CompanyLogoManager: React.FC = () => {
     const companyMap = new Map<string, Company>();
 
     Object.values(contacts).forEach(contact => {
-      if (contact.company) {
-        const existing = companyMap.get(contact.company);
+      if (contact?.company) {
+        const existing = companyMap.get(contact?.company);
         if (existing) {
           existing.contactsCount++;
         } else {
-          companyMap.set(contact.company, {
-            id: contact.company.toLowerCase().replace(/\s+/g, '-'),
-            name: contact.company,
+          companyMap.set(contact?.company, {
+            id: contact?.company.toLowerCase().replace(/\s+/g, '-'),
+            name: contact?.company,
             logo: '', // This would come from customer database
             contactsCount: 1,
             dealsCount: 0 // This would be calculated from deals
@@ -33,7 +33,7 @@ const CompanyLogoManager: React.FC = () => {
       }
     });
 
-    return Array.from(companyMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+    return Array.from(companyMap.values()).sort((a, b) => a?.name.localeCompare(b?.name));
   }, [contacts]);
 
   const handleUploadSuccess = (logoUrl: string) => {
@@ -71,7 +71,7 @@ const CompanyLogoManager: React.FC = () => {
             </button>
             <div>
               <h2 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                Upload Logo for {selectedCompany.name}
+                Upload Logo for {selectedCompany?.name}
               </h2>
               <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                 {selectedCompany.contactsCount} contacts • {selectedCompany.dealsCount} deals
@@ -132,14 +132,14 @@ const CompanyLogoManager: React.FC = () => {
               <div className="flex items-center space-x-3">
                 <Avatar
                   src={company.logo}
-                  alt={company.name}
+                  alt={company?.name}
                   size="lg"
-                  fallback={getInitials(company.name)}
+                  fallback={getInitials(company?.name)}
                   className="border-2 border-white/20"
                 />
                 <div className="flex-1">
                   <h3 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    {company.name}
+                    {company?.name}
                   </h3>
                   <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                     {company.contactsCount} contacts

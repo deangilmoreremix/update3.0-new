@@ -16,7 +16,7 @@ const CallHistory: React.FC = () => {
     if (savedHistory) {
       try {
         const parsed = JSON.parse(savedHistory);
-        setCallHistory(parsed.map((call: unknown) => ({
+        setCallHistory(parsed.map((call: any) => ({
           ...call,
           startTime: new Date(call.startTime),
           endTime: call.endTime ? new Date(call.endTime) : undefined

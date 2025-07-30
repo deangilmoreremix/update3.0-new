@@ -343,7 +343,7 @@ const CircleProspecting: React.FC = () => {
                     >
                       <Popup>
                         <div className="text-sm">
-                          <p className="font-bold">{prospect.name}</p>
+                          <p className="font-bold">{prospect?.name}</p>
                           <p>{prospect.address}</p>
                           <p className="mt-1">Home Value: ${prospect.homeValue?.toLocaleString()}</p>
                           <p>Last Refinance: {prospect.lastRefinance}</p>
@@ -399,7 +399,7 @@ const CircleProspecting: React.FC = () => {
                               <User className="h-5 w-5 text-gray-500" />
                             </div>
                             <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">{prospect.name}</div>
+                              <div className="text-sm font-medium text-gray-900">{prospect?.name}</div>
                               <div className="text-sm text-gray-500">{prospect.email}</div>
                             </div>
                           </div>

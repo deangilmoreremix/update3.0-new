@@ -126,10 +126,10 @@ const GroupCallInterface: FC<GroupCallInterfaceProps> = ({ _onClose }) => {
                   <div className="text-center">
                     <Avatar
                       size="2xl"
-                      fallback={getInitials(focusedParticipant.name)}
+                      fallback={getInitials(focusedParticipant?.name)}
                       className="mx-auto mb-3"
                     />
-                    <p className="text-white text-lg font-medium">{focusedParticipant.name}</p>
+                    <p className="text-white text-lg font-medium">{focusedParticipant?.name}</p>
                     {!focusedParticipant.isVideoEnabled && (
                       <p className="text-gray-400 text-sm">Camera turned off</p>
                     )}
@@ -140,7 +140,7 @@ const GroupCallInterface: FC<GroupCallInterfaceProps> = ({ _onClose }) => {
               {/* Spotlight overlay with name and controls */}
               <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
                 <div className="bg-black/60 rounded-lg px-4 py-2">
-                  <p className="text-white font-medium">{focusedParticipant.name}</p>
+                  <p className="text-white font-medium">{focusedParticipant?.name}</p>
                 </div>
               </div>
             </div>
@@ -169,14 +169,14 @@ const GroupCallInterface: FC<GroupCallInterfaceProps> = ({ _onClose }) => {
                     <div className="w-full h-full bg-gray-800 flex items-center justify-center">
                       <Avatar
                         size="md"
-                        fallback={getInitials(participant.name)}
+                        fallback={getInitials(participant?.name)}
                       />
                     </div>
                   )}
 
                   {/* Name overlay */}
                   <div className="absolute bottom-0 left-0 right-0 bg-black/70 p-1">
-                    <p className="text-white text-xs truncate">{participant.name}</p>
+                    <p className="text-white text-xs truncate">{participant?.name}</p>
                   </div>
 
                   {/* Mute indicator */}
@@ -222,17 +222,17 @@ const GroupCallInterface: FC<GroupCallInterfaceProps> = ({ _onClose }) => {
                     <div className="text-center">
                       <Avatar
                         size="lg"
-                        fallback={getInitials(participant.name)}
+                        fallback={getInitials(participant?.name)}
                         className="mx-auto mb-2"
                       />
-                      <p className="text-white text-sm">{participant.name}</p>
+                      <p className="text-white text-sm">{participant?.name}</p>
                     </div>
                   </div>
                 )}
 
                 {/* Participant info overlay */}
                 <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-2 flex justify-between items-center">
-                  <span className="text-white text-xs">{participant.name}</span>
+                  <span className="text-white text-xs">{participant?.name}</span>
                   <div className="flex space-x-1">
                     {!participant.isAudioEnabled && (
                       <MicOff size={12} className="text-red-500" />
@@ -398,10 +398,10 @@ const GroupCallInterface: FC<GroupCallInterfaceProps> = ({ _onClose }) => {
                       <div className="flex items-center space-x-3">
                         <Avatar
                           size="md"
-                          fallback={getInitials(participant.name)}
+                          fallback={getInitials(participant?.name)}
                         />
                         <div>
-                          <p className="text-white font-medium">{participant.name}</p>
+                          <p className="text-white font-medium">{participant?.name}</p>
                           <div className="flex items-center space-x-2 mt-1">
                             <span className={`flex items-center text-xs ${
                               participant.isConnected ? 'text-green-400' : 'text-yellow-400'

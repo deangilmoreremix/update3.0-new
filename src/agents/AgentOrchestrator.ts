@@ -16,7 +16,7 @@ import { aiJourneysAgent } from './aiJourneysAgent';
 import { whatsappNurturerAgent } from './whatsappNurturerAgent';
 import { reengagementAgent } from './reengagementAgent';
 
-export async function runAgentWorkflow(agentId: string, input: unknown, setSteps?: (steps: unknown) => void) {
+export async function runAgentWorkflow(agentId: string, input: any, setSteps?: (steps: any) => void) {
   switch (agentId) {
     // Contact Module Agents
     case "lead-enrichment":

@@ -256,7 +256,7 @@ const TextMessages: React.FC = () => {
   };
 
   const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(searchText.toLowerCase()) ||
+    contact?.name.toLowerCase().includes(searchText.toLowerCase()) ||
     contact.phone.includes(searchText)
   );
 
@@ -360,7 +360,7 @@ const TextMessages: React.FC = () => {
 
   const applyTemplate = (templateContent: string) => {
     if (selectedContact) {
-      const personalizedContent = templateContent.replace('{name}', selectedContact.name);
+      const personalizedContent = templateContent.replace('{name}', selectedContact?.name);
       setNewMessage(personalizedContent);
       setShowTemplates(false);
     }
@@ -375,7 +375,7 @@ const TextMessages: React.FC = () => {
     try {
       // Use the OpenAI service to generate a text message suggestion
       const result = await openai.generateEmailDraft(
-        selectedContact.name,
+        selectedContact?.name,
         "Short text message follow-up (keep it under 160 characters)"
       );
 
@@ -444,14 +444,14 @@ const TextMessages: React.FC = () => {
   };
 
   const createNewContact = () => {
-    if (!newContact.name || !newContact.phone) {
+    if (!newContact?.name || !newContact.phone) {
       alert('Name and phone number are required');
       return;
     }
 
     const newContactObj: Contact = {
       id: `contact-${Date.now()}`,
-      name: newContact.name,
+      name: newContact?.name,
       phone: newContact.phone,
       unread: 0,
       messages: [],
@@ -583,7 +583,7 @@ const TextMessages: React.FC = () => {
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <div className="flex items-center">
-                          <h3 className="text-sm font-medium text-gray-900">{contact.name}</h3>
+                          <h3 className="text-sm font-medium text-gray-900">{contact?.name}</h3>
                           {contact.unread > 0 && (
                             <span className="ml-2 bg-blue-500 text-white text-xs font-medium px-2 py-0.5 rounded-full">
                               {contact.unread}
@@ -618,7 +618,7 @@ const TextMessages: React.FC = () => {
               <>
                 <div className="p-4 border-b border-gray-200 flex justify-between items-center">
                   <div>
-                    <h2 className="text-lg font-medium text-gray-900">{selectedContact.name}</h2>
+                    <h2 className="text-lg font-medium text-gray-900">{selectedContact?.name}</h2>
                     <p className="text-sm text-gray-500">{selectedContact.phone}</p>
                   </div>
                   <div className="flex space-x-2">
@@ -701,7 +701,7 @@ const TextMessages: React.FC = () => {
                                 selectedCategory === category.id ? 'bg-blue-100 text-blue-800' : 'bg-gray-200 text-gray-700'
                               }`}
                             >
-                              {category.name}
+                              {category?.name}
                             </button>
                           ))}
                         </div>
@@ -714,7 +714,7 @@ const TextMessages: React.FC = () => {
                               className="p-2 bg-white hover:bg-blue-50 border border-gray-200 rounded cursor-pointer"
                             >
                               <div className="flex justify-between">
-                                <p className="text-sm font-medium">{template.name}</p>
+                                <p className="text-sm font-medium">{template?.name}</p>
                                 <span className="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded capitalize">
                                   {template.category}
                                 </span>
@@ -804,7 +804,7 @@ const TextMessages: React.FC = () => {
                       {/* Scheduled messages list */}
                       {scheduledMessages.filter(msg => msg.contactId === selectedContactId).length > 0 && (
                         <div className="p-3">
-                          <h4 className="text-xs font-medium text-gray-700 mb-2">Upcoming Messages for {selectedContact.name}</h4>
+                          <h4 className="text-xs font-medium text-gray-700 mb-2">Upcoming Messages for {selectedContact?.name}</h4>
                           <div className="space-y-2">
                             {scheduledMessages
                               .filter(msg => msg.contactId === selectedContactId && msg.status === 'pending')
@@ -1124,7 +1124,7 @@ const TextMessages: React.FC = () => {
                         <input 
                           type="text" 
                           id="name"
-                          value={newContact.name}
+                          value={newContact?.name}
                           onChange={(e) => setNewContact({...newContact, name: e.target.value})}
                           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         />
@@ -1205,7 +1205,7 @@ const TextMessages: React.FC = () => {
                         <label htmlFor="provider" className="block text-sm font-medium text-gray-700">SMS Provider</label>
                         <select
                           id="provider"
-                          value={smsProvider.name}
+                          value={smsProvider?.name}
                           onChange={(e) => setSmsProvider({...smsProvider, name: e.target.value})}
                           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         >
@@ -1216,7 +1216,7 @@ const TextMessages: React.FC = () => {
                       </div>
 
                       {/* Twilio specific fields */}
-                      {smsProvider.name === 'twilio' && (
+                      {smsProvider?.name === 'twilio' && (
                         <>
                           <div>
                             <label htmlFor="accountSid" className="block text-sm font-medium text-gray-700">Account SID</label>
@@ -1264,7 +1264,7 @@ const TextMessages: React.FC = () => {
                       )}
 
                       {/* MessageBird specific fields */}
-                      {smsProvider.name === 'messagebird' && (
+                      {smsProvider?.name === 'messagebird' && (
                         <>
                           <div>
                             <label htmlFor="apiKey" className="block text-sm font-medium text-gray-700">API Key</label>
@@ -1298,7 +1298,7 @@ const TextMessages: React.FC = () => {
                       )}
 
                       {/* Vonage specific fields */}
-                      {smsProvider.name === 'vonage' && (
+                      {smsProvider?.name === 'vonage' && (
                         <>
                           <div>
                             <label htmlFor="apiKey" className="block text-sm font-medium text-gray-700">API Key</label>
@@ -1348,11 +1348,11 @@ const TextMessages: React.FC = () => {
                       <div className="flex items-center">
                         <button
                           type="button"
-                          onClick={() => window.open(`https://${smsProvider.name}.com`, '_blank')}
+                          onClick={() => window.open(`https://${smsProvider?.name}.com`, '_blank')}
                           className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
                         >
                           <ExternalLink size={14} className="mr-1" />
-                          Sign up for {smsProvider.name.charAt(0).toUpperCase() + smsProvider.name.slice(1)}
+                          Sign up for {smsProvider?.name.charAt(0).toUpperCase() + smsProvider?.name.slice(1)}
                         </button>
                       </div>
                     </div>

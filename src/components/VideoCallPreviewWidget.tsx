@@ -61,7 +61,7 @@ const VideoCallPreviewWidget = React.memo(() => {
     try {
       await initiateCall({
         id: contact.id,
-        name: contact.name,
+        name: contact?.name,
         email: contact.email,
         avatar: contact.avatarSrc || contact.avatar
       }, type);
@@ -81,7 +81,7 @@ const VideoCallPreviewWidget = React.memo(() => {
       const contact = contacts[id];
       return {
         id: contact.id,
-        name: contact.name,
+        name: contact?.name,
         email: contact.email,
         avatar: contact.avatarSrc || contact.avatar
       };
@@ -176,17 +176,17 @@ const VideoCallPreviewWidget = React.memo(() => {
 
                       <Avatar
                         src={contact.avatarSrc || contact.avatar}
-                        alt={contact.name}
+                        alt={contact?.name}
                         size="md"
-                        fallback={getInitials(contact.name)}
+                        fallback={getInitials(contact?.name)}
                       />
 
                       <div className="flex-1 min-w-0">
                         <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                          {contact.name}
+                          {contact?.name}
                         </h4>
                         <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                          {contact.title || contact.position} {contact.company ? `at ${contact.company}` : ''}
+                          {contact?.title || contact.position} {contact?.company ? `at ${contact?.company}` : ''}
                         </p>
                       </div>
                     </div>
@@ -273,16 +273,16 @@ const VideoCallPreviewWidget = React.memo(() => {
                     <div className="flex items-center space-x-3">
                       <Avatar
                         src={contact.avatarSrc || contact.avatar}
-                        alt={contact.name}
+                        alt={contact?.name}
                         size="md"
-                        fallback={getInitials(contact.name)}
+                        fallback={getInitials(contact?.name)}
                       />
                       <div>
                         <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                          {contact.name}
+                          {contact?.name}
                         </h4>
                         <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                          {contact.title || contact.position} {contact.company ? `at ${contact.company}` : ''}
+                          {contact?.title || contact.position} {contact?.company ? `at ${contact?.company}` : ''}
                         </p>
                       </div>
                     </div>
@@ -359,9 +359,9 @@ const VideoCallPreviewWidget = React.memo(() => {
             <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
               <Avatar
                 src={sampleParticipant.avatar}
-                alt={sampleParticipant.name}
+                alt={sampleParticipant?.name}
                 size="md"
-                fallback={getInitials(sampleParticipant.name)}
+                fallback={getInitials(sampleParticipant?.name)}
               />
             </div>
 
@@ -391,12 +391,12 @@ const VideoCallPreviewWidget = React.memo(() => {
                 <div className="text-center">
                   <Avatar
                     src={sampleParticipant.avatar}
-                    alt={sampleParticipant.name}
+                    alt={sampleParticipant?.name}
                     size="xl"
-                    fallback={getInitials(sampleParticipant.name)}
+                    fallback={getInitials(sampleParticipant?.name)}
                     className="mx-auto mb-3"
                   />
-                  <p className="text-white font-medium">{sampleParticipant.name}</p>
+                  <p className="text-white font-medium">{sampleParticipant?.name}</p>
                   <p className="text-white/70 text-sm">Connected</p>
                 </div>
 

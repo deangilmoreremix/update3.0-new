@@ -27,7 +27,7 @@ interface TaskOptimizationMetrics {
 }
 
 interface SmartBulkRequest {
-  contacts: Array<{ contactId: string; contact: unknown }>;
+  contacts: Array<{ contactId: string; contact: any }>;
   analysisType: 'contact_scoring' | 'categorization' | 'tagging' | 'lead_qualification';
   urgency?: 'low' | 'medium' | 'high';
   costLimit?: number;
@@ -36,7 +36,7 @@ interface SmartBulkRequest {
 
 // Enhanced AI integration service mock (to be replaced with actual implementation)
 const enhancedAI = {
-  scoreContact: async (contactId: string, contact: unknown, urgency: string = 'medium') => {
+  scoreContact: async (contactId: string, contact: any, urgency: string = 'medium') => {
 
     // Use aiOrchestratorService to select the right model
     const result = await aiOrchestratorService.analyzeDeal(
@@ -53,7 +53,7 @@ const enhancedAI = {
     };
   },
 
-  enrichContact: async (contactId: string, contact: unknown, priority: 'standard' | 'premium' = 'standard') => {
+  enrichContact: async (contactId: string, contact: any, priority: 'standard' | 'premium' = 'standard') => {
 
     // Simulate enrichment with aiOrchestratorService
     const result = await aiOrchestratorService.generateContactInsights(
@@ -69,7 +69,7 @@ const enhancedAI = {
     };
   },
 
-  categorizeAndTag: async (contactId: string, contact: unknown) => {
+  categorizeAndTag: async (contactId: string, contact: any) => {
 
     // Use Gemma for categorization (typically faster)
     const result = await enhancedGeminiService.generateContent({
@@ -88,7 +88,7 @@ const enhancedAI = {
     };
   },
 
-  qualifyLead: async (contactId: string, contact: unknown, businessContext?: string) => {
+  qualifyLead: async (contactId: string, contact: any, businessContext?: string) => {
 
     // Use more advanced models for qualification
     const result = await aiOrchestratorService.analyzeDeal(
@@ -262,7 +262,7 @@ class TaskOptimizationHelper {
     return recommendations[taskType] || null;
   }
 
-  getInsights(data: unknown, customerId?: string) {
+  getInsights(data: any, customerId?: string) {
     return aiOrchestratorService.analyzePipelineHealth(data, {
       customerId,
       priority: 'quality'
@@ -619,7 +619,7 @@ export const useTaskOptimization = () => {
     return helper.getRecommendations(mappedType);
   }, []);
 
-  const getInsights = useCallback(async (data: unknown, customerId?: string) => {
+  const getInsights = useCallback(async (data: any, customerId?: string) => {
     try {
       const result = await helper.getInsights(data, customerId);
       return result.content;

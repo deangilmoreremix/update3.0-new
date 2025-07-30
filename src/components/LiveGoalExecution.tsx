@@ -81,7 +81,7 @@ const LiveGoalExecution: FC<LiveGoalExecutionProps> = ({
         {
           id: 'initialize',
           agentName: 'Command Analyzer Agent',
-          action: `Analyzing goal: "${goal.title}" and preparing execution plan`,
+          action: `Analyzing goal: "${goal?.title}" and preparing execution plan`,
           status: 'pending',
           crmImpact: 'Preparing CRM for automated workflow execution'
         }
@@ -101,7 +101,7 @@ const LiveGoalExecution: FC<LiveGoalExecutionProps> = ({
         steps.push({
           id: `agent-${index}`,
           agentName: agent,
-          action: `Executing ${agent} for ${goal.title.toLowerCase()}`,
+          action: `Executing ${agent} for ${goal?.title.toLowerCase()}`,
           status: 'pending',
           toolsUsed: goal.toolsNeeded,
           crmImpact
@@ -246,7 +246,7 @@ const LiveGoalExecution: FC<LiveGoalExecutionProps> = ({
       // Execution completed - generate results
       const completionResult = {
         goalId: goal.id,
-        goalTitle: goal.title,
+        goalTitle: goal?.title,
         completedAt: new Date(),
         executionTime: Date.now() - executionMetrics.startTime.getTime(),
         stepsCompleted: executionSteps.length,
@@ -261,7 +261,7 @@ const LiveGoalExecution: FC<LiveGoalExecutionProps> = ({
 
       setGoalResults(completionResult);
       setLiveActivity(prev => [
-        `🎉 Goal "${goal.title}" completed successfully!`,
+        `🎉 Goal "${goal?.title}" completed successfully!`,
         `💰 Estimated business value: $${executionMetrics.businessValue.toLocaleString()}`,
         `📊 CRM changes: ${executionMetrics.crmChanges} updates`,
         ...prev.slice(0, 7)
@@ -388,7 +388,7 @@ const LiveGoalExecution: FC<LiveGoalExecutionProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-3xl font-bold text-white">{goal.title}</h2>
+                <h2 className="text-3xl font-bold text-white">{goal?.title}</h2>
                 <button
                   onClick={() => setShowHelp(true)}
                   className="p-1 rounded-full bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 hover:text-blue-300 transition-colors"

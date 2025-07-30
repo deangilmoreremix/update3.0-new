@@ -83,7 +83,7 @@ const CompanyLogoUploader: FC<CompanyLogoUploaderProps> = ({
   const generateFilePath = useCallback((file: File): string => {
     const timestamp = Date.now();
     const randomId = Math.random().toString(36).substring(2, 8);
-    const extension = file.name.split('.').pop();
+    const extension = file?.name.split('.').pop();
     return `${customerId}/${timestamp}-${randomId}.${extension}`;
   }, [customerId]);
 
@@ -287,7 +287,7 @@ const CompanyLogoUploader: FC<CompanyLogoUploaderProps> = ({
               {selectedFile && (
                 <div className="text-center">
                   <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    {selectedFile.name}
+                    {selectedFile?.name}
                   </p>
                   <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                     {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB

@@ -1,7 +1,7 @@
 
-export async function objectionHandlerAgent(input: unknown, setSteps?: (steps: unknown) => void) {
-  const name = input.name || "the prospect";
-  const company = input.company || "the company";
+export async function objectionHandlerAgent(input: any, setSteps?: (steps: any) => void) {
+  const name = input?.name || "the prospect";
+  const company = input?.company || "the company";
   const objection = input.objection || "It's too expensive";
 
   setSteps?.([{ step: "Analyzing objection..." }]);

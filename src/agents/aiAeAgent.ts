@@ -1,8 +1,8 @@
 
-export async function aiAeAgent(input: unknown, setSteps?: (steps: unknown) => void) {
-  const name = input.name || "there";
-  const company = input.company || "your company";
-  const dealTitle = input.title || "our solution";
+export async function aiAeAgent(input: any, setSteps?: (steps: any) => void) {
+  const name = input?.name || "there";
+  const company = input?.company || "your company";
+  const dealTitle = input?.title || "our solution";
 
   setSteps?.([{ step: "Preparing demo script..." }]);
 

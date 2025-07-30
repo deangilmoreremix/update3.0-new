@@ -138,15 +138,15 @@ const VideoCallOverlay = () => {
             <div className="mb-6">
               <Avatar
                 src={currentCall.recipient.avatar}
-                alt={currentCall.recipient.name}
+                alt={currentCall.recipient?.name}
                 size="2xl"
-                fallback={getInitials(currentCall.recipient.name)}
+                fallback={getInitials(currentCall.recipient?.name)}
                 className="mx-auto"
               />
             </div>
 
             <h2 className={`text-2xl font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              {currentCall.recipient.name}
+              {currentCall.recipient?.name}
             </h2>
             <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'} mb-2`}>
               {currentCall.recipient.email}
@@ -213,9 +213,9 @@ const VideoCallOverlay = () => {
                 <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
                   <Avatar
                     src={currentCall.recipient.avatar}
-                    alt={currentCall.recipient.name}
+                    alt={currentCall.recipient?.name}
                     size="md"
-                    fallback={getInitials(currentCall.recipient.name)}
+                    fallback={getInitials(currentCall.recipient?.name)}
                   />
                 </div>
               )}
@@ -261,12 +261,12 @@ const VideoCallOverlay = () => {
                     <div className="text-center">
                       <Avatar
                         src={currentCall.recipient.avatar}
-                        alt={currentCall.recipient.name}
+                        alt={currentCall.recipient?.name}
                         size="xl"
-                        fallback={getInitials(currentCall.recipient.name)}
+                        fallback={getInitials(currentCall.recipient?.name)}
                         className="mx-auto mb-3"
                       />
-                      <p className="text-white font-medium">{currentCall.recipient.name}</p>
+                      <p className="text-white font-medium">{currentCall.recipient?.name}</p>
                       <p className="text-white/70 text-sm">
                         {callStatus === 'calling' ? 'Calling...' : 
                          callStatus === 'ringing' ? 'Ringing...' : 
@@ -383,7 +383,7 @@ const VideoCallOverlay = () => {
                   {/* Center - Participant Info */}
                   <div className="flex-1 text-center">
                     <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      {currentCall.recipient.name}
+                      {currentCall.recipient?.name}
                     </p>
                   </div>
 
@@ -428,7 +428,7 @@ const VideoCallOverlay = () => {
       <InCallMessaging
         isVisible={showMessaging}
         onClose={() => setShowMessaging(false)}
-        remoteParticipantName={currentCall.recipient.name}
+        remoteParticipantName={currentCall.recipient?.name}
       />
 
       {/* Call Recording Panel */}

@@ -62,11 +62,11 @@ const GoalExecutionModal: FC<GoalExecutionModalProps> = ({
     ];
 
     // Add specialized agents based on goal category and tools needed
-    const primaryAgent = getAgentForGoal(goal.title, goal.description, goal.toolsNeeded || []);
+    const primaryAgent = getAgentForGoal(goal?.title, goal.description, goal.toolsNeeded || []);
     if (primaryAgent && AVAILABLE_AGENTS[primaryAgent]) {
       requiredAgents.push({
         id: primaryAgent,
-        name: AVAILABLE_AGENTS[primaryAgent].name,
+        name: AVAILABLE_AGENTS[primaryAgent]?.name,
         type: primaryAgent,
         status: 'idle',
         capabilities: AVAILABLE_AGENTS[primaryAgent].capabilities,
@@ -115,7 +115,7 @@ const GoalExecutionModal: FC<GoalExecutionModalProps> = ({
       },
       {
         id: 'execution',
-        agentName: primaryAgent ? AVAILABLE_AGENTS[primaryAgent].name : 'Primary Agent',
+        agentName: primaryAgent ? AVAILABLE_AGENTS[primaryAgent]?.name : 'Primary Agent',
         action: 'Goal Execution',
         status: 'pending'
       },
@@ -140,7 +140,7 @@ const GoalExecutionModal: FC<GoalExecutionModalProps> = ({
 
     setExecutionState('running');
     setExecutionStartTime(new Date());
-    addLog(`🚀 ${realMode ? 'REAL MODE' : 'DEMO MODE'}: Starting execution of "${goal.title}"`);
+    addLog(`🚀 ${realMode ? 'REAL MODE' : 'DEMO MODE'}: Starting execution of "${goal?.title}"`);
 
     // Estimate time based on goal complexity
     const estimatedMinutes = goal.estimatedTime || 5;
@@ -150,7 +150,7 @@ const GoalExecutionModal: FC<GoalExecutionModalProps> = ({
       // Phase 1: Planning and Strategy
       await executePhase('planning', async () => {
         addLog('🧠 Orchestrator: Analyzing goal requirements and developing strategy...');
-        addThought('Analyzing goal: ' + goal.title);
+        addThought('Analyzing goal: ' + goal?.title);
         addThought('Complexity: ' + goal.complexity);
         addThought('Tools needed: ' + (goal.toolsNeeded?.join(', ') || 'None'));
 
@@ -185,9 +185,9 @@ const GoalExecutionModal: FC<GoalExecutionModalProps> = ({
 
       // Phase 3: Main Execution
       await executePhase('execution', async () => {
-        const primaryAgent = getAgentForGoal(goal.title, goal.description, goal.toolsNeeded || []);
+        const primaryAgent = getAgentForGoal(goal?.title, goal.description, goal.toolsNeeded || []);
         if (primaryAgent) {
-          addLog(`🤖 ${AVAILABLE_AGENTS[primaryAgent].name}: Executing primary goal tasks...`);
+          addLog(`🤖 ${AVAILABLE_AGENTS[primaryAgent]?.name}: Executing primary goal tasks...`);
 
           // Use Gemma Agent Optimizer for complex tasks
           const agentConfig = getOptimalGemmaConfig(goal.category.toLowerCase(), goal.complexity === 'High' ? 'complex' : 'simple');
@@ -201,10 +201,10 @@ const GoalExecutionModal: FC<GoalExecutionModalProps> = ({
           });
 
           if (result.success) {
-            addLog(`✅ ${AVAILABLE_AGENTS[primaryAgent].name}: Goal execution completed successfully`);
+            addLog(`✅ ${AVAILABLE_AGENTS[primaryAgent]?.name}: Goal execution completed successfully`);
             addThought(`Execution result: ${result.data?.result || 'Success'}`);
           } else {
-            addLog(`❌ ${AVAILABLE_AGENTS[primaryAgent].name}: Execution failed - ${result.error}`);
+            addLog(`❌ ${AVAILABLE_AGENTS[primaryAgent]?.name}: Execution failed - ${result.error}`);
           }
 
           addNetworkMessage(primaryAgent, 'orchestrator', 'Primary execution phase completed', 'completion');
@@ -229,7 +229,7 @@ const GoalExecutionModal: FC<GoalExecutionModalProps> = ({
 
       setExecutionState('completed');
       setOverallProgress(100);
-      addLog(`🎉 Goal "${goal.title}" completed successfully! ${realMode ? 'Real execution' : 'Demo simulation'} finished.`);
+      addLog(`🎉 Goal "${goal?.title}" completed successfully! ${realMode ? 'Real execution' : 'Demo simulation'} finished.`);
 
       // Call completion callback
       if (onComplete) {
@@ -334,7 +334,7 @@ const GoalExecutionModal: FC<GoalExecutionModalProps> = ({
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 flex items-center justify-between">
           <div className="flex-1">
-            <h2 className="text-2xl font-bold mb-2">{goal.title}</h2>
+            <h2 className="text-2xl font-bold mb-2">{goal?.title}</h2>
             <p className="text-blue-100 mb-4">{goal.description}</p>
 
             {/* Execution Controls */}
@@ -506,7 +506,7 @@ const GoalExecutionModal: FC<GoalExecutionModalProps> = ({
                           'bg-gray-300'
                         }`} />
                         <div>
-                          <p className="font-medium text-sm">{agent.name}</p>
+                          <p className="font-medium text-sm">{agent?.name}</p>
                           <p className="text-xs text-gray-500">{agent.currentTask || 'Standby'}</p>
                         </div>
                       </div>
@@ -525,7 +525,7 @@ const GoalExecutionModal: FC<GoalExecutionModalProps> = ({
               {agents.map(agent => (
                 <div key={agent.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-medium">{agent.name}</h4>
+                    <h4 className="font-medium">{agent?.name}</h4>
                     <div className={`w-2 h-2 rounded-full ${
                       agent.status === 'working' ? 'bg-blue-500 animate-pulse' :
                       agent.status === 'completed' ? 'bg-green-500' :

@@ -102,7 +102,7 @@ const QuickAIButton: FC<QuickAIButtonProps> = ({
 export const AIGoalsButton: FC<{
   entityType: string;
   entityId: string;
-  entityData: unknown;
+  entityData: any;
   size?: 'sm' | 'md';
   variant?: 'primary' | 'secondary';
   className?: string;

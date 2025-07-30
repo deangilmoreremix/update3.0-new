@@ -141,7 +141,7 @@ const DashboardLayoutControls: React.FC = () => {
                         <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${config.color}`}></div>
                         <div>
                           <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                            {config.title}
+                            {config?.title}
                           </p>
                           <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                             {config.description}
@@ -189,7 +189,7 @@ const DashboardLayoutControls: React.FC = () => {
                         </span>
                         <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${config.color}`}></div>
                         <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                          {config.title}
+                          {config?.title}
                         </span>
                       </div>
                     );

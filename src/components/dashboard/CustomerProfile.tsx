@@ -150,7 +150,7 @@ const CustomerProfile: React.FC = () => {
                         <div 
                           key={index} 
                           className={`${social.color} p-1.5 rounded-lg text-white hover:opacity-80 transition-opacity cursor-pointer`}
-                          title={social.name}
+                          title={social?.name}
                         >
                           <Icon className="w-3 h-3" />
                         </div>

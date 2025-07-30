@@ -21,7 +21,7 @@ const sampleDeal: Deal = {
 
 interface LiveDealAnalysisProps {
   deal?: Deal;
-  onAnalysisComplete?: (analysis: unknown) => void;
+  onAnalysisComplete?: (analysis: any) => void;
 }
 
 const LiveDealAnalysis: React.FC<LiveDealAnalysisProps> = ({ 

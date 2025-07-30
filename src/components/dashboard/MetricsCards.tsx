@@ -71,7 +71,7 @@ const MetricsCards: React.FC = () => {
             <h3 className={`text-2xl font-bold ${isDark ? 'text-white group-hover:text-green-400' : 'text-gray-900 group-hover:text-green-600'} transition-colors`}>
               {kpi.value}
             </h3>
-            <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm`}>{kpi.title}</p>
+            <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm`}>{kpi?.title}</p>
           </div>
         </div>
       ))}

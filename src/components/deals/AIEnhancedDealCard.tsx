@@ -136,7 +136,7 @@ const AIEnhancedDealCard: FC<AIEnhancedDealCardProps> = ({
     >
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="text-lg font-medium text-gray-900">{deal.title}</h3>
+          <h3 className="text-lg font-medium text-gray-900">{deal?.title}</h3>
 
           <div className="flex flex-wrap gap-2 mt-1">
             <span className={`text-xs px-2 py-0.5 rounded-full ${getStageBadgeColor(deal.stage)}`}>
@@ -154,7 +154,7 @@ const AIEnhancedDealCard: FC<AIEnhancedDealCardProps> = ({
           <div className="mt-3 space-y-1">
             <div className="flex items-center text-sm">
               <Building size={16} className="text-gray-400 mr-2" />
-              <span className="text-gray-600">{deal.company}</span>
+              <span className="text-gray-600">{deal?.company}</span>
             </div>
 
             <div className="flex items-center text-sm">

@@ -210,8 +210,8 @@ export const ContactCommunicationHistory: FC<ContactCommunicationHistoryProps> =
                 <User className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">{contact.name}</h2>
-                <p className="text-sm text-gray-600">{contact.title} at {contact.company}</p>
+                <h2 className="text-2xl font-bold text-gray-900">{contact?.name}</h2>
+                <p className="text-sm text-gray-600">{contact?.title} at {contact?.company}</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -558,7 +558,7 @@ export const ContactCommunicationHistory: FC<ContactCommunicationHistoryProps> =
                               {comm.attachments.map(att => (
                                 <div key={att.id} className="flex items-center space-x-2 text-sm text-gray-600">
                                   <Paperclip className="w-3 h-3" />
-                                  <span>{att.name}</span>
+                                  <span>{att?.name}</span>
                                   <button className="text-blue-600 hover:text-blue-800">
                                     <Download className="w-3 h-3" />
                                   </button>

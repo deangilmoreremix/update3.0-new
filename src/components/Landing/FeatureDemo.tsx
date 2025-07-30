@@ -192,7 +192,7 @@ const FeatureDemo: React.FC = () => {
                   : 'bg-white text-gray-700 hover:bg-gray-50'
               }`}
             >
-              {feature.title}
+              {feature?.title}
             </button>
           ))}
         </div>

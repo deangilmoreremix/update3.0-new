@@ -279,8 +279,8 @@ const SemanticSearchContent: React.FC = () => {
                     <div key={contact.id} className="py-4">
                       <div className="flex justify-between">
                         <div>
-                          <h4 className="font-medium text-blue-600">{contact.name}</h4>
-                          <p className="text-sm text-gray-500">{contact.position} at {contact.company}</p>
+                          <h4 className="font-medium text-blue-600">{contact?.name}</h4>
+                          <p className="text-sm text-gray-500">{contact.position} at {contact?.company}</p>
                         </div>
                         <div className="text-right">
                           <div className="text-sm font-medium">
@@ -318,8 +318,8 @@ const SemanticSearchContent: React.FC = () => {
                     <div key={deal.id} className="py-4">
                       <div className="flex justify-between">
                         <div>
-                          <h4 className="font-medium text-purple-600">{deal.title}</h4>
-                          <p className="text-sm text-gray-500">{deal.company} - ${deal.value.toLocaleString()}</p>
+                          <h4 className="font-medium text-purple-600">{deal?.title}</h4>
+                          <p className="text-sm text-gray-500">{deal?.company} - ${deal.value.toLocaleString()}</p>
                         </div>
                         <div className="text-right">
                           <div className="text-sm font-medium">

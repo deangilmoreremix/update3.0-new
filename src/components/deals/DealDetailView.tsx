@@ -28,14 +28,14 @@ return (
                   <div className="flex items-center mb-4">
                     <div className="flex-shrink-0">
                       <img
-                        src={deal.companyAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(deal.company)}&background=3b82f6&color=ffffff&size=40`}
-                        alt={deal.company}
+                        src={deal?.companyAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(deal?.company)}&background=3b82f6&color=ffffff&size=40`}
+                        alt={deal?.company}
                         className="h-12 w-12 rounded-lg border border-gray-200 dark:border-gray-600"
                       />
                     </div>
                     <div className="ml-4 flex-1 min-w-0">
-                      <h4 className="text-lg font-bold text-gray-900 dark:text-white truncate">{deal.title}</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">{deal.company}</p>
+                      <h4 className="text-lg font-bold text-gray-900 dark:text-white truncate">{deal?.title}</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">{deal?.company}</p>
                     </div>
                   </div>
 
@@ -141,7 +141,7 @@ return (
                         {contactData.avatarSrc ? (
                           <img 
                             src={contactData.avatarSrc} 
-                            alt={contactData.name}
+                            alt={contactData?.name}
                             className="h-10 w-10 rounded-full object-cover"
                           />
                         ) : (
@@ -151,8 +151,8 @@ return (
                         )}
                       </div>
                       <div className="ml-3">
-                        <h4 className="text-base font-medium text-gray-900 dark:text-white">{contactData.name}</h4>
-                        <p className="text-sm text-gray-600 dark:text-gray-300">{contactData.title}</p>
+                        <h4 className="text-base font-medium text-gray-900 dark:text-white">{contactData?.name}</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">{contactData?.title}</p>
                       </div>
                     </div>
 
@@ -265,7 +265,7 @@ return (
                         </div>
                         <div className="space-y-1">
                           <p className="text-sm text-gray-500 dark:text-gray-400">Company</p>
-                          <p className="font-medium text-gray-900 dark:text-white">{deal.company}</p>
+                          <p className="font-medium text-gray-900 dark:text-white">{deal?.company}</p>
                         </div>
                         <div className="space-y-1">
                           <p className="text-sm text-gray-500 dark:text-gray-400">Value</p>
@@ -400,7 +400,7 @@ return (
                                 <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                               </div>
                               <div>
-                                <p className="text-sm font-medium text-gray-900 dark:text-white">{file.name}</p>
+                                <p className="text-sm font-medium text-gray-900 dark:text-white">{file?.name}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">{file.size} • {file.date}</p>
                               </div>
                             </div>
@@ -522,7 +522,7 @@ return (
                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
                           <input
                             type="text"
-                            value={formData.title}
+                            value={formData?.title}
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           />
@@ -533,7 +533,7 @@ return (
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Company</label>
                             <input
                               type="text"
-                              value={formData.company}
+                              value={formData?.company}
                               onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />

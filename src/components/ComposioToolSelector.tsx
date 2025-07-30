@@ -174,7 +174,7 @@ const ComposioIntegrationModal: FC<ComposioIntegrationModalProps> = ({
 
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-3xl font-bold text-white">{selectedTool.name}</h3>
+                      <h3 className="text-3xl font-bold text-white">{selectedTool?.name}</h3>
                       <div className="flex items-center gap-2">
                         {selectedTool.popularityScore && selectedTool.popularityScore >= 90 && (
                           <div className="flex items-center gap-1 text-yellow-400">
@@ -285,7 +285,7 @@ const ComposioIntegrationModal: FC<ComposioIntegrationModalProps> = ({
                           ) : (
                             <>
                               <LinkIcon className="h-5 w-5" />
-                              Connect {selectedTool.name}
+                              Connect {selectedTool?.name}
                             </>
                           )}
                         </button>
@@ -471,7 +471,7 @@ const ComposioIntegrationModal: FC<ComposioIntegrationModalProps> = ({
                       : 'bg-slate-700/50 text-gray-300 hover:bg-slate-600/50'
                   }`}
                 >
-                  {category.iconText} {category.name} ({category.filteredCount})
+                  {category.iconText} {category?.name} ({category.filteredCount})
                 </button>
               ))}
             </div>
@@ -528,7 +528,7 @@ const ComposioIntegrationModal: FC<ComposioIntegrationModalProps> = ({
                       )}
                     </div>
 
-                    <h3 className="text-lg font-semibold text-white mb-1">{tool.name}</h3>
+                    <h3 className="text-lg font-semibold text-white mb-1">{tool?.name}</h3>
                     <div className="text-blue-400 text-sm mb-2">
                       {composioToolCategories.find(c => c.id === tool.category)?.name}
                     </div>
@@ -571,7 +571,7 @@ const ComposioIntegrationModal: FC<ComposioIntegrationModalProps> = ({
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-white">{tool.name}</h3>
+                        <h3 className="font-semibold text-white">{tool?.name}</h3>
                         {tool.popularityScore && tool.popularityScore >= 90 && (
                           <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
                         )}

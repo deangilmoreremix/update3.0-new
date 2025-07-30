@@ -49,7 +49,7 @@ export interface EnhancedAIAnalysisRequest {
   contact: Contact;
   analysisTypes: string[];
   urgency?: 'low' | 'medium' | 'high';
-  requirements?: unknown;
+  requirements?: any;
   businessContext?: string;
 }
 
@@ -70,7 +70,7 @@ class EnhancedAIIntegrationService {
     logger.info(`Starting smart analysis for contact ${contactId}`, {
       analysisTypes,
       urgency,
-      contactCompany: contact.company
+      contactCompany: contact?.company
     });
 
     const results: Record<string, any> = {};

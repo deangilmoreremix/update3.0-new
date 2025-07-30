@@ -1,7 +1,7 @@
 
-export async function aiDialerAgent(input: unknown, setSteps?: (steps: unknown) => void) {
-  const name = input.name || "there";
-  const company = input.company || "your company";
+export async function aiDialerAgent(input: any, setSteps?: (steps: any) => void) {
+  const name = input?.name || "there";
+  const company = input?.company || "your company";
   const callPurpose = input.callPurpose || "follow-up";
 
   setSteps?.([{ step: "Preparing call script..." }]);

@@ -46,7 +46,7 @@ const AgentModal: FC<AgentModalProps> = ({ agentId, data, onClose }) => {
   };
 
   // Render JSON output
-  const renderJsonOutput = (data: unknown) => {
+  const renderJsonOutput = (data: any) => {
     // Handle email sequence output (SDR agent)
     if (data.first_email && data.follow_up && data.final_bump) {
       return (
@@ -164,7 +164,7 @@ const AgentModal: FC<AgentModalProps> = ({ agentId, data, onClose }) => {
               {steps.map((step, idx) => (
                 <div key={idx} className="flex items-start">
                   <span className="text-gray-400 mr-2">➡️</span>
-                  <span className="font-medium text-gray-700">{step.step || step.name}</span>
+                  <span className="font-medium text-gray-700">{step.step || step?.name}</span>
                   {step.result && (
                     <span className="ml-1 text-green-600 flex items-center">
                       <Check size={14} className="mr-1" />

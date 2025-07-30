@@ -208,7 +208,7 @@ export const useFormStore = create<FormState>((set, get) => ({
       const formId = formData.id || `form-${uuidv4()}`;
       const newForm: FormTemplate = {
         id: formId,
-        name: formData.name || 'Untitled Form',
+        name: formData?.name || 'Untitled Form',
         description: formData.description || '',
         fields: formData.fields || [],
         submissions: 0,

@@ -128,7 +128,7 @@ const DealAnalytics: FC<DealAnalyticsProps> = ({
                 <XAxis type="number" />
                 <YAxis dataKey="stage" type="category" />
                 <Tooltip 
-                  formatter={(value: unknown) => [`${value} deals`, 'Count']}
+                  formatter={(value: any) => [`${value} deals`, 'Count']}
                   contentStyle={{ borderRadius: '6px' }}
                 />
                 <Bar 
@@ -167,7 +167,7 @@ const DealAnalytics: FC<DealAnalyticsProps> = ({
                   tickFormatter={(value) => `$${value / 1000}k`}
                 />
                 <Tooltip 
-                  formatter={(value: unknown) => [`$${(value / 1000).toFixed(1)}k`, 'Pipeline Value']}
+                  formatter={(value: any) => [`$${(value / 1000).toFixed(1)}k`, 'Pipeline Value']}
                   contentStyle={{ borderRadius: '6px' }}
                 />
                 <Line 

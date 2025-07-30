@@ -21,7 +21,7 @@ export interface ContactEnrichmentData {
   bio?: string;
   confidence: number;
   notes?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // This service would contain the actual implementation of contact enrichment

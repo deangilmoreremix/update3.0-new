@@ -198,13 +198,13 @@ export const VideoCallProvider: FC<{ children: React.ReactNode }> = ({ children 
       console.error('Error accessing media devices:', error);
 
       if (error instanceof Error) {
-        if (error.name === 'NotAllowedError') {
+        if (error?.name === 'NotAllowedError') {
           throw new Error('Camera/microphone access denied. Please allow permissions and try again.');
-        } else if (error.name === 'NotFoundError') {
+        } else if (error?.name === 'NotFoundError') {
           throw new Error('No camera/microphone found. Please check your devices.');
-        } else if (error.name === 'NotReadableError') {
+        } else if (error?.name === 'NotReadableError') {
           throw new Error('Camera/microphone is already in use by another application.');
-        } else if (error.name === 'OverconstrainedError') {
+        } else if (error?.name === 'OverconstrainedError') {
           // Try with relaxed constraints
 
           try {
@@ -230,7 +230,7 @@ export const VideoCallProvider: FC<{ children: React.ReactNode }> = ({ children 
   }, []);
 
   // Real signaling simulation using localStorage for cross-tab communication
-  const handleSignaling = useCallback((signal: unknown, isInitiator: boolean) => {
+  const handleSignaling = useCallback((signal: any, isInitiator: boolean) => {
 
     // For demo purposes, use localStorage to enable cross-tab calling
     const channelName = `webrtc-signal-${currentCall?.id || 'demo'}`;
@@ -474,7 +474,7 @@ export const VideoCallProvider: FC<{ children: React.ReactNode }> = ({ children 
       // Initialize participants
       const initialParticipants = callParticipants.map(p => ({
         id: p.id,
-        name: p.name,
+        name: p?.name,
         avatar: p.avatar,
         stream: undefined,
         isConnected: false,
@@ -584,7 +584,7 @@ export const VideoCallProvider: FC<{ children: React.ReactNode }> = ({ children 
       ...prev,
       {
         id: participant.id,
-        name: participant.name,
+        name: participant?.name,
         avatar: participant.avatar,
         stream: undefined,
         isConnected: false,
@@ -850,11 +850,11 @@ export const VideoCallProvider: FC<{ children: React.ReactNode }> = ({ children 
       setIsScreenSharing(false);
 
       if (error instanceof Error) {
-        if (error.name === 'NotAllowedError') {
+        if (error?.name === 'NotAllowedError') {
           alert('Screen sharing was denied. Please allow screen sharing to continue.');
-        } else if (error.name === 'NotSupportedError') {
+        } else if (error?.name === 'NotSupportedError') {
           alert('Screen sharing is not supported in your browser.');
-        } else if (error.name === 'AbortError') {
+        } else if (error?.name === 'AbortError') {
 
         } else {
           alert(`Screen sharing failed: ${error.message}`);
@@ -1006,7 +1006,7 @@ export const VideoCallProvider: FC<{ children: React.ReactNode }> = ({ children 
         let packetsReceived = 0;
         let rtt = 0;
 
-        stats.forEach((report: unknown) => {
+        stats.forEach((report: any) => {
           if (report.type === 'inbound-rtp' && report.mediaType === 'video') {
             packetsLost += report.packetsLost || 0;
             packetsReceived += report.packetsReceived || 0;

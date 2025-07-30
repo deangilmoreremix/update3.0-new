@@ -75,7 +75,7 @@ const SalesTools: React.FC = () => {
                    style={{backgroundImage: `linear-gradient(to right, ${tool.color})`}}>
                 {tool.icon}
               </div>
-              <h3 className="text-xl font-semibold mb-2">{tool.title}</h3>
+              <h3 className="text-xl font-semibold mb-2">{tool?.title}</h3>
               <p className="text-gray-600 mb-4 flex-1">{tool.description}</p>
               <div className="mt-auto">
                 <span className="inline-flex items-center text-blue-600 font-medium transition-all duration-300 group-hover:translate-x-1">

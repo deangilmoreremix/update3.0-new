@@ -79,9 +79,9 @@ const FunctionAssistantContent: React.FC = () => {
         .map(msg => ({
           role: msg.role,
           content: msg.content,
-          name: msg.name,
+          name: msg?.name,
           function_call: msg.functionCall ? {
-            name: msg.functionCall.name,
+            name: msg.functionCall?.name,
             arguments: msg.functionCall.arguments
           } : undefined
         }));
@@ -104,7 +104,7 @@ const FunctionAssistantContent: React.FC = () => {
         content: response.content || 'I processed your request.',
         timestamp: new Date(),
         functionCall: response.function_call ? {
-          name: response.function_call.name,
+          name: response.function_call?.name,
           arguments: response.function_call.arguments
         } : undefined
       };
@@ -276,7 +276,7 @@ const FunctionAssistantContent: React.FC = () => {
               ) : (
                 functionLogs.map((log, i) => (
                   <div key={i} className="mb-2">
-                    <div className="text-green-400">→ {log.name}({JSON.stringify(log.arguments)})</div>
+                    <div className="text-green-400">→ {log?.name}({JSON.stringify(log.arguments)})</div>
                     <div className="text-blue-400">← {JSON.stringify(log.result)}</div>
                   </div>
                 ))
@@ -310,7 +310,7 @@ const FunctionAssistantContent: React.FC = () => {
                     )}
                     <span className="text-xs opacity-80">
                       {message.role === 'user' ? 'You' : 
-                       message.role === 'function' ? `Function: ${message.name}` : 'Assistant'}
+                       message.role === 'function' ? `Function: ${message?.name}` : 'Assistant'}
                     </span>
                     <span className="ml-2 text-xs opacity-50">
                       {formatTime(message.timestamp)}
@@ -321,7 +321,7 @@ const FunctionAssistantContent: React.FC = () => {
                   {message.functionCall && (
                     <div className="mt-2 text-xs bg-gray-100 p-2 rounded">
                       <div className="font-bold">Function Call:</div>
-                      <div className="font-mono">{message.functionCall.name}()</div>
+                      <div className="font-mono">{message.functionCall?.name}()</div>
                     </div>
                   )}
                 </div>

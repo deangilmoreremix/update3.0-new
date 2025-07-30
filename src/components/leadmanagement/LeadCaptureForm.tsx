@@ -83,7 +83,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
           name: formData.fullName,
           email: formData.email,
           phone: formData.phone,
-          company: formData.company,
+          company: formData?.company,
           position: formData.position,
           industry: formData.industry,
           notes: formData.message,
@@ -226,7 +226,7 @@ const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({
             <Input
               id="company"
               placeholder="Acme Corp"
-              value={formData.company}
+              value={formData?.company}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('company', e.target.value)}
             />
           </div>

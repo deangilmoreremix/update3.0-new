@@ -294,7 +294,7 @@ export function getToolsByStatus(status: 'active' | 'coming-soon'): ComposioTool
 export function searchTools(query: string): ComposioTool[] {
   const lowerQuery = query.toLowerCase();
   return composioTools.filter(tool => 
-    tool.name.toLowerCase().includes(lowerQuery) ||
+    tool?.name.toLowerCase().includes(lowerQuery) ||
     tool.description.toLowerCase().includes(lowerQuery) ||
     (tool.useCases && tool.useCases.some(useCase => useCase.toLowerCase().includes(lowerQuery)))
   );

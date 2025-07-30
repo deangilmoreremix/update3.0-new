@@ -82,7 +82,7 @@ const AIGoals: React.FC = () => {
                 ].map((goal, index) => (
                   <div key={index} className={`${isDark ? 'bg-gray-700' : 'bg-gray-50'} rounded-lg p-4`}>
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium">{goal.title}</h3>
+                      <h3 className="font-medium">{goal?.title}</h3>
                       <span className={`px-2 py-1 rounded text-xs font-medium ${
                         goal.priority === 'high' ? 'bg-red-100 text-red-800' :
                         goal.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :

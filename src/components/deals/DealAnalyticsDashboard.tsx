@@ -341,7 +341,7 @@ export const DealAnalyticsDashboard: FC<DealAnalyticsDashboardProps> = ({ deal }
               {engagementData.map((item, index) => (
                 <div key={index} className="flex items-center mb-3">
                   <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: item.color }}></div>
-                  <span className="text-sm text-gray-600 mr-2">{item.name}:</span>
+                  <span className="text-sm text-gray-600 mr-2">{item?.name}:</span>
                   <span className="text-sm font-semibold text-gray-900">{item.value} interactions</span>
                 </div>
               ))}
@@ -389,9 +389,9 @@ export const DealAnalyticsDashboard: FC<DealAnalyticsDashboardProps> = ({ deal }
                   <Cell 
                     key={`cell-${index}`} 
                     fill={
-                      entry.name === 'Qualification' ? '#3b82f6' : 
-                      entry.name === 'Proposal' ? '#8b5cf6' : 
-                      entry.name === 'Negotiation' ? '#ec4899' : 
+                      entry?.name === 'Qualification' ? '#3b82f6' : 
+                      entry?.name === 'Proposal' ? '#8b5cf6' : 
+                      entry?.name === 'Negotiation' ? '#ec4899' : 
                       '#10b981'
                     } 
                   />
@@ -404,12 +404,12 @@ export const DealAnalyticsDashboard: FC<DealAnalyticsDashboardProps> = ({ deal }
         <div className="grid grid-cols-4 gap-4 mt-4">
           {stageDurationData.map((stage, index) => (
             <div key={index} className={`p-3 rounded-lg ${
-              stage.name === 'Qualification' ? 'bg-blue-50' : 
-              stage.name === 'Proposal' ? 'bg-purple-50' : 
-              stage.name === 'Negotiation' ? 'bg-pink-50' : 
+              stage?.name === 'Qualification' ? 'bg-blue-50' : 
+              stage?.name === 'Proposal' ? 'bg-purple-50' : 
+              stage?.name === 'Negotiation' ? 'bg-pink-50' : 
               'bg-green-50'
             }`}>
-              <p className="text-sm font-medium mb-1">{stage.name}</p>
+              <p className="text-sm font-medium mb-1">{stage?.name}</p>
               <div className="flex items-baseline">
                 <p className="text-xl font-bold mr-1">{stage.days}</p>
                 <p className="text-xs text-gray-500">days</p>
@@ -449,7 +449,7 @@ export const DealAnalyticsDashboard: FC<DealAnalyticsDashboardProps> = ({ deal }
             <tbody className="bg-white divide-y divide-gray-200">
               {similarDealsData.map((similarDeal) => (
                 <tr key={similarDeal.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{similarDeal.title}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{similarDeal?.title}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatCurrency(similarDeal.value)}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${

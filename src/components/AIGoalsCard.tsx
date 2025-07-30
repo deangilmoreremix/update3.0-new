@@ -52,7 +52,7 @@ const AIGoalsCard: React.FC = () => {
               <div>
                 <div className="flex items-center space-x-2">
                   <h4 className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    {goal.name}
+                    {goal?.name}
                   </h4>
                   {goal.daysLeft && (
                     <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>

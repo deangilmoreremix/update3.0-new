@@ -167,7 +167,7 @@ export const SmartAIControls: FC<SmartAIControlsProps> = ({
         <GlassCard className="p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <Brain className="w-5 h-5 mr-2 text-purple-600" />
-            Smart AI Analysis - {contact.name}
+            Smart AI Analysis - {contact?.name}
           </h3>
 
           {/* Operation Selection */}
@@ -191,7 +191,7 @@ export const SmartAIControls: FC<SmartAIControlsProps> = ({
                       <Icon className="w-4 h-4 text-white" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">{op.name}</h4>
+                      <h4 className="font-semibold text-gray-900">{op?.name}</h4>
                       <p className="text-sm text-gray-600">{op.description}</p>
                     </div>
                   </div>
@@ -383,7 +383,7 @@ export const SmartAIControls: FC<SmartAIControlsProps> = ({
           </h3>
 
           <div className="space-y-3">
-            {performance.modelPerformance.slice(0, 5).map((model: unknown, index: number) => (
+            {performance.modelPerformance.slice(0, 5).map((model: any, index: number) => (
               <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
                   <div className="font-medium text-gray-900">{model.model}</div>

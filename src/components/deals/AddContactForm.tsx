@@ -13,8 +13,8 @@ const AddContactForm: FC<AddContactFormProps> = ({
     lastName: initialData.lastName || '',
     email: initialData.email || '',
     phone: initialData.phone || '',
-    title: initialData.title || '',
-    company: initialData.company || '',
+    title: initialData?.title || '',
+    company: initialData?.company || '',
     industry: initialData.industry || '',
     status: initialData.status || 'lead' as Contact['status'],
     interestLevel: initialData.interestLevel || 'medium' as Contact['interestLevel'],
@@ -31,7 +31,7 @@ const AddContactForm: FC<AddContactFormProps> = ({
     if (!formData.firstName.trim()) errors.firstName = 'First name is required';
     if (!formData.lastName.trim()) errors.lastName = 'Last name is required';
     if (!formData.email.trim()) errors.email = 'Email is required';
-    if (!formData.company.trim()) errors.company = 'Company is required';
+    if (!formData?.company.trim()) errors?.company = 'Company is required';
 
     if (formData.email.trim() && !/\S+@\S+\.\S+/.test(formData.email)) {
       errors.email = 'Email is invalid';
@@ -60,8 +60,8 @@ const AddContactForm: FC<AddContactFormProps> = ({
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         phone: formData.phone,
-        title: formData.title,
-        company: formData.company,
+        title: formData?.title,
+        company: formData?.company,
         industry: formData.industry,
         status: formData.status,
         interestLevel: formData.interestLevel,
@@ -200,14 +200,14 @@ const AddContactForm: FC<AddContactFormProps> = ({
               <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
-                value={formData.company}
+                value={formData?.company}
                 onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
-                className={`w-full pl-10 pr-3 py-2 border ${formErrors.company ? 'border-red-300 ring-1 ring-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors`}
+                className={`w-full pl-10 pr-3 py-2 border ${formErrors?.company ? 'border-red-300 ring-1 ring-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors`}
                 placeholder="Acme Inc."
               />
             </div>
-            {formErrors.company && (
-              <p className="mt-1 text-xs text-red-600">{formErrors.company}</p>
+            {formErrors?.company && (
+              <p className="mt-1 text-xs text-red-600">{formErrors?.company}</p>
             )}
           </div>
 
@@ -219,7 +219,7 @@ const AddContactForm: FC<AddContactFormProps> = ({
               <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
-                value={formData.title}
+                value={formData?.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                 className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 placeholder="Marketing Manager"

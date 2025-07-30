@@ -62,7 +62,7 @@ const AutoFormCompleter: FC<AutoFormCompleterProps> = ({
     // Initialize formData from fields
     const initialData: Record<string, string> = {};
     fields.forEach(field => {
-      initialData[field.name] = field.value;
+      initialData[field?.name] = field.value;
     });
     setFormData(initialData);
   }, [fields]);
@@ -71,10 +71,10 @@ const AutoFormCompleter: FC<AutoFormCompleterProps> = ({
   useEffect(() => {
     if (Object.keys(formData).length === 0) return;
 
-    const requiredFields = fields.filter(field => field.required).map(field => field.name);
+    const requiredFields = fields.filter(field => field.required).map(field => field?.name);
     const filledRequiredFields = requiredFields.filter(fieldName => formData[fieldName]?.trim());
 
-    const allFields = fields.map(field => field.name);
+    const allFields = fields.map(field => field?.name);
     const filledFields = allFields.filter(fieldName => formData[fieldName]?.trim());
 
     // Calculate completion score
@@ -99,7 +99,7 @@ const AutoFormCompleter: FC<AutoFormCompleterProps> = ({
     // Update fields state
     setFields(prev => 
       prev.map(field => 
-        field.name === name 
+        field?.name === name 
           ? { ...field, value, autoCompleted: false }
           : field
       )
@@ -134,7 +134,7 @@ const AutoFormCompleter: FC<AutoFormCompleterProps> = ({
       const model = gemini.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
       // Format field names for the AI to recognize
-      const fieldNames = fields.map(field => field.name).join(', ');
+      const fieldNames = fields.map(field => field?.name).join(', ');
 
       const prompt = `
         Parse the following text and extract ${formType} information for these fields: ${fieldNames}
@@ -173,7 +173,7 @@ const AutoFormCompleter: FC<AutoFormCompleterProps> = ({
               updatedFormData[field] = value;
 
               // Mark fields as auto-completed
-              const fieldIndex = updatedFields.findIndex(f => f.name === field);
+              const fieldIndex = updatedFields.findIndex(f => f?.name === field);
               if (fieldIndex >= 0) {
                 updatedFields[fieldIndex] = {
                   ...updatedFields[fieldIndex],
@@ -217,8 +217,8 @@ const AutoFormCompleter: FC<AutoFormCompleterProps> = ({
 
       // Get the remaining empty fields
       const emptyFields = fields
-        .filter(field => !formData[field.name]?.trim() && field.name !== changedField)
-        .map(field => field.name);
+        .filter(field => !formData[field?.name]?.trim() && field?.name !== changedField)
+        .map(field => field?.name);
 
       if (emptyFields.length === 0) return;
 
@@ -272,7 +272,7 @@ const AutoFormCompleter: FC<AutoFormCompleterProps> = ({
     // Update fields state
     setFields(prev => 
       prev.map(field => 
-        field.name === fieldName 
+        field?.name === fieldName 
           ? { ...field, value, autoCompleted: true }
           : field
       )
@@ -302,7 +302,7 @@ const AutoFormCompleter: FC<AutoFormCompleterProps> = ({
 
     // Check required fields
     const requiredFields = fields.filter(field => field.required);
-    const missingFields = requiredFields.filter(field => !formData[field.name]?.trim());
+    const missingFields = requiredFields.filter(field => !formData[field?.name]?.trim());
 
     if (missingFields.length > 0) {
       setError(`Please fill in the required fields: ${missingFields.map(f => f.label).join(', ')}`);
@@ -423,15 +423,15 @@ const AutoFormCompleter: FC<AutoFormCompleterProps> = ({
           <div className="space-y-4">
             {fields.map((field) => (
               <div key={field.id}>
-                <label htmlFor={field.name} className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor={field?.name} className="block text-sm font-medium text-gray-700 mb-1">
                   {field.label} {field.required && <span className="text-red-500">*</span>}
                 </label>
                 <div className="relative">
                   {field.type === 'textarea' ? (
                     <textarea
-                      id={field.name}
+                      id={field?.name}
                       value={field.value}
-                      onChange={(e) => handleFieldChange(field.name, e.target.value)}
+                      onChange={(e) => handleFieldChange(field?.name, e.target.value)}
                       placeholder={field.placeholder}
                       rows={4}
                       className={`w-full p-2 pr-8 border rounded-md ${
@@ -442,9 +442,9 @@ const AutoFormCompleter: FC<AutoFormCompleterProps> = ({
                     />
                   ) : field.type === 'select' ? (
                     <select
-                      id={field.name}
+                      id={field?.name}
                       value={field.value}
-                      onChange={(e) => handleFieldChange(field.name, e.target.value)}
+                      onChange={(e) => handleFieldChange(field?.name, e.target.value)}
                       className={`w-full p-2 pr-8 border rounded-md ${
                         field.autoCompleted 
                           ? 'bg-emerald-50 border-emerald-200 focus:ring-emerald-500 focus:border-emerald-500' 
@@ -464,10 +464,10 @@ const AutoFormCompleter: FC<AutoFormCompleterProps> = ({
                         </div>
                       )}
                       <input
-                        id={field.name}
+                        id={field?.name}
                         type={field.type}
                         value={field.value}
-                        onChange={(e) => handleFieldChange(field.name, e.target.value)}
+                        onChange={(e) => handleFieldChange(field?.name, e.target.value)}
                         placeholder={field.placeholder}
                         className={`w-full ${field.icon ? 'pl-10' : 'pl-3'} p-2 pr-8 border rounded-md ${
                           field.autoCompleted 
@@ -524,7 +524,7 @@ const AutoFormCompleter: FC<AutoFormCompleterProps> = ({
 
               <div className="space-y-3 max-h-64 overflow-y-auto">
                 {Object.entries(suggestions).map(([fieldName, value]) => {
-                  const field = fields.find(f => f.name === fieldName);
+                  const field = fields.find(f => f?.name === fieldName);
                   if (!field) return null;
 
                   return (

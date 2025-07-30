@@ -72,7 +72,7 @@ const ProductDemo: React.FC = () => {
           >
             <img
               src={slide.image}
-              alt={slide.title}
+              alt={slide?.title}
               className="w-full h-full object-cover"
               loading={index === 0 ? "eager" : "lazy"}
             />
@@ -82,7 +82,7 @@ const ProductDemo: React.FC = () => {
                   <div className="p-2 rounded-full bg-white/20 backdrop-blur-sm mr-3">
                     {slide.icon}
                   </div>
-                  <h3 className="text-xl font-bold">{slide.title}</h3>
+                  <h3 className="text-xl font-bold">{slide?.title}</h3>
                 </div>
                 <p className="text-white/80 mb-4">{slide.description}</p>
                 <button className="inline-flex items-center text-sm bg-white/20 hover:bg-white/30 backdrop-blur-sm px-4 py-2 rounded-full text-white transition-colors">

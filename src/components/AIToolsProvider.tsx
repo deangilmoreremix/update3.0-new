@@ -355,7 +355,7 @@ export const AIToolsProvider: FC<AIToolsProviderProps> = ({ children }) => {
       <AIToolModal 
         isOpen={isToolOpen}
         onClose={closeTool}
-        title={toolInfo.title}
+        title={toolInfo?.title}
         icon={toolInfo.icon}
         maxWidth="max-w-5xl"
       >

@@ -48,9 +48,9 @@ const SMSWhatsAppMessaging: React.FC = () => {
       const response = await fetch('/api/contacts');
       const contactsData = await response.json();
 
-      const formattedContacts: Contact[] = contactsData.map((contact: unknown) => ({
+      const formattedContacts: Contact[] = contactsData.map((contact: any) => ({
         id: contact.id,
-        name: contact.name,
+        name: contact?.name,
         phone: contact.phone || '+1234567890',
         avatar: contact.avatar,
         lastMessage: 'Click to start conversation',
@@ -78,7 +78,7 @@ const SMSWhatsAppMessaging: React.FC = () => {
         {
           id: '1',
           contactId: selectedContact.id,
-          contactName: selectedContact.name,
+          contactName: selectedContact?.name,
           contactPhone: selectedContact.phone,
           content: 'Hello! Thanks for reaching out.',
           type: activeTab,
@@ -89,7 +89,7 @@ const SMSWhatsAppMessaging: React.FC = () => {
         {
           id: '2',
           contactId: selectedContact.id,
-          contactName: selectedContact.name,
+          contactName: selectedContact?.name,
           contactPhone: selectedContact.phone,
           content: 'Hi! How can I help you today?',
           type: activeTab,
@@ -132,7 +132,7 @@ const SMSWhatsAppMessaging: React.FC = () => {
         const newMsg: Message = {
           id: Date.now().toString(),
           contactId: selectedContact.id,
-          contactName: selectedContact.name,
+          contactName: selectedContact?.name,
           contactPhone: selectedContact.phone,
           content: newMessage,
           type: activeTab,
@@ -220,7 +220,7 @@ const SMSWhatsAppMessaging: React.FC = () => {
                 <div className="relative">
                   <Avatar className="w-10 h-10">
                     <AvatarImage src={contact.avatar} />
-                    <AvatarFallback>{contact.name.charAt(0)}</AvatarFallback>
+                    <AvatarFallback>{contact?.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   {contact.isOnline && (
                     <div className="absolute -bottom-0 -right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
@@ -229,7 +229,7 @@ const SMSWhatsAppMessaging: React.FC = () => {
 
                 <div className="ml-3 flex-1 min-w-0">
                   <div className="flex justify-between items-center">
-                    <p className="font-medium text-sm truncate">{contact.name}</p>
+                    <p className="font-medium text-sm truncate">{contact?.name}</p>
                     {contact.unreadCount > 0 && (
                       <Badge variant="secondary" className="text-xs">
                         {contact.unreadCount}
@@ -254,10 +254,10 @@ const SMSWhatsAppMessaging: React.FC = () => {
               <div className="flex items-center">
                 <Avatar className="w-8 h-8">
                   <AvatarImage src={selectedContact.avatar} />
-                  <AvatarFallback>{selectedContact.name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback>{selectedContact?.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="ml-3">
-                  <h3 className="font-medium">{selectedContact.name}</h3>
+                  <h3 className="font-medium">{selectedContact?.name}</h3>
                   <p className="text-sm text-gray-500">{selectedContact.phone}</p>
                 </div>
                 <div className="ml-auto">

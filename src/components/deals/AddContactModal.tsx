@@ -128,12 +128,12 @@ export const AddContactModal: FC<AddContactModalProps> = ({
       errors.lastName = 'Last name is required';
     }
 
-    if (!formData.company) {
-      errors.company = 'Company is required';
+    if (!formData?.company) {
+      errors?.company = 'Company is required';
     }
 
-    if (!formData.title) {
-      errors.title = 'Title is required';
+    if (!formData?.title) {
+      errors?.title = 'Title is required';
     }
 
     // Validate social profile URLs
@@ -177,12 +177,12 @@ export const AddContactModal: FC<AddContactModalProps> = ({
   };
 
   const handleAddCustomField = () => {
-    if (newCustomField.name && newCustomField.value) {
+    if (newCustomField?.name && newCustomField.value) {
       setFormData(prev => ({
         ...prev,
         customFields: {
           ...prev.customFields,
-          [newCustomField.name]: newCustomField.value
+          [newCustomField?.name]: newCustomField.value
         }
       }));
       setNewCustomField({ name: '', value: '' });
@@ -225,7 +225,7 @@ export const AddContactModal: FC<AddContactModalProps> = ({
     setLastEnrichmentData(enrichmentData);
 
     // Apply enrichment data to form
-    const updates: unknown = {};
+    const updates: any = {};
 
     if (enrichmentData.firstName && !formData.firstName) {
       updates.firstName = enrichmentData.firstName;
@@ -239,11 +239,11 @@ export const AddContactModal: FC<AddContactModalProps> = ({
     if (enrichmentData.phone && !formData.phone) {
       updates.phone = enrichmentData.phone;
     }
-    if (enrichmentData.title && !formData.title) {
-      updates.title = enrichmentData.title;
+    if (enrichmentData?.title && !formData?.title) {
+      updates?.title = enrichmentData?.title;
     }
-    if (enrichmentData.company && !formData.company) {
-      updates.company = enrichmentData.company;
+    if (enrichmentData?.company && !formData?.company) {
+      updates?.company = enrichmentData?.company;
     }
     if (enrichmentData.industry && !formData.industry) {
       updates.industry = enrichmentData.industry;
@@ -278,7 +278,7 @@ export const AddContactModal: FC<AddContactModalProps> = ({
 
     // Social profiles
     if (enrichmentData.socialProfiles) {
-      const socialUpdates: unknown = {};
+      const socialUpdates: any = {};
       Object.entries(enrichmentData.socialProfiles).forEach(([key, value]) => {
         if (value && !formData.socialProfiles[key as keyof typeof formData.socialProfiles]) {
           socialUpdates[key] = value;
@@ -312,8 +312,8 @@ export const AddContactModal: FC<AddContactModalProps> = ({
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         phone: formData.phone || undefined,
-        title: formData.title,
-        company: formData.company,
+        title: formData?.title,
+        company: formData?.company,
         industry: formData.industry || undefined,
         avatarSrc: formData.avatarSrc || `https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2`,
         sources: formData.sources.length > 0 ? formData.sources : ['Manual Entry'],
@@ -453,7 +453,7 @@ export const AddContactModal: FC<AddContactModalProps> = ({
                         email: formData.email,
                         firstName: formData.firstName,
                         lastName: formData.lastName,
-                        company: formData.company
+                        company: formData?.company
                       }}
                       onDataFound={handleAIAutoFill}
                       variant="outline"
@@ -637,15 +637,15 @@ export const AddContactModal: FC<AddContactModalProps> = ({
                   </label>
                   <input
                     type="text"
-                    value={formData.company}
+                    value={formData?.company}
                     onChange={(e) => handleInputChange('company', e.target.value)}
                     className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      formErrors.company ? 'border-red-500' : 'border-gray-300'
+                      formErrors?.company ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Enter company name"
                   />
-                  {formErrors.company && (
-                    <p className="text-sm text-red-600 mt-1">{formErrors.company}</p>
+                  {formErrors?.company && (
+                    <p className="text-sm text-red-600 mt-1">{formErrors?.company}</p>
                   )}
                 </div>
 
@@ -655,15 +655,15 @@ export const AddContactModal: FC<AddContactModalProps> = ({
                   </label>
                   <input
                     type="text"
-                    value={formData.title}
+                    value={formData?.title}
                     onChange={(e) => handleInputChange('title', e.target.value)}
                     className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      formErrors.title ? 'border-red-500' : 'border-gray-300'
+                      formErrors?.title ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Enter job title"
                   />
-                  {formErrors.title && (
-                    <p className="text-sm text-red-600 mt-1">{formErrors.title}</p>
+                  {formErrors?.title && (
+                    <p className="text-sm text-red-600 mt-1">{formErrors?.title}</p>
                   )}
                 </div>
 
@@ -870,7 +870,7 @@ export const AddContactModal: FC<AddContactModalProps> = ({
                         <div className={`${platform.color} p-1 rounded mr-2`}>
                           <Icon className="w-3 h-3 text-white" />
                         </div>
-                        {platform.name}
+                        {platform?.name}
                         {platform.key === 'linkedin' && formData.socialProfiles[platform.key] && (
                           <Brain className="w-3 h-3 ml-1 text-purple-500" title="AI research available" />
                         )}
@@ -944,7 +944,7 @@ export const AddContactModal: FC<AddContactModalProps> = ({
                     <input
                       type="text"
                       placeholder="Field name"
-                      value={newCustomField.name}
+                      value={newCustomField?.name}
                       onChange={(e) => setNewCustomField(prev => ({ ...prev, name: e.target.value }))}
                       className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
@@ -962,7 +962,7 @@ export const AddContactModal: FC<AddContactModalProps> = ({
                       variant="primary" 
                       size="sm" 
                       onClick={handleAddCustomField}
-                      disabled={!newCustomField.name || !newCustomField.value}
+                      disabled={!newCustomField?.name || !newCustomField.value}
                     >
                       Add Field
                     </ModernButton>

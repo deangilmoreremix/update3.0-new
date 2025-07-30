@@ -540,7 +540,7 @@ class SupabaseAIService {
       }, {} as Record<string, any>);
 
       // Calculate averages and convert Sets to arrays
-      Object.values(stats).forEach((stat: unknown) => {
+      Object.values(stats).forEach((stat: any) => {
         stat.avgResponseTime = stat.avgResponseTime / stat.requests / 1000; // Convert to seconds
         stat.successRate = (stat.successRate / stat.requests) * 100;
         stat.features = Array.from(stat.features);

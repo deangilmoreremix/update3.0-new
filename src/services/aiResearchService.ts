@@ -31,7 +31,7 @@ interface CompanyResearchData {
 class EnhancedAIResearchService implements AIResearchService {
   private intelligentAI: IntelligentAIService;
 
-  constructor(openaiService?: unknown, geminiService?: unknown) {
+  constructor(openaiService?: any, geminiService?: any) {
     // Use dependency injection instead of hooks
     if (openaiService && geminiService) {
       this.intelligentAI = new IntelligentAIService(openaiService, geminiService);
@@ -131,7 +131,7 @@ class EnhancedAIResearchService implements AIResearchService {
     return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&backgroundColor=3b82f6,8b5cf6,f59e0b,10b981,ef4444`;
   }
 
-  async enhanceWithAI(data: unknown, query: string, priority: 'speed' | 'quality' | 'cost' = 'quality'): Promise<unknown> {
+  async enhanceWithAI(data: any, query: string, priority: 'speed' | 'quality' | 'cost' = 'quality'): Promise<unknown> {
     try {
 
       // Use intelligent routing for insights (OpenAI preferred for creative insights)

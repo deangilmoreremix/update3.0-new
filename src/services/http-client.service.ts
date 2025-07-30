@@ -10,7 +10,7 @@ import { cacheService } from './cache.service';
 export interface RequestConfig {
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   url: string;
-  data?: unknown;
+  data?: any;
   headers?: Record<string, string>;
   params?: Record<string, any>;
   timeout?: number;
@@ -38,7 +38,7 @@ export interface ApiError extends Error {
   status?: number;
   statusText?: string;
   response?: {
-    data?: unknown;
+    data?: any;
     status: number;
     statusText: string;
   };
@@ -51,8 +51,8 @@ class HttpClientService {
   private refreshToken: string | null = null;
   private isRefreshing = false;
   private failedQueue: Array<{
-    resolve: (value?: unknown) => void;
-    reject: (reason?: unknown) => void;
+    resolve: (value?: any) => void;
+    reject: (reason?: any) => void;
   }> = [];
 
   constructor() {
@@ -307,7 +307,7 @@ class HttpClientService {
 
   async post<T>(
     url: string,
-    data?: unknown,
+    data?: any,
     options?: Partial<RequestConfig>
   ): Promise<ApiResponse<T>> {
     return this.makeRequest({
@@ -320,7 +320,7 @@ class HttpClientService {
 
   async put<T>(
     url: string,
-    data?: unknown,
+    data?: any,
     options?: Partial<RequestConfig>
   ): Promise<ApiResponse<T>> {
     return this.makeRequest({
@@ -333,7 +333,7 @@ class HttpClientService {
 
   async patch<T>(
     url: string,
-    data?: unknown,
+    data?: any,
     options?: Partial<RequestConfig>
   ): Promise<ApiResponse<T>> {
     return this.makeRequest({

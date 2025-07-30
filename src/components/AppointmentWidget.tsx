@@ -75,7 +75,7 @@ const AppointmentWidget: FC<AppointmentWidgetProps> = ({
                 <div>
                   <div className="flex items-center">
                     {getAppointmentTypeIcon(appointment.type)}
-                    <h4 className="font-medium text-sm ml-2">{appointment.title}</h4>
+                    <h4 className="font-medium text-sm ml-2">{appointment?.title}</h4>
                   </div>
                   <p className="text-xs text-gray-500 mt-1">{appointment.contactName}</p>
                 </div>

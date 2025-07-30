@@ -361,9 +361,9 @@ export function useGemini() {
         "${originalEmail}"
         
         Contact information:
-        ${contactInfo.name ? `Name: ${contactInfo.name}` : ''}
+        ${contactInfo?.name ? `Name: ${contactInfo?.name}` : ''}
         ${contactInfo.position ? `Position: ${contactInfo.position}` : ''}
-        ${contactInfo.company ? `Company: ${contactInfo.company}` : ''}
+        ${contactInfo?.company ? `Company: ${contactInfo?.company}` : ''}
         
         ${dealContext ? `Context about our relationship: ${dealContext}` : ''}
         

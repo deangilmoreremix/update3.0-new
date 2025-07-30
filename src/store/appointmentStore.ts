@@ -116,7 +116,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
       const newAppointment: Appointment = {
         id: appointmentId,
-        title: appointmentData.title || 'New Appointment',
+        title: appointmentData?.title || 'New Appointment',
         contactId: appointmentData.contactId,
         contactName: appointmentData.contactName || 'No Contact',
         contactEmail: appointmentData.contactEmail,

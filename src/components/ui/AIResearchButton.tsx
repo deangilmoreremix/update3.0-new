@@ -44,7 +44,7 @@ export const AIResearchButton: FC<AIResearchButtonProps> = ({
     setSearchResult(null);
 
     try {
-      let result: unknown;
+      let result: any;
 
       if (searchType === 'contact' || (searchType === 'auto' && (searchQuery.firstName || searchQuery.lastName || searchQuery.email))) {
         // Contact research
@@ -56,7 +56,7 @@ export const AIResearchButton: FC<AIResearchButtonProps> = ({
           // Use AI enrichment service for contact data
           const enrichData: ContactEnrichmentData = {
             name: personName,
-            company: searchQuery.company,
+            company: searchQuery?.company,
             email: searchQuery.email,
             linkedinUrl: searchQuery.linkedinUrl
           };
@@ -65,12 +65,12 @@ export const AIResearchButton: FC<AIResearchButtonProps> = ({
         } else {
           throw new Error('Insufficient contact information for research');
         }
-      } else if (searchType === 'company' || (searchType === 'auto' && (searchQuery.company || searchQuery.domain))) {
+      } else if (searchType === 'company' || (searchType === 'auto' && (searchQuery?.company || searchQuery.domain))) {
         // Company research
-        if (searchQuery.company || searchQuery.domain) {
+        if (searchQuery?.company || searchQuery.domain) {
           // Use AI enrichment service for company data
           const enrichData: CompanyEnrichmentData = {
-            name: searchQuery.company,
+            name: searchQuery?.company,
             domain: searchQuery.domain
           };
 

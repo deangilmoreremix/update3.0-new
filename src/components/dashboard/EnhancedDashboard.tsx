@@ -432,7 +432,7 @@ export default function EnhancedDashboard() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
-                      {activity.title}
+                      {activity?.title}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                       {activity.description}

@@ -1,7 +1,7 @@
 
-export async function leadScoringAgent(input: unknown, setSteps?: (steps: unknown) => void) {
-  const name = input.name || "Unknown";
-  const company = input.company || "Unknown";
+export async function leadScoringAgent(input: any, setSteps?: (steps: any) => void) {
+  const name = input?.name || "Unknown";
+  const company = input?.company || "Unknown";
   const email = input.email || "";
   const position = input.position || "";
   const industry = input.industry || "Unknown";

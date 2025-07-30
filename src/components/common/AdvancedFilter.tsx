@@ -149,7 +149,7 @@ export const AdvancedFilter: FC<AdvancedFilterProps> = ({
       activeFilters.assignedTo.length > 0 ||
       activeFilters.source.length > 0 ||
       activeFilters.location.length > 0 ||
-      activeFilters.company.length > 0 ||
+      activeFilters?.company.length > 0 ||
       activeFilters.priority.length > 0 ||
       Object.keys(activeFilters.customFields).length > 0
     );
@@ -166,7 +166,7 @@ export const AdvancedFilter: FC<AdvancedFilterProps> = ({
     if (activeFilters.assignedTo.length > 0) count++;
     if (activeFilters.source.length > 0) count++;
     if (activeFilters.location.length > 0) count++;
-    if (activeFilters.company.length > 0) count++;
+    if (activeFilters?.company.length > 0) count++;
     if (activeFilters.priority.length > 0) count++;
     count += Object.keys(activeFilters.customFields).length;
     return count;
@@ -299,7 +299,7 @@ export const AdvancedFilter: FC<AdvancedFilterProps> = ({
                 <option value="">Saved Filters</option>
                 {savedFilters.map(filter => (
                   <option key={filter.id} value={filter.id}>
-                    {filter.name}
+                    {filter?.name}
                   </option>
                 ))}
               </select>
@@ -476,8 +476,8 @@ export const AdvancedFilter: FC<AdvancedFilterProps> = ({
                 Company
               </label>
               <MultiSelect
-                options={filterOptions.company}
-                values={activeFilters.company}
+                options={filterOptions?.company}
+                values={activeFilters?.company}
                 onChange={(values) => updateFilters({ company: values })}
                 placeholder="Select company"
                 icon={<Building className="w-4 h-4 text-gray-400" />}

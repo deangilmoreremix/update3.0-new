@@ -1,7 +1,7 @@
 
-export async function aiJourneysAgent(input: unknown, setSteps?: (steps: unknown) => void) {
-  const name = input.name || "there";
-  const company = input.company || "your company";
+export async function aiJourneysAgent(input: any, setSteps?: (steps: any) => void) {
+  const name = input?.name || "there";
+  const company = input?.company || "your company";
   const journeyType = input.journeyType || "onboarding";
 
   setSteps?.([{ step: "Creating customer journey..." }]);

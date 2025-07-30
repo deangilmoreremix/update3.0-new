@@ -40,7 +40,7 @@ export function AIGoalsPage() {
     setSelectedGoal(null);
   };
 
-  const handleGoalComplete = (result: unknown) => {
+  const handleGoalComplete = (result: any) => {
 
   };
 
@@ -273,7 +273,7 @@ export function AIGoalsPage() {
                         Context-Aware Goal Recommendations
                       </h3>
                       <p className="text-blue-700 dark:text-blue-300 mb-4">
-                        Goals are pre-filtered and prioritized based on your current context: {context.type} - {context.name || context.title}
+                        Goals are pre-filtered and prioritized based on your current context: {context.type} - {context?.name || context?.title}
                       </p>
                       <div className="flex gap-2">
                         <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium">

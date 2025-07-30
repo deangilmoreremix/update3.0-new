@@ -40,7 +40,7 @@ const VoiceProfiles: React.FC = () => {
 
   useEffect(() => {
     if (editingProfile) {
-      setFormName(editingProfile.name);
+      setFormName(editingProfile?.name);
       setFormVoiceId(editingProfile.voice_id);
       setFormSettings(editingProfile.settings || { pitch: 1, speed: 1, volume: 1 });
     } else {
@@ -139,7 +139,7 @@ const VoiceProfiles: React.FC = () => {
 
   const getVoiceName = (voiceId: string) => {
     const voice = VOICE_OPTIONS.find(v => v.id === voiceId);
-    return voice ? voice.name : voiceId;
+    return voice ? voice?.name : voiceId;
   };
 
   return (
@@ -211,7 +211,7 @@ const VoiceProfiles: React.FC = () => {
               >
                 <option value="">Select a voice type</option>
                 {VOICE_OPTIONS.map(voice => (
-                  <option key={voice.id} value={voice.id}>{voice.name}</option>
+                  <option key={voice.id} value={voice.id}>{voice?.name}</option>
                 ))}
               </select>
             </div>
@@ -333,7 +333,7 @@ const VoiceProfiles: React.FC = () => {
                         <Mic size={20} />
                       </div>
                       <div className="ml-3">
-                        <h3 className="font-medium text-gray-900">{profile.name}</h3>
+                        <h3 className="font-medium text-gray-900">{profile?.name}</h3>
                         <p className="text-sm text-gray-500">{getVoiceName(profile.voice_id)}</p>
                       </div>
                     </div>

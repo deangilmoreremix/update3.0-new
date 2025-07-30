@@ -68,7 +68,7 @@ export const CommunicationHub: FC<CommunicationHubProps> = ({ contact }) => {
       duration: 45, // minutes
       type: 'video',
       status: 'scheduled',
-      participants: [contact.name, 'You']
+      participants: [contact?.name, 'You']
     },
     {
       id: '2',
@@ -77,7 +77,7 @@ export const CommunicationHub: FC<CommunicationHubProps> = ({ contact }) => {
       duration: 30, // minutes
       type: 'call',
       status: 'completed',
-      participants: [contact.name, 'You', 'Alex Rivera']
+      participants: [contact?.name, 'You', 'Alex Rivera']
     }
   ];
 
@@ -133,7 +133,7 @@ export const CommunicationHub: FC<CommunicationHubProps> = ({ contact }) => {
 
 Dear ${contact.firstName},
 
-I hope this email finds you well. I wanted to follow up on our recent conversation about how our solution can help ${contact.company} achieve its business goals.
+I hope this email finds you well. I wanted to follow up on our recent conversation about how our solution can help ${contact?.company} achieve its business goals.
 
 Based on our discussion about your needs in the ${contact.industry || 'industry'}, I believe our [Product/Service] would be particularly valuable for your team.
 
@@ -418,7 +418,7 @@ Best regards,
             <label className="block text-sm font-medium text-gray-700 mb-1">To:</label>
             <div className="flex items-center bg-gray-50 border border-gray-300 rounded-md px-3 py-2">
               <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm flex items-center">
-                {contact.name} <span className="text-blue-500 ml-1">&times;</span>
+                {contact?.name} <span className="text-blue-500 ml-1">&times;</span>
               </span>
             </div>
           </div>
@@ -496,7 +496,7 @@ Best regards,
                 <div className="bg-blue-100 rounded-full p-6 mb-4">
                   <Phone className="h-12 w-12 text-blue-600" />
                 </div>
-                <h5 className="text-lg font-semibold text-gray-900 mb-2">{contact.name}</h5>
+                <h5 className="text-lg font-semibold text-gray-900 mb-2">{contact?.name}</h5>
                 <p className="text-gray-600 mb-6">{contact.phone || 'No phone number available'}</p>
                 <button
                   onClick={handleStartCall}
@@ -511,7 +511,7 @@ Best regards,
                 <div className="bg-yellow-100 rounded-full p-6 mb-4">
                   <Phone className="h-12 w-12 text-yellow-600 animate-pulse" />
                 </div>
-                <h5 className="text-lg font-semibold text-gray-900 mb-2">{contact.name}</h5>
+                <h5 className="text-lg font-semibold text-gray-900 mb-2">{contact?.name}</h5>
                 <p className="text-yellow-600 mb-6 animate-pulse">Connecting...</p>
                 <button
                   onClick={handleEndCall}
@@ -525,7 +525,7 @@ Best regards,
                 <div className="bg-green-100 rounded-full p-6 mb-4">
                   <Phone className="h-12 w-12 text-green-600" />
                 </div>
-                <h5 className="text-lg font-semibold text-gray-900 mb-2">{contact.name}</h5>
+                <h5 className="text-lg font-semibold text-gray-900 mb-2">{contact?.name}</h5>
                 <p className="text-green-600 mb-2">Call in progress</p>
                 <p className="text-gray-600 mb-6">
                   {Math.floor(callDuration / 60)}:{(callDuration % 60).toString().padStart(2, '0')}
@@ -574,7 +574,7 @@ Best regards,
                 <div className="bg-gray-100 rounded-full p-6 mb-4">
                   <Phone className="h-12 w-12 text-gray-600" />
                 </div>
-                <h5 className="text-lg font-semibold text-gray-900 mb-2">{contact.name}</h5>
+                <h5 className="text-lg font-semibold text-gray-900 mb-2">{contact?.name}</h5>
                 <p className="text-red-600 mb-2">Call ended</p>
                 <button
                   onClick={() => setCallStatus('idle')}
@@ -752,7 +752,7 @@ Best regards,
                             )}
                           </div>
                           <div>
-                            <h5 className="text-sm font-medium text-gray-900">{meeting.title}</h5>
+                            <h5 className="text-sm font-medium text-gray-900">{meeting?.title}</h5>
                             <p className="text-xs text-gray-500">
                               {meeting.date.toLocaleDateString()} at {meeting.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </p>
@@ -807,7 +807,7 @@ Best regards,
                             )}
                           </div>
                           <div>
-                            <h5 className="text-sm font-medium text-gray-900">{meeting.title}</h5>
+                            <h5 className="text-sm font-medium text-gray-900">{meeting?.title}</h5>
                             <p className="text-xs text-gray-500">
                               {meeting.date.toLocaleDateString()} at {meeting.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </p>

@@ -84,7 +84,7 @@ export const DealDetailView: FC<DealDetailViewProps> = ({
     }));
   };
 
-  const handleInputChange = (field: string, value: unknown) => {
+  const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -165,7 +165,7 @@ export const DealDetailView: FC<DealDetailViewProps> = ({
     }
   };
 
-  const handleAIEnrichment = (enrichmentData: unknown) => {
+  const handleAIEnrichment = (enrichmentData: any) => {
     setIsLoading(true);
     setTimeout(() => {
       // Update the contact with enrichment data
@@ -221,11 +221,11 @@ export const DealDetailView: FC<DealDetailViewProps> = ({
   };
 
   const handleAddCustomField = () => {
-    if (!newCustomField.name || !newCustomField.value) return;
+    if (!newCustomField?.name || !newCustomField.value) return;
 
     const updatedCustomFields = {
       ...(formData.customFields || {}),
-      [newCustomField.name]: newCustomField.value
+      [newCustomField?.name]: newCustomField.value
     };
 
     setFormData(prev => ({ ...prev, customFields: updatedCustomFields }));
@@ -242,10 +242,10 @@ export const DealDetailView: FC<DealDetailViewProps> = ({
   };
 
   const handleAddLink = () => {
-    if (!newLink.url || !newLink.title) return;
+    if (!newLink.url || !newLink?.title) return;
 
     const link = {
-      title: newLink.title,
+      title: newLink?.title,
       url: newLink.url,
       createdAt: new Date().toISOString()
     };
@@ -268,7 +268,7 @@ export const DealDetailView: FC<DealDetailViewProps> = ({
       setNewAttachment({
         ...newAttachment,
         file: e.target.files[0],
-        name: e.target.files[0].name
+        name: e.target.files[0]?.name
       });
     }
   };
@@ -280,7 +280,7 @@ export const DealDetailView: FC<DealDetailViewProps> = ({
     // For now, we'll just add the file metadata
     const attachment = {
       id: Date.now().toString(),
-      name: newAttachment.name || newAttachment.file.name,
+      name: newAttachment?.name || newAttachment.file?.name,
       size: newAttachment.file.size,
       type: newAttachment.file.type,
       uploadedAt: new Date().toISOString()
@@ -318,7 +318,7 @@ export const DealDetailView: FC<DealDetailViewProps> = ({
     setIsFindingImage(true);
     try {
       // Call AI service to find a company logo
-      const newLogo = await aiResearch.findCompanyLogo(formData.company);
+      const newLogo = await aiResearch.findCompanyLogo(formData?.company);
       setFormData(prev => ({ ...prev, companyAvatar: newLogo }));
       await onUpdate(deal.id, { companyAvatar: newLogo });
     } catch (error) {
@@ -363,7 +363,7 @@ export const DealDetailView: FC<DealDetailViewProps> = ({
     setIsEnriching(true);
     try {
       // Use AI to research the company
-      const companyData = await aiResearch.researchCompany(formData.company);
+      const companyData = await aiResearch.researchCompany(formData?.company);
 
       // Update deal with enriched company data
       const newProbability = Math.min(deal.probability + 15, 95);
@@ -377,7 +377,7 @@ AI Company Research (${companyData.aiProvider}):
 
 Description: ${companyData.description}
 
-Key Executives: ${companyData.keyExecutives?.map(exec => `${exec.name} (${exec.title})`).join(', ') || 'Not found'}
+Key Executives: ${companyData.keyExecutives?.map(exec => `${exec?.name} (${exec?.title})`).join(', ') || 'Not found'}
 
 Potential Needs:
 ${companyData.potentialNeeds.map(need => `- ${need}`).join('\n')}
@@ -464,10 +464,10 @@ Sales Approach: ${companyData.salesApproach}
             <div className="flex items-start justify-between">
               <div className="flex items-center space-x-4">
                 <div className="relative h-12 w-12">
-                  {deal.companyAvatar ? (
+                  {deal?.companyAvatar ? (
                     <img 
-                      src={deal.companyAvatar} 
-                      alt={deal.company}
+                      src={deal?.companyAvatar} 
+                      alt={deal?.company}
                       className="h-full w-full rounded-lg object-cover border border-gray-200"
                     />
                   ) : (
@@ -484,11 +484,11 @@ Sales Approach: ${companyData.salesApproach}
                   )}
                </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 mb-1">{deal.title}</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-1">{deal?.title}</h2>
                   <div className="flex items-center space-x-2">
                     <div className="flex items-center space-x-1">
                       <Building2 className="w-3 h-3 text-gray-500" />
-                      <span className="text-gray-600">{deal.company}</span>
+                      <span className="text-gray-600">{deal?.company}</span>
                     </div>
                     <div className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                       deal.stage === 'qualification' ? 'bg-blue-100 text-blue-800' :
@@ -606,14 +606,14 @@ Sales Approach: ${companyData.salesApproach}
                           email: editedContact.email,
                           firstName: editedContact.firstName,
                           lastName: editedContact.lastName,
-                          company: editedContact.company
+                          company: editedContact?.company
                         };
 
                         handleAIEnrichment({
                           email: searchQuery.email,
                           firstName: searchQuery.firstName,
                           lastName: searchQuery.lastName,
-                          company: searchQuery.company,
+                          company: searchQuery?.company,
                           confidence: 75
                         });
                       }
@@ -644,7 +644,7 @@ Sales Approach: ${companyData.salesApproach}
                         firstName: editedContact.firstName,
                         lastName: editedContact.lastName,
                         email: editedContact.email,
-                        company: editedContact.company,
+                        company: editedContact?.company,
                         phone: editedContact.phone || `+1-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
                         industry: editedContact.industry || ['Technology', 'Finance', 'Healthcare', 'Education'][Math.floor(Math.random() * 4)],
                         notes: "Auto-enriched with AI on " + new Date().toLocaleDateString(),
@@ -837,7 +837,7 @@ Sales Approach: ${companyData.salesApproach}
                               <div 
                                 key={index} 
                                 className={`${social.color} p-1 rounded-md text-white ${profileUrl ? '' : 'opacity-50'} hover:opacity-80 transition-opacity cursor-pointer`}
-                                title={profileUrl ? `${social.name}: ${profileUrl}` : `Add ${social.name}`}
+                                title={profileUrl ? `${social?.name}: ${profileUrl}` : `Add ${social?.name}`}
                                 onClick={() => {
                                   if (profileUrl) {
                                     window.open(profileUrl, '_blank');
@@ -874,7 +874,7 @@ Sales Approach: ${companyData.salesApproach}
                           <option value="">Select platform...</option>
                           {socialPlatforms.map((platform) => (
                             <option key={platform.key} value={platform.key}>
-                              {platform.name}
+                              {platform?.name}
                             </option>
                           ))}
                         </select>
@@ -977,8 +977,8 @@ Sales Approach: ${companyData.salesApproach}
                 <div className="relative inline-block mb-4">
                   <div className="relative">
                     <img
-                      src={deal.companyAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${deal.company}&backgroundColor=3b82f6&textColor=ffffff`}
-                      alt={deal.company}
+                      src={deal?.companyAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${deal?.company}&backgroundColor=3b82f6&textColor=ffffff`}
+                      alt={deal?.company}
                       className="w-20 h-20 rounded-full object-cover border-4 border-gray-200 shadow-lg"
                     />
 
@@ -1004,11 +1004,11 @@ Sales Approach: ${companyData.salesApproach}
                 </div>
 
                 {/* Deal Title */}
-                {editMode.title ? (
+                {editMode?.title ? (
                   <div className="mb-4">
                     <input
                       type="text"
-                      value={formData.title}
+                      value={formData?.title}
                       onChange={(e) => handleInputChange('title', e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg mb-2"
                       placeholder="Deal Title"
@@ -1031,7 +1031,7 @@ Sales Approach: ${companyData.salesApproach}
                   </div>
                 ) : (
                   <h4 className="text-xl font-semibold text-gray-900 mb-1 flex items-center justify-center space-x-2">
-                    <span>{deal.title}</span>
+                    <span>{deal?.title}</span>
                     <button
                       onClick={() => toggleEditMode('title')}
                       className="text-gray-400 hover:text-gray-600"
@@ -1042,11 +1042,11 @@ Sales Approach: ${companyData.salesApproach}
                 )}
 
                 {/* Company Name */}
-                {editMode.company ? (
+                {editMode?.company ? (
                   <div className="mb-4">
                     <input
                       type="text"
-                      value={formData.company}
+                      value={formData?.company}
                       onChange={(e) => handleInputChange('company', e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg mb-2"
                       placeholder="Company Name"
@@ -1069,7 +1069,7 @@ Sales Approach: ${companyData.salesApproach}
                   </div>
                 ) : (
                   <p className="text-gray-600 text-sm flex items-center justify-center space-x-2">
-                    <span>{deal.company}</span>
+                    <span>{deal?.company}</span>
                     <button
                       onClick={() => toggleEditMode('company')}
                       className="text-gray-400 hover:text-gray-600"
@@ -1353,13 +1353,13 @@ Sales Approach: ${companyData.salesApproach}
                     {contactData ? (
                       <div className="flex items-center space-x-3">
                         <img
-                          src={contactData.avatarSrc || `https://api.dicebear.com/7.x/avataaars/svg?seed=${contactData.name}`}
-                          alt={contactData.name}
+                          src={contactData.avatarSrc || `https://api.dicebear.com/7.x/avataaars/svg?seed=${contactData?.name}`}
+                          alt={contactData?.name}
                           className="w-10 h-10 rounded-full object-cover border border-gray-200"
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-gray-900 truncate">{contactData.name}</p>
-                          <p className="text-sm text-gray-600 truncate">{contactData.title} at {contactData.company}</p>
+                          <p className="font-medium text-gray-900 truncate">{contactData?.name}</p>
+                          <p className="text-sm text-gray-600 truncate">{contactData?.title} at {contactData?.company}</p>
 
                           <div className="mt-2 flex items-center space-x-3">
                             <a
@@ -1524,12 +1524,12 @@ Sales Approach: ${companyData.salesApproach}
                   </button>
                 </div>
 
-                {newCustomField.name !== '' && (
+                {newCustomField?.name !== '' && (
                   <div className="mb-4 p-3 bg-blue-50 rounded-lg">
                     <div className="mb-2 grid grid-cols-2 gap-2">
                       <input
                         type="text"
-                        value={newCustomField.name}
+                        value={newCustomField?.name}
                         onChange={(e) => setNewCustomField(prev => ({ ...prev, name: e.target.value }))}
                         placeholder="Field Name"
                         className="px-3 py-2 border border-gray-300 rounded-lg"
@@ -1551,7 +1551,7 @@ Sales Approach: ${companyData.salesApproach}
                       </button>
                       <button
                         onClick={handleAddCustomField}
-                        disabled={!newCustomField.name || !newCustomField.value}
+                        disabled={!newCustomField?.name || !newCustomField.value}
                         className="flex-1 px-3 py-1 bg-blue-600 text-white rounded-lg text-sm disabled:opacity-50"
                       >
                         Add Field
@@ -1664,7 +1664,7 @@ Sales Approach: ${companyData.salesApproach}
                       </label>
                       <input
                         type="text"
-                        value={newAttachment.name}
+                        value={newAttachment?.name}
                         onChange={(e) => setNewAttachment(prev => ({ ...prev, name: e.target.value }))}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                         placeholder="File name to display"
@@ -1695,7 +1695,7 @@ Sales Approach: ${companyData.salesApproach}
                         <div className="flex items-center">
                           <FileText className="w-4 h-4 text-blue-500 mr-2" />
                           <div>
-                            <p className="text-sm font-medium text-gray-800">{file.name}</p>
+                            <p className="text-sm font-medium text-gray-800">{file?.name}</p>
                             <p className="text-xs text-gray-500">
                               {(file.size / 1024).toFixed(1)} KB • {new Date(file.uploadedAt).toLocaleDateString()}
                             </p>
@@ -1739,7 +1739,7 @@ Sales Approach: ${companyData.salesApproach}
                       </label>
                       <input
                         type="text"
-                        value={newLink.title}
+                        value={newLink?.title}
                         onChange={(e) => setNewLink(prev => ({ ...prev, title: e.target.value }))}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                         placeholder="e.g., Proposal Document"
@@ -1766,7 +1766,7 @@ Sales Approach: ${companyData.salesApproach}
                       </button>
                       <button
                         onClick={handleAddLink}
-                        disabled={!newLink.title || !newLink.url}
+                        disabled={!newLink?.title || !newLink.url}
                         className="flex-1 px-3 py-1 bg-blue-600 text-white rounded-lg text-sm disabled:opacity-50"
                       >
                         Add Link
@@ -1782,7 +1782,7 @@ Sales Approach: ${companyData.salesApproach}
                         <div className="flex items-center">
                           <ExternalLink className="w-4 h-4 text-indigo-500 mr-2" />
                           <div>
-                            <p className="text-sm font-medium text-gray-800">{link.title}</p>
+                            <p className="text-sm font-medium text-gray-800">{link?.title}</p>
                             <a 
                               href={link.url}
                               target="_blank"
@@ -1945,11 +1945,11 @@ Sales Approach: ${companyData.salesApproach}
                     <div className="space-y-3">
                       <div>
                         <p className="text-sm font-medium text-gray-700">Deal Title</p>
-                        <p className="text-base text-gray-900">{deal.title}</p>
+                        <p className="text-base text-gray-900">{deal?.title}</p>
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-700">Company</p>
-                        <p className="text-base text-gray-900">{deal.company}</p>
+                        <p className="text-base text-gray-900">{deal?.company}</p>
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-700">Value</p>

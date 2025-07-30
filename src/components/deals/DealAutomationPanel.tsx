@@ -263,7 +263,7 @@ export const DealAutomationPanel: FC<DealAutomationPanelProps> = ({ deal }) => {
     setTimeout(() => {
       const newAutomation: Automation = {
         id: Date.now().toString(),
-        name: `${deal.title} Closing Sequence`,
+        name: `${deal?.title} Closing Sequence`,
         description: 'AI-generated sequence to move this deal to closed-won stage',
         type: 'ai',
         status: 'draft',
@@ -272,7 +272,7 @@ export const DealAutomationPanel: FC<DealAutomationPanelProps> = ({ deal }) => {
             id: `s${Date.now()}-1`,
             type: 'email',
             name: 'Value Proposition Reinforcement',
-            details: `Email highlighting key value propositions specific to ${deal.company}`,
+            details: `Email highlighting key value propositions specific to ${deal?.company}`,
             status: 'pending'
           },
           {
@@ -286,7 +286,7 @@ export const DealAutomationPanel: FC<DealAutomationPanelProps> = ({ deal }) => {
             id: `s${Date.now()}-3`,
             type: 'task',
             name: 'Decision Maker Call',
-            details: `Schedule call with primary decision maker at ${deal.company}`,
+            details: `Schedule call with primary decision maker at ${deal?.company}`,
             status: 'pending'
           },
           {
@@ -359,7 +359,7 @@ export const DealAutomationPanel: FC<DealAutomationPanelProps> = ({ deal }) => {
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
                 <h5 className="text-lg font-medium text-gray-900 mb-2">AI is generating your automation...</h5>
                 <p className="text-gray-600 max-w-md mx-auto">
-                  Creating a personalized sequence based on {deal.title}'s profile, stage, and probability.
+                  Creating a personalized sequence based on {deal?.title}'s profile, stage, and probability.
                 </p>
               </div>
             ) : (
@@ -404,7 +404,7 @@ export const DealAutomationPanel: FC<DealAutomationPanelProps> = ({ deal }) => {
                       <div className="flex items-center">
                         <input type="checkbox" className="h-4 w-4 text-blue-600 rounded" id="include-company" />
                         <label htmlFor="include-company" className="ml-2 text-sm text-gray-700">
-                          Company: {deal.company}
+                          Company: {deal?.company}
                         </label>
                       </div>
                     </div>
@@ -493,7 +493,7 @@ export const DealAutomationPanel: FC<DealAutomationPanelProps> = ({ deal }) => {
 
                       <div>
                         <div className="flex items-center space-x-2">
-                          <h5 className="text-base font-medium text-gray-900">{automation.name}</h5>
+                          <h5 className="text-base font-medium text-gray-900">{automation?.name}</h5>
                           <span className={`px-2 py-0.5 text-xs rounded-full ${getAutomationStatusBadgeColor(automation.status)}`}>
                             {automation.status.charAt(0).toUpperCase() + automation.status.slice(1)}
                           </span>
@@ -596,7 +596,7 @@ export const DealAutomationPanel: FC<DealAutomationPanelProps> = ({ deal }) => {
 
                             <div className="flex-1 bg-gray-50 rounded-lg border border-gray-200 p-3">
                               <div className="flex justify-between">
-                                <h6 className="text-sm font-medium text-gray-900">{step.name}</h6>
+                                <h6 className="text-sm font-medium text-gray-900">{step?.name}</h6>
                                 <span className={`text-xs px-2 py-0.5 rounded-full ${
                                   step.status === 'completed' ? 'bg-green-100 text-green-800' :
                                   step.status === 'active' ? 'bg-blue-100 text-blue-800' :
@@ -686,7 +686,7 @@ export const DealAutomationPanel: FC<DealAutomationPanelProps> = ({ deal }) => {
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <h5 className="text-base font-medium text-gray-900 truncate">{automation.name}</h5>
+                      <h5 className="text-base font-medium text-gray-900 truncate">{automation?.name}</h5>
                       <span className={`px-2 py-0.5 text-xs rounded-full ${getAutomationTypeBadgeColor(automation.type)}`}>
                         {automation.type === 'drip' ? 'Sequence' : 
                          automation.type === 'event' ? 'Event-Based' : 
@@ -733,7 +733,7 @@ export const DealAutomationPanel: FC<DealAutomationPanelProps> = ({ deal }) => {
                             <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center">
                               <StepIcon className="w-3 h-3 text-gray-600" />
                             </div>
-                            <span className="text-xs text-gray-700">{step.name}</span>
+                            <span className="text-xs text-gray-700">{step?.name}</span>
                             {index < automation.steps.length - 1 && (
                               <ArrowRight className="w-3 h-3 text-gray-400" />
                             )}

@@ -45,7 +45,7 @@ const QuickActions = () => {
                 <action.icon className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-white">{action.title}</h3>
+                <h3 className="font-semibold text-white">{action?.title}</h3>
                 <p className="text-sm text-white/80">{action.description}</p>
               </div>
             </div>

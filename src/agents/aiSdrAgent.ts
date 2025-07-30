@@ -1,9 +1,9 @@
 import { callGemini } from "../services/callGemini";
 import { callOpenAI } from "../services/callOpenAI";
 
-export async function aiSdrAgent(input: unknown, setSteps?: (steps: unknown) => void) {
-  const name = input.name || "there";
-  const company = input.company || "a company";
+export async function aiSdrAgent(input: any, setSteps?: (steps: any) => void) {
+  const name = input?.name || "there";
+  const company = input?.company || "a company";
 
   setSteps?.([{ step: "Researching company with Gemini..." }]);
   const geminiContext = await callGemini(

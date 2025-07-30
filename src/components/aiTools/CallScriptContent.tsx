@@ -41,7 +41,7 @@ const CallScriptContent: React.FC = () => {
       const contactInfo = {
         name: formData.contactName,
         position: formData.contactPosition,
-        company: formData.companyName
+        company: formData?.companyName
       };
 
       // Split the previous interactions by line breaks
@@ -143,7 +143,7 @@ const CallScriptContent: React.FC = () => {
               type="text"
               className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               placeholder="e.g. Acme Inc."
-              value={formData.companyName}
+              value={formData?.companyName}
               onChange={handleChange}
             />
           </div>

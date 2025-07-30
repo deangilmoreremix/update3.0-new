@@ -38,8 +38,8 @@ const RealTimeFormValidation: FC<RealTimeFormValidationProps> = ({
     if (!field.value && !field.required) return field;
 
     // Clear any existing timer for this field
-    if (debounceTimers[field.name]) {
-      clearTimeout(debounceTimers[field.name]);
+    if (debounceTimers[field?.name]) {
+      clearTimeout(debounceTimers[field?.name]);
     }
 
     // Set a new debounce timer
@@ -75,12 +75,12 @@ const RealTimeFormValidation: FC<RealTimeFormValidationProps> = ({
 
           // If valid but can be improved, add an AI suggestion
           if (result.valid && (result.message.includes("suggest") || result.message.includes("improve") || result.message.includes("consider"))) {
-            setAiSuggestions(prev => ({...prev, [field.name]: result.message}));
+            setAiSuggestions(prev => ({...prev, [field?.name]: result.message}));
           } else if (result.valid) {
             // Clear any previous suggestion
             setAiSuggestions(prev => {
               const newSuggestions = {...prev};
-              delete newSuggestions[field.name];
+              delete newSuggestions[field?.name];
               return newSuggestions;
             });
           }
@@ -103,7 +103,7 @@ const RealTimeFormValidation: FC<RealTimeFormValidationProps> = ({
       return field;
     }, 400); // Debounce time of 400ms
 
-    setDebounceTimers(prev => ({...prev, [field.name]: timer}));
+    setDebounceTimers(prev => ({...prev, [field?.name]: timer}));
 
     return field;
   };
@@ -111,11 +111,11 @@ const RealTimeFormValidation: FC<RealTimeFormValidationProps> = ({
   const handleInputChange = async (name: string, value: string) => {
     setFields(prevFields => {
       return prevFields.map(field => {
-        if (field.name === name) {
+        if (field?.name === name) {
           const updatedField = { ...field, value };
           validateField(updatedField).then(validatedField => {
             setFields(prevFields => 
-              prevFields.map(f => f.name === name ? validatedField : f)
+              prevFields.map(f => f?.name === name ? validatedField : f)
             );
           });
           return updatedField;
@@ -207,9 +207,9 @@ const RealTimeFormValidation: FC<RealTimeFormValidationProps> = ({
         )}
 
         {fields.map((field) => (
-          <div key={field.name}>
+          <div key={field?.name}>
             <div className="flex justify-between">
-              <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">
+              <label htmlFor={field?.name} className="block text-sm font-medium text-gray-700">
                 {field.label} {field.required && <span className="text-red-500">*</span>}
               </label>
               <FieldStatusIndicator field={field} />
@@ -218,10 +218,10 @@ const RealTimeFormValidation: FC<RealTimeFormValidationProps> = ({
             <div className="mt-1 relative">
               {field.type === 'textarea' ? (
                 <textarea
-                  id={field.name}
-                  name={field.name}
+                  id={field?.name}
+                  name={field?.name}
                   value={field.value}
-                  onChange={(e) => handleInputChange(field.name, e.target.value)}
+                  onChange={(e) => handleInputChange(field?.name, e.target.value)}
                   required={field.required}
                   rows={4}
                   className={`w-full p-2 border rounded-md ${
@@ -234,10 +234,10 @@ const RealTimeFormValidation: FC<RealTimeFormValidationProps> = ({
               ) : (
                 <input
                   type={field.type}
-                  id={field.name}
-                  name={field.name}
+                  id={field?.name}
+                  name={field?.name}
                   value={field.value}
-                  onChange={(e) => handleInputChange(field.name, e.target.value)}
+                  onChange={(e) => handleInputChange(field?.name, e.target.value)}
                   required={field.required}
                   className={`w-full p-2 border rounded-md ${
                     field.validation ? (
@@ -253,9 +253,9 @@ const RealTimeFormValidation: FC<RealTimeFormValidationProps> = ({
               <p className="mt-1 text-sm text-red-600">{field.validation.message}</p>
             )}
 
-            {aiSuggestions[field.name] && (
+            {aiSuggestions[field?.name] && (
               <p className="mt-1 text-sm text-blue-600">
-                <span className="font-medium">Suggestion:</span> {aiSuggestions[field.name]}
+                <span className="font-medium">Suggestion:</span> {aiSuggestions[field?.name]}
               </p>
             )}
           </div>

@@ -16,8 +16,8 @@ export const EnhancedDealModal: FC<EnhancedDealModalProps> = ({
 
   // Form state
   const [formData, setFormData] = useState({
-    title: deal.title,
-    company: deal.company,
+    title: deal?.title,
+    company: deal?.company,
     contact: deal.contact || '',
     value: deal.value,
     stage: deal.stage,
@@ -86,8 +86,8 @@ export const EnhancedDealModal: FC<EnhancedDealModalProps> = ({
 
   useEffect(() => {
     setFormData({
-      title: deal.title,
-      company: deal.company,
+      title: deal?.title,
+      company: deal?.company,
       contact: deal.contact || '',
       value: deal.value,
       stage: deal.stage,
@@ -128,7 +128,7 @@ export const EnhancedDealModal: FC<EnhancedDealModalProps> = ({
     if (file) {
       const newAttachment: DealAttachment = {
         id: Date.now().toString(),
-        name: file.name,
+        name: file?.name,
         type: file.type,
         size: file.size,
         url: URL.createObjectURL(file),
@@ -140,11 +140,11 @@ export const EnhancedDealModal: FC<EnhancedDealModalProps> = ({
   };
 
   const handleAddActivity = () => {
-    if (newActivity.title.trim()) {
+    if (newActivity?.title.trim()) {
       const activity: DealActivity = {
         id: Date.now().toString(),
         type: newActivity.type,
-        title: newActivity.title,
+        title: newActivity?.title,
         description: newActivity.description,
         timestamp: new Date(),
         user: 'Current User'
@@ -204,8 +204,8 @@ export const EnhancedDealModal: FC<EnhancedDealModalProps> = ({
             <div className="flex items-center space-x-3">
               <Target className="w-8 h-8 text-blue-600" />
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">{deal.title}</h2>
-                <p className="text-sm text-gray-600">{deal.company}</p>
+                <h2 className="text-2xl font-bold text-gray-900">{deal?.title}</h2>
+                <p className="text-sm text-gray-600">{deal?.company}</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -302,7 +302,7 @@ export const EnhancedDealModal: FC<EnhancedDealModalProps> = ({
                             <label className="block text-sm font-medium text-gray-700 mb-1">Deal Title</label>
                             <input
                               type="text"
-                              value={formData.title}
+                              value={formData?.title}
                               onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
@@ -311,7 +311,7 @@ export const EnhancedDealModal: FC<EnhancedDealModalProps> = ({
                             <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
                             <input
                               type="text"
-                              value={formData.company}
+                              value={formData?.company}
                               onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
                               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
@@ -419,7 +419,7 @@ export const EnhancedDealModal: FC<EnhancedDealModalProps> = ({
                             <Building2 className="w-5 h-5 text-gray-400" />
                             <div>
                               <p className="text-sm text-gray-500">Company</p>
-                              <p className="font-medium">{deal.company}</p>
+                              <p className="font-medium">{deal?.company}</p>
                             </div>
                           </div>
                           <div className="flex items-center space-x-3">
@@ -538,7 +538,7 @@ export const EnhancedDealModal: FC<EnhancedDealModalProps> = ({
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-gray-900 truncate">
-                            {activity.title}
+                            {activity?.title}
                           </p>
                           <p className="text-xs text-gray-500">
                             {activity.timestamp.toLocaleString()}
@@ -582,7 +582,7 @@ export const EnhancedDealModal: FC<EnhancedDealModalProps> = ({
                       <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                       <input
                         type="text"
-                        value={newActivity.title}
+                        value={newActivity?.title}
                         onChange={(e) => setNewActivity(prev => ({ ...prev, title: e.target.value }))}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Activity title..."
@@ -624,7 +624,7 @@ export const EnhancedDealModal: FC<EnhancedDealModalProps> = ({
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <h4 className="text-sm font-medium text-gray-900">{activity.title}</h4>
+                            <h4 className="text-sm font-medium text-gray-900">{activity?.title}</h4>
                             <span className="text-xs text-gray-500">
                               {activity.timestamp.toLocaleString()}
                             </span>
@@ -676,7 +676,7 @@ export const EnhancedDealModal: FC<EnhancedDealModalProps> = ({
                           <FileText className="w-8 h-8 text-blue-600" />
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">{file.name}</p>
+                          <p className="font-medium text-gray-900">{file?.name}</p>
                           <p className="text-sm text-gray-500">
                             {formatFileSize(file.size)} • Uploaded by {file.uploadedBy} on {file.uploadedAt.toLocaleDateString()}
                           </p>

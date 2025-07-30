@@ -337,9 +337,9 @@ class ContactAPIService {
           if (filters.search) {
             const search = filters.search.toLowerCase();
             filteredContacts = filteredContacts.filter(c => 
-              c.name.toLowerCase().includes(search) ||
+              c?.name.toLowerCase().includes(search) ||
               c.email.toLowerCase().includes(search) ||
-              c.company.toLowerCase().includes(search)
+              c?.company.toLowerCase().includes(search)
             );
           }
 
@@ -359,7 +359,7 @@ class ContactAPIService {
 
           // Apply sorting
           if (filters.sortBy) {
-            filteredContacts.sort((a: unknown, b: unknown) => {
+            filteredContacts.sort((a: any, b: any) => {
               const aValue = a[filters.sortBy!];
               const bValue = b[filters.sortBy!];
 
@@ -415,7 +415,7 @@ class ContactAPIService {
     }
 
     // Validate all contacts
-    const validatedContacts: unknown[] = [];
+    const validatedContacts: any[] = [];
     const validationErrors: string[] = [];
 
     contacts.forEach((contact, index) => {

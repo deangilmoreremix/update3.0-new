@@ -106,16 +106,16 @@ const RecentActivity: React.FC = () => {
                   {contact && (
                     <Avatar
                       src={contact.avatarSrc || contact.avatar}
-                      alt={contact.name}
+                      alt={contact?.name}
                       size="sm"
-                      fallback={getInitials(contact.name)}
+                      fallback={getInitials(contact?.name)}
                       status={deal.status as 'online' | 'offline' | 'away' | 'busy'}
                     />
                   )}
                   <div>
-                    <h4 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'} text-sm`}>{deal.company}</h4>
+                    <h4 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'} text-sm`}>{deal?.company}</h4>
                     <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {contact ? contact.name : 'Unknown Contact'}
+                      {contact ? contact?.name : 'Unknown Contact'}
                     </p>
                   </div>
                 </div>
@@ -149,7 +149,7 @@ const RecentActivity: React.FC = () => {
                   <Icon className={`w-4 h-4 ${isDark ? activity.color : activity.color}`} />
                 </div>
                 <div className="flex-1">
-                  <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} text-sm`}>{activity.title}</h4>
+                  <h4 className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'} text-sm`}>{activity?.title}</h4>
                   <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{activity.description}</p>
                   <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-500'} mt-1`}>{activity.time}</p>
                 </div>

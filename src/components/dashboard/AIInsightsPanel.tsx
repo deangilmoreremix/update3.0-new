@@ -42,7 +42,7 @@ const AIInsightsPanel = () => {
       const contact = contacts[deal.contactId];
       return contact ? {
         id: contact.id,
-        name: contact.name,
+        name: contact?.name,
         avatar: contact.avatar
       } : null;
     }).filter(Boolean) as Array<{ id: string; name: string; avatar?: string; }>;
@@ -53,7 +53,7 @@ const AIInsightsPanel = () => {
       const contact = contacts[deal.contactId];
       return contact ? {
         id: contact.id,
-        name: contact.name,
+        name: contact?.name,
         avatar: contact.avatar
       } : null;
     }).filter(Boolean) as Array<{ id: string; name: string; avatar?: string; }>;
@@ -64,7 +64,7 @@ const AIInsightsPanel = () => {
       const contact = contacts[deal.contactId];
       return contact ? {
         id: contact.id,
-        name: contact.name,
+        name: contact?.name,
         avatar: contact.avatar
       } : null;
     }).filter(Boolean) as Array<{ id: string; name: string; avatar?: string; }>;
@@ -111,7 +111,7 @@ const AIInsightsPanel = () => {
     const pipelineData = {
       deals: dealsArray.map(deal => ({
         id: deal.id,
-        title: deal.title,
+        title: deal?.title,
         value: deal.value,
         stage: deal.stage,
         probability: deal.probability,
@@ -121,8 +121,8 @@ const AIInsightsPanel = () => {
       })),
       contacts: contactsArray.map(contact => ({
         id: contact.id,
-        name: contact.name,
-        company: contact.company,
+        name: contact?.name,
+        company: contact?.company,
         status: contact.status,
         source: contact.source,
         tags: contact.tags
@@ -218,9 +218,9 @@ const AIInsightsPanel = () => {
             <div key={contact.id} className="relative" style={{ zIndex: maxVisible - index }}>
               <Avatar
                 src={contact.avatar}
-                alt={contact.name}
+                alt={contact?.name}
                 size="sm"
-                fallback={getInitials(contact.name)}
+                fallback={getInitials(contact?.name)}
                 className="border-2 border-white dark:border-gray-900"
               />
             </div>
@@ -313,7 +313,7 @@ const AIInsightsPanel = () => {
               </div>
               <div className="flex-1">
                 <h3 className={`font-medium ${isDark ? 'text-white group-hover:text-green-400' : 'text-gray-900 group-hover:text-green-600'} transition-colors`}>
-                  {insight.title}
+                  {insight?.title}
                 </h3>
                 <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} mt-1`}>{insight.description}</p>
 

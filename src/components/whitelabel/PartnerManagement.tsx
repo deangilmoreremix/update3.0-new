@@ -78,7 +78,7 @@ export default function PartnerManagement() {
 
   // Filter customers based on search and filters
   const filteredCustomers = customers?.filter(customer => {
-    const matchesSearch = customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = customer?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          customer.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesPackage = selectedPackage === 'all' || customer.package === selectedPackage;
     const matchesStatus = statusFilter === 'all' || customer.status === statusFilter;
@@ -226,7 +226,7 @@ export default function PartnerManagement() {
             >
               <option value="all">All Packages</option>
               {featurePackages?.map((pkg: FeaturePackage) => (
-                <option key={pkg.id} value={pkg.name}>{pkg.name}</option>
+                <option key={pkg.id} value={pkg?.name}>{pkg?.name}</option>
               ))}
             </select>
             <select
@@ -271,7 +271,7 @@ export default function PartnerManagement() {
                     <tr key={customer.id} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800">
                       <td className="p-4">
                         <div>
-                          <div className="font-medium">{customer.name}</div>
+                          <div className="font-medium">{customer?.name}</div>
                           <div className="text-sm text-gray-500">{customer.email}</div>
                         </div>
                       </td>

@@ -61,7 +61,7 @@ export class RealAgentExecutor {
     const availableTools = request.toolsNeeded
       .map(toolId => composioToolsData.find(t => t.id === toolId))
       .filter(Boolean)
-      .map(tool => `${tool!.name}: ${tool!.description}`)
+      .map(tool => `${tool!?.name}: ${tool!.description}`)
       .join('\n- ');
 
     return `Business Automation Agent: ${request.agentName}

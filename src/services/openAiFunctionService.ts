@@ -55,7 +55,7 @@ const crmFunctions: CrmFunctions = {
       if (params.status && deal.stage !== params.status) return false;
       if (params.minValue && deal.value < params.minValue) return false;
       if (params.maxValue && deal.value > params.maxValue) return false;
-      if (params.query && !deal.title.toLowerCase().includes(params.query.toLowerCase())) return false;
+      if (params.query && !deal?.title.toLowerCase().includes(params.query.toLowerCase())) return false;
       return true;
     });
   },
@@ -99,7 +99,7 @@ const crmFunctions: CrmFunctions = {
       // Apply filters
       if (params.status && contact.status !== params.status) return false;
       if (params.industry && contact.industry !== params.industry) return false;
-      if (params.query && !contact.name.toLowerCase().includes(params.query.toLowerCase())) return false;
+      if (params.query && !contact?.name.toLowerCase().includes(params.query.toLowerCase())) return false;
       return true;
     });
   },
@@ -395,7 +395,7 @@ export const useOpenAIFunctions = () => {
     try {
       // Filter function schemas based on available functions
       const selectedFunctionSchemas = functionSchemas.filter(
-        schema => availableFunctions.includes(schema.name)
+        schema => availableFunctions.includes(schema?.name)
       );
       
       // Initial API call with functions
@@ -410,7 +410,7 @@ export const useOpenAIFunctions = () => {
       
       // Check if the model wants to call a function
       if (responseMessage.function_call) {
-        const functionName = responseMessage.function_call.name;
+        const functionName = responseMessage.function_call?.name;
         let functionArgs = {};
         
         try {

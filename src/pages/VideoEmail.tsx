@@ -89,7 +89,7 @@ const VideoEmail: React.FC = () => {
       // Convert the parsed data to VideoRecordingData objects with proper Blobs
       const loadedRecordings: VideoRecordingData[] = [];
 
-      parsedRecordings.forEach((recording: unknown) => {
+      parsedRecordings.forEach((recording: any) => {
         // Skip loading if url is not available
         if (!recording.url) return;
 
@@ -411,7 +411,7 @@ const VideoEmail: React.FC = () => {
           const processedVideo: VideoRecordingData = {
             ...selectedRecording,
             id: Date.now().toString(),
-            title: `${selectedRecording.title} (Processed)`,
+            title: `${selectedRecording?.title} (Processed)`,
             timestamp: new Date()
           };
 
@@ -462,7 +462,7 @@ const VideoEmail: React.FC = () => {
         const trimmedVideo: VideoRecordingData = {
           ...selectedRecording,
           id: Date.now().toString(),
-          title: `${selectedRecording.title} (Trimmed)`,
+          title: `${selectedRecording?.title} (Trimmed)`,
           timestamp: new Date(),
           duration: trimEnd - trimStart
         };
@@ -487,7 +487,7 @@ const VideoEmail: React.FC = () => {
       if (selectedRecipient) {
         const recipient = availableRecipients.find(r => r.email === selectedRecipient);
         if (recipient) {
-          context = `This is a video message for ${recipient.name}, who is the ${recipient.position} at ${recipient.company}.`;
+          context = `This is a video message for ${recipient?.name}, who is the ${recipient.position} at ${recipient?.company}.`;
         }
       }
 
@@ -495,7 +495,7 @@ const VideoEmail: React.FC = () => {
       if (transcription) {
         context += `\nThe video contains the following content: ${transcription}`;
       } else {
-        context += `\nThe video is about ${selectedRecording.title} and is ${formatTime(selectedRecording.duration)} in duration.`;
+        context += `\nThe video is about ${selectedRecording?.title} and is ${formatTime(selectedRecording.duration)} in duration.`;
       }
 
       // Call Gemini to generate talking points
@@ -608,7 +608,7 @@ const VideoEmail: React.FC = () => {
 
     try {
       // Prepare context for the AI
-      let emailContext = selectedRecording.title;
+      let emailContext = selectedRecording?.title;
 
       // Add transcription if available
       if (transcription) {
@@ -624,7 +624,7 @@ const VideoEmail: React.FC = () => {
       if (selectedRecipient) {
         const recipient = availableRecipients.find(r => r.email === selectedRecipient);
         if (recipient) {
-          emailContext += ` The recipient is ${recipient.name}, ${recipient.position} at ${recipient.company}.`;
+          emailContext += ` The recipient is ${recipient?.name}, ${recipient.position} at ${recipient?.company}.`;
         }
       }
 
@@ -637,7 +637,7 @@ const VideoEmail: React.FC = () => {
 
       setEmailDraft(result);
       setEmailBody(result);
-      setEmailSubject(`Video message: ${selectedRecording.title}`);
+      setEmailSubject(`Video message: ${selectedRecording?.title}`);
       setShowEmailComposer(true);
     } catch (err) {
       console.error('Error generating email draft:', err);
@@ -667,7 +667,7 @@ const VideoEmail: React.FC = () => {
 
       // Call Gemini to generate a persona
       const result = await gemini.generateCustomerPersona(
-        recipient.company ? recipient.company : "Technology", 
+        recipient?.company ? recipient?.company : "Technology", 
         "mid-market", 
         ["streamlined operations", "improved security", "cost reduction"]
       );
@@ -687,8 +687,8 @@ const VideoEmail: React.FC = () => {
 
       // Create a structured persona object
       const persona: RecipientPersona = {
-        name: recipient.name,
-        company: recipient.company,
+        name: recipient?.name,
+        company: recipient?.company,
         position: recipient.position,
         interests: interests,
         painPoints: painPoints,
@@ -753,7 +753,7 @@ const VideoEmail: React.FC = () => {
 
     const a = document.createElement('a');
     a.href = selectedRecording.url;
-    a.download = `${selectedRecording.title}.webm`;
+    a.download = `${selectedRecording?.title}.webm`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -795,7 +795,7 @@ const VideoEmail: React.FC = () => {
       if (selectedRecipient) {
         const recipient = availableRecipients.find(r => r.email === selectedRecipient);
         if (recipient) {
-          context += ` for ${recipient.name} (${recipient.position} at ${recipient.company})`;
+          context += ` for ${recipient?.name} (${recipient.position} at ${recipient?.company})`;
         }
       }
 
@@ -882,7 +882,7 @@ const VideoEmail: React.FC = () => {
                     <option value="">-- Select a recipient --</option>
                     {availableRecipients.map(recipient => (
                       <option key={recipient.email} value={recipient.email}>
-                        {recipient.name} ({recipient.position}, {recipient.company})
+                        {recipient?.name} ({recipient.position}, {recipient?.company})
                       </option>
                     ))}
                   </select>
@@ -896,8 +896,8 @@ const VideoEmail: React.FC = () => {
                     <div className="flex">
                       <UserCircle size={40} className="text-blue-500 mr-3" />
                       <div>
-                        <h3 className="font-medium text-gray-900">{recipientPersona.name}</h3>
-                        <p className="text-sm text-gray-600">{recipientPersona.position}, {recipientPersona.company}</p>
+                        <h3 className="font-medium text-gray-900">{recipientPersona?.name}</h3>
+                        <p className="text-sm text-gray-600">{recipientPersona.position}, {recipientPersona?.company}</p>
                       </div>
                     </div>
                     <button 
@@ -1338,7 +1338,7 @@ const VideoEmail: React.FC = () => {
                   <div className="flex justify-between items-start">
                     <div>
                       <div className="flex items-center">
-                        <h3 className="font-medium text-gray-900">{selectedRecording.title}</h3>
+                        <h3 className="font-medium text-gray-900">{selectedRecording?.title}</h3>
                         <button className="ml-2 text-blue-600 hover:text-blue-800" onClick={generateVideoTitle}>
                           <Edit size={14} />
                         </button>
@@ -1509,7 +1509,7 @@ const VideoEmail: React.FC = () => {
                           {recording.thumbnailUrl ? (
                             <img 
                               src={recording.thumbnailUrl} 
-                              alt={recording.title} 
+                              alt={recording?.title} 
                               className="w-full h-full object-cover"
                             />
                           ) : (
@@ -1530,7 +1530,7 @@ const VideoEmail: React.FC = () => {
                         </div>
 
                         <div className="p-3">
-                          <h3 className="font-medium text-gray-900 text-sm truncate">{recording.title}</h3>
+                          <h3 className="font-medium text-gray-900 text-sm truncate">{recording?.title}</h3>
                           <p className="text-xs text-gray-500 flex justify-between mt-1">
                             <span>{new Date(recording.timestamp).toLocaleDateString()}</span>
                             <span>{(recording.size / (1024 * 1024)).toFixed(2)} MB</span>
@@ -1627,7 +1627,7 @@ const VideoEmail: React.FC = () => {
                         .map(recording => (
                           <div key={recording.id} className="flex justify-between items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
                             <div>
-                              <div className="font-medium">{recording.title}</div>
+                              <div className="font-medium">{recording?.title}</div>
                               <div className="text-sm text-gray-500">
                                 Sent to: {recording.recipients?.join(', ')}
                               </div>

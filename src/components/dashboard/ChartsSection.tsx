@@ -37,7 +37,7 @@ const ChartsSection: React.FC = () => {
         const contact = contacts[deal.contactId];
         return contact ? {
           id: contact.id,
-          name: contact.name,
+          name: contact?.name,
           avatar: contact.avatar
         } : null;
       })
@@ -54,7 +54,7 @@ const ChartsSection: React.FC = () => {
       const contact = contacts[deal.contactId];
       return contact ? {
         id: contact.id,
-        name: contact.name,
+        name: contact?.name,
         avatar: contact.avatar
       } : null;
     }).filter(Boolean) as Array<{ id: string; name: string; avatar?: string; }>;
@@ -72,9 +72,9 @@ const ChartsSection: React.FC = () => {
             <div key={contact.id} className="relative" style={{ zIndex: maxVisible - index }}>
               <Avatar
                 src={contact.avatar}
-                alt={contact.name}
+                alt={contact?.name}
                 size="sm"
-                fallback={getInitials(contact.name)}
+                fallback={getInitials(contact?.name)}
                 className="border-2 border-white dark:border-gray-900"
               />
             </div>
@@ -238,7 +238,7 @@ const ChartsSection: React.FC = () => {
                   borderRadius: '8px'
                 }}
                 labelStyle={{ color: isDark ? '#F3F4F6' : '#374151' }}
-                formatter={(value: unknown, name: string) => [
+                formatter={(value: any, name: string) => [
                   name === 'revenue' ? `$${value.toLocaleString()}` : value,
                   name === 'revenue' ? 'Revenue' : 'Deals Closed'
                 ]}
@@ -288,7 +288,7 @@ const ChartsSection: React.FC = () => {
                   borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e5e7eb',
                   borderRadius: '8px'
                 }}
-                formatter={(value: unknown) => [`${value} deals`, 'Count']}
+                formatter={(value: any) => [`${value} deals`, 'Count']}
               />
               <Bar dataKey="value" fill="#4F46E5" radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -313,7 +313,7 @@ const ChartsSection: React.FC = () => {
                 ))}
               </Pie>
               <Tooltip 
-                formatter={(value: unknown) => [`${value} deals`, 'Count']}
+                formatter={(value: any) => [`${value} deals`, 'Count']}
                 contentStyle={{ 
                   backgroundColor: isDark ? 'rgba(17, 24, 39, 0.9)' : '#ffffff',
                   borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e5e7eb',

@@ -143,7 +143,7 @@ export class MCPClient {
   }
 
   validateFunctionCall(functionName: string, parameters: Record<string, any>): { valid: boolean; errors?: string[] } {
-    const func = AVAILABLE_MCP_FUNCTIONS.find(f => f.name === functionName);
+    const func = AVAILABLE_MCP_FUNCTIONS.find(f => f?.name === functionName);
 
     if (!func) {
       return { valid: false, errors: [`Function ${functionName} not found`] };

@@ -163,7 +163,7 @@ const SalesPerformanceDashboard: React.FC = () => {
         {kpis.map((kpi, index) => (
           <Card key={index}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
+              <CardTitle className="text-sm font-medium">{kpi?.title}</CardTitle>
               <kpi.icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -286,7 +286,7 @@ const SalesPerformanceDashboard: React.FC = () => {
                       className="w-3 h-3 rounded-full"
                       style={{ backgroundColor: stage.color }}
                     />
-                    <span className="text-sm font-medium">{stage.name}</span>
+                    <span className="text-sm font-medium">{stage?.name}</span>
                   </div>
                   <Badge variant="secondary">{stage.deals}</Badge>
                 </div>
@@ -306,7 +306,7 @@ const SalesPerformanceDashboard: React.FC = () => {
             {deals.slice(0, 5).map((deal, index) => (
               <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
                 <div>
-                  <p className="font-medium">{deal.title}</p>
+                  <p className="font-medium">{deal?.title}</p>
                   <p className="text-sm text-gray-500">Stage: {deal.stage}</p>
                 </div>
                 <div className="text-right">

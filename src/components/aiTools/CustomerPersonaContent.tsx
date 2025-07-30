@@ -67,7 +67,7 @@ const CustomerPersonaContent: React.FC = () => {
     try {
       const persona = await gemini.generateCustomerPersona(
         formData.industry,
-        formData.companySize,
+        formData?.companySize,
         validPainPoints
       );
 
@@ -158,7 +158,7 @@ const CustomerPersonaContent: React.FC = () => {
             <select
               id="companySize"
               name="companySize"
-              value={formData.companySize}
+              value={formData?.companySize}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
             >

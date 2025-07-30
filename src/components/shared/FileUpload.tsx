@@ -42,7 +42,7 @@ const FileUpload: FC<FileUploadProps> = ({
     }
   };
 
-  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: unknown[]) => {
+  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: any[]) => {
     // Handle rejected files
     if (rejectedFiles.length > 0) {
       const firstRejection = rejectedFiles[0];
@@ -142,7 +142,7 @@ const FileUpload: FC<FileUploadProps> = ({
                 <li key={index} className="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200">
                   <div className="flex items-center overflow-hidden">
                     {getFileIcon(file)}
-                    <span className="ml-2 text-sm font-medium text-gray-700 truncate">{file.name}</span>
+                    <span className="ml-2 text-sm font-medium text-gray-700 truncate">{file?.name}</span>
                     <span className="ml-2 text-xs text-gray-500">{formatFileSize(file.size)}</span>
                   </div>
                   <button 

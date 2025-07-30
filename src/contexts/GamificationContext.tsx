@@ -110,7 +110,7 @@ export const GamificationProvider: FC<{ children: ReactNode }> = ({ children }) 
     const leaderboardData = filteredTeamMembers
       .map(member => ({
         contactId: member.id,
-        name: member.name,
+        name: member?.name,
         role: member.role || 'sales-rep',
         avatarSrc: member.avatarSrc,
         score: member.gamificationStats?.points || 0,

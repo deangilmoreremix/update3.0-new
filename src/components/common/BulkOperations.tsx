@@ -399,7 +399,7 @@ export const BulkOperations: FC<BulkOperationsProps> = ({
               {type === 'deals' && (
                 <div>
                   <div className="font-medium text-gray-900 dark:text-white">
-                    {item.data.title}
+                    {item.data?.title}
                   </div>
                   <div className="text-sm text-gray-500">
                     ${item.data.value?.toLocaleString()} • {item.data.stage}
@@ -410,7 +410,7 @@ export const BulkOperations: FC<BulkOperationsProps> = ({
               {type === 'contacts' && (
                 <div>
                   <div className="font-medium text-gray-900 dark:text-white">
-                    {item.data.name}
+                    {item.data?.name}
                   </div>
                   <div className="text-sm text-gray-500">
                     {item.data.email} • {item.data.status}
@@ -421,7 +421,7 @@ export const BulkOperations: FC<BulkOperationsProps> = ({
               {type === 'companies' && (
                 <div>
                   <div className="font-medium text-gray-900 dark:text-white">
-                    {item.data.name}
+                    {item.data?.name}
                   </div>
                   <div className="text-sm text-gray-500">
                     {item.data.industry} • {item.data.size} employees
@@ -623,7 +623,7 @@ export const BulkOperations: FC<BulkOperationsProps> = ({
                 <option value="">Select team member</option>
                 {teamMembers.map(member => (
                   <option key={member.id} value={member.id}>
-                    {member.name} ({member.email})
+                    {member?.name} ({member.email})
                   </option>
                 ))}
               </select>

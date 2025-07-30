@@ -113,7 +113,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       const taskId = uuidv4();
       const newTask: Task = {
         id: taskId,
-        title: taskData.title || 'New Task',
+        title: taskData?.title || 'New Task',
         description: taskData.description || '',
         dueDate: taskData.dueDate,
         completed: taskData.completed || false,
