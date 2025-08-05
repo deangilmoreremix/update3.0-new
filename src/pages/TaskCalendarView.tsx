@@ -8,15 +8,22 @@ import Select from 'react-select';
 import ReactMarkdown from 'react-markdown';
 
 const TaskCalendarView: React.FC = () => {
-  const { 
-    tasks, 
-    createTask, 
-    updateTask, 
-    deleteTask, 
-    markTaskComplete, 
+  const {
+    tasks,
+    createTask,
+    updateTask,
+    deleteTask,
+    markTaskComplete,
     selectTask,
     selectedTask
   } = useTaskStore();
+
+  const taskList = Array.isArray(tasks) ? tasks : Object.values(tasks);
+  const selectedTaskData = selectedTask
+    ? (Array.isArray(tasks)
+        ? tasks.find(t => t.id === selectedTask)
+        : tasks[selectedTask])
+    : null;
 
   const [showTaskDetail, setShowTaskDetail] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -33,8 +40,13 @@ const TaskCalendarView: React.FC = () => {
 
   useEffect(() => {
     // If a task is selected, populate the form with its data
-    if (selectedTask && tasks[selectedTask]) {
-      setFormData(tasks[selectedTask]);
+    if (selectedTask) {
+      const task = Array.isArray(tasks)
+        ? tasks.find(t => t.id === selectedTask)
+        : tasks[selectedTask];
+      if (task) {
+        setFormData(task);
+      }
     }
   }, [selectedTask, tasks]);
 
@@ -109,12 +121,12 @@ const TaskCalendarView: React.FC = () => {
 
   // Calculate task statistics
   const taskStats = {
-    total: Object.values(tasks).length,
-    completed: Object.values(tasks).filter(task => task.completed).length,
-    overdue: Object.values(tasks).filter(task => 
+    total: taskList.length,
+    completed: taskList.filter(task => task.completed).length,
+    overdue: taskList.filter(task =>
       !task.completed && task.dueDate && task.dueDate < new Date()
     ).length,
-    dueToday: Object.values(tasks).filter(task => {
+    dueToday: taskList.filter(task => {
       if (!task.dueDate || task.completed) return false;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -349,7 +361,7 @@ const TaskCalendarView: React.FC = () => {
       )}
 
       {/* Task Detail Modal */}
-      {selectedTask && showTaskDetail && tasks[selectedTask] && (
+      {selectedTask && showTaskDetail && selectedTaskData && (
         <div className="fixed inset-0 z-10 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 transition-opacity" aria-hidden="true">
@@ -468,69 +480,69 @@ const TaskCalendarView: React.FC = () => {
                         <div className="flex items-start">
                           <input
                             type="checkbox"
-                            checked={tasks[selectedTask].completed}
+                            checked={selectedTaskData.completed}
                             onChange={(e) => markTaskComplete(selectedTask, e.target.checked)}
                             className="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 mt-0.5"
                           />
                           <div className="ml-3">
                             <h4 className={`text-lg font-medium ${
-                              tasks[selectedTask].completed ? 'line-through text-gray-500' : 'text-gray-900'
+                              selectedTaskData.completed ? 'line-through text-gray-500' : 'text-gray-900'
                             }`}>
-                              {tasks[selectedTask]?.title}
+                              {selectedTaskData?.title}
                             </h4>
 
                             <div className="flex flex-wrap gap-2 mt-2">
-                              {tasks[selectedTask].priority && (
+                              {selectedTaskData.priority && (
                                 <div className={`text-xs px-2.5 py-0.5 rounded-full font-medium
-                                  ${tasks[selectedTask].priority === 'high' ? 'bg-red-100 text-red-800' : 
-                                    tasks[selectedTask].priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
+                                  ${selectedTaskData.priority === 'high' ? 'bg-red-100 text-red-800' :
+                                    selectedTaskData.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
                                     'bg-green-100 text-green-800'}`
                                 }>
                                   <Flag className="inline-block w-3 h-3 mr-1" />
-                                  {tasks[selectedTask].priority} priority
+                                  {selectedTaskData.priority} priority
                                 </div>
                               )}
 
-                              {tasks[selectedTask].category && (
+                              {selectedTaskData.category && (
                                 <div className="text-xs px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 font-medium capitalize">
-                                  {tasks[selectedTask].category}
+                                  {selectedTaskData.category}
                                 </div>
                               )}
                             </div>
                           </div>
                         </div>
 
-                        {tasks[selectedTask].dueDate && (
+                        {selectedTaskData.dueDate && (
                           <div className="flex items-center space-x-2 mt-2 text-sm">
                             <Clock size={16} className="text-gray-400" />
                             <span className={
-                              !tasks[selectedTask].completed && 
-                              tasks[selectedTask].dueDate < new Date() 
-                                ? 'text-red-600 font-medium' 
+                              !selectedTaskData.completed &&
+                              selectedTaskData.dueDate < new Date()
+                                ? 'text-red-600 font-medium'
                                 : 'text-gray-600'
                             }>
-                              {formatDate(tasks[selectedTask].dueDate)}
+                              {formatDate(selectedTaskData.dueDate)}
                             </span>
                           </div>
                         )}
 
-                        {tasks[selectedTask].description && (
+                        {selectedTaskData.description && (
                           <div className="mt-4">
                             <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
                               <MessageSquare size={16} className="mr-1 text-gray-400" />
                               Description
                             </h4>
                             <div className="prose prose-sm max-w-none bg-gray-50 p-3 rounded-lg">
-                              <ReactMarkdown>{tasks[selectedTask].description}</ReactMarkdown>
+                              <ReactMarkdown>{selectedTaskData.description}</ReactMarkdown>
                             </div>
                           </div>
                         )}
 
-                        {tasks[selectedTask].relatedTo && (
+                        {selectedTaskData.relatedTo && (
                           <div className="mt-4">
                             <h4 className="text-sm font-medium text-gray-700 mb-2">Related To</h4>
                             <div className="text-sm text-gray-600 flex items-center">
-                              {tasks[selectedTask].relatedTo.type === 'contact' ? (
+                              {selectedTaskData.relatedTo.type === 'contact' ? (
                                 <>
                                   <Users size={16} className="mr-2 text-blue-500" />
                                   <span>Contact: John Doe</span>
@@ -547,11 +559,11 @@ const TaskCalendarView: React.FC = () => {
 
                         <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between text-sm text-gray-500">
                           <div>
-                            Created: {formatDate(tasks[selectedTask].createdAt)}
+                            Created: {formatDate(selectedTaskData.createdAt)}
                           </div>
-                          {tasks[selectedTask].completedAt && (
+                          {selectedTaskData.completedAt && (
                             <div>
-                              Completed: {formatDate(tasks[selectedTask].completedAt)}
+                              Completed: {formatDate(selectedTaskData.completedAt)}
                             </div>
                           )}
                         </div>

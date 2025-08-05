@@ -1846,17 +1846,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Prepare comprehensive business analysis
+      const tasksArray = Array.isArray(tasks) ? tasks : Object.values(tasks || {});
       const businessSummary = {
         totalContacts: contacts?.length || 0,
         totalDeals: Object.keys(deals || {}).length,
-        totalTasks: Object.keys(tasks || {}).length,
-        activeDeals: Object.values(deals || {}).filter((deal: unknown) => 
+        totalTasks: tasksArray.length,
+        activeDeals: Object.values(deals || {}).filter((deal: unknown) =>
           deal.stage !== 'closed-won' && deal.stage !== 'closed-lost'
         ).length,
-        pipelineValue: Object.values(deals || {}).reduce((sum: number, deal: any) => 
+        pipelineValue: Object.values(deals || {}).reduce((sum: number, deal: any) =>
           sum + (deal.value || 0), 0
         ),
-        completedTasks: Object.values(tasks || {}).filter((task: unknown) => task.completed).length
+        completedTasks: tasksArray.filter((task: unknown) => task.completed).length
       };
 
       const prompt = `Analyze this CRM business data and provide strategic recommendations:
