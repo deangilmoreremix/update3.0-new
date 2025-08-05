@@ -2,7 +2,7 @@ import React, { useState, useMemo, FC } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import { Task } from '../types';
-import { useTaskStore } from '../store/taskStore';
+import { useTaskStore } from '@/store/taskStore';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Calendar } from 'lucide-react';
 

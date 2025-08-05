@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Calendar, Mail, FileText, CheckCircle, Check, MoreVertical } from 'lucide-react';
 import Avatar from './ui/Avatar';
-import { useTaskStore } from '../store/taskStore';
+import { useTaskStore } from '@/store/taskStore';
 import { getInitials, getAvatarByIndex } from '../utils/avatars';
 import { useTheme } from '../contexts/ThemeContext';
 

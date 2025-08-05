@@ -6,7 +6,7 @@ import { useNavigation } from '../contexts/NavigationContext';
 import { useCallback, memo } from 'react';
 import { useDealStore } from '../store/dealStore';
 import { useContactStore } from '../store/contactStore';
-import { useTaskStore } from '../store/taskStore';
+import { useTaskStore } from '@/store/taskStore';
 import { useAppointmentStore } from '../store/appointmentStore';
 
 interface NavbarProps {

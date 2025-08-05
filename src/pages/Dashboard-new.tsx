@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDealStore } from '../store/dealStore';
 import { useContactStore } from '../store/contactStore';
-import { useTaskStore } from '../store/taskStore';
+import { useTaskStore } from '@/store/taskStore';
 import { useAppointmentStore } from '../store/appointmentStore';
 import { useTheme } from '../contexts/ThemeContext';
 import { useDashboardLayout } from '../contexts/DashboardLayoutContext';

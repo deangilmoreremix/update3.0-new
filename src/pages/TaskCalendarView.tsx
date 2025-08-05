@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useTaskStore } from '../store/taskStore';
+import { useTaskStore } from '@/store/taskStore';
 import TaskCalendar from '../components/TaskCalendar';
 import { Task } from '../types';
 import { Plus, List, CheckSquare, Calendar, Users, Briefcase, Flag, Clock, X, Edit, Trash2, Save, MessageSquare, Link } from 'lucide-react';

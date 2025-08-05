@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDealStore } from '../store/dealStore';
 import { useContactStore } from '../store/contactStore';
 import { useGemini } from '../services/geminiService';
-import { useTaskStore } from '../store/taskStore';
+import { useTaskStore } from '@/store/taskStore';
 import { useAppointmentStore } from '../store/appointmentStore';
 import { useAITools } from '../components/AIToolsProvider';
 import { useTheme } from '../contexts/ThemeContext';
