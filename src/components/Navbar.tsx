@@ -35,11 +35,12 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ onOpenPipelineModal }) => {
       deal.stage !== 'closed-won' && deal.stage !== 'closed-lost'
     ).length;
     
-    const hotContacts = Object.values(contacts).filter(contact => 
+    const hotContacts = Object.values(contacts).filter(contact =>
       contact.status === 'hot'
     ).length;
-    
-    const pendingTasks = Object.values(tasks).filter(task => 
+
+    const taskList = Array.isArray(tasks) ? tasks : Object.values(tasks);
+    const pendingTasks = taskList.filter(task =>
       !task.completed
     ).length;
     

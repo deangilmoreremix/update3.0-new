@@ -11,13 +11,14 @@ const localizer = momentLocalizer(moment);
 
 const TaskCalendar: FC<TaskCalendarProps> = ({ onTaskSelect }) => {
   const { tasks } = useTaskStore();
+  const taskList = Array.isArray(tasks) ? tasks : Object.values(tasks);
   const [view, setView] = useState<'month' | 'week' | 'day'>('month');
   const [date, setDate] = useState(new Date());
   const [showAll, setShowAll] = useState(false);
 
   // Format tasks as events for the calendar
   const events = useMemo(() => {
-    return Object.values(tasks)
+    return taskList
       .filter(task => task.dueDate || showAll) // Only show tasks with due dates unless showAll is true
       .map(task => ({
         id: task.id,

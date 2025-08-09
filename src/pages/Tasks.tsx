@@ -8,16 +8,18 @@ import SimpleMDE from 'react-simplemde-editor';
 import 'easymde/dist/easymde.min.css';
 
 const Tasks: React.FC = () => {
-  const { 
-    tasks, 
+  const {
+    tasks,
     isLoading,
-    createTask, 
-    updateTask, 
-    deleteTask, 
+    createTask,
+    updateTask,
+    deleteTask,
     markTaskComplete,
     selectTask,
     selectedTask
   } = useTaskStore();
+
+  const taskList = Array.isArray(tasks) ? tasks : Object.values(tasks);
 
   const [filter, setFilter] = useState<{
     status: 'all' | 'completed' | 'uncompleted';
@@ -50,7 +52,7 @@ const Tasks: React.FC = () => {
   });
 
   // Filter tasks based on selected filters and search term
-  const filteredTasks = (Object.values(tasks) as Task[]).filter((task: Task) => {
+  const filteredTasks = taskList.filter((task: Task) => {
     // Check search term
     if (searchTerm && !task?.title.toLowerCase().includes(searchTerm.toLowerCase())) {
       return false;
@@ -341,7 +343,7 @@ const Tasks: React.FC = () => {
           </div>
           <div>
             <p className="text-sm text-gray-500">Total Tasks</p>
-            <p className="text-xl font-semibold">{Object.keys(tasks).length}</p>
+            <p className="text-xl font-semibold">{taskList.length}</p>
           </div>
         </div>
 
@@ -352,7 +354,7 @@ const Tasks: React.FC = () => {
           <div>
             <p className="text-sm text-gray-500">Overdue</p>
             <p className="text-xl font-semibold">
-              {(Object.values(tasks) as Task[]).filter((task: Task) => 
+              {taskList.filter((task: Task) =>
                 !task.completed && task.dueDate && task.dueDate < new Date()
               ).length}
             </p>
@@ -366,7 +368,7 @@ const Tasks: React.FC = () => {
           <div>
             <p className="text-sm text-gray-500">Completed</p>
             <p className="text-xl font-semibold">
-              {(Object.values(tasks) as Task[]).filter((task: Task) => task.completed).length}
+              {taskList.filter((task: Task) => task.completed).length}
             </p>
           </div>
         </div>
