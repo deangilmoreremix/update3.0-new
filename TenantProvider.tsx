@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 
 interface Tenant {
   id: string;
@@ -46,6 +46,7 @@ interface TenantProviderProps {
 export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
   const [tenant, setTenant] = useState<Tenant | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const originalTitleRef = useRef(document.title);
 
   useEffect(() => {
     fetchTenantInfo();
@@ -68,11 +69,6 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
         if (response.ok) {
           const data = await response.json();
           setTenant(data.tenant);
-          
-          // Apply branding immediately after fetching
-          if (data.tenant) {
-            applyTenantBranding(data.tenant);
-          }
         } else {
           // Silently handle non-200 responses without logging errors
           // This prevents console spam during development
@@ -146,6 +142,15 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
       applyTenantBranding(tenant);
     }
   };
+
+  useEffect(() => {
+    if (tenant) {
+      applyTenantBranding(tenant);
+    }
+    return () => {
+      document.title = originalTitleRef.current;
+    };
+  }, [tenant]);
 
   return (
     <TenantContext.Provider
