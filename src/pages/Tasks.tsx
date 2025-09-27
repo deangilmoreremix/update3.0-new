@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTaskStore } from '../store/taskStore';
+import { useTaskStore } from '@/store/taskStore';
 import { Task } from '../types';
 import { AlertCircle, Briefcase, Calendar, CheckCircle, CheckSquare, Clock, Flag, Plus, Search, User, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
